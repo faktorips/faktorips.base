@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -56,43 +58,47 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getAssociation().getIpsSrcFile());
+    protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        try {
+            result.add(getAssociation().getIpsSrcFile());
+            if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
+                IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)getAssociation();
+                IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
+                        .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());
+                if (inverseAssociation != null) {
+                    result.add(inverseAssociation.getIpsSrcFile());
+                }
 
-        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)getAssociation();
-            IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
-                    .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());
-            if (inverseAssociation != null) {
-                addIpsSrcFile(inverseAssociation.getIpsSrcFile());
+                testCaseTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+                for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
+                    result.add(ipsSrcFile);
+                }
+
+            } else if (getAssociation() instanceof IProductCmptTypeAssociation) {
+                productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+                for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+                    result.add(ipsSrcFile);
+                }
             }
 
-            testCaseTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
-            for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
-                addIpsSrcFile(ipsSrcFile);
-            }
-
-        } else if (getAssociation() instanceof IProductCmptTypeAssociation) {
-            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-            for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
-                addIpsSrcFile(ipsSrcFile);
-            }
-        }
-
-        if (getAssociation().isDerivedUnion()) {
-            Set<IIpsSrcFile> typeSrcFiles = findReferencingIpsSrcFiles(getAssociation() instanceof IPolicyCmptTypeAssociation ? IpsObjectType.POLICY_CMPT_TYPE
-                    : IpsObjectType.PRODUCT_CMPT_TYPE);
-            for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
-                IType type = (IType)ipsSrcFile.getIpsObject();
-                for (IAssociation association : type.getAssociations()) {
-                    if (association.getSubsettedDerivedUnion().equals(getOriginalName())) {
-                        derivedUnionSubsets.add(association);
-                        addIpsSrcFile(ipsSrcFile);
+            if (getAssociation().isDerivedUnion()) {
+                Set<IIpsSrcFile> typeSrcFiles = findReferencingIpsSrcFiles(getAssociation() instanceof IPolicyCmptTypeAssociation ? IpsObjectType.POLICY_CMPT_TYPE
+                        : IpsObjectType.PRODUCT_CMPT_TYPE);
+                for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
+                    IType type = (IType)ipsSrcFile.getIpsObject();
+                    for (IAssociation association : type.getAssociations()) {
+                        if (association.getSubsettedDerivedUnion().equals(getOriginalName())) {
+                            derivedUnionSubsets.add(association);
+                            result.add(ipsSrcFile);
+                        }
                     }
                 }
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
-
+        return result;
     }
 
     @Override
@@ -120,7 +126,8 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsSrcFileModificationSet modifications = createDefaultModifications();
         if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
             updateInverseAssociation();
             updateTestCaseTypeParameters();
@@ -133,6 +140,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
         updateTargetRoleSingular();
         updateTargetRolePlural();
+        return modifications;
     }
 
     private void updateTargetRoleSingular() {

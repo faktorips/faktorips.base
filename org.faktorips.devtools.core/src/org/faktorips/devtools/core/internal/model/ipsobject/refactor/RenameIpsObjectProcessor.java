@@ -13,7 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -45,11 +47,10 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
-        List<IIpsSrcFile> ipsSrcFiles = renameMoveHelper.addIpsSrcFiles();
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            addIpsSrcFile(ipsSrcFile);
-        }
+    protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        result.addAll(renameMoveHelper.getAffectedIpsSrcFiles());
+        return result;
     }
 
     @Override
@@ -68,8 +69,9 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.refactorIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(), isAdaptRuntimeId(), pm);
+    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        return renameMoveHelper.refactorIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(),
+                isAdaptRuntimeId(), pm);
     }
 
     @Override

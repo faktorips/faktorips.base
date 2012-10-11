@@ -14,11 +14,13 @@
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -36,6 +38,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -65,22 +68,42 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getIpsSrcFile());
-        productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
-            addIpsSrcFile(ipsSrcFile);
-        }
-        if (getAttribute() instanceof IPolicyCmptTypeAttribute) {
-            testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
-            for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
-                addIpsSrcFile(ipsSrcFile);
+    protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        try {
+            result.add(getIpsSrcFile());
+            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+            for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+                result.add(ipsSrcFile);
             }
-            policyCmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
-            for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
-                addIpsSrcFile(ipsSrcFile);
+            if (getAttribute() instanceof IPolicyCmptTypeAttribute) {
+                testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+                for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
+                    result.add(ipsSrcFile);
+                }
+                policyCmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+                for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
+                    result.add(ipsSrcFile);
+                }
+                // Collect source files for overwritten attributes
+                IPolicyCmptTypeAttribute overwrittenAttribute = null;
+                while (true) {
+                    if (overwrittenAttribute == null) {
+                        overwrittenAttribute = ((IPolicyCmptTypeAttribute)getAttribute())
+                                .findOverwrittenAttribute(getIpsProject());
+                    } else {
+                        overwrittenAttribute = overwrittenAttribute.findOverwrittenAttribute(getIpsProject());
+                    }
+                    if (overwrittenAttribute == null) {
+                        break;
+                    }
+                    result.add(overwrittenAttribute.getIpsSrcFile());
+                }
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
+        return result;
     }
 
     @Override
@@ -90,7 +113,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsSrcFileModificationSet modifications = createDefaultModifications();
         if (getAttribute() instanceof IProductCmptTypeAttribute) {
             updateProductCmptAttributeValueReferences();
         } else {
@@ -101,6 +125,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateSubHierarchyAttributes();
         }
         updateAttributeName();
+        return modifications;
     }
 
     /**
@@ -155,7 +180,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
          */
         for (IPolicyCmptTypeAttribute attribute : attributesToRename) {
             attribute.setName(getNewName());
-            addIpsSrcFile(attribute.getIpsSrcFile());
         }
     }
 

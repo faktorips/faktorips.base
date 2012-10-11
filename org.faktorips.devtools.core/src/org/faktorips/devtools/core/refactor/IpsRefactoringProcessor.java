@@ -45,9 +45,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     /** The {@link IIpsElement} to be refactored. */
     private final IIpsElement ipsElement;
 
-    /** Set containing all {@link IIpsSrcFile}s that are affected by the refactoring. */
-    private final Set<IIpsSrcFile> affectedIpsSrcFiles;
-
     /** Set containing all message codes that will be ignored during final condition checking. */
     private final Set<String> ignoredValidationMessageCodes;
 
@@ -61,7 +58,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         ArgumentCheck.notNull(ipsElement);
 
         this.ipsElement = ipsElement;
-        affectedIpsSrcFiles = new HashSet<IIpsSrcFile>();
         ignoredValidationMessageCodes = new HashSet<String>();
     }
 
@@ -114,8 +110,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
 
-        addIpsSrcFiles();
-        for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : getAffectedIpsSrcFiles()) {
             if (!(ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ZERO))) {
                 status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsSrcFileOutOfSync, ipsSrcFile
                         .getCorrespondingResource().getFullPath()));
@@ -199,8 +194,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     @Override
     public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        refactorIpsModel(pm);
-        saveIpsSourceFiles(pm);
+        IpsSrcFileModificationSet modificationSet = refactorIpsModel(pm);
+        saveIpsSourceFiles(modificationSet, pm);
         return new NullChange();
     }
 
@@ -212,40 +207,41 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @throws CoreException Subclasses may throw this kind of exception any time
      */
-    protected abstract void refactorIpsModel(IProgressMonitor pm) throws CoreException;
+    protected abstract IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException;
 
-    private void saveIpsSourceFiles(IProgressMonitor pm) throws CoreException {
-        for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
-            // File may not exist if it has been moved during refactoring.
-            if (ipsSrcFile.exists()) {
-                ipsSrcFile.save(true, pm);
+    private void saveIpsSourceFiles(IpsSrcFileModificationSet modificationSet, IProgressMonitor pm)
+            throws CoreException {
+        for (IIpsSrcFileModification modification : modificationSet.getModifications()) {
+            if (modification.getTargetIpsSrcFile().exists()) {
+                modification.getTargetIpsSrcFile().save(true, pm);
             }
         }
     }
 
     /**
-     * Subclass implementation responsible for adding all {@link IIpsSrcFile}s touched by this
-     * refactoring.
+     * Returns the list of affected {@link IIpsSrcFile IPS source files}.
      * 
-     * @see #addIpsSrcFile(IIpsSrcFile)
+     * @return The list of affected {@link IIpsSrcFile IPS source files}.
      * 
-     * @throws CoreException May be thrown at any time
      */
-    protected abstract void addIpsSrcFiles() throws CoreException;
+    protected abstract Set<IIpsSrcFile> getAffectedIpsSrcFiles();
 
     /**
-     * Adds the given {@link IIpsSrcFile} to this refactoring.
+     * This method creates a modifications set using all {@link IIpsSrcFile IPS source files} added
+     * collected by {@link #getAffectedIpsSrcFiles()}.
      * <p>
-     * Added source files will be processed and saved. If the {@link IIpsSrcFile} in question was
-     * already added before, nothing will happen.
-     * 
-     * @param ipsSrcFile {@link IIpsSrcFile} to add
-     * 
-     * @throws NullPointerException If the parameter is null
+     * This method could be called in {@link #refactorIpsModel(IProgressMonitor)} to get all
+     * modifications. It needs to be called before any of these source files was modified!
+     * <p>
+     * This method only creates normal modifications. If you have rename modifications or something
+     * else you need to create these modifications by your own.
      */
-    protected final void addIpsSrcFile(IIpsSrcFile ipsSrcFile) {
-        ArgumentCheck.notNull(ipsSrcFile);
-        affectedIpsSrcFiles.add(ipsSrcFile);
+    protected final IpsSrcFileModificationSet createDefaultModifications() {
+        IpsSrcFileModificationSet modificationSet = new IpsSrcFileModificationSet();
+        for (IIpsSrcFile ipsSrcFile : getAffectedIpsSrcFiles()) {
+            modificationSet.addBeforeChanged(ipsSrcFile);
+        }
+        return modificationSet;
     }
 
     /**

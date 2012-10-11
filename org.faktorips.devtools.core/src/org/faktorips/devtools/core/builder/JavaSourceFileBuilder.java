@@ -1036,8 +1036,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         if (ipsObjectPartContainer instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
-            if (isGeneratsArtifactsFor(ipsObject.getIpsSrcFile())) {
-                javaElements.addAll(getGeneratedJavaTypes(ipsObject));
+            try {
+                if (isBuilderFor(ipsObject.getIpsSrcFile())) {
+                    javaElements.addAll(getGeneratedJavaTypes(ipsObject));
+                }
+            } catch (CoreException e) {
+                return new ArrayList<IJavaElement>();
             }
         }
 

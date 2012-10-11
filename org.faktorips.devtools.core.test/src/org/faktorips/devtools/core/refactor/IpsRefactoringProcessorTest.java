@@ -25,6 +25,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -117,7 +120,9 @@ public class IpsRefactoringProcessorTest {
 
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, RETURNS_DEEP_STUBS);
         when(ipsSrcFile.getCorrespondingResource().isSynchronized(anyInt())).thenReturn(false);
-        testProcessorSpy.addIpsSrcFile(ipsSrcFile);
+        Set<IIpsSrcFile> affectedFiles = new HashSet<IIpsSrcFile>();
+        affectedFiles.add(ipsSrcFile);
+        when(testProcessorSpy.getAffectedIpsSrcFiles()).thenReturn(affectedFiles);
 
         RefactoringStatus status = testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
 
@@ -181,13 +186,14 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        protected void addIpsSrcFiles() throws CoreException {
+        protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+            return new HashSet<IIpsSrcFile>();
 
         }
 
         @Override
-        protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-
+        protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+            return createDefaultModifications();
         }
 
         @Override
