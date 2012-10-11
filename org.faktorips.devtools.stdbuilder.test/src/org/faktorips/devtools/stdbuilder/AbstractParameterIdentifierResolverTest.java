@@ -27,7 +27,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -42,7 +41,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.fl.CompilationResult;
@@ -139,17 +137,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         resolver = (AbstractParameterIdentifierResolver)ipsProject.getIpsArtefactBuilderSet()
                 .createFlIdentifierResolver(formula, formula.newExprCompiler(ipsProject));
 
-        standardBuilderSet = (StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet();
-    }
-
-    private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
-        IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
-        for (IIpsArtefactBuilder builder : builders) {
-            if (builder instanceof PolicyCmptInterfaceBuilder) {
-                return (PolicyCmptInterfaceBuilder)builder;
-            }
-        }
-        return null;
+        standardBuilderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
     }
 
     @Test
@@ -180,8 +168,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
-        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet())
-                .getGenerator(policyCmptType);
+        GenPolicyCmptType genPolicyCmptType = standardBuilderSet.getGenerator(policyCmptType);
         String expected = "policy."
                 + genPolicyCmptType.getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
