@@ -44,8 +44,6 @@ public abstract class XProductClass extends XType {
 
     private Set<XProductAssociation> associations;
 
-    private Set<XDerivedUnionAssociation> subsettedDerivedUnions;
-
     private Set<XTableUsage> tables;
 
     public XProductClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
@@ -74,7 +72,6 @@ public abstract class XProductClass extends XType {
         attributes = null;
         configuredAttributes = null;
         associations = null;
-        subsettedDerivedUnions = null;
         tables = null;
     }
 
@@ -199,15 +196,7 @@ public abstract class XProductClass extends XType {
 
     @Override
     public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
-        checkForUpdate();
-        if (subsettedDerivedUnions == null) {
-            synchronized (this) {
-                if (subsettedDerivedUnions == null) {
-                    subsettedDerivedUnions = findSubsettedDerivedUnions(getAssociations());
-                }
-            }
-        }
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
+        return findSubsettedDerivedUnions(getAssociations());
     }
 
     public Set<XTableUsage> getTables() {
@@ -231,14 +220,14 @@ public abstract class XProductClass extends XType {
     }
 
     public String getPolicyInterfaceName() {
-        return getPolicyName(BuilderAspect.INTERFACE);
+        return getPolicyClassName(BuilderAspect.INTERFACE);
     }
 
     public String getPolicyImplClassName() {
-        return getPolicyName(BuilderAspect.IMPLEMENTATION);
+        return getPolicyClassName(BuilderAspect.IMPLEMENTATION);
     }
 
-    protected String getPolicyName(BuilderAspect aspect) {
+    protected String getPolicyClassName(BuilderAspect aspect) {
         XPolicyCmptClass xPolicyCmptClass = getPolicyCmptClass();
         return xPolicyCmptClass.getSimpleName(aspect);
     }

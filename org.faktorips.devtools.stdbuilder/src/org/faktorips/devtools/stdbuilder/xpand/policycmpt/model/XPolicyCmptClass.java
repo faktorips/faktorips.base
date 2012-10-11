@@ -54,8 +54,6 @@ public class XPolicyCmptClass extends XType {
 
     private volatile Set<XPolicyAssociation> associations;
 
-    private volatile Set<XDerivedUnionAssociation> subsettedDerivedUnions;
-
     private volatile Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
     private volatile Set<XValidationRule> validationRules;
@@ -190,7 +188,6 @@ public class XPolicyCmptClass extends XType {
         attributes = null;
         productAttributes = null;
         associations = null;
-        subsettedDerivedUnions = null;
         detailToMasterDerivedUnionAssociations = null;
         validationRules = null;
     }
@@ -250,15 +247,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
-        checkForUpdate();
-        if (subsettedDerivedUnions == null) {
-            synchronized (this) {
-                if (subsettedDerivedUnions == null) {
-                    subsettedDerivedUnions = findSubsettedDerivedUnions(getAssociations());
-                }
-            }
-        }
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
+        return findSubsettedDerivedUnions(getAssociations());
     }
 
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {

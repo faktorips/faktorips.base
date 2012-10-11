@@ -134,7 +134,7 @@ public class XPolicyAssociation extends XAssociation {
      * simply return null because testing would be with equal low performance as this method itself.
      * 
      */
-    XPolicyAssociation getSuperAssociationWithSameName() {
+    protected XPolicyAssociation getSuperAssociationWithSameName() {
         try {
             IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
                     .findSuperAssociationWithSameName(getIpsProject());
