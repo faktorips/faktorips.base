@@ -125,7 +125,20 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         }
         Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
         doInitPropertiesFromXml(propertyElements);
+        doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         initExtensionPropertiesFromXml(cmptElement);
+    }
+
+    /**
+     * 
+     * @param linkElements the XML elements used to initialize {@link ProductComponentLink}
+     *            instances.
+     */
+    protected void doInitReferencesFromXml(Map<String, List<Element>> linkElements) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitReferencesFromXml().
     }
 
     /**
