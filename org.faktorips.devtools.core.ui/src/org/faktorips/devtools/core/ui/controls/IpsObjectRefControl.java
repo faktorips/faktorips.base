@@ -80,6 +80,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl implements I
     }
 
     /**
+     * 
      * @deprecated This method is deprecated because of the refitting of this class for several
      *             projects. Use {@link #setIpsProjects(List)} instead of this method.
      */
@@ -185,7 +186,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl implements I
     }
 
     @Override
-    public final IIpsSrcFile[] provideIpsSrcFile() {
+    public final IIpsSrcFile[] getProvidedIpsSrcFiles() {
         try {
             return getIpsSrcFiles();
         } catch (CoreException e) {

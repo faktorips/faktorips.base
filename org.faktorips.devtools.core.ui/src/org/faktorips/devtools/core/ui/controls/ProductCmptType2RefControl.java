@@ -74,7 +74,6 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
      * @throws CoreException if an exception occurs while searching for the type.
      */
     public IProductCmptType findProductCmptType() throws CoreException {
-        IIpsObject object = findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE);
-        return (IProductCmptType)object;
+        return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE);
     }
 }

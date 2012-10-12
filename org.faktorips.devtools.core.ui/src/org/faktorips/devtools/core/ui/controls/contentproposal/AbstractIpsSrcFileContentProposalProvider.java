@@ -23,14 +23,21 @@ import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+/**
+ * Abstract implementation of an {@link IContentProposalProvider} for {@link IIpsSrcFile}. A source
+ * file is part of the proposal, if its unqualified name fits the given arguments in the method
+ * {@link #getProposals(String, int)}.
+ * <p>
+ * The result could be filtered, if an {@link IFilter} is set.
+ * <p>
+ * Subclasses must implement {@link #getIpsSrcFiles()}.
+ * 
+ * @author dicker
+ */
 public abstract class AbstractIpsSrcFileContentProposalProvider implements IContentProposalProvider {
 
     private SearchPattern searchPattern = new SearchPattern();
-    protected IFilter filter;
-
-    public AbstractIpsSrcFileContentProposalProvider() {
-        super();
-    }
+    private IFilter filter;
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
@@ -55,4 +62,7 @@ public abstract class AbstractIpsSrcFileContentProposalProvider implements ICont
         this.filter = filter;
     }
 
+    public IFilter getFilter() {
+        return filter;
+    }
 }

@@ -15,8 +15,16 @@ package org.faktorips.devtools.core.ui.controls.contentproposal;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+/**
+ * This interface provides {@link IIpsSrcFile ips source files}.
+ * 
+ * @author dicker
+ */
 public interface IpsSrcFileProvider {
 
-    IIpsSrcFile[] provideIpsSrcFile();
+    /**
+     * Returns an array of the {@link IIpsSrcFile ips source files}, which should be provided.
+     */
+    IIpsSrcFile[] getProvidedIpsSrcFiles();
 
 }

@@ -15,17 +15,26 @@ package org.faktorips.devtools.core.ui.controls.contentproposal;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+/**
+ * This subclass of the {@link AbstractIpsSrcFileContentProposalProvider} uses an
+ * {@link IpsSrcFileProvider} to provide IIpsSrcFiles for the proposal.
+ * 
+ * @author dicker
+ */
 public class ProvidedIpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContentProposalProvider {
 
     private final IpsSrcFileProvider ipsSrcFileProvider;
 
+    /**
+     * Constructor with the {@link IpsSrcFileProvider}
+     */
     public ProvidedIpsSrcFileContentProposalProvider(IpsSrcFileProvider ipsSrcFileProvider) {
         this.ipsSrcFileProvider = ipsSrcFileProvider;
     }
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() {
-        return ipsSrcFileProvider.provideIpsSrcFile();
+        return ipsSrcFileProvider.getProvidedIpsSrcFiles();
     }
 
 }
