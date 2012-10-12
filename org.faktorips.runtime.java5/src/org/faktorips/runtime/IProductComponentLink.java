@@ -18,7 +18,7 @@ package org.faktorips.runtime;
  * 
  * @author Daniel Hohenberger
  */
-public interface IProductComponentLink<E extends IProductComponent> extends IRuntimeObject, IClRepositoryObject {
+public interface IProductComponentLink<T extends IProductComponent> extends IRuntimeObject, IClRepositoryObject {
 
     /**
      * @return this link's min and max cardinality as a <code>IntegerRange</code>.
@@ -26,15 +26,22 @@ public interface IProductComponentLink<E extends IProductComponent> extends IRun
     public CardinalityRange getCardinality();
 
     /**
-     * Returns the product component generation this link belongs to. This method never returns
-     * <code>null</code>.
+     * Returns the {@link IProductComponentGeneration} this link originates from (if applicable). If
+     * this link originates from a product component an {@link UnsupportedOperationException} is
+     * thrown.
+     * 
+     * @throws UnsupportedOperationException if this link's source is not a product component
+     *             generation but a product component
+     * @deprecated As of 3.8 links can originate both from product components and generations. No
+     *             replacement available.
      */
+    @Deprecated
     public IProductComponentGeneration getSource();
 
     /**
      * Returns the target product component.
      */
-    public E getTarget();
+    public T getTarget();
 
     /**
      * Returns the target product component's id.

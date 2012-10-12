@@ -37,7 +37,6 @@ public class ProductComponentTest {
     }
 
     private Element setUpElement() {
-        // cmptElement.getElementsByTagName(VALID_TO).item(0)
         Element element = mock(Element.class);
         Element validToElement = mock(Element.class);
         NodeList nodeList = mock(NodeList.class);
