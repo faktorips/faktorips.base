@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
@@ -68,19 +69,26 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
 
     @Override
     protected boolean visit(IProductCmptType currentType) throws CoreException {
-        List<IAssociation> associations = currentType.getAssociations();
-        for (IAssociation association : associations) {
+        List<IProductCmptTypeAssociation> associations = currentType.getProductCmptTypeAssociations();
+        for (IProductCmptTypeAssociation association : associations) {
             if (association.isDerivedUnion()) {
                 continue;
             }
-            List<IProductCmptLink> relations = linkContainer.getLinksAsList(association.getTargetRoleSingular());
-            addMessageIfAssociationHasValidationMessages(association, list);
-            addMessageIfLessLinksThanMinCard(association, relations, list);
-            addMessageIfMoreLinksThanMaxCard(association, relations, list);
-            addMessageIfDuplicateTargetPresent(association, relations, list);
+            if (!linkContainer.isContainerFor(association)) {
+                continue;
+            }
+            validateAssociation(association);
         }
 
         return true;
+    }
+
+    protected void validateAssociation(IAssociation association) {
+        List<IProductCmptLink> relations = linkContainer.getLinksAsList(association.getTargetRoleSingular());
+        addMessageIfAssociationHasValidationMessages(association, list);
+        addMessageIfLessLinksThanMinCard(association, relations, list);
+        addMessageIfMoreLinksThanMaxCard(association, relations, list);
+        addMessageIfDuplicateTargetPresent(association, relations, list);
     }
 
     protected void addMessageIfDuplicateTargetPresent(IAssociation association,

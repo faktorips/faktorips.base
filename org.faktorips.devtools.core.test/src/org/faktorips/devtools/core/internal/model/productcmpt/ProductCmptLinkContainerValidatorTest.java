@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.verification.VerificationMode;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductCmptLinkContainerValidatorTest {
@@ -71,7 +72,7 @@ public class ProductCmptLinkContainerValidatorTest {
     }
 
     @Test
-    public void testVisitIgnoredDerivedUnions() {
+    public void testVisitIgnoresDerivedUnions() {
         IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
         when(assoc.isDerivedUnion()).thenReturn(true);
 
@@ -82,23 +83,25 @@ public class ProductCmptLinkContainerValidatorTest {
         validator = spy(validator);
         callValidator();
 
-        verify(validator, never()).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
-        verify(validator, never()).addMessageIfDuplicateTargetPresent(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
-        verify(validator, never()).addMessageIfLessLinksThanMinCard(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
-        verify(validator, never()).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
+        verifyAddMessagesCalled(assoc, never());
 
     }
 
+    private void verifyAddMessagesCalled(IProductCmptTypeAssociation assoc, VerificationMode mode) {
+        verify(validator, mode).validateAssociation(eq(assoc));
+        verify(validator, mode).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
+        verify(validator, mode).addMessageIfDuplicateTargetPresent(eq(assoc), anyListOf(IProductCmptLink.class),
+                any(MessageList.class));
+        verify(validator, mode).addMessageIfLessLinksThanMinCard(eq(assoc), anyListOf(IProductCmptLink.class),
+                any(MessageList.class));
+        verify(validator, mode).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
+                any(MessageList.class));
+    }
+
     @Test
-    public void testVisitCallsAddMessageMethods() throws CoreException {
+    public void testVisitIgnoresOppositeChangingOverTimeAssociations() {
         IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
-        when(assoc.isDerivedUnion()).thenReturn(false);
-        MessageList messageList = mock(MessageList.class);
-        when(messageList.isEmpty()).thenReturn(true);
-        when(assoc.validate(any(IIpsProject.class))).thenReturn(messageList);
+        when(linkContainer.isContainerFor(assoc)).thenReturn(false);
 
         List<IAssociation> associations = new ArrayList<IAssociation>();
         associations.add(assoc);
@@ -107,13 +110,26 @@ public class ProductCmptLinkContainerValidatorTest {
         validator = spy(validator);
         callValidator();
 
-        verify(validator, times(1)).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
-        verify(validator, times(1)).addMessageIfDuplicateTargetPresent(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
-        verify(validator, times(1)).addMessageIfLessLinksThanMinCard(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
-        verify(validator, times(1)).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
+        verifyAddMessagesCalled(assoc, never());
+    }
+
+    @Test
+    public void testVisitCallsAddMessageMethods() throws CoreException {
+        IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
+        when(assoc.isDerivedUnion()).thenReturn(false);
+        when(linkContainer.isContainerFor(assoc)).thenReturn(true);
+        MessageList messageList = mock(MessageList.class);
+        when(messageList.isEmpty()).thenReturn(true);
+        when(assoc.validate(any(IIpsProject.class))).thenReturn(messageList);
+
+        List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
+        associations.add(assoc);
+        when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
+
+        validator = spy(validator);
+        callValidator();
+
+        verifyAddMessagesCalled(assoc, times(1));
     }
 
 }
