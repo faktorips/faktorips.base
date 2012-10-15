@@ -49,7 +49,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -208,15 +208,16 @@ public final class MoveRenameIpsObjectHelper {
         return deleteResourceChange.perform(pm);
     }
 
-    public IpsSrcFileModificationSet refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment,
+    public IpsRefactoringModificationSet refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             boolean adaptRuntimeId,
             IProgressMonitor pm) throws CoreException {
-        IpsSrcFileModificationSet modifications = new IpsSrcFileModificationSet();
+        IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(toBeRefactored);
         modifications.append(updateDependencies(targetIpsPackageFragment, newName));
         modifications.addRenameModification(toBeRefactored.getIpsSrcFile(), targetIpsPackageFragment
                 .getIpsSrcFile((RefactorUtil.getTargetFileName(toBeRefactored.getIpsSrcFile(), newName))));
         IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
+        modifications.setTargetElement(targetSrcFile.getIpsObject());
 
         if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
             IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
@@ -228,9 +229,9 @@ public final class MoveRenameIpsObjectHelper {
         return modifications;
     }
 
-    private IpsSrcFileModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment, String newName)
+    private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment, String newName)
             throws CoreException {
-        IpsSrcFileModificationSet modifications = new IpsSrcFileModificationSet();
+        IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(null);
         for (IDependency dependency : getDependencies()) {
             if (!isMatching(dependency)) {
                 continue;

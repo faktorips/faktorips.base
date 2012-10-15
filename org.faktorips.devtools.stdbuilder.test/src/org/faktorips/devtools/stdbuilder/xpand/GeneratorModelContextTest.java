@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,9 +42,6 @@ public class GeneratorModelContextTest {
     private IIpsArtefactBuilderSetConfig config;
 
     @Mock
-    private ImportHandler importHandler;
-
-    @Mock
     private IJavaPackageStructure javaPackageStructure;
 
     private GeneratorModelContext generatorModelContext;
@@ -53,7 +49,7 @@ public class GeneratorModelContextTest {
     @Before
     public void createGeneratorModelContext() throws Exception {
         generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap);
-        generatorModelContext.setImportHandler(importHandler);
+        generatorModelContext.newBuilderProcess("any");
     }
 
     @Test

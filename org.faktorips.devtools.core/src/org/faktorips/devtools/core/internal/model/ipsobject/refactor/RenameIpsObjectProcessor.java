@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -69,7 +69,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         return renameMoveHelper.refactorIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(),
                 isAdaptRuntimeId(), pm);
     }

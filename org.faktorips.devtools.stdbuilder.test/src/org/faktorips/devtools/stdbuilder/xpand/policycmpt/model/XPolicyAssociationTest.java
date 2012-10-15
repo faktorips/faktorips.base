@@ -56,8 +56,6 @@ public class XPolicyAssociationTest {
     @Mock
     private ModelService modelService;
 
-    @Mock
-    private XPolicyAssociation inverseAssoc;
     private XPolicyAssociation assoc;
 
     @Before

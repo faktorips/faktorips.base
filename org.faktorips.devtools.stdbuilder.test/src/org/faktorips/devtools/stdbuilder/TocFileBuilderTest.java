@@ -172,7 +172,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
         // asserts for product cmpt entry
         List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
-        assertEquals(2, entries.size());
+        assertEquals(1, entries.size());
 
         ProductCmptTocEntry entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
         assertNotNull(entry0);
@@ -195,30 +195,33 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         long stamp = tocFile.getModificationStamp();
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertEquals(stamp, tocFile.getModificationStamp());
-        assertEquals(8, tocFileBuilder.getToc(root).getEntries().size());
+        assertEquals(6, tocFileBuilder.getToc(root).getEntries().size());
 
-        // delete the product cmpt => should be removed from toc => 7
+        // delete the product cmpt => should be removed from toc => 5
         motorProduct.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        assertEquals(7, tocFileBuilder.getToc(root).getEntries().size());
+        assertEquals(5, tocFileBuilder.getToc(root).getEntries().size());
 
-        // delete the table => should be removed from toc => 6
+        // delete the table => should be removed from toc => 4
         table.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root).getEntry(
                 new QualifiedNameType("motor.RateTable", IpsObjectType.TABLE_CONTENTS)));
+        assertEquals(4, tocFileBuilder.getToc(root).getEntries().size());
 
-        // delete the second table => should be removed from toc => 5
+        // delete the second table => should be removed from toc => 3
         table2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root).getEntry(
                 new QualifiedNameType("motor.RateTable2", IpsObjectType.TABLE_CONTENTS)));
+        assertEquals(3, tocFileBuilder.getToc(root).getEntries().size());
 
-        // delete test case => should be removed from toc => 4
+        // delete test case => should be removed from toc => 2
         testCase.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root).getEntry(
                 new QualifiedNameType("tests.PremiumCalcTestA", IpsObjectType.TABLE_CONTENTS)));
+        assertEquals(2, tocFileBuilder.getToc(root).getEntries().size());
 
         // check removing of table toc entries depending on the table structure type
         // create table content

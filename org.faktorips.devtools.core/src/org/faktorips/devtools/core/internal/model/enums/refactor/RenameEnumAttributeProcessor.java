@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -83,8 +83,9 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        IpsSrcFileModificationSet modifications = createDefaultModifications();
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
         updateSubclassReferences();
         if (!(getEnumType().isAbstract())) {
             if (getEnumType().isContainingValues()) {
@@ -94,7 +95,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
             }
         }
         updateEnumAttributeName();
-        return modifications;
+        return modificationSet;
     }
 
     private void updateLiteralNameReference() {

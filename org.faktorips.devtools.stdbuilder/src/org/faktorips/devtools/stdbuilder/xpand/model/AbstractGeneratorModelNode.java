@@ -60,7 +60,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractGeneratorModelNode {
 
-    private long lastUpdateStamp;
+    private long lastGeneratorRunCount;
 
     private final LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(getClass());
 
@@ -169,13 +169,12 @@ public abstract class AbstractGeneratorModelNode {
      * @return True if an update is needed, false if everything is still the same.
      */
     protected boolean checkForUpdate() {
-        long modificationStamp = getIpsObjectPartContainer().getEnclosingResource() != null ? getIpsObjectPartContainer()
-                .getEnclosingResource().getModificationStamp() : 0;
-        if (modificationStamp != lastUpdateStamp) {
+        long modificationStamp = modelContext.getGeneratorRunCount();
+        if (modificationStamp != lastGeneratorRunCount) {
             synchronized (this) {
-                if (modificationStamp != lastUpdateStamp) {
+                if (modificationStamp != lastGeneratorRunCount) {
                     clearCaches();
-                    lastUpdateStamp = modificationStamp;
+                    lastGeneratorRunCount = modificationStamp;
                     return true;
                 } else {
                     return false;

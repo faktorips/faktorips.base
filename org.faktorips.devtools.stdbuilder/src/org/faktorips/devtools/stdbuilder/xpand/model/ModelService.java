@@ -113,4 +113,12 @@ public class ModelService {
         }
         return nodes;
     }
+
+    public void clearCachesFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+        Set<AbstractGeneratorModelNode> allModelNodes = getAllModelNodes(ipsObjectPartContainer);
+        for (AbstractGeneratorModelNode modelNode : allModelNodes) {
+            modelNode.clearCaches();
+            modelNode.clearGeneratedJavaElements();
+        }
+    }
 }

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -35,17 +34,14 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.util.RefactorUtil;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -233,7 +229,7 @@ public abstract class RefactoringParticipantHelper {
      * {@link IJavaElement}s that will be generated for the {@link IIpsObjectPartContainer} after
      * the refactoring has finished and true is returned.
      */
-    public final boolean initialize(Object element) {
+    public final boolean initialize(IpsRefactoringProcessor processor, Object element) {
         if (!(element instanceof IIpsObjectPartContainer)) {
             return false;
         }
@@ -248,7 +244,14 @@ public abstract class RefactoringParticipantHelper {
         StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
         boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, standardBuilderSet);
         if (success) {
-            success = initializeTargetJavaElements(ipsObjectPartContainer, standardBuilderSet);
+            try {
+                IpsRefactoringModificationSet modificationSet = processor.refactorIpsModel(new NullProgressMonitor());
+                success = initializeTargetJavaElements((IIpsObjectPartContainer)modificationSet.getTargetElement(),
+                        standardBuilderSet);
+                modificationSet.undo();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
         initializeOriginalJavaMembersByType();
@@ -305,10 +308,9 @@ public abstract class RefactoringParticipantHelper {
      * This implementation asks the builder set for the generated elements of the given
      * {@link IIpsObjectPartContainer}. This behavior may be overwritten by subclasses.
      */
-    protected boolean initializeOriginalJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+    private boolean initializeOriginalJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
             StandardBuilderSet builderSet) {
-
-        originalJavaElements = builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
+        originalJavaElements = initializeJavaElements(ipsObjectPartContainer, builderSet);
         return true;
     }
 
@@ -320,67 +322,16 @@ public abstract class RefactoringParticipantHelper {
      * @param builderSet A reference to the {@link StandardBuilderSet} to ask for generated Java
      *            elements
      */
-    protected abstract boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-            StandardBuilderSet builderSet);
-
-    /**
-     * Initializes the target {@link IJavaElement}s for the given {@link IIpsObject}.
-     * 
-     * @param ipsObject The {@link IIpsObject} to be refactored
-     * @param targetIpsPackageFragment The new {@link IIpsPackageFragment} of the {@link IIpsObject}
-     * @param newName The new name of the {@link IIpsObject}
-     * @param builderSet A reference to the {@link StandardBuilderSet} to ask for generated Java
-     *            elements
-     * 
-     * @throws NullPointerException If any parameter is null
-     */
-    protected final boolean initTargetJavaElements(IIpsObject ipsObject,
-            IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
+    private boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
             StandardBuilderSet builderSet) {
-
-        ArgumentCheck.notNull(new Object[] { ipsObject, targetIpsPackageFragment, newName, builderSet });
-
-        Change undoDeleteChange = new NullChange();
-        try {
-            // 1) Create temporary copy with time stamp to avoid file system problems
-            IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(ipsObject.getIpsSrcFile(),
-                    targetIpsPackageFragment, newName, null);
-            IPath originalResourcePath = ipsObject.getIpsSrcFile().getCorrespondingResource().getFullPath();
-
-            // 2) Delete original source file with delete refactoring for undo possibility
-            DeleteResourceChange deleteResourceChange = new DeleteResourceChange(originalResourcePath, true);
-            undoDeleteChange = deleteResourceChange.perform(null);
-
-            // 3) Copy the temporary file to create the target file
-            IIpsSrcFile targetSrcFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName,
-                    null);
-
-            // 4) Delete the temporary file, we don't need it any longer
-            tempSrcFile.getCorrespondingResource().delete(true, null);
-
-            // 5) Obtain the generated Java elements for the target IPS object
-            IIpsObject targetIpsObject = targetSrcFile.getIpsObject();
-            targetJavaElements = builderSet.getGeneratedJavaElements(targetIpsObject);
-
-            // 6) Clean up by deleting the target source file
-            targetSrcFile.getCorrespondingResource().delete(true, null);
-
-        } catch (CoreException e) {
-            // The participant won't be initialized if a CoreException occurs
-            StdBuilderPlugin.log(e);
-            return false;
-
-        } finally {
-            // Roll-back by performing the undo change of the delete refactoring
-            try {
-                undoDeleteChange.perform(new NullProgressMonitor());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
+        targetJavaElements = initializeJavaElements(ipsObjectPartContainer, builderSet);
         return true;
+
+    }
+
+    protected List<IJavaElement> initializeJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+            StandardBuilderSet builderSet) {
+        return builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
     }
 
     /**
@@ -397,11 +348,11 @@ public abstract class RefactoringParticipantHelper {
         this.targetJavaElements = targetJavaElements;
     }
 
-    protected final List<IJavaElement> getOriginalJavaElements() {
+    private final List<IJavaElement> getOriginalJavaElements() {
         return originalJavaElements;
     }
 
-    protected final List<IJavaElement> getTargetJavaElements() {
+    private final List<IJavaElement> getTargetJavaElements() {
         return targetJavaElements;
     }
 

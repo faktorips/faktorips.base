@@ -676,9 +676,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
+            // TODO besser mit dependency graph!
+            // try {
             if (javaBuilder.isGeneratsArtifactsFor(ipsSrcFile)) {
                 javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
             }
+            // } catch (CoreException e) {
+            // throw new CoreRuntimeException(e);
+            // }
         }
 
         return javaElements;

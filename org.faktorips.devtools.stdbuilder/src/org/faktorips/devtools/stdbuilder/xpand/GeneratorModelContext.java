@@ -55,6 +55,8 @@ public class GeneratorModelContext {
      */
     private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<ImportHandler>();
 
+    private final ThreadLocal<Long> generatorRunCount = new ThreadLocal<Long>();
+
     private final IIpsArtefactBuilderSetConfig config;
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
@@ -69,6 +71,19 @@ public class GeneratorModelContext {
         this.javaPackageStructure = javaPackageStructure;
         this.annotationGeneratorMap = annotationGeneratorMap;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
+    }
+
+    public void newBuilderProcess(String packageOfArtifacts) {
+        importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
+        if (generatorRunCount.get() != null) {
+            generatorRunCount.set(generatorRunCount.get() + 1);
+        } else {
+            generatorRunCount.set(0L);
+        }
+    }
+
+    public long getGeneratorRunCount() {
+        return generatorRunCount.get();
     }
 
     IIpsArtefactBuilderSetConfig getConfig() {
@@ -97,7 +112,7 @@ public class GeneratorModelContext {
      * 
      * @param importHandler The thread local import handler
      */
-    public void setImportHandler(ImportHandler importHandler) {
+    protected void setImportHandler(ImportHandler importHandler) {
         this.importHandlerThreadLocal.set(importHandler);
     }
 

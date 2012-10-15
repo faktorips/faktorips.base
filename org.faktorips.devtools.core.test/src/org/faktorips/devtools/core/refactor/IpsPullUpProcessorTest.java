@@ -97,8 +97,10 @@ public class IpsPullUpProcessorTest {
         }
 
         @Override
-        protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
-            return createDefaultModifications();
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+            IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+            addAffectedSrcFiles(modificationSet);
+            return modificationSet;
         }
 
         @Override

@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,8 +115,10 @@ public class IpsProcessorBasedRefactoringTest {
         }
 
         @Override
-        protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
-            return createDefaultModifications();
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+            IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
+            addAffectedSrcFiles(modificationSet);
+            return modificationSet;
         }
 
         @Override

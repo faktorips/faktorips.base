@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 
 /**
  * Refactoring processor for the "Pull Up Attribute" - refactoring.
@@ -51,11 +51,13 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) {
-        IpsSrcFileModificationSet modifications = createDefaultModifications();
-        pullUpAttribute();
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
+        IAttribute newAttribute = pullUpAttribute();
+        modificationSet.setTargetElement(newAttribute);
         deleteOriginalAttribute();
-        return modifications;
+        return modificationSet;
     }
 
     private IAttribute pullUpAttribute() {

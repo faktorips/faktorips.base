@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -126,8 +126,9 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        IpsSrcFileModificationSet modifications = createDefaultModifications();
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
         if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
             updateInverseAssociation();
             updateTestCaseTypeParameters();
@@ -140,7 +141,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
         updateTargetRoleSingular();
         updateTargetRolePlural();
-        return modifications;
+        return modificationSet;
     }
 
     private void updateTargetRoleSingular() {

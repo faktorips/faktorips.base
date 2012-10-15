@@ -183,19 +183,19 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testGetPolicyName() throws Exception {
-        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
-        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
-
-        when(xPolicyCmpt.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("IPolicyCmpt");
-        when(xPolicyCmpt.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("PolicyCmpt");
-
-        assertEquals("IPolicyCmpt", xProductClass.getPolicyName(BuilderAspect.INTERFACE));
-        assertEquals("PolicyCmpt", xProductClass.getPolicyName(BuilderAspect.IMPLEMENTATION));
-
-        assertEquals("IPolicyCmpt", xProductClass.getPolicyInterfaceName());
-        assertEquals("PolicyCmpt", xProductClass.getPolicyImplClassName());
-    }
+        public void testGetPolicyClassName() throws Exception {
+            when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+            when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+    
+            when(xPolicyCmpt.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("IPolicyCmpt");
+            when(xPolicyCmpt.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("PolicyCmpt");
+    
+            assertEquals("IPolicyCmpt", xProductClass.getPolicyClassName(BuilderAspect.INTERFACE));
+            assertEquals("PolicyCmpt", xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION));
+    
+            assertEquals("IPolicyCmpt", xProductClass.getPolicyInterfaceName());
+            assertEquals("PolicyCmpt", xProductClass.getPolicyImplClassName());
+        }
 
     @Test
     public void testIsContainsNotDerivedAssociations_noAssociation() throws Exception {

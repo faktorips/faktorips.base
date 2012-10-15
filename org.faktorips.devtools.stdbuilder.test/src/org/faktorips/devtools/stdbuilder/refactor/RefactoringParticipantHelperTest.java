@@ -15,17 +15,21 @@ package org.faktorips.devtools.stdbuilder.refactor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +47,9 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     @Mock
     private StandardBuilderSet mockStandardBuilderSet;
 
+    @Mock
+    private IpsRefactoringProcessor ipsRefactoringProcessor;
+
     private TestParticipantHelper spyRefactoringHelper;
 
     @Override
@@ -50,23 +57,29 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     public void setUp() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
+        when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(
+                new IpsRefactoringModificationSet(null));
         TestParticipantHelper refactoringHelper = new TestParticipantHelper();
         spyRefactoringHelper = spy(refactoringHelper);
     }
 
     @Test
     public void testInitializeNonIpsElement() {
-        assertFalse(spyRefactoringHelper.initialize(new Object()));
+        assertFalse(spyRefactoringHelper.initialize(ipsRefactoringProcessor, new Object()));
     }
 
     @Test
-    public void testInitializeIpsObjectPartContainer() {
+    public void testInitializeIpsObjectPartContainer() throws CoreException {
         when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);
         when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockStandardBuilderSet);
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(mockIpsObjectPartContainer);
+        IIpsObjectPartContainer targetIpsObjectPartContainer = mock(IIpsObjectPartContainer.class);
+        modificationSet.setTargetElement(targetIpsObjectPartContainer);
+        when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(modificationSet);
 
-        assertTrue(spyRefactoringHelper.initialize(mockIpsObjectPartContainer));
+        assertTrue(spyRefactoringHelper.initialize(ipsRefactoringProcessor, mockIpsObjectPartContainer));
 
-        verify(spyRefactoringHelper).initializeTargetJavaElements(mockIpsObjectPartContainer, mockStandardBuilderSet);
+        verify(spyRefactoringHelper).initializeJavaElements(targetIpsObjectPartContainer, mockStandardBuilderSet);
     }
 
     @Test
@@ -75,10 +88,14 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         IIpsArtefactBuilderSet mockBuilderSet = mock(IIpsArtefactBuilderSet.class);
         when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockBuilderSet);
 
-        assertFalse(spyRefactoringHelper.initialize(mockIpsObjectPartContainer));
+        assertFalse(spyRefactoringHelper.initialize(ipsRefactoringProcessor, mockIpsObjectPartContainer));
     }
 
     public static class TestParticipantHelper extends RefactoringParticipantHelper {
+
+        public TestParticipantHelper() {
+            super();
+        }
 
         @Override
         protected JavaRefactoring createJavaRefactoring(IJavaElement generatedJavaElement,
@@ -87,13 +104,6 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
                 IProgressMonitor progressMonitor) {
 
             return null;
-        }
-
-        @Override
-        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-                StandardBuilderSet builderSet) {
-
-            return true;
         }
 
         @Override

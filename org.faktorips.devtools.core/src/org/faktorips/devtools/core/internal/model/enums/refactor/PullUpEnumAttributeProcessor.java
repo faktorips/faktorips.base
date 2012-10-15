@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
-import org.faktorips.devtools.core.refactor.IpsSrcFileModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 
 /**
  * Refactoring processor for the "Pull Up Enum Attribute" - refactoring.
@@ -70,19 +70,22 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    protected IpsSrcFileModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        IpsSrcFileModificationSet modificationSet = createDefaultModifications();
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
 
-        pullUpEnumAttribute();
+        IEnumAttribute newEnumAttr = pullUpEnumAttribute();
+        modificationSet.setTargetElement(newEnumAttr);
         markeOriginalEnumAttributeInherited();
         inheritEnumAttributeInSubclassesOfTarget();
 
         return modificationSet;
     }
 
-    private void pullUpEnumAttribute() throws CoreException {
+    private IEnumAttribute pullUpEnumAttribute() throws CoreException {
         IEnumAttribute newEnumAttribute = getTargetEnumType().newEnumAttribute();
         newEnumAttribute.copyFrom(getEnumAttribute());
+        return newEnumAttribute;
     }
 
     private void markeOriginalEnumAttributeInherited() {
