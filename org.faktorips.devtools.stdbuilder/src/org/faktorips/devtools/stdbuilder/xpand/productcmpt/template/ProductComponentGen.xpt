@@ -75,29 +75,29 @@
 		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
 		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 		    }
-	
-«IF containsNotDerivedAssociations»
-		    /**
-		     * @generated
-		     */
-		    «overrideAnnotation(false)-»
-		    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
-		        super.«doInitReferencesFromXml("elementsMap")»;
-		        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
-		    }
-«ENDIF»
+		
+			«IF containsNotDerivedAssociations»
+			    /**
+			     * @generated
+			     */
+			    «overrideAnnotation(false)-»
+			    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
+			        super.«doInitReferencesFromXml("elementsMap")»;
+			        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+			    }
+			«ENDIF»
 
-«IF containsTables-»
-		    /**
-		     * @generated
-		     */
-		    @Override
-		    protected void «doInitTableUsagesFromXml(Map("String", Element()) + " tableUsageMap")» {
-		        super.«doInitTableUsagesFromXml("tableUsageMap")»;
-		        Element element = null;
-		        «EXPAND TableUsages::initTableUsages FOREACH tables-»
-		    }
-«ENDIF»
+			«IF containsTables-»
+			    /**
+			     * @generated
+			     */
+			    @Override
+			    protected void «doInitTableUsagesFromXml(Map("String", Element()) + " tableUsageMap")» {
+			        super.«doInitTableUsagesFromXml("tableUsageMap")»;
+			        Element element = null;
+			        «EXPAND TableUsages::initTableUsages FOREACH tables-»
+			    }
+			«ENDIF»
 		
 			«EXPAND writeToXmlMethods-»
 

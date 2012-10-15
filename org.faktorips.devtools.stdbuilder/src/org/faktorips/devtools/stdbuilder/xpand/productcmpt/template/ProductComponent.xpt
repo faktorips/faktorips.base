@@ -57,6 +57,18 @@
 		        «ENDIF-»
 		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
 		    }
+		    
+			«IF containsNotDerivedAssociations»
+			    /**
+			     * @generated
+			     */
+			    «overrideAnnotation(false)-»
+			    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
+			        super.«doInitReferencesFromXml("elementsMap")»;
+			        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+			    }
+			«ENDIF»
+			
 			«EXPAND writeToXmlMethods-»
 
 			«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
