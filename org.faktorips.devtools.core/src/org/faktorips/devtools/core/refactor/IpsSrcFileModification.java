@@ -154,7 +154,6 @@ public class IpsSrcFileModification {
     }
 
     private void resetChanges(IIpsSrcFile iIpsSrcFile) {
-        iIpsSrcFile.discardChanges();
         try {
             iIpsSrcFile.setMemento(getOriginalContent());
         } catch (CoreException e) {
