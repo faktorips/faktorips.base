@@ -148,11 +148,11 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
         private List<IJavaElement> initializeJavaElements(IPolicyCmptTypeAttribute policyCmptTypeAttribute,
                 StandardBuilderSet builderSet) throws CoreException {
             ArrayList<IJavaElement> result = new ArrayList<IJavaElement>();
-            // // TODO overwrite is transitiv!!!
-            if (policyCmptTypeAttribute.isOverwrite()) {
-                IPolicyCmptTypeAttribute overwrittenAttribute = policyCmptTypeAttribute
-                        .findOverwrittenAttribute(policyCmptTypeAttribute.getIpsProject());
-                result.addAll(builderSet.getGeneratedJavaElements(overwrittenAttribute));
+
+            IPolicyCmptTypeAttribute attribute = policyCmptTypeAttribute;
+            while (attribute.isOverwrite()) {
+                attribute = attribute.findOverwrittenAttribute(attribute.getIpsProject());
+                result.addAll(builderSet.getGeneratedJavaElements(attribute));
             }
             return result;
         }
