@@ -14,6 +14,7 @@
 package org.faktorips.runtime;
 
 import java.util.Calendar;
+import java.util.List;
 
 import org.faktorips.runtime.internal.DateTime;
 
@@ -70,5 +71,21 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Creates a new policy component that is configured by this product component.
      */
     public IConfigurableModelObject createPolicyComponent();
+
+    /**
+     * Returns the <code>IProductComponentLink</code> for the association with the given role name
+     * to the given product component or <code>null</code> if no such association exists.
+     * 
+     * @since 3.8
+     */
+    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
+
+    /**
+     * Returns a <code>List</code> of all the <code>IProductComponentLink</code>s from this product
+     * component generation to other product components.
+     * 
+     * @since 3.8
+     */
+    public List<IProductComponentLink<? extends IProductComponent>> getLinks();
 
 }

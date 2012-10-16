@@ -38,6 +38,10 @@ import org.w3c.dom.NodeList;
 
 /**
  * Base class for product component generations
+ * <p>
+ * Deliberately implements {@link IXmlPersistenceSupport} directly. Letting
+ * {@link IProductComponentGeneration} extend {@link IXmlPersistenceSupport} would have published
+ * it, which is undesired.
  * 
  */
 public abstract class ProductComponentGeneration extends RuntimeObject implements IProductComponentGeneration,

@@ -48,4 +48,18 @@ public class ProductComponentTest {
 
         return element;
     }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetLinks() {
+        ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
+        // base implementation throws exception
+        cmpt.getLinks();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetLinkForName() {
+        ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
+        // base implementation throws exception
+        cmpt.getLink("", null);
+    }
 }
