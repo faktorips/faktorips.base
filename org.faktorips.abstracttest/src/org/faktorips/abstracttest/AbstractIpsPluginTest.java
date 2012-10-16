@@ -524,6 +524,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                     ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
                     ((IPolicyCmptType)ipsObject).setProductCmptType(qualifiedName + "ProductCmpt");
                     newProductCmptType(root, qualifiedName + "ProductCmpt");
+                } else if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
+                    ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
                 }
             }
         };

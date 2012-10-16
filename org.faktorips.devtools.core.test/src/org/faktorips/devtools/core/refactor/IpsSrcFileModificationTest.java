@@ -53,7 +53,6 @@ public class IpsSrcFileModificationTest {
         modification.undo();
 
         verify(ipsSrcFile).exists();
-        verify(ipsSrcFile).discardChanges();
         verify(ipsSrcFile).setMemento(modification.getOriginalContent());
 
         verifyNoMoreInteractions(ipsSrcFile);
