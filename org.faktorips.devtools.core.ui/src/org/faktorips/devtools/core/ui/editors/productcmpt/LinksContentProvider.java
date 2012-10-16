@@ -21,12 +21,13 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
@@ -59,14 +60,17 @@ public class LinksContentProvider implements ITreeContentProvider {
                 return getAssociationNames(pcType, pc.getIpsProject());
             }
         } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return new Object[0];
+            throw new CoreRuntimeException(e);
         }
     }
 
-    private String[] getAssociationNames(IProductCmptGeneration gen) {
+    protected String[] getAssociationNames(IProductCmptGeneration gen) {
         Set<String> associations = new LinkedHashSet<String>();
-        IProductCmptLink[] links = gen.getLinks();
+        List<IProductCmptLink> links = gen.getLinksAsList();
+        for (IProductCmptLink link : links) {
+            associations.add(link.getAssociation());
+        }
+        links = gen.getProductCmpt().getLinksAsList();
         for (IProductCmptLink link : links) {
             associations.add(link.getAssociation());
         }
@@ -98,7 +102,33 @@ public class LinksContentProvider implements ITreeContentProvider {
         if (!(parentElement instanceof String) || generation == null) {
             return new Object[0];
         }
-        return generation.getLinks((String)parentElement);
+        return getChildrenInternal((String)parentElement);
+    }
+
+    private IProductCmptLink[] getChildrenInternal(String associationName) {
+        try {
+            IProductCmpt pc = generation.getProductCmpt();
+            IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
+            if (pcType == null) {
+                return new IProductCmptLink[0];
+            } else {
+                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)pcType.findAssociation(
+                        associationName, generation.getIpsProject());
+                return getChildrenInternal(association);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    protected IProductCmptLink[] getChildrenInternal(IProductCmptTypeAssociation association) {
+        List<IProductCmptLink> linksAsList;
+        if (association.isChangingOverTime()) {
+            linksAsList = generation.getLinksAsList(association.getName());
+        } else {
+            linksAsList = generation.getProductCmpt().getLinksAsList(association.getName());
+        }
+        return linksAsList.toArray(new IProductCmptLink[linksAsList.size()]);
     }
 
     @Override
