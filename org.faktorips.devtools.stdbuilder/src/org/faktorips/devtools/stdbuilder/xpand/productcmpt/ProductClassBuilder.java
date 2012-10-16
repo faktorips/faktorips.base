@@ -11,48 +11,26 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.policycmpt;
+package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class PolicyCmptClassBuilder extends TypeBuilder<XPolicyCmptClass> {
+public abstract class ProductClassBuilder<T extends XProductClass> extends TypeBuilder<T> {
 
-    public PolicyCmptClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
-            GeneratorModelContext modelContext, ModelService modelService) {
-        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                PolicyCmptClassBuilder.class));
-    }
-
-    @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
-    }
-
-    @Override
-    protected Class<XPolicyCmptClass> getGeneratorModelNodeClass() {
-        return XPolicyCmptClass.class;
-    }
-
-    @Override
-    public String getTemplate() {
-        if (isInterfaceBuilder()) {
-            return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptInterface::main";
-        } else {
-            return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main";
-        }
+    public ProductClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
+            GeneratorModelContext modelContext, ModelService modelService, LocalizedStringsSet localizedStringsSet) {
+        super(interfaceBuilder, builderSet, modelContext, modelService, localizedStringsSet);
     }
 
     @Override
@@ -65,9 +43,9 @@ public class PolicyCmptClassBuilder extends TypeBuilder<XPolicyCmptClass> {
             throw new CoreRuntimeException(e);
         }
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-        if (ipsObject instanceof IProductCmptType) {
-            IProductCmptType proCmptType = (IProductCmptType)ipsObject;
-            return proCmptType.isConfigurationForPolicyCmptType();
+        if (ipsObject instanceof IPolicyCmptType) {
+            IPolicyCmptType polCmptType = (IPolicyCmptType)ipsObject;
+            return polCmptType.isConfigurableByProductCmptType();
         } else {
             return false;
         }
@@ -76,13 +54,13 @@ public class PolicyCmptClassBuilder extends TypeBuilder<XPolicyCmptClass> {
     @Override
     protected IIpsObject getSupportedIpsObject(IIpsObjectPartContainer ipsObjectPartContainer) {
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-        if (ipsObject instanceof IPolicyCmptType) {
+        if (ipsObject instanceof IProductCmptType) {
             return ipsObject;
-        } else if (ipsObject instanceof IProductCmptType) {
-            IProductCmptType productCmptType = (IProductCmptType)ipsObject;
-            if (productCmptType.isConfigurationForPolicyCmptType()) {
+        } else if (ipsObject instanceof IPolicyCmptType) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
+            if (policyCmptType.isConfigurableByProductCmptType()) {
                 try {
-                    return productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
+                    return policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }

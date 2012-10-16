@@ -83,6 +83,7 @@ import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
@@ -676,14 +677,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
-            // TODO besser mit dependency graph!
-            // try {
-            if (javaBuilder.isGeneratsArtifactsFor(ipsSrcFile)) {
-                javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+            try {
+                if (javaBuilder.isBuilderFor(ipsSrcFile)) {
+                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+                } else if (javaBuilder instanceof XpandBuilder<?>) {
+                    XpandBuilder<?> xpandBuilder = (XpandBuilder<?>)javaBuilder;
+                    if (xpandBuilder.isGenerateingArtifactsFor(ipsObjectPartContainer)) {
+                        javaElements.addAll(xpandBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+                    }
+                }
+
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
-            // } catch (CoreException e) {
-            // throw new CoreRuntimeException(e);
-            // }
         }
 
         return javaElements;

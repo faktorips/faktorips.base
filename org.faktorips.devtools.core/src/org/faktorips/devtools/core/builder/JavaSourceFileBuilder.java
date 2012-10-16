@@ -59,7 +59,6 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.builder.organizeimports.IpsRemoveImportsOperation;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -1114,23 +1113,5 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns true if an interface is generated, false if a class is generated.
      */
     protected abstract boolean generatesInterface();
-
-    /**
-     * Returns true if this builder generates artifacts for the specified source file.
-     * <p>
-     * The default implementation delegates to {@link #isBuilderFor(IIpsSrcFile)} but other builders
-     * may overwrite this method. For example a product component builder also generates artifacts
-     * for policy component types.
-     * 
-     * @param ipsSrcFile The {@link IIpsSrcFile} for which you want to get the generated artifacts
-     * @return true if this builder generates artifacts for the specified source file
-     */
-    public boolean isGeneratsArtifactsFor(IIpsSrcFile ipsSrcFile) {
-        try {
-            return isBuilderFor(ipsSrcFile);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
 
 }
