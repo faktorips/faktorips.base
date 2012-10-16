@@ -15,15 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.xtend.expression.Variable;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -40,41 +32,8 @@ public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends 
         this.interfaceBuilder = interfaceBuilder;
     }
 
-    @Override
-    public boolean isGeneratsArtifactsFor(IIpsSrcFile ipsSrcFile) {
-        return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
-                || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE);
-    }
-
     public boolean isInterfaceBuilder() {
         return interfaceBuilder;
-    }
-
-    @Override
-    protected IIpsObject getSupportedIpsObject(IIpsObjectPartContainer ipsObjectPartContainer) {
-        IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-        try {
-            if (!isBuilderFor(ipsObject.getIpsSrcFile())) {
-                if (ipsObject instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
-                    if (policyCmptType.isConfigurableByProductCmptType()) {
-                        ipsObject = policyCmptType.findProductCmptType(getIpsProject());
-                    } else {
-                        return null;
-                    }
-                } else if (ipsObject instanceof IProductCmptType) {
-                    IProductCmptType productCmptType = (IProductCmptType)ipsObject;
-                    if (productCmptType.isConfigurationForPolicyCmptType()) {
-                        ipsObject = productCmptType.findPolicyCmptType(getIpsProject());
-                    } else {
-                        return null;
-                    }
-                }
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        return ipsObject;
     }
 
     @Override

@@ -55,6 +55,8 @@ public class GeneratorModelContext {
      */
     private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<ImportHandler>();
 
+    private final ThreadLocal<GeneratorModelCaches> generatorModelCacheThreadLocal = new ThreadLocal<GeneratorModelCaches>();
+
     private final ThreadLocal<Long> generatorRunCount = new ThreadLocal<Long>();
 
     private final IIpsArtefactBuilderSetConfig config;
@@ -75,6 +77,7 @@ public class GeneratorModelContext {
 
     public void newBuilderProcess(String packageOfArtifacts) {
         importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
+        generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
         if (generatorRunCount.get() != null) {
             generatorRunCount.set(generatorRunCount.get() + 1);
         } else {
@@ -91,8 +94,8 @@ public class GeneratorModelContext {
     }
 
     /**
-     * Gets the thread local import handler. The import handler stores all import statements needed
-     * in the generated class file.
+     * Returns the thread local import handler. The import handler stores all import statements
+     * needed in the generated class file.
      * <p>
      * The import handler is stored as {@link ThreadLocal} variable to have the ability to generate
      * different files in different threads
@@ -114,6 +117,19 @@ public class GeneratorModelContext {
      */
     protected void setImportHandler(ImportHandler importHandler) {
         this.importHandlerThreadLocal.set(importHandler);
+    }
+
+    /**
+     * Returns the thread local generator model cache. The generator model cache stores all cached
+     * object references that may change on any time.
+     * <p>
+     * The generator model cache is stored as {@link ThreadLocal} variable to have the ability to
+     * generate different files in different threads
+     * 
+     * @return The thread local generator model cache
+     */
+    public GeneratorModelCaches getGeneratorModelCache() {
+        return generatorModelCacheThreadLocal.get();
     }
 
     /**

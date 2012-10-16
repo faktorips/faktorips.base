@@ -40,10 +40,12 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelCaches;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -72,6 +74,12 @@ public class XPolicyCmptClassTest {
 
     @Mock
     private XPolicyAssociation associationNode2;
+
+    @Before
+    public void initModelContext() {
+        GeneratorModelCaches generatorModelCache = new GeneratorModelCaches();
+        when(modelContext.getGeneratorModelCache()).thenReturn(generatorModelCache);
+    }
 
     @Test
     public void initAttributes() {

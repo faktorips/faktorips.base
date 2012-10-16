@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -30,8 +29,6 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public class XMethod extends AbstractGeneratorModelNode {
-
-    private Set<XParameter> methodParameters;
 
     public XMethod(IMethod method, GeneratorModelContext context, ModelService modelService) {
         super(method, context, modelService);
@@ -77,15 +74,14 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public Set<XParameter> getParameters() {
-        checkForUpdate();
-        if (methodParameters == null) {
-            synchronized (this) {
-                if (methodParameters == null) {
-                    methodParameters = initNodesForParts(Arrays.asList(getMethod().getParameters()), XParameter.class);
-                }
-            }
+        if (isCached(XParameter.class)) {
+            return getCachedObjects(XParameter.class);
+        } else {
+            Set<XParameter> nodesForParts = initNodesForParts(Arrays.asList(getMethod().getParameters()),
+                    XParameter.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XParameter>(methodParameters);
     }
 
     public List<MethodParameter> getMethodParameters() {

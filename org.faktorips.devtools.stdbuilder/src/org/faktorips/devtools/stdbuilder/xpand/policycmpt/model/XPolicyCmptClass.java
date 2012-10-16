@@ -14,11 +14,9 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +25,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -47,18 +46,6 @@ import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XType {
-
-    private volatile Set<XPolicyAttribute> attributes;
-
-    private volatile Set<XProductAttribute> productAttributes;
-
-    private volatile Set<XPolicyAssociation> associations;
-
-    private volatile Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
-
-    private volatile Set<XValidationRule> validationRules;
-
-    private volatile Set<XTableUsage> productTables;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -183,26 +170,15 @@ public class XPolicyCmptClass extends XType {
     }
 
     @Override
-    protected void clearCaches() {
-        super.clearCaches();
-        attributes = null;
-        productAttributes = null;
-        associations = null;
-        detailToMasterDerivedUnionAssociations = null;
-        validationRules = null;
-    }
-
-    @Override
     public Set<XPolicyAttribute> getAttributes() {
-        checkForUpdate();
-        if (attributes == null) {
-            synchronized (this) {
-                if (attributes == null) {
-                    attributes = initNodesForParts(getType().getPolicyCmptTypeAttributes(), XPolicyAttribute.class);
-                }
-            }
+        if (isCached(XPolicyAttribute.class)) {
+            return getCachedObjects(XPolicyAttribute.class);
+        } else {
+            Set<XPolicyAttribute> nodesForParts = initNodesForParts(getType().getPolicyCmptTypeAttributes(),
+                    XPolicyAttribute.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XPolicyAttribute>(attributes);
     }
 
     public boolean isConfiguredBy(String qualifiedName) {
@@ -214,35 +190,33 @@ public class XPolicyCmptClass extends XType {
     }
 
     public Set<XProductAttribute> getProductAttributes() {
-        checkForUpdate();
-        if (productAttributes == null) {
-            synchronized (this) {
-                if (productAttributes == null) {
-                    if (isConfigured()) {
-                        productAttributes = initNodesForParts(getProductCmptType().getProductCmptTypeAttributes(),
-                                XProductAttribute.class);
-                    } else {
-                        productAttributes = new HashSet<XProductAttribute>();
-                    }
-                }
+        if (isCached(XProductAttribute.class)) {
+            return getCachedObjects(XProductAttribute.class);
+        } else {
+            Set<XProductAttribute> nodesForParts;
+            if (isConfigured()) {
+                List<IProductCmptTypeAttribute> productCmptTypeAttributes = getProductCmptType()
+                        .getProductCmptTypeAttributes();
+                nodesForParts = initNodesForParts(productCmptTypeAttributes, XProductAttribute.class);
+            } else {
+                nodesForParts = new LinkedHashSet<XProductAttribute>();
             }
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XProductAttribute>(productAttributes);
     }
 
     @Override
     public Set<XPolicyAssociation> getAssociations() {
-        checkForUpdate();
-        if (associations == null) {
-            synchronized (this) {
-                if (associations == null) {
-                    List<IPolicyCmptTypeAssociation> associationsNeedToGenerate = getType()
-                            .getPolicyCmptTypeAssociations();
-                    associations = initNodesForParts(associationsNeedToGenerate, XPolicyAssociation.class);
-                }
-            }
+        if (isCached(XPolicyAssociation.class)) {
+            return getCachedObjects(XPolicyAssociation.class);
+        } else {
+            List<IPolicyCmptTypeAssociation> associationsNeedToGenerate = getType().getPolicyCmptTypeAssociations();
+            Set<XPolicyAssociation> nodesForParts = initNodesForParts(associationsNeedToGenerate,
+                    XPolicyAssociation.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XPolicyAssociation>(associations);
     }
 
     @Override
@@ -251,15 +225,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {
-        checkForUpdate();
-        if (detailToMasterDerivedUnionAssociations == null) {
-            synchronized (this) {
-                if (detailToMasterDerivedUnionAssociations == null) {
-                    detailToMasterDerivedUnionAssociations = findDetailToMasterDerivedUnionAssociations(getAssociations());
-                }
-            }
-        }
-        return new CopyOnWriteArraySet<XDetailToMasterDerivedUnionAssociation>(detailToMasterDerivedUnionAssociations);
+        return findDetailToMasterDerivedUnionAssociations(getAssociations());
     }
 
     /**
@@ -278,32 +244,22 @@ public class XPolicyCmptClass extends XType {
     }
 
     public Set<XValidationRule> getValidationRules() {
-        checkForUpdate();
-        if (validationRules == null) {
-            synchronized (this) {
-                if (validationRules == null) {
-                    validationRules = initNodesForParts(getType().getValidationRules(), XValidationRule.class);
-                }
-            }
+        if (isCached(XValidationRule.class)) {
+            return getCachedObjects(XValidationRule.class);
+        } else {
+            Set<XValidationRule> nodesForParts = initNodesForParts(getType().getValidationRules(),
+                    XValidationRule.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XValidationRule>(validationRules);
     }
 
     public Set<XTableUsage> getProductTables() {
-        checkForUpdate();
-        if (productTables == null) {
-            synchronized (this) {
-                if (productTables == null) {
-                    if (isConfigured()) {
-                        productTables = initNodesForParts(getProductCmptType().getTableStructureUsages(),
-                                XTableUsage.class);
-                    } else {
-                        productTables = new HashSet<XTableUsage>();
-                    }
-                }
-            }
+        if (isConfigured()) {
+            return initNodesForParts(getProductCmptType().getTableStructureUsages(), XTableUsage.class);
+        } else {
+            return new LinkedHashSet<XTableUsage>();
         }
-        return new CopyOnWriteArraySet<XTableUsage>(productTables);
     }
 
     protected IProductCmptType getProductCmptType() {

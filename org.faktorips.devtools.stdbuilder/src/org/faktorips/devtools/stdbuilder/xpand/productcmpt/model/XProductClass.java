@@ -17,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -37,14 +36,6 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 public abstract class XProductClass extends XType {
-
-    private Set<XProductAttribute> attributes;
-
-    private Set<XPolicyAttribute> configuredAttributes;
-
-    private Set<XProductAssociation> associations;
-
-    private Set<XTableUsage> tables;
 
     public XProductClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -66,15 +57,6 @@ public abstract class XProductClass extends XType {
         return (XProductClass)super.getSupertype();
     }
 
-    @Override
-    protected void clearCaches() {
-        super.clearCaches();
-        attributes = null;
-        configuredAttributes = null;
-        associations = null;
-        tables = null;
-    }
-
     /**
      * Returns true if this class represents a container that handles properties which changes over
      * time, otherwise false.
@@ -86,16 +68,14 @@ public abstract class XProductClass extends XType {
 
     @Override
     public Set<XProductAttribute> getAttributes() {
-        checkForUpdate();
-        if (attributes == null) {
-            synchronized (this) {
-                if (attributes == null) {
-                    attributes = initNodesForParts(getAttributesInternal(isChangeOverTimeClass()),
-                            XProductAttribute.class);
-                }
-            }
+        if (isCached(XProductAttribute.class)) {
+            return getCachedObjects(XProductAttribute.class);
+        } else {
+            Set<XProductAttribute> nodesForParts = initNodesForParts(getAttributesInternal(isChangeOverTimeClass()),
+                    XProductAttribute.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XProductAttribute>(attributes);
     }
 
     /**
@@ -118,15 +98,13 @@ public abstract class XProductClass extends XType {
     }
 
     public Set<XPolicyAttribute> getConfiguredAttributes() {
-        checkForUpdate();
-        if (configuredAttributes == null) {
-            synchronized (this) {
-                if (configuredAttributes == null) {
-                    configuredAttributes = getConfiguredAttributesInternal();
-                }
-            }
+        if (isCached(XPolicyAttribute.class)) {
+            return getCachedObjects(XPolicyAttribute.class);
+        } else {
+            Set<XPolicyAttribute> nodesForParts = getConfiguredAttributesInternal();
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XPolicyAttribute>(configuredAttributes);
     }
 
     /**
@@ -160,16 +138,14 @@ public abstract class XProductClass extends XType {
 
     @Override
     public Set<XProductAssociation> getAssociations() {
-        checkForUpdate();
-        if (associations == null) {
-            synchronized (this) {
-                if (associations == null) {
-                    associations = initNodesForParts(getAssociationsInternal(isChangeOverTimeClass()),
-                            XProductAssociation.class);
-                }
-            }
+        if (isCached(XProductAssociation.class)) {
+            return getCachedObjects(XProductAssociation.class);
+        } else {
+            Set<XProductAssociation> nodesForParts = initNodesForParts(
+                    getAssociationsInternal(isChangeOverTimeClass()), XProductAssociation.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XProductAssociation>(associations);
     }
 
     /**
@@ -200,15 +176,13 @@ public abstract class XProductClass extends XType {
     }
 
     public Set<XTableUsage> getTables() {
-        checkForUpdate();
-        if (tables == null) {
-            synchronized (this) {
-                if (tables == null) {
-                    tables = initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
-                }
-            }
+        if (isCached(XTableUsage.class)) {
+            return getCachedObjects(XTableUsage.class);
+        } else {
+            Set<XTableUsage> nodesForParts = initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XTableUsage>(tables);
     }
 
     public boolean isContainsTables() {

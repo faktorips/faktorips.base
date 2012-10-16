@@ -60,8 +60,6 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractGeneratorModelNode {
 
-    private long lastGeneratorRunCount;
-
     private final LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(getClass());
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
@@ -162,35 +160,22 @@ public abstract class AbstractGeneratorModelNode {
         return StringUtils.isEmpty(description) ? "" : "<p>\n" + description;
     }
 
-    /**
-     * Call this method before every access to cached resources. This method would call
-     * {@link #clearCaches()} if needed.
-     * 
-     * @return True if an update is needed, false if everything is still the same.
-     */
-    protected boolean checkForUpdate() {
-        long modificationStamp = modelContext.getGeneratorRunCount();
-        if (modificationStamp != lastGeneratorRunCount) {
-            synchronized (this) {
-                if (modificationStamp != lastGeneratorRunCount) {
-                    clearCaches();
-                    lastGeneratorRunCount = modificationStamp;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
+    protected <T extends AbstractGeneratorModelNode> boolean isCached(Class<T> type) {
+        return modelContext.getGeneratorModelCache().isCached(this, type);
     }
 
-    /**
-     * This method is called when cached generator model nodes need to be cleared. Always call super
-     * because may be the super class also has cached nodes.
-     */
-    protected void clearCaches() {
-        // do nothing - only default method
+    protected <T extends AbstractGeneratorModelNode> Set<T> getCachedObjects(Class<T> type) {
+        return new LinkedHashSet<T>(modelContext.getGeneratorModelCache().getCachedNodes(this, type));
+    }
+
+    protected <T extends AbstractGeneratorModelNode> void putToCache(T objectToCache) {
+        modelContext.getGeneratorModelCache().put(objectToCache, this);
+    }
+
+    protected <T extends AbstractGeneratorModelNode> void putToCache(Set<T> objectsToCache) {
+        for (T t : objectsToCache) {
+            putToCache(t);
+        }
     }
 
     protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean resolveTypesToPublishedInterface) {
