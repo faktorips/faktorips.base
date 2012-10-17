@@ -43,6 +43,8 @@
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
+			
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions»
 
 		    /**
 		     * «inheritDoc()»

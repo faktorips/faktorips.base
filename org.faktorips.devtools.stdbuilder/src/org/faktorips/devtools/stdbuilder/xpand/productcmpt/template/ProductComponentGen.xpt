@@ -48,9 +48,8 @@
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 			
-			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  subsettedDerivedUnions»
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions»
 
-			
 			«FOREACH methods AS this-»
 				«IF !formulaSignature-»
 					«EXPAND Methods::method-»
@@ -144,52 +143,52 @@
 
 «DEFINE writeToXmlMethods FOR XProductCmptGenerationClass-»
 	«IF generateToXmlSupport-»
+	    /**
+	     * «inheritDoc()»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)-»
+	    protected void «writePropertiesToXml(Element() + " element")» {
+	    	«IF hasSupertype()-»
+	        	super.«writePropertiesToXml("element")»;
+	        «ELSE-»
+ «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
+	        «ENDIF-»
+	        «IF attributes.size > 0-»
+		        Element attributeElement = null;
+		        List<String> stringList = null;
+	        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
+	        «ENDIF-»
+	        «IF configuredAttributes.size > 0-» 
+	        	Element configElement = null;
+	        	Element valueSetElement = null;
+	        	Element valueSetValuesElement = null;
+	        	«EXPAND DefaultAndAllowedValues::writeAttributeToXML FOREACH configuredAttributes-»
+	        «ENDIF-»
+	    }
+	   
+		«IF  containsNotDerivedAssociations»
 		    /**
-		     * «inheritDoc()»
-		     * 
 		     * @generated
 		     */
 		    «overrideAnnotation(false)-»
-		    protected void «writePropertiesToXml(Element() + " element")» {
-		    	«IF hasSupertype()-»
-		        	super.«writePropertiesToXml("element")»;
-		        «ELSE-»
- «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
-		        «ENDIF-»
-		        «IF attributes.size > 0-»
-			        Element attributeElement = null;
-			        List<String> stringList = null;
-		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
-		        «ENDIF-»
-		        «IF configuredAttributes.size > 0-» 
-		        	Element configElement = null;
-		        	Element valueSetElement = null;
-		        	Element valueSetValuesElement = null;
-		        	«EXPAND DefaultAndAllowedValues::writeAttributeToXML FOREACH configuredAttributes-»
-		        «ENDIF-»
+		    protected void «writeReferencesToXml(Element() + " element")» {
+		        super.«writeReferencesToXml("element")»;
+		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
 		    }
-		   
-			«IF  containsNotDerivedAssociations»
-			    /**
-			     * @generated
-			     */
-			    «overrideAnnotation(false)-»
-			    protected void «writeReferencesToXml(Element() + " element")» {
-			        super.«writeReferencesToXml("element")»;
-			        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
-			    }
-			«ENDIF»
+		«ENDIF»
 
 			«IF containsTables-»
-			    /**
-			     * @generated
-			     */
-			    @Override
-			    protected void «writeTableUsagesToXml(Element() + " element")» {
-			        super.«writeTableUsagesToXml("element")»;
-			        «EXPAND TableUsages::writeTableUsages FOREACH tables-»
-			    }
-			«ENDIF»
+		    /**
+		     * @generated
+		     */
+		    @Override
+		    protected void «writeTableUsagesToXml(Element() + " element")» {
+		        super.«writeTableUsagesToXml("element")»;
+		        «EXPAND TableUsages::writeTableUsages FOREACH tables-»
+		    }
+		«ENDIF»
 	«ENDIF-»
 «ENDDEFINE»
 
