@@ -60,6 +60,14 @@ public interface IProductCmptTypeAssociation extends IAssociation {
     public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationInvalid"; //$NON-NLS-1$
 
     /**
+     * Message code when derived unions and their subsets have different changing over time
+     * properties. i.e. a subset is defined as changing over time, but the derived union is defined
+     * as static.
+     */
+    public static final String MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX
+            + "DerivedUnionChangingOverTimeMismatch"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that two associations matching associations with the same
      * name. Although these associations could be two different ones we would generate duplicated
      * methods.

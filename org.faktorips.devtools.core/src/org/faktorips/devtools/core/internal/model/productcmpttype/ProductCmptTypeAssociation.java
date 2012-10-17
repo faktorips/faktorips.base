@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -302,6 +304,39 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateMatchingAsoociation(list, ipsProject);
+        validateDerivedUnionChangingOverTimeProperty(list, ipsProject);
+    }
+
+    /**
+     * Validates that derived unions and their subsets have the same changing over time property.
+     * e.g. if a derived union is changing over time its subsets must also be defined as changing
+     * over time. If a derived union is static its subsets must also be defined as static.
+     * 
+     * @param list the message list to add messages to
+     * @param ipsProject the IPS project to be used for searching related IPS objects
+     */
+    protected void validateDerivedUnionChangingOverTimeProperty(MessageList list, IIpsProject ipsProject) {
+        if (isSubsetOfADerivedUnion()) {
+            try {
+                IProductCmptTypeAssociation derivedUnionAssociation = (IProductCmptTypeAssociation)findSubsettedDerivedUnion(ipsProject);
+                if (derivedUnionAssociation.isChangingOverTime() != isChangingOverTime()) {
+                    String messageText;
+                    if (isChangingOverTime()) {
+                        messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetChanging;
+                    } else {
+                        messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetStatic;
+                    }
+                    String boundMessageText = NLS.bind(messageText, derivedUnionAssociation.getName());
+                    Message message = new Message(
+                            IProductCmptTypeAssociation.MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH,
+                            boundMessageText, Message.ERROR, new ObjectProperty(this,
+                                    IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME));
+                    list.add(message);
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
     }
 
     private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) throws CoreException {
