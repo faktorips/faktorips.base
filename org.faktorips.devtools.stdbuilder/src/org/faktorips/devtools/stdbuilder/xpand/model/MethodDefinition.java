@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.util.Arrays;
 
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.Signature;
 
 /**
@@ -30,7 +32,7 @@ import org.eclipse.jdt.core.Signature;
  * 
  * @author dirmeier
  */
-public class MethodDefinition {
+public class MethodDefinition implements IGeneratedJavaElement {
 
     private final String name;
 
@@ -45,6 +47,14 @@ public class MethodDefinition {
     public MethodDefinition(String name, MethodParameter... parameters) {
         this.name = name;
         this.parameters = parameters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IJavaElement getJavaElement(IType javaType) {
+        return javaType.getMethod(getName(), getTypeSignatures());
     }
 
     /**

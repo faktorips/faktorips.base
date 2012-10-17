@@ -279,7 +279,6 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
             IIpsObjectPartContainer ipsObjectPartContainer,
             List<IJavaElement> javaElements) {
         try {
-            modelService.clearCachesFor(ipsObjectPartContainer);
             if (getTemplateDefinition() == null) {
                 initTemplate();
             }

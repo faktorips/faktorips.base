@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,6 +29,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.model.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 
@@ -57,7 +60,7 @@ public class GeneratorModelContext {
 
     private final ThreadLocal<GeneratorModelCaches> generatorModelCacheThreadLocal = new ThreadLocal<GeneratorModelCaches>();
 
-    private final ThreadLocal<Long> generatorRunCount = new ThreadLocal<Long>();
+    private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>>();
 
     private final IIpsArtefactBuilderSetConfig config;
 
@@ -78,15 +81,7 @@ public class GeneratorModelContext {
     public void newBuilderProcess(String packageOfArtifacts) {
         importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
         generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
-        if (generatorRunCount.get() != null) {
-            generatorRunCount.set(generatorRunCount.get() + 1);
-        } else {
-            generatorRunCount.set(0L);
-        }
-    }
-
-    public long getGeneratorRunCount() {
-        return generatorRunCount.get();
+        generatedJavaElements.set(new LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>());
     }
 
     IIpsArtefactBuilderSetConfig getConfig() {
@@ -154,6 +149,48 @@ public class GeneratorModelContext {
 
     public boolean removeImport(String importStatement) {
         return getImportHandler().remove(importStatement);
+    }
+
+    /**
+     * Returns the thread local generated artifacts map that maps a
+     * {@link AbstractGeneratorModelNode} to a list of generated java elements.
+     * <p>
+     * The map is stored as {@link ThreadLocal} variable to have the ability to generate different
+     * files in different threads.
+     * 
+     * @return The thread local map holding the generated java elements for the generator model
+     *         nodes
+     */
+    private LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>> getGeneratedJavaElementsMap() {
+        return generatedJavaElements.get();
+    }
+
+    /**
+     * Add a generated java element to the list of generated elements for the specified generator
+     * model node
+     * 
+     * @param node The generator model node that generates the specified element
+     * @param element the generated java element
+     */
+    public void addGeneratedJavaElement(AbstractGeneratorModelNode node, IGeneratedJavaElement element) {
+        List<IGeneratedJavaElement> list = getGeneratedJavaElements(node);
+        list.add(element);
+    }
+
+    /**
+     * Returns the list of generated java elements that is stored for the specified
+     * {@link AbstractGeneratorModelNode}. The list is stored in a {@link ThreadLocal}.
+     * 
+     * @param node The generator model node for which you want to have the generated artifacts
+     * @return The list of generated java elements for the specified generator model nodes
+     */
+    public List<IGeneratedJavaElement> getGeneratedJavaElements(AbstractGeneratorModelNode node) {
+        List<IGeneratedJavaElement> list = getGeneratedJavaElementsMap().get(node);
+        if (list == null) {
+            list = new ArrayList<IGeneratedJavaElement>();
+            getGeneratedJavaElementsMap().put(node, list);
+        }
+        return list;
     }
 
     public ResourceManager getResourceManager() {

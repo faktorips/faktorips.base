@@ -68,10 +68,6 @@ public abstract class AbstractGeneratorModelNode {
 
     private final ModelService modelService;
 
-    private final Set<String> generatedFields = new LinkedHashSet<String>();
-
-    private final Set<MethodDefinition> generatedMethods = new LinkedHashSet<MethodDefinition>();
-
     /**
      * This constructor is required in every generator model node. It defines
      * <ul>
@@ -552,18 +548,11 @@ public abstract class AbstractGeneratorModelNode {
         return getAnnotations(type, getIpsObjectPartContainer());
     }
 
-    public void clearGeneratedJavaElements() {
-        generatedFields.clear();
-        generatedMethods.clear();
-    }
-
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
         List<IJavaElement> result = new ArrayList<IJavaElement>();
-        for (String field : generatedFields) {
-            result.add(javaType.getField(field));
-        }
-        for (MethodDefinition methodSignature : generatedMethods) {
-            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getTypeSignatures()));
+        List<IGeneratedJavaElement> generatedJavaElements = modelContext.getGeneratedJavaElements(this);
+        for (IGeneratedJavaElement generatedJavaElement : generatedJavaElements) {
+            result.add(generatedJavaElement.getJavaElement(javaType));
         }
         return result;
     }
@@ -582,7 +571,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return Returns simply the name to use in the template
      */
     public String field(String fieldName) {
-        generatedFields.add(fieldName);
+        modelContext.addGeneratedJavaElement(this, new Field(fieldName));
         return fieldName;
     }
 
@@ -715,7 +704,7 @@ public abstract class AbstractGeneratorModelNode {
 
     public String method(String methodName, MethodParameter... parameters) {
         MethodDefinition methodSignature = new MethodDefinition(methodName, parameters);
-        generatedMethods.add(methodSignature);
+        modelContext.addGeneratedJavaElement(this, methodSignature);
         return methodSignature.getDefinition();
     }
 
