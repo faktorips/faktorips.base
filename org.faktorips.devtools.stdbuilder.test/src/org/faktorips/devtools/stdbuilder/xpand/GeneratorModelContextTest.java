@@ -49,7 +49,7 @@ public class GeneratorModelContextTest {
     @Before
     public void createGeneratorModelContext() throws Exception {
         generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap);
-        generatorModelContext.newBuilderProcess("any");
+        generatorModelContext.resetContext("any");
     }
 
     @Test

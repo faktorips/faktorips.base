@@ -480,12 +480,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (type instanceof IPolicyCmptType) {
             javaImplClass = getBuilderSet().getPolicyCmptImplClassBuilder().getQualifiedClassName(type);
             xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.POLICY_CMPT_MODEL_TYPE,
-                    PolicyModelTypeXmlBuilder.class).getXmlContentRelativeFile(type.getIpsSrcFile());
+                    ModelTypeXmlBuilder.class).getXmlContentRelativeFile(type.getIpsSrcFile());
             return new PolicyCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName.toString(), javaImplClass);
         } else if (type instanceof IProductCmptType) {
             javaImplClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(type);
-            xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.PRODUCT_CMPT_XML,
-                    ProductCmptXMLBuilder.class).getXmlContentRelativeFile(type.getIpsSrcFile());
+            xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.PRODUCT_CMPT_MODEL_TYPE,
+                    ModelTypeXmlBuilder.class).getXmlContentRelativeFile(type.getIpsSrcFile());
             return new ProductCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName.toString(), javaImplClass);
         } else {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));

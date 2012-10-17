@@ -132,21 +132,6 @@ public interface IIpsArtefactBuilderSet {
             throws CoreException;
 
     /**
-     * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given formula.
-     * The returned identifier resolver has an special handling of type attribute (e.g. an policy
-     * cmpt type attribute), instead of using the getter method of the attribute a parameter will be
-     * used.
-     * <p>
-     * Returns <code>null</code> if this builder set doesn't support a formula language identifier
-     * resolver.
-     * 
-     * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or
-     *            services that are necessary to be able to resolve an identifier properly
-     */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression expression, ExprCompiler exprCompiler)
-            throws CoreException;
-
-    /**
      * Returns the data type helper for the provided {@link IEnumType}. <code>IEnumType</code>
      * implements the {@link Datatype} interface and this method provides the datatype helper for
      * it. The data type helper of an <code>IEnumType</code> depends on the

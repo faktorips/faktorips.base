@@ -149,18 +149,6 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     @Override
     public ExprCompiler newExprCompiler(IIpsProject ipsProject) {
-        return newExprCompiler(ipsProject, false);
-    }
-
-    /**
-     * Returns all {@link ITableContentUsage}s available for this expression.
-     * 
-     * @return all {@link ITableContentUsage}s available for this expression
-     */
-    abstract protected ITableContentUsage[] getTableContentUsages();
-
-    @Override
-    public ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) {
         ExtendedExprCompiler compiler = ipsProject.newExpressionCompiler();
 
         // add the table functions based on the table usages defined in the product cmpt type
@@ -173,12 +161,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         }
         IdentifierResolver resolver;
         try {
-            if (!formulaTest) {
-                resolver = builderSet.createFlIdentifierResolver(this, compiler);
-            } else {
-                // create special identifier resolver for test methods
-                resolver = builderSet.createFlIdentifierResolverForFormulaTest(this, compiler);
-            }
+            resolver = builderSet.createFlIdentifierResolver(this, compiler);
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
@@ -189,6 +172,13 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
         return compiler;
     }
+
+    /**
+     * Returns all {@link ITableContentUsage}s available for this expression.
+     * 
+     * @return all {@link ITableContentUsage}s available for this expression
+     */
+    abstract protected ITableContentUsage[] getTableContentUsages();
 
     @Override
     public EnumDatatype[] getEnumDatatypesAllowedInFormula() {

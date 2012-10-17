@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
  * Handles the imports for generated java files. Imports can be added using {@link #add(String)}.
  * All added statements can be retrieved using the {@link #getImports()} method.
  * <p>
- * Primitive types (e.g. java.lang.boolean) will not be added to the imports.
+ * Types of java.lang will not be added to the imports.
  * <p>
  * Checks whether classes with the same unqualified name have already been imported. Thus avoids
  * "double" imports and provides information about class name conflicts by means of the
@@ -56,6 +56,11 @@ public class ImportHandler {
         this.implicitlyImportedClassNamesMap = new LinkedHashMap<String, ImportStatement>();
     }
 
+    /**
+     * Returns the set of imports this handler collected
+     * 
+     * @return The set of import statements collected by this import handler
+     */
     public Set<ImportStatement> getImports() {
         return new LinkedHashSet<ImportStatement>(classNameToImportStatementMap.values());
     }
@@ -79,6 +84,13 @@ public class ImportHandler {
         }
     }
 
+    /**
+     * Add a new import statement.
+     * 
+     * @param qualifiedName The qualified name of the class you want to add to the import handler
+     * 
+     * @return The import statement created and stored in this handler
+     */
     public ImportStatement add(String qualifiedName) {
         ImportStatement importStatement = new ImportStatement(qualifiedName);
         String packageName = importStatement.getPackage();
@@ -151,10 +163,21 @@ public class ImportHandler {
         return isInConflictWithImportedClassName(implicitlyImportedClassNamesMap, importStatement);
     }
 
-    public boolean remove(String importStatement) {
-        return classNameToImportStatementMap.remove(new ImportStatement(importStatement).getUnqualifiedName()) != null;
+    /**
+     * Remove an existing import statement.
+     * 
+     * @param qualifiedName The qualified name of the class you want to remove from import
+     * @return True if the removement was successfull
+     */
+    public boolean remove(String qualifiedName) {
+        return classNameToImportStatementMap.remove(new ImportStatement(qualifiedName).getUnqualifiedName()) != null;
     }
 
+    /**
+     * Returns the own package of this import handler. For this package no import statement will be
+     * created.
+     * 
+     */
     public String getOwnPackage() {
         return ownPackage;
     }

@@ -124,7 +124,13 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
-        generatorModelContext.newBuilderProcess(getPackage());
+        generatorModelContext.resetContext(getPackage());
+    }
+
+    @Override
+    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+        super.afterBuild(ipsSrcFile);
+        generatorModelContext.resetContext(null);
     }
 
     /**
@@ -284,7 +290,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
             }
 
             getOut().addOutlet(new NullOutlet());
-            generatorModelContext.newBuilderProcess("");
+            generatorModelContext.resetContext(null);
 
             evaluateTemplate(ipsObject);
 

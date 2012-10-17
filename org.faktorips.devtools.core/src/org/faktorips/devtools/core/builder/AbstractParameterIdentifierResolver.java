@@ -475,7 +475,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             javaCodeFragment.append("()"); //$NON-NLS-1$
         } else {
             javaCodeFragment.append('.');
-            javaCodeFragment.append(getAssociationTargetGetterName(association, (IPolicyCmptType)type));
+            javaCodeFragment.append(getAssociationTargetAtIndexGetterName(association, (IPolicyCmptType)type));
             javaCodeFragment.append("(" + index.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return new CompilationResultImpl(javaCodeFragment, target);

@@ -14,6 +14,7 @@
 package org.faktorips.abstracttest.builder;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     private boolean isAggregateRootBuilder;
 
-    private final Map<IBuilderKindId, IIpsArtefactBuilder> ipsArtefactBuilders;
+    private final LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> ipsArtefactBuilders;
 
     /**
      * You can put any object for any key into this map. Some of the test methods in this test
@@ -66,7 +67,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException {
         super();
-        ipsArtefactBuilders = new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        ipsArtefactBuilders = new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
         for (IIpsArtefactBuilder ipsArtefactBuilder : builders) {
             ipsArtefactBuilders.put(new GenericBuilderKindId(), ipsArtefactBuilder);
         }
@@ -82,7 +83,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         return ipsArtefactBuilders;
     }
 
@@ -152,12 +153,6 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-        return new TestParameterIdentifierResolver(formula, exprCompiler);
-    }
-
-    @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
         return new TestParameterIdentifierResolver(formula, exprCompiler);
     }

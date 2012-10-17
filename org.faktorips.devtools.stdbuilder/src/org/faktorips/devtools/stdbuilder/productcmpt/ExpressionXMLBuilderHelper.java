@@ -92,7 +92,7 @@ public class ExpressionXMLBuilderHelper {
                 JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
                 IProductCmptTypeMethod formulaSignature = formula.findFormulaSignature(getIpsProject());
                 JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula,
-                        formulaSignature, false, buildStatus);
+                        formulaSignature, buildStatus);
 
                 generateFormulaMethodSignature(method, builder);
 

@@ -158,12 +158,6 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-        return new TestParameterIdentifierResolver(formula, exprCompiler);
-    }
-
-    @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
         return (IFile)testObjectsMap.get(root);
     }

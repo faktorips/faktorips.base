@@ -73,13 +73,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-
-        return createFlIdentifierResolver(formula, exprCompiler);
-    }
-
-    @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }

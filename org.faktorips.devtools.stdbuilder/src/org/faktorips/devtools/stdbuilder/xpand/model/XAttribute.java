@@ -94,6 +94,16 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     /**
+     * Return the qualified java class name of the data type for this attribute.
+     * 
+     * @see #getJavaClassName()
+     */
+    public String getQualifiedJavaClassName() {
+        String javaClassName = getDatatypeHelper().getJavaClassName();
+        return javaClassName;
+    }
+
+    /**
      * Returns the code to create a new instance. The expression is the code to retrieve the value
      * from, e.g. another variable. The repositoryExpression is the code for getting a repository.
      * It may be needed for enumerations with separated content.

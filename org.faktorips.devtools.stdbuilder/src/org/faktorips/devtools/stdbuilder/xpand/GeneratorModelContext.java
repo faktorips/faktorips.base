@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.xtend.expression.ResourceManager;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
@@ -78,7 +79,14 @@ public class GeneratorModelContext {
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
     }
 
-    public void newBuilderProcess(String packageOfArtifacts) {
+    /**
+     * Resetting the builder context for starting a new build process with clean context
+     * information.
+     * 
+     * @param packageOfArtifacts The package of the source file to be generated to handle the
+     *            correct import statements
+     */
+    public void resetContext(String packageOfArtifacts) {
         importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
         generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
         generatedJavaElements.set(new LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>());
@@ -94,11 +102,19 @@ public class GeneratorModelContext {
      * <p>
      * The import handler is stored as {@link ThreadLocal} variable to have the ability to generate
      * different files in different threads
+     * <p>
+     * To be able to use the generator model nodes also if no build process is running, this method
+     * would return a new import handler in the case there is no import handler yet.
      * 
      * @return The thread local import handler
      */
     public ImportHandler getImportHandler() {
-        return importHandlerThreadLocal.get();
+        ImportHandler importHandler = importHandlerThreadLocal.get();
+        if (importHandler != null) {
+            return importHandler;
+        } else {
+            return new ImportHandler(StringUtils.EMPTY);
+        }
     }
 
     /**

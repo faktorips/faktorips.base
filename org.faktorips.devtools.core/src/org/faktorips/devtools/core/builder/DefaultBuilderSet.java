@@ -133,12 +133,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return null;
     }
 
-    @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-        return null;
-    }
-
     /**
      * {@inheritDoc}
      * <p>

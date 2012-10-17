@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
@@ -45,8 +45,13 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
@@ -61,12 +66,17 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
+public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     private Document doc;
 
-    public ModelTypeXmlBuilder(IpsObjectType type, DefaultBuilderSet builderSet) {
+    public ModelTypeXmlBuilder(IpsObjectType type, StandardBuilderSet builderSet) {
         super(type, builderSet);
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     @Override
@@ -86,13 +96,14 @@ public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     private Element createModelType(IType type) throws CoreException {
         Element modelTypeElement = doc.createElement(IModelType.XML_TAG);
         modelTypeElement.setAttribute(IModelElement.PROPERTY_NAME, type.getQualifiedName());
-        modelTypeElement.setAttribute(IModelType.PROPERTY_CLASS, getStandardBuilderSet().getGenerator(type)
-                .getQualifiedName(false));
+        XType xType = getXType(type);
+        modelTypeElement.setAttribute(IModelType.PROPERTY_CLASS, xType.getQualifiedName(BuilderAspect.IMPLEMENTATION));
         modelTypeElement.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
         IType supertype = type.findSupertype(getIpsProject());
         if (supertype != null) {
-            modelTypeElement.setAttribute(IModelType.PROPERTY_SUPERTYPE, getStandardBuilderSet()
-                    .getGenerator(supertype).getQualifiedName(false));
+            XType xSupertype = getXType(supertype);
+            modelTypeElement.setAttribute(IModelType.PROPERTY_SUPERTYPE,
+                    xSupertype.getQualifiedName(BuilderAspect.IMPLEMENTATION));
         } else {
             modelTypeElement.setAttribute(IModelType.PROPERTY_SUPERTYPE, null);
         }
@@ -104,6 +115,18 @@ public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         addAttributes(type, modelTypeElement);
 
         return modelTypeElement;
+    }
+
+    private XType getXType(IType type) {
+        XType xType;
+        if (type instanceof IPolicyCmptType) {
+            xType = getStandardBuilderSet().getModelNode(type, XPolicyCmptClass.class);
+        } else if (type instanceof IProductCmptType) {
+            xType = getStandardBuilderSet().getModelNode(type, XProductCmptClass.class);
+        } else {
+            throw new RuntimeException("Illegal type: " + type.getQualifiedNameType());
+        }
+        return xType;
     }
 
     private void addAssociations(IType model, Element modelType) throws CoreException {
@@ -123,15 +146,15 @@ public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 String targetName = association.getTarget();
                 if (targetName != null && targetName.length() > 0) {
                     if (model instanceof IPolicyCmptType) {
-                        modelTypeAssociation.setAttribute(
-                                IModelTypeAssociation.PROPERTY_TARGET,
-                                ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                        getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(false));
+                        XPolicyAssociation xAssociation = getStandardBuilderSet().getModelNode(association,
+                                XPolicyAssociation.class);
+                        modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET,
+                                xAssociation.getTargetQualifiedClassName());
                     } else if (model instanceof IProductCmptType) {
-                        modelTypeAssociation.setAttribute(
-                                IModelTypeAssociation.PROPERTY_TARGET,
-                                ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                        getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
+                        XProductAssociation xAssociation = getStandardBuilderSet().getModelNode(association,
+                                XProductAssociation.class);
+                        modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET,
+                                xAssociation.getTargetQualifiedClassName());
                     }
                 } else {
                     modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET, null);
@@ -189,19 +212,13 @@ public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 modelTypeAttributes.appendChild(modelTypeAttribute);
                 modelTypeAttribute.setAttribute(IModelElement.PROPERTY_NAME, attribute.getName());
                 if (model instanceof IPolicyCmptType) {
-                    GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet())
-                            .getGenerator((IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
-                    if (genPolicyCmptTypeAttribute != null) {
-                        modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE,
-                                genPolicyCmptTypeAttribute.getDatatype().getJavaClassName());
-                    }
+                    XPolicyAttribute xAttribute = getBuilderSet().getModelNode(attribute, XPolicyAttribute.class);
+                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE,
+                            xAttribute.getQualifiedJavaClassName());
                 } else if (model instanceof IProductCmptType) {
-                    GenProductCmptTypeAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                            (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
-                    if (genAttribute != null) {
-                        modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, genAttribute
-                                .getDatatype().getJavaClassName());
-                    }
+                    XProductAttribute xAttribute = getBuilderSet().getModelNode(attribute, XProductAttribute.class);
+                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE,
+                            xAttribute.getQualifiedJavaClassName());
                 } else {
                     modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, null);
                 }
@@ -332,7 +349,7 @@ public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     private StandardBuilderSet getStandardBuilderSet() {
-        return (StandardBuilderSet)getBuilderSet();
+        return getBuilderSet();
     }
 
 }
