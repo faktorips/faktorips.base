@@ -39,8 +39,8 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 

@@ -473,9 +473,21 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                     new String[] { unresolvedParam(getPublishedInterfaceName(oldName, ipsProject)), booleanParam() })
                     .exists());
 
+            if (!policyClass.getMethod("get" + newName, new String[0]).exists()) {
+                System.err.println("arg");
+            }
             assertTrue(policyClass.getMethod("get" + newName, new String[0]).exists());
+            if (!policyClass.getMethod("get" + newName + getGenerationConceptNameAbbreviation(ipsProject),
+                    new String[0]).exists()) {
+                System.err.println("arg2");
+            }
             assertTrue(policyClass.getMethod("get" + newName + getGenerationConceptNameAbbreviation(ipsProject),
                     new String[0]).exists());
+            if (!policyClass.getMethod("set" + newName,
+                    new String[] { unresolvedParam(getPublishedInterfaceName(newName, ipsProject)), booleanParam() })
+                    .exists()) {
+                System.err.println("arg3");
+            }
             assertTrue(policyClass.getMethod("set" + newName,
                     new String[] { unresolvedParam(getPublishedInterfaceName(newName, ipsProject)), booleanParam() })
                     .exists());

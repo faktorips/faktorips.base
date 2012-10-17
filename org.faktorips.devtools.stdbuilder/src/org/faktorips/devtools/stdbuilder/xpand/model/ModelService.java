@@ -16,7 +16,7 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -30,7 +30,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ModelService {
 
-    private HashMap<IIpsObjectPartContainer, Set<AbstractGeneratorModelNode>> generatorModelNodes = new HashMap<IIpsObjectPartContainer, Set<AbstractGeneratorModelNode>>();
+    private HashMap<IIpsObjectPartContainer, LinkedHashSet<AbstractGeneratorModelNode>> generatorModelNodes = new HashMap<IIpsObjectPartContainer, LinkedHashSet<AbstractGeneratorModelNode>>();
 
     public ModelService() {
     }
@@ -54,9 +54,9 @@ public class ModelService {
             GeneratorModelContext modelContext) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         ArgumentCheck.notNull(nodeClass);
-        Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
+        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
         if (nodes == null) {
-            nodes = new HashSet<AbstractGeneratorModelNode>();
+            nodes = new LinkedHashSet<AbstractGeneratorModelNode>();
             generatorModelNodes.put(ipsObjectPartContainer, nodes);
         }
         for (AbstractGeneratorModelNode generatorModelNode : nodes) {
@@ -109,7 +109,7 @@ public class ModelService {
     public Set<AbstractGeneratorModelNode> getAllModelNodes(IIpsObjectPartContainer ipsObjectPartContainer) {
         Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
         if (nodes == null) {
-            nodes = new HashSet<AbstractGeneratorModelNode>();
+            nodes = new LinkedHashSet<AbstractGeneratorModelNode>();
         }
         return nodes;
     }

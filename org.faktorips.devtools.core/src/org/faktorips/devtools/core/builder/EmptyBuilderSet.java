@@ -13,8 +13,7 @@
 
 package org.faktorips.devtools.core.builder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -112,8 +111,8 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-        return new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+        return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
     }
 
     @Override

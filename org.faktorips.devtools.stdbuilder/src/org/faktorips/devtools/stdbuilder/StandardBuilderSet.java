@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -339,9 +340,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
-        Map<IBuilderKindId, IIpsArtefactBuilder> builders = new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE, new PolicyCmptClassBuilder(true, this,
                 generatorModelContext, modelService));
         PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this, generatorModelContext,

@@ -27,11 +27,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -1641,8 +1640,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-                return new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
+            protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+                return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
             }
 
         };
@@ -1683,8 +1682,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-                return new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
+            protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+                return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
             }
 
         };

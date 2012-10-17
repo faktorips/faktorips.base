@@ -14,9 +14,9 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
@@ -51,7 +51,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     private String label;
     private IIpsProject ipsProject;
     private IIpsArtefactBuilderSetConfig config;
-    private Map<IBuilderKindId, IIpsArtefactBuilder> builders;
+    private LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders;
 
     public AbstractBuilderSet() {
         super();
@@ -159,7 +159,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * Template method to create the set's builders.
      */
-    protected abstract Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException;
+    protected abstract LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException;
 
     @Override
     public void afterBuildProcess(int buildKind) throws CoreException {
