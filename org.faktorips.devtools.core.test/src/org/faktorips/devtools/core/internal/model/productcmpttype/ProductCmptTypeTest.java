@@ -364,6 +364,257 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * There is a product component type that configures a policy component type, both types possess
+     * a super type. The policy component type contains an attribute which overwrites an attribute
+     * from it's super type. The attribute in the super type is marked <em>productRelevant</em>,
+     * whereas the attribute in the sub type is <em><strong>not</strong></em>.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The map should not contain any attribute because only the overwritten attribute should be
+     * considered. The overwritten attribute however is not marked <em>productRelevant</em>. That
+     * means it does not qualify as product component property.
+     */
+    @Test
+    public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreNotProductRelevant()
+            throws CoreException {
+
+        // Create types
+        IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
+        IProductCmptType productTypeA = policyTypeA.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
+        IProductCmptType productTypeB = policyTypeB.findProductCmptType(ipsProject);
+        policyTypeB.setSupertype(policyTypeA.getQualifiedName());
+        productTypeB.setSupertype(productTypeA.getQualifiedName());
+
+        // Create attributes
+        IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
+        attributeA.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeA.setProductRelevant(true);
+
+        IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
+        attributeB.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeB.setProductRelevant(false);
+        attributeB.setOverwrite(true);
+
+        // Verify
+        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productTypeB).findProductCmptPropertyMap(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        assertTrue(propertyMap.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * Same as
+     * {@link #testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreNotProductRelevant()}
+     * , but with multiple hierarchy levels. In each hierarchy level the attribute is overwritten
+     * and the <em>productRelevant</em> flag is changed. The lowest level sets the flag to
+     * {@code false}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Same as
+     * {@link #testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreNotProductRelevant()}.
+     */
+    @Test
+    public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreNotProductRelevant_MultipleHierarchyLevels()
+            throws CoreException {
+
+        // Create types
+        IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
+        IProductCmptType productTypeA = policyTypeA.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
+        IProductCmptType productTypeB = policyTypeB.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeC = newPolicyAndProductCmptType(ipsProject, "PolicyTypeC", "ProductTypeC");
+        IProductCmptType productTypeC = policyTypeC.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeD = newPolicyAndProductCmptType(ipsProject, "PolicyTypeD", "ProductTypeD");
+        IProductCmptType productTypeD = policyTypeD.findProductCmptType(ipsProject);
+
+        policyTypeB.setSupertype(policyTypeA.getQualifiedName());
+        productTypeB.setSupertype(productTypeA.getQualifiedName());
+        policyTypeC.setSupertype(policyTypeB.getQualifiedName());
+        productTypeC.setSupertype(productTypeB.getQualifiedName());
+        policyTypeD.setSupertype(policyTypeC.getQualifiedName());
+        productTypeD.setSupertype(productTypeC.getQualifiedName());
+
+        // Create attributes
+        IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
+        attributeA.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeA.setProductRelevant(true);
+
+        IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
+        attributeB.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeB.setProductRelevant(false);
+        attributeB.setOverwrite(true);
+
+        IPolicyCmptTypeAttribute attributeC = policyTypeC.newPolicyCmptTypeAttribute("test");
+        attributeC.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeC.setProductRelevant(true);
+        attributeC.setOverwrite(true);
+
+        IPolicyCmptTypeAttribute attributeD = policyTypeD.newPolicyCmptTypeAttribute("test");
+        attributeD.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeD.setProductRelevant(false);
+        attributeD.setOverwrite(true);
+
+        // Verify
+        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productTypeD).findProductCmptPropertyMap(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        assertTrue(propertyMap.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * There is a product component type that configures a policy component type, both types possess
+     * a super type. The policy component type contains an attribute which overwrites an attribute
+     * from it's super type. The attribute in the super type is <em><strong>not</strong></em> marked
+     * <em>productRelevant</em>, whereas the attribute in the sub type is.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The map should contain only the overwritten attribute.
+     */
+    @Test
+    public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreProductRelevant()
+            throws CoreException {
+
+        // Create types
+        IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
+        IProductCmptType productTypeA = policyTypeA.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
+        IProductCmptType productTypeB = policyTypeB.findProductCmptType(ipsProject);
+        policyTypeB.setSupertype(policyTypeA.getQualifiedName());
+        productTypeB.setSupertype(productTypeA.getQualifiedName());
+
+        // Create attributes
+        IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
+        attributeA.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeA.setProductRelevant(false);
+
+        IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
+        attributeB.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeB.setProductRelevant(true);
+        attributeB.setOverwrite(true);
+
+        // Verify
+        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productTypeB).findProductCmptPropertyMap(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        assertSame(attributeB, propertyMap.get("test"));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * Same as
+     * {@link #testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreProductRelevant()}
+     * , but with multiple hierarchy levels. In each hierarchy level the attribute is overwritten
+     * and the <em>productRelevant</em> flag is changed. The lowest level sets the flag to
+     * {@code true}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Same as
+     * {@link #testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreProductRelevant()}.
+     */
+    @Test
+    public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreProductRelevant_MultipleHierarchyLevels()
+            throws CoreException {
+
+        // Create types
+        IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
+        IProductCmptType productTypeA = policyTypeA.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
+        IProductCmptType productTypeB = policyTypeB.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeC = newPolicyAndProductCmptType(ipsProject, "PolicyTypeC", "ProductTypeC");
+        IProductCmptType productTypeC = policyTypeC.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeD = newPolicyAndProductCmptType(ipsProject, "PolicyTypeD", "ProductTypeD");
+        IProductCmptType productTypeD = policyTypeD.findProductCmptType(ipsProject);
+
+        policyTypeB.setSupertype(policyTypeA.getQualifiedName());
+        productTypeB.setSupertype(productTypeA.getQualifiedName());
+        policyTypeC.setSupertype(policyTypeB.getQualifiedName());
+        productTypeC.setSupertype(productTypeB.getQualifiedName());
+        policyTypeD.setSupertype(policyTypeC.getQualifiedName());
+        productTypeD.setSupertype(productTypeC.getQualifiedName());
+
+        // Create attributes
+        IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
+        attributeA.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeA.setProductRelevant(false);
+
+        IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
+        attributeB.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeB.setProductRelevant(true);
+        attributeB.setOverwrite(true);
+
+        IPolicyCmptTypeAttribute attributeC = policyTypeC.newPolicyCmptTypeAttribute("test");
+        attributeC.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeC.setProductRelevant(false);
+        attributeC.setOverwrite(true);
+
+        IPolicyCmptTypeAttribute attributeD = policyTypeD.newPolicyCmptTypeAttribute("test");
+        attributeD.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeD.setProductRelevant(true);
+        attributeD.setOverwrite(true);
+
+        // Verify
+        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productTypeD).findProductCmptPropertyMap(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        assertSame(attributeD, propertyMap.get("test"));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IPolicyCmptTypeAttribute} is overwritten in a sub type, setting the
+     * <em>productRelevant</em> flag from {@code false} to {@code true}. In addition, there also is
+     * an {@link IValidationRule}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The returned map should only contain the attribute or only contain the validation rule
+     * depending on the provided {@link ProductCmptPropertyType}.
+     */
+    @Test
+    public void testFindProductCmptPropertyMap_OverwrittenAttributeToProductRelevantPlusValidationRule()
+            throws CoreException {
+
+        // Create types
+        IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
+        IProductCmptType productTypeA = policyTypeA.findProductCmptType(ipsProject);
+        IPolicyCmptType policyTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
+        IProductCmptType productTypeB = policyTypeB.findProductCmptType(ipsProject);
+        policyTypeB.setSupertype(policyTypeA.getQualifiedName());
+        productTypeB.setSupertype(productTypeA.getQualifiedName());
+
+        // Create attributes
+        IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("attribute");
+        attributeA.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeA.setProductRelevant(false);
+
+        IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("attribute");
+        attributeB.setDatatype(Datatype.STRING.getQualifiedName());
+        attributeB.setProductRelevant(true);
+        attributeB.setOverwrite(true);
+
+        // Create validation rule
+        IValidationRule validationRule = policyTypeB.newRule();
+        validationRule.setName("validationRule");
+        validationRule.setConfigurableByProductComponent(true);
+
+        // Verify
+        Map<String, IProductCmptProperty> attributeMap = ((ProductCmptType)productTypeB).findProductCmptPropertyMap(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        assertSame(attributeB, attributeMap.get("attribute"));
+        assertEquals(1, attributeMap.size());
+
+        Map<String, IProductCmptProperty> validationRuleMap = ((ProductCmptType)productTypeB)
+                .findProductCmptPropertyMap(ProductCmptPropertyType.VALIDATION_RULE, ipsProject);
+        assertSame(validationRule, validationRuleMap.get("validationRule"));
+        assertEquals(1, validationRuleMap.size());
+
+        Map<String, IProductCmptProperty> allPropertiesMap = ((ProductCmptType)productTypeB)
+                .findProductCmptPropertyMap(null, ipsProject);
+        assertSame(attributeB, allPropertiesMap.get("attribute"));
+        assertSame(validationRule, allPropertiesMap.get("validationRule"));
+        assertEquals(2, allPropertiesMap.size());
+    }
+
     @Test
     public void testFindProductCmptProperty_ByTypeAndName() throws CoreException {
         // attributes
