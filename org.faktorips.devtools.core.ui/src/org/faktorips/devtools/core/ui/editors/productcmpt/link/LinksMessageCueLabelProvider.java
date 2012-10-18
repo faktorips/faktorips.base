@@ -40,14 +40,10 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
     @Override
     public MessageList getMessages(Object element) throws CoreException {
-        if (element instanceof DetachedAssociationViewItem) {
-            DetachedAssociationViewItem viewItem = (DetachedAssociationViewItem)element;
+        if (element instanceof AbstractAssociationViewItem) {
+            AbstractAssociationViewItem viewItem = (AbstractAssociationViewItem)element;
             IProductCmptLinkContainer linkContainer = viewItem.getLinkContainer();
             return linkContainer.validate(linkContainer.getIpsProject()).getMessagesFor(viewItem.getAssociationName());
-        }
-        if (element instanceof AssociationViewItem) {
-            AssociationViewItem viewItem = (AssociationViewItem)element;
-            return super.getMessages(viewItem.getAssociation());
         }
         if (element instanceof LinkViewItem) {
             LinkViewItem viewItem = (LinkViewItem)element;
