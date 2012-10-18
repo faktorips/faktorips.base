@@ -2855,8 +2855,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                                         targetName);
                             }
                         }
-                        getTreeViewer().expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                         refreshTreeAndDetailArea();
+                        expandTreeAfterAdd(associationType, null);
                         selectInTreeByObject(newAssociation, true);
                     } else {
                         ITestPolicyCmptLink newLink = null;
@@ -2875,10 +2875,21 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         if (newTestPolicyCmpt == null) {
                             throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingAssociation));
                         }
-                        getTreeViewer().expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                         refreshTreeAndDetailArea();
+                        expandTreeAfterAdd(associationType, newTestPolicyCmpt);
                         selectionInTreeChanged((IStructuredSelection)getSelection());
                         selectInTreeByObject(newTestPolicyCmpt, true);
+                    }
+                }
+
+                private void expandTreeAfterAdd(TestCaseTypeAssociation associationType,
+                        ITestPolicyCmpt newTestPolicyCmpt) {
+
+                    getTreeViewer().expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
+                    for (Object child : contentProvider.getChildren(associationType)) {
+                        if (child.equals(newTestPolicyCmpt)) {
+                            getTreeViewer().expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
+                        }
                     }
                 }
             };
