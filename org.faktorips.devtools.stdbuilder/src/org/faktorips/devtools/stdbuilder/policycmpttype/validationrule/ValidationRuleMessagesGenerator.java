@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
-import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
 
 public class ValidationRuleMessagesGenerator {
 

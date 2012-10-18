@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.table;
+package org.faktorips.devtools.stdbuilder.xpand.table.model;
 
 import java.util.ArrayList;
 import java.util.List;

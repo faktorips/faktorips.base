@@ -582,7 +582,6 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                         return compileTypeAttributeIdentifier(compilationResult.getCodeFragment(), target, tail);
                     }
                 }
-
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);

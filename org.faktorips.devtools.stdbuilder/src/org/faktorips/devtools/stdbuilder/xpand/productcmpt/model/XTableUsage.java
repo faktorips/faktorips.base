@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.table.XTable;
+import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
 import org.faktorips.runtime.ITable;
 
 public class XTableUsage extends AbstractGeneratorModelNode {

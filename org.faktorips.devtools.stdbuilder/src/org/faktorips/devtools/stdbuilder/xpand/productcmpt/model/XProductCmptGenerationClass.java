@@ -19,9 +19,9 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
