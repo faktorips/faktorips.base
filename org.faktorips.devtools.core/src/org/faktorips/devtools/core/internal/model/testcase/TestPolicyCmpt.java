@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -397,19 +398,29 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             String policyCmptType,
             String targetName) throws CoreException {
 
+        return addTestPcTypeLink(typeParam, productCmpt, policyCmptType, targetName, false);
+    }
+
+    @Override
+    public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
+            String productCmpt,
+            String policyCmptType,
+            String targetName,
+            boolean recursivelyAddRequired) throws CoreException {
+
         ArgumentCheck.notNull(typeParam);
         if (!StringUtils.isEmpty(productCmpt) && !StringUtils.isEmpty(policyCmptType)) {
             throw new CoreException(new IpsStatus(Messages.TestPolicyCmpt_Error_ProductCmpAndPolicyCmptTypeGiven));
         }
 
-        IPolicyCmptTypeAssociation link = typeParam.findAssociation(typeParam.getIpsProject());
-        if (link == null) {
+        IPolicyCmptTypeAssociation policyCmptTypeAssociation = typeParam.findAssociation(typeParam.getIpsProject());
+        if (policyCmptTypeAssociation == null) {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_LinkNotFound,
                     typeParam.getAssociation())));
         }
 
         ITestPolicyCmptLink newTestPcTypeLink = null;
-        if (!link.isAssoziation()) {
+        if (!policyCmptTypeAssociation.isAssoziation()) {
             // link is composition
             // add new link including a test policy component child
             newTestPcTypeLink = new TestPolicyCmptLink(this, getNextPartId());
@@ -429,6 +440,19 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
             // set the defaults for all attribute values
             newTestPolicyCmpt.updateDefaultTestAttributeValues();
+
+            // if desired, recursively add links as possible
+            if (recursivelyAddRequired) {
+                for (ITestPolicyCmptTypeParameter childParam : typeParam.getTestPolicyCmptTypeParamChilds()) {
+                    IIpsSrcFile[] allowedProductCmpts = childParam.getAllowedProductCmpt(getIpsProject(),
+                            newTestPolicyCmpt.findProductCmpt(getIpsProject()));
+                    // add as many links recursively as defined by the minimum instances
+                    for (int i = 0; i < childParam.getMinInstances(); i++) {
+                        newTestPolicyCmpt.addTestPcTypeLink(childParam, allowedProductCmpts[0].getQualifiedNameType()
+                                .getName(), null, null, true);
+                    }
+                }
+            }
 
         } else {
             // link is association

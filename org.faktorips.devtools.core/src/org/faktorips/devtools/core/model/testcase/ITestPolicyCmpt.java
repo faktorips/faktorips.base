@@ -16,7 +16,9 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
@@ -191,14 +193,53 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Creates a new link on the test policy component and returns it. The given test policy
      * component type parameter specifies the type of the link.
      * 
-     * @param typeParam The test policy component type parameter for which the new link will be
-     *            created. This is the type definition of the test link.
-     * @param productCmpt The name of the product component if the child of the link requires a
-     *            product component otherwise empty.
-     * @param policyCmptType The name of the policy component type if the child of the link don't
-     *            requires a product component otherwise empty.
-     * @param targetName The name of the target if the new link should be an association otherwise
-     *            empty.
+     * @param typeParam test policy component type parameter for which the new link will be created.
+     *            This is the type definition of the test link
+     * @param productCmpt name of the product component if the child of the link requires a product
+     *            component otherwise empty
+     * @param policyCmptType name of the policy component type if the child of the link don't
+     *            requires a product component otherwise empty
+     * @param targetName name of the target if the new link should be an association otherwise empty
+     * 
+     * @throws CoreException if an error occurs while adding the new link. If the productCmpt and
+     *             the policyCmptType are both given
+     */
+    public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
+            String productCmpt,
+            String policyCmptType,
+            String targetName) throws CoreException;
+
+    /**
+     * Creates a new link on the test policy component and returns it. The given test policy
+     * component type parameter specifies the type of the link.
+     * <p>
+     * This operation is able to recursively continue to create links where required and possible.
+     * The algorithm works as following:
+     * <ol>
+     * <li>Further links can only be created if the {@linkplain IPolicyCmptTypeAssociation policy
+     * component type association} associated to the {@linkplain ITestPolicyCmptTypeParameter test
+     * parameter} is a composition
+     * <li>The operation will look at the child test parameters
+     * <li>For each child test parameter, if it's minimum cardinality is > 0 (meaning the parameter
+     * is not optional), and only one {@linkplain IProductCmpt product component} qualifies for the
+     * association, a number of {@linkplain ITestPolicyCmptLink test policy component links} that is
+     * equal to the minimum cardinality of the child test parameter will be added
+     * <li>If more than one product component qualifies for the association, the
+     * {@linkplain IProductCmptLink product component links} of the product component assigned to
+     * the test policy component are analyzed. For each product component link to the target with
+     * minimum cardinality > 0, a number of {@linkplain ITestPolicyCmptLink test policy component
+     * links} equal to the minimum cardinality of the product component link will be added
+     * </ol>
+     * 
+     * @param typeParam test policy component type parameter for which the new link will be created.
+     *            This is the type definition of the test link
+     * @param productCmpt name of the product component if the child of the link requires a product
+     *            component otherwise empty
+     * @param policyCmptType name of the policy component type if the child of the link don't
+     *            requires a product component otherwise empty
+     * @param targetName name of the target if the new link should be an association otherwise empty
+     * @param recursivelyAddRequired flag indicating whether further links shall be recursively
+     *            added where required and possible
      * 
      * @throws CoreException if an error occurs while adding the new link. If the productCmpt and
      *             the policyCmptType are both given.
@@ -206,7 +247,8 @@ public interface ITestPolicyCmpt extends ITestObject {
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
-            String targetName) throws CoreException;
+            String targetName,
+            boolean recursivelyAddRequired) throws CoreException;
 
     /**
      * Returns all test policy component links.
