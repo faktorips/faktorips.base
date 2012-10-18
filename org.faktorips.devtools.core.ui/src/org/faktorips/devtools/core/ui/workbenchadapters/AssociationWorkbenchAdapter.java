@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -50,6 +51,13 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
                     }
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
+                }
+            }
+            if (association instanceof IProductCmptTypeAssociation) {
+                IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
+                if (!productAssociation.isChangingOverTime()) {
+                    return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseName,
+                            OverlayIcons.NOT_CHANGEOVERTIME_OVR, IDecoration.BOTTOM_RIGHT);
                 }
             }
             return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(baseName, true);
