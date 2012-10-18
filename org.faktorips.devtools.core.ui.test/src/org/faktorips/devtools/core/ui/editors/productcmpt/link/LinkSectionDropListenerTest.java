@@ -38,10 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.editors.productcmpt.LinksContentProvider;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
-import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropListener;
-import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksContentProvider;
 import org.junit.Before;
 import org.junit.Test;
 
