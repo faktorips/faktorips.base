@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
@@ -27,7 +28,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author widmaier
  */
-public class LinkViewItem implements LinkSectionViewItem {
+public class LinkViewItem extends PlatformObject implements LinkSectionViewItem {
 
     private final IProductCmptLink link;
 
@@ -61,4 +62,11 @@ public class LinkViewItem implements LinkSectionViewItem {
         return link;
     }
 
+    @Override
+    public Object getAdapter(Class adapter) {
+        if (IProductCmptLink.class.equals(adapter)) {
+            return link;
+        }
+        return super.getAdapter(adapter);
+    }
 }
