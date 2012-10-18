@@ -26,15 +26,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractIpsSrcFileContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalLabelProvider;
-import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileProvider;
-import org.faktorips.devtools.core.ui.controls.contentproposal.ProvidedIpsSrcFileContentProposalProvider;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
 import org.faktorips.util.StringUtil;
@@ -51,7 +49,7 @@ import org.faktorips.util.StringUtil;
  * methods.
  * 
  */
-public abstract class IpsObjectRefControl extends TextButtonControl implements IpsSrcFileProvider {
+public abstract class IpsObjectRefControl extends TextButtonControl {
 
     private List<IIpsProject> ipsProjects;
 
@@ -72,7 +70,14 @@ public abstract class IpsObjectRefControl extends TextButtonControl implements I
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
 
-        proposalProvider = new ProvidedIpsSrcFileContentProposalProvider(this);
+        proposalProvider = new AbstractIpsSrcFileContentProposalProvider() {
+
+            @Override
+            protected IIpsSrcFile[] getIpsSrcFiles() {
+                return getIpsSrcFiles();
+            }
+        };
+
         toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new IpsSrcFileContentProposalLabelProvider());
 
@@ -183,15 +188,6 @@ public abstract class IpsObjectRefControl extends TextButtonControl implements I
 
     public void setDialogFilterEnabled(boolean enable) {
         enableDialogFilter = enable;
-    }
-
-    @Override
-    public final IIpsSrcFile[] getProvidedIpsSrcFiles() {
-        try {
-            return getIpsSrcFiles();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     /**
