@@ -63,11 +63,11 @@ public class GeneratorModelContext {
 
     private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>>();
 
+    private final ThreadLocal<ResourceManager> resourceManager = new ThreadLocal<ResourceManager>();
+
     private final IIpsArtefactBuilderSetConfig config;
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
-
-    private final ResourceManager resourceManager = new OptimizedResourceManager();
 
     private final IJavaPackageStructure javaPackageStructure;
 
@@ -209,8 +209,24 @@ public class GeneratorModelContext {
         return list;
     }
 
+    /**
+     * Returns the thread local resource manager. If there is no resource manager yet this method
+     * would create a new one (lazy loading).
+     * <p>
+     * The resource manager needs to be thread local because the resources seems to be stateful in
+     * XPAND. That means a resource may have the state of the current template evaluation. Hence if
+     * you use the same resource manager in two threads both threads would use the same resource and
+     * we get a concurrent modification exception.
+     * 
+     * @return The thread local resource manager
+     */
     public ResourceManager getResourceManager() {
-        return resourceManager;
+        ResourceManager localResourceManager = resourceManager.get();
+        if (localResourceManager == null) {
+            localResourceManager = new OptimizedResourceManager();
+            resourceManager.set(localResourceManager);
+        }
+        return localResourceManager;
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {

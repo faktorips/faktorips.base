@@ -47,8 +47,8 @@ public class StringOutput implements Output, InsertionPointSupport {
     private final Stack<SyntaxElement> s = new Stack<SyntaxElement>();
 
     private static ThreadLocal<Stack<FileHandle>> fileHandles = new ThreadLocal<Stack<FileHandle>>();
+
     private boolean deleteLine = false;
-    // private static ThreadLocal<>
 
     private final Map<String, Outlet> outlets = new HashMap<String, Outlet>();
 

@@ -57,6 +57,8 @@ import org.faktorips.util.LocalizedStringsSet;
 /**
  * An abstract implementation to use XPAND templates for code generation. The implementation only
  * needs to provide the name of the template and the corresponding generator model.
+ * <p>
+ * 
  * 
  * @author dirmeier
  */
@@ -152,45 +154,41 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     protected XpandExecutionContextImpl createXpandContext() {
-        if (DEBUG) {
-            return new XpandExecutionContextImpl(getOut(), null, getGlobalVars(), null, null);
-        } else {
-            ProgressMonitor progressMonitor = null;
-            ExceptionHandler exceptionHandler = new ExceptionHandler() {
-                @Override
-                public void handleRuntimeException(RuntimeException ex,
-                        SyntaxElement element,
-                        ExecutionContext ctx,
-                        Map<String, Object> additionalContextInfo) {
-                    if (DEBUG) {
-                        ex.printStackTrace();
-                    }
-                    if (getIpsObject() != null) {
-                        addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
-                                "Error while parsing code generation template.", ex));
-                    }
+        ProgressMonitor progressMonitor = null;
+        ExceptionHandler exceptionHandler = new ExceptionHandler() {
+            @Override
+            public void handleRuntimeException(RuntimeException ex,
+                    SyntaxElement element,
+                    ExecutionContext ctx,
+                    Map<String, Object> additionalContextInfo) {
+                if (DEBUG) {
+                    ex.printStackTrace();
                 }
-            };
-            NullEvaluationHandler nullEvaluationHandler = new NullEvaluationHandler() {
+                if (getIpsObject() != null) {
+                    addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
+                            "Error while parsing code generation template.", ex));
+                }
+            }
+        };
+        NullEvaluationHandler nullEvaluationHandler = new NullEvaluationHandler() {
 
-                @Override
-                public Object handleNullEvaluation(SyntaxElement element, ExecutionContext ctx) {
-                    if (DEBUG) {
-                        new NullPointerException().printStackTrace();
-                    }
-                    if (getIpsObject() != null) {
-                        addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
-                                "Nullpointer in code generation at statement " + element, new EvaluationException(
-                                        "null evaluation", element, ctx)));
-                    }
-                    return "null";
+            @Override
+            public Object handleNullEvaluation(SyntaxElement element, ExecutionContext ctx) {
+                if (DEBUG) {
+                    new NullPointerException().printStackTrace();
                 }
-            };
-            XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
-                    .getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor, exceptionHandler,
-                    nullEvaluationHandler, null);
-            return context;
-        }
+                if (getIpsObject() != null) {
+                    addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
+                            "Nullpointer in code generation at statement " + element, new EvaluationException(
+                                    "null evaluation", element, ctx)));
+                }
+                return "null";
+            }
+        };
+        XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
+                .getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor, exceptionHandler,
+                nullEvaluationHandler, null);
+        return context;
     }
 
     protected Map<String, Variable> getGlobalVars() {
