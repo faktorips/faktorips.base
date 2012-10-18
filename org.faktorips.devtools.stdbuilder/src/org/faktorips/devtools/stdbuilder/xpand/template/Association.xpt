@@ -21,7 +21,7 @@
 
 «DEFINE abstractMethods FOR XAssociation-»
 	«IF (!generatePublishedInterfaces || genInterface()) && generateAbstractGetter-»
-		«IF masterToDetail-»
+		«IF oneToMany-»
 			/**
 		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»
 			 *
