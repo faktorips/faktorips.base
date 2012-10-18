@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 /**
@@ -320,7 +321,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private IProductCmptTypeAssociation getAssociation(Object target) throws CoreException {
         String associationName = getAssociationName(target);
-        IProductCmptType type = generation.getProductCmpt().findProductCmptType(generation.getIpsProject());
+        IProductCmptType type = generation.findProductCmptType(generation.getIpsProject());
         return (IProductCmptTypeAssociation)type.findAssociation(associationName, generation.getIpsProject());
     }
 

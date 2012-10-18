@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
@@ -43,7 +43,10 @@ import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.ICompositeWithSelectableViewer;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.productcmpt.LinkSectionDropListener.MoveLinkDragListener;
+import org.faktorips.devtools.core.ui.editors.productcmpt.CardinalityPanel;
+import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.util.ArgumentCheck;

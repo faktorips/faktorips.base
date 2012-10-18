@@ -89,7 +89,7 @@ import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.editors.productcmpt.LinkEditDialog;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkEditDialog;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;

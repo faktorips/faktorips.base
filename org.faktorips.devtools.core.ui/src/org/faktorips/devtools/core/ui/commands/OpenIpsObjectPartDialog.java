@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
-import org.faktorips.devtools.core.ui.editors.productcmpt.LinkEditDialog;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkEditDialog;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**

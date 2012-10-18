@@ -43,8 +43,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
-import org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**

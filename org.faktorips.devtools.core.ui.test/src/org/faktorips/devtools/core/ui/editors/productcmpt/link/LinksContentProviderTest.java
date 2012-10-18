@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksContentProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

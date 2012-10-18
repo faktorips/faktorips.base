@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 
 /**
  * Panel to display cardinality. Note that this is <strong>NOT</strong> a control.

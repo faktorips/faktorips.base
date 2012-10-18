@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -78,8 +78,8 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             if (element instanceof String) {
                 try {
                     // the reason why we use String elements at all is that we want to be able to
-                    // show the association names event if we cannot find the association nor the
-                    // product component type
+                    // show the association names even if we can neither find the association nor
+                    // the product component type
                     if (productCmptType == null) {
                         return element.toString();
                     }
@@ -124,7 +124,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             }
             if (element instanceof String) {
                 try {
-                    IProductCmptType type = generation.getProductCmpt().findProductCmptType(generation.getIpsProject());
+                    IProductCmptType type = generation.findProductCmptType(generation.getIpsProject());
                     if (type != null) {
                         IAssociation association = type.findAssociation((String)element, generation.getIpsProject());
                         return IpsUIPlugin.getImageHandling().getImage(association);

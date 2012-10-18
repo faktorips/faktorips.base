@@ -82,7 +82,11 @@ public class MessageCueLabelProvider extends LabelProvider {
     }
 
     /**
-     * Returns the message list applying to the given element.
+     * Returns the message list applying to the given IPS object part. The corresponding IPS object
+     * is validated. Of all those validation messages the ones that apply to the part itself as well
+     * as all of its children are returned.
+     * <p>
+     * Returns an empty list if the given object is not an IPS object part.
      * 
      * @throws CoreException If an error occurs during the creation of the message list.
      */

@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
 

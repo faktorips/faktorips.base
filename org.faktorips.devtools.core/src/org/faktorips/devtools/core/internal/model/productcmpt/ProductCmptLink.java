@@ -197,21 +197,22 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             }
             String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, association, typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
-            return;
-        }
-        IPolicyCmptTypeAssociation polAssociation = associationObj.findMatchingPolicyCmptTypeAssociation(ipsProject);
-        if (polAssociation != null) {
-            validateCardinality(list, polAssociation);
-        }
+        } else {
+            IPolicyCmptTypeAssociation polAssociation = associationObj
+                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
+            if (polAssociation != null) {
+                validateCardinality(list, polAssociation);
+            }
 
-        IProductCmpt targetObj = findTarget(ipsProject);
-        if (!willBeValid(targetObj, associationObj, ipsProject)) {
-            String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(associationObj);
-            String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationLabel);
-            list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
-        }
+            IProductCmpt targetObj = findTarget(ipsProject);
+            if (!willBeValid(targetObj, associationObj, ipsProject)) {
+                String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(associationObj);
+                String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationLabel);
+                list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
+            }
 
-        validateChangingOverTimeProperty(list, associationObj);
+            validateChangingOverTimeProperty(list, associationObj);
+        }
     }
 
     private void validateChangingOverTimeProperty(MessageList list, IProductCmptTypeAssociation associationObj) {

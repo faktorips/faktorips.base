@@ -44,8 +44,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -106,7 +106,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     public IProductCmptType getProductCmptType() {
         try {
-            return generation.getProductCmpt().findProductCmptType(getIpsProject());
+            return generation.findProductCmptType(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }

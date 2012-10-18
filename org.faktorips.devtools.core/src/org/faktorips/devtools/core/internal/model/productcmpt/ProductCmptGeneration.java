@@ -466,7 +466,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        IProductCmptType type = getProductCmpt().findProductCmptType(ipsProject);
+        IProductCmptType type = findProductCmptType(ipsProject);
         // no type information available, so no further validation possible
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound,
