@@ -34,6 +34,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -129,11 +131,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
     protected List<IProductCmptLink> getExistingLinks(ProductCmptEditor productCmptEditor,
             IProductCmptTypeAssociation association) {
         IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
-        if (association.isChangingOverTime()) {
-            return activeGeneration.getLinksAsList(association.getName());
-        } else {
-            return activeGeneration.getProductCmpt().getLinksAsList(association.getName());
-        }
+        IProductCmptLinkContainer container = ((ProductCmptGeneration)activeGeneration).getContainerFor(association);
+        return container.getLinksAsList(association.getName());
     }
 
     /**

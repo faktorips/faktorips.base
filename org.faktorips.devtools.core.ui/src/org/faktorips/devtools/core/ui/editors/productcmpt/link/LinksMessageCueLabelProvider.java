@@ -17,17 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
-import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -36,104 +30,49 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  * @author Cornelius Dirmeier
+ * @author Stefan Widmaier
  */
 public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
-    private final IProductCmptGeneration generation;
-
-    public LinksMessageCueLabelProvider(IProductCmptGeneration generation) {
-        super(new InternalLabelProvider(generation), generation.getIpsProject());
-        this.generation = generation;
+    public LinksMessageCueLabelProvider(IIpsProject ipsProject) {
+        super(new InternalLabelProvider(), ipsProject);
     }
 
     @Override
     public MessageList getMessages(Object element) throws CoreException {
-        if (element instanceof String) {
-            return generation.validate(generation.getIpsProject()).getMessagesFor(element);
+        if (element instanceof DetachedAssociationViewItem) {
+            DetachedAssociationViewItem viewItem = (DetachedAssociationViewItem)element;
+            IProductCmptLinkContainer linkContainer = viewItem.getLinkContainer();
+            return linkContainer.validate(linkContainer.getIpsProject()).getMessagesFor(viewItem.getAssociationName());
         }
-        if (element instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)element;
-            return super.getMessages(link);
+        if (element instanceof AssociationViewItem) {
+            AssociationViewItem viewItem = (AssociationViewItem)element;
+            return super.getMessages(viewItem.getAssociation());
+        }
+        if (element instanceof LinkViewItem) {
+            LinkViewItem viewItem = (LinkViewItem)element;
+            return super.getMessages(viewItem.getLink());
         }
         return super.getMessages(element);
     }
 
     private static class InternalLabelProvider extends LabelProvider {
 
-        private final IProductCmptGeneration generation;
-
-        private final IProductCmptType productCmptType;
-
-        public InternalLabelProvider(IProductCmptGeneration generation) {
-            this.generation = generation;
-            try {
-                productCmptType = generation.findProductCmptType(generation.getIpsProject());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+        public InternalLabelProvider() {
         }
 
         @Override
         public String getText(Object element) {
-            if (element instanceof String) {
-                try {
-                    // the reason why we use String elements at all is that we want to be able to
-                    // show the association names even if we can neither find the association nor
-                    // the product component type
-                    if (productCmptType == null) {
-                        return element.toString();
-                    }
-                    IAssociation association = productCmptType.findAssociation((String)element,
-                            productCmptType.getIpsProject());
-                    if (association == null) {
-                        return element.toString();
-                    }
-                    if (association.is1ToMany()) {
-                        return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
-                    } else {
-                        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (element instanceof IProductCmptLink) {
-                IProductCmptLink rel = ((IProductCmptLink)element);
-                return StringUtil.unqualifiedName(rel.getTarget());
+            if (element instanceof LinkSectionViewItem) {
+                return ((LinkSectionViewItem)element).getText();
             }
             return element.toString();
         }
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof IProductCmptLink) {
-                IProductCmptLink link = (IProductCmptLink)element;
-                IProductCmpt product;
-                try {
-                    Image image;
-                    product = link.findTarget(link.getIpsProject());
-                    if (product == null) {
-                        image = IpsUIPlugin.getImageHandling().getDefaultImage(ProductCmpt.class);
-                    } else {
-                        image = IpsUIPlugin.getImageHandling().getImage(product);
-                    }
-                    return image;
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-            if (element instanceof String) {
-                try {
-                    IProductCmptType type = generation.findProductCmptType(generation.getIpsProject());
-                    if (type != null) {
-                        IAssociation association = type.findAssociation((String)element, generation.getIpsProject());
-                        return IpsUIPlugin.getImageHandling().getImage(association);
-                    }
-                } catch (Exception e) {
-                    IpsPlugin.log(e);
-                }
-                return IpsUIPlugin.getImageHandling().getImage(
-                        new AssociationWorkbenchAdapter().getDefaultImageDescriptor());
+            if (element instanceof LinkSectionViewItem) {
+                return ((LinkSectionViewItem)element).getImage();
             }
             return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
         }

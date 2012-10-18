@@ -22,13 +22,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
@@ -38,8 +39,6 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
  * @author Thorsten Guenther
  */
 public class LinksContentProvider implements ITreeContentProvider {
-
-    private IProductCmptGeneration generation;
 
     @Override
     public Object[] getElements(Object inputElement) {
@@ -51,36 +50,53 @@ public class LinksContentProvider implements ITreeContentProvider {
             IProductCmpt pc = generation.getProductCmpt();
             IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
             if (pcType == null) {
-                // type can't be found, so extract the association name from the links in the
-                // generation
-                // this is the reason we return Strings instead of association objects as elements.
-                return getAssociationNames(generation);
+                /*
+                 * Type can't be found in case product component is loaded from a VCS repository.
+                 * Extract the association names from the links in the generation and product
+                 * component.
+                 */
+                return getDetachedAssociationViewItems(generation);
             } else {
                 // find association using the product cmpt's project
-                return getAssociationNames(pcType, pc.getIpsProject());
+                return getAssociationItems(pcType, pc.getIpsProject(), generation);
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
-    protected String[] getAssociationNames(IProductCmptGeneration gen) {
-        Set<String> associations = new LinkedHashSet<String>();
-        List<IProductCmptLink> links = gen.getLinksAsList();
-        for (IProductCmptLink link : links) {
-            associations.add(link.getAssociation());
-        }
-        links = gen.getProductCmpt().getLinksAsList();
-        for (IProductCmptLink link : links) {
-            associations.add(link.getAssociation());
-        }
-        return associations.toArray(new String[associations.size()]);
+    protected DetachedAssociationViewItem[] getDetachedAssociationViewItems(IProductCmptGeneration gen) {
+        List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
+        items.addAll(getAssociationItemsForLinkContainer(gen.getProductCmpt()));
+        items.addAll(getAssociationItemsForLinkContainer(gen));
+        return items.toArray(new DetachedAssociationViewItem[items.size()]);
     }
 
-    private String[] getAssociationNames(IProductCmptType type, IIpsProject ipsProject) throws CoreException {
-        NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(ipsProject);
+    protected List<DetachedAssociationViewItem> getAssociationItemsForLinkContainer(IProductCmptLinkContainer linkContainer) {
+        List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
+        Set<String> associations = new LinkedHashSet<String>();
+        List<IProductCmptLink> links = linkContainer.getLinksAsList();
+        for (IProductCmptLink link : links) {
+            if (associations.add(link.getAssociation())) {
+                items.add(new DetachedAssociationViewItem(linkContainer, link.getAssociation()));
+            }
+        }
+        return items;
+    }
+
+    private AssociationViewItem[] getAssociationItems(IProductCmptType type,
+            IIpsProject ipsProject,
+            IProductCmptGeneration generation) throws CoreException {
+        NonDerivedAssociationsCollector collector = new NonDerivedAssociationsCollector(ipsProject);
         collector.start(type);
-        return collector.associations.toArray(new String[collector.associations.size()]);
+        List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
+        List<IProductCmptTypeAssociation> associations = collector.getAssociations();
+        for (IProductCmptTypeAssociation association : associations) {
+            IProductCmptLinkContainer container = ((ProductCmptGeneration)generation).getContainerFor(association);
+            AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
+            items.add(associationViewItem);
+        }
+        return items.toArray(new AssociationViewItem[items.size()]);
     }
 
     @Override
@@ -90,90 +106,60 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput instanceof IProductCmptGeneration) {
-            generation = (IProductCmptGeneration)newInput;
-        } else {
-            generation = null;
-        }
+        /*
+         * No need to implement. Input is given in #getElements() and needs to be recalculated every
+         * time anyways.
+         */
     }
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (!(parentElement instanceof String) || generation == null) {
-            return new Object[0];
+        if (parentElement instanceof AbstractAssociationViewItem) {
+            List<LinkSectionViewItem> children = ((AbstractAssociationViewItem)parentElement).getChildren();
+            return children.toArray(new LinkSectionViewItem[children.size()]);
         }
-        return getChildrenInternal((String)parentElement);
-    }
-
-    private IProductCmptLink[] getChildrenInternal(String associationName) {
-        try {
-            IProductCmpt pc = generation.getProductCmpt();
-            IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
-            if (pcType == null) {
-                return new IProductCmptLink[0];
-            } else {
-                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)pcType.findAssociation(
-                        associationName, generation.getIpsProject());
-                return getChildrenInternal(association);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    protected IProductCmptLink[] getChildrenInternal(IProductCmptTypeAssociation association) {
-        List<IProductCmptLink> linksAsList;
-        if (association.isChangingOverTime()) {
-            linksAsList = generation.getLinksAsList(association.getName());
-        } else {
-            linksAsList = generation.getProductCmpt().getLinksAsList(association.getName());
-        }
-        return linksAsList.toArray(new IProductCmptLink[linksAsList.size()]);
+        return new Object[0];
     }
 
     @Override
     public Object getParent(Object element) {
-        if (element instanceof String) {
-            return generation;
-        }
-        if (element instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)element;
-            return link.getAssociation();
-        }
-        throw new RuntimeException("Unknown element type " + element); //$NON-NLS-1$ 
+        /*
+         * No need to implement. Would be needed if a single item had to be expanded in the tree.
+         */
+        return null;
     }
 
     @Override
     public boolean hasChildren(Object element) {
-        Object[] children = getChildren(element);
-        if (children == null) {
-            return false;
-        }
-        return children.length > 0;
+        return getChildren(element).length > 0;
     }
 
-    class NoneDerivedAssociationsCollector extends TypeHierarchyVisitor<IProductCmptType> {
+    class NonDerivedAssociationsCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
-        private List<String> associations = new ArrayList<String>();
+        private List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
 
-        public NoneDerivedAssociationsCollector(IIpsProject ipsProject) {
+        public NonDerivedAssociationsCollector(IIpsProject ipsProject) {
             super(ipsProject);
         }
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            List<IAssociation> typeAssociations = currentType.getAssociations();
+            List<IProductCmptTypeAssociation> typeAssociations = currentType.getProductCmptTypeAssociations();
             int index = 0;
-            for (IAssociation association : typeAssociations) {
+            for (IProductCmptTypeAssociation association : typeAssociations) {
                 // to get the associations of the root type of the supertype hierarchy first,
                 // put in the list at first, but with unchanged order for all associations
                 // found in one type...
                 if (!association.isDerived()) {
-                    associations.add(index, association.getName());
+                    associations.add(index, association);
                     index++;
                 }
             }
             return true;
+        }
+
+        public List<IProductCmptTypeAssociation> getAssociations() {
+            return associations;
         }
 
     }

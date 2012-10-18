@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksContentProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,51 +104,13 @@ public class LinksContentProviderTest {
     }
 
     @Test
-    public void testGetLinksFromGeneration() {
-        Object[] links = provider.getChildren("dummyAssociation");
-        assertChangingLinksPresent(links);
-    }
-
-    @Test
-    public void testGetLinksFromProductCmpt() {
-        Object[] links = provider.getChildren("staticDummyAssociation");
-        assertStaticLinksPresent(links);
-    }
-
-    @Test
-    public void testGetLinkInternalsFromGeneration() {
-        Object[] links = provider.getChildrenInternal(association);
-        assertChangingLinksPresent(links);
-    }
-
-    @Test
-    public void testGetLinksInternalFromProductCmpt() {
-        Object[] links = provider.getChildrenInternal(staticAssociation);
-        assertStaticLinksPresent(links);
-    }
-
-    private void assertChangingLinksPresent(Object[] links) {
-        assertEquals(3, links.length);
-        assertEquals(link1, links[0]);
-        assertEquals(link2, links[1]);
-        assertEquals(link3, links[2]);
-    }
-
-    private void assertStaticLinksPresent(Object[] links) {
-        assertEquals(2, links.length);
-        assertEquals(staticLink1, links[0]);
-        assertEquals(staticLink2, links[1]);
-    }
-
-    @Test
-    public void testGetAssociationNames() throws CoreException {
-        doReturn(null).when(prodCmpt).findProductCmptType(any(IIpsProject.class));
+    public void testGetDetachedAssociationViewItems() {
         doReturn(links).when(gen).getLinksAsList();
         doReturn(staticLinks).when(prodCmpt).getLinksAsList();
 
-        String[] associationNames = provider.getAssociationNames(gen);
-        assertEquals(2, associationNames.length);
-        assertEquals("dummyAssociation", associationNames[0]);
-        assertEquals("staticDummyAssociation", associationNames[1]);
+        DetachedAssociationViewItem[] associationItems = provider.getDetachedAssociationViewItems(gen);
+        assertEquals(2, associationItems.length);
+        assertEquals("staticDummyAssociation", associationItems[0].getAssociationName());
+        assertEquals("dummyAssociation", associationItems[1].getAssociationName());
     }
 }
