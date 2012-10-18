@@ -22,6 +22,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
+/**
+ * Represents a product component link in the product component editor's link section.
+ * 
+ * @author widmaier
+ */
 public class LinkViewItem implements LinkSectionViewItem {
 
     private final IProductCmptLink link;
