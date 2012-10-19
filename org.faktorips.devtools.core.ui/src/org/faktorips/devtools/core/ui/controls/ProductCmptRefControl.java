@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +55,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
 
-        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<IIpsSrcFile>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             ipsSrcFiles.addAll(Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType,
                     includeCmptsForSubtypes)));

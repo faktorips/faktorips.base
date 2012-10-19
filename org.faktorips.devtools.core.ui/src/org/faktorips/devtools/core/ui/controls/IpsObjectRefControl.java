@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -203,7 +203,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * This is a convenience method for subclasses to search the source files in all given projects.
      */
     protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreException {
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new LinkedHashSet<IIpsSrcFile>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(ipsProject.findIpsSrcFiles(type)));
         }
