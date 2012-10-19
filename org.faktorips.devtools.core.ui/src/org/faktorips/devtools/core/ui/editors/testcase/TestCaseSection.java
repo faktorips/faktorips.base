@@ -962,13 +962,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
-                ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
+                ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
-                    changeProductCmpt(testPolicyCmpt);
+                    changeProductCmpt(newTestPolicyCmpt);
                 }
                 refreshTreeAndDetailArea();
-                treeViewer.expandToLevel(associationType, 1);
-                selectInTreeByObject(testPolicyCmpt, true);
+                expandTreeAfterAdd(associationType, newTestPolicyCmpt);
+                selectInTreeByObject(newTestPolicyCmpt, true);
                 selectionInTreeChanged((IStructuredSelection)treeViewer.getSelection());
             }
         };
@@ -984,6 +984,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
+    }
+
+    private void expandTreeAfterAdd(TestCaseTypeAssociation associationType, ITestPolicyCmpt newTestPolicyCmpt) {
+        treeViewer.expandToLevel(associationType, 1);
+        for (Object child : contentProvider.getChildren(associationType)) {
+            if (child.equals(newTestPolicyCmpt)) {
+                treeViewer.expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
+            }
+        }
     }
 
     /**
@@ -2879,17 +2888,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         expandTreeAfterAdd(associationType, newTestPolicyCmpt);
                         selectionInTreeChanged((IStructuredSelection)getSelection());
                         selectInTreeByObject(newTestPolicyCmpt, true);
-                    }
-                }
-
-                private void expandTreeAfterAdd(TestCaseTypeAssociation associationType,
-                        ITestPolicyCmpt newTestPolicyCmpt) {
-
-                    getTreeViewer().expandToLevel(associationType, 1);
-                    for (Object child : contentProvider.getChildren(associationType)) {
-                        if (child.equals(newTestPolicyCmpt)) {
-                            getTreeViewer().expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
-                        }
                     }
                 }
             };

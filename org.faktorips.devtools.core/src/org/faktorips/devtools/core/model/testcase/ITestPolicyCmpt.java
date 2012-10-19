@@ -219,16 +219,17 @@ public interface ITestPolicyCmpt extends ITestObject {
      * <li>Further links can only be created if the {@linkplain IPolicyCmptTypeAssociation policy
      * component type association} associated to the {@linkplain ITestPolicyCmptTypeParameter test
      * parameter} is a composition
-     * <li>The operation will look at the child test parameters
-     * <li>For each child test parameter, if it's minimum cardinality is > 0 (meaning the parameter
-     * is not optional), and only one {@linkplain IProductCmpt product component} qualifies for the
-     * association, a number of {@linkplain ITestPolicyCmptLink test policy component links} that is
-     * equal to the minimum cardinality of the child test parameter will be added
-     * <li>If more than one product component qualifies for the association, the
-     * {@linkplain IProductCmptLink product component links} of the product component assigned to
-     * the test policy component are analyzed. For each product component link to the target with
-     * minimum cardinality > 0, a number of {@linkplain ITestPolicyCmptLink test policy component
-     * links} equal to the minimum cardinality of the product component link will be added
+     * <li>The operation will look at the child test parameters. For each child test parameter, if
+     * it's minimum instances count is > 0 (meaning the parameter is not optional), and only one
+     * {@linkplain IProductCmpt product component} qualifies for the association, a number of
+     * {@linkplain ITestPolicyCmptLink test policy component links} that is equal to the minimum
+     * cardinality of the child test parameter will be added
+     * <li>If more than one product component qualifies for the association, or the minimum
+     * instances count = 0, the {@linkplain IProductCmptLink product component links} of the product
+     * component assigned to the test policy component are analyzed. For each product component link
+     * to the target with minimum cardinality > 0, a number of {@linkplain ITestPolicyCmptLink test
+     * policy component links} equal to the minimum cardinality of the product component link will
+     * be added
      * </ol>
      * 
      * @param typeParam test policy component type parameter for which the new link will be created.

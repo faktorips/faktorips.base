@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -475,18 +476,61 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return newTestPcTypeLink;
     }
 
-    private void recursivelyAddRequiredLinks(ITestPolicyCmptTypeParameter typeParam, ITestPolicyCmpt newTestPolicyCmpt)
-            throws CoreException {
+    private void recursivelyAddRequiredLinks(ITestPolicyCmptTypeParameter testParameter,
+            ITestPolicyCmpt newTestPolicyCmpt) throws CoreException {
 
-        for (ITestPolicyCmptTypeParameter childParam : typeParam.getTestPolicyCmptTypeParamChilds()) {
-            IIpsSrcFile[] allowedProductCmpts = childParam.getAllowedProductCmpt(getIpsProject(),
-                    newTestPolicyCmpt.findProductCmpt(getIpsProject()));
-            // add as many links recursively as defined by the minimum instances
-            for (int i = 0; i < childParam.getMinInstances(); i++) {
-                newTestPolicyCmpt.addTestPcTypeLink(childParam,
-                        allowedProductCmpts[0].getQualifiedNameType().getName(), null, null, true);
+        for (ITestPolicyCmptTypeParameter childParameter : testParameter.getTestPolicyCmptTypeParamChilds()) {
+            boolean addedViaTestParameter = recursivelyAddRequiredLinksViaTestParameter(childParameter,
+                    newTestPolicyCmpt);
+            if (!addedViaTestParameter) {
+                recursivelyAddRequiredLinksViaParentProductCmpt(childParameter, newTestPolicyCmpt);
             }
         }
+    }
+
+    /**
+     * Deduces the target product component from the test parameter, returns {@code false} if that
+     * was not possible.
+     */
+    private boolean recursivelyAddRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter,
+            ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+
+        IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(), null);
+        if (allowedProductCmptSrcFiles.length != 1 || testParameter.getMinInstances() == 0) {
+            return false;
+        }
+
+        // add as many links as defined by the minimum instances
+        for (int i = 0; i < testParameter.getMinInstances(); i++) {
+            testPolicyCmpt.addTestPcTypeLink(testParameter, allowedProductCmptSrcFiles[0].getQualifiedNameType()
+                    .getName(), null, null, true);
+        }
+        return true;
+    }
+
+    /**
+     * Deduces the target product component from the parent product component, returns {@code false}
+     * if that was not possible.
+     */
+    private boolean recursivelyAddRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
+            ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+
+        IProductCmpt originalProductCmpt = testPolicyCmpt.findProductCmpt(getIpsProject());
+        IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(),
+                originalProductCmpt);
+        for (IIpsSrcFile allowedProductCmptSrcFile : allowedProductCmptSrcFiles) {
+            for (IProductCmptLink link : originalProductCmpt.getFirstGeneration().getLinks()) {
+                if (link.getTarget().equals(allowedProductCmptSrcFile.getQualifiedNameType().getName())) {
+                    // add as many links as defined by the minimum cardinality
+                    for (int i = 0; i < link.getMinCardinality(); i++) {
+                        testPolicyCmpt.addTestPcTypeLink(testParameter, allowedProductCmptSrcFile
+                                .getQualifiedNameType().getName(), null, null, true);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
