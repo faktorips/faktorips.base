@@ -27,58 +27,44 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
+public final class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
 
+    private List<ComponentNode> storedRootElements;
     private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
     @Override
-    public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof ComponentNode) {
-            if (((ComponentNode)parentElement).isRepetition()) {
-                return new Object[0];
-            }
-            return getComponentNodeChildren((ComponentNode)parentElement).toArray();
-        } else if (parentElement instanceof AbstractStructureNode) {
-            return ((AbstractStructureNode)parentElement).getChildren().toArray();
-        }
-        return new Object[0];
-    }
-
-    @Override
     public Object getParent(Object element) {
-        return ((IModelOverviewNode)element).getParent();
+        return ((ComponentNode)element).getParent();
     }
 
     @Override
     public boolean hasChildren(Object element) {
-        if (element instanceof AbstractStructureNode) {
-            return !((AbstractStructureNode)element).getChildren().isEmpty();
-        } else if (element instanceof ComponentNode) {
-            return !getComponentNodeChildren((ComponentNode)element).isEmpty();
-        }
-        return false;
+        return this.getChildren(element) != null && this.getChildren(element).length > 0;
     }
 
     @Override
     protected String getWaitingLabel() {
-        return Messages.IpsModelOverview_waitingLabel;
+        return Messages.ModelOverview_waitingLabel;
     }
 
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         // if input is an IType, alter it to the corresponding IIpsProject
+        IIpsProject inputProject = null;
         if (inputElement instanceof IType) {
-            inputElement = ((IType)inputElement).getIpsProject();
+            inputProject = ((IType)inputElement).getIpsProject();
+        } else {
+            inputProject = (IIpsProject)inputElement;
         }
 
         // only accept project input
-        if (inputElement instanceof IIpsProject) {
-            IIpsProject project = (IIpsProject)inputElement;
+        if (inputProject != null) {
+            IIpsProject project = inputProject;
 
             monitor.beginTask(getWaitingLabel(), 3);
             List<IType> projectComponents;
-            if (showState == ShowTypeState.SHOW_POLICIES) {
+            if (getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
                 projectComponents = getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE);
             } else {
                 projectComponents = getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -88,7 +74,8 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
             List<IType> derivedRootElements = computeDerivedRootElements(
                     getProjectSpecificITypes(projectComponents, project), projectComponents, project);
             monitor.worked(1);
-            Object[] rootElements = ComponentNode.encapsulateComponentTypes(derivedRootElements, project).toArray();
+            storedRootElements = ComponentNode.encapsulateComponentTypes(derivedRootElements, null, project);
+            Object[] rootElements = storedRootElements.toArray();
             monitor.worked(1);
             monitor.done();
             return rootElements;
@@ -106,15 +93,13 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
             try {
                 IType supertype = projectType.findSupertype(project);
 
-                // if
                 if ((supertype == null || !supertype.getIpsProject().equals(project))
                         && !isAssociated(projectType, projectSpecificITypes, allComponentITypes, project,
                                 ASSOCIATION_TYPES)) {
                     rootCandidates.add(projectType);
                 }
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new CoreRuntimeException(e);
             }
         }
 
@@ -163,70 +148,34 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
         return rootElements;
     }
 
-    /**
-     * Takes a {@link List} of {@link IType} and extracts all elements which are contained in the
-     * provided {@link IIpsProject} into a new list.
-     * 
-     * @param components a list of {@link IType}
-     * @param project the project for which the {@link IType}s should be retrieved
-     * @return a {@link List} of {@link IType}, or an empty list if no provided elements are
-     *         contained in this project
-     */
-    protected static List<IType> getProjectSpecificITypes(List<IType> components, IIpsProject project) {
-        List<IType> projectComponents = new ArrayList<IType>();
-        for (IType iType : components) {
-            if (iType.getIpsProject().getName().equals(project.getName())) {
-                projectComponents.add(iType);
-            }
-        }
-        return projectComponents;
-    }
-
     @Override
-    List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent) {
-        List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
-
-        SubtypeNode subtypeNode = getComponentNodeSubtypeChild(parent);
-        if (subtypeNode != null) {
-            children.add(subtypeNode);
-        }
-
-        CompositeNode compositeNode = getComponentNodeCompositeChild(parent);
-        if (compositeNode != null) {
-            children.add(compositeNode);
-        }
-
-        return children;
-    }
-
-    @Override
-    SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent) {
+    List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {
         List<IType> subtypes = findProjectSpecificSubtypes(parent.getValue(), parent.getValue().getIpsProject());
-        if (!subtypes.isEmpty()) {
-            return new SubtypeNode(parent, ComponentNode.encapsulateComponentTypes(subtypes, parent.getValue()
-                    .getIpsProject()));
-        }
-        return null;
+        return SubtypeComponentNode.encapsulateSubtypeComponentTypes(subtypes, parent, parent.getValue()
+                .getIpsProject());
     }
 
     @Override
-    CompositeNode getComponentNodeCompositeChild(ComponentNode parent) {
+    List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent) {
 
-        List<ComponentNode> associationNodes = new ArrayList<ComponentNode>();
+        List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
 
         IType parentValue = parent.getValue();
-        IIpsProject project = parentValue.getIpsProject();
+        // IIpsProject project = parentValue.getIpsProject();
+        IIpsProject project = parent.getSourceIpsProject();
+
         // add direct associations (from the same project)
-        associationNodes.addAll(getDirectAssociationComponentNodes(parentValue, project));
+        associationNodes.addAll(getDirectAssociationComponentNodes(parent, project));
 
         try {
-            // general root element or supertype is from the same project, therefore we have no
-            // derived
-            // associations
+            /*
+             * general root element or supertype is from the same project, therefore we have no
+             * derived associations
+             */
             if (parentValue.findSupertype(project) == null
                     || parentValue.findSupertype(project).getIpsProject().equals(project)) {
                 if (!associationNodes.isEmpty()) {
-                    return new CompositeNode(parent, associationNodes);
+                    return associationNodes;
                 } else {
                     return null;
                 }
@@ -236,19 +185,20 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
                 List<IAssociation> supertypeAssociations = new ArrayList<IAssociation>();
                 // collect all relevant supertype-associations
                 while (supertype != null && !supertype.getIpsProject().equals(project)) {
-                    supertypeAssociations.addAll(supertype.getAssociations(ASSOCIATION_TYPES));
+                    supertypeAssociations.addAll(0, supertype.getAssociations(ASSOCIATION_TYPES));
                     supertype = supertype.findSupertype(project);
                 }
 
                 for (IAssociation supertypeAssociation : supertypeAssociations) {
-                    List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
-                            project);
-                    for (IType subtype : subtypes) {
-                        associationNodes.add(newAssociationComponentNode(subtype,
-                                supertypeAssociation.getMinCardinality(), supertypeAssociation.getMaxCardinality(),
-                                supertypeAssociation.getTargetRoleSingular(), project,
-                                supertypeAssociation.isDerivedUnion(), supertypeAssociation.isSubsetOfADerivedUnion(),
-                                true));
+                    if (!supertypeAssociation.isDerivedUnion()) {
+                        List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
+                                project);
+                        for (IType subtype : subtypes) {
+                            AssociationComponentNode associationComponentNode = newAssociationComponentNode(subtype,
+                                    supertypeAssociation, parent, project);
+                            associationComponentNode.setInherited(true);
+                            associationNodes.add(associationComponentNode);
+                        }
                     }
                 }
             }
@@ -257,12 +207,13 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
         }
 
         if (!associationNodes.isEmpty()) {
-            return new CompositeNode(parent, associationNodes);
+            return associationNodes;
         }
         return null;
     }
 
-    private List<AssociationComponentNode> getDirectAssociationComponentNodes(IType parentValue, IIpsProject project) {
+    private List<AssociationComponentNode> getDirectAssociationComponentNodes(ComponentNode parent, IIpsProject project) {
+        IType parentValue = parent.getValue();
         List<IAssociation> directAssociations = new ArrayList<IAssociation>();
         for (IAssociation directAssociation : parentValue.getAssociations(ASSOCIATION_TYPES)) {
             try {
@@ -276,8 +227,13 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
 
         List<AssociationComponentNode> componentNodes = new ArrayList<AssociationComponentNode>();
         for (IAssociation association : directAssociations) {
-            componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, project));
+            componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, parent, project));
         }
         return componentNodes;
+    }
+
+    @Override
+    List<ComponentNode> getStoredRootElements() {
+        return storedRootElements;
     }
 }

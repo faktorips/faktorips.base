@@ -19,10 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,7 +34,6 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 import org.junit.Test;
 
 public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
@@ -56,7 +52,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildren_CyclicNodeHasNoChildren() throws CoreException {
+    public void testHasChildren_CyclicNodeIsRepeatedOnlyOnce() throws CoreException {
         // setup
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
 
@@ -69,9 +65,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         Object[] elements = provider.collectElements(vertrag, new NullProgressMonitor());
 
-        Object[] structureChildren = provider.getChildren(elements[0]);
-        Object[] componentChildren = provider.getChildren(structureChildren[0]);
-        assertFalse(provider.hasChildren(componentChildren[0]));
+        assertFalse(provider.hasChildren(provider.getChildren(elements[0])));
     }
 
     @Test
@@ -122,13 +116,10 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         // tests
         assertEquals(1, elements.length); // only one root element
 
-        Object[] structureChildren = provider.getChildren(elements[0]);
-        assertEquals(1, structureChildren.length); // only one structure child
-        assertTrue(structureChildren[0] instanceof CompositeNode);
+        Object[] children = provider.getChildren(elements[0]);
+        assertEquals(1, children.length); // only one structure child
 
-        Object[] componentChildren = provider.getChildren(structureChildren[0]);
-        assertEquals(1, componentChildren.length);
-        AssociationComponentNode componentNode = (AssociationComponentNode)componentChildren[0];
+        AssociationComponentNode componentNode = (AssociationComponentNode)children[0];
         assertEquals(selfReferencingVertrag, componentNode.getValue()); // the self referencing node
                                                                         // has itself as a child!
         assertTrue(componentNode.isRepetition());
@@ -160,22 +151,108 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         assertEquals(1, elements.length);
 
-        // get the parent element
-        Object[] structChildren1 = provider.getChildren(elements[0]);
+        Object[] childrenLevel1 = provider.getChildren(elements[0]);
+        Object[] childrenLevel2 = provider.getChildren(childrenLevel1[0]);
+        Object[] childrenLevel3 = provider.getChildren(childrenLevel2[0]);
 
-        // get the first level children
-        Object[] componentChildren1 = provider.getChildren(structChildren1[0]);
-        Object[] structChildren2 = provider.getChildren(componentChildren1[0]);
+        assertTrue(((ComponentNode)childrenLevel3[0]).isRepetition());
+        assertEquals(((ComponentNode)elements[0]).getValue(), ((ComponentNode)childrenLevel3[0]).getValue());
+    }
 
-        // get the second level children
-        Object[] componentChildren2 = provider.getChildren(structChildren2[0]);
-        Object[] structChildren3 = provider.getChildren(componentChildren2[0]);
+    @Test
+    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
 
-        // get the third level children
-        Object[] componentChildren3 = provider.getChildren(structChildren3[0]);
+        typeB.setSupertype(typeA.getQualifiedName());
 
-        assertTrue(((ComponentNode)componentChildren3[0]).isRepetition());
-        assertEquals(((ComponentNode)elements[0]).getValue(), ((ComponentNode)componentChildren3[0]).getValue());
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeA, project));
+
+        // test
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof SubtypeComponentNode);
+        assertEquals(typeB, ((SubtypeComponentNode)children[0]).getValue());
+        assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
+    }
+
+    @Test
+    public void testGetChildren_HasInheritedAssociations() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        IType typeAB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+
+        IIpsProject projectB = newIpsProject();
+        IType typeBA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        IType typeBB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        typeBA.setSupertype(typeAA.getQualifiedName());
+        typeBB.setSupertype(typeAB.getQualifiedName());
+
+        IAssociation association = typeAA.newAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTarget(typeAB.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] children = provider.getChildren(new ComponentNode(typeAB, projectB));
+        assertTrue(((ComponentNode)children[0]).isTargetOfInheritedAssociation());
+    }
+
+    @Test
+    public void testGetChildren_HasNoInheritedAssociations() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        IType typeAB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+
+        IIpsProject projectB = newIpsProject();
+        IType typeBA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        IType typeBB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        typeBA.setSupertype(typeAA.getQualifiedName());
+        typeBB.setSupertype(typeAB.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] children = provider.getChildren(new ComponentNode(typeAB, projectB));
+        assertFalse(((ComponentNode)children[0]).isTargetOfInheritedAssociation());
+    }
+
+    @Test
+    public void testGetChildren_AssociationChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
+
+        IAssociation association = typeA.newAssociation();
+        association.setTarget(typeB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeA, project));
+
+        // test
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof AssociationComponentNode);
+        assertEquals(typeB, ((AssociationComponentNode)children[0]).getValue());
+        assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
     }
 
     @Test
@@ -254,19 +331,11 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         association.setTarget(associatedCmptType.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
-        IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
-
-        IAssociation association2 = prodCmptType.newAssociation();
-        association2.setTarget(associatedProdCmptType.getQualifiedName());
-
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
-        for (Object element : elements) {
-            assertTrue(provider.hasChildren(element));
-        }
+        assertTrue(provider.hasChildren(elements[0]));
     }
 
     @Test
@@ -293,56 +362,6 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(1, elements.length);
         assertTrue(provider.hasChildren(elements[0]));
         assertEquals(2, provider.getChildren(elements[0]).length);
-    }
-
-    /**
-     * 
-     * <strong>Scenario:</strong><br>
-     * Tests if the root Elements have children and the returned lists are not null. Furthermore it
-     * is checked that the correct {@link AbstractStructureNode AbstractStructureNodes} are
-     * returned. At last the nodes under these structure nodes will be checked on identity.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * In the first {@link IIpsProject} a {@link CompositeNode} and a {@link SubtypeNode} are
-     * expected as children of the root element. In the second project only a SubType node is
-     * expected.
-     * 
-     */
-    @Test
-    public void testGetChildren_CorrectStructureAndComponentNodeHierarchy() throws CoreException {
-        // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-
-        IIpsProject project1 = newIpsProject();
-        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType");
-        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType2");
-        IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestSubPolicyComponentType");
-
-        IAssociation association = cmptType.newAssociation();
-        association.setTarget(associatedCmptType.getQualifiedName());
-        subCmptType.setSupertype(cmptType.getQualifiedName());
-
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        Object[] elements = provider.collectElements(project1, new NullProgressMonitor());
-
-        IModelOverviewNode subtypeNode = (IModelOverviewNode)provider.getChildren(elements[0])[0];
-        IModelOverviewNode compositeNode = (IModelOverviewNode)provider.getChildren(elements[0])[1];
-
-        // test
-        // project1
-        assertEquals(2, provider.getChildren(elements[0]).length);
-
-        assertTrue(compositeNode instanceof CompositeNode);
-        assertTrue(subtypeNode instanceof SubtypeNode);
-
-        List<ComponentNode> compositeChildren = ((CompositeNode)compositeNode).getChildren();
-        assertEquals(1, compositeChildren.size());
-        assertEquals(associatedCmptType, compositeChildren.get(0).getValue());
-
-        List<ComponentNode> subtypeChildren = ((SubtypeNode)subtypeNode).getChildren();
-        assertEquals(1, subtypeChildren.size());
-        assertEquals(subCmptType, subtypeChildren.get(0).getValue());
     }
 
     /**
@@ -385,39 +404,24 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(vertrag, vertragNode.getValue());
         assertEquals(1, elements.length);
 
-        Object[] vertragStructureChildren = provider.getChildren(elements[0]);
+        Object[] vertragChildren = provider.getChildren(elements[0]);
+
+        assertEquals(2, vertragChildren.length);
 
         // test that hausratvertrag is a subtype of vertrag
-        SubtypeNode subtypeNode = (SubtypeNode)vertragStructureChildren[0];
-        Object[] vertragSubtypeChildren = provider.getChildren(subtypeNode);
-        assertEquals(1, vertragSubtypeChildren.length);
-        ComponentNode hausratVertragNode = (ComponentNode)vertragSubtypeChildren[0];
+        ComponentNode hausratVertragNode = (SubtypeComponentNode)vertragChildren[0];
         assertEquals(hausratVertrag, hausratVertragNode.getValue());
 
         // test that only hausratgrunddeckung is a composite of hausratvertrag
-        Object[] hausratVertragStructureChildren = provider.getChildren(hausratVertragNode);
-        CompositeNode hausratVertragCompositeNode = (CompositeNode)hausratVertragStructureChildren[0];
-        Object[] hausratVertragCompositeChildren = provider.getChildren(hausratVertragCompositeNode);
-        assertEquals(1, hausratVertragCompositeChildren.length);
-        assertEquals(hausratGrunddeckung, ((ComponentNode)hausratVertragCompositeChildren[0]).getValue());
+        Object[] hausratVertragChildren = provider.getChildren(hausratVertragNode);
+        assertEquals(1, hausratVertragChildren.length);
+        assertEquals(hausratGrunddeckung, ((ComponentNode)hausratVertragChildren[0]).getValue());
 
         // test that deckung is a composite of vertrag
-        CompositeNode compositeNode = (CompositeNode)vertragStructureChildren[1];
-        Object[] vertragCompositeChildren = provider.getChildren(compositeNode);
-        assertEquals(1, vertragCompositeChildren.length);
-        assertEquals(deckung, ((ComponentNode)vertragCompositeChildren[0]).getValue());
+        ComponentNode deckungNode = (AssociationComponentNode)vertragChildren[1];
+        assertEquals(deckung, deckungNode.getValue());
     }
 
-    /**
-     * 
-     * <strong>Scenario:</strong><br>
-     * 
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The {@link SubtypeNode} should be before the {@link CompositeNode} in the list of
-     * {@link ComponentNode} children
-     * 
-     */
     @Test
     public void testGetChildren_ComponentNodeChildrenOrder() throws CoreException {
         // setup
@@ -442,8 +446,8 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(1, elements.length);
 
         Object[] vertragChildren = provider.getChildren(elements[0]);
-        assertTrue(vertragChildren[0] instanceof SubtypeNode);
-        assertTrue(vertragChildren[1] instanceof CompositeNode);
+        assertTrue(vertragChildren[0] instanceof SubtypeComponentNode);
+        assertTrue(vertragChildren[1] instanceof AssociationComponentNode);
     }
 
     @Test
@@ -618,67 +622,6 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_ComputeRootToLeafHierarchyPaths() throws CoreException {
-        // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-        PolicyCmptType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
-
-        List<IType> componentList = new ArrayList<IType>();
-        componentList.add(vertrag);
-        componentList.add(deckung);
-        componentList.add(hausratVertrag);
-        componentList.add(hausratGrunddeckung);
-
-        hausratVertrag.setSupertype(vertrag.getQualifiedName());
-        hausratGrunddeckung.setSupertype(deckung.getQualifiedName());
-
-        IAssociation associationVertrag2Deckung = vertrag.newAssociation();
-        associationVertrag2Deckung.setTarget(deckung.getQualifiedName());
-        associationVertrag2Deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        IAssociation associationHausratVertrag2HausratGrunddeckung = hausratVertrag.newAssociation();
-        associationHausratVertrag2HausratGrunddeckung.setTarget(hausratGrunddeckung.getQualifiedName());
-        associationHausratVertrag2HausratGrunddeckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        // get the rootCandidates
-        List<AssociationType> associationTypeFilter = new ArrayList<AssociationType>();
-        associationTypeFilter.add(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        associationTypeFilter.add(AssociationType.AGGREGATION);
-        Collection<IType> rootCandidatesForIType = provider.getRootElementsForIType(hausratGrunddeckung, componentList,
-                ModelOverviewContentProvider.ToChildAssociationType.SELF, new ArrayList<IType>(),
-                new ArrayList<List<PathElement>>(), new ArrayList<PathElement>());
-
-        // compute the actual list of root elements and most importantly the list of paths from the
-        // root elements to the selected element
-        List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
-        provider.getRootElementsForIType(hausratGrunddeckung, componentList,
-                ModelOverviewContentProvider.ToChildAssociationType.SELF, rootCandidatesForIType, paths,
-                new ArrayList<PathElement>());
-
-        // expected paths
-        Deque<PathElement> paths1 = new ArrayDeque<PathElement>();
-        paths1.push(new PathElement(hausratGrunddeckung, ToChildAssociationType.SELF));
-        paths1.push(new PathElement(hausratVertrag, ToChildAssociationType.ASSOCIATION));
-        paths1.push(new PathElement(vertrag, ToChildAssociationType.SUPERTYPE));
-
-        Deque<PathElement> paths2 = new ArrayDeque<PathElement>();
-        paths1.push(new PathElement(hausratGrunddeckung, ToChildAssociationType.SELF));
-        paths1.push(new PathElement(deckung, ToChildAssociationType.SUPERTYPE));
-        paths1.push(new PathElement(vertrag, ToChildAssociationType.ASSOCIATION));
-
-        // tests
-        assertEquals(2, paths.size());
-
-        paths.contains(paths1);
-        paths.contains(paths2);
-    }
-
-    @Test
     public void testCollectElements_OnIType_DetectCycleOnSelfreferencingELement() throws CoreException {
         // setup
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
@@ -780,7 +723,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // tests
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        assertNull(provider.getComponentNodeCompositeChild(root));
+        assertNull(provider.getComponentNodeAssociationChildren(root));
     }
 
     @Test
@@ -797,153 +740,32 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         ComponentNode root = new ComponentNode(vertrag, project);
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        CompositeNode child = provider.getComponentNodeCompositeChild(root);
+        List<AssociationComponentNode> children = provider.getComponentNodeAssociationChildren(root);
+
+        // tests
+        assertNotNull(children);
+        assertEquals(1, children.size());
+        assertEquals(deckung, children.get(0).getValue());
+    }
+
+    @Test
+    public void testGetComponentNodeSubtypeChildren_NotNull() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
+
+        // supertypes
+        hausratVertrag.setSupertype(vertrag.getQualifiedName());
+
+        ComponentNode root = new ComponentNode(vertrag, project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        List<SubtypeComponentNode> child = provider.getComponentNodeSubtypeChildren(root);
 
         // tests
         assertNotNull(child);
-        assertEquals(1, child.getChildren().size());
-        assertEquals(deckung, child.getChildren().get(0).getValue());
+        assertEquals(1, child.size());
+        assertEquals(hausratVertrag, child.get(0).getValue());
     }
 
-    @Test
-    public void testGetComponentNodeCompositeChild_InheritanceStateIsTrue() throws CoreException {
-        // setup
-        IIpsProject projectA = newIpsProject();
-        PolicyCmptType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
-        PolicyCmptType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
-
-        IIpsProject projectB = newIpsProject();
-        PolicyCmptType bA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
-        PolicyCmptType bB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
-
-        bA.setSupertype(aA.getQualifiedName());
-        bB.setSupertype(aB.getQualifiedName());
-
-        IAssociation association = aA.newAssociation();
-        association.setTarget(aB.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        IIpsObjectPath path = projectB.getIpsObjectPath();
-        path.newIpsProjectRefEntry(projectA);
-        projectB.setIpsObjectPath(path);
-
-        // tests
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] rootElements = provider.collectElements(projectB, new NullProgressMonitor());
-        Object[] structureNodes = provider.getChildren(rootElements[0]);
-        AssociationComponentNode nodeAB = (AssociationComponentNode)provider.getChildren(structureNodes[1])[0];
-        Object[] structureNodes2 = provider.getChildren(nodeAB);
-        ComponentNode nodeBB = (ComponentNode)provider.getChildren(structureNodes2[0])[0];
-
-        assertTrue(nodeBB.hasInheritedAssociation());
-    }
-
-    @Test
-    public void testGetComponentNodeSubtypeChild_IsNull() throws CoreException {
-        // setup
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-
-        ComponentNode root = new ComponentNode(vertrag, project);
-
-        // tests
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        assertNull(provider.getComponentNodeSubtypeChild(root));
-    }
-
-    @Test
-    public void testGetComponentNodeSubtypeChild_NotNull() throws CoreException {
-        // setup
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-
-        // supertypes
-        hausratVertrag.setSupertype(vertrag.getQualifiedName());
-
-        ComponentNode root = new ComponentNode(vertrag, project);
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        SubtypeNode child = provider.getComponentNodeSubtypeChild(root);
-
-        // tests
-        assertNotNull(child);
-        assertEquals(1, child.getChildren().size());
-        assertEquals(hausratVertrag, child.getChildren().get(0).getValue());
-    }
-
-    @SuppressWarnings("null")
-    @Test
-    public void testGetComponentNodeChildren_HasCompositeAndSubtypeNodeWithChildren() throws CoreException {
-        // setup
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-
-        // supertypes
-        hausratVertrag.setSupertype(vertrag.getQualifiedName());
-
-        // associations
-        IAssociation vertrag2deckung = vertrag.newAssociation();
-        vertrag2deckung.setTarget(deckung.getQualifiedName());
-        vertrag2deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        // tests
-        ComponentNode root = new ComponentNode(vertrag, project);
-
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        List<AbstractStructureNode> children = provider.getComponentNodeChildren(root);
-        assertEquals(2, children.size());
-
-        AbstractStructureNode subtypeNode = null;
-        AbstractStructureNode compositeNode = null;
-        // more complicated logic to initialize these values to make the test more independent from
-        // the testGetChildren_AbstractStructureNodeOrder() test-case
-
-        for (AbstractStructureNode node : children) {
-            if (node instanceof SubtypeNode) {
-                subtypeNode = node;
-            } else if (node instanceof CompositeNode) {
-                compositeNode = node;
-            }
-        }
-
-        assertTrue(subtypeNode instanceof SubtypeNode);
-        assertTrue(compositeNode instanceof CompositeNode);
-
-        assertEquals(1, subtypeNode.getChildren().size());
-        assertEquals(1, compositeNode.getChildren().size());
-
-        assertEquals(hausratVertrag, subtypeNode.getChildren().get(0).getValue());
-        assertEquals(deckung, compositeNode.getChildren().get(0).getValue());
-    }
-
-    @Test
-    public void testGetComponentNodeChildren_AbstractStructureNodeOrder() throws CoreException {
-        // setup
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-
-        // supertypes
-        hausratVertrag.setSupertype(vertrag.getQualifiedName());
-
-        // associations
-        IAssociation vertrag2deckung = vertrag.newAssociation();
-        vertrag2deckung.setTarget(deckung.getQualifiedName());
-        vertrag2deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        // tests
-        ComponentNode root = new ComponentNode(vertrag, project);
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        List<AbstractStructureNode> children = provider.getComponentNodeChildren(root);
-
-        // the order of the elements in the list of children is fixed
-        AbstractStructureNode subtypeNode = children.get(0);
-        AbstractStructureNode compositeNode = children.get(1);
-
-        assertTrue(subtypeNode instanceof SubtypeNode);
-        assertTrue(compositeNode instanceof CompositeNode);
-    }
 }

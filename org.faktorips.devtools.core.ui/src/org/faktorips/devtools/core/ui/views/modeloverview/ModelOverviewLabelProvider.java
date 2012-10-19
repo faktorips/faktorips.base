@@ -25,14 +25,17 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
+public final class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
-    private static final String STRUCTURE_NODE_SUPTYPE_IMAGE = "over_co.gif"; //$NON-NLS-1$
-    private static final String STRUCTURE_NODE_ASSOCIATION_IMAGE = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
+    private static final String PRODUCT_SUBTYPE_IMAGE = "product_subtype.gif"; //$NON-NLS-1$
+    private static final String POLICY_SUBTYPE_IMAGE = "policy_subtype.gif"; //$NON-NLS-1$
+    private static final String POLICY_ASSOCIATION_IMAGE = "policy_AssociationType-Aggregation.gif"; //$NON-NLS-1$
+    private static final String PRODUCT_ASSOCIATION_IMAGE = "product_AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_orange.gif"; //$NON-NLS-1$
     private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_ABSTRACT_IMAGE = "AbstractIndicator.gif"; //$NON-NLS-1$
 
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
@@ -63,11 +66,29 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                 overlayImages[IDecoration.BOTTOM_LEFT] = OVERLAY_LOOP_IMAGE;
                 overlayed = true;
             }
-            if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()
-                    || node.hasInheritedAssociation()) {
+            if (node.getValue().isAbstract()) {
+                overlayImages[IDecoration.TOP_RIGHT] = OVERLAY_ABSTRACT_IMAGE;
+                overlayed = true;
+            }
+            if ((element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited())
+                    || node.isTargetOfInheritedAssociation()) {
                 overlayImages[IDecoration.BOTTOM_RIGHT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
                 overlayed = true;
             }
+            if (node instanceof AssociationComponentNode) {
+                if (node.getValue() instanceof PolicyCmptType) {
+                    imageName = POLICY_ASSOCIATION_IMAGE;
+                } else {
+                    imageName = PRODUCT_ASSOCIATION_IMAGE;
+                }
+            } else if (node instanceof SubtypeComponentNode) {
+                if (node.getValue() instanceof PolicyCmptType) {
+                    imageName = POLICY_SUBTYPE_IMAGE;
+                } else {
+                    imageName = PRODUCT_SUBTYPE_IMAGE;
+                }
+            }
+            overlayed = true;
 
             if (overlayed) {
                 return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
@@ -79,10 +100,6 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                     return result;
                 }
             }
-        } else if (element instanceof CompositeNode) {
-            return IpsUIPlugin.getImageHandling().getSharedImage(STRUCTURE_NODE_ASSOCIATION_IMAGE, true);
-        } else if (element instanceof SubtypeNode) {
-            return IpsUIPlugin.getImageHandling().getSharedImage(STRUCTURE_NODE_SUPTYPE_IMAGE, true);
         }
         return null;
     }
@@ -102,7 +119,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     public StyledString getStyledText(Object element) {
         String label = getText(element);
 
-        StyledString styledLabel = new StyledString(label);
+        StyledString styledLabel = new StyledString("    " + label); //$NON-NLS-1$
 
         if (element instanceof AssociationComponentNode) {
             AssociationComponentNode node = ((AssociationComponentNode)element);
@@ -152,14 +169,14 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     }
 
     /**
-     * Defines if cardinalities should be shown on AssociationComponentNode labels
+     * Defines if cardinalities should be shown on AssociationComponentNode labels.
      */
     public void setShowCardinalities(boolean showCardinalities) {
         this.showCardinalities = showCardinalities;
     }
 
     /**
-     * Toggles the show cardinalities state
+     * Toggles the show cardinalities state.
      * 
      * @see #setShowCardinalities(boolean)
      */
@@ -175,14 +192,14 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     }
 
     /**
-     * Defines if role names should be shown on AssociationComponentNode labels
+     * Defines if role names should be shown on AssociationComponentNode labels.
      */
     public void setShowRolenames(boolean showRolenames) {
         this.showRolenames = showRolenames;
     }
 
     /**
-     * Toggles the show role names state
+     * Toggles the show role names state.
      * 
      * @see #setShowRolenames(boolean)
      */
@@ -191,25 +208,42 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     }
 
     /**
-     * @see #setShowProjects(boolean)
+     * @see #setShowProjects(boolean) .
      */
     public boolean getShowProjects() {
         return this.showProjects;
     }
 
     /**
-     * Defines if the project names should be shown on ComponentNode labels
+     * Defines if the project names should be shown on ComponentNode labels.
      */
     public void setShowProjects(boolean showProjects) {
         this.showProjects = showProjects;
     }
 
     /**
-     * Toggles the show projects state
+     * Toggles the show projects state.
      * 
      * @see #setShowProjects(boolean)
      */
     public void toggleShowProjects() {
         this.showProjects = !this.showProjects;
+    }
+
+    public String getToolTipText(Object element) {
+        String text = ""; //$NON-NLS-1$
+        if (element instanceof ComponentNode) {
+            if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
+                AssociationComponentNode node = (AssociationComponentNode)element;
+                text += Messages.ModelOverview_tooltipInheritedAssociations
+                        + " " + node.getTargetingType().getQualifiedName(); //$NON-NLS-1$
+            } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {
+                text += Messages.ModelOverview_tooltipHasInheritedAssociation;
+            }
+            if (!text.isEmpty()) {
+                return text;
+            }
+        }
+        return null;
     }
 }

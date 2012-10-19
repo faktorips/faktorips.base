@@ -84,7 +84,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     public void testEncapsulateComponentTypes_EmptyListInput() throws CoreException {
         IIpsProject project = newIpsProject();
         List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
-                project);
+                null, project);
 
         assertTrue(encapsulateComponentTypes.isEmpty());
     }
@@ -93,7 +93,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     public void testEncapsulateComponentTypes_NullListInput() throws CoreException {
         IIpsProject project = newIpsProject();
 
-        ComponentNode.encapsulateComponentTypes(null, project);
+        ComponentNode.encapsulateComponentTypes(null, null, project);
     }
 
     @Test
@@ -102,7 +102,8 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         ArrayList<IType> components = new ArrayList<IType>();
         PolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Component");
         components.add(type);
-        List<ComponentNode> encapsulatedComponentTypes = ComponentNode.encapsulateComponentTypes(components, project);
+        List<ComponentNode> encapsulatedComponentTypes = ComponentNode.encapsulateComponentTypes(components, null,
+                project);
 
         assertEquals(1, encapsulatedComponentTypes.size());
         assertEquals(type, encapsulatedComponentTypes.get(0).getValue());
@@ -114,13 +115,13 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         ArrayList<IType> components = new ArrayList<IType>();
         components.add(newPolicyCmptTypeWithoutProductCmptType(project, "Component"));
 
-        ComponentNode.encapsulateComponentTypes(components, null);
+        ComponentNode.encapsulateComponentTypes(components, null, null);
     }
 
     @Test
     public void testEncapsulateComponentTypes_NullProjectAndEmptyListInput() {
         List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
-                null);
+                null, null);
         assertTrue(encapsulateComponentTypes.isEmpty());
     }
 }

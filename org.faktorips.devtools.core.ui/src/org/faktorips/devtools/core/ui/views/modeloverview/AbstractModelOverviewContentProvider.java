@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -31,7 +32,11 @@ import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider
 public abstract class AbstractModelOverviewContentProvider extends DeferredStructuredContentProvider implements
         ITreeContentProvider {
 
-    protected ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
+    /**
+     * Provides information about the currently shown {@link IType}s. It will be set by the
+     * {@link ModelOverview}, but the content provider is responsible to act on this state.
+     */
+    private ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
 
     /**
      * Computes the root elements of a complete {@link IIpsProject}. An element is considered as
@@ -39,6 +44,10 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * {@link IType}.
      * 
      * @param components all components of the concerned {@link IIpsProject}s
+     * @param sourceProject the selected {@link IIpsProject}
+     * @param monitor an {@link IProgressMonitor} which consumes three units of work
+     * @param types the {@link AssociationType}s which should be considered for the root element
+     *            computation
      * @return a {@link List} of {@link IType} with the root elements, or an empty list if there are
      *         no elements.
      */
@@ -49,6 +58,10 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         List<IType> rootComponents = new ArrayList<IType>();
         List<IType> rootCandidates = new ArrayList<IType>();
 
+        SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+
+        SubMonitor loopProgress = subMonitor.newChild(30).setWorkRemaining(components.size());
+
         // compute the set of Supertype-root-candidates and real root-elements (no (existing)
         // Supertype and no incoming Association)
         for (IType iType : components) {
@@ -58,28 +71,31 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
                     rootComponents.add(iType);
                 }
             }
+            loopProgress.worked(1);
         }
-        monitor.worked(1);
 
-        // the lists are the same we have found an unambiguous set of root-elements
         if (rootComponents.size() != rootCandidates.size()) {
             removeDescendants(rootCandidates, rootComponents, components, types);
+            SubMonitor whileProgress = subMonitor.newChild(40).setWorkRemaining(rootCandidates.size());
             // Remove an arbitrary element from the candidates list and add it to the root elements
             while (!rootCandidates.isEmpty()) {
                 IType newRoot = rootCandidates.remove(0);
                 rootComponents.add(newRoot);
                 removeDescendants(rootCandidates, rootComponents, components, types);
+                whileProgress.worked(1);
             }
         }
-        monitor.worked(1);
+        subMonitor.setWorkRemaining(30);
 
+        subMonitor.newChild(30);
         removeSuperfluousRootElements(rootComponents, sourceProject, types);
+        subMonitor.worked(30);
         return rootComponents;
     }
 
     /**
      * Removes all root-elements whose descendants does not include any element from the
-     * source-project
+     * source-project.
      */
     private static void removeSuperfluousRootElements(List<IType> rootCandidates,
             IIpsProject sourceProject,
@@ -93,6 +109,20 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         rootCandidates.removeAll(elementsToRemove);
     }
 
+    /**
+     * Checks if the tree of descendants of an {@IType} element contains an element of a
+     * specific {@link IIpsProject}.
+     * 
+     * @param element the {@link IType} root element of the tree
+     * @param sourceProject the {@link IIpsProject} for which the existence of an element is
+     *            evaluated
+     * @param callHierarchy a {@link List} of {@link IType} which contains the elements which
+     *            already have been checked
+     * @param types the {@link AssociationType}s which should be considered for the computation of
+     *            element associations
+     * @return {@code true} if the indicated tree contains an element of the provided project,
+     *         otherwise {@code false}
+     */
     private static boolean isContainingSourceProjectElement(IType element,
             IIpsProject sourceProject,
             List<IType> callHierarchy,
@@ -127,6 +157,9 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         return false;
     }
 
+    /**
+     * Convenience function for {@link #getExistingSupertypeFromList(IType, List)} {@code != null}.
+     */
     protected static boolean hasExistingSupertype(IType type, List<IType> components) {
         return getExistingSupertypeFromList(type, components) != null;
     }
@@ -161,7 +194,6 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * @param types an array of {@link AssociationType} which should be recognized. Make sure it is
      *            not empty, otherwise nothing will be removed!
      */
-    // FIXME does not remove all descendants -> testcase
     static void removeDescendants(List<IType> rootCandidates,
             List<IType> rootComponents,
             List<IType> components,
@@ -183,8 +215,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
                 }
             }
             potentialDescendants.removeAll(newDescendants);
-            rootCandidates.removeAll(descendants); // newDescendants will be removed in the next
-                                                   // iteration, except they are empty
+            rootCandidates.removeAll(descendants);
             descendants = newDescendants;
         }
     }
@@ -271,7 +302,18 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         return components;
     }
 
-    public void toggleShowTypeState() {
+    /**
+     * Toggles the show type state.<br>
+     * <p>
+     * <b>Example:</b> <br>
+     * <ol>
+     * <li>{@link #getShowTypeState()} returns {@link ShowTypeState ShowTypeState.SHOW_POLICIES}</li>
+     * <li>{@link #toggleShowTypeState()}</li>
+     * <li>{@link #getShowTypeState()} return {@link ShowTypeState ShowTypeState.SHOW_PRODUCTS}</li>
+     * </ol>
+     * and the other way round
+     */
+    public final void toggleShowTypeState() {
         if (this.showState == ShowTypeState.SHOW_POLICIES) {
             this.showState = ShowTypeState.SHOW_PRODUCTS;
         } else {
@@ -279,11 +321,14 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         }
     }
 
-    public ShowTypeState getShowTypeState() {
+    public final ShowTypeState getShowTypeState() {
         return showState;
     }
 
-    public void setShowTypeState(ShowTypeState showState) {
+    /**
+     * Sets the show type state of the content provider.
+     */
+    public final void setShowTypeState(ShowTypeState showState) {
         this.showState = showState;
     }
 
@@ -298,7 +343,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         SHOW_PRODUCTS(2);
         private final int state;
 
-        ShowTypeState(int value) {
+        private ShowTypeState(int value) {
             this.state = value;
         }
 
@@ -307,39 +352,64 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         }
     }
 
-    /**
-     * Returns a {@link List} which may contain at most one {@link CompositeNode} and one
-     * {@link SubtypeNode}. The {@link SubtypeNode} will be before the {@link CompositeNode} in the
-     * returned {@link List}. This method has to compute the grandchildren of the node, therefore
-     * these will be stored in the direct children.
-     * 
-     * @return a {@link List} with a {@link SubtypeNode} and a {@link CompositeNode}, in this
-     *         indicated order when both children exist, otherwise a list with only one element, or
-     *         an empty list if no child exists.
-     */
-    abstract List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent);
+    @Override
+    public final Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof ComponentNode) {
+            ComponentNode node = (ComponentNode)parentElement;
+            if (node.isRepetition()) {
+                return new Object[0];
+            }
+            return getComponentNodeChildren(node).toArray();
+        }
+        return new Object[0];
+    }
 
     /**
-     * Computes the child {@link SubtypeNode} of this node, if there are any {@link IType}s in the
-     * project scope which are subclassing the enclosed {@link IType} of this node.
+     * Returns a {@link List} consisting of {@link SubtypeComponentNode}s and
+     * {@link AssociationComponentNode}s. The {@link SubtypeComponentNode}s will be before the
+     * {@link AssociationComponentNode}s in the returned {@link List}.
      * 
-     * @param parent the node for which the {@link SubtypeNode} should be computed
-     * @return a {@link SubtypeNode}, or {@code null} if there are no subtypes.
+     * @return a list with the computed children, or an empty list if there are no children
      */
-    abstract SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent);
+    final List<ComponentNode> getComponentNodeChildren(ComponentNode parent) {
+        List<ComponentNode> children = new ArrayList<ComponentNode>();
+
+        List<SubtypeComponentNode> subtypeChildren = getComponentNodeSubtypeChildren(parent);
+        if (subtypeChildren != null) {
+            children.addAll(subtypeChildren);
+        }
+
+        List<AssociationComponentNode> associationChildren = getComponentNodeAssociationChildren(parent);
+        if (associationChildren != null) {
+            children.addAll(associationChildren);
+        }
+
+        return children;
+    }
 
     /**
-     * Computes the child {@link CompositeNode} of this node, if there are any {@link IType}s in the
-     * project scope which are associated by the enclosed {@link IType} of this node.
+     * Computes the {@link SubtypeComponentNode} children of this node, if there are any
+     * {@link IType}s in the project scope which are subclassing the enclosed {@link IType} of this
+     * node.
      * 
-     * @param parent the node for which the {@link CompositeNode} should be computed
-     * @return a {@link CompositeNode}, or {@code null} if there are no associated types.
+     * @param parent the node for which the children should be computed
+     * @return a {@link SubtypeComponentNode}, or {@code null} if there are no subtypes.
      */
-    abstract CompositeNode getComponentNodeCompositeChild(ComponentNode parent);
+    abstract List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent);
 
     /**
-     * Checks if this type is directly or indirectly associated by another {@link IType} of the same
-     * {@link IIpsProject}
+     * Computes the {@link AssociationComponentNode} children of this node, if there are any
+     * {@link IType}s in the project scope which are associated by the enclosed {@link IType} of
+     * this node.
+     * 
+     * @param parent the node for which the children should be computed
+     * @return a {@link AssociationComponentNode}, or {@code null} if there are no associated types.
+     */
+    abstract List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent);
+
+    /**
+     * Checks if this type is directly or indirectly associated by another {@link IType} of the
+     * same. {@link IIpsProject}
      * 
      * @param type the {@link IType} for which the associations should be checked
      * @param projectSpecificITypes a {@link List} of {@link IType}s, containing all ITypes of the
@@ -381,4 +451,25 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
             }
         }
     }
+
+    /**
+     * Takes a {@link List} of {@link IType} and extracts all elements which are contained in the
+     * provided {@link IIpsProject} into a new list.
+     * 
+     * @param components a list of {@link IType}
+     * @param project the project for which the {@link IType}s should be retrieved
+     * @return a {@link List} of {@link IType}, or an empty list if no provided elements are
+     *         contained in this project
+     */
+    protected static List<IType> getProjectSpecificITypes(List<IType> components, IIpsProject project) {
+        List<IType> projectComponents = new ArrayList<IType>();
+        for (IType iType : components) {
+            if (iType.getIpsProject().getName().equals(project.getName())) {
+                projectComponents.add(iType);
+            }
+        }
+        return projectComponents;
+    }
+
+    abstract List<ComponentNode> getStoredRootElements();
 }

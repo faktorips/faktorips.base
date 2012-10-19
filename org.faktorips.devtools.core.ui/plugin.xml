@@ -13,6 +13,7 @@
    <extension-point id="ipsDropListenerProvider" name="ipsDropListenerProvider" schema="schema/ipsDropListenerProvider.exsd"/>
    <extension-point id="productCmptPropertyFilter" name="Product Component Property Filter" schema="schema/productCmptPropertyFilter.exsd"/>
    <extension-point id="deepCopyWizard" name="Deep Copy Wizard" schema="schema/deepCopyWizard.exsd"/>
+   <extension-point id="modelOverviewContentProvider" name="modelOverviewContentProvider" schema="schema/modelOverviewContentProvider.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -1958,6 +1959,13 @@
             properties="isEditorEditable"
             type="org.faktorips.devtools.core.ui.editors.IpsObjectEditor">
       </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
+            id="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
+            namespace="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
+            properties="isModelIpsProject"
+            type="org.faktorips.devtools.core.internal.model.ipsproject.IpsProject">
+      </propertyTester>
    </extension>
    
       <extension
@@ -2154,9 +2162,10 @@
                                  property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
                            </test>
                         </adapt>
-                        <instanceof
-                              value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
-                        </instanceof>
+                        <test
+                              forcePluginActivation="true"
+                              property="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester.isModelIpsProject">
+                        </test>
                      </or>
                   </iterate>
                </with>
@@ -2345,6 +2354,17 @@
     <ipsDropAdapterProvider
           class="org.faktorips.devtools.core.ui.LinkDropHandler">
     </ipsDropAdapterProvider>
+ </extension>
+ <extension
+       point="org.faktorips.devtools.core.ui.modelOverviewContentProvider">
+    <contentprovider
+          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider_label">
+    </contentprovider>
+    <contentprovider
+          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider_label">
+    </contentprovider>
  </extension>
 	
 

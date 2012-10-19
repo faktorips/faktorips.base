@@ -320,7 +320,85 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
     }
 
     @Test
+    public void testGetChildren_AssociationChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
+
+        IAssociation association = typeA.newAssociation();
+        association.setTarget(typeB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeA, project));
+
+        // test
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof AssociationComponentNode);
+        assertEquals(typeB, ((AssociationComponentNode)children[0]).getValue());
+        assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
+    }
+
+    @Test
+    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
+
+        typeB.setSupertype(typeA.getQualifiedName());
+
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeA, project));
+
+        // test
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof SubtypeComponentNode);
+        assertEquals(typeB, ((SubtypeComponentNode)children[0]).getValue());
+        assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
+    }
+
+    @Test
+    public void testGetChildren_InheritedAssociationChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "typeAA");
+        IType typeAB = newPolicyCmptTypeWithoutProductCmptType(projectA, "typeAB");
+
+        IAssociation association = typeAA.newAssociation();
+        association.setTarget(typeAB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        IIpsProject projectB = newIpsProject();
+        IType typeBA = newPolicyCmptTypeWithoutProductCmptType(projectB, "typeBA");
+        IType typeBB = newPolicyCmptTypeWithoutProductCmptType(projectB, "typeBB");
+
+        typeBA.setSupertype(typeAA.getQualifiedName());
+        typeBB.setSupertype(typeAB.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeBA, projectB));
+
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof AssociationComponentNode);
+        AssociationComponentNode componentNodeBB = (AssociationComponentNode)children[0];
+        assertEquals(typeBB, componentNodeBB.getValue());
+        assertEquals(typeBA, componentNodeBB.getParent().getValue());
+        assertTrue(componentNodeBB.isInherited());
+    }
+
+    @Test
     public void testGetChildren_FindsDerivedAssociations() throws CoreException {
+
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType stdSubCoverageType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "StdSubCoverageType");
@@ -360,11 +438,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         // this should be the derived root element from the customProject
         assertEquals(subCoverageType, ((ComponentNode)elements[0]).getValue());
 
-        Object[] structureChildren = provider.getChildren(elements[0]);
-        assertEquals(1, structureChildren.length);
-        assertTrue(structureChildren[0] instanceof CompositeNode);
-
-        Object[] associationChildren = provider.getChildren(structureChildren[0]);
+        Object[] associationChildren = provider.getChildren(elements[0]);
         assertEquals(2, associationChildren.length);
         assertTrue(associationChildren[0] instanceof AssociationComponentNode);
         assertTrue(((AssociationComponentNode)associationChildren[0]).isInherited());
@@ -376,5 +450,42 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         associationChildrenList.add(((ComponentNode)associationChildren[1]).getValue());
         assertTrue(associationChildrenList.contains(clauseType));
         assertTrue(associationChildrenList.contains(deductibleType));
+    }
+
+    @Test
+    public void testGetChildren_DoNoInheritDerivedUnionAssociations() throws CoreException {
+        // setup
+        IIpsProject baseProject = newIpsProject();
+        IType vertrag = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Vertrag");
+        IType deckung = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Deckung");
+
+        IAssociation derivedUnionAssociation = vertrag.newAssociation();
+        derivedUnionAssociation.setTarget(deckung.getQualifiedName());
+        derivedUnionAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        derivedUnionAssociation.setDerivedUnion(true);
+
+        IIpsProject customProject = newIpsProject();
+        IType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(customProject, "HausratVertrag");
+        IType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(customProject, "HausratGrunddeckung");
+
+        IAssociation standardAssociation = hausratVertrag.newAssociation();
+        standardAssociation.setTarget(hausratGrunddeckung.getQualifiedName());
+        standardAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        hausratVertrag.setSupertype(vertrag.getQualifiedName());
+        hausratGrunddeckung.setSupertype(deckung.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = customProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        customProject.setIpsObjectPath(path);
+
+        // test
+        AbstractModelOverviewContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        Object[] children = provider.getChildren(new SubtypeComponentNode(hausratVertrag, new ComponentNode(vertrag,
+                customProject), customProject));
+
+        assertEquals(1, children.length);
+        assertEquals(hausratGrunddeckung, ((ComponentNode)children[0]).getValue());
     }
 }

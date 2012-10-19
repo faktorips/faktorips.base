@@ -19,6 +19,11 @@ import java.util.Observable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -28,11 +33,9 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
-import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -42,6 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewSite;
@@ -53,6 +57,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -69,13 +74,17 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 
-public class ModelOverview extends ViewPart implements ICollectorFinishedListener {
+public final class ModelOverview extends ViewPart implements ICollectorFinishedListener {
+
+    private static final String CONTEXT_MENU_GROUP_OPEN = "open"; //$NON-NLS-1$
+
+    private static final String OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID = "OpenParentAssociationTypeEditorAction"; //$NON-NLS-1$
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
-    private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+    private static final String MENU_GROUP_INFO = "group.info"; //$NON-NLS-1$
+    private static final String MENU_GROUP_CONTENT_PROVIDER = "group.contentprovider"; //$NON-NLS-1$
 
     private static final String SHOW_CARDINALITIES = "show_cardinalities"; //$NON-NLS-1$
     private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
@@ -83,8 +92,15 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
-    private static final String TOGGLE_CONTENT_PROVIDER_IMAGE = "ConfigDefElement.gif"; //$NON-NLS-1$
     private static final String CARDINALITY_IMAGE = "Cardinality.gif"; //$NON-NLS-1$
+    private static final String PROVIDER_SHOW_STATE = "show_state"; //$NON-NLS-1$
+    private static final String INITIAL_CONTENT_PROVIDER = "initial_content_provider"; //$NON-NLS-1$
+
+    private static final String MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID = "org.faktorips.devtools.core.ui.modelOverviewContentProvider"; //$NON-NLS-1$
+
+    private static final boolean DEFAULT_SHOW_CARDINALITIES = true;
+    private static final boolean DEFAULT_SHOW_ROLENAMES = true;
+    private static final boolean DEFAULT_SHOW_PROJECTNAMES = false;
 
     private IPolicyCmptType toggledPolicyCmptInput;
     private IProductCmptType toggledProductCmptInput;
@@ -93,65 +109,78 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private TreeViewer treeViewer;
     private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
-    private Label emptyMessageLabel;
+    private Label infoMessageLabel;
 
     private ModelOverviewLabelProvider labelProvider;
     private AbstractModelOverviewContentProvider provider;
 
     private Action toggleProductPolicyAction;
-    private Action toggleContentProviderAction;
     private ExpandAllAction expandAllAction;
     private CollapseAllAction collapseAllAction;
+
     private boolean showCardinalities;
     private boolean showRolenames;
     private boolean showProjectnames;
+    private ShowTypeState providerShowState;
+
+    private Action showCardinalitiesAction;
+    private Action showRoleNameAction;
+    private Action showProjectsAction;
+    private Action refreshAction;
+
+    private List<IAction> contentProviderActions;
+
+    private String initialContentProvider;
 
     @Override
     public void createPartControl(Composite parent) {
         panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true, true));
-
         label = uiToolkit.createLabel(panel, "", SWT.LEFT, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, false));
 
         treeViewer = new TreeViewer(panel);
-        provider = new ModelOverviewContentProvider();
+
+        // initializes with a default content provider
+        provider = new ModelOverviewInheritAssociationsContentProvider();
+
+        initContentProviders();
+        // set default show state and the according toggle-button image
+        provider.setShowTypeState(providerShowState);
         treeViewer.setContentProvider(provider);
 
+        ColumnViewerToolTipSupport.enableFor(treeViewer);
         labelProvider = new ModelOverviewLabelProvider();
-        DecoratingStyledCellLabelProvider decoratingLabelProvider = new DecoratingStyledCellLabelProvider(
-                labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator(),
-                new DecorationContext());
+        IDecoratorManager decoratorManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        // decoratorManager.setEnabled(decoratorId, enabled)
+
+        DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelOverviewDecoratingStyledCellLabelProvider(
+                labelProvider, decoratorManager.getLabelDecorator(), DecorationContext.DEFAULT_CONTEXT);
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         getSite().setSelectionProvider(treeViewer); // necessary for the context menu
 
         // initialize the empty message
-        emptyMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
+        infoMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, true));
-        emptyMessageLabel.setText(Messages.IpsModelOverview_emptyMessage);
 
         activateContext();
         createContextMenu();
         initMenu();
         initToolBar();
 
-        // set default show state and the according toggle-button image
-        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
-        setProductCmptTypeImage();
-
-        treeViewer.addTreeListener(createNewAutoExpandStructureNodesListener());
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
 
-        showEmptyMessage();
+        showInfoMessage(Messages.ModelOverview_emptyMessage);
     }
 
-    private void showEmptyMessage() {
+    private void showInfoMessage(String message) {
+        infoMessageLabel.setText(message);
         enableButtons(false);
-        if (!emptyMessageLabel.isDisposed()) {
-            emptyMessageLabel.setVisible(true);
-            ((GridData)emptyMessageLabel.getLayoutData()).exclude = false;
+        if (!infoMessageLabel.isDisposed()) {
+            infoMessageLabel.setVisible(true);
+            ((GridData)infoMessageLabel.getLayoutData()).exclude = false;
         }
         if (!label.isDisposed()) {
             label.setVisible(false);
@@ -166,9 +195,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private void showTree() {
         enableButtons(true);
-        if (!emptyMessageLabel.isDisposed()) {
-            emptyMessageLabel.setVisible(false);
-            ((GridData)emptyMessageLabel.getLayoutData()).exclude = true;
+        if (!infoMessageLabel.isDisposed()) {
+            infoMessageLabel.setVisible(false);
+            ((GridData)infoMessageLabel.getLayoutData()).exclude = true;
         }
         if (!label.isDisposed()) {
             label.setVisible(true);
@@ -179,38 +208,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             ((GridData)treeViewer.getTree().getLayoutData()).exclude = false;
         }
         panel.layout();
-        // FIXME otherwise we loose the focus
         this.setFocus();
-    }
-
-    private ITreeViewerListener createNewAutoExpandStructureNodesListener() {
-        return new ITreeViewerListener() {
-
-            @Override
-            public void treeCollapsed(TreeExpansionEvent event) {
-                // do nothing
-            }
-
-            @Override
-            public void treeExpanded(TreeExpansionEvent event) {
-                final Object element = event.getElement();
-                final AbstractTreeViewer treeViewer = event.getTreeViewer();
-                if (element instanceof ComponentNode) {
-                    Control ctrl = treeViewer.getControl();
-                    if (ctrl != null && !ctrl.isDisposed()) {
-                        ctrl.getDisplay().asyncExec(new Runnable() {
-                            @Override
-                            public void run() {
-                                Control ctrl2 = treeViewer.getControl();
-                                if (ctrl2 != null && !ctrl2.isDisposed()) {
-                                    treeViewer.expandToLevel(element, 2);
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        };
     }
 
     private void activateContext() {
@@ -220,27 +218,64 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private void createContextMenu() {
         MenuManager manager = new MenuManager();
-        manager.add(new Separator("open")); //$NON-NLS-1$
+        manager.add(new Separator(CONTEXT_MENU_GROUP_OPEN));
         manager.add(new OpenEditorAction(treeViewer));
         manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         manager.add(new GroupMarker(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+
         final Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
         MenuCleaner.addAdditionsCleaner(manager);
 
         manager.addMenuListener(new IMenuListener() {
-
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 IIpsSrcFile srcFile = getCurrentlySelectedIpsSrcFile();
 
                 if (srcFile == null) { // show the menu only on non-structure nodes
                     contextMenu.setVisible(false);
+                } else {
+                    addOpenSourceAssociationTargetingTypeEditorAction(manager);
                 }
             }
+
         });
 
+    }
+
+    private void addOpenSourceAssociationTargetingTypeEditorAction(IMenuManager manager) {
+        final ComponentNode node = getCurrentlySelectedComponentNode();
+        manager.remove(OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID);
+        if (node instanceof AssociationComponentNode) {
+            Action openParentAssociationTypeEditorAction = new Action() {
+
+                @Override
+                public String getId() {
+                    return OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID;
+                }
+
+                @Override
+                public void run() {
+                    IpsUIPlugin.getDefault().openEditor(
+                            ((AssociationComponentNode)node).getTargetingType().getIpsSrcFile());
+                }
+
+            };
+            openParentAssociationTypeEditorAction
+                    .setText(Messages.ModelOverview_contextMenuOpenAssociationTargetingTypeEditor
+                            + ((AssociationComponentNode)node).getTargetingType().getName());
+            manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
+        }
+    }
+
+    private ComponentNode getCurrentlySelectedComponentNode() {
+        TypedSelection<IAdaptable> typedSelection = getSelectionFromSelectionProvider();
+        if (typedSelection == null || !typedSelection.isValid()) {
+            return null;
+        }
+
+        return (ComponentNode)typedSelection.getFirstElement();
     }
 
     private IIpsSrcFile getCurrentlySelectedIpsSrcFile() {
@@ -276,9 +311,17 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IIpsProject}
      */
     public void showOverview(IIpsProject input) {
-        this.treeViewer.setInput(input);
-        this.showTree();
-        this.updateView();
+        List<IType> result = AbstractModelOverviewContentProvider.getProjectITypes(input, new IpsObjectType[] {
+                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
+        List<IType> projectSpecificITypes = AbstractModelOverviewContentProvider
+                .getProjectSpecificITypes(result, input);
+        if (projectSpecificITypes.isEmpty()) {
+            showInfoMessage(Messages.ModelOverview_NothingToShow_message);
+        } else {
+            this.treeViewer.setInput(input);
+            this.showTree();
+            this.updateView();
+        }
     }
 
     /**
@@ -287,7 +330,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IType}
      */
     public void showOverview(IType input) {
-        this.showTree();
         toggleProductPolicyAction.setEnabled(true);
         try {
             if (input instanceof PolicyCmptType) {
@@ -298,6 +340,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                     toggleProductPolicyAction.setEnabled(false);
                 }
                 toggledPolicyCmptInput = (IPolicyCmptType)input;
+                this.provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
             } else if (input instanceof ProductCmptType) {
                 setPolicyCmptTypeImage();
                 IProductCmptType product = (IProductCmptType)input;
@@ -306,57 +349,45 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                     toggleProductPolicyAction.setEnabled(false);
                 }
                 toggledProductCmptInput = (ProductCmptType)input;
+                this.provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
         this.treeViewer.setInput(input);
+        this.showTree();
         this.updateView();
     }
 
-    /**
-     * Returns a {@link TreePath} containing the corresponding {@link IModelOverviewNode
-     * IModelOverviewNodes} to the input types. {@link AbstractStructureNode AbstractStructureNodes}
-     * will be generated automatically.
-     * 
-     * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
-     *            downwards
-     */
-    TreePath computePath(List<PathElement> treePath, ModelOverviewContentProvider contentProvider) {
-        // The IpsProject must be from the project which is the lowest in the project hierarchy
-        IIpsProject rootProject = treePath.get(treePath.size() - 1).getComponent().getIpsProject();
+    private TreePath[] computePathsForIType(IType typeToExpand) {
+        List<ComponentNode> rootElements = this.provider.getStoredRootElements();
+        List<List<ComponentNode>> paths = new ArrayList<List<ComponentNode>>();
 
-        // get the root node
-        PathElement root = treePath.get(0);
-        ComponentNode rootNode = new ComponentNode(root.getComponent(), rootProject);
-        List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
-        pathList.add(rootNode);
-
-        for (int i = 1; i < treePath.size(); i++) {
-            if (root.getAssociationType() == ToChildAssociationType.SELF) {
-                break;
-            }
-            // add the structure node
-            AbstractStructureNode abstractRootChild = null;
-            if (root.getAssociationType() == ToChildAssociationType.ASSOCIATION) {
-                abstractRootChild = contentProvider.getComponentNodeCompositeChild(rootNode);
-            } else { // ToChildAssociationType.SUPERTYPE
-                abstractRootChild = contentProvider.getComponentNodeSubtypeChild(rootNode);
-            }
-            pathList.add(abstractRootChild);
-
-            // add the child node
-            for (ComponentNode childNode : abstractRootChild.getChildren()) {
-                // note that
-                if (childNode.getValue().equals(treePath.get(i).getComponent())) {
-                    pathList.add(childNode);
-                    rootNode = childNode;
-                    break;
-                }
-            }
-            root = treePath.get(i);
+        for (ComponentNode rootElement : rootElements) {
+            computePathForIType(typeToExpand, rootElement, new ArrayList<ComponentNode>(), paths);
         }
-        return new TreePath(pathList.toArray());
+
+        TreePath[] treePaths = new TreePath[paths.size()];
+        for (int i = 0; i < paths.size(); i++) {
+            treePaths[i] = new TreePath(paths.get(i).toArray());
+        }
+
+        return treePaths;
+    }
+
+    private void computePathForIType(IType typeToExpand,
+            ComponentNode position,
+            List<ComponentNode> pathHead,
+            List<List<ComponentNode>> foundPaths) {
+        pathHead.add(position);
+        if (position.getValue().equals(typeToExpand)) {
+            foundPaths.add(pathHead);
+        }
+
+        Object[] children = provider.getChildren(position);
+        for (Object child : children) {
+            computePathForIType(typeToExpand, (ComponentNode)child, new ArrayList<ComponentNode>(pathHead), foundPaths);
+        }
     }
 
     private void updateView() {
@@ -377,38 +408,113 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         toggleProductPolicyAction = createToggleProductPolicyAction();
         toolBarManager.add(toggleProductPolicyAction);
 
-        toggleContentProviderAction = createToggleContentProviderAction();
-        toolBarManager.add(toggleContentProviderAction);
-
         expandAllAction = new ExpandAllAction(treeViewer);
         toolBarManager.add(expandAllAction);
 
         collapseAllAction = new CollapseAllAction(treeViewer);
         toolBarManager.add(collapseAllAction);
+
+        refreshAction = createRefreshAction();
+        toolBarManager.add(refreshAction);
+
+        if (providerShowState == ShowTypeState.SHOW_POLICIES) {
+            setProductCmptTypeImage();
+        } else {
+            setPolicyCmptTypeImage();
+        }
+    }
+
+    private Action createRefreshAction() {
+        // refresh action
+        Action newRefreshAction = new Action(Messages.ModelOverview_tooltipRefreshContents, IpsUIPlugin
+                .getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+            @Override
+            public void run() {
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ModelOverview_tooltipRefreshContents;
+            }
+        };
+        return newRefreshAction;
     }
 
     private void initMenu() {
         IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
-        menuManager.add(new Separator(MENU_INFO_GROUP));
+        menuManager.add(new Separator(MENU_GROUP_INFO));
 
-        Action showCardinalitiesAction = createShowCardinalitiesAction();
+        showCardinalitiesAction = createShowCardinalitiesAction();
         labelProvider.setShowCardinalities(showCardinalities);
         showCardinalitiesAction.setChecked(showCardinalities);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
 
-        Action showRoleNameAction = createShowRoleNameAction();
+        showRoleNameAction = createShowRoleNameAction();
         labelProvider.setShowRolenames(showRolenames);
         showRoleNameAction.setChecked(showRolenames);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
 
-        Action showProjectsAction = createShowProjectsAction();
+        showProjectsAction = createShowProjectsAction();
         labelProvider.setShowProjects(showProjectnames);
         showProjectsAction.setChecked(showProjectnames);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showProjectsAction);
+
+        menuManager.appendToGroup(MENU_GROUP_INFO, showCardinalitiesAction);
+        menuManager.appendToGroup(MENU_GROUP_INFO, showRoleNameAction);
+        menuManager.appendToGroup(MENU_GROUP_INFO, showProjectsAction);
+
+        menuManager.add(new Separator(MENU_GROUP_CONTENT_PROVIDER));
+
+        for (IAction contentProviderAction : getContentProviderActions()) {
+            menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, contentProviderAction);
+        }
+    }
+
+    private List<IAction> getContentProviderActions() {
+        initContentProviders();
+        return contentProviderActions;
+    }
+
+    /**
+     * Initializes the set of content providers, if it has not been initialized yet.
+     */
+    private void initContentProviders() {
+        if (contentProviderActions == null || contentProviderActions.isEmpty()) {
+            contentProviderActions = new ArrayList<IAction>();
+
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint extensionPoint = registry
+                    .getExtensionPoint(MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID);
+            IExtension[] extensions = extensionPoint.getExtensions();
+
+            for (int i = 0; i < extensions.length; i++) {
+                IConfigurationElement[] elements = extensions[i].getConfigurationElements();
+                for (int j = 0; j < elements.length; j++) {
+                    try {
+                        Object contentProvider = elements[j].createExecutableExtension("class"); //$NON-NLS-1$
+                        if (contentProvider instanceof AbstractModelOverviewContentProvider) {
+                            String label = elements[j].getAttribute("label"); //$NON-NLS-1$
+
+                            Action contentProviderAction = createContentProviderAction(label,
+                                    (AbstractModelOverviewContentProvider)contentProvider);
+                            contentProviderActions.add(contentProviderAction);
+                            if (initialContentProvider == null) {
+                                initialContentProvider = contentProvider.getClass().getCanonicalName();
+                            }
+                            if (initialContentProvider.equals(contentProvider.getClass().getCanonicalName())) {
+                                provider = (AbstractModelOverviewContentProvider)contentProvider;
+                                contentProviderAction.setChecked(true);
+                            }
+                        }
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
+                }
+            }
+        }
+
     }
 
     private Action createShowCardinalitiesAction() {
-        return new Action(Messages.IpsModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getImageHandling().createImageDescriptor(CARDINALITY_IMAGE);
@@ -422,13 +528,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_menuShowCardinalities_tooltip;
+                return Messages.ModelOverview_menuShowCardinalities_tooltip;
             }
         };
     }
 
     private Action createShowRoleNameAction() {
-        return new Action(Messages.IpsModelOverview_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelOverview_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
@@ -442,13 +548,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_menuShowRoleName_tooltip;
+                return Messages.ModelOverview_menuShowRoleName_tooltip;
             }
         };
     }
 
     private Action createShowProjectsAction() {
-        return new Action(Messages.IpsModelOverview_menuShowProjects_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelOverview_menuShowProjects_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
@@ -462,13 +568,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_menuShowProjects_tooltip;
+                return Messages.ModelOverview_menuShowProjects_tooltip;
             }
         };
     }
 
     private Action createToggleProductPolicyAction() {
-        return new Action(Messages.IpsModelOverview_tooltipToggleButton, SWT.TOGGLE) {
+        return new Action(Messages.ModelOverview_tooltipToggleButton, SWT.DEFAULT) {
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -477,7 +583,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipToggleButton;
+                return Messages.ModelOverview_tooltipToggleButton;
             }
 
             @Override
@@ -488,49 +594,52 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         };
     }
 
-    private Action createToggleContentProviderAction() {
-        return new Action(Messages.IpsModelOverview_tooltipToggleContentProviderButton, SWT.TOGGLE) {
+    private Action createContentProviderAction(final String label,
+            final AbstractModelOverviewContentProvider contentProvider) {
+        return new Action(label, IAction.AS_RADIO_BUTTON) {
+            AbstractModelOverviewContentProvider newProvider = contentProvider;
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor(TOGGLE_CONTENT_PROVIDER_IMAGE);
+                return null;
             }
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipToggleContentProviderButton;
+                return label;
             }
 
             @Override
             public void run() {
-                toggleContentProvider();
+                switchContentProvider(newProvider);
             }
-
         };
     }
 
     private void enableButtons(boolean state) {
         expandAllAction.setEnabled(state);
         collapseAllAction.setEnabled(state);
-        toggleProductPolicyAction.setEnabled(state);
-        toggleContentProviderAction.setEnabled(state);
+        // toggleProductPolicyAction.setEnabled(state);
+
+        showCardinalitiesAction.setEnabled(state);
+        showProjectsAction.setEnabled(state);
+        showRoleNameAction.setEnabled(state);
+
+        refreshAction.setEnabled(state);
     }
 
-    private void toggleContentProvider() {
+    private void switchContentProvider(AbstractModelOverviewContentProvider newProvider) {
         Object input = treeViewer.getInput();
-        ShowTypeState currentShowTypeState = provider.getShowTypeState();
+        ShowTypeState currentShowTypeState;
+        currentShowTypeState = provider.getShowTypeState();
 
-        provider.removeCollectorFinishedListener(this);
+        newProvider.removeCollectorFinishedListener(this);
 
-        if (treeViewer.getContentProvider() instanceof ModelOverviewContentProvider) {
-            provider = new ModelOverviewInheritAssociationsContentProvider();
-        } else {
-            provider = new ModelOverviewContentProvider();
-        }
+        this.provider = newProvider;
 
-        treeViewer.setContentProvider(provider);
-        provider.setShowTypeState(currentShowTypeState);
-        provider.addCollectorFinishedListener(this);
+        treeViewer.setContentProvider(newProvider);
+        newProvider.setShowTypeState(currentShowTypeState);
+        newProvider.addCollectorFinishedListener(this);
         treeViewer.setInput(input);
         refresh();
     }
@@ -546,32 +655,36 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         if (input instanceof IIpsProject) { // switch the viewShowState for project selections
             provider.toggleShowTypeState();
-            if (provider.getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
-                setProductCmptTypeImage();
-            } else {
-                setPolicyCmptTypeImage();
-            }
             treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
         } else if (input instanceof PolicyCmptType) {
+            provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
             treeViewer.setInput(toggledProductCmptInput);
-            setPolicyCmptTypeImage();
         } else if (input instanceof ProductCmptType) {
+            provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
             treeViewer.setInput(toggledPolicyCmptInput);
+        }
+        if (provider.getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
             setProductCmptTypeImage();
+        } else {
+            setPolicyCmptTypeImage();
         }
         refresh();
     }
 
     private void setPolicyCmptTypeImage() {
-        // FIXME Do not misuse the HoverImageDescriptor for functionality that should be
-        // provided by the normal image descriptor
+        /*
+         * FIXME Do not misuse the HoverImageDescriptor for functionality that should be provided by
+         * the normal image descriptor
+         */
         toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 POLICY_CMPT_TYPE_IMAGE));
     }
 
     private void setProductCmptTypeImage() {
-        // FIXME Do not misuse the HoverImageDescriptor for functionality that should be
-        // provided by the normal image descriptor
+        /*
+         * FIXME Do not misuse the HoverImageDescriptor for functionality that should be provided by
+         * the normal image descriptor
+         */
         toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 PRODUCT_CMPT_TYPE_IMAGE));
     }
@@ -607,18 +720,15 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     @Override
     public void update(Observable o, Object arg) {
         if (o.equals(this.provider)) {
-            if (this.treeViewer.getInput() instanceof IType && provider instanceof ModelOverviewContentProvider) {
-                expandPaths((ModelOverviewContentProvider)this.provider);
+            if (this.treeViewer.getInput() instanceof IType && provider.getStoredRootElements() != null) {
+                expandPaths((IType)this.treeViewer.getInput());
             }
         }
     }
 
-    private void expandPaths(ModelOverviewContentProvider contentProvider) {
-        List<List<PathElement>> paths = contentProvider.getPaths();
-        TreePath[] treePaths = new TreePath[paths.size()];
-        for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = computePath(paths.get(i), contentProvider);
-        }
+    private void expandPaths(IType typeToExpand) {
+        TreePath[] treePaths = computePathsForIType(typeToExpand);
+
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);
         }
@@ -631,26 +741,40 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         memento.putBoolean(SHOW_CARDINALITIES, this.labelProvider.getShowCardinalities());
         memento.putBoolean(SHOW_ROLENAMES, this.labelProvider.getShowRolenames());
         memento.putBoolean(SHOW_PROJECTS, this.labelProvider.getShowProjects());
+
+        memento.putInteger(PROVIDER_SHOW_STATE, this.provider.getShowTypeState().getState());
+
+        memento.putString(INITIAL_CONTENT_PROVIDER, this.provider.getClass().getCanonicalName());
     }
 
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
 
+        // initialize the parameter stored in the memento with meaningful values
+        showCardinalities = true;
+        showRolenames = true;
+        showProjectnames = true;
+        providerShowState = ShowTypeState.SHOW_POLICIES;
+
         if (memento != null) {
             // initialize the label settings
             Boolean showcard = memento.getBoolean(SHOW_CARDINALITIES);
-            showCardinalities = showcard == null ? true : showcard;
+            showCardinalities = showcard == null ? DEFAULT_SHOW_CARDINALITIES : showcard;
 
             Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
-            showRolenames = showRoles == null ? true : showRoles;
+            showRolenames = showRoles == null ? DEFAULT_SHOW_ROLENAMES : showRoles;
 
             Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
-            showProjectnames = showProjects == null ? true : showProjects;
-        } else {
-            showCardinalities = true;
-            showRolenames = true;
-            showProjectnames = true;
+            showProjectnames = showProjects == null ? DEFAULT_SHOW_PROJECTNAMES : showProjects;
+
+            initialContentProvider = memento.getString(INITIAL_CONTENT_PROVIDER);
+
+            // initialize the provider show state
+            Integer state = memento.getInteger(PROVIDER_SHOW_STATE);
+            if (state != null && state == ShowTypeState.SHOW_PRODUCTS.getState()) {
+                providerShowState = ShowTypeState.SHOW_PRODUCTS;
+            }
         }
     }
 }
