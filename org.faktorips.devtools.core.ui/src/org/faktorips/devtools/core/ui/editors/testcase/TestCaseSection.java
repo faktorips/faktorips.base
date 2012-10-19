@@ -2885,7 +2885,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 private void expandTreeAfterAdd(TestCaseTypeAssociation associationType,
                         ITestPolicyCmpt newTestPolicyCmpt) {
 
-                    getTreeViewer().expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                     for (Object child : contentProvider.getChildren(associationType)) {
                         if (child.equals(newTestPolicyCmpt)) {
                             getTreeViewer().expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
