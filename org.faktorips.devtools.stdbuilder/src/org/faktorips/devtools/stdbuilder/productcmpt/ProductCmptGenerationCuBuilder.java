@@ -28,9 +28,10 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -44,8 +45,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -68,8 +70,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     // builders needed
     private ProductCmptBuilder productCmptBuilder;
-    private ProductCmptImplClassBuilder productCmptImplBuilder;
-    private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
+    private ProductCmptClassBuilder productCmptImplBuilder;
+    private ProductCmptGenerationClassBuilder productCmptGenImplBuilder;
 
     private MultiStatus buildStatus;
 
@@ -91,11 +93,11 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         this.generation = generation;
     }
 
-    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
+    public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
         productCmptImplBuilder = builder;
     }
 
-    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
+    public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
         productCmptGenImplBuilder = builder;
     }
 
@@ -174,46 +176,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * Generates the method to compute a value as specified by a formula configuration element and
      */
     public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) {
-        generateMethodForFormula(formula, builder, null, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * Generates the method to compute a value as specified by a formula configuration element,
-     * 
-     * @param formula The formula the method will be generated for
-     * @param builder The builder which is used to generate the code
-     * @param methodSuffix Suffix which will append to the method name
-     * @param testParameterNames additional parameter name which will be append to the method
-     *            signature
-     * @param testParameterTypes additional parameter types which will be append to the method
-     *            signature
-     */
-    public void generateMethodForFormula(IFormula formula,
-            JavaCodeFragmentBuilder builder,
-            String methodSuffix,
-            String[] testParameterNames,
-            String[] testParameterTypes) {
-        generateMethodForFormula(formula, builder, methodSuffix, testParameterNames, testParameterTypes, true);
-    }
-
-    /**
-     * Generates the method to compute a value as specified by a formula configuration element,
-     * especially for test case classes.
-     * 
-     * @param formula The formula the method will be generated for
-     * @param builder The builder which is used to generate the code
-     * @param methodSuffix Suffix which will append to the method name
-     * @param testParameterNames additional parameter name which will be append to the method
-     *            signature
-     * @param testParameterTypes additional parameter types which will be append to the method
-     *            signature
-     */
-    public void generateMethodForFormulaForTestCase(IFormula formula,
-            JavaCodeFragmentBuilder builder,
-            String methodSuffix,
-            String[] testParameterNames,
-            String[] testParameterTypes) {
-        generateMethodForFormula(formula, builder, methodSuffix, testParameterNames, testParameterTypes, false);
+        generateMethodForFormula(formula, builder, true);
     }
 
     @Override
@@ -228,17 +191,12 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     private void generateMethodForFormula(IFormula formula,
             JavaCodeFragmentBuilder builder,
-            String methodSuffix,
-            String[] testParameterNames,
-            String[] testParameterTypes,
             boolean addOverrideAnnotationIfNecessary) {
         try {
             IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
             if (method.validate(getIpsProject()).containsErrorMsg()) {
                 return;
             }
-            boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0)
-                    || methodSuffix != null;
 
             builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
             if (addOverrideAnnotationIfNecessary) {
@@ -248,37 +206,32 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                         && !getBuilderSet().getFormulaCompiling().isCompileToXml());
             }
 
-            getBuilderSet()
-                    .getGenerator(getProductCmptType())
-                    .getGenerator(method)
-                    .generateSignatureForModelMethod(false, true, builder, methodSuffix, testParameterNames,
-                            testParameterTypes, getIpsProject());
+            generateSignatureForModelMethod(method, builder);
+
             builder.openBracket();
             builder.append("try {"); //$NON-NLS-1$
             builder.append("return "); //$NON-NLS-1$
-            builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, formulaTest, buildStatus));
+            builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus));
             builder.appendln(";"); //$NON-NLS-1$
             builder.append("} catch (Exception e) {"); //$NON-NLS-1$
             builder.appendClassName(StringBuffer.class);
             builder.append(" parameterValues=new StringBuffer();"); //$NON-NLS-1$
-            if (!formulaTest) {
-                // in formula tests the input will not printed in case of an exception
-                // because the input is stored in the formula test
-                IParameter[] parameters = method.getParameters();
-                for (int i = 0; i < parameters.length; i++) {
-                    if (i > 0) {
-                        builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
-                    }
-                    builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
-                    ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
-                    if (valuetype != null && valuetype.isPrimitive()) { // optimization: we search
-                                                                        // for
-                        // value types only as only
-                        // those can be primitives!
-                        builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
-                    } else {
-                        builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    }
+            // in formula tests the input will not printed in case of an exception
+            // because the input is stored in the formula test
+            IParameter[] parameters = method.getParameters();
+            for (int i = 0; i < parameters.length; i++) {
+                if (i > 0) {
+                    builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
+                }
+                builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
+                ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
+                if (valuetype != null && valuetype.isPrimitive()) { // optimization: we search
+                                                                    // for
+                    // value types only as only
+                    // those can be primitives!
+                    builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
             builder.append("throw new "); //$NON-NLS-1$
@@ -294,6 +247,33 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         }
     }
 
+    public void generateSignatureForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+
+        IParameter[] parameters = method.getParameters();
+        int modifier = method.getJavaModifier();
+        boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
+        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(),
+                resolveTypesToPublishedInterface, getBuilderSet(), method.getIpsProject());
+
+        String[] parameterNames = null;
+        parameterNames = BuilderHelper.extractParameterNames(parameters);
+        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
+                resolveTypesToPublishedInterface, getBuilderSet(), method.getIpsProject());
+        String[] parameterInSignatur = parameterNames;
+        String[] parameterTypesInSignatur = parameterTypes;
+        parameterInSignatur = parameterNames;
+        parameterTypesInSignatur = parameterTypes;
+
+        String methodName = method.getName();
+        // extend the method signature with the given parameter names
+        methodsBuilder
+                .signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, true);
+
+        methodsBuilder.append(" throws ");
+        methodsBuilder.appendClassName(FormulaExecutionException.class);
+    }
+
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
@@ -307,7 +287,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             try {
                 String typeName = getUnqualifiedClassName(generationSrcFile);
                 ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName
-                        + JavaSourceFileBuilder.JAVA_EXTENSION);
+                        + JavaClassNaming.JAVA_EXTENSION);
                 javaTypes.add(compilationUnit.getType(typeName));
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e.getMessage(), e);
@@ -323,6 +303,11 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean generatesInterface() {
         return false;
     }
 

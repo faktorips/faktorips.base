@@ -241,9 +241,18 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Returns all not derived associations from this type and its super types.
+     * 
+     * @deprecated As of 3.8. Use {@link #findAllNotDerivedAssociations(IIpsProject)} instead.
      */
-    // TODO AW 18-10-2011: Finder missing IPS project
+    @Deprecated
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
+
+    /**
+     * Returns all non-derived associations from this type and its super types.
+     * 
+     * @since 3.8
+     */
+    public List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipcProject);
 
     /**
      * Returns the type's attributes.

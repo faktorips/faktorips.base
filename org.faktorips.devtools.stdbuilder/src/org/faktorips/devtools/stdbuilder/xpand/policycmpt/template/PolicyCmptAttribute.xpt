@@ -1,0 +1,146 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
+
+«DEFINE constantForPropertyName FOR XPolicyAttribute-»
+	«IF !overwrite-»
+		/**
+		 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+		 * @generated
+		 */
+		public final static String «field(constantNamePropertyName)» = "«name»";
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE constantForValueSet FOR XPolicyAttribute-»
+	«IF generateConstantForValueSet-»
+		/**
+		 * «localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
+		 *
+		 * @generated
+		 */
+		public final static «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE constantField FOR XPolicyAttribute-»
+	«IF constant-»
+			/**
+			 * «localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
+			 *
+			 * @generated
+			 */
+			public static final «javaClassName» «field(fieldName)» = «defaultValueCode»;
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE memberField FOR XPolicyAttribute-»
+	«IF generateField-»
+		/**
+		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+		 *
+		 * @generated
+		 */
+		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)-»
+		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
+		private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getter FOR XPolicyAttribute-» 
+	«IF generateGetter && !(overwrite && genInterface())-»
+		/**
+		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
+		 *
+		 * @generated
+		 */
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
+		public «javaClassName» «method(methodNameGetter)»
+		«IF genInterface()-»;«ELSE-»
+		{
+			«IF generateField-»
+				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
+			«ELSE-»
+				«IF generateDefaultForDerivedAttribute-»
+					return «defaultValueCode»;
+				«ELSE-»
+			        «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
+			        «EXPAND formulaParameterDeclaration FOR formulaSignature-»
+			        return «getProductCmptGeneration(false && formulaSignature.published)».«EXPAND formulaCall FOR formulaSignature-»;			
+				«ENDIF-»
+			«ENDIF-»
+		}
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE setter FOR XPolicyAttribute-»
+	«IF generateSetter-»
+		/**
+		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»
+		 *
+		 * @generated
+		 */
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
+		public void «method(methodNameSetter, javaClassName, "newValue")»
+		«IF genInterface()-»;«ELSE-»
+		{
+			«EXPAND PropertyChangeSupport::storeOldValue-»
+			this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
+			«EXPAND PropertyChangeSupport::notify-»
+		}
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE allowedValuesMethod FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+		/**
+		 * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
+		 *
+		 * @generated
+		 */
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)-»
+		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
+		«IF genInterface()-»;«ELSE-»
+		{
+			«IF productRelevant-»
+				return «getProductCmptGeneration(published)».«methodNameGetAllowedValuesFor»(context);
+			«ELSE-»
+				return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
+			«ENDIF-»
+		}
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
+	«IF generateInitWithProductData-»
+        «fieldName» = «getProductCmptGeneration(published)».«methodNameGetDefaultValue»();
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
+	«IF generateInitPropertiesFromXML-»
+        if (propMap.containsKey("«name»")) {
+            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(\"" + name + "\")", "productRepository")»;
+        }
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE formulaParameterDeclaration FOR XMethod-»
+	«FOREACH parameters AS parameter-»
+		«parameter.javaClassName» «parameter.name» = «parameter.nullExpression»;
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE formulaCall FOR XMethod-»
+	«methodName»(«FOREACH parameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH»)
+«ENDDEFINE»
+
+

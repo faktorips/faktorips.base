@@ -17,7 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
 /**
  * This class generates JPA annotations for attribute setter methods on policy component types.
@@ -26,12 +26,8 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractAnnotationGenerator {
 
-    public PolicyCmptImplClassAttributeSetterJpaAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
-
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         return newJavaCodeFragment();
     }
 

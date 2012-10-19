@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -101,14 +103,40 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
     public final static String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate a mismatch with the specification in the product
+     * component type association. A message with this message code is added if this link is part of
+     * a container that changes over time but the product component type association is defined as
+     * static (not changing over time), et vice versa.
+     * 
+     * @since 3.8
+     */
+    public final static String MSGCODE_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX + "ChangingOverTimeMismatch"; //$NON-NLS-1$
+
+    /**
      * Returns the product component this configuration element belongs to.
      */
     public IProductCmpt getProductCmpt();
 
     /**
-     * Returns the product component generation this configuration element belongs to.
+     * Returns the product component generation this configuration element belongs to. Returns
+     * <code>null</code> if this link is part of the product component (it does not change over
+     * time).
+     * 
+     * @deprecated As of 3.8 {@link IProductCmptLink product component links} can be part of both
+     *             {@link IProductCmpt product components} and {@link ProductCmptGeneration product
+     *             component generations}. Use {@link #getProductCmptLinkContainer()} and the common
+     *             interface {@link IProductCmptLinkContainer} instead.
      */
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration();
+
+    /**
+     * Returns the {@link IProductCmptLinkContainer link container} this link is a part of.
+     * 
+     * @since 3.8
+     * @see IProductCmptLinkContainer
+     */
+    public IProductCmptLinkContainer getProductCmptLinkContainer();
 
     /**
      * Returns the name of the product component type association this link is an instance of.

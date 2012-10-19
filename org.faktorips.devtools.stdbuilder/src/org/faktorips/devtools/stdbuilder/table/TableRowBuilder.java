@@ -27,6 +27,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -37,13 +39,26 @@ import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
-    private final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
+    private final IJavaClassNameProvider javaClassNameProvider;
 
-    private final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
+    private static final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
+
+    private static final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
 
     public TableRowBuilder(DefaultBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
+        javaClassNameProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
+            @Override
+            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+                return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
+            }
+        };
+    }
+
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNameProvider;
     }
 
     @Override
@@ -216,11 +231,6 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
@@ -238,6 +248,11 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
     private ITableStructure getTableStructure() {
         return (ITableStructure)getIpsObject();
+    }
+
+    @Override
+    protected boolean generatesInterface() {
+        return false;
     }
 
 }

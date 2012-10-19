@@ -1,0 +1,51 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE main FOR XProductCmptClass-»
+	«FILE getFileName(BuilderAspect::INTERFACE) -»
+	package «getPackageName(BuilderAspect::INTERFACE)»;
+
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+	
+		/**
+		 * «localizedJDoc("INTERFACE", name)»
+		 * @generated
+		 */
+		public interface «interfaceName» 
+		«IF extendsInterface-»
+			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
+		«ENDIF-»
+		 {
+		 
+		 	«FOREACH attributes AS this-»
+		 		«IF published -»
+			 		«EXPAND ProductAttribute::constantForPropertyName-»
+			 	«ENDIF-»
+		 	«ENDFOREACH-»
+		 
+		 	«FOREACH attributes AS this-»
+		 		«REM»
+		 		 TODO the old code generator generated the getter always to the published interface»
+		 		«IF published -»
+			 	«ENDIF-»
+			 	«ENDREM»
+					«EXPAND ProductAttribute::getter»
+		 	«ENDFOREACH-»
+
+			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
+
+		 	«EXPAND ProductComponent::getProductComponentGeneration FOR productCmptGenerationNode»
+
+			«IF configurationForPolicyCmptType»
+				«EXPAND ProductComponent::createPolicyCmpt(this) FOR policyCmptClass»
+			«ENDIF»
+
+		 }
+	«ENDFILE»
+«ENDDEFINE»
+

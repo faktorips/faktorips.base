@@ -21,6 +21,9 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
@@ -44,6 +47,8 @@ public interface IProductCmptTypeAssociation extends IAssociation {
 
     public final static String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
+    public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+
     /**
      * Message code for validation messages when the matching association was not found
      */
@@ -53,6 +58,14 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * Message code for validation messages when the matching association is invalid
      */
     public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationInvalid"; //$NON-NLS-1$
+
+    /**
+     * Message code when derived unions and their subsets have different changing over time
+     * properties. i.e. a subset is defined as changing over time, but the derived union is defined
+     * as static.
+     */
+    public static final String MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX
+            + "DerivedUnionChangingOverTimeMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that two associations matching associations with the same
@@ -182,5 +195,30 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * @return The qualified name of the policy component type which association is constrained
      */
     String getMatchingAssociationSource();
+
+    /**
+     * Returns whether this association is marked as changing over time (<code>true</code>) or as
+     * static (<code>false</code>). Instances of changing-over-time associations (
+     * {@link IProductCmptLink product component links}) are part of {@link IProductCmptGeneration
+     * product component generations}. Each generation may specify a different target component.
+     * Instances of static associations are part of the {@link IProductCmpt product component}
+     * directly.
+     * 
+     * @return <code>true</code> if instances of this associations change over time,
+     *         <code>false</code> if they are static.
+     */
+    boolean isChangingOverTime();
+
+    /**
+     * Marks this association as changing over time (<code>true</code>) or static (
+     * <code>false</code>). Instances of changing-over-time associations ({@link IProductCmptLink
+     * product component links}) will be part of {@link IProductCmptGeneration product component
+     * generations}. Each generation may specify a different target component. Instances of static
+     * associations will be part of the {@link IProductCmpt product component} directly.
+     * 
+     * @param changingOverTime <code>true</code> if instances of this associations change over time,
+     *            <code>false</code> if they are static.
+     */
+    void setChangingOverTime(boolean changingOverTime);
 
 }

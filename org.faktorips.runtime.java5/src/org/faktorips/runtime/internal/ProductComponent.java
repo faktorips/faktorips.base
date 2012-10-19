@@ -19,12 +19,17 @@ import java.util.Map;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * Base class for all product components.
+ * <p>
+ * Deliberately implements {@link IXmlPersistenceSupport} directly. Letting
+ * {@link IProductComponent} extend {@link IXmlPersistenceSupport} would have published it, which is
+ * undesired.
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
 
@@ -125,7 +130,20 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         }
         Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
         doInitPropertiesFromXml(propertyElements);
+        doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         initExtensionPropertiesFromXml(cmptElement);
+    }
+
+    /**
+     * 
+     * @param linkElements the XML elements used to initialize {@link ProductComponentLink}
+     *            instances.
+     */
+    protected void doInitReferencesFromXml(Map<String, List<Element>> linkElements) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitReferencesFromXml().
     }
 
     /**
@@ -172,6 +190,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         Element prodCmptElement = document.createElement("ProductComponent");
         writeValidToToXml(prodCmptElement);
         writePropertiesToXml(prodCmptElement);
+        writeReferencesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
         if (includeGenerations) {
             List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
@@ -206,6 +225,29 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     protected void writePropertiesToXml(Element element) {
         throw new UnsupportedOperationException(
                 "The method toXml() is currently not supported, as the required methods were not generated. To activate toXml() please check your FIPS Builder properties and make sure \"Generated toXml Support\" is set to true.");
+    }
+
+    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    /**
+     * This is a utility method called by generated code. The given {@link Element} is the element
+     * representing this {@link ProductComponentGeneration}.
+     * 
+     * @param element the element all table usages should be added to
+     * @since 3.8
+     */
+    protected void writeReferencesToXml(Element element) {
+
+        /*
+         * Nothing to be done base class. Note that this method is deliberately not declaredtoXml
+         * abstract to allow calls to super.writeReferencesToXml() in subclasses.
+         */
     }
 
 }

@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * Abstract base class for annotation generators.
@@ -22,15 +24,11 @@ import org.faktorips.codegen.JavaCodeFragment;
  */
 public abstract class AbstractAnnotationGenerator implements IAnnotationGenerator {
 
-    private final StandardBuilderSet builderSet;
-
-    public AbstractAnnotationGenerator(StandardBuilderSet builderSet) {
-        this.builderSet = builderSet;
+    public AbstractAnnotationGenerator() {
     }
 
-    @Override
-    public StandardBuilderSet getStandardBuilderSet() {
-        return builderSet;
+    public IIpsArtefactBuilderSet getBuilderSet(IIpsProject ipsProject) {
+        return ipsProject.getIpsArtefactBuilderSet();
     }
 
     protected JavaCodeFragment newJavaCodeFragment() {

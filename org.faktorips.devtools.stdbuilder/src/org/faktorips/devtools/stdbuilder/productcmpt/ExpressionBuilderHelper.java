@@ -20,17 +20,17 @@ import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
 
 /**
  * A class that provides the
- * {@link ExpressionBuilderHelper#compileFormulaToJava(IExpression, IProductCmptTypeMethod, boolean, MultiStatus)}
+ * {@link ExpressionBuilderHelper#compileFormulaToJava(IExpression, IProductCmptTypeMethod, MultiStatus)}
  * method for {@link IIpsArtefactBuilder}s handling {@link IExpression}s.
  * 
  * @author schwering
@@ -42,16 +42,12 @@ public class ExpressionBuilderHelper {
      * 
      * @param formula the {@link IExpression} to be compiled
      * @param formulaSignature the signature of the formula
-     * @param formulaTest if {@code true} the formula will be compiled for usage inside a formula
-     *            test, in formula tests all type parameters will be replaced by their value, which
-     *            is defined inside the formula test.
      * @param buildStatus a {@link MultiStatus} that receives {@link IpsStatus} messages when
      *            compilation produces an error
      * @return the Java code compiled from the formula
      */
     public static JavaCodeFragment compileFormulaToJava(IExpression formula,
             IProductCmptTypeMethod formulaSignature,
-            boolean formulaTest,
             MultiStatus buildStatus) {
         String expression = formula.getExpression();
         if (StringUtils.isEmpty(expression)) {
@@ -61,7 +57,7 @@ public class ExpressionBuilderHelper {
         }
         try {
             IIpsProject ipsProject = formula.getIpsProject();
-            ExtendedExprCompiler compiler = formula.newExprCompiler(ipsProject, formulaTest);
+            ExprCompiler compiler = formula.newExprCompiler(ipsProject);
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(ipsProject);

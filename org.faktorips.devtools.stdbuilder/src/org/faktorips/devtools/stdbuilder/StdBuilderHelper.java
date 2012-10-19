@@ -19,11 +19,7 @@ import org.eclipse.jdt.core.Signature;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.util.QNameUtil;
 
@@ -170,32 +166,11 @@ public final class StdBuilderHelper {
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
             IIpsProject ipsProject) throws CoreException {
-
         Datatype datatype = ipsProject.findDatatype(qualifiedDatatypeName);
         if (datatype.isVoid()) {
             return "void";
         }
-        if (datatype instanceof ValueDatatype) {
-            DatatypeHelper helper = ipsProject.findDatatypeHelper(qualifiedDatatypeName);
-            if (helper != null) {
-                return helper.getJavaClassName();
-            }
-            throw new RuntimeException("Can't get datatype helper for datatype " + qualifiedDatatypeName);
-        }
-        if (datatype instanceof PolicyCmptType) {
-            if (resolveToPublishedInterface) {
-                return builderSet.getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
-            }
-            return builderSet.getGenerator((IPolicyCmptType)datatype).getQualifiedName(false);
-        } else if (datatype instanceof ProductCmptType) {
-            if (resolveToPublishedInterface) {
-                return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedClassNameForProductCmptTypeGen(
-                        true);
-            }
-            return builderSet.getGenerator((IProductCmptType)datatype)
-                    .getQualifiedClassNameForProductCmptTypeGen(false);
-        }
-        throw new RuntimeException("Can't get Java class name for datatype " + qualifiedDatatypeName);
+        return builderSet.getJavaClassName(datatype, resolveToPublishedInterface);
     }
 
     public static String[] transformParameterTypesToJavaClassNames(IParameter[] params,

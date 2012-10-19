@@ -283,7 +283,10 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     /**
      * Creates a new link of the given association.
+     * 
+     * @deprecated As of 3.8
      */
+    @Deprecated
     public IProductCmptLink newLink(String associationName) {
         return generation.newLink(associationName);
     }

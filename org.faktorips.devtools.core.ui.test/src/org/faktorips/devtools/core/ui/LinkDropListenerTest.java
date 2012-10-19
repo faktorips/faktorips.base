@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -185,7 +184,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         // select first
         dropListener.setSelection(1 << 0);
         assertTrue(dropListener.performDropSingle(getFilenames(cmptB1)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(associationToB1.getName(), links[0].getAssociation());
@@ -194,7 +193,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         // select second
         dropListener.setSelection(1 << 1);
         assertTrue(dropListener.performDropSingle(getFilenames(cmptB1)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(associationToB2.getName(), links[0].getAssociation());
@@ -203,7 +202,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         // select both
         dropListener.setSelection(1 << 0 | 1 << 1);
         assertTrue(dropListener.performDropSingle(getFilenames(cmptB1)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(cmptB1.getQualifiedName(), links[1].getTarget());
@@ -217,7 +216,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         // select first
         dropListener.setSelection(1 << 0);
         assertTrue(dropListener.performDropSingle(getFilenames(cmptB1, cmptB2)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(cmptB2.getQualifiedName(), links[1].getTarget());
@@ -229,7 +228,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         // select second
         dropListener.setSelection(1 << 1);
         assertTrue(dropListener.performDropSingle(getFilenames(cmptB1, cmptB2)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertTrue(links.length == 2);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(cmptB2.getQualifiedName(), links[1].getTarget());
@@ -241,15 +240,15 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         // select both
         dropListener.setSelection(1 << 0 | 1 << 1);
         assertTrue(dropListener.performDropSingle(getFilenames(cmptB1, cmptB2)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(4, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
-        assertEquals(cmptB1.getQualifiedName(), links[1].getTarget());
-        assertEquals(cmptB2.getQualifiedName(), links[2].getTarget());
+        assertEquals(cmptB2.getQualifiedName(), links[1].getTarget());
+        assertEquals(cmptB1.getQualifiedName(), links[2].getTarget());
         assertEquals(cmptB2.getQualifiedName(), links[3].getTarget());
         assertEquals(associationToB1.getName(), links[0].getAssociation());
-        assertEquals(associationToB2.getName(), links[1].getAssociation());
-        assertEquals(associationToB1.getName(), links[2].getAssociation());
+        assertEquals(associationToB1.getName(), links[1].getAssociation());
+        assertEquals(associationToB2.getName(), links[2].getAssociation());
         assertEquals(associationToB2.getName(), links[3].getAssociation());
         links[0].delete();
         links[1].delete();
@@ -288,7 +287,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
         assertFalse(ipsSrcFile.isDirty());
 
-        IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
         // delete the last one
         links[links.length - 1].delete();
         assertTrue(ipsSrcFile.isDirty());
@@ -296,7 +295,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
 
         // reset for next test
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         links[0].delete();
         ipsSrcFile.save(false, null);
     }
@@ -310,12 +309,12 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private void checkDropWithSinglePossibility(int alreadyExistingLinks) {
         // drop single component on CmptReference with no possibility to add
         assertFalse(dropListener.performDropSingle(getFilenames(cmptA)));
-        IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
         assertEquals(alreadyExistingLinks, links.length);
 
         // drop single component on CmptReference with one possibility to add
         assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1 + alreadyExistingLinks, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + alreadyExistingLinks].getTarget());
         assertEquals(associationToC.getName(), links[0 + alreadyExistingLinks].getAssociation());
@@ -323,7 +322,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // drop multiple component on CmptReference with one possibility to add
         assertTrue(dropListener.performDropSingle(getFilenames(cmptC1, cmptC2)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2 + alreadyExistingLinks, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + alreadyExistingLinks].getTarget());
         assertEquals(cmptC2.getQualifiedName(), links[1 + alreadyExistingLinks].getTarget());
@@ -406,7 +405,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
             }
 
             @Override
-            protected Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
+            protected Object[] selectAssociation(String droppedCmptName, List<IProductCmptTypeAssociation> possibleAssos) {
                 IAssociation[] result = new IAssociation[Integer.bitCount(selection)];
                 int j = 0;
                 for (int i = 0; i < possibleAssos.size(); i++) {

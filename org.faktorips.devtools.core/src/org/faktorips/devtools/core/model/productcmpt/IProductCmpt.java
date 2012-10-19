@@ -17,6 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
@@ -32,7 +33,8 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 /**
  * A part (or component) of a product.
  */
-public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IPropertyValueContainer {
+public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IPropertyValueContainer,
+        IProductCmptLinkContainer {
 
     /**
      * The name of the product component type property

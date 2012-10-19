@@ -109,17 +109,15 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             IIpsSrcFile[] ipsSrcFiles = productCmpt.getIpsProject().findAllProductCmptSrcFiles(targetProductCmptType,
                     true);
 
-            // Existing links
-            IProductCmptLink[] links = ((IProductCmptGeneration)productCmptEditor.getActiveGeneration())
-                    .getLinks(associationName);
-            Set<IIpsSrcFile> result = getResult(ipsSrcFiles, links);
+            List<IProductCmptLink> existingLinks = getExistingLinks(productCmptEditor, association);
+            Set<IIpsSrcFile> possibleTargets = getSelectableTargetProductCmpts(ipsSrcFiles, existingLinks);
             final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
-            context.setElements(result.toArray(new IIpsSrcFile[ipsSrcFiles.length]));
+            context.setElements(possibleTargets.toArray(new IIpsSrcFile[ipsSrcFiles.length]));
             final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(
                     HandlerUtil.getActiveShell(event), Messages.AddLinkAction_selectDialogTitle, context, true);
             int rc = dialog.open();
             if (rc == Window.OK && !dialog.getSelectedObjects().isEmpty()) {
-                addLinksToActiveProductCmptGeneration((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
+                addLinksToGenerationOrProductCmpt((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
                         association, dialog.getSelectedObjects());
             }
 
@@ -128,17 +126,28 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         }
     }
 
+    protected List<IProductCmptLink> getExistingLinks(ProductCmptEditor productCmptEditor,
+            IProductCmptTypeAssociation association) {
+        IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
+        if (association.isChangingOverTime()) {
+            return activeGeneration.getLinksAsList(association.getName());
+        } else {
+            return activeGeneration.getProductCmpt().getLinksAsList(association.getName());
+        }
+    }
+
     /**
      * Compares possible target product component source files and existing links and returns the
      * different source files as result
      */
-    private Set<IIpsSrcFile> getResult(IIpsSrcFile[] ipsSrcFiles, IProductCmptLink[] links) {
+    private Set<IIpsSrcFile> getSelectableTargetProductCmpts(IIpsSrcFile[] ipsSrcFiles,
+            List<IProductCmptLink> existingLinks) {
         Set<IIpsSrcFile> result = new LinkedHashSet<IIpsSrcFile>();
 
         for (int i = 0; i < ipsSrcFiles.length; i++) {
             boolean exists = false;
-            for (int j = 0; j < links.length; j++) {
-                if ((ipsSrcFiles[i].getQualifiedNameType().getName()).equals(links[j].getTarget())) {
+            for (IProductCmptLink link : existingLinks) {
+                if ((ipsSrcFiles[i].getQualifiedNameType().getName()).equals(link.getTarget())) {
                     exists = true;
                 }
             }
@@ -149,7 +158,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         return result;
     }
 
-    private void addLinksToActiveProductCmptGeneration(final IProductCmptGeneration activeProductCmptGeneration,
+    private void addLinksToGenerationOrProductCmpt(final IProductCmptGeneration activeProductCmptGeneration,
             final IProductCmptTypeAssociation association,
             final List<IIpsElement> selectedIpsElements) throws CoreException {
 
@@ -159,12 +168,10 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                 for (IIpsElement element : selectedIpsElements) {
                     if (element instanceof IIpsSrcFile) {
                         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-                        IProductCmpt selectedProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                        IProductCmptLink link = activeProductCmptGeneration.newLink(association);
-                        link.setAssociation(association.getName());
-                        link.setTarget(selectedProductCmpt.getQualifiedName());
-                        link.setMaxCardinality(1);
-                        link.setMinCardinality(0);
+                        IProductCmpt targetProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+
+                        LinkCreatorUtil util = new LinkCreatorUtil(false);
+                        util.createLink(association, activeProductCmptGeneration, targetProductCmpt.getQualifiedName());
                     }
                 }
             }

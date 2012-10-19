@@ -238,6 +238,23 @@ public class StringUtil {
      * 
      * <pre>
      *  CamelCase      -&gt;  Camel_Case
+     *  a.,- b-cdEF    -&gt;  a_b_cd_EF
+     * </pre>
+     * 
+     */
+    public static String camelCaseToUnderscore(String text) {
+        return camelCaseToUnderscore(text, false);
+    }
+
+    /**
+     * Returns a String where an occurrence of a character followed by an upper case character is
+     * replaced by these characters divided by an underscore. Consecutive sequences of comma, dot,
+     * hyphen and whitespace is also replaced by one single underscore.
+     * <p/>
+     * For example:
+     * 
+     * <pre>
+     *  CamelCase      -&gt;  Camel_Case
      *  a.,- b-cdEF    -&gt;  a_b_cd_E_F       (splitUppercaseSequences = true)
      *  a.,- b-cdEF    -&gt;  a_b_cd_EF       (splitUppercaseSequences = false)
      * </pre>

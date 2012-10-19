@@ -13,15 +13,14 @@
 
 package org.faktorips.devtools.core.builder;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -46,60 +45,17 @@ import org.faktorips.fl.IdentifierResolver;
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
-    private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
-
     /**
-     * Returns the name of the (Java) package that contains the artefacts specified by the
-     * parameters generated for the given ips source file.
-     * 
-     * @param publishedArtefact <code>true</code> if the artefacts are published (usable by
-     *            clients), <code>false</code> if they are internal.
-     * @param mergableArtefact <code>true</code> if the generated artefact is mergable (at the
-     *            moment this applies to Java Source files only). <code>false</code) if the artefact
-     *            is 100% generated and can't be modified by the user.
+     * Name of the configuration property that indicates whether to generate public interfaces or
+     * not.
+     * <p>
+     * Although this property is defined in this abstraction it needs to be configured in the
+     * extension point of every specific builder. If it is not specified as a configuration
+     * definition of any builder, the default value is <code>true</code>.
      */
-    public String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
-            boolean publishedArtefact,
-            boolean mergableArtefact) throws CoreException {
+    public final static String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
 
-        String basePackName = mergableArtefact ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile
-                .getBasePackageNameForDerivedArtefacts();
-        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-        if (!publishedArtefact) {
-            return getInternalPackage(basePackName, packageFragName);
-        } else {
-            return QNameUtil.concat(basePackName, packageFragName);
-        }
-    }
-
-    @Override
-    public String getInternalPackage(final String basePackName, final String subPackageFragment) {
-        String internalBasePack = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
-        return QNameUtil.concat(internalBasePack, subPackageFragment);
-    }
-
-    /**
-     * Returns the name of the (Java) package name that contains the published artefacts that are
-     * generated for the given IPS source file that (the artefacts) are also mergable.
-     */
-    public String getPackageNameForMergablePublishedArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, true, true);
-    }
-
-    /**
-     * Returns the name of the (Java) package name that contains the internal artefacts that are
-     * generated for the given IPS source file that (the artefacts) are also mergable.
-     */
-    public String getPackageNameForMergableInternalArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, true);
-    }
-
-    @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackName = entry.getBasePackageNameForDerivedJavaClasses();
-        return getInternalPackage(basePackName, StringUtils.EMPTY);
-    }
+    private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
@@ -110,7 +66,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             return null;
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackInternal = getTocFilePackageName(root);
+        String basePackInternal = javaPackageStructure.getBasePackageName(entry, false, false);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
         IFolder tocFileLocation = getTocFileLocation(root);
@@ -136,14 +92,18 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (builder instanceof JavaSourceFileBuilder) {
+    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifacts, boolean mergableArtifacts) {
+        return javaPackageStructure.getPackageName(ipsSrcFile, publishedArtifacts, mergableArtifacts);
+    }
 
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-            return getPackageNameForGeneratedArtefacts(ipsSrcFile, javaBuilder.isBuildingPublishedSourceFile(),
-                    builder.buildsDerivedArtefacts());
-        }
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, builder.buildsDerivedArtefacts());
+    @Override
+    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean publishedArtifact, boolean mergableArtifacts) {
+        return javaPackageStructure.getBasePackageName(entry, publishedArtifact, mergableArtifacts);
+    }
+
+    public boolean isGeneratePublishedInterfaces() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_PUBLISHED_INTERFACES);
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
     @Override
@@ -169,12 +129,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     @Override
     public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-        return null;
-    }
-
-    @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
         return null;
     }

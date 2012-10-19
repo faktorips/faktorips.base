@@ -21,7 +21,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -60,19 +59,6 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateOtherCode(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(),
                 mainSection.getMethodBuilder());
         generateCodeForJavatype(mainSection);
-    }
-
-    /**
-     * Returns the abbreviation for the generation (changes over time) concept.
-     * 
-     * @param element An <tt>IIpsElement</tt> needed to access the <tt>IIpsProject</tt> where the
-     *            necessary configuration information is stored.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
-     */
-    public String getAbbreviationForGenerationConcept(IIpsElement element) {
-        return getChangesInTimeNamingConvention(element).getGenerationConceptNameAbbreviation(
-                getLanguageUsedInGeneratedSourceCode());
     }
 
     protected abstract void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException;
@@ -176,11 +162,6 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
         // could be implemented in subclass
     }
-
-    /**
-     * Returns true if an interface is generated, false if a class is generated.
-     */
-    protected abstract boolean generatesInterface();
 
     /**
      * Returns the class modifier.

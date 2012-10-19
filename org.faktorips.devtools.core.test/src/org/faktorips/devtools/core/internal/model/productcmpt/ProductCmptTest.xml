@@ -12,4 +12,6 @@
 	<AttributeValue id="abc123" attribute="bezeichnung">
 		<Value>testtesttest</Value>
 	</AttributeValue>
+    <Link id="3" association="staticCoverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
+    <Link id="4" association="staticIDontKnow" target="IDK" minCardinality="2" maxCardinality="3"/>
 </ProductCmpt>

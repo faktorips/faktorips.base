@@ -1,0 +1,115 @@
+import org::faktorips::devtools::stdbuilder::xpand::model;
+import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
+
+extension org::faktorips::devtools::stdbuilder::xpand::template::MethodNames reexport;
+
+boolean genInterface() : GLOBALVAR generateInterface;
+
+String camelCaseToUnderscore(String s) :
+	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
+
+// Use this function for methods that implement a base-interface method (a base interface from the1 
+// FIPS runtime, e.g. IConfigurableModelObject) or already existing base methods (e.g. doInitPropertiesFromXml).
+// Returns the @Override annotation if the compliance level is Java 6 or higher or if interfaceMethodImplementation is false
+// (In Java 5 no @Override must be annotated when implementing an interface method) 
+overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImplementation) :
+	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
+	
+// Use this function for published methods. i.e. methods that are defined in a published interface.
+// Returns the @Override annotation if published interfaces are beeing generated and if the compliance 
+// level is Java 6 or higher. (In Java 5 no @Override must be annotated when implementing an
+// interface method) 
+overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
+	if generatePublishedInterfaces && needOverrideAnnotation(true) then "@Override";
+
+// Use this function for published methods. i.e. methods that are defined in a published interface.
+// Returns the @Override annotation if the condition is true, published interfaces are beeing generated and if the compliance 
+// level is Java 6 or higher. (In Java 5 no @Override must be annotated when implementing an
+// interface method) 
+overrideAnnotationForPublishedMethodAndIf(AbstractGeneratorModelNode this, boolean condition) :
+	if (condition && generatePublishedInterfaces && needOverrideAnnotation(true)) then "@Override";
+
+// Use this function for published methods that require an override in a special condition. i.e. methods 
+// that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
+// @Override annotation if published interfaces are beeing generated and if the  compliance level is Java 6 or 
+// higher or if the condition is true . (In Java 5 no @Override must be annotated when implementing an interface method) 
+overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean condition) :
+	if (generatePublishedInterfaces && needOverrideAnnotation(true)) || (condition && needOverrideAnnotation(false)) then "@Override";
+
+// Use this function for maybe published methods that require an override in a special condition. i.e. methods 
+// that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
+// @Override annotation if first parameter (isPublished) is true, published interfaces are beeing generated and if the  compliance
+// level is Java 6 or higher or if the condition is true .
+// (In Java 5 no @Override must be annotated when implementing an interface method) 
+overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean isPublished , boolean condition) :
+	if (generatePublishedInterfaces && isPublished && needOverrideAnnotation(true))
+		 || (condition && needOverrideAnnotation(false)) then "@Override";
+
+// User this function for attribute methods (e.g. getter, setter).
+// Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
+// If the attribute does not override another attribute, the boolean parameter specifies wether the attribute
+// is publishe
+overrideAnnotationForAttribute(XAttribute this) :
+	overrideAnnotationForPublishedMethodOrIf(published, overwrite);
+	
+// Use this function if the method in question is generated for all generated classes and subclasses always 
+// override their super's implementation. The method in question should not be an interface method. 
+// Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
+// Returns nothing in all other cases.
+overrideAnnotationIfHasSuperclass(XType this) :
+	if hasSupertype() then "@Override";
+
+// Use this function if the method in question is generated for all generated classes and subclasses always 
+// override their super's implementation. The method in question should not be an interface method. 
+// Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
+// Returns nothing in all other cases.
+overrideAnnotationIfHasSuperclassOrInterface(XType this) :
+	if hasSupertype() || needOverrideAnnotation(true) then "@Override";
+
+// Use this function if the generated method is the implementation of an interface method, 
+// but there may be superclasses that already implement the method themselves. 
+// Returns nothing if the compliance level is 5 (Java 1.5) and none of the current XPolicyCmptClass' 
+// superclasses is concrete (non abstract). (In this case the method overrides an interface method. 
+// In java 5 no @override must be annotated when implementing an interface.) 
+// Returns the @Override annotation in all other cases.
+overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod(XPolicyCmptClass this) :
+	if needOverrideAnnotation(!hasNonAbstractSupertype()) then "@Override";
+
+inheritDoc() :
+	"{@inheritDoc}";
+
+inheritDocOrText(AbstractGeneratorModelNode this, String text):
+	inheritDocOrTextIf(false, text);
+
+inheritDocOrTextIf(AbstractGeneratorModelNode this, boolean generateInterface, String text):
+	(generatePublishedInterfaces && !generateInterface)?inheritDoc():text;
+
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key):
+	inheritDocOrJavaDocIf(false, key);
+
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param):
+	inheritDocOrJavaDocIf(false, key, param);
+	
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param1, String param2):
+	inheritDocOrJavaDocIf(false, key, param1, param2);
+
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param1, String param2, String param3):
+	inheritDocOrJavaDocIf(false, key, param1, param2, param3);
+
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key):
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key);
+
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param):
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param);
+
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2):
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param1, param2);
+	
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2,String param3):
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param1, param2, param3);
+	
+abstract(XType this) :
+	if abstract then "abstract";
+
+isPolicyCmptClass(XClass xClass) :
+	if XPolicyCmptClass.isInstance(xClass) then true else false;

@@ -128,6 +128,15 @@ public interface IIpsArtefactBuilder {
     public boolean buildsDerivedArtefacts();
 
     /**
+     * Indicates if the builder generates files that are considered internal. Internal files are
+     * generated in internal packages.
+     * 
+     * @return <code>true</code> if this builder generates internal artifacts <code>false</code> for
+     *         published artifacts
+     */
+    public boolean isBuildingInternalArtefacts();
+
+    /**
      * Deletes the artifact that is created by this builder upon the provided IpsSrcFile.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder

@@ -360,6 +360,35 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testChangingOverTimeMatchesContainer() throws CoreException {
+        setUpAssociation(true);
+
+        MessageList messageList = link.validate(ipsProject);
+        assertEquals(0, messageList.size());
+    }
+
+    @Test
+    public void testChangingOverTimeDoesNotMatchContainer() throws CoreException {
+        setUpAssociation(false);
+
+        MessageList messageList = link.validate(ipsProject);
+        assertEquals(1, messageList.size());
+    }
+
+    private void setUpAssociation(boolean changingOverTime) throws CoreException {
+        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
+        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        productAssociation.setChangingOverTime(changingOverTime);
+
+        IProductCmpt targetCmpt = newProductCmpt(coverageTypeType, "TestCoverage");
+        link.setTarget(targetCmpt.getQualifiedName());
+    }
+
+    @Test
     public void testGetCaption() throws CoreException {
         createAssociation();
         assertEquals("foo", link.getCaption(Locale.US));
@@ -410,6 +439,41 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         label.setPluralValue("foos");
 
         return association;
+    }
+
+    @Test
+    public void testGetProductCmpt() {
+        IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
+        assertNotNull(newLink.getProductCmpt());
+        assertEquals(productCmpt, newLink.getProductCmpt());
+    }
+
+    @Test
+    public void testGetProductCmpt2() {
+        IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
+        assertNotNull(newLink.getProductCmpt());
+        assertEquals(productCmpt, newLink.getProductCmpt());
+    }
+
+    @Test
+    public void testGetProductCmptGeneration() {
+        IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
+        assertNotNull(newLink.getProductCmptGeneration());
+        assertEquals(generation, newLink.getProductCmptGeneration());
+    }
+
+    @Test
+    public void testGetProductCmptGeneration2() {
+        IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
+        assertNull(newLink.getProductCmptGeneration());
+    }
+
+    private IProductCmptLink createLinkWithContainer(IProductCmptLinkContainer container,
+            String partId,
+            String associationName) {
+        IProductCmptLink newLink = new ProductCmptLink(container, partId);
+        newLink.setAssociation(associationName);
+        return newLink;
     }
 
 }

@@ -17,6 +17,7 @@ import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
+import org.faktorips.runtime.IProductComponentLinkSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
 public class ProductComponentLink<E extends IProductComponent> extends RuntimeObject implements
         IProductComponentLink<E>, IXmlPersistenceSupport {
 
-    private final IProductComponentGeneration source;
+    private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
     private String targetId;
     private String associationName;
@@ -41,8 +42,47 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link for the given product component generation. Target and cardinality must be
      * set by invoking <code>initFromXml</code>.
+     * 
+     * @deprecated Use {@link #ProductComponentLink(IProductComponentLinkSource)} instead.
      */
+    @Deprecated
     public ProductComponentLink(IProductComponentGeneration source) {
+        this((IProductComponentLinkSource)source);
+    }
+
+    /**
+     * Creates a new link to the given target for the given product component generation using the
+     * cardinality (0,*).
+     * 
+     * @throws NullPointerException if any of the parameters is {@code null}.
+     * 
+     * @deprecated Use {@link #ProductComponentLink(IProductComponentLinkSource, IProductComponent)}
+     *             instead.
+     */
+    @Deprecated
+    public ProductComponentLink(IProductComponentGeneration source, E target) {
+        this((IProductComponentLinkSource)source, target, CardinalityRange.FULL_RANGE);
+    }
+
+    /**
+     * Creates a new link with the given cardinality to the given target for the given product
+     * component generation.
+     * 
+     * @throws NullPointerException if any of the parameters is {@code null}.
+     * @deprecated use
+     *             {@link #ProductComponentLink(IProductComponentGeneration, IProductComponent, CardinalityRange)}
+     *             instead.
+     */
+    @Deprecated
+    public ProductComponentLink(IProductComponentGeneration source, E target, CardinalityRange cardinality) {
+        this((IProductComponentLinkSource)source, target, cardinality);
+    }
+
+    /**
+     * Creates a new link for the given product component generation. Target and cardinality must be
+     * set by invoking <code>initFromXml</code>.
+     */
+    public ProductComponentLink(IProductComponentLinkSource source) {
         this.source = source;
     }
 
@@ -51,8 +91,9 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * cardinality (0,*).
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
+     * 
      */
-    public ProductComponentLink(IProductComponentGeneration source, E target) {
+    public ProductComponentLink(IProductComponentLinkSource source, E target) {
         this(source, target, CardinalityRange.FULL_RANGE);
     }
 
@@ -62,7 +103,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
-    public ProductComponentLink(IProductComponentGeneration source, E target, CardinalityRange cardinality) {
+    public ProductComponentLink(IProductComponentLinkSource source, E target, CardinalityRange cardinality) {
         if (source == null) {
             throw new NullPointerException("The source for the ProductComponentLink may not be null.");
         }
@@ -142,8 +183,23 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         return sb.toString();
     }
 
+    @Deprecated
     public IProductComponentGeneration getSource() {
-        return source;
+        if (source instanceof IProductComponentGeneration) {
+            return (IProductComponentGeneration)source;
+        } else {
+            throw new UnsupportedOperationException(
+                    "This link does not originate from a product component generation but from a product component.");
+        }
     }
+    //
+    // /**
+    // * Returns the {@link IProductComponentSource} this link originates from.
+    // *
+    // * @since 3.8
+    // */
+    // public IProductComponentSource getProductComponentSource() {
+    // return source;
+    // }
 
 }

@@ -82,7 +82,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         inheritedAttribute.setName(superEnumAttribute.getName());
         inheritedAttribute.setInherited(true);
 
-        javaEnum = getGeneratedJavaEnum(enumType, false, builder, ENUM_TYPE_NAME);
+        javaEnum = getGeneratedJavaClass(enumType, true, false, ENUM_TYPE_NAME);
     }
 
     @Test

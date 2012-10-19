@@ -27,7 +27,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 /**
  * A generator for JPA annotations of <code>IPolicyCmptType</code>s.
@@ -39,10 +40,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  * @author Roman Grutza
  */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
-
-    public PolicyCmptImplClassJpaAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
 
     private final static String ANNOTATION_ENTITY = "@Entity";
     private final static String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
@@ -68,24 +65,28 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        IPolicyCmptType pcType = (IPolicyCmptType)ipsElement;
+        if (generatorModelNode instanceof XPolicyCmptClass) {
+            XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
 
-        IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
+            IPolicyCmptType pcType = xPolicyCmptClass.getType();
 
-        if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
-            fragment.addImport(IMPORT_ENTITY);
-            fragment.appendln(ANNOTATION_ENTITY);
-            addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
-            addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
-        } else if (persistenceTypeInfo.getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
-            fragment.addImport(IMPORT_MAPPED_SUPERCLASS);
-            fragment.appendln(ANNOTATION_MAPPED_SUPERCLASS);
-        } else {
-            throw new RuntimeException("Unknown persistent type: " + persistenceTypeInfo.getPersistentType());
+            IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
+
+            if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
+                fragment.addImport(IMPORT_ENTITY);
+                fragment.appendln(ANNOTATION_ENTITY);
+                addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
+                addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
+            } else if (persistenceTypeInfo.getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
+                fragment.addImport(IMPORT_MAPPED_SUPERCLASS);
+                fragment.appendln(ANNOTATION_MAPPED_SUPERCLASS);
+            } else {
+                throw new RuntimeException("Unknown persistent type: " + persistenceTypeInfo.getPersistentType());
+            }
+
         }
-
         return fragment;
     }
 

@@ -57,11 +57,13 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -346,6 +348,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(1, gen.getNumOfConfigElements());
         IConfigElement ce = gen.getConfigElements()[0];
         assertEquals("1.5", ce.getValue());
+
+        assertEquals(2, productCmpt.getNumOfLinks());
+        assertEquals("staticCoverage", productCmpt.getLinksAsList().get(0).getAssociation());
+        assertEquals("staticIDontKnow", productCmpt.getLinksAsList().get(1).getAssociation());
     }
 
     @Test
@@ -386,6 +392,21 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IAttributeValue copyAttributeValue = copy.getAttributeValue(attr2.getName());
         assertNotNull(copyAttributeValue);
         assertEquals(propertyValue.getName(), copyAttributeValue.getName());
+    }
+
+    @Test
+    public void testToXml_Links() {
+        attr2.setChangingOverTime(false);
+        IProductCmptLink newLink = productCmpt.newLink("newLink");
+        newLink.setTarget("target");
+        Element xml = productCmpt.toXml(newDocument());
+
+        ProductCmpt copy = new ProductCmpt();
+        copy.initFromXml(xml);
+        List<IProductCmptLink> linksCopy = copy.getLinksAsList("newLink");
+        assertNotNull(linksCopy);
+        assertEquals(1, linksCopy.size());
+        assertEquals(newLink.getTarget(), linksCopy.get(0).getTarget());
     }
 
     @Test
@@ -706,6 +727,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         int currentMonth = GregorianCalendar.getInstance().get(Calendar.MONTH);
         int currentDay = GregorianCalendar.getInstance().get(Calendar.DAY_OF_MONTH);
         return new GregorianCalendar(currentYear, currentMonth, currentDay + offsetToCurrentDay);
+    }
+
+    @Test
+    public void testIsContainerForChangingAssociation() {
+        IProductCmptTypeAssociation changingAssoc = type.newProductCmptTypeAssociation();
+        changingAssoc.setChangingOverTime(true);
+
+        assertFalse(productCmpt.isContainerFor(changingAssoc));
+    }
+
+    @Test
+    public void testIsContainerForStaticAssociation() {
+        IProductCmptTypeAssociation staticAssoc = type.newProductCmptTypeAssociation();
+        staticAssoc.setChangingOverTime(false);
+
+        assertTrue(productCmpt.isContainerFor(staticAssoc));
     }
 
 }

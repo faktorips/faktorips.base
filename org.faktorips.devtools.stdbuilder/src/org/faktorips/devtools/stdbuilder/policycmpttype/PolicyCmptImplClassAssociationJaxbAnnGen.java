@@ -19,56 +19,45 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 
 public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotationGenerator {
 
-    public PolicyCmptImplClassAssociationJaxbAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
-
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
+        if (modelNode instanceof XPolicyAssociation) {
+            XPolicyAssociation xPolicyAssociation = (XPolicyAssociation)modelNode;
+            IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
 
-        GenAssociation genAssociation = null;
-        String fieldName = null;
-        String targetImplClassName = null;
-        try {
-            GenPolicyCmptType genPolicyCmptType = (GenPolicyCmptType)getStandardBuilderSet().getGenerator(
-                    association.getType());
-            genAssociation = genPolicyCmptType.getGenerator(association);
-            fieldName = genAssociation.getFieldNameForAssociation();
-            targetImplClassName = genAssociation.getTargetImplClassName();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            String fieldName = xPolicyAssociation.getFieldName();
+            String targetImplClassName = xPolicyAssociation.getTargetQualifiedClassName();
 
-        if (association.is1To1()) {
-            // toOne
-            if (association.isCompositionDetailToMaster()) {
-                builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", fieldName + ".id");
-            } else {
-                builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
-                        + "\", type=" + targetImplClassName + ".class");
-            }
-            if (!association.isCompositionMasterToDetail()) {
-                builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
-            }
-        } else {
-            // toMany
-            if (!association.isCompositionDetailToMaster()) {
-                builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
-                        + "\", type=" + targetImplClassName + ".class");
+            if (association.is1To1()) {
+                // toOne
+                if (association.isCompositionDetailToMaster()) {
+                    builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", fieldName + ".id");
+                } else {
+                    builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
+                            + "\", type=" + targetImplClassName + ".class");
+                }
                 if (!association.isCompositionMasterToDetail()) {
-                    // normally this must be an association
                     builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                 }
+            } else {
+                // toMany
+                if (!association.isCompositionDetailToMaster()) {
+                    builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
+                            + "\", type=" + targetImplClassName + ".class");
+                    if (!association.isCompositionMasterToDetail()) {
+                        // normally this must be an association
+                        builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
+                    }
+                }
+                builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name",
+                        association.getTargetRolePlural());
             }
-            builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name",
-                    association.getTargetRolePlural());
         }
         return builder.getFragment();
     }

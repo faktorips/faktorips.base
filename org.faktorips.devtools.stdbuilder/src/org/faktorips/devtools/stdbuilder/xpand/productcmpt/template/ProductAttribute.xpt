@@ -1,0 +1,102 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE constantForPropertyName FOR XProductAttribute-»
+	/**
+	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+	 * @generated
+	 */
+	public final static String «field(constantNamePropertyName)» = "«name»";
+«ENDDEFINE»
+
+«DEFINE memberField FOR XProductAttribute-»
+	/**
+	 * «localizedJDoc("FIELD_VALUE", name.toFirstUpper())»
+	 *
+	 * @generated
+	 */
+	 private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+«ENDDEFINE»
+
+«DEFINE getterSetter FOR XProductAttribute-»
+	«EXPAND getter-»
+	«EXPAND setter-»
+«ENDDEFINE»
+
+«DEFINE getter FOR XProductAttribute-» 
+	/**
+	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
+	 *
+	 * @generated
+	 */
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
+	public «javaClassName» «method(methodNameGetter)»
+	«IF genInterface()»;«ELSE-»
+	{
+		return «getReferenceOrSafeCopyIfNecessary(fieldName)»;
+	}
+	«ENDIF»
+«ENDDEFINE»
+
+
+«DEFINE setter FOR XProductAttribute-»
+	/**
+	 * «localizedJDoc("METHOD_SETVALUE", name, description)»
+	 *
+	 * @generated
+	 */
+	public void «method(methodNameSetter, javaClassName, "newValue")»{
+		«EXPAND ProductCommons::checkRepositoryModifyable-»
+		this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
+	}
+«ENDDEFINE»
+
+«DEFINE initAttributeFromXML FOR XProductAttribute-»
+        configElement = configMap.get("«name»");
+        if (configElement != null) {
+        «IF multiValue-»
+        	«IF javaClassName == "List<String>"-»
+	            «javaClassName» valueList = «MultiValueXmlHelper()».«getValuesFromXML("configElement")»;
+	        «ELSE-»
+	            «javaClassName» valueList = «newMultiValueInstance»;
+            	«LET singleValueOfMultiValueAttribute AS this-»
+		            «List_("String")» stringList = «MultiValueXmlHelper()».«getValuesFromXML("configElement")»;
+		            for (String stringValue : stringList) {
+		                «javaClassName» convertedValue = «getNewInstanceFromExpression("stringValue", "getRepository()")»;
+		                valueList.add(convertedValue);
+		            }
+                «ENDLET-»
+	        «ENDIF-»
+   	        this.«fieldName» = valueList;
+        «ELSE-»
+            String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
+            this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
+        «ENDIF-»
+        }        
+«ENDDEFINE»
+
+«DEFINE writeAttributeToXML FOR XProductAttribute-»
+        attributeElement = element.getOwnerDocument().createElement("AttributeValue");
+        attributeElement.setAttribute("attribute", "«name»");
+        «IF multiValue-»
+            «IF javaClassName == "List<String>"-»
+                «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "this." + fieldName)»;
+            «ELSE-»
+            	«LET singleValueOfMultiValueAttribute AS this-»
+			        stringList = new «ArrayList("String")»();
+			        for («javaClassName» value : this.«fieldName») {
+			            String stringValue = «getToStringExpression("value")»;
+			            stringList.add(stringValue);
+			        }
+			    «ENDLET-»
+		        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList")»;
+	        «ENDIF-»
+	    «ELSE-»
+	        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(fieldName)», attributeElement, "Value");
+        «ENDIF-»
+        element.appendChild(attributeElement);
+«ENDDEFINE»

@@ -27,7 +27,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -41,10 +40,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
-import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.IModelObject;
@@ -139,17 +137,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         resolver = (AbstractParameterIdentifierResolver)ipsProject.getIpsArtefactBuilderSet()
                 .createFlIdentifierResolver(formula, formula.newExprCompiler(ipsProject));
 
-        standardBuilderSet = (StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet();
-    }
-
-    private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
-        IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
-        for (IIpsArtefactBuilder builder : builders) {
-            if (builder instanceof PolicyCmptInterfaceBuilder) {
-                return (PolicyCmptInterfaceBuilder)builder;
-            }
-        }
-        return null;
+        standardBuilderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
     }
 
     @Test
@@ -180,10 +168,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
-        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet())
-                .getGenerator(policyCmptType);
-        String expected = "policy."
-                + genPolicyCmptType.getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
+        XPolicyAttribute xPolicyAttribute = standardBuilderSet.getModelNode(attribute, XPolicyAttribute.class);
+        String expected = "policy." + xPolicyAttribute.getMethodNameGetter() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
         // unknown parameter
@@ -230,10 +216,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         result = resolver.compile("policy.tax@default", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
-        expected = "policy." + genPolicyCmptType.getGenProductCmptType().getMethodNameGetProductCmptGeneration()
-                + "()."
-                + ((GenChangeableAttribute)genPolicyCmptType.getGenerator(attribute)).getMethodNameGetDefaultValue()
-                + "()";
+        expected = "policy." + xPolicyAttribute.getMethodNameGetProductCmptGeneration() + "()."
+                + xPolicyAttribute.getMethodNameGetDefaultValue() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
         // attribute of the product component type can be accessed without specifying the product
@@ -271,18 +255,18 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result is a {@link ListOfTypeDatatype} with the basic type {@code IBranch}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns
      * </ul>
      */
     @Test
-    public void testCompileAssociations_1toMany() throws CoreException {
+    public void testCompileAssociations_1toMany() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         CompilationResult result = resolver.compile("tree.branch", null, locale);
         assertTrue(result.successfull());
         assertEquals(new ListOfTypeDatatype(branchPolicyCmptType), result.getDatatype());
-        String expected = "tree."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
-                        .getMethodNameGetAllRefObjects() + "()";
+        XPolicyAssociation xPolicyAssociation = standardBuilderSet.getModelNode(associationTreeToBranches,
+                XPolicyAssociation.class);
+        String expected = "tree." + xPolicyAssociation.getMethodNameGetter() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -317,19 +301,18 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code IBranch}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetRefObjectAtIndex()} method returns and the index
-     * {@code 1}
+     * {@link XPolicyAssociation#getMethodNameGetSingle()} method returns and the index {@code 1}
      * </ul>
      */
     @Test
-    public void testCompileAssociations_1toManyIndexed() throws CoreException {
+    public void testCompileAssociations_1toManyIndexed() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         CompilationResult result = resolver.compile("tree.branch[1]", null, locale);
         assertTrue(result.successfull());
         assertEquals(branchPolicyCmptType, result.getDatatype());
-        String expected = "tree."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
-                        .getMethodNameGetRefObjectAtIndex() + "(1)";
+        XPolicyAssociation xPolicyAssociation = standardBuilderSet.getModelNode(associationTreeToBranches,
+                XPolicyAssociation.class);
+        String expected = "tree." + xPolicyAssociation.getMethodNameGetSingle() + "(1)";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -346,22 +329,26 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result is a {@link ListOfTypeDatatype} with the basic type {@code ILeaf}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetRefObjectAtIndex()} method returns and the
-     * {@link FormulaEvaluatorUtil.AssociationTo1Helper}
+     * {@link XPolicyAssociation#getMethodNameGetSingle()} method returns and the
+     * {@link org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper}
      * </ul>
      */
     @Test
-    public void testCompileAssociations_1toMany1to1() throws CoreException {
+    public void testCompileAssociations_1toMany1to1() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         CompilationResult result = resolver.compile("tree.branch.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(new ListOfTypeDatatype(leafPolicyCmptType), result.getDatatype());
-        String iLeaf = standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true);
-        String iBranch = standardBuilderSet.getGenerator(branchPolicyCmptType).getUnqualifiedClassName(true);
-        String getBranches = standardBuilderSet.getGenerator(treePolicyCmptType)
-                .getGenerator(associationTreeToBranches).getMethodNameGetAllRefObjects();
-        String getLeaf = standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToLeaf)
-                .getMethodNameGetRefObject();
+        XPolicyCmptClass xLeafPct = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class);
+        String iLeaf = xLeafPct.getInterfaceName();
+        XPolicyCmptClass xBranchPct = standardBuilderSet.getModelNode(branchPolicyCmptType, XPolicyCmptClass.class);
+        String iBranch = xBranchPct.getInterfaceName();
+        XPolicyAssociation xTreeToBranches = standardBuilderSet.getModelNode(associationTreeToBranches,
+                XPolicyAssociation.class);
+        String getBranches = xTreeToBranches.getMethodNameGetter();
+        XPolicyAssociation xBranchToLeaf = standardBuilderSet.getModelNode(associationBranchToLeaf,
+                XPolicyAssociation.class);
+        String getLeaf = xBranchToLeaf.getMethodNameGetter();
         String expected = "new " + FormulaEvaluatorUtil.AssociationTo1Helper.class.getSimpleName() + "<" + iBranch
                 + ", " + iLeaf + ">(){@Override protected " + iLeaf + " getTargetInternal(" + iBranch
                 + " sourceObject){return sourceObject." + getLeaf + "();}}.getTargets(tree." + getBranches + "())";
@@ -379,18 +366,18 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code ILeaf}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetRefObject()} method returns
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns
      * </ul>
      */
     @Test
-    public void testCompileAssociations_1to1() throws CoreException {
+    public void testCompileAssociations_1to1() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         CompilationResult result = resolver.compile("twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        String expected = "twig."
-                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
-                        .getMethodNameGetRefObject() + "()";
+        XPolicyAssociation xPolicyAssociation = standardBuilderSet.getModelNode(associationTwigToLeaf,
+                XPolicyAssociation.class);
+        String expected = "twig." + xPolicyAssociation.getMethodNameGetter() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -429,21 +416,21 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code ILeaf}
      * <li>the result's sourcecode uses the methods the
-     * {@link GenAssociation#getMethodNameGetRefObject()} method returns for both associations
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns for both associations
      * </ul>
      */
     @Test
-    public void testCompileAssociations_1to1Chain() throws CoreException {
+    public void testCompileAssociations_1to1Chain() {
         method.newParameter(branchPolicyCmptType.getQualifiedName(), "branch");
         CompilationResult result = resolver.compile("branch.twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        String expected = "branch."
-                + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
-                        .getMethodNameGetRefObject()
-                + "()."
-                + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationTwigToLeaf)
-                        .getMethodNameGetRefObject() + "()";
+        XPolicyAssociation xBranchToTwig = standardBuilderSet.getModelNode(associationBranchToTwig,
+                XPolicyAssociation.class);
+        XPolicyAssociation xTwigToLeaf = standardBuilderSet.getModelNode(associationTwigToLeaf,
+                XPolicyAssociation.class);
+        String expected = "branch." + xBranchToTwig.getMethodNameGetter() + "()." + xTwigToLeaf.getMethodNameGetter()
+                + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -461,26 +448,26 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code ILeaf}
      * <li>the result's sourcecode uses the methods the
-     * {@link GenAssociation#getMethodNameGetRefObjectAtIndex()} method returns for the first
-     * association and the methods the {@link GenAssociation#getMethodNameGetRefObject()} method
-     * returns for the other two associations
+     * {@link XPolicyAssociation#getMethodNameGetSingle()} method returns for the first association
+     * and the methods the {@link XPolicyAssociation#getMethodNameGetter()} method returns for the
+     * other two associations
      * </ul>
      */
     @Test
-    public void testCompileAssociations_fullChainWithIndexInBetween() throws CoreException {
+    public void testCompileAssociations_fullChainWithIndexInBetween() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         CompilationResult result = resolver.compile("tree.branch[0].twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        String expected = "tree."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
-                        .getMethodNameGetRefObjectAtIndex()
-                + "(0)."
-                + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
-                        .getMethodNameGetRefObject()
-                + "()."
-                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
-                        .getMethodNameGetRefObject() + "()";
+        XPolicyAssociation xTreeToBranches = standardBuilderSet.getModelNode(associationTreeToBranches,
+                XPolicyAssociation.class);
+        XPolicyAssociation xBranchToTwig = standardBuilderSet.getModelNode(associationBranchToTwig,
+                XPolicyAssociation.class);
+        XPolicyAssociation xTwigToLeaf = standardBuilderSet.getModelNode(associationTwigToLeaf,
+                XPolicyAssociation.class);
+
+        String expected = "tree." + xTreeToBranches.getMethodNameGetSingle() + "(0)."
+                + xBranchToTwig.getMethodNameGetter() + "()." + xTwigToLeaf.getMethodNameGetter() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -498,12 +485,12 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code ILeaf}
      * <li>the result's sourcecode uses the methods the
-     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns for the first
-     * association and the {@link FormulaEvaluatorUtil.AssociationTo1Helper}
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns for the first association and
+     * the {@link org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper}
      * </ul>
      */
     @Test
-    public void testCompileAssociations_fullChainWithIndexAtEnd() throws CoreException {
+    public void testCompileAssociations_fullChainWithIndexAtEnd() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         CompilationResult result = resolver.compile("tree.branch.twig.leaf[2]", null, locale);
         assertTrue(result.successfull());
@@ -513,15 +500,21 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         // sourceObject.getleaf();}}.getTargets(new AssociationTo1Helper<IBranch, ITwig>(){@Override
         // protected ITwig getTargetInternal(IBranch sourceObject){return
         // sourceObject.gettwig();}}.getTargets(tree.getBranches())).get(2)
-        String iBranch = standardBuilderSet.getGenerator(branchPolicyCmptType).getUnqualifiedClassName(true);
-        String iTwig = standardBuilderSet.getGenerator(twigPolicyCmptType).getUnqualifiedClassName(true);
-        String iLeaf = standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true);
-        String getBranches = standardBuilderSet.getGenerator(treePolicyCmptType)
-                .getGenerator(associationTreeToBranches).getMethodNameGetAllRefObjects();
-        String getTwig = standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
-                .getMethodNameGetRefObject();
-        String getLeaf = standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToLeaf)
-                .getMethodNameGetRefObject();
+        XPolicyCmptClass xBranch = standardBuilderSet.getModelNode(branchPolicyCmptType, XPolicyCmptClass.class);
+        String iBranch = xBranch.getInterfaceName();
+        XPolicyCmptClass xTwig = standardBuilderSet.getModelNode(twigPolicyCmptType, XPolicyCmptClass.class);
+        String iTwig = xTwig.getInterfaceName();
+        XPolicyCmptClass xLeaf = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class);
+        String iLeaf = xLeaf.getInterfaceName();
+        XPolicyAssociation xTreeToBranches = standardBuilderSet.getModelNode(associationTreeToBranches,
+                XPolicyAssociation.class);
+        String getBranches = xTreeToBranches.getMethodNameGetter();
+        XPolicyAssociation xBranchToTwig = standardBuilderSet.getModelNode(associationBranchToTwig,
+                XPolicyAssociation.class);
+        String getTwig = xBranchToTwig.getMethodNameGetter();
+        XPolicyAssociation xBranchToLeaf = standardBuilderSet.getModelNode(associationBranchToLeaf,
+                XPolicyAssociation.class);
+        String getLeaf = xBranchToLeaf.getMethodNameGetter();
         String expected = "new " + FormulaEvaluatorUtil.AssociationTo1Helper.class.getSimpleName() + "<" + iTwig + ", "
                 + iLeaf + ">(){@Override protected " + iLeaf + " getTargetInternal(" + iTwig
                 + " sourceObject){return sourceObject." + getLeaf + "();}}.getTargets(new "
@@ -548,21 +541,19 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@link Datatype#STRING}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetRefObject()} method returns
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns
      * </ul>
      */
     @Test
-    public void testCompileAssociations_associationAndAttribute() throws CoreException {
+    public void testCompileAssociations_associationAndAttribute() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         CompilationResult result = resolver.compile("twig.leaf.color", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
         String expected = "twig."
-                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
-                        .getMethodNameGetRefObject()
-                + "()."
-                + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
-                        attributeColor.getName(), Datatype.STRING) + "()";
+                + standardBuilderSet.getModelNode(associationTwigToLeaf, XPolicyAssociation.class)
+                        .getMethodNameGetter() + "()."
+                + standardBuilderSet.getModelNode(attributeColor, XPolicyAttribute.class).getMethodNameGetter() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -580,7 +571,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@link Datatype#STRING}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetRefObject()} method returns and the
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns and the
      * {@link FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)} method with the ID
      * {@code "MyLeaf"}
      * </ul>
@@ -602,15 +593,14 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
         String expected = "(("
-                + standardBuilderSet.getGenerator(multiColoredLeafPolicyCmptType).getUnqualifiedClassName(true)
+                + standardBuilderSet.getModelNode(multiColoredLeafPolicyCmptType, XPolicyCmptClass.class)
+                        .getInterfaceName()
                 + ")"
                 + FormulaEvaluatorUtil.class.getSimpleName()
                 + ".getModelObjectById(twig."
-                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
-                        .getMethodNameGetRefObject()
-                + "(), \"MyLeaf\"))."
-                + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
-                        attributeColor2.getName(), Datatype.STRING) + "()";
+                + standardBuilderSet.getModelNode(associationTreeToLeaf, XPolicyAssociation.class)
+                        .getMethodNameGetter() + "(), \"MyLeaf\"))."
+                + standardBuilderSet.getModelNode(attributeColor2, XPolicyAttribute.class).getMethodNameGetter() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -673,7 +663,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code IBranch}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns and the
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns and the
      * {@link FormulaEvaluatorUtil#getModelObjectById(List, String)} method with the ID
      * {@code "Branch"}
      * </ul>
@@ -687,8 +677,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         assertEquals(branchPolicyCmptType, result.getDatatype());
         String expected = FormulaEvaluatorUtil.class.getSimpleName()
                 + ".getModelObjectById(tree."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
-                        .getMethodNameGetAllRefObjects() + "(), \"Branch\")";
+                + standardBuilderSet.getModelNode(associationTreeToBranches, XPolicyAssociation.class)
+                        .getMethodNameGetter() + "(), \"Branch\")";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 
@@ -706,7 +696,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code IBranch}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns and the
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns and the
      * {@link FormulaEvaluatorUtil#getModelObjectById(List, String)} method with the ID
      * {@code "Branch"}
      * </ul>
@@ -718,12 +708,13 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         CompilationResult result = resolver.compile("tree.branch.leaf[\"ALeaf\"]", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        String iLeaf = standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true);
-        String iBranch = standardBuilderSet.getGenerator(branchPolicyCmptType).getUnqualifiedClassName(true);
-        String getBranches = standardBuilderSet.getGenerator(treePolicyCmptType)
-                .getGenerator(associationTreeToBranches).getMethodNameGetAllRefObjects();
-        String getLeaf = standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToLeaf)
-                .getMethodNameGetRefObject();
+        String iLeaf = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class).getInterfaceName();
+        String iBranch = standardBuilderSet.getModelNode(branchPolicyCmptType, XPolicyCmptClass.class)
+                .getInterfaceName();
+        String getBranches = standardBuilderSet.getModelNode(associationTreeToBranches, XPolicyAssociation.class)
+                .getMethodNameGetter();
+        String getLeaf = standardBuilderSet.getModelNode(associationBranchToLeaf, XPolicyAssociation.class)
+                .getMethodNameGetter();
         String expected = FormulaEvaluatorUtil.class.getSimpleName() + ".getModelObjectById(new "
                 + FormulaEvaluatorUtil.AssociationTo1Helper.class.getSimpleName() + "<" + iBranch + ", " + iLeaf
                 + ">(){@Override protected " + iLeaf + " getTargetInternal(" + iBranch
@@ -751,7 +742,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code String}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns and the
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns and the
      * {@link FormulaEvaluatorUtil#getModelObjectById(List, String)} method with the ID
      * {@code "ALeaf"}
      * </ul>
@@ -763,32 +754,19 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         CompilationResult result = resolver.compile("tree.branch.moreLeaf[\"MyLeaf\"].color", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
-        String iLeaf = standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true);
-        String iBranch = standardBuilderSet.getGenerator(branchPolicyCmptType).getUnqualifiedClassName(true);
-        String getBranches = standardBuilderSet.getGenerator(treePolicyCmptType)
-                .getGenerator(associationTreeToBranches).getMethodNameGetAllRefObjects();
-        String getMoreLeafs = standardBuilderSet.getGenerator(branchPolicyCmptType)
-                .getGenerator(associationBranchToMoreLeafs).getMethodNameGetAllRefObjects();
-        String expected = FormulaEvaluatorUtil.class.getSimpleName()
-                + ".getModelObjectById(new "
-                + FormulaEvaluatorUtil.AssociationToManyHelper.class.getSimpleName()
-                + "<"
-                + iBranch
-                + ", "
-                + iLeaf
-                + ">(){@Override protected "
-                + List.class.getSimpleName()
-                + '<'
-                + iLeaf
-                + "> getTargetsInternal("
-                + iBranch
-                + " sourceObject){return sourceObject."
-                + getMoreLeafs
-                + "();}}.getTargets(tree."
-                + getBranches
-                + "()), \"MyLeaf\")."
-                + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
-                        attributeColor.getName(), Datatype.STRING) + "()";
+        String iLeaf = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class).getInterfaceName();
+        String iBranch = standardBuilderSet.getModelNode(branchPolicyCmptType, XPolicyCmptClass.class)
+                .getInterfaceName();
+        String getBranches = standardBuilderSet.getModelNode(associationTreeToBranches, XPolicyAssociation.class)
+                .getMethodNameGetter();
+        String getMoreLeafs = standardBuilderSet.getModelNode(associationBranchToMoreLeafs, XPolicyAssociation.class)
+                .getMethodNameGetter();
+        String expected = FormulaEvaluatorUtil.class.getSimpleName() + ".getModelObjectById(new "
+                + FormulaEvaluatorUtil.AssociationToManyHelper.class.getSimpleName() + "<" + iBranch + ", " + iLeaf
+                + ">(){@Override protected " + List.class.getSimpleName() + '<' + iLeaf + "> getTargetsInternal("
+                + iBranch + " sourceObject){return sourceObject." + getMoreLeafs + "();}}.getTargets(tree."
+                + getBranches + "()), \"MyLeaf\")."
+                + standardBuilderSet.getModelNode(attributeColor, XPolicyAttribute.class).getMethodNameGetter() + "()";
         // FormulaEvaluatorUtil.getModelObjectById(new AssociationToManyHelper<IBranch,
         // ILeaf>(){@Override protected List<ILeaf> getTargetsInternal(IBranch sourceObject){return
         // sourceObject.getMoreLeafs();}}.getTargets(tree.getBranches()), "MyLeaf").getColor()
@@ -808,7 +786,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <li>successful compilation
      * <li>the result datatype is {@code IBranch}
      * <li>the result's sourcecode uses the method the
-     * {@link GenAssociation#getMethodNameGetRefObject()} method returns and the
+     * {@link XPolicyAssociation#getMethodNameGetter()} method returns and the
      * {@link FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)} method with the ID
      * {@code "ALeaf"}
      * </ul>
@@ -822,8 +800,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         assertEquals(leafPolicyCmptType, result.getDatatype());
         Object expected = FormulaEvaluatorUtil.class.getSimpleName()
                 + ".getModelObjectById(twig."
-                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
-                        .getMethodNameGetRefObject() + "(), \"ALeaf\")";
+                + standardBuilderSet.getModelNode(associationTwigToLeaf, XPolicyAssociation.class)
+                        .getMethodNameGetter() + "(), \"ALeaf\")";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 

@@ -1,0 +1,216 @@
+extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
+
+// ---------------------------------
+// Methods in IModelObject or AbstractModelObject
+// ---------------------------------
+
+createUnresolvedReference(String arguments):
+	"createUnresolvedReference("+arguments+")";
+
+
+// ---------------------------------
+// Methods in IConfigurableModelObject or AbstractConfigurableModelObject
+// ---------------------------------
+
+getEffectiveFromAsCalendar() :
+	"getEffectiveFromAsCalendar()";
+	
+effectiveFromHasChanged() :
+	"effectiveFromHasChanged()";
+
+// ---------------------------------
+// Methods in IDependantObject
+// ---------------------------------
+
+getParentModelObject() :
+	"getParentModelObject()";
+	
+// ---------------------------------
+// Methods in IProductComponentLink
+// ---------------------------------
+
+getTarget() :
+	"getTarget()";
+	
+getTargetId() :
+	"getTargetId()";
+
+getCardinality() :
+	"getCardinality()";
+	
+createPolicyComponent() :
+	"createPolicyComponent()";
+	
+// ---------------------------------
+// Methods in IProductComponent
+// ---------------------------------
+
+getId() :
+	"getId()";
+	
+getRepository() :
+	"getRepository()";
+
+// ---------------------------------
+// Methods in ProductComponentGeneration
+// ---------------------------------
+
+doInitPropertiesFromXml(String paramMap) :
+	"doInitPropertiesFromXml(" + paramMap + ")";
+
+doInitReferencesFromXml(String paramMap) :
+	"doInitReferencesFromXml(" + paramMap + ")";
+
+doInitTableUsagesFromXml(String paramMap) :
+	"doInitTableUsagesFromXml(" + paramMap + ")";
+
+writePropertiesToXml(String paramElement) :
+	"writePropertiesToXml(" + paramElement + ")";
+
+writeReferencesToXml(String paramElement) :
+	"writeReferencesToXml(" + paramElement + ")";
+
+writeTableUsagesToXml(String paramElement) :
+	"writeTableUsagesToXml(" + paramElement + ")";
+// ---------------------------------
+// Methods in IProductComponentGeneration
+// ---------------------------------
+
+isValidationRuleActivated(String paramConstantName) :
+	"isValidationRuleActivated(" + paramConstantName +")";
+
+getLink(String paramLinkName, String paramTarget) :
+	"getLink(" + paramLinkName + ", " + paramTarget +")";
+
+getLinks() :
+	"getLinks()";
+	
+// ---------------------------------
+// Methods in IConfigurableModelObject
+// ---------------------------------
+
+getProductComponent() :
+	"getProductComponent()";
+	
+getProductCmptGeneration() :
+	"getProductCmptGeneration()";
+
+initialize():
+	"initialize()";
+
+copyProductCmptAndGenerationInternal(String argument):
+	"copyProductCmptAndGenerationInternal("+argument+")";
+			
+// ---------------------------------
+// Methods in AbstractConfigurableModelObject
+// ---------------------------------
+
+setProductCmptGeneration(String argument) :
+	"setProductCmptGeneration(" + argument + ")";
+
+setProductComponent(String argument) :
+	"setProductComponent("+argument+")";
+	
+initPropertiesFromXml(String arg1, String arg2):
+	"initPropertiesFromXml("+arg1+","+arg2+")";
+			
+// ---------------------------------
+// Methods in AbstractModelObject
+// ---------------------------------
+	
+createChildFromXml(String argument):
+	"createChildFromXml("+argument+")";
+	
+validateSelf(String argument1, String argument2):
+	"validateSelf("+argument1+", "+argument2+")";
+	
+validateDependants(String argument1, String argument2):
+	"validateDependants("+argument1+", "+argument2+")";
+			
+// ---------------------------------
+// Methods in IRuntimeRepository
+// ---------------------------------
+
+isModifiable() :
+	"isModifiable()";
+
+getProductComponentGeneration(String idParam, String effectiveFromParam):
+	"getProductComponentGeneration(" + idParam + ", " + effectiveFromParam + ")";
+
+// ---------------------------------
+// Methods in ValueToXmlHelper
+// ---------------------------------
+
+getValueFromElement(String paramConfigElement, String paramValue) :
+	"getValueFromElement(" + paramConfigElement + ", " + paramValue + ")";
+	
+getEnumValueSetFromElement(String paramConfigElement, String paramValueSet) :
+	"getEnumValueSetFromElement(" + paramConfigElement + ", " + paramValueSet + ")";
+	
+getRangeFromElement(String paramConfigElement, String paramValueSet) :
+	"getRangeFromElement(" + paramConfigElement + ", " + paramValueSet + ")";
+
+addValueToElement(String valueParam, String elementParam, String tagNameParam) :
+	"addValueToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
+
+// ---------------------------------
+// Methods in MultiValueXmlHelper
+// ---------------------------------
+
+getValuesFromXML(String paramConfigElement) :
+	"getValuesFromXML(" + paramConfigElement + ")";
+	
+addValuesToElement(String attributeElementParam, String nameParam) :
+	"addValuesToElement(" + attributeElementParam + ", " + nameParam + ")";
+	
+// ---------------------------------
+// Methods in ValueSet
+// ---------------------------------
+	
+containsNull() : 
+	"containsNull()";
+
+// ---------------------------------
+// Methods in EnumValueSet
+// ---------------------------------
+
+getNumberOfValues() : 
+	"getNumberOfValues()";
+
+// ---------------------------------
+// Methods in IXmlPersistenceSupport
+// ---------------------------------
+	
+toXml(String paramDocument) :
+	"toXml(" + paramDocument + ")";
+	
+// ---------------------------------
+// Methods in IDeltaSupport
+// ---------------------------------
+
+computeDelta(String arg1, String arg2):
+	"computeDelta("+arg1+","+arg2+")";
+
+	
+// ---------------------------------
+// Methods in ICopySupport
+// ---------------------------------
+
+newCopy():
+	"newCopy()";
+	
+newCopyInternal(String argument):
+	"newCopyInternal("+argument+")";
+
+copyProperties(String arg1, String arg2):
+	"copyProperties("+arg1+","+arg2+")";
+
+copyAssociationsInternal(String arg1, String arg2):
+	"copyAssociationsInternal("+arg1+","+arg2+")";
+
+// ---------------------------------
+// Methods in IVisitorSupport
+// ---------------------------------
+
+accept(String argument):
+	"accept("+argument+")";

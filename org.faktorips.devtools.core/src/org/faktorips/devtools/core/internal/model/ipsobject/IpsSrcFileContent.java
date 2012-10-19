@@ -190,6 +190,7 @@ public class IpsSrcFileContent {
         if (!modified) {
             return;
         }
+        markAsUnmodified();
         initContentFromFile();
         wholeContentChanged();
     }

@@ -29,8 +29,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 
 /**
  * 
@@ -46,11 +46,16 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, this);
     }
 
-    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
+    }
+
+    public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
         generationBuilder.setProductCmptImplBuilder(builder);
     }
 
-    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
+    public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
         generationBuilder.setProductCmptGenImplBuilder(builder);
     }
 
@@ -102,7 +107,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(generation);
         generationBuilder.setProductCmptGeneration(generation);
         generationBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        if (((StandardBuilderSet)getBuilderSet()).getFormulaCompiling().isCompileToSubclass()) {
+        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
             generationBuilder.build(ipsSrcFile);
         }
         generationBuilder.afterBuild(ipsSrcFile);
@@ -195,6 +200,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
+    }
+
+    @Override
+    public boolean isBuildingInternalArtefacts() {
+        return getBuilderSet().isGeneratePublishedInterfaces();
     }
 
 }

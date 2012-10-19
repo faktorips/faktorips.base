@@ -139,6 +139,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             return false;
         }
 
+        @Override
+        public boolean isBuildingInternalArtefacts() {
+            return false;
+        }
+
     }
 
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
@@ -169,6 +174,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
             deleteCalled = true;
+        }
+
+        @Override
+        public boolean isBuildingInternalArtefacts() {
+            return false;
         }
 
     }
@@ -222,6 +232,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         @Override
         public String getName() {
             return "TestDependencyIpsArtefactBuilder";
+        }
+
+        @Override
+        public boolean isBuildingInternalArtefacts() {
+            return false;
         }
 
     }
@@ -311,7 +326,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         formula.newParameter(a.getQualifiedName(), "pA");
 
         IProductCmpt aProduct = newProductCmpt(aConfigType, "AProduct");
-        IProductCmptGeneration aProductGeneration = (IProductCmptGeneration)aProduct.getFirstGeneration();
+        IProductCmptGeneration aProductGeneration = aProduct.getFirstGeneration();
         IFormula productFormula = aProductGeneration.newFormula(formula);
         productFormula.setExpression("pA.aAttr");
 

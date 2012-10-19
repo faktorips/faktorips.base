@@ -24,6 +24,8 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -42,11 +44,25 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
+    private final IJavaClassNameProvider javaClassNamingProvider;
+
     public EnumTypeBuilder enumTypeBuilder;
 
     public EnumXmlAdapterBuilder(DefaultBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
         super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
         this.enumTypeBuilder = enumTypeBuilder;
+        javaClassNamingProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
+            @Override
+            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+                return ipsSrcFile.getIpsProject().getJavaNamingConvention()
+                        .getImplementationClassName(ipsSrcFile.getIpsObjectName() + "XmlAdapter"); //$NON-NLS-1$
+            }
+        };
+    }
+
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNamingProvider;
     }
 
     @Override
@@ -74,16 +90,6 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
             return !enumType.isContainingValues() && !enumType.isAbstract();
         }
         return false;
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return super.getUnqualifiedClassName(ipsSrcFile) + "XmlAdapter"; //$NON-NLS-1$
-    }
-
-    @Override
-    public String getUnqualifiedClassName() throws CoreException {
-        return super.getUnqualifiedClassName() + "XmlAdapter"; //$NON-NLS-1$
     }
 
     @Override
@@ -218,6 +224,11 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean generatesInterface() {
         return false;
     }
 

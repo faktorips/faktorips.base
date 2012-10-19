@@ -91,7 +91,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 
     @Override
     public String toString() {
-        return getName();
+        return "Builder: " + getName(); //$NON-NLS-1$
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the language in that variables, methods are named and and Java documentations are
      * written in.
      */
-    public Locale getLanguageUsedInGeneratedSourceCode() {
+    public final Locale getLanguageUsedInGeneratedSourceCode() {
         return getBuilderSet().getLanguageUsedInGeneratedSourceCode();
     }
 

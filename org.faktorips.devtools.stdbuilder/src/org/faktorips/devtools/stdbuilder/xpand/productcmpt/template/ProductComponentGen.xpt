@@ -1,0 +1,215 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE main FOR XProductCmptGenerationClass-»
+	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
+	package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+	
+		/**
+		 * «localizedJDoc("CLASS", interfaceName)»
+		 * @generated
+		 */
+		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
+		 {
+		 
+		 	«FOREACH attributes AS this-»
+		 		«IF !generatePublishedInterfaces || !published -»
+			 		«EXPAND ProductAttribute::constantForPropertyName-»
+			 	«ENDIF-»
+		 	«ENDFOREACH-»
+		 
+			«EXPAND ProductAttribute::memberField FOREACH attributes-»
+
+			«EXPAND DefaultAndAllowedValues::defaultAndAllowedValuesFields FOREACH configuredAttributes-»
+
+			«EXPAND ProductAssociation::field FOREACH associations-»
+			
+			«EXPAND TableUsages::memberField FOREACH tables»
+			
+		    /**
+		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
+		     * 
+		     * @generated
+		     */
+			public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
+				super(productCmpt);
+			}
+
+			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
+
+			«EXPAND DefaultAndAllowedValues::getter FOREACH configuredAttributes-»
+
+			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
+			
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions»
+
+			«FOREACH methods AS this-»
+				«IF !formulaSignature-»
+					«EXPAND Methods::method-»
+				«ELSE-»
+					«EXPAND Methods::formulaMethod-»
+				«ENDIF-»
+			«ENDFOREACH-»
+
+			«EXPAND getProductCmpt FOR productCmptClassNode-»
+
+		    /**
+		     * «inheritDoc()»
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
+		        super.«doInitPropertiesFromXml("configMap")»;
+		        «IF attributes.size > 0 || configuredAttributes.size > 0-»
+		        	Element configElement = null;
+		        «ENDIF-»
+		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
+		    }
+		
+			«IF containsNotDerivedAssociations»
+			    /**
+			     * @generated
+			     */
+			    «overrideAnnotation(false)-»
+			    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
+			        super.«doInitReferencesFromXml("elementsMap")»;
+			        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+			    }
+			«ENDIF»
+
+			«IF containsTables-»
+			    /**
+			     * @generated
+			     */
+			    @Override
+			    protected void «doInitTableUsagesFromXml(Map("String", Element()) + " tableUsageMap")» {
+			        super.«doInitTableUsagesFromXml("tableUsageMap")»;
+			        Element element = null;
+			        «EXPAND TableUsages::initTableUsages FOREACH tables-»
+			    }
+			«ENDIF»
+		
+			«EXPAND writeToXmlMethods-»
+
+			«EXPAND createPolicyCmpt(productCmptClassNode) FOREACH policyTypeClassHierarchy»
+
+«REM» TODO may use covariant return type«ENDREM»
+			«IF generateMethodGenericCreatePolicyComponent»
+			    /**
+			     * «inheritDoc()»
+			     * 
+			     * @generated
+			     */
+			    «overrideAnnotation(false)-»
+			    public «IConfigurableModelObject()» «createPolicyComponent()» {
+			    	«IF !configurationForPolicyCmptType-»
+			    		return null;
+			    	«ELSE-»
+			        	return «policyCmptClass.methodNameCreatePolicyCmpt»();
+			        «ENDIF-»
+			    }
+		    «ENDIF»
+	
+			«EXPAND ProductAssociation::getLinkMethods»
+			
+			«EXPAND TableUsages::getterAndSetter FOREACH tables»
+	}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE getProductCmpt FOR XProductCmptClass-»
+	    /**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT_IN_GEN", name, generationConceptNameSingular)»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	    public «interfaceName» «method(methodNameGetProductCmpt)»
+	    «IF genInterface()»;«ELSE-»
+	    {
+	        return («interfaceName»)«getProductComponent()»;
+	    }
+	    «ENDIF»
+«ENDDEFINE»
+
+«DEFINE writeToXmlMethods FOR XProductCmptGenerationClass-»
+	«IF generateToXmlSupport-»
+	    /**
+	     * «inheritDoc()»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)-»
+	    protected void «writePropertiesToXml(Element() + " element")» {
+	    	«IF hasSupertype()-»
+	        	super.«writePropertiesToXml("element")»;
+	        «ELSE-»
+ «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
+	        «ENDIF-»
+	        «IF attributes.size > 0-»
+		        Element attributeElement = null;
+		        List<String> stringList = null;
+	        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
+	        «ENDIF-»
+	        «IF configuredAttributes.size > 0-» 
+	        	Element configElement = null;
+	        	Element valueSetElement = null;
+	        	Element valueSetValuesElement = null;
+	        	«EXPAND DefaultAndAllowedValues::writeAttributeToXML FOREACH configuredAttributes-»
+	        «ENDIF-»
+	    }
+	   
+		«IF  containsNotDerivedAssociations»
+		    /**
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    protected void «writeReferencesToXml(Element() + " element")» {
+		        super.«writeReferencesToXml("element")»;
+		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
+		    }
+		«ENDIF»
+
+			«IF containsTables-»
+		    /**
+		     * @generated
+		     */
+		    @Override
+		    protected void «writeTableUsagesToXml(Element() + " element")» {
+		        super.«writeTableUsagesToXml("element")»;
+		        «EXPAND TableUsages::writeTableUsages FOREACH tables-»
+		    }
+		«ENDIF»
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
+«REM» TODO may use covariant return type«ENDREM»
+«DEFINE createPolicyCmpt(XProductCmptClass currentType) FOR XPolicyCmptClass»
+	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
+	    /**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CREATE_POLICY_CMPT_IN_GEN")»
+	     * 
+	     * @generated
+	     */
+	     «overrideAnnotationForPublishedMethodOrIf(!genInterface(), this.productCmptNode != currentType)-»
+	    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)»
+	    «IF genInterface()»;«ELSE-»
+	    {
+	        «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
+	        policy.«setProductCmptGeneration("this")»;
+	        policy.«initialize()»;
+	        return policy;
+	    }
+	    «ENDIF-»
+    «ENDIF-»
+«ENDDEFINE»

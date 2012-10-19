@@ -318,8 +318,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             // Sort links by association
             Hashtable<String, List<IProductCmptLink>> mapping = new Hashtable<String, List<IProductCmptLink>>();
 
-            List<IAssociation> associations = new ArrayList<IAssociation>();
-            // new ArrayList<IProductCmptTypeAssociation>();
             for (IProductCmptLink link : links) {
                 try {
                     IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
@@ -340,12 +338,13 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 }
             }
 
+            List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
             try {
                 IProductCmptType cmptType = cmpt.findProductCmptType(ipsProject);
                 if (cmptType != null) {
                     // get again all associations. in the previous constructed list there are only
                     // not empty relations
-                    associations = cmptType.findAllNotDerivedAssociations();
+                    associations = cmptType.findAllNotDerivedAssociations(ipsProject);
                 }
                 for (IAssociation iAssociation : associations) {
                     IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;

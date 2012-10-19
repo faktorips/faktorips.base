@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 
 /**
  * Utility class needed by the Faktor-IPS refactoring support.
@@ -52,11 +53,15 @@ public final class RefactorUtil {
 
         IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
 
-        String targetSrcFileName = copyName + "." + toBeCopied.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
+        String targetSrcFileName = getTargetFileName(toBeCopied, copyName);
         IPath destinationPath = destinationFolder.append(targetSrcFileName);
 
         toBeCopied.getCorrespondingResource().copy(destinationPath, true, progressMonitor);
         return targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
+    }
+
+    public static String getTargetFileName(IIpsSrcFile toBeCopied, String copyName) {
+        return copyName + "." + toBeCopied.getIpsObjectType().getFileExtension();//$NON-NLS-1$
     }
 
     /**
@@ -81,6 +86,29 @@ public final class RefactorUtil {
 
         long timestamp = new Date().getTime();
         return copyIpsSrcFile(toBeCopied, targetIpsPackageFragment, copyName + timestamp, progressMonitor);
+    }
+
+    public static IIpsSrcFile moveIpsSrcFile(IIpsSrcFile originalSrcFile,
+            IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
+            IProgressMonitor pm) throws CoreException {
+        IIpsSrcFile targetSrcFile;
+        if (targetIpsPackageFragment.equals(originalSrcFile.getIpsPackageFragment())
+                && isOnlyCapitalizationChanged(originalSrcFile, newName)) {
+            IIpsSrcFile tempSrcFile = copyIpsSrcFileToTemporary(originalSrcFile, targetIpsPackageFragment, newName, pm);
+            originalSrcFile.delete();
+            targetSrcFile = copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, pm);
+            tempSrcFile.delete();
+        } else {
+            targetSrcFile = copyIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
+            originalSrcFile.delete();
+        }
+        return targetSrcFile;
+    }
+
+    public static boolean isOnlyCapitalizationChanged(IIpsSrcFile fileToBeCopied, String newName) {
+        String oldName = StringUtil.getFilenameWithoutExtension(fileToBeCopied.getName());
+        return newName.toLowerCase().equals(oldName.toLowerCase());
     }
 
     private RefactorUtil() {

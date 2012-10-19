@@ -20,12 +20,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -93,13 +97,15 @@ public class IpsPullUpProcessorTest {
         }
 
         @Override
-        protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+            IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+            addAffectedSrcFiles(modificationSet);
+            return modificationSet;
         }
 
         @Override
-        protected void addIpsSrcFiles() throws CoreException {
-
+        protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+            return new HashSet<IIpsSrcFile>();
         }
 
         @Override

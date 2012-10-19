@@ -28,6 +28,13 @@ public interface IParameter extends IIpsObjectPart {
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /**
+     * Returns the parent container this parameter is part of.
+     * 
+     * @return The container this parameter is part of.
+     */
+    public IParameterContainer getParameterContainer();
+
+    /**
      * Sets the name of the parameter.
      */
     public void setName(String newName);

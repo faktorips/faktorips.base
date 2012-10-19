@@ -27,7 +27,7 @@ import org.faktorips.runtime.internal.ProductComponent;
  * 
  * @author Jan Ortmann
  */
-public interface IProductComponentGeneration extends IRuntimeObject {
+public interface IProductComponentGeneration extends IRuntimeObject, IProductComponentLinkSource {
 
     /**
      * Creates a new policy component that is configured by this product component generation. After

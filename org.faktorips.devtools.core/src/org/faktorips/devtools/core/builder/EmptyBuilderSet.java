@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.LinkedHashMap;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -70,24 +73,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-
-        return createFlIdentifierResolver(formula, exprCompiler);
-    }
-
-    @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
 
     @Override
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) {
-        return null;
-    }
-
-    @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
         return null;
     }
 
@@ -113,17 +104,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-        return new IIpsArtefactBuilder[0];
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+        return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
     }
 
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
-        return null;
-    }
-
-    @Override
-    public String getInternalPackage(String basePackageName, String subPackageFragment) {
         return null;
     }
 

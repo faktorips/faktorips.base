@@ -6,7 +6,7 @@
          <meta.schema plugin="org.faktorips.plugin" id="artefactbuilder" name="%artefactbuilderName"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension defines a Faktor-IPS builder set and its configuration definition.
       </documentation>
    </annotation>
 

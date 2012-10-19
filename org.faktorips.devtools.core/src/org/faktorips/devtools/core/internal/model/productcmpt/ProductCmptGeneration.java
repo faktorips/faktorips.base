@@ -14,11 +14,9 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -59,17 +57,15 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 public class ProductCmptGeneration extends IpsObjectGeneration implements IProductCmptGeneration {
 
-    private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
+    private final ProductCmptLinkCollection linkCollection = new ProductCmptLinkCollection();
 
-    private List<IProductCmptLink> links = new ArrayList<IProductCmptLink>(0);
+    private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
@@ -264,23 +260,19 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IProductCmptLink[] getLinks() {
-        return links.toArray(new ProductCmptLink[links.size()]);
+        List<IProductCmptLink> result = getLinksAsList();
+        return result.toArray(new ProductCmptLink[result.size()]);
     }
 
     @Override
     public IProductCmptLink[] getLinks(String typeLink) {
-        List<IProductCmptLink> result = new ArrayList<IProductCmptLink>();
-        for (IProductCmptLink link : links) {
-            if (link.getAssociation().equals(typeLink)) {
-                result.add(link);
-            }
-        }
+        List<IProductCmptLink> result = getLinksAsList(typeLink);
         return result.toArray(new ProductCmptLink[result.size()]);
     }
 
     @Override
     public int getNumOfLinks() {
-        return links.size();
+        return linkCollection.size();
     }
 
     @Override
@@ -290,107 +282,40 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IProductCmptLink newLink(String associationName) {
-        ProductCmptLink newRelation = newLinkInternal(getNextPartId());
-        newRelation.setAssociation(associationName);
+        IProductCmptLink newLink = linkCollection.createAndAddNewLink(this, associationName, getNextPartId());
         objectHasChanged();
-        return newRelation;
+        return newLink;
     }
 
     @Override
-    public IProductCmptLink newLink(String associationName, IProductCmptLink insertBefore) {
-        ProductCmptLink newRelation = newLinkInternal(getNextPartId(), insertBefore);
-        newRelation.setAssociation(associationName);
+    public IProductCmptLink newLink(String associationName, IProductCmptLink insertAbove) {
+        IProductCmptLink newLink = linkCollection.createAndInsertNewLink(this, associationName, getNextPartId(),
+                insertAbove);
         objectHasChanged();
-        return newRelation;
+        return newLink;
     }
 
     @Override
-    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException {
-
-        if (association == null || target == null || !getIpsSrcFile().isMutable()) {
-            return false;
-        }
-        IProductCmptType type = findProductCmptType(ipsProject);
-        if (type == null) {
-            return false;
-        }
-        // it is not valid to create more than one relation with the same type and target.
-        if (!isFirstRelationOfThisType(association, target, ipsProject)) {
-            return false;
-        }
-        // is correct type
-        IProductCmptType targetType = target.findProductCmptType(ipsProject);
-        if (targetType == null) {
-            return false;
-        }
-        if (!targetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject)) {
-            return false;
-        }
-
-        return this.getLinks(association.getName()).length < association.getMaxCardinality()
-                && ProductCmptLink.willBeValid(target, association, ipsProject);
-    }
-
-    private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
-            throws CoreException {
-
-        // TODO Sometimes there were concurrent modification when adding multiple links in the
-        // product component editor at once (add existing --> multi select). This fixes the problem
-        // but does not fix the root of the problem.
-        List<IProductCmptLink> copy = new CopyOnWriteArrayList<IProductCmptLink>(links);
-        for (IProductCmptLink link : copy) {
-            if (link.findAssociation(ipsProject).equals(association)
-                    && link.getTarget().equals(target.getQualifiedName())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private ProductCmptLink newLinkInternal(String id, IProductCmptLink insertBefore) {
-        ProductCmptLink newRelation = new ProductCmptLink(this, id);
-        if (insertBefore == null) {
-            links.add(newRelation);
-        } else {
-            int index = links.indexOf(insertBefore);
-            if (index == -1) {
-                links.add(newRelation);
-            } else {
-                links.add(index, newRelation);
-            }
-        }
-        return newRelation;
-    }
-
-    private ProductCmptLink newLinkInternal(String id) {
-        return newLinkInternal(id, null);
+    public boolean canCreateValidLink(IProductCmpt target,
+            IProductCmptTypeAssociation association,
+            IIpsProject ipsProject) throws CoreException {
+        return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 
     @Override
-    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before) {
-        // if toMove and target are the same we have to do nothing
-        if (toMove == target) {
-            return true;
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
+        boolean moved = linkCollection.moveLink(toMove, target, above);
+        if (moved) {
+            /*
+             * In 3.8 objectHasChanged() is now also called if toMove and target are identical,
+             * where before it wasn't. This is because moveLink() returns true in that case (even
+             * though no real "change" happened). However semantically it seems correct to mark as
+             * changed if a link could be moved. Maybe the moveLink() implementation (or java doc)
+             * needs to be re-thought?
+             */
+            objectHasChanged();
         }
-        if (toMove == null || target == null) {
-            return false;
-        }
-        if (!links.contains(target)) {
-            return false;
-        }
-        boolean removed = links.remove(toMove);
-        if (!removed) {
-            return false;
-        }
-        int index = links.indexOf(target);
-        if (!before) {
-            index++;
-        }
-        links.add(index, toMove);
-        toMove.setAssociation(target.getAssociation());
-        objectHasChanged();
-        return true;
+        return moved;
     }
 
     @Override
@@ -464,7 +389,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 + getNumOfFormulas() + getNumOfValidationRules() + getNumOfLinks();
         List<IIpsElement> children = new ArrayList<IIpsElement>(size);
         children.addAll(propertyValueCollection.getAllPropertyValues());
-        children.addAll(links);
+        children.addAll(getLinksAsList());
         return children.toArray(new IIpsElement[children.size()]);
     }
 
@@ -472,7 +397,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         IIpsObjectPart newPart = null;
         if (IPolicyCmptTypeAssociation.class.isAssignableFrom(partType)) {
-            newPart = newLinkInternal(getNextPartId());
+            newPart = createAndAddNewLinkInternal(getNextPartId());
         } else if (IPropertyValue.class.isAssignableFrom(partType)) {
             Class<? extends IPropertyValue> propertyValueType = partType.asSubclass(IPropertyValue.class);
             newPart = propertyValueCollection.newPropertyValue(this, getNextPartId(), propertyValueType);
@@ -484,7 +409,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
-            ProductCmptLink newLinkInternal = newLinkInternal(id);
+            IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
             return newLinkInternal;
         } else {
             IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, xmlTagName, getNextPartId());
@@ -492,11 +417,24 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
     }
 
+    /**
+     * Creates a link without a corresponding association name. The association thus remains
+     * undefined. Moreover the association must not be set as this method is used for XML
+     * initialization which in turn must not trigger value changes (and setAssociation() would).
+     * 
+     * @param id the future part id of the new link
+     */
+    private IProductCmptLink createAndAddNewLinkInternal(String id) {
+        ProductCmptLink newLink = new ProductCmptLink(this, id);
+        linkCollection.addLink(newLink);
+        return newLink;
+    }
+
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
         boolean result = false;
         if (part instanceof IProductCmptLink) {
-            result = links.add((IProductCmptLink)part);
+            result = linkCollection.addLink((IProductCmptLink)part);
         } else if (part instanceof IPropertyValue) {
             result = propertyValueCollection.addPropertyValue((IPropertyValue)part);
         }
@@ -506,7 +444,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IProductCmptLink) {
-            return links.remove(part);
+            return linkCollection.remove((IProductCmptLink)part);
         } else if (part instanceof IPropertyValue) {
             return propertyValueCollection.removePropertyValue((IPropertyValue)part);
         } else {
@@ -517,7 +455,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected void reinitPartCollectionsThis() {
         propertyValueCollection.clear();
-        links.clear();
+        linkCollection.clear();
     }
 
     @Override
@@ -546,7 +484,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
 
-        new AssociationsValidator(ipsProject, list).start(type);
+        new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
 
         IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
@@ -621,76 +559,24 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return ruleConfig;
     }
 
-    private class AssociationsValidator extends TypeHierarchyVisitor<IProductCmptType> {
-
-        private final MessageList list;
-
-        public AssociationsValidator(IIpsProject ipsProject, MessageList list) {
-            super(ipsProject);
-            this.list = list;
-        }
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            List<IAssociation> associations = currentType.getAssociations();
-            for (IAssociation association : associations) {
-                if (association.isDerivedUnion()) {
-                    continue;
-                }
-                IProductCmptLink[] relations = getLinks(association.getTargetRoleSingular());
-
-                // get all messages for the relation types and add them
-                MessageList relMessages = association.validate(ipsProject);
-                if (!relMessages.isEmpty()) {
-                    list.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
-                }
-
-                if (association.getMinCardinality() > relations.length) {
-                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                    Object[] params = { new Integer(relations.length), associationLabel,
-                            new Integer(association.getMinCardinality()) };
-                    String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
-                    ObjectProperty prop1 = new ObjectProperty(this, null);
-                    ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-                    list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {
-                            prop1, prop2 }));
-                }
-
-                int maxCardinality = association.getMaxCardinality();
-                if (maxCardinality < relations.length) {
-                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                    Object[] params = { new Integer(relations.length), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
-                    String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
-                    ObjectProperty prop1 = new ObjectProperty(this, null);
-                    ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-                    list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] { prop1,
-                            prop2 }));
-                }
-
-                Set<String> targets = new HashSet<String>();
-                String msg = null;
-                for (IProductCmptLink relation : relations) {
-                    String target = relation.getTarget();
-                    if (!targets.add(target)) {
-                        if (msg == null) {
-                            String associationLabel = IpsPlugin.getMultiLanguageSupport()
-                                    .getLocalizedLabel(association);
-                            msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
-                        }
-                        list.add(new Message(MSGCODE_DUPLICATE_RELATION_TARGET, msg, Message.ERROR, association
-                                .getTargetRoleSingular()));
-                    }
-                }
-            }
-
-            return true;
-        }
-
-    }
-
     @Override
     public String getProductCmptType() {
         return getProductCmpt().getProductCmptType();
+    }
+
+    @Override
+    public boolean isContainerFor(IProductCmptTypeAssociation association) {
+        return association.isChangingOverTime();
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinksAsList() {
+        return linkCollection.getLinks();
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinksAsList(String associationName) {
+        return linkCollection.getLinks(associationName);
     }
 
 }

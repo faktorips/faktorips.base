@@ -41,6 +41,8 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
      * <p>
      * This constructor was left deprecated to ensure compatibility with the product variant
      * plugins.
+     * 
+     * @deprecated As of 3.7.
      */
     @Deprecated
     public EnumValueSubsetChooserModel(List<String> sourceValueIds, IEnumValueSet resultingEnumValueSet,

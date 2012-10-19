@@ -310,16 +310,16 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
 
         generation.newLink(association.getName()).setTarget(target.getQualifiedName());
         ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
 
         generation.newLink(association).setTarget(target.getQualifiedName());
 
         ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
 
     @Test
@@ -332,15 +332,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(2);
 
         MessageList ml = baseGeneration.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
     }
 
@@ -354,15 +354,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(1);
 
         MessageList ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
     }
 
     @Test
@@ -656,6 +656,22 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNotNull(generation.getValidationRuleConfig("ruleThree"));
         assertNull(generation.getValidationRuleConfig("nonExistingRule"));
         assertNull(generation.getValidationRuleConfig(null));
+    }
+
+    @Test
+    public void testIsContainerForChangingAssociation() {
+        IProductCmptTypeAssociation changingAssoc = productCmptType.newProductCmptTypeAssociation();
+        changingAssoc.setChangingOverTime(true);
+
+        assertTrue(generation.isContainerFor(changingAssoc));
+    }
+
+    @Test
+    public void testIsContainerForStaticAssociation() {
+        IProductCmptTypeAssociation staticAssoc = productCmptType.newProductCmptTypeAssociation();
+        staticAssoc.setChangingOverTime(false);
+
+        assertFalse(generation.isContainerFor(staticAssoc));
     }
 
 }

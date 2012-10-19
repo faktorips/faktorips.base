@@ -16,18 +16,18 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAssociation;
 
-public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer {
+public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
+        IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -37,26 +37,43 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     /**
      * Validation message code to indicate that the generation contains less relations of a specific
      * relation type than required by the relation type. E.g. a motor product must contain at least
-     * one collision coverage type, but the motor product does not contain a relation to a collision
-     * coverage type.
+     * one relation to a collision coverage component, but it does not.
      * <p>
      * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
      * The first one contains the generation and the second one the relation type as string. In both
      * cases the property part of the ObjectProperty is empty.
+     * 
+     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_NOT_ENOUGH_RELATIONS}
+     *             instead.
      */
+    @Deprecated
     public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the generation contains more relations of a specific
-     * relation type than specified by the relation type. E.g. a motor product can contain only one
-     * collision coverage type, but the motor product contains two relations to a collision coverage
-     * type.
+     * relation type than specified by the relation type. E.g. a motor product can contain at most
+     * one relation to a collision coverage component, but contains two (or more) relations to
+     * collision coverage components.
      * <p>
      * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
      * The first one contains the generation and the second one the relation type as string. In both
      * cases the property part of the ObjectProperty is empty.
+     * 
+     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_TOO_MANY_RELATIONS}
+     *             instead.
      */
+    @Deprecated
     public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that two or more relations of a specific type have the
+     * same target.
+     * 
+     * @deprecated As of 3.8. Use
+     *             {@link IProductCmptLinkContainer#MSGCODE_DUPLICATE_RELATION_TARGET} instead.
+     */
+    @Deprecated
+    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template for the product this generation is for
@@ -73,12 +90,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
             + "AttributeWithMissingConfigElement"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that more than one relation of a specific type have the
-     * same target.
-     */
-    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
-
-    /**
      * Validation message code to identify the message that informs about a link to a product
      * component that doesn't have an effective date that is before or equal to the effective date
      * of the referencing product component generation.
@@ -88,6 +99,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     /**
      * Returns the product component this generation belongs to.
      */
+    @Override
     public IProductCmpt getProductCmpt();
 
     /**
@@ -172,77 +184,19 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Returns the product component's relations to other product components.
+     * 
+     * Use {@link #getLinksAsList()} instead
      */
     public IProductCmptLink[] getLinks();
 
     /**
      * Returns the links that are instances of the given product component type association or an
-     * empty array if no such link is found.
+     * empty array if no such link is found. Use {@link #getLinksAsList(String)} instead
      * 
      * @param association The name (=target role singular) of an association.
      * @throws IllegalArgumentException if type relation is null.
      */
     public IProductCmptLink[] getLinks(String association);
-
-    /**
-     * Returns the number of relations.
-     */
-    public int getNumOfLinks();
-
-    /**
-     * Creates a new link that is an instance of the product component type association identified
-     * by the given association name.
-     * 
-     * @throws NullPointerException if associationName is <code>null</code>.
-     */
-    public IProductCmptLink newLink(String associationName);
-
-    /**
-     * Creates a new link that is an instance of the product component type association.
-     * 
-     * @throws NullPointerException if association is <code>null</code>.
-     */
-    public IProductCmptLink newLink(IProductCmptTypeAssociation association);
-
-    /**
-     * Creates a new link that is an instance of the given association. The new link is placed
-     * before the given one.
-     */
-    public IProductCmptLink newLink(String association, IProductCmptLink insertBefore);
-
-    /**
-     * Checks whether a new link as instance of the given product component type association and the
-     * given target will be valid.
-     * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
-     *            necessarily the project this component is part of.
-     * 
-     * @return <code>true</code> if a new relation with the given values will be valid,
-     *         <code>false</code> otherwise.
-     * 
-     * @throws CoreException if a problem occur during the search of the type hierarchy.
-     */
-    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException;
-
-    /**
-     * Moves the link given with parameter <code>toMove</code> before or after the specified target
-     * link. If the target belongs to another association, the association of the toMove link will
-     * change, too.
-     * <p>
-     * With the boolean parameter before you could specify to move the link before or after the
-     * target link.
-     * 
-     * @param toMove the link you want to move
-     * @param target target link you want to move the <code>toMove</code>-Link
-     * @param before true for moving <code>toMove</code> in front of target, false to move it behind
-     *            target
-     * 
-     * @return The method returns true if the link could be moved and returns false if toMove or
-     *         target is null one of the links was not part of this generation yet.
-     * 
-     */
-    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before);
 
     /**
      * Returns a new table content usage.

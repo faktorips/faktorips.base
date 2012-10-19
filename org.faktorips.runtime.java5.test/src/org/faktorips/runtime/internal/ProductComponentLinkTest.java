@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentLinkSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -34,7 +35,8 @@ public class ProductComponentLinkTest {
     @Before
     public void setUp() throws Exception {
         ProductComponentGeneration generationMock = mock(ProductComponentGeneration.class);
-        ProductComponentLink<IProductComponent> link = new ProductComponentLink<IProductComponent>(generationMock);
+        ProductComponentLink<IProductComponent> link = new ProductComponentLink<IProductComponent>(
+                (IProductComponentLinkSource)generationMock);
         linkSpy = spy(link);
         when(linkSpy.getTargetId()).thenReturn(null);
         when(linkSpy.getAssociationName()).thenReturn("associationName");
@@ -66,6 +68,15 @@ public class ProductComponentLinkTest {
         verify(linkElement).setAttribute("minCardinality", "0");
         verify(linkElement).setAttribute("maxCardinality", "*");
         verify(linkElement).setAttribute("defaultCardinality", "1");
+    }
+
+    @SuppressWarnings("deprecation")
+    // Deliberately tests the (changed) functionality of the deprecated method
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUnsupportedOperationIfSourceIsProductComponent() {
+        ProductComponent prodCmpt = mock(ProductComponent.class);
+        ProductComponentLink<IProductComponent> link = new ProductComponentLink<IProductComponent>(prodCmpt);
+        link.getSource();
     }
 
 }

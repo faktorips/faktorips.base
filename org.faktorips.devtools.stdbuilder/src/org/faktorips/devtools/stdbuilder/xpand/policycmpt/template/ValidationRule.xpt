@@ -1,0 +1,121 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::ClassNames»
+
+«DEFINE validate FOR XValidationRule-»
+        if (!«methodNameExecRule»(ml, context)) {
+            return STOP_VALIDATION;
+        }
+«ENDDEFINE»
+
+«DEFINE constants FOR XValidationRule-»
+	«EXPAND constantMsgCode-»
+	«EXPAND constantRuleName-»
+«ENDDEFINE»
+
+«DEFINE validationRuleMethods FOR XValidationRule-»
+	«EXPAND execRuleMethod»
+	«EXPAND createMessageFor»
+«ENDDEFINE»
+
+«DEFINE constantMsgCode FOR XValidationRule-»
+    /**
+     * «localizedJDoc("FIELD_MSG_CODE", name)»
+     * 
+     * @generated
+     */
+    public final static String «constantNameMessageCode» = "«messageCode»";
+«ENDDEFINE»
+
+«DEFINE constantRuleName FOR XValidationRule-»
+	«IF configured-»
+	    /**
+	     * «localizedJDoc("FIELD_RULE_NAME", name)»
+	     * 
+	     * @generated
+	     */
+	    public final static String «constantNameRuleName» = "«name»";
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE execRuleMethod FOR XValidationRule-»
+    /**
+     * «localizedJDoc("EXEC_RULE", name)»
+     * 
+     * @restrainedmodifiable
+     */
+    protected boolean «method(methodNameExecRule, MessageList(), "ml", IValidationContext(), "context")» {
+    	«IF specificBusinessFunctions»
+  	        if (
+  	        «FOREACH specifiedBusinessFunctions AS bf SEPARATOR " || "-»
+  	        "«bf»".equals(context.getValue("businessFunction"))
+  	        «ENDFOREACH-»
+  	        ) {
+    	«ENDIF-»
+		«IF configured»
+	        if («getProductCmptGeneration()».«isValidationRuleActivated(constantNameRuleName)») {
+		«ENDIF-»
+		«IF !checkValueAgainstValueSetRule-»
+		     // begin-user-code
+	        «localizedComment("EXEC_RULE_IMPLEMENT_TODO", name)»
+	        if (true) {
+	            ml.add(«methodNameCreateMessage»(context «FOREACH replacementParameters AS param», null«ENDFOREACH»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));«IF needTodoCompleteCallCreateMsg-»
+	            «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
+	            «ENDIF-»
+	        }
+	        return CONTINUE_VALIDATION;
+	        // end-user-code
+	    «ELSE-»
+	    	«LET checkedAttribute AS this-»
+	        if (!«methodNameGetAllowedValuesFor»(context).contains(«methodNameGetter»())) {
+	        «ENDLET-»
+	            // begin-user-code
+	            ml.add(«methodNameCreateMessage»(context «FOREACH replacementParameters AS param», null«ENDFOREACH»));
+	            // end-user-code
+	        }
+      		return CONTINUE_VALIDATION;
+        «ENDIF-»
+		«IF configured-»
+	    }
+        return CONTINUE_VALIDATION;
+		«ENDIF-»
+    	«IF specificBusinessFunctions-»
+	    }
+        return CONTINUE_VALIDATION;
+    	«ENDIF-»
+    }
+«ENDDEFINE»
+
+«DEFINE createMessageFor FOR XValidationRule-»
+    /**
+     * «localizedJDoc("CREATE_MESSAGE", name)»
+     * 
+     * @generated
+     */
+    protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {
+    	«IF validateAttributes-»
+                ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
+                «FOREACH validatedAttributeConstants AS constant SEPARATOR ","-»
+                new ObjectProperty(this, «constant»)
+                «ENDFOREACH-»
+				 };
+        «ELSE-»
+        «IF !validatedAttrSpecifiedInSrc-»
+        «ObjectProperty()» invalidObjectProperties = new «ObjectProperty()»(this);
+        «ENDIF-»
+		«ENDIF-»        
+        «IF containsReplacementParameters-»
+	        «MsgReplacementParameter()»[] replacementParameters = new «MsgReplacementParameter()»[] {
+	        	«FOREACH replacementParameters AS param SEPARATOR ","-»
+	                new «MsgReplacementParameter()»("«param»", «param»)
+	            «ENDFOREACH-»
+	             };
+	    «ENDIF-»
+        «MessagesHelper()» messageHelper = new «MessagesHelper()»("«validateMessageBundleName»",
+                getClass().getClassLoader());
+        String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale()«FOREACH replacementParameters AS param», «param»«ENDFOREACH»);
+        return new «Message()»(«constantNameMessageCode», msgText, «severityConstant», invalidObjectProperties «IF containsReplacementParameters», replacementParameters«ENDIF»);
+    }
+«ENDDEFINE»

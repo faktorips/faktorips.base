@@ -16,9 +16,12 @@ package org.faktorips.devtools.core.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.LinkedHashMap;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -49,7 +52,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetRuntimeRepositoryTocFile() throws CoreException {
+    public void testGetRuntimeRepositoryTocFile() {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         DefaultBuilderSet builderSet = new TestBuilderSet();
         IFile file = builderSet.getRuntimeRepositoryTocFile(root);
@@ -58,7 +61,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetRuntimeRepositoryTocResourceName() throws CoreException {
+    public void testGetRuntimeRepositoryTocResourceName() {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         DefaultBuilderSet builderSet = new TestBuilderSet();
         String tocResource = builderSet.getRuntimeRepositoryTocResourceName(root);
@@ -83,8 +86,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-            return new IIpsArtefactBuilder[0];
+        protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+            return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
         }
 
     }
