@@ -1781,7 +1781,7 @@
                         variable="selection">
                      <iterate>
                         <instanceof
-                              value="java.lang.String">
+                              value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                         </instanceof>
                      </iterate>
                   </with>
@@ -1831,7 +1831,7 @@
                         variable="selection">
                      <iterate>
                         <instanceof
-                              value="java.lang.String">
+                              value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                         </instanceof>
                      </iterate>
                   </with>
@@ -2115,7 +2115,7 @@
                         ifEmpty="true"
                         operator="and">
                      <instanceof
-                           value="java.lang.String">
+                           value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                      </instanceof>
                   </iterate>
                </with>
@@ -2132,7 +2132,7 @@
                      variable="selection">
                   <iterate>
                      <instanceof
-                           value="java.lang.String">
+                           value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                      </instanceof>
                   </iterate>
                </with>
@@ -2252,6 +2252,13 @@
           class="org.faktorips.devtools.core.ui.adapterfactories.FixDifferencesCompositeAdapterFactory">
        <adapter
              type="org.eclipse.ui.model.IWorkbenchAdapter">
+       </adapter>
+    </factory>
+    <factory
+          adaptableType="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem"
+          class="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItemAdapterFactory">
+       <adapter
+             type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer">
        </adapter>
     </factory>
  </extension>

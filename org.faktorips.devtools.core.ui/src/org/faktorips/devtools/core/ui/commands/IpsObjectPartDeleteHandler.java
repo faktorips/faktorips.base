@@ -20,9 +20,11 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
@@ -47,13 +49,12 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
                 for (Object o : structuredSelection.toArray()) {
                     if (o instanceof IIpsObjectPart) {
                         IIpsObjectPart objectPart = (IIpsObjectPart)o;
-                        IIpsSrcFile srcFile = objectPart.getIpsSrcFile();
-                        if (IpsUIPlugin.isEditable(srcFile)) {
-                            if (needToSave(srcFile, event)) {
-                                srcFilesToSave.add(srcFile);
-                            }
-                            objectPart.delete();
-                        }
+                        deleteIpsObjectPart(event, srcFilesToSave, objectPart);
+                    }
+                    if (o instanceof IAdaptable) {
+                        IIpsObjectPart ipsObjectPart = (IIpsObjectPart)Platform.getAdapterManager().getAdapter(o,
+                                IIpsObjectPart.class);
+                        deleteIpsObjectPart(event, srcFilesToSave, ipsObjectPart);
                     }
                 }
             } finally {
@@ -77,6 +78,18 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
             }
         }
         return null;
+    }
+
+    private void deleteIpsObjectPart(ExecutionEvent event,
+            final Set<IIpsSrcFile> srcFilesToSave,
+            IIpsObjectPart objectPart) {
+        IIpsSrcFile srcFile = objectPart.getIpsSrcFile();
+        if (IpsUIPlugin.isEditable(srcFile)) {
+            if (needToSave(srcFile, event)) {
+                srcFilesToSave.add(srcFile);
+            }
+            objectPart.delete();
+        }
     }
 
     private boolean needToSave(IIpsSrcFile srcFile, ExecutionEvent event) {

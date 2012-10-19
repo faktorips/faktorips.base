@@ -53,4 +53,8 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
         return association.getName();
     }
 
+    public IProductCmptTypeAssociation getAssociation() {
+        return association;
+    }
+
 }

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.commands.AbstractAddAndNewProductCmptCommand;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptCommand {
@@ -45,7 +46,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection)selection;
             Object firstElement = structuredSelection.getFirstElement();
-            if (firstElement instanceof String) {
+            if (firstElement instanceof AbstractAssociationViewItem) {
                 addNewLinkInEditor(event);
                 return null;
             } else if (firstElement instanceof IProductCmptStructureReference) {
@@ -61,7 +62,8 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
     private void addNewLinkInEditor(ExecutionEvent event) {
         // association node in LinkSection
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+        TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<AbstractAssociationViewItem>(
+                AbstractAssociationViewItem.class, selection);
         if (!typedSelection.isValid()) {
             return;
         }
@@ -76,7 +78,8 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
                 IProductCmptType productCmptType = sourceGeneration.findProductCmptType(sourceGeneration
                         .getIpsProject());
                 IProductCmptTypeAssociation addToAssociation = (IProductCmptTypeAssociation)productCmptType
-                        .findAssociation(typedSelection.getFirstElement(), sourceGeneration.getIpsProject());
+                        .findAssociation(typedSelection.getFirstElement().getAssociationName(),
+                                sourceGeneration.getIpsProject());
                 if (addToAssociation != null) {
                     initWizard(sourceGeneration, addToAssociation, null, HandlerUtil.getActiveShell(event));
                 }

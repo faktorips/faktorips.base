@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -62,11 +63,10 @@ public class LinkViewItem extends PlatformObject implements LinkSectionViewItem 
         return link;
     }
 
+    @SuppressWarnings("rawtypes")
+    // IAdaptable forces raw type upon implementing classes
     @Override
     public Object getAdapter(Class adapter) {
-        if (IProductCmptLink.class.equals(adapter)) {
-            return link;
-        }
-        return super.getAdapter(adapter);
+        return Platform.getAdapterManager().getAdapter(this, adapter);
     }
 }
