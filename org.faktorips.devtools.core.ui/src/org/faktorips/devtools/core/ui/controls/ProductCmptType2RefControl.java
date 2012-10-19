@@ -14,13 +14,12 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -55,7 +54,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
             return allProductCmptTypes;
         }
 
-        Set<IIpsSrcFile> filteredProductCmptTypes = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> filteredProductCmptTypes = new LinkedHashSet<IIpsSrcFile>();
 
         for (IIpsSrcFile ipsSrcFile : allProductCmptTypes) {
             if (!Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
