@@ -369,7 +369,6 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Adds the missing test object of the given testPolicyCmptTypeParameter
      */
-    // TODO PA-709: Need to add the boolean recursive flag to this method as well
     public ITestPolicyCmpt addRootTestPolicyCmpt(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter)
             throws CoreException {
 
