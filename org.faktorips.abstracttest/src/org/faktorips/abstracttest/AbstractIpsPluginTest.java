@@ -524,6 +524,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                     ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
                     ((IPolicyCmptType)ipsObject).setProductCmptType(qualifiedName + "ProductCmpt");
                     newProductCmptType(root, qualifiedName + "ProductCmpt");
+                } else if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
+                    ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
                 }
             }
         };
@@ -705,7 +707,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             boolean createDefaultCategories) throws CoreException {
         ProductCmptType productCmptType = (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE,
                 qualifiedName);
-        productCmptType.setConfigurationForPolicyCmptType(false);
         if (createDefaultCategories) {
             createDefaultCategoriesForProductCmptTypeAsNecessary(productCmptType);
         }

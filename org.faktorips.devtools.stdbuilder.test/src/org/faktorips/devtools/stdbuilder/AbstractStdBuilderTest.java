@@ -70,19 +70,21 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     /**
      * Returns the generated Java implementation class for the given {@link IIpsObject}.
      */
-    protected final IType getGeneratedJavaClass(IIpsObject ipsObject, boolean derivedSource, String conceptName) {
-
+    protected final IType getGeneratedJavaClass(IIpsObject ipsObject,
+            boolean published,
+            boolean derivedSource,
+            String conceptName) {
         String javaTypeName = ipsObject.getIpsProject().getJavaNamingConvention()
                 .getImplementationClassName(conceptName);
-        return getGeneratedJavaType(ipsObject, false, derivedSource, javaTypeName);
+        return getGeneratedJavaType(ipsObject, published, derivedSource, javaTypeName);
     }
 
     /**
-     * Returns the generated Java enum for the given {@link IIpsObject}.
+     * Returns the generated Java implementation class for the given {@link IIpsObject}. The
+     * generated class is treated as an internal implementation.
      */
-    protected final IType getGeneratedJavaEnum(IIpsObject ipsObject, boolean derivedSource, String conceptName) {
-
-        return getGeneratedJavaType(ipsObject, true, derivedSource, conceptName);
+    protected final IType getGeneratedJavaClass(IIpsObject ipsObject, boolean derivedSource, String conceptName) {
+        return getGeneratedJavaClass(ipsObject, false, derivedSource, conceptName);
     }
 
     /**

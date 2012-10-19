@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.builder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -51,19 +53,33 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetBuilderByClass() {
-        assertEquals(a, builderSet.getBuilderByClass(A.class));
-        assertEquals(b, builderSet.getBuilderByClass(B.class));
-        assertEquals(c, builderSet.getBuilderByClass(C.class));
-        assertEquals(d, builderSet.getBuilderByClass(DExtendsC.class));
-        assertEquals(e, builderSet.getBuilderByClass(EExtendsC.class));
+        assertEquals(0, builderSet.getBuildersByClass(NotInBuilderSer.class).size());
+        assertEquals(5, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).size());
+        assertThat(builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class),
+                hasItem((StubJavaSourceFileBuilder)a));
+        assertThat(builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class),
+                hasItem((StubJavaSourceFileBuilder)b));
+        assertThat(builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class),
+                hasItem((StubJavaSourceFileBuilder)c));
+        assertThat(builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class),
+                hasItem((StubJavaSourceFileBuilder)d));
+        assertThat(builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class),
+                hasItem((StubJavaSourceFileBuilder)e));
+        assertEquals(1, builderSet.getBuildersByClass(A.class).size());
+        assertEquals(a, builderSet.getBuildersByClass(A.class).get(0));
+        assertEquals(1, builderSet.getBuildersByClass(B.class).size());
+        assertEquals(b, builderSet.getBuildersByClass(B.class).get(0));
+        assertEquals(3, builderSet.getBuildersByClass(C.class).size());
+        assertThat(builderSet.getBuildersByClass(C.class), hasItem(c));
+        assertThat(builderSet.getBuildersByClass(C.class), hasItem((C)d));
+        assertThat(builderSet.getBuildersByClass(C.class), hasItem((C)e));
+        assertEquals(1, builderSet.getBuildersByClass(DExtendsC.class).size());
+        assertEquals(d, builderSet.getBuildersByClass(DExtendsC.class).get(0));
+        assertEquals(1, builderSet.getBuildersByClass(EExtendsC.class).size());
+        assertEquals(e, builderSet.getBuildersByClass(EExtendsC.class).get(0));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testGetBuilderByClass_fail() {
-        assertEquals(e, builderSet.getBuilderByClass(C.class));
-    }
-
-    class A extends StubJavaSourceFileBuilder {
+    static class A extends StubJavaSourceFileBuilder {
 
         public A() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
@@ -71,7 +87,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     }
 
-    class B extends StubJavaSourceFileBuilder {
+    static class B extends StubJavaSourceFileBuilder {
 
         public B() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
@@ -79,7 +95,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     }
 
-    class C extends StubJavaSourceFileBuilder {
+    static class C extends StubJavaSourceFileBuilder {
 
         public C() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
@@ -87,7 +103,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     }
 
-    class DExtendsC extends C {
+    static class DExtendsC extends C {
 
         public DExtendsC() throws CoreException {
             super();
@@ -95,7 +111,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     }
 
-    class EExtendsC extends C {
+    static class EExtendsC extends C {
 
         public EExtendsC() throws CoreException {
             super();
@@ -103,7 +119,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     }
 
-    class NotInBuilderSer extends StubJavaSourceFileBuilder {
+    static class NotInBuilderSer extends StubJavaSourceFileBuilder {
 
         public NotInBuilderSer(IIpsArtefactBuilderSet builderSet) {
             super(builderSet);

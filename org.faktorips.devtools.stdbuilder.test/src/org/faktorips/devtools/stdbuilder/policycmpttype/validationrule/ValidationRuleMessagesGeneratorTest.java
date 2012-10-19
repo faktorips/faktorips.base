@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
-import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
 import org.junit.Test;
 
 public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessagesBuilderTest {

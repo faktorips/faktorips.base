@@ -64,6 +64,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     @Test
     public void testMoveProductCmptType() throws CoreException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
+        productCmptType.setConfigurationForPolicyCmptType(false);
 
         saveIpsSrcFile(productCmptType);
         performFullBuild(ipsProject);

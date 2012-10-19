@@ -180,4 +180,14 @@ public class ClassToInstancesMapTest {
         assertEquals("a321", values.get(1));
         assertEquals("a123", values.get(2));
     }
+
+    @Test
+    public void testContainsValuesOf() throws Exception {
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        assertFalse(classToMultiInstanceMap.containsValuesOf(String.class));
+
+        classToMultiInstanceMap.put("asd");
+        assertTrue(classToMultiInstanceMap.containsValuesOf(String.class));
+        assertFalse(classToMultiInstanceMap.containsValuesOf(Integer.class));
+    }
 }

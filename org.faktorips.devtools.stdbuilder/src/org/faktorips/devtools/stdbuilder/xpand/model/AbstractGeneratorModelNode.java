@@ -60,8 +60,6 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractGeneratorModelNode {
 
-    private long lastUpdateStamp;
-
     private final LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(getClass());
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
@@ -69,10 +67,6 @@ public abstract class AbstractGeneratorModelNode {
     private final GeneratorModelContext modelContext;
 
     private final ModelService modelService;
-
-    private final Set<String> generatedFields = new LinkedHashSet<String>();
-
-    private final Set<MethodDefinition> generatedMethods = new LinkedHashSet<MethodDefinition>();
 
     /**
      * This constructor is required in every generator model node. It defines
@@ -162,36 +156,22 @@ public abstract class AbstractGeneratorModelNode {
         return StringUtils.isEmpty(description) ? "" : "<p>\n" + description;
     }
 
-    /**
-     * Call this method before every access to cached resources. This method would call
-     * {@link #clearCaches()} if needed.
-     * 
-     * @return True if an update is needed, false if everything is still the same.
-     */
-    protected boolean checkForUpdate() {
-        long modificationStamp = getIpsObjectPartContainer().getEnclosingResource() != null ? getIpsObjectPartContainer()
-                .getEnclosingResource().getModificationStamp() : 0;
-        if (modificationStamp != lastUpdateStamp) {
-            synchronized (this) {
-                if (modificationStamp != lastUpdateStamp) {
-                    clearCaches();
-                    lastUpdateStamp = modificationStamp;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
+    protected <T extends AbstractGeneratorModelNode> boolean isCached(Class<T> type) {
+        return modelContext.getGeneratorModelCache().isCached(this, type);
     }
 
-    /**
-     * This method is called when cached generator model nodes need to be cleared. Always call super
-     * because may be the super class also has cached nodes.
-     */
-    protected void clearCaches() {
-        // do nothing - only default method
+    protected <T extends AbstractGeneratorModelNode> Set<T> getCachedObjects(Class<T> type) {
+        return new LinkedHashSet<T>(modelContext.getGeneratorModelCache().getCachedNodes(this, type));
+    }
+
+    protected <T extends AbstractGeneratorModelNode> void putToCache(T objectToCache) {
+        modelContext.getGeneratorModelCache().put(objectToCache, this);
+    }
+
+    protected <T extends AbstractGeneratorModelNode> void putToCache(Set<T> objectsToCache) {
+        for (T t : objectsToCache) {
+            putToCache(t);
+        }
     }
 
     protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean resolveTypesToPublishedInterface) {
@@ -568,18 +548,11 @@ public abstract class AbstractGeneratorModelNode {
         return getAnnotations(type, getIpsObjectPartContainer());
     }
 
-    public void clearGeneratedJavaElements() {
-        generatedFields.clear();
-        generatedMethods.clear();
-    }
-
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
         List<IJavaElement> result = new ArrayList<IJavaElement>();
-        for (String field : generatedFields) {
-            result.add(javaType.getField(field));
-        }
-        for (MethodDefinition methodSignature : generatedMethods) {
-            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getTypeSignatures()));
+        List<IGeneratedJavaElement> generatedJavaElements = modelContext.getGeneratedJavaElements(this);
+        for (IGeneratedJavaElement generatedJavaElement : generatedJavaElements) {
+            result.add(generatedJavaElement.getJavaElement(javaType));
         }
         return result;
     }
@@ -598,7 +571,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return Returns simply the name to use in the template
      */
     public String field(String fieldName) {
-        generatedFields.add(fieldName);
+        modelContext.addGeneratedJavaElement(this, new Field(fieldName));
         return fieldName;
     }
 
@@ -731,7 +704,7 @@ public abstract class AbstractGeneratorModelNode {
 
     public String method(String methodName, MethodParameter... parameters) {
         MethodDefinition methodSignature = new MethodDefinition(methodName, parameters);
-        generatedMethods.add(methodSignature);
+        modelContext.addGeneratedJavaElement(this, methodSignature);
         return methodSignature.getDefinition();
     }
 

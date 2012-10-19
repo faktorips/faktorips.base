@@ -14,11 +14,13 @@
 package org.faktorips.devtools.stdbuilder.xpand;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.xtend.expression.ResourceManager;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
@@ -28,6 +30,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.model.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 
@@ -55,11 +59,15 @@ public class GeneratorModelContext {
      */
     private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<ImportHandler>();
 
+    private final ThreadLocal<GeneratorModelCaches> generatorModelCacheThreadLocal = new ThreadLocal<GeneratorModelCaches>();
+
+    private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>>();
+
+    private final ThreadLocal<ResourceManager> resourceManager = new ThreadLocal<ResourceManager>();
+
     private final IIpsArtefactBuilderSetConfig config;
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
-
-    private final ResourceManager resourceManager = new OptimizedResourceManager();
 
     private final IJavaPackageStructure javaPackageStructure;
 
@@ -71,21 +79,42 @@ public class GeneratorModelContext {
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
     }
 
+    /**
+     * Resetting the builder context for starting a new build process with clean context
+     * information.
+     * 
+     * @param packageOfArtifacts The package of the source file to be generated to handle the
+     *            correct import statements
+     */
+    public void resetContext(String packageOfArtifacts) {
+        importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
+        generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
+        generatedJavaElements.set(new LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>());
+    }
+
     IIpsArtefactBuilderSetConfig getConfig() {
         return config;
     }
 
     /**
-     * Gets the thread local import handler. The import handler stores all import statements needed
-     * in the generated class file.
+     * Returns the thread local import handler. The import handler stores all import statements
+     * needed in the generated class file.
      * <p>
      * The import handler is stored as {@link ThreadLocal} variable to have the ability to generate
      * different files in different threads
+     * <p>
+     * To be able to use the generator model nodes also if no build process is running, this method
+     * would return a new import handler in the case there is no import handler yet.
      * 
      * @return The thread local import handler
      */
     public ImportHandler getImportHandler() {
-        return importHandlerThreadLocal.get();
+        ImportHandler importHandler = importHandlerThreadLocal.get();
+        if (importHandler != null) {
+            return importHandler;
+        } else {
+            return new ImportHandler(StringUtils.EMPTY);
+        }
     }
 
     /**
@@ -97,8 +126,21 @@ public class GeneratorModelContext {
      * 
      * @param importHandler The thread local import handler
      */
-    public void setImportHandler(ImportHandler importHandler) {
+    protected void setImportHandler(ImportHandler importHandler) {
         this.importHandlerThreadLocal.set(importHandler);
+    }
+
+    /**
+     * Returns the thread local generator model cache. The generator model cache stores all cached
+     * object references that may change on any time.
+     * <p>
+     * The generator model cache is stored as {@link ThreadLocal} variable to have the ability to
+     * generate different files in different threads
+     * 
+     * @return The thread local generator model cache
+     */
+    public GeneratorModelCaches getGeneratorModelCache() {
+        return generatorModelCacheThreadLocal.get();
     }
 
     /**
@@ -125,8 +167,66 @@ public class GeneratorModelContext {
         return getImportHandler().remove(importStatement);
     }
 
+    /**
+     * Returns the thread local generated artifacts map that maps a
+     * {@link AbstractGeneratorModelNode} to a list of generated java elements.
+     * <p>
+     * The map is stored as {@link ThreadLocal} variable to have the ability to generate different
+     * files in different threads.
+     * 
+     * @return The thread local map holding the generated java elements for the generator model
+     *         nodes
+     */
+    private LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>> getGeneratedJavaElementsMap() {
+        return generatedJavaElements.get();
+    }
+
+    /**
+     * Add a generated java element to the list of generated elements for the specified generator
+     * model node
+     * 
+     * @param node The generator model node that generates the specified element
+     * @param element the generated java element
+     */
+    public void addGeneratedJavaElement(AbstractGeneratorModelNode node, IGeneratedJavaElement element) {
+        List<IGeneratedJavaElement> list = getGeneratedJavaElements(node);
+        list.add(element);
+    }
+
+    /**
+     * Returns the list of generated java elements that is stored for the specified
+     * {@link AbstractGeneratorModelNode}. The list is stored in a {@link ThreadLocal}.
+     * 
+     * @param node The generator model node for which you want to have the generated artifacts
+     * @return The list of generated java elements for the specified generator model nodes
+     */
+    public List<IGeneratedJavaElement> getGeneratedJavaElements(AbstractGeneratorModelNode node) {
+        List<IGeneratedJavaElement> list = getGeneratedJavaElementsMap().get(node);
+        if (list == null) {
+            list = new ArrayList<IGeneratedJavaElement>();
+            getGeneratedJavaElementsMap().put(node, list);
+        }
+        return list;
+    }
+
+    /**
+     * Returns the thread local resource manager. If there is no resource manager yet this method
+     * would create a new one (lazy loading).
+     * <p>
+     * The resource manager needs to be thread local because the resources seems to be stateful in
+     * XPAND. That means a resource may have the state of the current template evaluation. Hence if
+     * you use the same resource manager in two threads both threads would use the same resource and
+     * we get a concurrent modification exception.
+     * 
+     * @return The thread local resource manager
+     */
     public ResourceManager getResourceManager() {
-        return resourceManager;
+        ResourceManager localResourceManager = resourceManager.get();
+        if (localResourceManager == null) {
+            localResourceManager = new OptimizedResourceManager();
+            resourceManager.set(localResourceManager);
+        }
+        return localResourceManager;
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {

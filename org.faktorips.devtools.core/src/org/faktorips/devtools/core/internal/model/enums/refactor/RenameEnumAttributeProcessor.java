@@ -13,10 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -53,18 +56,24 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getIpsSrcFile());
-        enumTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE);
-        for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
-            addIpsSrcFile(ipsSrcFile);
-        }
-        if (!(getEnumType().isContainingValues())) {
-            IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
-            if (enumContent != null) {
-                addIpsSrcFile(enumContent.getIpsSrcFile());
+    protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        try {
+            result.add(getIpsSrcFile());
+            enumTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+            for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
+                result.add(ipsSrcFile);
             }
+            if (!(getEnumType().isContainingValues())) {
+                IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
+                if (enumContent != null) {
+                    result.add(enumContent.getIpsSrcFile());
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
+        return result;
     }
 
     @Override
@@ -74,7 +83,9 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
         updateSubclassReferences();
         if (!(getEnumType().isAbstract())) {
             if (getEnumType().isContainingValues()) {
@@ -84,6 +95,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
             }
         }
         updateEnumAttributeName();
+        return modificationSet;
     }
 
     private void updateLiteralNameReference() {

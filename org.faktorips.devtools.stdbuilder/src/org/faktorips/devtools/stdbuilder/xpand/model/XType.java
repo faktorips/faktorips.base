@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -32,8 +31,6 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public abstract class XType extends XClass {
-
-    private Set<XMethod> methods;
 
     public XType(IType type, GeneratorModelContext context, ModelService modelService) {
         super(type, context, modelService);
@@ -60,22 +57,14 @@ public abstract class XType extends XClass {
         return getJavaNamingConvention().getMemberVarName(getName());
     }
 
-    @Override
-    protected void clearCaches() {
-        super.clearCaches();
-        methods = null;
-    }
-
     public Set<XMethod> getMethods() {
-        checkForUpdate();
-        if (methods == null) {
-            synchronized (this) {
-                if (methods == null) {
-                    methods = initNodesForParts(getType().getMethods(), XMethod.class);
-                }
-            }
+        if (isCached(XMethod.class)) {
+            return getCachedObjects(XMethod.class);
+        } else {
+            Set<XMethod> nodesForParts = initNodesForParts(getType().getMethods(), XMethod.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
-        return new CopyOnWriteArraySet<XMethod>(methods);
     }
 
     private String getSuperclassName(BuilderAspect aspect) {

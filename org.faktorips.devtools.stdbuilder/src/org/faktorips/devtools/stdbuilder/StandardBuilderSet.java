@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,26 +28,25 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -56,7 +56,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
@@ -65,26 +64,29 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
-import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
-import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -93,7 +95,6 @@ import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.ClassToInstancesMap;
 
 /**
  * An <code>IpsArtefactBuilderSet</code> implementation that assembles the standard Faktor-IPS
@@ -178,14 +179,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private final String version;
 
-    private final Map<IType, GenType> ipsObjectTypeGenerators;
     private final AnnotationGeneratorFactory[] annotationGeneratorFactories;
 
     private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
-        ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
-
         annotationGeneratorFactories = new AnnotationGeneratorFactory[] { new PolicyCmptImplClassJpaAnnGenFactory(), // JPA
                                                                                                                      // support
                 new PolicyCmptImplClassJaxbAnnGenFactory() }; // Jaxb support
@@ -213,16 +211,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public void afterBuildProcess(int buildKind) throws CoreException {
-        clearGenerators();
-    }
-
-    @Override
-    public void beforeBuildProcess(int buildKind) throws CoreException {
-        clearGenerators();
-    }
-
-    @Override
     public void clean(IProgressMonitor monitor) {
         super.clean(monitor);
         modelService = new ModelService();
@@ -231,53 +219,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public boolean isSupportTableAccess() {
         return true;
-    }
-
-    private void clearGenerators() {
-        ipsObjectTypeGenerators.clear();
-    }
-
-    public GenType getGenerator(IType type) throws CoreException {
-        if (type == null) {
-            return null;
-        }
-
-        if (type instanceof IPolicyCmptType) {
-            return getGenerator((IPolicyCmptType)type);
-        }
-        if (type instanceof IProductCmptType) {
-            return getGenerator((IProductCmptType)type);
-        }
-
-        throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass())); //$NON-NLS-1$
-    }
-
-    public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
-        if (policyCmptType == null) {
-            return null;
-        }
-
-        GenPolicyCmptType generator = (GenPolicyCmptType)ipsObjectTypeGenerators.get(policyCmptType);
-        if (generator == null) {
-            generator = new GenPolicyCmptType(policyCmptType, this);
-            ipsObjectTypeGenerators.put(policyCmptType, generator);
-        }
-
-        return generator;
-    }
-
-    public GenProductCmptType getGenerator(IProductCmptType productCmptType) throws CoreException {
-        if (productCmptType == null) {
-            return null;
-        }
-
-        GenProductCmptType generator = (GenProductCmptType)ipsObjectTypeGenerators.get(productCmptType);
-        if (generator == null) {
-            generator = new GenProductCmptType(productCmptType, this);
-            ipsObjectTypeGenerators.put(productCmptType, generator);
-        }
-
-        return generator;
     }
 
     @Override
@@ -318,12 +259,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
-        return new StandardParameterIdentifierResolverForFormulaTest(formula, exprCompiler);
-    }
-
-    @Override
     public boolean isSupportFlIdentifierResolver() {
         return true;
     }
@@ -337,60 +272,60 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
-        ClassToInstancesMap<IIpsArtefactBuilder> builders = new ClassToInstancesMap<IIpsArtefactBuilder>();
-        builders.put(new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService) {
-        });
-        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this,
-                generatorModelContext, modelService);
-        builders.put(policyCmptClassBuilder);
+        LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE, new PolicyCmptClassBuilder(true, this,
+                generatorModelContext, modelService));
+        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this, generatorModelContext,
+                modelService);
+        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, policyCmptClassBuilder);
 
         // create product component type builders
-        builders.put(new ProductCmptClassBuilder(true, this, generatorModelContext, modelService) {
-        });
-        builders.put(new ProductCmptGenerationClassBuilder(true, this, generatorModelContext, modelService) {
-        });
-        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
-                false, this, generatorModelContext, modelService);
-        builders.put(productCmptGenerationClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_INTERFACE, new ProductCmptClassBuilder(true, this,
+                generatorModelContext, modelService));
         ProductCmptClassBuilder productCmptClassBuilder = new ProductCmptClassBuilder(false, this,
                 generatorModelContext, modelService);
-        builders.put(productCmptClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, productCmptClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, new ProductCmptGenerationClassBuilder(true,
+                this, generatorModelContext, modelService));
+        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
+                false, this, generatorModelContext, modelService);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION, productCmptGenerationClassBuilder);
 
         // table structure builders
         TableImplBuilder tableImplBuilder = new TableImplBuilder(this);
-        builders.put(tableImplBuilder);
+        builders.put(BuilderKindIds.TABLE, tableImplBuilder);
         TableRowBuilder tableRowBuilder = new TableRowBuilder(this);
-        builders.put(tableRowBuilder);
+        builders.put(BuilderKindIds.TABLE_ROW, tableRowBuilder);
         tableImplBuilder.setTableRowBuilder(tableRowBuilder);
 
         // table content builders
-        builders.put(new TableContentBuilder(this));
+        builders.put(BuilderKindIds.TABLE_CONTENT, new TableContentBuilder(this));
 
         // test case type builders
-        builders.put(new TestCaseTypeClassBuilder(this));
+        builders.put(BuilderKindIds.TEST_CASE_TYPE, new TestCaseTypeClassBuilder(this));
 
         // test case builder
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
-        builders.put(testCaseBuilder);
+        builders.put(BuilderKindIds.TEST_CASE, testCaseBuilder);
 
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
-        builders.put(tocFileBuilder);
+        builders.put(BuilderKindIds.TOC_FILE, tocFileBuilder);
 
-        builders.put(new BusinessFunctionBuilder(this));
+        builders.put(BuilderKindIds.BUSINESS_FUNCTION, new BusinessFunctionBuilder(this));
         // New enum type builder
         EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(this);
-        builders.put(enumTypeBuilder);
-        builders.put(new EnumXmlAdapterBuilder(this, enumTypeBuilder));
-        builders.put(new EnumContentBuilder(this));
+        builders.put(BuilderKindIds.ENUM_TYPE, enumTypeBuilder);
+        builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this, enumTypeBuilder));
+        builders.put(BuilderKindIds.ENUM_CONTENT, new EnumContentBuilder(this));
 
         // product component builders
         ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(this);
-        builders.put(productCmptBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_IMPLEMENTATION, productCmptBuilder);
         IIpsArtefactBuilder productCmptXmlBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this);
-        builders.put(productCmptXmlBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_XML, productCmptXmlBuilder);
 
         productCmptBuilder.setProductCmptImplBuilder(productCmptClassBuilder);
         productCmptBuilder.setProductCmptGenImplBuilder(productCmptGenerationClassBuilder);
@@ -398,15 +333,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptClassBuilder);
 
-        builders.put(new ValidationRuleMessagesPropertiesBuilder(this));
+        builders.put(BuilderKindIds.VALIDATION_RULE_MESSAGES, new ValidationRuleMessagesPropertiesBuilder(this));
 
         List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
         for (IIpsArtefactBuilder ipsArtefactBuilder : extendingBuilders) {
-            builders.put(ipsArtefactBuilder);
+            GenericBuilderKindId id = new GenericBuilderKindId(ipsArtefactBuilder.getName());
+            if (builders.containsKey(id)) {
+                id = new GenericBuilderKindId();
+            }
+            builders.put(id, ipsArtefactBuilder);
         }
 
-        builders.put(new PolicyModelTypeXmlBuilder(this));
-        builders.put(new ProductModelTypeXmlBuilder(this));
+        builders.put(BuilderKindIds.POLICY_CMPT_MODEL_TYPE, new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE,
+                this));
+        builders.put(BuilderKindIds.PRODUCT_CMPT_MODEL_TYPE, new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE,
+                this));
         tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
         return builders;
@@ -465,62 +406,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Returns a code fragment containing all annotations to the given Java Element Type and
-     * IpsElement.
-     * 
-     * @param type Determines the type of annotation to generate. See
-     *            {@link AnnotatedJavaElementType} for a list of possible types.
-     * @param ipsElement The IPS element to create the annotations for.
-     */
-    public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
-        JavaCodeFragment code = new JavaCodeFragment();
-        List<IAnnotationGenerator> generators = annotationGeneratorsMap.get(type);
-        if (generators == null) {
-            return code;
-        }
-        for (IAnnotationGenerator generator : generators) {
-            // TODO remove the not needed part of annotation handling
-            // code.append(generator.createAnnotation(ipsElement));
-        }
-        return code;
-    }
-
-    /**
      * Returns the map of annotation generators used to provide annotations to generated elements.
      * 
      * @return The annotation generator map.
      */
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> getAnnotationGenerators() {
         return annotationGeneratorsMap;
-    }
-
-    /**
-     * Returns a code fragment containing all annotations to the given Java Element Type and
-     * IpsElement using the given builder.
-     * 
-     * @param type Determines the type of annotation to generate. See
-     *            {@link AnnotatedJavaElementType} for a list of possible types.
-     * @param ipsElement The IPS element to create the annotations for. <br/>
-     *            <code>Null</code> is permitted for certain AnnotatedJavaElementTypes which do not
-     *            need further information. This is the case if <code>type</code> is
-     *            POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD.
-     * 
-     * @param builder The builder for the Java Code Fragment to be generated.
-     */
-    public void addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement, JavaCodeFragmentBuilder builder) {
-        List<IAnnotationGenerator> generators = annotationGeneratorsMap.get(type);
-        if (generators == null) {
-            return;
-        }
-        for (IAnnotationGenerator generator : generators) {
-            if (!generator.isGenerateAnnotationFor(ipsElement)) {
-                continue;
-            }
-            // TODO remove the not needed part of annotation handling
-            // builder.append(generator.createAnnotation(ipsElement));
-            builder.appendln();
-        }
-        return;
     }
 
     @Override
@@ -631,16 +522,22 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return pProviderCached.cachedProvider;
     }
 
-    public String getJavaClassName(Datatype datatype) throws CoreException {
+    public String getJavaClassName(Datatype datatype) {
+        return getJavaClassName(datatype, true);
+    }
+
+    public String getJavaClassName(Datatype datatype, boolean interfaces) {
         if (datatype instanceof IPolicyCmptType) {
-            return getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
-        }
+            return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
+                    BuilderAspect.getValue(interfaces));
+        } else
 
         if (datatype instanceof IProductCmptType) {
-            return getGenerator((IProductCmptType)datatype).getQualifiedName(true);
+            return modelService.getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class,
+                    generatorModelContext).getQualifiedName(BuilderAspect.getValue(interfaces));
+        } else {
+            return datatype.getJavaClassName();
         }
-
-        return datatype.getJavaClassName();
     }
 
     /**
@@ -671,8 +568,18 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
-            if (javaBuilder.isGeneratsArtifactsFor(ipsSrcFile)) {
-                javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+            try {
+                if (javaBuilder.isBuilderFor(ipsSrcFile)) {
+                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+                } else if (javaBuilder instanceof XpandBuilder<?>) {
+                    XpandBuilder<?> xpandBuilder = (XpandBuilder<?>)javaBuilder;
+                    if (xpandBuilder.isGenerateingArtifactsFor(ipsObjectPartContainer)) {
+                        javaElements.addAll(xpandBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+                    }
+                }
+
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
 
@@ -684,88 +591,46 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * assembled yet.
      */
     public final ProductCmptGenerationClassBuilder getProductCmptGenImplClassBuilder() {
-        return getBuilderByClass(ProductCmptGenerationClassBuilder.class);
+        return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
+                ProductCmptGenerationClassBuilder.class);
     }
 
     public final ProductCmptBuilder getProductCmptBuilder() {
-        return getBuilderByClass(ProductCmptBuilder.class);
+        return getBuilderById(BuilderKindIds.PRODUCT_CMPT_IMPLEMENTATION, ProductCmptBuilder.class);
     }
 
     /**
-     * Returns the <tt>PolicyCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled
-     * yet.
+     * Returns the <tt>PolicyCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled yet.
      */
     public final PolicyCmptClassBuilder getPolicyCmptImplClassBuilder() {
-        return getBuilderByClass(PolicyCmptClassBuilder.class);
+        return getBuilderById(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, PolicyCmptClassBuilder.class);
     }
 
     /**
-     * Returns the <tt>ProductCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled
-     * yet.
+     * Returns the <tt>ProductCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled yet.
      */
     public final ProductCmptClassBuilder getProductCmptImplClassBuilder() {
-        return getBuilderByClass(ProductCmptClassBuilder.class);
+        return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, ProductCmptClassBuilder.class);
     }
 
     public TableImplBuilder getTableImplBuilder() {
-        return getBuilderByClass(TableImplBuilder.class);
+        return getBuilderById(BuilderKindIds.TABLE, TableImplBuilder.class);
     }
 
     public TableRowBuilder getTableRowBuilder() {
-        return getBuilderByClass(TableRowBuilder.class);
+        return getBuilderById(BuilderKindIds.TABLE_ROW, TableRowBuilder.class);
     }
 
     public EnumTypeBuilder getEnumTypeBuilder() {
-        return getBuilderByClass(EnumTypeBuilder.class);
+        return getBuilderById(BuilderKindIds.ENUM_TYPE, EnumTypeBuilder.class);
     }
 
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
         return generatorModelContext.getValidationMessageBundleBaseName(entry);
     }
 
-    private final class StandardParameterIdentifierResolverForFormulaTest extends StandardParameterIdentifierResolver {
-        private StandardParameterIdentifierResolverForFormulaTest(IExpression formula2, ExprCompiler exprCompiler) {
-            super(formula2, exprCompiler);
-        }
-
-        @Override
-        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            IType type = attribute.getType();
-            try {
-                if (type instanceof IPolicyCmptType) {
-                    return getGenerator((IPolicyCmptType)type).getMethodNameGetPropertyValue(attribute.getName(),
-                            datatype);
-                }
-                if (type instanceof IProductCmptType) {
-                    return getGenerator((IProductCmptType)type).getMethodNameGetPropertyValue(attribute.getName(),
-                            datatype);
-                }
-            } catch (CoreException e) {
-                return null;
-            }
-            return null;
-        }
-
-        @Override
-        protected CompilationResult compile(IParameter param, String attributeName) {
-            CompilationResult compile = super.compile(param, attributeName);
-            try {
-                Datatype datatype = param.findDatatype(getIpsProject());
-                if (datatype instanceof IType) {
-                    /*
-                     * instead of using the types getter method to get the value for an identifier,
-                     * the given datatype plus the attribute will be used as new parameter
-                     * identifier, this parameter identifier will also be used as parameter inside
-                     * the formula method which uses this code fragment
-                     */
-                    String code = param.getName() + "_" + attributeName; //$NON-NLS-1$
-                    return new CompilationResultImpl(code, compile.getDatatype());
-                }
-            } catch (CoreException ignored) {
-                // the exception was already handled in the compile method of the super class
-            }
-            return compile;
-        }
+    public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer object, Class<T> type) {
+        return modelService.getModelNode(object, type, generatorModelContext);
     }
 
     private class StandardParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
@@ -784,87 +649,52 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         @Override
         protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            IType type = attribute.getType();
-            try {
-                if (type instanceof IPolicyCmptType) {
-                    return getGenerator((IPolicyCmptType)type).getMethodNameGetPropertyValue(attribute.getName(),
-                            datatype);
+            if (attribute instanceof IPolicyCmptTypeAttribute) {
+                XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
+                return xPolicyAttribute.getMethodNameGetter();
+            }
+            if (attribute instanceof IProductCmptTypeAttribute) {
+                XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
+                if (xProductAttribute.isChangingOverTime()) {
+                    return xProductAttribute.getMethodNameGetter();
+                } else {
+                    XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
+                    return xProductCmptClass.getMethodNameGetProductCmpt() + "()."
+                            + xProductAttribute.getMethodNameGetter();
                 }
-                if (type instanceof IProductCmptType) {
-                    GenProductCmptType generator = getGenerator((IProductCmptType)type);
-                    String parameterAttributeGetter = generator.getMethodNameGetPropertyValue(attribute.getName(),
-                            datatype);
-                    if (attribute instanceof IProductCmptTypeAttribute) {
-                        if (!((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
-                            return generator.getMethodNameGetProductCmpt() + "()." + parameterAttributeGetter;
-                        }
-                    }
-                    return parameterAttributeGetter;
-                }
-            } catch (CoreException e) {
-                return null;
             }
             return null;
         }
 
         @Override
         protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
-            try {
-                GenPolicyCmptType genPolicyCmptType = getGenerator((PolicyCmptType)attribute.getType());
-                String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
-                        .getMethodNameGetProductCmptGeneration();
-                GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType
-                        .getGenerator((IPolicyCmptTypeAttribute)attribute);
-                if (genPolicyCmptTypeAttribute instanceof GenChangeableAttribute) {
-                    String methodNameGetDefaultValue = ((GenChangeableAttribute)genPolicyCmptTypeAttribute)
-                            .getMethodNameGetDefaultValue();
-                    return getProductCmptGeneration + "()." + methodNameGetDefaultValue;
-                } else {
-                    throw new IllegalStateException("Could not generate default method access. Attribute "
-                            + attribute.getName() + " is not changeable.");
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e.getMessage(), e);
-            }
+            XPolicyCmptClass xPolicyCmptClass = getModelNode(attribute.getType(), XPolicyCmptClass.class);
+            XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
+            return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "()."
+                    + xPolicyAttribute.getMethodNameGetDefaultValue();
         }
 
         @Override
         protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            try {
-                return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                        .getMethodNameGetRefObject();
-            } catch (CoreException e) {
-                return null;
-            }
+            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
+            return xPolicyAssociation.getMethodNameGetter();
         }
 
         @Override
         protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            try {
-                return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                        .getMethodNameGetRefObjectAtIndex();
-            } catch (CoreException e) {
-                return null;
-            }
+            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
+            return xPolicyAssociation.getMethodNameGetSingle();
         }
 
         @Override
         protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            try {
-                return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                        .getMethodNameGetAllRefObjects();
-            } catch (CoreException e) {
-                return null;
-            }
+            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
+            return xPolicyAssociation.getMethodNameGetter();
         }
 
         @Override
         protected String getJavaClassName(IType type) {
-            try {
-                return getGenerator(type).getQualifiedName(true);
-            } catch (CoreException e) {
-                return null;
-            }
+            return StandardBuilderSet.this.getJavaClassName(type);
         }
     }
 

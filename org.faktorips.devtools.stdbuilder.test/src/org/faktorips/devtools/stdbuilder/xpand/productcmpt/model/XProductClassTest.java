@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelCaches;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
@@ -103,6 +104,11 @@ public class XProductClassTest {
     private XProductAssociation assocNode3;
 
     private XProductClass xProductClass;
+
+    @Before
+    public void initModelContext() {
+        when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
+    }
 
     @Before
     public void createProductClass() {
@@ -195,15 +201,15 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testGetPolicyName() throws Exception {
+    public void testGetPolicyClassName() throws Exception {
         when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
         when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
 
         when(xPolicyCmpt.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("IPolicyCmpt");
         when(xPolicyCmpt.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("PolicyCmpt");
 
-        assertEquals("IPolicyCmpt", xProductClass.getPolicyName(BuilderAspect.INTERFACE));
-        assertEquals("PolicyCmpt", xProductClass.getPolicyName(BuilderAspect.IMPLEMENTATION));
+        assertEquals("IPolicyCmpt", xProductClass.getPolicyClassName(BuilderAspect.INTERFACE));
+        assertEquals("PolicyCmpt", xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION));
 
         assertEquals("IPolicyCmpt", xProductClass.getPolicyInterfaceName());
         assertEquals("PolicyCmpt", xProductClass.getPolicyImplClassName());

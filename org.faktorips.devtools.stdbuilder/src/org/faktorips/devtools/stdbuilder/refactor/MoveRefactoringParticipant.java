@@ -30,10 +30,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 
 /**
  * This class is loaded by the Faktor-IPS 'Move' refactoring to participate in this process by
@@ -63,7 +60,7 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
 
     @Override
     protected boolean initialize(Object element) {
-        return refactoringHelper.initialize(element);
+        return refactoringHelper.initialize((IpsRefactoringProcessor)getProcessor(), element);
     }
 
     @Override
@@ -97,21 +94,6 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
             Refactoring jdtRefactoring = descriptor.createRefactoring(status);
 
             return new JdtRefactoring(jdtRefactoring);
-        }
-
-        @Override
-        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-                StandardBuilderSet builderSet) {
-
-            if (!(ipsObjectPartContainer instanceof IIpsObject)) {
-                return false;
-            }
-
-            IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
-            IIpsPackageFragment targetIpsPackageFragment = (IIpsPackageFragment)getArguments().getDestination();
-            String newName = ipsObject.getName();
-            boolean success = initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
-            return success;
         }
 
     }

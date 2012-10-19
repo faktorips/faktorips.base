@@ -154,6 +154,16 @@ public class ClassToInstancesMap<T> {
     }
 
     /**
+     * Check if the map contains a list of values for the specified type.
+     * 
+     * @param type The type for which we check if there is a list of values for
+     * @return true if there is a list of values of the specified type
+     */
+    public boolean containsValuesOf(Class<? extends T> type) {
+        return internalMap.get(type) != null;
+    }
+
+    /**
      * Remove a single element from the list and returns true if it was removed successfully. If the
      * list containing the object multiple times only the fist one will be removed!
      * 

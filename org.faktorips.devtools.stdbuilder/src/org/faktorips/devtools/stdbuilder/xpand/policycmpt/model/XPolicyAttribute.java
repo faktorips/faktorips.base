@@ -281,6 +281,11 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
+    public boolean isOverrideGetAllowedValuesFor() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesFor()
+                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor() == getMethodNameGetAllowedValuesFor();
+    }
+
     public boolean isGenerateConstantForValueSet() {
         return !isAbstractValueSet() && (isValueSetRange() || isValueSetEnum());
     }

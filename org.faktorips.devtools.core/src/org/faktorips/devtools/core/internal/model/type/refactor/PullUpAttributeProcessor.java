@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -24,6 +27,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 
 /**
  * Refactoring processor for the "Pull Up Attribute" - refactoring.
@@ -39,15 +43,21 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() {
-        addIpsSrcFile(getIpsSrcFile());
-        addIpsSrcFile(getTarget().getIpsSrcFile());
+    protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        result.add(getIpsSrcFile());
+        result.add(getTarget().getIpsSrcFile());
+        return result;
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) {
-        pullUpAttribute();
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
+        IAttribute newAttribute = pullUpAttribute();
+        modificationSet.setTargetElement(newAttribute);
         deleteOriginalAttribute();
+        return modificationSet;
     }
 
     private IAttribute pullUpAttribute() {

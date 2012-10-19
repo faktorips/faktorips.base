@@ -19,16 +19,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
+import org.eclipse.internal.xtend.expression.ast.SyntaxElement;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xpand2.output.Outlet;
+import org.eclipse.xtend.expression.EvaluationException;
 import org.eclipse.xtend.expression.ExceptionHandler;
+import org.eclipse.xtend.expression.ExecutionContext;
 import org.eclipse.xtend.expression.NullEvaluationHandler;
 import org.eclipse.xtend.expression.Variable;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
@@ -39,8 +44,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.nullout.NullOutlet;
@@ -52,6 +57,8 @@ import org.faktorips.util.LocalizedStringsSet;
 /**
  * An abstract implementation to use XPAND templates for code generation. The implementation only
  * needs to provide the name of the template and the corresponding generator model.
+ * <p>
+ * 
  * 
  * @author dirmeier
  */
@@ -60,7 +67,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     /*
      * If this debug switch is set to true we reload the template with every build!
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
@@ -116,6 +123,18 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         }
     }
 
+    @Override
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+        super.beforeBuild(ipsSrcFile, status);
+        generatorModelContext.resetContext(getPackage());
+    }
+
+    @Override
+    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+        super.afterBuild(ipsSrcFile);
+        generatorModelContext.resetContext(null);
+    }
+
     /**
      * Initializes the template given by the concrete implementation of {@link #getTemplate()}.
      */
@@ -135,28 +154,45 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     protected XpandExecutionContextImpl createXpandContext() {
-        if (DEBUG) {
-            return new XpandExecutionContextImpl(getOut(), null, getGlobalVars(), null, null);
-        } else {
-            // TODO maybe we want to instantiate one of these by our own?
-            ProgressMonitor progressMonitor = null;
-            ExceptionHandler exceptionHandler = null;
-            NullEvaluationHandler nullEvaluationHandler = null;
-            XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
-                    .getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor, exceptionHandler,
-                    nullEvaluationHandler, null);
-            return context;
-        }
+        ProgressMonitor progressMonitor = null;
+        ExceptionHandler exceptionHandler = new ExceptionHandler() {
+            @Override
+            public void handleRuntimeException(RuntimeException ex,
+                    SyntaxElement element,
+                    ExecutionContext ctx,
+                    Map<String, Object> additionalContextInfo) {
+                if (DEBUG) {
+                    ex.printStackTrace();
+                }
+                if (getIpsObject() != null) {
+                    addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
+                            "Error while parsing code generation template.", ex));
+                }
+            }
+        };
+        NullEvaluationHandler nullEvaluationHandler = new NullEvaluationHandler() {
+
+            @Override
+            public Object handleNullEvaluation(SyntaxElement element, ExecutionContext ctx) {
+                if (DEBUG) {
+                    new NullPointerException().printStackTrace();
+                }
+                if (getIpsObject() != null) {
+                    addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
+                            "Nullpointer in code generation at statement " + element, new EvaluationException(
+                                    "null evaluation", element, ctx)));
+                }
+                return "null";
+            }
+        };
+        XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
+                .getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor, exceptionHandler,
+                nullEvaluationHandler, null);
+        return context;
     }
 
     protected Map<String, Variable> getGlobalVars() {
         return new HashMap<String, Variable>();
-    }
-
-    @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
-        super.beforeBuild(ipsSrcFile, status);
-        generatorModelContext.setImportHandler(new ImportHandler(getPackage()));
     }
 
     /**
@@ -228,25 +264,32 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     @Override
-    public boolean isGeneratsArtifactsFor(IIpsSrcFile ipsSrcFile) {
-        return super.isGeneratsArtifactsFor(ipsSrcFile);
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
-        if (getTemplateDefinition() == null) {
-            initTemplate();
-        }
-        getOut().addOutlet(new NullOutlet());
-        // TODO NullImportHandler??
-        generatorModelContext.setImportHandler(new ImportHandler(""));
+        getGeneratedArtifacts(getSupportedIpsObject(ipsObjectPartContainer), ipsObjectPartContainer, javaElements);
+    }
 
+    /**
+     * Get the generated artifacts by evaluating the template using the given {@link IIpsObject}.
+     * The generated artifacts are collected by the specified {@link IIpsObjectPartContainer}. The
+     * {@link IIpsObject} may differ from the IPS object of the part.
+     * 
+     * @param ipsObject The object used to parse the template
+     * @param ipsObjectPartContainer the {@link IIpsObjectPartContainer} for which we collect the
+     *            generated artifacts
+     * @param javaElements the list of java elements where we add our result to
+     */
+    private void getGeneratedArtifacts(IIpsObject ipsObject,
+            IIpsObjectPartContainer ipsObjectPartContainer,
+            List<IJavaElement> javaElements) {
         try {
-            IIpsObject ipsObject = getSupportedIpsObject(ipsObjectPartContainer);
-            if (ipsObject == null) {
-                return;
+            if (getTemplateDefinition() == null) {
+                initTemplate();
             }
+
+            getOut().addOutlet(new NullOutlet());
+            generatorModelContext.resetContext(null);
+
             evaluateTemplate(ipsObject);
 
             // At the moment only one java type per generator is supported. Multiple types are only
@@ -267,17 +310,32 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     /**
-     * Getting the IPS object that is supported by this builder.
+     * Returns true if this builder is generating artifacts for the specified
+     * {@link IIpsObjectPartContainer}.
      * <p>
-     * This method is called to get the generated artifacts for an ipsObjectPartContainer. The given
-     * {@link IIpsObject} {@link IIpsObjectPartContainer} may not be of a supported type. For
-     * example a policy component attribute has generated artifacts in the product component. Hence
-     * we need to parse the policy and the product component template.
+     * For example a product component builder may generate artifacts for a product configured
+     * policy component type attribute.
+     * <p>
+     * It is not strictly necessary that there are really generated artifacts for this
+     * {@link IIpsObjectPartContainer} because this may depend on very much circumstances. But it is
+     * strictly necessary that {@link #getSupportedIpsObject(IIpsObjectPartContainer)} does not
+     * return null if this method returns <code>true</code>.
+     */
+    public abstract boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer);
+
+    /**
+     * Returns the {@link IIpsObject} that is supported by this builder for a
+     * {@link IIpsObjectPartContainer} for which this builder seems to generate artifacts.
+     * <p>
+     * For example the {@link IIpsObjectPartContainer} may be a policy attribute and this builder is
+     * responsible to build product component generations. If the policy attribute is configured by
+     * a product component, then this builder needs to generate some artifacts for this policy
+     * attribute. This method would return the corresponding product component type so this (product
+     * component) builder could parse the templates and collect possible generated artifacts.
      * 
-     * @param ipsObjectPartContainer A {@link IIpsObjectPartContainer} for which we want to get the
-     *            {@link IIpsObject} that is supported by this builder
-     * @return The {@link IIpsObject} that is supported by this builder.
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} for which we want to get
+     *            the {@link IIpsObject} which is supported by this builder
+     * @return The {@link IIpsObject} that is supported by this builder
      */
     protected abstract IIpsObject getSupportedIpsObject(IIpsObjectPartContainer ipsObjectPartContainer);
-
 }

@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -117,16 +116,6 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * if the element does not contain a formula.
      */
     ExprCompiler newExprCompiler(IIpsProject ipsProject);
-
-    /**
-     * Returns an expression compiler that can be used to compile the formula. or <code>null</code>
-     * if the element does not contain a formula.
-     * 
-     * @param formulaTest if <code>true</code> the formula will be compiled for usage inside a
-     *            formula test, in formula tests all type parameters will be replaced by their
-     *            value, which is defined inside the formula test.
-     */
-    ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest);
 
     /**
      * Returns the enumeration data types that can be use in this formula. Allowed enumeration types

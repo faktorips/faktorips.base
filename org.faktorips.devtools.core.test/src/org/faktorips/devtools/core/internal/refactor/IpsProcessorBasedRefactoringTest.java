@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,8 +28,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,12 +115,15 @@ public class IpsProcessorBasedRefactoringTest {
         }
 
         @Override
-        protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+            IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
+            addAffectedSrcFiles(modificationSet);
+            return modificationSet;
         }
 
         @Override
-        protected void addIpsSrcFiles() throws CoreException {
+        protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+            return new HashSet<IIpsSrcFile>();
 
         }
 

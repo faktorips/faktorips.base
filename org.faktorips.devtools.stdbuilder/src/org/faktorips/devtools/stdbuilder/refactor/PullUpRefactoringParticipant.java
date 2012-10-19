@@ -32,13 +32,7 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 
 /**
  * This class is loaded by the Faktor-IPS 'Pull Up' refactoring to participate in this process by
@@ -51,8 +45,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     private final PullUpParticipantHelper refactoringHelper;
-
-    private IpsPullUpArguments arguments;
 
     public PullUpRefactoringParticipant() {
         refactoringHelper = new PullUpParticipantHelper();
@@ -77,12 +69,12 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     @Override
     protected boolean initialize(Object element) {
-        return refactoringHelper.initialize(element);
+        return refactoringHelper.initialize((IpsRefactoringProcessor)getProcessor(), element);
     }
 
     @Override
     protected void initialize(RefactoringArguments arguments) {
-        this.arguments = (IpsPullUpArguments)arguments;
+        // nothing to do
     }
 
     private class PullUpParticipantHelper extends RefactoringParticipantHelper {
@@ -136,42 +128,6 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
                 }
             }
             return deletedMethods;
-        }
-
-        @Override
-        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-                StandardBuilderSet builderSet) {
-
-            boolean success = false;
-            if (ipsObjectPartContainer instanceof IAttribute) {
-                success = initializeTargetJavaElementsForAttribute((IAttribute)ipsObjectPartContainer, builderSet);
-            } else if (ipsObjectPartContainer instanceof IEnumAttribute) {
-                success = initializeTargetJavaElementsForEnumAttribute((IEnumAttribute)ipsObjectPartContainer,
-                        builderSet);
-            }
-            return success;
-        }
-
-        private boolean initializeTargetJavaElementsForAttribute(IAttribute attribute, StandardBuilderSet builderSet) {
-            IAttribute targetAttribute = ((IType)arguments.getTarget()).newAttribute();
-            targetAttribute.copyFrom(attribute); // Temporary copy
-            setTargetJavaElements(builderSet.getGeneratedJavaElements(targetAttribute));
-            targetAttribute.delete(); // Delete temporary copy
-            return true;
-        }
-
-        private boolean initializeTargetJavaElementsForEnumAttribute(IEnumAttribute enumAttribute,
-                StandardBuilderSet builderSet) {
-
-            try {
-                IEnumAttribute targetEnumAttribute = ((IEnumType)arguments.getTarget()).newEnumAttribute();
-                targetEnumAttribute.copyFrom(enumAttribute); // Temporary copy
-                setTargetJavaElements(builderSet.getGeneratedJavaElements(targetEnumAttribute));
-                targetEnumAttribute.delete(); // Delete temporary copy
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-            return true;
         }
 
     }

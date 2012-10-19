@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.refactor;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -25,6 +26,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -33,6 +37,8 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -117,7 +123,9 @@ public class IpsRefactoringProcessorTest {
 
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, RETURNS_DEEP_STUBS);
         when(ipsSrcFile.getCorrespondingResource().isSynchronized(anyInt())).thenReturn(false);
-        testProcessorSpy.addIpsSrcFile(ipsSrcFile);
+        Set<IIpsSrcFile> affectedFiles = new HashSet<IIpsSrcFile>();
+        affectedFiles.add(ipsSrcFile);
+        when(testProcessorSpy.getAffectedIpsSrcFiles()).thenReturn(affectedFiles);
 
         RefactoringStatus status = testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
 
@@ -181,13 +189,16 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        protected void addIpsSrcFiles() throws CoreException {
+        protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+            return new HashSet<IIpsSrcFile>();
 
         }
 
         @Override
-        protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+            IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
+            addAffectedSrcFiles(modificationSet);
+            return modificationSet;
         }
 
         @Override
@@ -212,6 +223,70 @@ public class IpsRefactoringProcessorTest {
             return false;
         }
 
+    }
+
+    @Test
+    public void testGetIpsElement_ipsObjectPart() throws Exception {
+        IIpsObjectPart ipsObjectPart = mock(IIpsObjectPart.class);
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+
+        IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsObjectPart);
+
+        when(ipsObjectPart.isDeleted()).thenReturn(false);
+        assertSame(ipsObjectPart, refactoringProcessor.getIpsElement());
+
+        IIpsObjectPart ipsObjectPart2 = mock(IIpsObjectPart.class);
+
+        when(ipsObjectPart.getName()).thenReturn("ipsObjectPart");
+        when(ipsObjectPart2.getName()).thenReturn("ipsObjectPart");
+        when(ipsObject.getName()).thenReturn("ipsObject");
+        when(ipsSrcFile.getName()).thenReturn("ipsSrcFile");
+
+        when(ipsObjectPart.isDeleted()).thenReturn(true);
+        when(ipsObjectPart.getParent()).thenReturn(ipsObject);
+        when(ipsObject.getParent()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getChildren()).thenReturn(new IIpsElement[] { ipsObject });
+        when(ipsObject.getChildren()).thenReturn(new IIpsElement[] { ipsObjectPart2 });
+
+        assertSame(ipsObjectPart2, refactoringProcessor.getIpsElement());
+    }
+
+    @Test
+    public void testGetIpsElement_ipsObject() throws Exception {
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+
+        IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsObject);
+
+        when(ipsObject.exists()).thenReturn(true);
+        assertSame(ipsObject, refactoringProcessor.getIpsElement());
+
+        IIpsObject ipsObject2 = mock(IIpsObject.class);
+
+        when(ipsObject.getName()).thenReturn("ipsObject");
+        when(ipsObject2.getName()).thenReturn("ipsObject");
+        when(ipsSrcFile.getName()).thenReturn("ipsSrcFile");
+
+        when(ipsObject.exists()).thenReturn(false);
+        when(ipsObject.getParent()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getChildren()).thenReturn(new IIpsElement[] { ipsObject2 });
+
+        assertSame(ipsObject2, refactoringProcessor.getIpsElement());
+    }
+
+    @Test
+    public void testGetIpsElement_anyOther() throws Exception {
+        IIpsElement ipsElement = mock(IIpsElement.class);
+
+        IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsElement);
+
+        when(ipsElement.exists()).thenReturn(true);
+        assertSame(ipsElement, refactoringProcessor.getIpsElement());
+
+        when(ipsElement.exists()).thenReturn(false);
+
+        assertSame(ipsElement, refactoringProcessor.getIpsElement());
     }
 
 }

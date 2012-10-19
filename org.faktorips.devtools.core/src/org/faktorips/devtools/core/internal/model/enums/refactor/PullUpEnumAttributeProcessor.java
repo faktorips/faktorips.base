@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 
 /**
  * Refactoring processor for the "Pull Up Enum Attribute" - refactoring.
@@ -46,31 +48,44 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getIpsSrcFile());
+    protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        try {
+            result.add(getIpsSrcFile());
 
-        addIpsSrcFile(getTarget().getIpsSrcFile());
+            result.add(getTarget().getIpsSrcFile());
 
-        // Sub enum types of target enum type
-        for (IIpsSrcFile ipsSrcFile : findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE)) {
-            IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
-            if (enumType.isSubEnumTypeOf(getTargetEnumType(), getIpsProject()) && !enumType.equals(getEnumType())) {
-                addIpsSrcFile(ipsSrcFile);
-                subEnumTypes.add(enumType);
+            // Sub enum types of target enum type
+            for (IIpsSrcFile ipsSrcFile : findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE)) {
+                IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
+                if (enumType.isSubEnumTypeOf(getTargetEnumType(), getIpsProject()) && !enumType.equals(getEnumType())) {
+                    result.add(ipsSrcFile);
+                    subEnumTypes.add(enumType);
+                }
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
+        return result;
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        pullUpEnumAttribute();
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
+        addAffectedSrcFiles(modificationSet);
+
+        IEnumAttribute newEnumAttr = pullUpEnumAttribute();
+        modificationSet.setTargetElement(newEnumAttr);
         markeOriginalEnumAttributeInherited();
         inheritEnumAttributeInSubclassesOfTarget();
+
+        return modificationSet;
     }
 
-    private void pullUpEnumAttribute() throws CoreException {
+    private IEnumAttribute pullUpEnumAttribute() throws CoreException {
         IEnumAttribute newEnumAttribute = getTargetEnumType().newEnumAttribute();
         newEnumAttribute.copyFrom(getEnumAttribute());
+        return newEnumAttribute;
     }
 
     private void markeOriginalEnumAttributeInherited() {

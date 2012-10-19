@@ -105,7 +105,7 @@
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)-»
 		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
 		«IF genInterface()-»;«ELSE-»
 		{

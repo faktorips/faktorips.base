@@ -91,7 +91,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 
     @Override
     public String toString() {
-        return getName();
+        return "Builder: " + getName(); //$NON-NLS-1$
     }
 
     /**

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,8 +27,12 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -45,9 +50,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     /** The {@link IIpsElement} to be refactored. */
     private final IIpsElement ipsElement;
 
-    /** Set containing all {@link IIpsSrcFile}s that are affected by the refactoring. */
-    private final Set<IIpsSrcFile> affectedIpsSrcFiles;
-
     /** Set containing all message codes that will be ignored during final condition checking. */
     private final Set<String> ignoredValidationMessageCodes;
 
@@ -61,7 +63,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         ArgumentCheck.notNull(ipsElement);
 
         this.ipsElement = ipsElement;
-        affectedIpsSrcFiles = new HashSet<IIpsSrcFile>();
         ignoredValidationMessageCodes = new HashSet<String>();
     }
 
@@ -114,8 +115,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
 
-        addIpsSrcFiles();
-        for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : getAffectedIpsSrcFiles()) {
             if (!(ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ZERO))) {
                 status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsSrcFileOutOfSync, ipsSrcFile
                         .getCorrespondingResource().getFullPath()));
@@ -199,8 +199,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     @Override
     public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        refactorIpsModel(pm);
-        saveIpsSourceFiles(pm);
+        IpsRefactoringModificationSet modificationSet = refactorIpsModel(pm);
+        saveIpsSourceFiles(modificationSet, pm);
         return new NullChange();
     }
 
@@ -212,47 +212,46 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @throws CoreException Subclasses may throw this kind of exception any time
      */
-    protected abstract void refactorIpsModel(IProgressMonitor pm) throws CoreException;
+    public abstract IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException;
 
-    private void saveIpsSourceFiles(IProgressMonitor pm) throws CoreException {
-        for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
-            // File may not exist if it has been moved during refactoring.
-            if (ipsSrcFile.exists()) {
-                ipsSrcFile.save(true, pm);
+    private void saveIpsSourceFiles(IpsRefactoringModificationSet modificationSet, IProgressMonitor pm)
+            throws CoreException {
+        for (IpsSrcFileModification modification : modificationSet.getModifications()) {
+            if (modification.getTargetIpsSrcFile().exists()) {
+                modification.getTargetIpsSrcFile().save(true, pm);
             }
         }
     }
 
     /**
-     * Subclass implementation responsible for adding all {@link IIpsSrcFile}s touched by this
-     * refactoring.
+     * Returns the list of affected {@link IIpsSrcFile IPS source files}.
      * 
-     * @see #addIpsSrcFile(IIpsSrcFile)
+     * @return The list of affected {@link IIpsSrcFile IPS source files}.
      * 
-     * @throws CoreException May be thrown at any time
      */
-    protected abstract void addIpsSrcFiles() throws CoreException;
+    protected abstract Set<IIpsSrcFile> getAffectedIpsSrcFiles();
 
     /**
-     * Adds the given {@link IIpsSrcFile} to this refactoring.
+     * This method creates modifications using all {@link IIpsSrcFile IPS source files} collected by
+     * {@link #getAffectedIpsSrcFiles()}.
      * <p>
-     * Added source files will be processed and saved. If the {@link IIpsSrcFile} in question was
-     * already added before, nothing will happen.
-     * 
-     * @param ipsSrcFile {@link IIpsSrcFile} to add
-     * 
-     * @throws NullPointerException If the parameter is null
+     * This method could be called in {@link #refactorIpsModel(IProgressMonitor)} to get all
+     * modifications. It needs to be called before any of these source files was modified!
+     * <p>
+     * This method only creates normal modifications. If you have rename modifications or something
+     * else you need to create these modifications by your own.
      */
-    protected final void addIpsSrcFile(IIpsSrcFile ipsSrcFile) {
-        ArgumentCheck.notNull(ipsSrcFile);
-        affectedIpsSrcFiles.add(ipsSrcFile);
+    protected final void addAffectedSrcFiles(IpsRefactoringModificationSet modificationSet) {
+        for (IIpsSrcFile ipsSrcFile : getAffectedIpsSrcFiles()) {
+            modificationSet.addBeforeChanged(ipsSrcFile);
+        }
     }
 
     /**
      * Returns the {@link IIpsProject} the {@link IIpsElement} to be refactored belongs to.
      */
     protected final IIpsProject getIpsProject() {
-        return ipsElement.getIpsProject();
+        return getIpsElement().getIpsProject();
     }
 
     /**
@@ -265,7 +264,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
 
     @Override
     public final Object[] getElements() {
-        return new Object[] { ipsElement };
+        return new Object[] { getIpsElement() };
     }
 
     /**
@@ -278,9 +277,51 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
 
     /**
      * Returns the {@link IIpsElement} to be refactored.
+     * <p>
+     * Because of the refactoring may be performed multiple times (preview, getting generated java
+     * artifacts...) the element may be already deleted or moved and reconstructed. That means the
+     * element may be identified by its name but it is not the identical object reference. In this
+     * case we try to find the element by name.
      */
     public final IIpsElement getIpsElement() {
-        return ipsElement;
+        if (ipsElement instanceof IIpsObjectPart) {
+            IIpsObjectPart ipsObjectPart = (IIpsObjectPart)ipsElement;
+            if (!ipsObjectPart.isDeleted()) {
+                return ipsObjectPart;
+            }
+        }
+        if (ipsElement instanceof IIpsObject) {
+            IIpsObject ipsObject = (IIpsObject)ipsElement;
+            if (ipsObject.exists()) {
+                return ipsObject;
+            }
+        }
+        ArrayList<String> names = new ArrayList<String>();
+        IIpsElement element = ipsElement;
+        if (element instanceof IIpsObjectPartContainer) {
+            try {
+                while (!(element instanceof IIpsSrcFile)) {
+                    names.add(0, element.getName());
+                    element = element.getParent();
+                }
+                for (String name : names) {
+                    for (IIpsElement child : element.getChildren()) {
+                        if (child.getName().equals(name)) {
+                            element = child;
+                            break;
+                        }
+                    }
+                    if (!element.getName().equals(name)) {
+                        throw new RuntimeException("Cannot find element with name " + name + " in " + element); //$NON-NLS-1$//$NON-NLS-2$
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            return ipsElement;
+        }
+        return element;
     }
 
     /**
