@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -63,15 +62,14 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>2 -&gt; 3 &nbsp;(1..1)
      * </ul>
      * <li>Product components are non-ambiguous
-     * <li>A first link is being added to the test case
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * One further link to the third policy component must be added. This is because the
-     * associations are not optional.
+     * One link to the third policy component must be added. This is because the associations are
+     * not optional.
      */
     @Test
-    public void testAddPcTypeLink_MinCardinalityOne() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityOne() throws CoreException {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -122,15 +120,13 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>2 -&gt; 3 &nbsp;(0..1)
      * </ul>
      * <li>Product components are non-ambiguous
-     * <li>A first link is being added to the test case
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * No additional link must be added because the associations are all optional.
+     * No link must be added because the associations are all optional.
      */
-    // TODO PA-709 test for optional but mandatory in product component
     @Test
-    public void testAddPcTypeLink_MinCardinalityZero() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityZero() throws CoreException {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -180,15 +176,14 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>2 -&gt; 3 &nbsp;(2..3)
      * </ul>
      * <li>Product components are non-ambiguous
-     * <li>A first link is being added to the test case
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * Two further links to the third policy component must be added automatically. This is because
-     * the associations require at least two policy components.
+     * Two links to the third policy component must be added. This is because the associations
+     * require at least two policy components.
      */
     @Test
-    public void testAddPcTypeLink_MinCardinalityTwo() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityTwo() throws CoreException {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -226,12 +221,10 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
 
         // Verify
         ITestPolicyCmptLink link1_1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0];
-        assertSame(productCmpt2, link1_1.findTarget().findProductCmpt(ipsProject));
-
         ITestPolicyCmptLink link2_1 = link1_1.findTarget().getTestPolicyCmptLinks(parameter3.getName())[0];
-        assertSame(productCmpt3, link2_1.findTarget().findProductCmpt(ipsProject));
-
         ITestPolicyCmptLink link2_2 = link1_1.findTarget().getTestPolicyCmptLinks(parameter3.getName())[1];
+        assertSame(productCmpt2, link1_1.findTarget().findProductCmpt(ipsProject));
+        assertSame(productCmpt3, link2_1.findTarget().findProductCmpt(ipsProject));
         assertSame(productCmpt3, link2_2.findTarget().findProductCmpt(ipsProject));
     }
 
@@ -245,16 +238,15 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>3 -&gt; 4 &nbsp;(0..1)
      * </ul>
      * <li>Product components are non-ambiguous
-     * <li>A first link is being added to the test case
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * Three further links to the third policy component must be added automatically. This is
-     * because the second association requires at least three policy components. No link to the
-     * fourth policy component must be added, because it is optional.
+     * Three links to the third policy component must be added. This is because the second
+     * association requires at least three policy components. No link to the fourth policy component
+     * must be added, because it is optional.
      */
     @Test
-    public void testAddPcTypeLink_MixedMinCardinalities() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MixedMinCardinalities() throws CoreException {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -318,15 +310,14 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>2 -&gt; 3_3 &nbsp;(1..1)
      * </ul>
      * <li>Product components are non-ambiguous
-     * <li>A first link is being added to the test case
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * Three further links have to be added originating from policy component 2 to each policy
-     * component on the third level.
+     * Three links must be added originating from policy component 2 to each policy component on the
+     * third level.
      */
     @Test
-    public void testAddPcTypeLink_MultipleAssociations() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MultipleAssociations() throws CoreException {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -397,15 +388,13 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
      * </ul>
-     * <li>Product components are ambiguous: Product components 3_1 and 3_2 come into consideration
-     * for policy type 3. However, only product component 3_2 is actually linked with product
-     * component 2.
-     * <li>A first link is being added to the test case
+     * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. However, only
+     * product component 3_2 is actually linked with product component 2.
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * One further link must be added originating from policy component 2. The correct product
-     * component 3_2 must be determined by analyzing the available product component links.
+     * One link must be added originating from policy component 2. The correct product component 3_2
+     * must be determined by analyzing the available product component links.
      */
     @Test
     public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityOne() throws CoreException {
@@ -459,16 +448,14 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
      * </ul>
-     * <li>Product components are ambiguous: Product components 3_1 and 3_2 come into consideration
-     * for policy type 3. However, only product component 3_1 is actually linked with product
-     * component 2. Furthermore, this link defines a minimum cardinality of 0, so the link is
-     * optional.
-     * <li>A first link is being added to the test case
+     * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. However, only
+     * product component 3_1 is actually linked with product component 2. Furthermore, this link
+     * defines a minimum cardinality of 0, so the link is optional.
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * No further link must be added originating from policy component 2. This is because the only
-     * available link from product component 2 is optional.
+     * No link must be added originating from policy component 2. This is because the only available
+     * link from product component 2 is optional.
      */
     @Test
     public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityZero() throws CoreException {
@@ -521,15 +508,14 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
      * </ul>
-     * <li>Product components are ambiguous: Product components 3_1 and 3_2 come into consideration
-     * for policy type 3. However, only product component 3_1 is actually linked with product
-     * component 2. Furthermore, this link defines a minimum cardinality of 2.
-     * <li>A first link is being added to the test case
+     * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. However, only
+     * product component 3_1 is actually linked with product component 2. Furthermore, this link
+     * defines a minimum cardinality of 2.
      * </ul>
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * Two further links must be added originating from policy component 2. The correct product
-     * component is 3_1 for both links.
+     * Two links must be added originating from policy component 2. The correct product component is
+     * 3_1 for both links.
      */
     @Test
     public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityTwo() throws CoreException {
@@ -571,22 +557,208 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
 
         // Verify
         ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
-        ITestPolicyCmpt child2 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
-        ITestPolicyCmpt child3 = child1.getTestPolicyCmptLinks(parameter3.getName())[1].findTarget();
-        assertSame(productCmpt3_1, child2.findProductCmpt(ipsProject));
-        assertSame(productCmpt3_1, child3.findProductCmpt(ipsProject));
+        ITestPolicyCmpt child2_1 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
+        ITestPolicyCmpt child2_2 = child1.getTestPolicyCmptLinks(parameter3.getName())[1].findTarget();
+        assertSame(productCmpt3_1, child2_1.findProductCmpt(ipsProject));
+        assertSame(productCmpt3_1, child2_2.findProductCmpt(ipsProject));
     }
 
-    @Ignore
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>Multiple policy types are linked together as following:
+     * <ul>
+     * <li>1 -&gt; 2 &nbsp;(1..1)
+     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * </ul>
+     * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. Both product
+     * components are linked with product component 2. Furthermore, each link defines a minimum
+     * cardinality of 1 so both product components are mandatory.
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Two links must be added originating from policy component 2, one with product component 3_1,
+     * the other one with product component 3_2.
+     */
     @Test
     public void testAddPcTypeLink_AmbiguousProductComponents_TwoLinks_MinCardinalityOne() throws CoreException {
-        // TODO
+        // Create model types
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+        IProductCmptType productType1 = policyType1.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+        IProductCmptType productType3 = policyType3.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
+        IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter parameter1 = createTestParameter(testCaseType, policyType1, 1, 1);
+        ITestPolicyCmptTypeParameter parameter2 = createTestParameter(parameter1, policyType2, policy1ToPolicy2, 1, 1);
+        ITestPolicyCmptTypeParameter parameter3 = createTestParameter(parameter2, policyType3, policy2ToPolicy3, 1, 1);
+
+        // Create product components
+        IProductCmpt productCmpt1 = newProductCmpt(productType1, "Product1");
+        IProductCmpt productCmpt2 = newProductCmpt(productType2, "Product2");
+        IProductCmpt productCmpt3_1 = newProductCmpt(productType3, "Product3_1");
+        IProductCmpt productCmpt3_2 = newProductCmpt(productType3, "Product3_2");
+
+        // Create product links
+        createProductCmptLink(productCmpt1, productCmpt2, product1ToProduct2, 1, 1);
+        createProductCmptLink(productCmpt2, productCmpt3_1, product2ToProduct3, 1, 1);
+        createProductCmptLink(productCmpt2, productCmpt3_2, product2ToProduct3, 1, 1);
+
+        // Create test case
+        ITestPolicyCmpt rootTestPolicyCmpt = createTestCase(testCaseType, policyType1, productCmpt1);
+
+        // Execute
+        rootTestPolicyCmpt.addTestPcTypeLink(parameter2, productCmpt2.getQualifiedName(), null, null, true);
+
+        // Verify
+        ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
+        ITestPolicyCmpt child2_1 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
+        ITestPolicyCmpt child2_2 = child1.getTestPolicyCmptLinks(parameter3.getName())[1].findTarget();
+        assertSame(productCmpt3_1, child2_1.findProductCmpt(ipsProject));
+        assertSame(productCmpt3_2, child2_2.findProductCmpt(ipsProject));
     }
 
-    @Ignore
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>Multiple policy types are linked together as following:
+     * <ul>
+     * <li>1 -&gt; 2 &nbsp;(1..1)
+     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * </ul>
+     * <li>Following product components exist for policy type 3, and are linked with product
+     * component 2:
+     * <ul>
+     * <li>3_1 &nbsp;(0..1)
+     * <li>3_2 &nbsp;(2..2)
+     * <li>3_3 &nbsp;(1..1)
+     * </ul>
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Three links must be added originating from policy component 2, two with product component 3_2
+     * and one with product component 3_3.
+     */
     @Test
     public void testAddPcTypeLink_AmbiguousProductComponents_ThreeLinks_MixedCardinalities() throws CoreException {
-        // TODO
+        // Create model types
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+        IProductCmptType productType1 = policyType1.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+        IProductCmptType productType3 = policyType3.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
+        IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter parameter1 = createTestParameter(testCaseType, policyType1, 1, 1);
+        ITestPolicyCmptTypeParameter parameter2 = createTestParameter(parameter1, policyType2, policy1ToPolicy2, 1, 1);
+        ITestPolicyCmptTypeParameter parameter3 = createTestParameter(parameter2, policyType3, policy2ToPolicy3, 1, 1);
+
+        // Create product components
+        IProductCmpt productCmpt1 = newProductCmpt(productType1, "Product1");
+        IProductCmpt productCmpt2 = newProductCmpt(productType2, "Product2");
+        IProductCmpt productCmpt3_1 = newProductCmpt(productType3, "Product3_1");
+        IProductCmpt productCmpt3_2 = newProductCmpt(productType3, "Product3_2");
+        IProductCmpt productCmpt3_3 = newProductCmpt(productType3, "Product3_3");
+
+        // Create product links
+        createProductCmptLink(productCmpt1, productCmpt2, product1ToProduct2, 1, 1);
+        createProductCmptLink(productCmpt2, productCmpt3_1, product2ToProduct3, 0, 1);
+        createProductCmptLink(productCmpt2, productCmpt3_2, product2ToProduct3, 2, 2);
+        createProductCmptLink(productCmpt2, productCmpt3_3, product2ToProduct3, 1, 1);
+
+        // Create test case
+        ITestPolicyCmpt rootTestPolicyCmpt = createTestCase(testCaseType, policyType1, productCmpt1);
+
+        // Execute
+        rootTestPolicyCmpt.addTestPcTypeLink(parameter2, productCmpt2.getQualifiedName(), null, null, true);
+
+        // Verify
+        ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
+        ITestPolicyCmpt child2_1 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
+        ITestPolicyCmpt child2_2 = child1.getTestPolicyCmptLinks(parameter3.getName())[1].findTarget();
+        ITestPolicyCmpt child2_3 = child1.getTestPolicyCmptLinks(parameter3.getName())[2].findTarget();
+        assertSame(productCmpt3_2, child2_1.findProductCmpt(ipsProject));
+        assertSame(productCmpt3_2, child2_2.findProductCmpt(ipsProject));
+        assertSame(productCmpt3_3, child2_3.findProductCmpt(ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>Multiple policy types are linked together as following:
+     * <ul>
+     * <li>1 -&gt; 2 &nbsp;(1..1)
+     * <li>2 -&gt; 3 &nbsp;(0..1)
+     * </ul>
+     * <li>Product components are non-ambiguous. However, the cardinality from product component 2
+     * to product component 3 is changed by the product component link to mandatory.
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Because the minimum instances in the test parameter is 0, we evaluate the product component
+     * link. The product component link sets the cardinality to mandatory, which is why a test
+     * policy component link must be added from policy 2 to policy 3.
+     */
+    @Test
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_LinkOptionalInTestParameterButMandatoryInProductComponent()
+            throws CoreException {
+
+        // Create model types
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+        IProductCmptType productType1 = policyType1.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+        IProductCmptType productType3 = policyType3.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
+        IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 0, 1);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 0, 1);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter parameter1 = createTestParameter(testCaseType, policyType1, 1, 1);
+        ITestPolicyCmptTypeParameter parameter2 = createTestParameter(parameter1, policyType2, policy1ToPolicy2, 1, 1);
+        ITestPolicyCmptTypeParameter parameter3 = createTestParameter(parameter2, policyType3, policy2ToPolicy3, 0, 1);
+
+        // Create product components
+        IProductCmpt productCmpt1 = newProductCmpt(productType1, "Product1");
+        IProductCmpt productCmpt2 = newProductCmpt(productType2, "Product2");
+        IProductCmpt productCmpt3 = newProductCmpt(productType3, "Product3");
+
+        // Create product links
+        createProductCmptLink(productCmpt1, productCmpt2, product1ToProduct2, 1, 1);
+        createProductCmptLink(productCmpt2, productCmpt3, product2ToProduct3, 1, 1);
+
+        // Create test case
+        ITestPolicyCmpt rootTestPolicyCmpt = createTestCase(testCaseType, policyType1, productCmpt1);
+
+        // Execute
+        rootTestPolicyCmpt.addTestPcTypeLink(parameter2, productCmpt2.getQualifiedName(), null, null, true);
+
+        // Verify
+        ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
+        ITestPolicyCmpt child2 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
+        assertSame(productCmpt3, child2.findProductCmpt(ipsProject));
     }
 
     private IPolicyCmptTypeAssociation createAssociation(IPolicyCmptType source,

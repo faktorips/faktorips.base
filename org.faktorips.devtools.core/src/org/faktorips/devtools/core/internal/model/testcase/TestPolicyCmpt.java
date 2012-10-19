@@ -489,8 +489,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     /**
-     * Deduces the target product component from the test parameter, returns {@code false} if that
-     * was not possible.
+     * Adds recursive {@linkplain ITestPolicyCmptLink test policy component links} by deducing the
+     * target product component from the test parameter, returns {@code false} if that was not
+     * possible.
      */
     private boolean recursivelyAddRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter,
             ITestPolicyCmpt testPolicyCmpt) throws CoreException {
@@ -509,10 +510,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     /**
-     * Deduces the target product component from the parent product component, returns {@code false}
-     * if that was not possible.
+     * Adds recursive {@linkplain ITestPolicyCmptLink test policy component links} as is possible by
+     * deducing the target product component from the parent product component.
      */
-    private boolean recursivelyAddRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
+    private void recursivelyAddRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
             ITestPolicyCmpt testPolicyCmpt) throws CoreException {
 
         IProductCmpt originalProductCmpt = testPolicyCmpt.findProductCmpt(getIpsProject());
@@ -526,11 +527,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                         testPolicyCmpt.addTestPcTypeLink(testParameter, allowedProductCmptSrcFile
                                 .getQualifiedNameType().getName(), null, null, true);
                     }
-                    return true;
                 }
             }
         }
-        return false;
     }
 
     @Override
