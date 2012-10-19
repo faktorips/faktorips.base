@@ -319,7 +319,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (isSubsetOfADerivedUnion()) {
             try {
                 IProductCmptTypeAssociation derivedUnionAssociation = (IProductCmptTypeAssociation)findSubsettedDerivedUnion(ipsProject);
-                if (derivedUnionAssociation.isChangingOverTime() != isChangingOverTime()) {
+                if (derivedUnionAssociation != null
+                        && derivedUnionAssociation.isChangingOverTime() != isChangingOverTime()) {
                     String messageText;
                     if (isChangingOverTime()) {
                         messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetChanging;
