@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.junit.Before;
 import org.junit.Test;
 
-public class LinksContentProviderTest extends AbstractIpsPluginTest {
+public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
 
     private static final String ASSOCIATION = "association";
     private static final String OTHER_ASSOCIATION = "otherAssociation";
