@@ -31,4 +31,9 @@ public abstract interface LinkSectionViewItem {
      * Returns the image to be displayed for this item in the tree. To be used by label providers.
      */
     public Image getImage();
+
+    /**
+     * Returns the the name of the corresponding product component type association.
+     */
+    public String getAssociationName();
 }

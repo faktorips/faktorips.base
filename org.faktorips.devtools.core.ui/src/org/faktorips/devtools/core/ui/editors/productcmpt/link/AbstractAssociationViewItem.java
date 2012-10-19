@@ -45,8 +45,6 @@ public abstract class AbstractAssociationViewItem implements LinkSectionViewItem
         return items;
     }
 
-    public abstract String getAssociationName();
-
     public IProductCmptLinkContainer getLinkContainer() {
         return linkContainer;
     }

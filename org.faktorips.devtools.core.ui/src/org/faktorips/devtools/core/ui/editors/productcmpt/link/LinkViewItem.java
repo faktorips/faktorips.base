@@ -69,4 +69,9 @@ public class LinkViewItem extends PlatformObject implements LinkSectionViewItem 
     public Object getAdapter(Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);
     }
+
+    @Override
+    public String getAssociationName() {
+        return link.getAssociation();
+    }
 }
