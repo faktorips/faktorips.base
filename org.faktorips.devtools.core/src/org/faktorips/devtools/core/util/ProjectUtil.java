@@ -32,6 +32,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.Util;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -158,22 +159,8 @@ public class ProjectUtil {
         IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
                 isModelProject, isPersistentProject);
 
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.setOutputDefinedPerSrcFolder(true);
+        createIpsSourceFolderEntry(ipsProject, srcFolder.getName(), mergableFolder, derivedFolder);
 
-        if (path.containsSrcFolderEntry(srcFolder)) {
-            path.removeSrcFolderEntry(srcFolder);
-        }
-
-        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(srcFolder);
-        entry.setSpecificBasePackageNameForMergableJavaClasses(javaProject.getProject().getName()
-                + "." + srcFolder.getName()); //$NON-NLS-1$
-        entry.setSpecificOutputFolderForMergableJavaFiles(mergableFolder);
-        entry.setSpecificBasePackageNameForDerivedJavaClasses(javaProject.getProject().getName()
-                + "." + srcFolder.getName()); //$NON-NLS-1$
-        entry.setSpecificOutputFolderForDerivedJavaFiles(derivedFolder);
-
-        ipsProject.setIpsObjectPath(path);
         return ipsProject;
     }
 
@@ -234,8 +221,7 @@ public class ProjectUtil {
         if (path.containsSrcFolderEntry(srcFolder)) {
             path.removeSrcFolderEntry(srcFolder);
         }
-
-        String packageName = ipsProject.getName() + "." + folderName; //$NON-NLS-1$
+        String packageName = new JavaNamingConvention().getValidJavaIdentifier(ipsProject.getName()) + "." + folderName; //$NON-NLS-1$
 
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(srcFolder);
         entry.setSpecificBasePackageNameForMergableJavaClasses(packageName);

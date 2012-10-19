@@ -94,4 +94,9 @@ public interface IJavaNamingConvention {
      */
     public String getToDoMarker();
 
+    /**
+     * Replace characters with underscore that are not valid for Java identifier.
+     */
+    public String getValidJavaIdentifier(String identifier);
+
 }

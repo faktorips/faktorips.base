@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -269,6 +270,18 @@ public abstract class Type extends BaseIpsObject implements IType {
     @Override
     public List<IAssociation> getAssociations() {
         return new ArrayList<IAssociation>(getAssociationPartCollection().getBackingList());
+    }
+
+    @Override
+    public List<IAssociation> getAssociations(AssociationType... types) {
+        List<IAssociation> associations = new ArrayList<IAssociation>();
+        List<IAssociation> findAssociations = this.getAssociations();
+        for (IAssociation association : findAssociations) {
+            if (Arrays.asList(types).contains(association.getAssociationType())) {
+                associations.add(association);
+            }
+        }
+        return associations;
     }
 
     @Override

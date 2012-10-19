@@ -34,7 +34,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
     protected static final IIpsSrcFile[] EMPTY_ARRAY = new IIpsSrcFile[0];
 
     /*
-     * indicates wether to search the subtypes for an instance or not
+     * indicates whether to search the subtypes for an instance or not
      */
     private boolean subTypeSearch = true;
 

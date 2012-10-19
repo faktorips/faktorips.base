@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1323,7 +1324,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         private List<IProductCmptProperty> policyCmptTypeAttributes = new ArrayList<IProductCmptProperty>();
         private List<IProductCmptProperty> validationRules = new ArrayList<IProductCmptProperty>();
 
-        private Set<IPolicyCmptType> visitedPolicyCmptTypes = new HashSet<IPolicyCmptType>();
+        private Set<IPolicyCmptType> visitedPolicyCmptTypes = new LinkedHashSet<IPolicyCmptType>();
 
         public ProductCmptPropertyCollector(ProductCmptPropertyType propertyType, boolean searchSupertypeHierarchy,
                 IIpsProject ipsProject) {
@@ -1401,7 +1402,39 @@ public class ProductCmptType extends Type implements IProductCmptType {
             add(propertyMap, formulaSignatureDefinitions);
             add(propertyMap, policyCmptTypeAttributes);
             add(propertyMap, validationRules);
+
+            if (propertyType == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE) {
+                fixOverwrittenPolicyCmptTypeAttributes(propertyMap);
+            }
+
             return propertyMap;
+        }
+
+        /**
+         * Changes the provided property map with regard to two things:
+         * <ul>
+         * <li>Removes all policy component type attributes that have been overwritten at the lowest
+         * hierarchy level to be non-product-relevant.
+         * <li>Adds all policy component type attributes that have been overwritten at the lowest
+         * hierarchy level to be product-relevant.
+         * </ul>
+         */
+        private void fixOverwrittenPolicyCmptTypeAttributes(Map<String, IProductCmptProperty> propertyMap) {
+            // Iteration trough policy component types starts from the bottom of the hierarchy
+            Set<String> analyzedPolicyAttributes = new HashSet<String>();
+            for (IPolicyCmptType policyCmptType : visitedPolicyCmptTypes) {
+                for (IPolicyCmptTypeAttribute attribute : policyCmptType.getPolicyCmptTypeAttributes()) {
+                    if (!attribute.isOverwrite() || analyzedPolicyAttributes.contains(attribute.getName())) {
+                        continue;
+                    }
+                    if (!attribute.isProductRelevant()) {
+                        propertyMap.remove(attribute.getName());
+                    } else {
+                        propertyMap.put(attribute.getName(), attribute);
+                    }
+                    analyzedPolicyAttributes.add(attribute.getName());
+                }
+            }
         }
 
         private void add(Map<String, IProductCmptProperty> propertyMap,

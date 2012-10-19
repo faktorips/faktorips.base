@@ -279,8 +279,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
 
     private void activateContext() {
-        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
-        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
     @Override

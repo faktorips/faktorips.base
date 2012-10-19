@@ -307,6 +307,12 @@
                optional="false">
          </commandParameter>
       </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
+            description="%ShowModelOverviewHandler.tooltip"
+            id="org.faktorips.devtools.core.ui.commands.showModelOverview"
+            name="%ShowModelOverviewHandler.name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1137,6 +1143,15 @@
             name="%IpsHierarchyTitle"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"
+            icon="icons/IpsHierarchyView.gif"
+            id="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"
+            name="%IpsModelOverviewTitle"
+            restorable="true">
+      </view>
    </extension>
    
    <extension
@@ -1885,6 +1900,39 @@
             </with>
          </activeWhen>
       </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.ShowModelOverviewHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.showModelOverview">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <or>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <adapt
+                              type="org.faktorips.devtools.core.model.type.IType">
+                        </adapt>
+                     </adapt>
+                     <instanceof
+                           value="org.faktorips.devtools.core.model.type.IType">
+                     </instanceof>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.type.IType">
+                        </instanceof>
+                     </adapt>
+                     <instanceof
+                           value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                     </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <extension
@@ -2081,6 +2129,35 @@
                            </test>
                         </not>
                      </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.showModelOverview"
+               icon="icons/IpsHierarchyView.gif"
+               label="%ShowModelOverviewHandler.name"
+               style="push"
+               tooltip="%ShowModelOverviewHandler.tooltip">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="or">
+                     <or>
+                        <adapt
+                              type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           <test
+                                 forcePluginActivation="true"
+                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
+                           </test>
+                        </adapt>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                        </instanceof>
+                     </or>
                   </iterate>
                </with>
             </visibleWhen>

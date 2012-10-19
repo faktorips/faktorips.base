@@ -112,9 +112,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
      */
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
-    private static String MENU_INFO_GROUP = "goup.info"; //$NON-NLS-1$
-    private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
-    private static String MENU_RULE_GROUP = "goup.rule"; //$NON-NLS-1$
+    private static String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+    private static String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
+    private static String MENU_RULE_GROUP = "group.rule"; //$NON-NLS-1$
 
     // Used for saving the current layout style in a eclipse memento.
     private static final String LAYOUT_AND_FILTER_MEMENTO = "layoutandfilter"; //$NON-NLS-1$
@@ -768,7 +768,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IIpsElement[] cyclePath = e.getCyclePath();
         StringBuffer path = new StringBuffer();
 
-        // don't show first element if the first elemet is no product relevant node (e.g. effective
+        // don't show first element if the first element is no product relevant node (e.g. effective
         // date info node)
         IIpsElement[] cyclePathCpy;
         if (cyclePath[0] == null) {
