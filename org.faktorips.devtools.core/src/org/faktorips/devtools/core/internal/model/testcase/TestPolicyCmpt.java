@@ -443,15 +443,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
             // if desired, recursively add links as possible
             if (recursivelyAddRequired) {
-                for (ITestPolicyCmptTypeParameter childParam : typeParam.getTestPolicyCmptTypeParamChilds()) {
-                    IIpsSrcFile[] allowedProductCmpts = childParam.getAllowedProductCmpt(getIpsProject(),
-                            newTestPolicyCmpt.findProductCmpt(getIpsProject()));
-                    // add as many links recursively as defined by the minimum instances
-                    for (int i = 0; i < childParam.getMinInstances(); i++) {
-                        newTestPolicyCmpt.addTestPcTypeLink(childParam, allowedProductCmpts[0].getQualifiedNameType()
-                                .getName(), null, null, true);
-                    }
-                }
+                recursivelyAddRequiredLinks(typeParam, newTestPolicyCmpt);
             }
 
         } else {
@@ -481,6 +473,20 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
         objectHasChanged();
         return newTestPcTypeLink;
+    }
+
+    private void recursivelyAddRequiredLinks(ITestPolicyCmptTypeParameter typeParam, ITestPolicyCmpt newTestPolicyCmpt)
+            throws CoreException {
+
+        for (ITestPolicyCmptTypeParameter childParam : typeParam.getTestPolicyCmptTypeParamChilds()) {
+            IIpsSrcFile[] allowedProductCmpts = childParam.getAllowedProductCmpt(getIpsProject(),
+                    newTestPolicyCmpt.findProductCmpt(getIpsProject()));
+            // add as many links recursively as defined by the minimum instances
+            for (int i = 0; i < childParam.getMinInstances(); i++) {
+                newTestPolicyCmpt.addTestPcTypeLink(childParam,
+                        allowedProductCmpts[0].getQualifiedNameType().getName(), null, null, true);
+            }
+        }
     }
 
     @Override
