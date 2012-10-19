@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -44,6 +44,21 @@
 			<id>galileo</id>
 			<layout>p2</layout>
 			<url>http://update.faktorzehn.org/p2repositories/galileo/</url>
+		</repository>
+		<repository>
+			<id>xpand</id>
+			<layout>p2</layout>
+			<url>http://update.faktorips.org/p2repositories/modeling/m2t/xpand</url>
+		</repository>
+		<repository>
+			<id>emf</id>
+			<layout>p2</layout>
+			<url>http://update.faktorzehn.org/p2repositories/modeling/emf/</url>
+		</repository>
+		<repository>
+			<id>emft-mwe</id>
+			<layout>p2</layout>
+			<url>http://update.faktorips.org/p2repositories/modeling/emft/mwe/</url>
 		</repository>
 	</repositories>
 
@@ -132,6 +147,10 @@
 				<configuration>
 					<useJDK>BREE</useJDK>
 					<showWarnings>true</showWarnings>
+					<compilerArgument>-enableJavadoc</compilerArgument>
+                    <compilerArguments>
+						<properties>${project.basedir}/.settings/org.eclipse.jdt.core.prefs</properties>
+                    </compilerArguments>
 				</configuration>
 			</plugin>
 			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
