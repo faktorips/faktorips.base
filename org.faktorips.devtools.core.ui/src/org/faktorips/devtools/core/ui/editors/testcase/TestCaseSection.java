@@ -964,7 +964,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             public void run(IProgressMonitor monitor) throws CoreException {
                 ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
-                    changeProductCmpt(newTestPolicyCmpt);
+                    boolean productCmptAssigned = changeProductCmpt(newTestPolicyCmpt);
+                    if (productCmptAssigned) {
+                        newTestPolicyCmpt.addRequiredLinks(ipsProject);
+                    }
                 }
                 refreshTreeAndDetailArea();
                 expandTreeAfterAdd(associationType, newTestPolicyCmpt);
@@ -1013,29 +1016,29 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return newAssociation;
     }
 
-    private void changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private boolean changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         ITestPolicyCmptTypeParameter testTypeParam;
         try {
             testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         } catch (CoreException e) {
             // ignored, the validation shows the unknown type failure message
-            return;
+            return false;
         }
         IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
         if (policyCmptType == null) {
             // policy cmpt type not found, this is a validation error
-            return;
+            return false;
         }
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
         if (productCmptType == null) {
             // policy cmpt type not found, this is a validation error
-            return;
+            return false;
         }
         String[] productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam,
                 testPolicyCmpt.getParentTestPolicyCmpt(), false);
         if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
             // cancel
-            return;
+            return false;
         }
         testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmptQualifiedNames[0]);
         // reset the stored policy cmpt type, because the policy cmpt type can now
@@ -1050,6 +1053,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         refreshTreeAndDetailArea();
+
+        return true;
     }
 
     private void changeProductCmpt() throws CoreException {

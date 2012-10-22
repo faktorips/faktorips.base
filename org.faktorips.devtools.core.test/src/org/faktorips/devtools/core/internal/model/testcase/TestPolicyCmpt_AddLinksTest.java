@@ -42,8 +42,9 @@ import org.junit.Test;
 /**
  * Test cases for
  * {@link TestPolicyCmpt#addTestPcTypeLink(ITestPolicyCmptTypeParameter, String, String, String, boolean)}
+ * and {@link ITestPolicyCmpt#addRequiredLinks(IIpsProject)}
  */
-public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
+public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
@@ -759,6 +760,105 @@ public class TestPolicyCmpt_AddPcTypeLinkTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
         ITestPolicyCmpt child2 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
         assertSame(productCmpt3, child2.findProductCmpt(ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>Policy types are linked together as following:
+     * <ul>
+     * <li>Root -&gt; 1 &nbsp;(1..1)
+     * <li>Root -&gt; 2 &nbsp;(0..1)
+     * <li>Root -&gt; 3 &nbsp;(2..2)
+     * </ul>
+     * <li>Product components can be non-ambiguously assigned to each association
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * When adding the required links to the root policy , following links should be added:
+     * <ul>
+     * <li>1 link from root to policy 1
+     * <li>2 links from root to policy 3
+     * </ul>
+     * <p>
+     * There is no link to policy 2 because the corresponding association is optional.
+     */
+    @Test
+    public void testAddRequiredLinks() throws CoreException {
+        // Create model types
+        IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+        IProductCmptType rootProductType = rootPolicyType.findProductCmptType(ipsProject);
+        IProductCmptType productType1 = policyType1.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+        IProductCmptType productType3 = policyType3.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation rootPolicyToPolicy1 = createAssociation(rootPolicyType, policyType1, 1, 1);
+        IPolicyCmptTypeAssociation rootPolicyToPolicy2 = createAssociation(rootPolicyType, policyType2, 0, 1);
+        IPolicyCmptTypeAssociation rootPolicyToPolicy3 = createAssociation(rootPolicyType, policyType3, 2, 2);
+        IProductCmptTypeAssociation rootProductToProduct1 = createAssociation(rootProductType, productType1, 1, 1);
+        IProductCmptTypeAssociation rootProductToProduct2 = createAssociation(rootProductType, productType2, 0, 1);
+        IProductCmptTypeAssociation rootProductToProduct3 = createAssociation(rootProductType, productType3, 2, 2);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
+        ITestPolicyCmptTypeParameter rootToPolicy1Parameter = createTestParameter(rootParameter, policyType1,
+                rootPolicyToPolicy1, 1, 1);
+        ITestPolicyCmptTypeParameter rootToPolicy2Parameter = createTestParameter(rootParameter, policyType2,
+                rootPolicyToPolicy2, 0, 1);
+        ITestPolicyCmptTypeParameter rootToPolicy3Parameter = createTestParameter(rootParameter, policyType3,
+                rootPolicyToPolicy3, 2, 2);
+
+        // Create product components
+        IProductCmpt rootProductCmpt = newProductCmpt(rootProductType, "RootProduct");
+        IProductCmpt productCmpt1 = newProductCmpt(productType1, "Product1");
+        IProductCmpt productCmpt2 = newProductCmpt(productType2, "Product2");
+        IProductCmpt productCmpt3 = newProductCmpt(productType3, "Product3");
+
+        // Create product links
+        createProductCmptLink(rootProductCmpt, productCmpt1, rootProductToProduct1, 1, 1);
+        createProductCmptLink(rootProductCmpt, productCmpt2, rootProductToProduct2, 1, 1);
+        createProductCmptLink(rootProductCmpt, productCmpt3, rootProductToProduct3, 1, 1);
+
+        // Create test case
+        ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
+        ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(rootParameter);
+        rootTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(rootProductCmpt.getQualifiedName());
+
+        // Execute
+        rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+
+        // Verify
+        ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(rootToPolicy1Parameter.getName())[0]
+                .findTarget();
+        ITestPolicyCmpt child2 = rootTestPolicyCmpt.getTestPolicyCmptLinks(rootToPolicy2Parameter.getName())[0]
+                .findTarget();
+        ITestPolicyCmpt child3 = rootTestPolicyCmpt.getTestPolicyCmptLinks(rootToPolicy3Parameter.getName())[0]
+                .findTarget();
+        assertSame(productCmpt1, child1.findProductCmpt(ipsProject));
+        assertSame(productCmpt2, child2.findProductCmpt(ipsProject));
+        assertSame(productCmpt3, child3.findProductCmpt(ipsProject));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAddRequiredLinks_OnlyPossibleIfProductCmptAssigned() throws CoreException {
+        // Create model types
+        IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
+
+        // Create test case
+        ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
+        ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(rootParameter);
+
+        // Execute
+        rootTestPolicyCmpt.addRequiredLinks(ipsProject);
     }
 
     private IPolicyCmptTypeAssociation createAssociation(IPolicyCmptType source,

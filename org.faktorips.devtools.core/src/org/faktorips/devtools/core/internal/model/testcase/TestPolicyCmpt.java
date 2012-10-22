@@ -444,7 +444,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
             // if desired, recursively add links as possible
             if (recursivelyAddRequired) {
-                recursivelyAddRequiredLinks(typeParam, newTestPolicyCmpt);
+                newTestPolicyCmpt.addRequiredLinks(typeParam.getIpsProject());
             }
 
         } else {
@@ -476,14 +476,18 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return newTestPcTypeLink;
     }
 
-    private void recursivelyAddRequiredLinks(ITestPolicyCmptTypeParameter testParameter,
-            ITestPolicyCmpt newTestPolicyCmpt) throws CoreException {
+    @Override
+    public void addRequiredLinks(IIpsProject ipsProject) throws CoreException {
+        IProductCmpt originalProductCmpt = findProductCmpt(getIpsProject());
+        if (originalProductCmpt == null) {
+            throw new IllegalStateException();
+        }
 
-        for (ITestPolicyCmptTypeParameter childParameter : testParameter.getTestPolicyCmptTypeParamChilds()) {
-            boolean addedViaTestParameter = recursivelyAddRequiredLinksViaTestParameter(childParameter,
-                    newTestPolicyCmpt);
+        for (ITestPolicyCmptTypeParameter childParameter : findTestPolicyCmptTypeParameter(ipsProject)
+                .getTestPolicyCmptTypeParamChilds()) {
+            boolean addedViaTestParameter = addRequiredLinksViaTestParameter(childParameter);
             if (!addedViaTestParameter) {
-                recursivelyAddRequiredLinksViaParentProductCmpt(childParameter, newTestPolicyCmpt);
+                addRequiredLinksViaParentProductCmpt(childParameter, originalProductCmpt);
             }
         }
     }
@@ -493,9 +497,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * target product component from the test parameter, returns {@code false} if that was not
      * possible.
      */
-    private boolean recursivelyAddRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter,
-            ITestPolicyCmpt testPolicyCmpt) throws CoreException {
-
+    private boolean addRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter) throws CoreException {
         IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(), null);
         if (allowedProductCmptSrcFiles.length != 1 || testParameter.getMinInstances() == 0) {
             return false;
@@ -503,8 +505,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
         // add as many links as defined by the minimum instances
         for (int i = 0; i < testParameter.getMinInstances(); i++) {
-            testPolicyCmpt.addTestPcTypeLink(testParameter, allowedProductCmptSrcFiles[0].getQualifiedNameType()
-                    .getName(), null, null, true);
+            addTestPcTypeLink(testParameter, allowedProductCmptSrcFiles[0].getQualifiedNameType().getName(), null,
+                    null, true);
         }
         return true;
     }
@@ -513,10 +515,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * Adds recursive {@linkplain ITestPolicyCmptLink test policy component links} as is possible by
      * deducing the target product component from the parent product component.
      */
-    private void recursivelyAddRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
-            ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private void addRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
+            IProductCmpt originalProductCmpt) throws CoreException {
 
-        IProductCmpt originalProductCmpt = testPolicyCmpt.findProductCmpt(getIpsProject());
         IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(),
                 originalProductCmpt);
         for (IIpsSrcFile allowedProductCmptSrcFile : allowedProductCmptSrcFiles) {
@@ -524,8 +525,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 if (link.getTarget().equals(allowedProductCmptSrcFile.getQualifiedNameType().getName())) {
                     // add as many links as defined by the minimum cardinality
                     for (int i = 0; i < link.getMinCardinality(); i++) {
-                        testPolicyCmpt.addTestPcTypeLink(testParameter, allowedProductCmptSrcFile
-                                .getQualifiedNameType().getName(), null, null, true);
+                        addTestPcTypeLink(testParameter, allowedProductCmptSrcFile.getQualifiedNameType().getName(),
+                                null, null, true);
                     }
                 }
             }
