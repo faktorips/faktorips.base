@@ -964,13 +964,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
-                ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
+                ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
-                    changeProductCmpt(testPolicyCmpt);
+                    boolean productCmptAssigned = changeProductCmpt(newTestPolicyCmpt);
+                    if (productCmptAssigned) {
+                        newTestPolicyCmpt.addRequiredLinks(ipsProject);
+                    }
                 }
                 refreshTreeAndDetailArea();
-                treeViewer.expandToLevel(associationType, 1);
-                selectInTreeByObject(testPolicyCmpt, true);
+                expandTreeAfterAdd(associationType, newTestPolicyCmpt);
+                selectInTreeByObject(newTestPolicyCmpt, true);
                 selectionInTreeChanged((IStructuredSelection)treeViewer.getSelection());
             }
         };
@@ -988,6 +991,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
     }
 
+    private void expandTreeAfterAdd(TestCaseTypeAssociation associationType, ITestPolicyCmpt newTestPolicyCmpt) {
+        treeViewer.expandToLevel(associationType, 1);
+        for (Object child : contentProvider.getChildren(associationType)) {
+            if (child.equals(newTestPolicyCmpt)) {
+                treeViewer.expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
+            }
+        }
+    }
+
     /**
      * Adds a new link target to the given association type
      */
@@ -998,7 +1010,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         ITestPolicyCmptLink newAssociation = associationType.getParentTestPolicyCmpt().addTestPcTypeLink(
                 associationType.getTestPolicyCmptTypeParam(), productCmptQualifiedName, policyCmptTypeQualifiedName,
-                targetName);
+                targetName, true);
         ITestPolicyCmpt newTestPolicyCmpt = newAssociation.findTarget();
         if (newTestPolicyCmpt == null) {
             throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingAssociation));
@@ -1006,29 +1018,29 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return newAssociation;
     }
 
-    private void changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private boolean changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         ITestPolicyCmptTypeParameter testTypeParam;
         try {
             testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         } catch (CoreException e) {
             // ignored, the validation shows the unknown type failure message
-            return;
+            return false;
         }
         IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
         if (policyCmptType == null) {
             // policy cmpt type not found, this is a validation error
-            return;
+            return false;
         }
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
         if (productCmptType == null) {
             // policy cmpt type not found, this is a validation error
-            return;
+            return false;
         }
         String[] productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam,
                 testPolicyCmpt.getParentTestPolicyCmpt(), false);
         if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
             // cancel
-            return;
+            return false;
         }
         testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmptQualifiedNames[0]);
         // reset the stored policy cmpt type, because the policy cmpt type can now
@@ -1043,6 +1055,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         refreshTreeAndDetailArea();
+
+        return true;
     }
 
     private void changeProductCmpt() throws CoreException {
@@ -2699,8 +2713,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                                         targetName);
                             }
                         }
-                        getTreeViewer().expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                         refreshTreeAndDetailArea();
+                        expandTreeAfterAdd(associationType, null);
                         selectInTreeByObject(newAssociation, true);
                     } else {
                         ITestPolicyCmptLink newLink = null;
@@ -2719,8 +2733,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         if (newTestPolicyCmpt == null) {
                             throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingAssociation));
                         }
-                        getTreeViewer().expandToLevel(associationType, AbstractTreeViewer.ALL_LEVELS);
                         refreshTreeAndDetailArea();
+                        expandTreeAfterAdd(associationType, newTestPolicyCmpt);
                         selectionInTreeChanged((IStructuredSelection)getSelection());
                         selectInTreeByObject(newTestPolicyCmpt, true);
                     }

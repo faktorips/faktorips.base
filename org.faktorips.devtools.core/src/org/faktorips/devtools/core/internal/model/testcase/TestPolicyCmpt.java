@@ -26,11 +26,13 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -397,19 +399,29 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             String policyCmptType,
             String targetName) throws CoreException {
 
+        return addTestPcTypeLink(typeParam, productCmpt, policyCmptType, targetName, false);
+    }
+
+    @Override
+    public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
+            String productCmpt,
+            String policyCmptType,
+            String targetName,
+            boolean recursivelyAddRequired) throws CoreException {
+
         ArgumentCheck.notNull(typeParam);
         if (!StringUtils.isEmpty(productCmpt) && !StringUtils.isEmpty(policyCmptType)) {
             throw new CoreException(new IpsStatus(Messages.TestPolicyCmpt_Error_ProductCmpAndPolicyCmptTypeGiven));
         }
 
-        IPolicyCmptTypeAssociation link = typeParam.findAssociation(typeParam.getIpsProject());
-        if (link == null) {
+        IPolicyCmptTypeAssociation policyCmptTypeAssociation = typeParam.findAssociation(typeParam.getIpsProject());
+        if (policyCmptTypeAssociation == null) {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_LinkNotFound,
                     typeParam.getAssociation())));
         }
 
         ITestPolicyCmptLink newTestPcTypeLink = null;
-        if (!link.isAssoziation()) {
+        if (!policyCmptTypeAssociation.isAssoziation()) {
             // link is composition
             // add new link including a test policy component child
             newTestPcTypeLink = new TestPolicyCmptLink(this, getNextPartId());
@@ -429,6 +441,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
             // set the defaults for all attribute values
             newTestPolicyCmpt.updateDefaultTestAttributeValues();
+
+            // if desired, recursively add links as possible
+            if (recursivelyAddRequired) {
+                newTestPolicyCmpt.addRequiredLinks(typeParam.getIpsProject());
+            }
 
         } else {
             // link is association
@@ -457,6 +474,63 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
         objectHasChanged();
         return newTestPcTypeLink;
+    }
+
+    @Override
+    public void addRequiredLinks(IIpsProject ipsProject) throws CoreException {
+        IProductCmpt originalProductCmpt = findProductCmpt(getIpsProject());
+        if (originalProductCmpt == null) {
+            throw new IllegalStateException();
+        }
+
+        for (ITestPolicyCmptTypeParameter childParameter : findTestPolicyCmptTypeParameter(ipsProject)
+                .getTestPolicyCmptTypeParamChilds()) {
+            boolean addedViaTestParameter = addRequiredLinksViaTestParameter(childParameter);
+            if (!addedViaTestParameter) {
+                addRequiredLinksViaParentProductCmpt(childParameter, originalProductCmpt);
+            }
+        }
+    }
+
+    /**
+     * Adds recursive {@linkplain ITestPolicyCmptLink test policy component links} by deducing the
+     * target product component from the test parameter, returns {@code false} if that was not
+     * possible.
+     */
+    private boolean addRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter) throws CoreException {
+        IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(), null);
+        if (allowedProductCmptSrcFiles.length != 1 || testParameter.getMinInstances() == 0) {
+            return false;
+        }
+
+        // add as many links as defined by the minimum instances
+        for (int i = 0; i < testParameter.getMinInstances(); i++) {
+            addTestPcTypeLink(testParameter, allowedProductCmptSrcFiles[0].getQualifiedNameType().getName(), null,
+                    null, true);
+        }
+        return true;
+    }
+
+    /**
+     * Adds recursive {@linkplain ITestPolicyCmptLink test policy component links} as is possible by
+     * deducing the target product component from the parent product component.
+     */
+    private void addRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
+            IProductCmpt originalProductCmpt) throws CoreException {
+
+        IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(),
+                originalProductCmpt);
+        for (IIpsSrcFile allowedProductCmptSrcFile : allowedProductCmptSrcFiles) {
+            for (IProductCmptLink link : originalProductCmpt.getFirstGeneration().getLinks()) {
+                if (link.getTarget().equals(allowedProductCmptSrcFile.getQualifiedNameType().getName())) {
+                    // add as many links as defined by the minimum cardinality
+                    for (int i = 0; i < link.getMinCardinality(); i++) {
+                        addTestPcTypeLink(testParameter, allowedProductCmptSrcFile.getQualifiedNameType().getName(),
+                                null, null, true);
+                    }
+                }
+            }
+        }
     }
 
     @Override
