@@ -21,9 +21,12 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.observable.value.WritableValue;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -95,8 +98,10 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -3031,22 +3036,170 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         @Override
-        public boolean validateDrop(final Object target, int operation, TransferData transferType) {
-            if (!FileTransfer.getInstance().isSupportedType(transferType)) {
-                return false;
+        public boolean validateDrop(final Object target, int operation, TransferData transferData) {
+
+            if (LocalSelectionTransfer.getTransfer().isSupportedType(transferData)) {
+                return valideDropToMove(target);
+            }
+            if (FileTransfer.getInstance().isSupportedType(transferData)) {
+                return valideDropToLink(target, transferData);
             }
 
-            // if (!LocalSelectionTransfer.getTransfer().isSupportedType(transferType)) {
-            // return false;
-            // }
+            return false;
+        }
+
+        private boolean valideDropToMove(Object target) {
             ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
             if (!(selection instanceof IStructuredSelection)) {
                 return false;
             }
-            if (isValidTarget(target, (ITestPolicyCmpt)((IStructuredSelection)selection).getFirstElement())) {
+            if (isValidToMove(target, (ITestPolicyCmpt)((IStructuredSelection)selection).getFirstElement())) {
                 return true;
             }
             return false;
+        }
+
+        private boolean isValidToMove(Object target, ITestPolicyCmpt source) {
+            if (source == null) {
+                return false;
+            }
+            if (!isValideTarget(target)) {
+                return false;
+            }
+            return source.getParentTestPolicyCmpt().equals(((ITestPolicyCmpt)target).getParentTestPolicyCmpt());
+        }
+
+        private boolean isValideTarget(Object target) {
+            return target instanceof ITestPolicyCmpt;
+        }
+
+        private boolean valideDropToLink(Object target, TransferData transferData) {
+            String[] filename = (String[])(FileTransfer.getInstance().nativeToJava(transferData));
+            if (filename[0] == null) {
+                return false;
+            }
+            IProductCmpt productCmpt = getProductCmptFromFileName(filename[0]);
+
+            if (isValidTargetToLink(target, productCmpt)) {
+                return true;
+            }
+            return false;
+        }
+
+        private IProductCmpt getProductCmptFromFileName(String filename) {
+
+            IFile file = getFile(filename);
+            if (file == null) {
+                return null;
+            }
+            try {
+                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+                if (element == null || !element.exists()) {
+                    return null;
+                }
+                IProductCmpt draggedCmpt = getProductCmpt(element);
+                if (draggedCmpt == null) {
+                    return null;
+                }
+                return draggedCmpt;
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return null;
+            }
+        }
+
+        private IFile getFile(String filename) {
+            return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
+        }
+
+        private IProductCmpt getProductCmpt(IIpsElement element) throws CoreException {
+            if (element instanceof IIpsSrcFile
+                    && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+                return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
+            } else {
+                return null;
+            }
+        }
+
+        private boolean isValidTargetToLink(Object target, IProductCmpt productCmpt) {
+            if (!isValideTarget(target)) {
+                return false;
+            }
+            ITestPolicyCmpt testPolicyCmptTarget = ((ITestPolicyCmpt)target);
+            if (testPolicyCmptTarget == null) {
+                return false;
+            }
+            try {
+                ITestPolicyCmptTypeParameter testTypeParam = testPolicyCmptTarget
+                        .findTestPolicyCmptTypeParameter(ipsProject);
+                if (testTypeParam == null) {
+                    return false;
+                }
+                IProductCmptType productCmptType = productCmpt.findProductCmptType(ipsProject);
+                if (productCmptType == null) {
+                    return false;
+                }
+                IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
+                if (policyCmptType == null) {
+                    return false;
+                }
+                ITestPolicyCmptTypeParameter targetToChildParam = null;
+                for (ITestPolicyCmptTypeParameter potentialTargetToChildParam : testTypeParam
+                        .getTestPolicyCmptTypeParamChilds()) {
+                    IPolicyCmptType policyTypeOfParameter = potentialTargetToChildParam.findPolicyCmptType(ipsProject);
+                    if (policyCmptType.isSubtypeOf(policyTypeOfParameter, ipsProject)) {
+                        targetToChildParam = potentialTargetToChildParam;
+                        break;
+                    }
+                }
+                if (targetToChildParam == null) {
+                    return false;
+                }
+                IIpsSrcFile[] srcFiles = getProductCmptSrcFiles(targetToChildParam, testPolicyCmptTarget);
+                for (IIpsSrcFile srcFile : srcFiles) {
+                    String prod = ((IProductCmpt)srcFile.getIpsObject()).getQualifiedName();
+                    if (prod.equals(productCmpt.getQualifiedName())) {
+                        return true;
+                    }
+                }
+
+                return false;
+            } catch (CoreException e) {
+                throw new RuntimeException();
+            }
+        }
+
+        @Override
+        public boolean performDrop(Object data) {
+            if (getCurrentEvent().operations == DND.DROP_MOVE) {
+                try {
+                    move(getDroppedTestPolicyCmpt(data), (ITestPolicyCmpt)getInsertAt());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+            if (getCurrentEvent().operations == DND.DROP_LINK) {
+                getDroppedProductCmpt(data);
+            }
+
+            ISelection selection = getTreeViewer().getSelection();
+            refreshTreeAndDetailArea();
+            getTreeViewer().setSelection(selection);
+            return true;
+        }
+
+        private ITestPolicyCmpt getDroppedTestPolicyCmpt(Object data) {
+            if (!(data instanceof IStructuredSelection)) {
+                return null;
+            }
+            return (ITestPolicyCmpt)(((IStructuredSelection)data).getFirstElement());
+        }
+
+        private IProductCmpt getDroppedProductCmpt(Object data) {
+            if (!(data instanceof IStructuredSelection)) {
+                return null;
+            }
+            return (IProductCmpt)(((IStructuredSelection)data).getFirstElement());
         }
 
         private Object getInsertAt() {
@@ -3060,38 +3213,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
             return null;
-        }
-
-        @Override
-        public boolean performDrop(Object data) {
-            ITestPolicyCmpt droppedTestPolicyCmpt = getDroppedTestPolicyCmpt(data);
-            if (!isValidTarget(getInsertAt(), droppedTestPolicyCmpt)) {
-                return false;
-            }
-
-            if (getCurrentEvent().operations == DND.DROP_MOVE) {
-                try {
-                    move(droppedTestPolicyCmpt, (ITestPolicyCmpt)getInsertAt());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
-            }
-
-            ISelection selection = getTreeViewer().getSelection();
-            refreshTreeAndDetailArea();
-            getTreeViewer().setSelection(selection);
-            return true;
-        }
-
-        private boolean isValidTarget(Object target, ITestPolicyCmpt toMove) {
-            ITestPolicyCmpt parentTestPolicyCmptOfTarget = null;
-            if (target instanceof ITestPolicyCmpt) {
-                parentTestPolicyCmptOfTarget = ((ITestPolicyCmpt)target).getParentTestPolicyCmpt();
-            }
-            if (toMove == null) {
-                return false;
-            }
-            return toMove.getParentTestPolicyCmpt().equals(parentTestPolicyCmptOfTarget);
         }
 
         private void move(ITestPolicyCmpt droppedTestPolicyCmpt, ITestPolicyCmpt targetTestPolicyCmpt)
@@ -3116,14 +3237,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             };
             IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
-        }
-
-        private ITestPolicyCmpt getDroppedTestPolicyCmpt(Object data) {
-            if (!(data instanceof IStructuredSelection)) {
-                return null;
-            }
-
-            return (ITestPolicyCmpt)(((IStructuredSelection)data).getFirstElement());
         }
 
         private TreeViewer getTreeViewer() {
