@@ -3051,13 +3051,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public boolean validateDrop(final Object target, int operation, TransferData transferData) {
-
             if (LocalSelectionTransfer.getTransfer().isSupportedType(transferData)) {
-                return valideDropToMove(target);
+                return validateDropToMove(target);
             }
             if (FileTransfer.getInstance().isSupportedType(transferData)) {
                 try {
-                    return valideDropToLink(target, transferData);
+                    return validateDropToLink(target, transferData);
                 } catch (CoreException e) {
                     throw new RuntimeException();
                 }
@@ -3066,11 +3065,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return false;
         }
 
-        private boolean valideDropToMove(Object target) {
+        private boolean validateDropToMove(Object target) {
             ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
             if (!(selection instanceof IStructuredSelection)) {
                 return false;
             }
+            // TODO CODE-REVIEW PA-707: hier einfach return isValidToMove(...), spart 3 Zeilen ein
             if (isValidToMove(target, (ITestPolicyCmpt)((IStructuredSelection)selection).getFirstElement())) {
                 return true;
             }
@@ -3087,8 +3087,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return source.getParentTestPolicyCmpt().equals(((ITestPolicyCmpt)target).getParentTestPolicyCmpt());
         }
 
-        private boolean valideDropToLink(Object target, TransferData transferData) throws CoreException {
+        private boolean validateDropToLink(Object target, TransferData transferData) throws CoreException {
             String[] filename = (String[])(FileTransfer.getInstance().nativeToJava(transferData));
+            // TODO CODE-REVIEW PA-707: Dieses if sieht komisch aus, wann passiert denn das?
             if (filename[0] == null) {
                 return false;
             }
@@ -3096,7 +3097,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (productCmpt == null) {
                 return false;
             }
-
+            /*
+             * TODO CODE-REVIEW PA-707: Die folgenden 2 Methoden besser einfach isValidTarget
+             * nennnen. Als Parameter einmal ITestPolicyCmpt und einmal TestCaseTypeAssociation. Den
+             * instanceof Check dann entsprechend schon hier machen und mit dem entsprechenden Cast
+             * die Methoden aufrufen.
+             */
             if (isValidTargetTestPolicyCmptToLink(target, productCmpt)) {
                 return true;
             }
@@ -3106,8 +3112,43 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return false;
         }
 
+        /*
+         * TODO CODE-REVIEW PA-707: Diese und die nächste Methode scheinen beide das selbe zu tun,
+         * sobald der ITestPolicyCmptTypeParameter ermittelt wurde. Entsprechend den duplizierten
+         * Code in eine eigene Methode auslagern.
+         */
+        private boolean isValidTargetTestPolicyCmptToLink(Object target, IProductCmpt productCmpt) throws CoreException {
+            if (!(target instanceof ITestPolicyCmpt)) {
+                return false;
+            }
+            ITestPolicyCmpt testPolicyCmptTarget = ((ITestPolicyCmpt)target);
+
+            ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
+                    testPolicyCmptTarget);
+            if (targetToChildParam == null) {
+                return false;
+            }
+            /*
+             * TODO CODE-REVIEW PA-707: Das Ziel hier ist herauszufinden, ob der gegebene
+             * Produktbaustein im Array der erlaubten Produktbausteine enthalten ist. Hier kann
+             * einfach return Arrays.asList(srcFiles).contains(productCmpt.getIpsSrcFile());
+             * verwendet werden.
+             */
+            IIpsSrcFile[] srcFiles = getProductCmptSrcFiles(targetToChildParam, testPolicyCmptTarget);
+            Arrays.asList(srcFiles).contains(productCmpt.getIpsSrcFile());
+            for (IIpsSrcFile srcFile : srcFiles) {
+                String prod = ((IProductCmpt)srcFile.getIpsObject()).getQualifiedName();
+                if (prod.equals(productCmpt.getQualifiedName())) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private boolean isValidTargetTestCaseTypeAssociationToLink(Object target, IProductCmpt productCmpt)
                 throws CoreException {
+
             if (!(target instanceof TestCaseTypeAssociation)) {
                 return false;
             }
@@ -3126,10 +3167,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return false;
         }
 
+        /*
+         * TODO CODE-REVIEW PA-707: Diese Methode wird erst weiter unten benötigt, also entsprechend
+         * nach unten schieben.
+         */
         private IFile getFile(String filename) {
             return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
         }
 
+        /*
+         * TODO CODE-REVIEW PA-707: Diese Methode wird erst weiter unten benötigt, also entsprechend
+         * nach unten schieben.
+         */
         private IProductCmpt getProductCmpt(IIpsElement element) throws CoreException {
             if (element instanceof IIpsSrcFile
                     && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
@@ -3139,30 +3188,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
 
-        private boolean isValidTargetTestPolicyCmptToLink(Object target, IProductCmpt productCmpt) throws CoreException {
-            if (!(target instanceof ITestPolicyCmpt)) {
-                return false;
-            }
-            ITestPolicyCmpt testPolicyCmptTarget = ((ITestPolicyCmpt)target);
-
-            ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
-                    testPolicyCmptTarget);
-            if (targetToChildParam == null) {
-                return false;
-            }
-            IIpsSrcFile[] srcFiles = getProductCmptSrcFiles(targetToChildParam, testPolicyCmptTarget);
-            for (IIpsSrcFile srcFile : srcFiles) {
-                String prod = ((IProductCmpt)srcFile.getIpsObject()).getQualifiedName();
-                if (prod.equals(productCmpt.getQualifiedName())) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
+        /*
+         * TODO CODE-REVIEW PA-707: Diese Methode wird erst weiter unten benötigt, also entsprechend
+         * nach unten schieben.
+         */
         private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
                 ITestPolicyCmpt testPolicyCmptTarget) throws CoreException {
+
             ITestPolicyCmptTypeParameter testTypeParam = testPolicyCmptTarget
                     .findTestPolicyCmptTypeParameter(ipsProject);
             if (testTypeParam == null) {
@@ -3190,6 +3222,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public boolean performDrop(Object data) {
+            /*
+             * TODO CODE-REVIEW PA-707: getCurrentEvent().operations gibt nur an, welche Operationen
+             * vom Drag Source generell unterstützt werden. Um die aktuelle Operation abzufragen
+             * muss getCurrentOperation() verwendet werden. Das wird zur Unterscheidung aber nicht
+             * viel helfen, da hier immer DROP_MOVE zurückkommt. Unterscheidung stattdessen besser
+             * über FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType)
+             * bzw.
+             * LocalSelectionDialog.getTransfer().isSupportedType(getCurrentEvent().currentDataType)
+             * wie in validateDrop(...).
+             */
             if (getCurrentEvent().operations == DND.DROP_MOVE) {
                 try {
                     move(getDroppedTestPolicyCmpt(data), (ITestPolicyCmpt)getInsertAt());
@@ -3200,7 +3242,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (getCurrentEvent().operations == 6) {
                 try {
                     perfomDropToLink(data);
-
                 } catch (CoreException e) {
                     throw new RuntimeException();
                 }
@@ -3214,6 +3255,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         private void perfomDropToLink(Object data) throws CoreException {
             String[] filename = (String[])data;
+            // TODO CODE-REVIEW PA-707: Dieser Fall wurde schon in validate abgefangen
             if (filename[0] == null) {
                 return;
             }
@@ -3221,12 +3263,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             ITestPolicyCmpt testPolicyCmpt = null;
             if (getCurrentTarget() instanceof ITestPolicyCmpt) {
                 testPolicyCmpt = (ITestPolicyCmpt)getCurrentTarget();
-
             }
+            /*
+             * TODO CODE-REVIEW PA-707: Besser else if verwenden. Dann muss - wenn das Programm in
+             * den oberen Fall reingegangen ist - dieses if gar nicht mehr ausgewertet werden.
+             */
             if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
                 testPolicyCmpt = ((TestCaseTypeAssociation)getCurrentTarget()).getParentTestPolicyCmpt();
-
             }
+            /*
+             * TODO CODE-REVIEW PA-707: Hier dann einfach nur else, und dann beherzt eine
+             * RuntimeException werfen (es handelt sich dann um einen Programmierfehler, da es kein
+             * anderes Ziel als die oberen beiden geben kann)
+             */
             if (testPolicyCmpt == null) {
                 return;
             }
@@ -3279,7 +3328,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         private IProductCmpt getProductCmptFromFileName(String filename) throws CoreException {
-
             IFile file = getFile(filename);
             if (file == null) {
                 return null;
@@ -3289,6 +3337,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return null;
             }
             IProductCmpt draggedCmpt = getProductCmpt(element);
+            /*
+             * TODO CODE-REVIEW PA-707: Hier einfach return draggedCmpt, oder noch besser gleich
+             * return getProductCmpt(element)
+             */
             if (draggedCmpt == null) {
                 return null;
             }
