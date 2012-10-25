@@ -57,7 +57,7 @@ public class IpsObjectPartTester extends PropertyTester {
 
     /**
      * Checks if the given object is either an instance of, or adapts to {@link IIpsObjectPart} and
-     * returns it. Returns <code>null</code> if the given object neither is an
+     * returns that part. Returns <code>null</code> if the given object neither is an
      * {@link IIpsObjectPart} nor does it adapt to it.
      */
     public static IIpsObjectPart castOrAdaptToIpsObjectPart(Object object) {
