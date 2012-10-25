@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 /**
@@ -28,7 +28,7 @@ public class LinkViewItemAdapterFactory implements IAdapterFactory {
     // IAdaptable forces raw type upon implementing classes
     @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if (IIpsObjectPathContainer.class.equals(adapterType)) {
+        if (IIpsObjectPart.class.equals(adapterType)) {
             return ((LinkViewItem)adaptableObject).getLink();
         }
         return null;
@@ -38,7 +38,7 @@ public class LinkViewItemAdapterFactory implements IAdapterFactory {
     // IAdaptable forces raw type upon implementing classes
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { IIpsObjectPathContainer.class };
+        return new Class[] { IIpsObjectPart.class };
     }
 
 }

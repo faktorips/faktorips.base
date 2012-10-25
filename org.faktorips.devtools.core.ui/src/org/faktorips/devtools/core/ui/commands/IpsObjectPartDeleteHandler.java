@@ -20,11 +20,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
@@ -47,37 +45,35 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
             final Set<IIpsSrcFile> srcFilesToSave = new HashSet<IIpsSrcFile>();
             try {
                 for (Object o : structuredSelection.toArray()) {
-                    if (o instanceof IIpsObjectPart) {
-                        IIpsObjectPart objectPart = (IIpsObjectPart)o;
+                    IIpsObjectPart objectPart = IpsObjectPartTester.castOrAdaptToIpsObjectPart(o);
+                    if (objectPart != null) {
                         deleteIpsObjectPart(event, srcFilesToSave, objectPart);
-                    }
-                    if (o instanceof IAdaptable) {
-                        IIpsObjectPart ipsObjectPart = (IIpsObjectPart)Platform.getAdapterManager().getAdapter(o,
-                                IIpsObjectPart.class);
-                        deleteIpsObjectPart(event, srcFilesToSave, ipsObjectPart);
                     }
                 }
             } finally {
-                new Job("Save touched Ips-Src-Files") { //$NON-NLS-1$
-
-                    @Override
-                    protected IStatus run(IProgressMonitor monitor) {
-                        MultiStatus result = new MultiStatus(IpsUIPlugin.PLUGIN_ID, IStatus.OK,
-                                "Save touched Ips-Src-Files", null); //$NON-NLS-1$
-                        new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files"); //$NON-NLS-1$
-                        for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
-                            try {
-                                srcFileToSave.save(true, monitor);
-                            } catch (CoreException e) {
-                                result.add(e.getStatus());
-                            }
-                        }
-                        return result;
-                    }
-                }.schedule();
+                saveSrcFilesAsAJob(srcFilesToSave);
             }
         }
         return null;
+    }
+
+    private void saveSrcFilesAsAJob(final Set<IIpsSrcFile> srcFilesToSave) {
+        new Job("Save touched Ips-Src-Files") { //$NON-NLS-1$
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                MultiStatus result = new MultiStatus(IpsUIPlugin.PLUGIN_ID, IStatus.OK,
+                        "Save touched Ips-Src-Files", null); //$NON-NLS-1$
+                new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files"); //$NON-NLS-1$
+                for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
+                    try {
+                        srcFileToSave.save(true, monitor);
+                    } catch (CoreException e) {
+                        result.add(e.getStatus());
+                    }
+                }
+                return result;
+            }
+        }.schedule();
     }
 
     private void deleteIpsObjectPart(ExecutionEvent event,
