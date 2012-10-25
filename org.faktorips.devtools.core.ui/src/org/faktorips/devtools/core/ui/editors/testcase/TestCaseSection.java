@@ -2741,17 +2741,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             };
 
-            Runnable runnableWithBusyIndicator = new Runnable() {
+            BusyIndicator.showWhile(getDisplay(), new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+                        runnable.run(null);
                     } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
+                        throw new CoreRuntimeException(e);
                     }
                 }
-            };
-            BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
+            });
         }
 
         /**

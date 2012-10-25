@@ -50,7 +50,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
         ipsProject = newIpsProject();
     }
 
@@ -762,6 +763,44 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         assertSame(productCmpt3, child2.findProductCmpt(ipsProject));
     }
 
+    @Test
+    public void testAddPcTypeLink_OnlyWholeContentChangedEvent() throws CoreException {
+        // Create model types
+        IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IProductCmptType rootProductType = rootPolicyType.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(rootPolicyType, policyType2, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(rootProductType, productType2, 1, 1);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
+        ITestPolicyCmptTypeParameter parameter2 = createTestParameter(rootParameter, policyType2, policy1ToPolicy2, 1,
+                1);
+
+        // Create product components
+        IProductCmpt rootProductCmpt = newProductCmpt(rootProductType, "RootProduct");
+        IProductCmpt productCmpt2 = newProductCmpt(productType2, "Product2");
+
+        // Create product links
+        createProductCmptLink(rootProductCmpt, productCmpt2, product1ToProduct2, 1, 1);
+
+        // Create test case
+        ITestPolicyCmpt rootTestPolicyCmpt = createTestCase(testCaseType, rootPolicyType, rootProductCmpt);
+        rootTestPolicyCmpt.setProductCmpt(rootProductCmpt.getQualifiedName());
+
+        // Execute
+        resetNumberContentChangeEvents();
+        rootTestPolicyCmpt.addTestPcTypeLink(parameter2, productCmpt2.getQualifiedName(), null, null, true);
+
+        // Verify
+        assertSingleContentChangeEvent();
+        assertWholeContentChangedEvent(rootTestPolicyCmpt.getIpsSrcFile());
+    }
+
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
@@ -859,6 +898,33 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
 
         // Execute
         rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+    }
+
+    @Test
+    public void testAddRequiredLinks_OnlyWholeContentChangedEvent() throws CoreException {
+        // Create model types
+        IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
+        IProductCmptType rootProductCmptType = rootPolicyType.findProductCmptType(ipsProject);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
+
+        // Create product component
+        IProductCmpt rootProductCmpt = newProductCmpt(rootProductCmptType, "RootProduct");
+
+        // Create test case
+        ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
+        ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(rootParameter);
+        rootTestPolicyCmpt.setProductCmpt(rootProductCmpt.getQualifiedName());
+
+        // Execute
+        resetNumberContentChangeEvents();
+        rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+
+        // Verify
+        assertSingleContentChangeEvent();
+        assertWholeContentChangedEvent(testCase.getIpsSrcFile());
     }
 
     private IPolicyCmptTypeAssociation createAssociation(IPolicyCmptType source,
