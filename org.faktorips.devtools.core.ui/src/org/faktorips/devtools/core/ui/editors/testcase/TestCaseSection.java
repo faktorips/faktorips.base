@@ -992,10 +992,40 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
     }
 
-    private void expandTreeAfterAdd(Object toExpand, ITestPolicyCmpt newTestPolicyCmpt) {
-        treeViewer.expandToLevel(toExpand, 1);
-        for (Object child : contentProvider.getChildren(toExpand)) {
-            if (child.equals(newTestPolicyCmpt)) {
+    /**
+     * Expands the tree viewer so that the provided test policy component and all it's children are
+     * visible.
+     * <p>
+     * This operation can handle both configurations of
+     * {@link TestCaseContentProvider#isWithoutAssociations()}.
+     * 
+     * @param parentItem parent of the provided test policy component within the tree (this is
+     *            either a {@link TestCaseTypeAssociation} or another test policy component
+     * @param testPolicyCmpt test policy component to expand in the tree (including children)
+     */
+    private void expandTreeAfterAdd(Object parentItem, ITestPolicyCmpt testPolicyCmpt) {
+        /*
+         * If the user adds a test policy component onto another test policy component AND the
+         * content provider is configured to also contain association nodes, we need to expand the
+         * correct association node instead of the test policy component.
+         */
+        if (parentItem instanceof ITestPolicyCmpt && !contentProvider.isWithoutAssociations()) {
+            for (Object child : contentProvider.getChildren(parentItem)) {
+                try {
+                    if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject).equals(
+                            ((TestCaseTypeAssociation)child).getTestPolicyCmptTypeParam())) {
+                        parentItem = child;
+                        break;
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+        }
+
+        treeViewer.expandToLevel(parentItem, 1);
+        for (Object child : contentProvider.getChildren(parentItem)) {
+            if (child.equals(testPolicyCmpt)) {
                 treeViewer.expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
             }
         }
@@ -3136,10 +3166,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         private void perfomDropToLink(final Object data) {
-            class DropToLinkRunnable implements Runnable {
+            class DropOnLinkRunnable implements Runnable {
                 private IProductCmpt productCmpt;
 
-                private DropToLinkRunnable(IProductCmpt productCmpt) {
+                private DropOnLinkRunnable(IProductCmpt productCmpt) {
                     this.productCmpt = productCmpt;
                 }
 
@@ -3193,7 +3223,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
 
             IProductCmpt productCmpt = getProductCmpt(((String[])data)[0]);
-            BusyIndicator.showWhile(Display.getDefault(), new DropToLinkRunnable(productCmpt));
+            BusyIndicator.showWhile(Display.getDefault(), new DropOnLinkRunnable(productCmpt));
         }
 
         private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
