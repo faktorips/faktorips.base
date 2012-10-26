@@ -80,6 +80,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
@@ -2741,17 +2742,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             };
 
-            Runnable runnableWithBusyIndicator = new Runnable() {
+            BusyIndicator.showWhile(getDisplay(), new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+                        runnable.run(null);
                     } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
+                        throw new CoreRuntimeException(e);
                     }
                 }
-            };
-            BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
+            });
         }
 
         /**
@@ -3125,33 +3125,47 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
             if (FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType)) {
-                try {
-                    perfomDropToLink(data);
-                } catch (CoreException e) {
-                    throw new RuntimeException();
-                }
+                perfomDropToLink(data);
             }
-
-            ISelection selection = getTreeViewer().getSelection();
+            // if (getCurrentTarget() instanceof ITestPolicyCmpt) {
+            // ((ITestPolicyCmpt)getCurrentTarget()).get;
+            // } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
+            // ((TestCaseTypeAssociation)getCurrentTarget());
+            // }
             refreshTreeAndDetailArea();
-            getTreeViewer().setSelection(selection);
+            expandTreeAfterAdd((TestCaseTypeAssociation)getCurrentTarget(), getDroppedTestPolicyCmpt(data));
+            selectionInTreeChanged((IStructuredSelection)(getTreeViewer().getSelection()));
+            selectInTreeByObject(getDroppedTestPolicyCmpt(data), true);
+
+            // ISelection selection = getTreeViewer().getSelection();
+            // refreshTreeAndDetailArea();
+            // getTreeViewer().setSelection(selection);
             return true;
         }
 
-        private void perfomDropToLink(Object data) throws CoreException {
-            String[] filename = (String[])data;
+        private void perfomDropToLink(final Object data) {
+            BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+                @Override
+                public void run() {
+                    String[] filename = (String[])data;
 
-            IProductCmpt productCmpt = getProductCmptFromFileName(filename[0]);
-            ITestPolicyCmpt testPolicyCmpt = null;
-            if (getCurrentTarget() instanceof ITestPolicyCmpt) {
-                testPolicyCmpt = (ITestPolicyCmpt)getCurrentTarget();
-            } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
-                testPolicyCmpt = ((TestCaseTypeAssociation)getCurrentTarget()).getParentTestPolicyCmpt();
-            } else {
-                throw new RuntimeException();
-            }
-            testPolicyCmpt.addTestPcTypeLink(getTargetToChildParameter(productCmpt, testPolicyCmpt),
-                    productCmpt.getQualifiedName(), null, null, true);
+                    try {
+                        IProductCmpt productCmpt = getProductCmptFromFileName(filename[0]);
+                        ITestPolicyCmpt testPolicyCmpt = null;
+                        if (getCurrentTarget() instanceof ITestPolicyCmpt) {
+                            testPolicyCmpt = (ITestPolicyCmpt)getCurrentTarget();
+                        } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
+                            testPolicyCmpt = ((TestCaseTypeAssociation)getCurrentTarget()).getParentTestPolicyCmpt();
+                        } else {
+                            throw new RuntimeException();
+                        }
+                        testPolicyCmpt.addTestPcTypeLink(getTargetToChildParameter(productCmpt, testPolicyCmpt),
+                                productCmpt.getQualifiedName(), null, null, true);
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
+                }
+            });
         }
 
         private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
