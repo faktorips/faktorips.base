@@ -13,7 +13,11 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
+		«IF generatePublishedInterfaces-»
 		 * «localizedJDoc("CLASS", interfaceName)»
+		«ELSE»
+		 * «localizedJDoc("CLASS_NO_INTERFACE", name)»
+		«ENDIF»
 		 * @generated
 		 */
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
