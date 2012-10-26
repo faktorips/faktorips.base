@@ -455,7 +455,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                             newTestPolicyCmpt.updateDefaultTestAttributeValues();
 
                             // if desired, recursively add links as possible
-                            if (recursivelyAddRequired) {
+                            if (recursivelyAddRequired && newTestPolicyCmpt.findProductCmpt(getIpsProject()) != null) {
                                 newTestPolicyCmpt.addRequiredLinks(typeParam.getIpsProject());
                             }
 
