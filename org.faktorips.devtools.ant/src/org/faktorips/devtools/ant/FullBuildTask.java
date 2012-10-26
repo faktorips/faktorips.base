@@ -26,9 +26,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -60,35 +63,47 @@ public class FullBuildTask extends AbstractIpsTask {
      */
     @Override
     public void executeInternal() throws Exception {
+        WorkspaceJob job = new WorkspaceJob("build") {
+            @Override
+            public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+                // Fetch Workspace
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                IProject projects[] = null;
+                if (eclipseProjects.isEmpty()) {
+                    // Iterate over Projects in Workspace to find Warning and Errormarkers
+                    projects = workspace.getRoot().getProjects();
+                    if (projects.length > 0) {
+                        System.out.println("The following IPS-Projects are about to be built: ");
+                    }
+                    for (int i = 0; i < projects.length; i++) {
+                        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel()
+                                .getIpsProject(projects[i].getName());
+                        if (ipsProject.exists()) {
+                            System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
+                                    + ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: "
+                                    + ipsProject.getIpsArtefactBuilderSet().getVersion());
+                        }
+                    }
+                    workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 
-        // Fetch Workspace
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-        // Create ProgressMonitor
-        IProgressMonitor monitor = new NullProgressMonitor();
-
-        IProject projects[] = null;
-        if (eclipseProjects.isEmpty()) {
-            // Iterate over Projects in Workspace to find Warning and Errormarkers
-            projects = workspace.getRoot().getProjects();
-            if (projects.length > 0) {
-                System.out.println("The following IPS-Projects are about to be built: ");
-            }
-            for (int i = 0; i < projects.length; i++) {
-                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projects[i].getName());
-                if (ipsProject.exists()) {
-                    System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
-                            + ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: "
-                            + ipsProject.getIpsArtefactBuilderSet().getVersion());
+                } else {
+                    projects = buildEclipseProjects(workspace);
                 }
+
+                handleMarkers(projects);
+                return Status.OK_STATUS;
             }
-            workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
-        } else {
-            projects = buildEclipseProjects(workspace);
+        };
+        job.setPriority(Job.BUILD);
+        job.schedule();
+        job.join();
+        IStatus result = job.getResult();
+        if (result.getSeverity() == Status.ERROR) {
+            if (result.getException() instanceof RuntimeException) {
+                throw (RuntimeException)result.getException();
+            }
+            throw new RuntimeException("Error while building Faktor-IPS: " + result.getMessage(), result.getException());
         }
-
-        handleMarkers(projects);
     }
 
     private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreException {
