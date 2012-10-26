@@ -96,9 +96,9 @@
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {
     	«IF validateAttributes-»
-                ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
+                «ObjectProperty()»[] invalidObjectProperties = new «ObjectProperty()»[] {
                 «FOREACH validatedAttributeConstants AS constant SEPARATOR ","-»
-                new ObjectProperty(this, «constant»)
+                new «ObjectProperty()»(this, «constant»)
                 «ENDFOREACH-»
 				 };
         «ELSE-»

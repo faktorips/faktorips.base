@@ -12,7 +12,7 @@
 	     * 
 	     * @generated
 	     */
-	    public static final IntegerRange «constantNameMaxCardinalityFor» = new «IntegerRange()»(«minCardinality», «maxCardinality»);
+	    public static final «IntegerRange()» «constantNameMaxCardinalityFor» = new «IntegerRange()»(«minCardinality», «maxCardinality»);
 	«ENDIF-»
 
 	«IF !hasSuperAssociationWithSameName()-»
