@@ -992,9 +992,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
     }
 
-    private void expandTreeAfterAdd(TestCaseTypeAssociation associationType, ITestPolicyCmpt newTestPolicyCmpt) {
-        treeViewer.expandToLevel(associationType, 1);
-        for (Object child : contentProvider.getChildren(associationType)) {
+    private void expandTreeAfterAdd(Object toExpand, ITestPolicyCmpt newTestPolicyCmpt) {
+        treeViewer.expandToLevel(toExpand, 1);
+        for (Object child : contentProvider.getChildren(toExpand)) {
             if (child.equals(newTestPolicyCmpt)) {
                 treeViewer.expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
             }
@@ -3085,18 +3085,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         private boolean validateDropToLink(Object target, TransferData transferData) throws CoreException {
             String[] filename = (String[])(FileTransfer.getInstance().nativeToJava(transferData));
-            IProductCmpt productCmpt = getProductCmptFromFileName(filename[0]);
+
+            // Check whether a product component is being transfered
+            IProductCmpt productCmpt = getProductCmpt(filename[0]);
             if (productCmpt == null) {
                 return false;
             }
+
             if (target instanceof TestCaseTypeAssociation) {
                 TestCaseTypeAssociation testCaseTypeAssociation = (TestCaseTypeAssociation)target;
-
                 return isValidTarget(testCaseTypeAssociation.getTestPolicyCmptTypeParam(), productCmpt,
                         testCaseTypeAssociation.getParentTestPolicyCmpt());
-            }
-            if (target instanceof ITestPolicyCmpt) {
 
+            } else if (target instanceof ITestPolicyCmpt) {
                 ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
                         (ITestPolicyCmpt)target);
                 if (targetToChildParam == null) {
@@ -3104,6 +3105,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
                 return isValidTarget(targetToChildParam, productCmpt, (ITestPolicyCmpt)target);
             }
+
             return false;
         }
 
@@ -3123,49 +3125,75 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
-            }
-            if (FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType)) {
+                ISelection selection = getTreeViewer().getSelection();
+                refreshTreeAndDetailArea();
+                getTreeViewer().setSelection(selection);
+            } else if (FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType)) {
                 perfomDropToLink(data);
             }
-            // if (getCurrentTarget() instanceof ITestPolicyCmpt) {
-            // ((ITestPolicyCmpt)getCurrentTarget()).get;
-            // } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
-            // ((TestCaseTypeAssociation)getCurrentTarget());
-            // }
-            refreshTreeAndDetailArea();
-            expandTreeAfterAdd((TestCaseTypeAssociation)getCurrentTarget(), getDroppedTestPolicyCmpt(data));
-            selectionInTreeChanged((IStructuredSelection)(getTreeViewer().getSelection()));
-            selectInTreeByObject(getDroppedTestPolicyCmpt(data), true);
 
-            // ISelection selection = getTreeViewer().getSelection();
-            // refreshTreeAndDetailArea();
-            // getTreeViewer().setSelection(selection);
             return true;
         }
 
         private void perfomDropToLink(final Object data) {
-            BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+            class DropToLinkRunnable implements Runnable {
+                private IProductCmpt productCmpt;
+
+                private DropToLinkRunnable(IProductCmpt productCmpt) {
+                    this.productCmpt = productCmpt;
+                }
+
                 @Override
                 public void run() {
-                    String[] filename = (String[])data;
-
+                    ITestPolicyCmpt newTestPolicyCmpt;
                     try {
-                        IProductCmpt productCmpt = getProductCmptFromFileName(filename[0]);
-                        ITestPolicyCmpt testPolicyCmpt = null;
                         if (getCurrentTarget() instanceof ITestPolicyCmpt) {
-                            testPolicyCmpt = (ITestPolicyCmpt)getCurrentTarget();
+                            newTestPolicyCmpt = dropOnTestPolicyCmpt((ITestPolicyCmpt)getCurrentTarget());
                         } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
-                            testPolicyCmpt = ((TestCaseTypeAssociation)getCurrentTarget()).getParentTestPolicyCmpt();
+                            newTestPolicyCmpt = dropOnTestCaseTypeAssociation((TestCaseTypeAssociation)getCurrentTarget());
                         } else {
                             throw new RuntimeException();
                         }
-                        testPolicyCmpt.addTestPcTypeLink(getTargetToChildParameter(productCmpt, testPolicyCmpt),
-                                productCmpt.getQualifiedName(), null, null, true);
+
+                        refreshTreeAndDetailArea();
+                        expandTreeAfterAdd(getCurrentTarget(), newTestPolicyCmpt);
+                        selectInTreeByObject(newTestPolicyCmpt, true);
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);
                     }
                 }
-            });
+
+                private ITestPolicyCmpt dropOnTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
+                        throws CoreException {
+
+                    if (testCaseTypeAssociation.isRoot()) {
+                        return dropOnRootTestCaseTypeAssociation(testCaseTypeAssociation);
+                    } else {
+                        return dropOnTestPolicyCmpt(testCaseTypeAssociation.getParentTestPolicyCmpt());
+                    }
+                }
+
+                private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
+                        throws CoreException {
+
+                    ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase)
+                            .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());
+                    rootTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt.getQualifiedName());
+                    rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+                    return rootTestPolicyCmpt;
+                }
+
+                private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+                    ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(
+                            getTargetToChildParameter(productCmpt, testPolicyCmpt), productCmpt.getQualifiedName(),
+                            null, null, true);
+                    return testPolicyCmptLink.findTarget();
+                }
+
+            }
+
+            IProductCmpt productCmpt = getProductCmpt(((String[])data)[0]);
+            BusyIndicator.showWhile(Display.getDefault(), new DropToLinkRunnable(productCmpt));
         }
 
         private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
@@ -3240,7 +3268,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
         }
 
-        private IProductCmpt getProductCmptFromFileName(String filename) throws CoreException {
+        private IProductCmpt getProductCmpt(String filename) {
             IFile file = getFile(filename);
             if (file == null) {
                 return null;
@@ -3256,10 +3284,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
         }
 
-        private IProductCmpt getProductCmpt(IIpsElement element) throws CoreException {
+        private IProductCmpt getProductCmpt(IIpsElement element) {
             if (element instanceof IIpsSrcFile
                     && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-                return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
+                try {
+                    return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             } else {
                 return null;
             }

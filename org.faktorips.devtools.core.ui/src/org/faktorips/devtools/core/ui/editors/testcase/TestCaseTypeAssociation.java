@@ -245,4 +245,9 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     public IIpsProject getIpsProject() {
         return testPolicyCmptTypeParameter.getIpsProject();
     }
+
+    public boolean isRoot() {
+        return getParentTestPolicyCmpt() == null;
+    }
+
 }
