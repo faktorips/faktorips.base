@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.CoreException;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -977,6 +979,82 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         assertWholeContentChangedEvent(testCase.getIpsSrcFile());
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>There are following product components and generations:
+     * <ul>
+     * <li>Product Component 1 - Generation 1
+     * <li>Product Component 1 - Generation 2
+     * <li>Product Component 1 - Generation 3
+     * <li>Product Component 2 - Generation 1
+     * <li>Product Component 2 - Generation 2
+     * <li>Product Component 2 - Generation 3
+     * <li>Product Component 3 - Generation 1
+     * </ul>
+     * <li>Links are established between product component 1 / generation 1 to product component 2,
+     * as well as product component 2 / generation 2 to product component 3.
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Links do not need to exist in all generations for automatic link creation to work. It is
+     * sufficient if the link is provided in one generation.
+     */
+    @Test
+    public void testAddRequiredLinks_SearchAllGenerationsForLink() throws CoreException {
+        // Create model types
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+        IProductCmptType productType1 = policyType1.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+        IProductCmptType productType3 = policyType3.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
+        IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter parameter1 = createTestParameter(testCaseType, policyType1, 1, 1);
+        ITestPolicyCmptTypeParameter parameter2 = createTestParameter(parameter1, policyType2, policy1ToPolicy2, 1, 1);
+        ITestPolicyCmptTypeParameter parameter3 = createTestParameter(parameter2, policyType3, policy2ToPolicy3, 1, 1);
+
+        // Create product components
+        IProductCmpt productCmpt1 = newProductCmpt(productType1, "Product1");
+        IProductCmptGeneration generation1_1 = (IProductCmptGeneration)productCmpt1
+                .newGeneration(new GregorianCalendar(3000, 1, 1));
+        productCmpt1.newGeneration(new GregorianCalendar(3000, 1, 2));
+        productCmpt1.newGeneration(new GregorianCalendar(3000, 1, 2));
+
+        IProductCmpt productCmpt2_1 = newProductCmpt(productType2, "Product2_1");
+        productCmpt2_1.newGeneration(new GregorianCalendar(3000, 1, 1));
+        IProductCmptGeneration generation2_2 = (IProductCmptGeneration)productCmpt2_1
+                .newGeneration(new GregorianCalendar(3000, 1, 2));
+        productCmpt2_1.newGeneration(new GregorianCalendar(3000, 1, 3));
+        newProductCmpt(productType2, "Product2_2");
+
+        IProductCmpt productCmpt3_1 = newProductCmpt(productType3, "Product3_1");
+        newProductCmpt(productType3, "Product3_2");
+
+        // Create product links
+        createProductCmptLink(generation1_1, productCmpt2_1, product1ToProduct2, 1, 1);
+        createProductCmptLink(generation2_2, productCmpt3_1, product2ToProduct3, 1, 1);
+
+        // Create test case
+        ITestPolicyCmpt rootTestPolicyCmpt = createTestCase(testCaseType, policyType1, productCmpt1);
+
+        // Execute
+        rootTestPolicyCmpt.addTestPcTypeLink(parameter2, productCmpt2_1.getQualifiedName(), null, null, true);
+
+        // Verify
+        ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
+        ITestPolicyCmpt child2 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
+        assertSame(productCmpt3_1, child2.findProductCmpt(ipsProject));
+    }
+
     private IPolicyCmptTypeAssociation createAssociation(IPolicyCmptType source,
             IPolicyCmptType target,
             int minCardinality,
@@ -1051,6 +1129,19 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
             int maxCardinality) {
 
         IProductCmptLink link = source.getFirstGeneration().newLink(association);
+        link.setTarget(target.getQualifiedName());
+        link.setMinCardinality(minCardinality);
+        link.setMaxCardinality(maxCardinality);
+        return link;
+    }
+
+    private IProductCmptLink createProductCmptLink(IProductCmptGeneration source,
+            IProductCmpt target,
+            IProductCmptTypeAssociation association,
+            int minCardinality,
+            int maxCardinality) {
+
+        IProductCmptLink link = source.newLink(association);
         link.setTarget(target.getQualifiedName());
         link.setMinCardinality(minCardinality);
         link.setMaxCardinality(maxCardinality);
