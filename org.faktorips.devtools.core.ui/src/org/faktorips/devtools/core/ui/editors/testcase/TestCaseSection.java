@@ -100,10 +100,8 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -392,7 +390,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.setInput(testCase);
 
         treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
-                LocalSelectionTransfer.getTransfer() }, new TestPolicyCmptDropAdapter(treeViewer));
+                LocalSelectionTransfer.getTransfer() }, new TestPolicyCmptDropAdapter(treeViewer, this));
         treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
                 new TestPolicyCmptDragAdapter(treeViewer, this));
         buildContextMenu();
@@ -3085,15 +3083,27 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     }
 
-    private class TestPolicyCmptDropAdapter extends ViewerDropAdapter {
+    private static class TestPolicyCmptDropAdapter extends ViewerDropAdapter {
 
-        private TestPolicyCmptDropAdapter(Viewer viewer) {
+        private final TestCaseSection testCaseSection;
+
+        private TestPolicyCmptDropAdapter(Viewer viewer, TestCaseSection testCaseSection) {
             super(viewer);
+            this.testCaseSection = testCaseSection;
         }
 
         @Override
         public boolean validateDrop(final Object target, int operation, TransferData transferData) {
-            return localDragAndDrop ? validateDropToMove(target) : validateDropToLink(target, transferData);
+            // Some operating systems do not fill transfer data during drop validation
+            if (transferData == null) {
+                return true;
+            }
+
+            if (testCaseSection.localDragAndDrop) {
+                return validateDropToMove(target);
+            } else {
+                return validateDropToLink(target, transferData);
+            }
         }
 
         private boolean validateDropToMove(Object target) {
@@ -3139,26 +3149,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 IProductCmpt productCmpt,
                 ITestPolicyCmpt targetToTestPolicyCmpt) {
 
-            IIpsSrcFile[] srcFiles = getProductCmptSrcFiles(targetToParameter, targetToTestPolicyCmpt);
+            IIpsSrcFile[] srcFiles = testCaseSection.getProductCmptSrcFiles(targetToParameter, targetToTestPolicyCmpt);
             return Arrays.asList(srcFiles).contains(productCmpt.getIpsSrcFile());
         }
 
         @Override
         public boolean performDrop(Object data) {
-            if (localDragAndDrop) {
-                try {
-                    performDropToMove(getDroppedTestPolicyCmpt(data), (ITestPolicyCmpt)getInsertAt());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
-                ISelection selection = getTreeViewer().getSelection();
-                refreshTreeAndDetailArea();
-                getTreeViewer().setSelection(selection);
+            if (testCaseSection.localDragAndDrop) {
+                performDropToMove(data, (ITestPolicyCmpt)getInsertAt());
             } else {
-                validateDropToLink(getCurrentTarget(), getCurrentEvent().currentDataType);
-                perfomDropToLink(data);
+                if (validateDropToLink(getCurrentTarget(), getCurrentEvent().currentDataType)) {
+                    perfomDropToLink(data);
+                }
             }
-
             return true;
         }
 
@@ -3184,9 +3187,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                             throw new RuntimeException();
                         }
 
-                        refreshTreeAndDetailArea();
-                        expandTreeAfterAdd(getCurrentTarget(), newTestPolicyCmpt);
-                        selectInTreeByObject(newTestPolicyCmpt, true);
+                        testCaseSection.refreshTreeAndDetailArea();
+                        testCaseSection.expandTreeAfterAdd(getCurrentTarget(), newTestPolicyCmpt);
+                        testCaseSection.selectInTreeByObject(newTestPolicyCmpt, true);
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);
                     }
@@ -3205,10 +3208,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
                         throws CoreException {
 
-                    ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase)
+                    ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCaseSection.testCase)
                             .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());
                     rootTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt.getQualifiedName());
-                    rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+                    rootTestPolicyCmpt.addRequiredLinks(testCaseSection.ipsProject);
                     return rootTestPolicyCmpt;
                 }
 
@@ -3230,23 +3233,24 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
             try {
                 ITestPolicyCmptTypeParameter testTypeParam = testPolicyCmptTarget
-                        .findTestPolicyCmptTypeParameter(ipsProject);
+                        .findTestPolicyCmptTypeParameter(testCaseSection.ipsProject);
                 if (testTypeParam == null) {
                     return null;
                 }
-                IProductCmptType productCmptType = productCmpt.findProductCmptType(ipsProject);
+                IProductCmptType productCmptType = productCmpt.findProductCmptType(testCaseSection.ipsProject);
                 if (productCmptType == null) {
                     return null;
                 }
-                IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
+                IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(testCaseSection.ipsProject);
                 if (policyCmptType == null) {
                     return null;
                 }
                 ITestPolicyCmptTypeParameter targetToChildParam = null;
                 for (ITestPolicyCmptTypeParameter potentialTargetToChildParam : testTypeParam
                         .getTestPolicyCmptTypeParamChilds()) {
-                    IPolicyCmptType policyTypeOfParameter = potentialTargetToChildParam.findPolicyCmptType(ipsProject);
-                    if (policyCmptType.isSubtypeOf(policyTypeOfParameter, ipsProject)) {
+                    IPolicyCmptType policyTypeOfParameter = potentialTargetToChildParam
+                            .findPolicyCmptType(testCaseSection.ipsProject);
+                    if (policyCmptType.isSubtypeOf(policyTypeOfParameter, testCaseSection.ipsProject)) {
                         targetToChildParam = potentialTargetToChildParam;
                         break;
                     }
@@ -3257,6 +3261,48 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
 
+        private Object getInsertAt() {
+            if (getCurrentEvent().item != null && getCurrentEvent().item.getData() != null) {
+                return getCurrentEvent().item.getData();
+            }
+
+            // Event happened on the tree viewer, but not targeted at an entry
+            TreeItem[] items = getTreeViewer().getTree().getItems();
+            return items.length > 0 ? items[items.length - 1].getData() : null;
+        }
+
+        private void performDropToMove(Object data, ITestPolicyCmpt targetTestPolicyCmpt) {
+            getCurrentEvent().detail = DND.DROP_MOVE;
+
+            ITestPolicyCmpt droppedTestPolicyCmpt = getDroppedTestPolicyCmpt(data);
+            try {
+                final ITestPolicyCmpt parentTestPolicyCmpt = droppedTestPolicyCmpt.getParentTestPolicyCmpt();
+                int posTarget = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(targetTestPolicyCmpt);
+                final int posSource = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(droppedTestPolicyCmpt);
+
+                int steps = posSource - posTarget;
+                final boolean up = (steps >= 0);
+                final int stepsToMove = Math.abs(steps);
+                IWorkspaceRunnable moveRunnable = new IWorkspaceRunnable() {
+                    @Override
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        int currPos = posSource;
+                        for (int i = 0; i < stepsToMove; i++) {
+                            parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
+                            currPos += (up ? -1 : 1);
+                        }
+                    }
+                };
+                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+
+            ISelection selection = getTreeViewer().getSelection();
+            testCaseSection.refreshTreeAndDetailArea();
+            getTreeViewer().setSelection(selection);
+        }
+
         private ITestPolicyCmpt getDroppedTestPolicyCmpt(Object data) {
             if (!(data instanceof IStructuredSelection)) {
                 return null;
@@ -3264,51 +3310,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return (ITestPolicyCmpt)(((IStructuredSelection)data).getFirstElement());
         }
 
-        private Object getInsertAt() {
-            if (getCurrentEvent().item != null && getCurrentEvent().item.getData() != null) {
-                return getCurrentEvent().item.getData();
-            } else {
-                // event happened on the tree viewer, but not targeted at an entry
-                TreeItem[] items = getTreeViewer().getTree().getItems();
-                if (items.length > 0) {
-                    return items[items.length - 1].getData();
-                }
+        private IProductCmpt getProductCmpt(Object data) {
+            if (data instanceof ISelection) {
+                return getProductCmpt((ISelection)data);
             }
-            return null;
-        }
-
-        private void performDropToMove(ITestPolicyCmpt droppedTestPolicyCmpt, ITestPolicyCmpt targetTestPolicyCmpt)
-                throws CoreException {
-
-            getCurrentEvent().detail = DND.DROP_MOVE;
-
-            final ITestPolicyCmpt parentTestPolicyCmpt = droppedTestPolicyCmpt.getParentTestPolicyCmpt();
-
-            int posTarget = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(targetTestPolicyCmpt);
-            final int posSource = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(droppedTestPolicyCmpt);
-
-            int steps = posSource - posTarget;
-            final boolean up = (steps >= 0);
-            final int stepsToMove = Math.abs(steps);
-            IWorkspaceRunnable moveRunnable = new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    int currPos = posSource;
-                    for (int i = 0; i < stepsToMove; i++) {
-                        parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
-                        currPos += (up ? -1 : 1);
-                    }
-                }
-            };
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
-        }
-
-        private IProductCmpt getProductCmpt(Object object) {
-            if (object instanceof ISelection) {
-                return getProductCmpt((ISelection)object);
-            }
-            if (object instanceof String[]) {
-                return getProductCmpt(((String[])object)[0]);
+            if (data instanceof String[]) {
+                return getProductCmpt(((String[])data)[0]);
             }
             return null;
         }
@@ -3333,8 +3340,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         private IProductCmpt getProductCmpt(ISelection selection) {
             TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selection, 1, 1);
             if (typedSelection.isValid()) {
-                IIpsElement ipsElement = (IIpsElement)typedSelection.getFirstElement().getAdapter(IIpsElement.class);
-                return getProductCmpt(ipsElement);
+                return (IProductCmpt)typedSelection.getFirstElement().getAdapter(IProductCmpt.class);
             } else {
                 return null;
             }
@@ -3342,27 +3348,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         private IProductCmpt getProductCmpt(String filename) {
             IFile file = getFile(filename);
-            if (file == null) {
-                return null;
-            }
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-            if (element == null || !element.exists()) {
-                return null;
-            }
-            return getProductCmpt(element);
-        }
-
-        private IProductCmpt getProductCmpt(IIpsElement element) {
-            if (element instanceof IIpsSrcFile
-                    && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-                try {
-                    return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
-            } else {
-                return null;
-            }
+            return (IProductCmpt)file.getAdapter(IProductCmpt.class);
         }
 
         private IFile getFile(String filename) {
