@@ -3155,7 +3155,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (localDragAndDrop) {
                 try {
                     move(getDroppedTestPolicyCmpt(data), (ITestPolicyCmpt)getInsertAt());
-                    localDragAndDrop = false;
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
@@ -3357,6 +3356,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 event.doit = testCaseSection.isDataChangeable() && parentTestPolicyCmpt != null;
                 LocalSelectionTransfer.getTransfer().setSelection(selectionProvider.getSelection());
             }
+        }
+
+        @Override
+        public void dragFinished(DragSourceEvent event) {
+            testCaseSection.localDragAndDrop = false;
         }
 
     }
