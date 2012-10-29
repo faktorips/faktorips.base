@@ -100,8 +100,12 @@ class TestCaseSectionDropAdapter extends ViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        // Some operating systems do not fill transfer data during drop validation
-        if (transferType == null) {
+        /*
+         * Some operating systems do not fill file transfer data during drop validation. In this
+         * case, we have to simply allow the drop. Note that validation is called once again during
+         * performDrop(...).
+         */
+        if (isFileTransferWithoutValidationSupport(transferType)) {
             return true;
         }
 
@@ -110,6 +114,13 @@ class TestCaseSectionDropAdapter extends ViewerDropAdapter {
         } else {
             return dropToLinkHelper.validateDrop(target, transferType);
         }
+    }
+
+    private boolean isFileTransferWithoutValidationSupport(TransferData transferType) {
+        if (!FileTransfer.getInstance().isSupportedType(transferType)) {
+            return false;
+        }
+        return FileTransfer.getInstance().nativeToJava(transferType) == null;
     }
 
     @Override
