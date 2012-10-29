@@ -128,7 +128,10 @@ class TestCaseSectionDropAdapter extends ViewerDropAdapter {
         if (testCaseSection.localDragAndDrop) {
             return dropToMoveHelper.performDrop(data, (ITestPolicyCmpt)getInsertAt());
         } else {
-            return dropToLinkHelper.performDrop(data);
+            if (dropToLinkHelper.validateDrop(getCurrentTarget(), getCurrentEvent().currentDataType)) {
+                return dropToLinkHelper.performDrop(data);
+            }
+            return false;
         }
     }
 
