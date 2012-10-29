@@ -26,6 +26,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -74,7 +75,11 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
             @Override
             protected IIpsSrcFile[] getIpsSrcFiles() {
-                return getIpsSrcFiles();
+                try {
+                    return IpsObjectRefControl.this.getIpsSrcFiles();
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             }
         };
 
