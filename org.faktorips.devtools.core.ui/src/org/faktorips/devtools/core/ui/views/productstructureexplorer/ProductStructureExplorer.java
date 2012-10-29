@@ -95,7 +95,6 @@ import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
-import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
@@ -433,8 +432,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         IpsUIPlugin.getDefault().addDropSupport(treeViewer);
-        treeViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
-                new IpsElementDragListener(treeViewer));
 
         // XXX Dragging is disabled because moving components within this view may be confusing
         // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },

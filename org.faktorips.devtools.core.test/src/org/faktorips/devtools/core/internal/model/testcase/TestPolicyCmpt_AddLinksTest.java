@@ -304,7 +304,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3_1 &nbsp;(1..1)
@@ -385,7 +385,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
@@ -445,7 +445,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
@@ -505,7 +505,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
@@ -568,7 +568,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
@@ -632,7 +632,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(1..1)
@@ -704,7 +704,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     /**
      * <strong>Scenario:</strong><br>
      * <ul>
-     * <li>Multiple policy types are linked together as following:
+     * <li>Multiple policy component types are linked together as following:
      * <ul>
      * <li>1 -&gt; 2 &nbsp;(1..1)
      * <li>2 -&gt; 3 &nbsp;(0..1)
@@ -761,6 +761,56 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(parameter2.getName())[0].findTarget();
         ITestPolicyCmpt child2 = child1.getTestPolicyCmptLinks(parameter3.getName())[0].findTarget();
         assertSame(productCmpt3, child2.findProductCmpt(ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>Multiple policy component types are linked together as following:
+     * <ul>
+     * <li>1 -&gt; 2 &nbsp;(1..1)
+     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * </ul>
+     * <li>There is a test policy component for policy component type 1, but the product component
+     * that is assigned to it does not exist
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * When adding a test policy component link to the test policy component, a new test policy
+     * component for policy component type 2 should be created. The link between the two test policy
+     * components should be established. However, no test policy component link should be added from
+     * test policy component 2 to policy component type 3, because no existing product component was
+     * assigned to test policy component 1.
+     */
+    @Test
+    public void testAddPcTypeLink_RecursiveAddNotPossibleIfNoProductCmptIsAssigned() throws CoreException {
+        // Create model types
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+
+        // Create associations
+        IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
+        IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter parameter1 = createTestParameter(testCaseType, policyType1, 1, 1);
+        ITestPolicyCmptTypeParameter parameter2 = createTestParameter(parameter1, policyType2, policy1ToPolicy2, 1, 1);
+        createTestParameter(parameter2, policyType3, policy2ToPolicy3, 1, 1);
+
+        // Create test case
+        ITestCase testCase = newTestCase(testCaseType, "TestCase");
+        ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(parameter1);
+        rootTestPolicyCmpt.setPolicyCmptType(policyType1.getQualifiedName());
+        rootTestPolicyCmpt.setProductCmpt("someNonExistentProductCmpt");
+
+        // Execute
+        ITestPolicyCmptLink newLink = rootTestPolicyCmpt.addTestPcTypeLink(parameter2, null,
+                policyType2.getQualifiedName(), null, true);
+
+        // Verify
+        assertEquals(0, newLink.findTarget().getTestPolicyCmptLinks().length);
     }
 
     @Test

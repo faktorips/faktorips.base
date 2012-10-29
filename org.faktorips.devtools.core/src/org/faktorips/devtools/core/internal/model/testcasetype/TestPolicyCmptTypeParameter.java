@@ -14,9 +14,7 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -467,7 +465,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             // no matching association found
             return new IIpsSrcFile[0];
         }
-        Set<IIpsSrcFile> result = new HashSet<IIpsSrcFile>(100);
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(100);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             // check all links, if the target matches the defined target in the test case type
