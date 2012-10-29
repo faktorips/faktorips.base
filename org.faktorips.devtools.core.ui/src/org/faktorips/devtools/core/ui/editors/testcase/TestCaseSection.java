@@ -250,6 +250,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private Section structureSection;
 
+    private boolean localDragAndDropAllowed;
+
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
             IEditorSite site) {
@@ -386,7 +388,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                 LocalSelectionTransfer.getTransfer() }, new TestPolicyCmptDropAdapter(treeViewer));
         treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
-                new TestPolicyCmptDragAdapter(treeViewer));
+                new TestPolicyCmptDragAdapter(treeViewer, this));
         buildContextMenu();
 
         // Details section
@@ -3051,18 +3053,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public boolean validateDrop(final Object target, int operation, TransferData transferData) {
-            if (LocalSelectionTransfer.getTransfer().isSupportedType(transferData)) {
+            if (localDragAndDropAllowed) {
                 return validateDropToMove(target);
-            }
-            if (FileTransfer.getInstance().isSupportedType(transferData)) {
+            } else {
                 try {
                     return validateDropToLink(target, transferData);
                 } catch (CoreException e) {
                     throw new RuntimeException();
                 }
             }
-
-            return false;
         }
 
         private boolean validateDropToMove(Object target) {
@@ -3119,16 +3118,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public boolean performDrop(Object data) {
-            if (LocalSelectionTransfer.getTransfer().isSupportedType(getCurrentEvent().currentDataType)) {
+            if (localDragAndDropAllowed) {
                 try {
                     move(getDroppedTestPolicyCmpt(data), (ITestPolicyCmpt)getInsertAt());
+                    localDragAndDropAllowed = false;
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
                 ISelection selection = getTreeViewer().getSelection();
                 refreshTreeAndDetailArea();
                 getTreeViewer().setSelection(selection);
-            } else if (FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType)) {
+            } else {
                 perfomDropToLink(data);
             }
 
@@ -3303,23 +3303,28 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     }
 
-    private class TestPolicyCmptDragAdapter extends DragSourceAdapter {
+    private static class TestPolicyCmptDragAdapter extends DragSourceAdapter {
 
         private final ISelectionProvider selectionProvider;
 
-        private TestPolicyCmptDragAdapter(ISelectionProvider selectionProvider) {
+        private final TestCaseSection testCaseSection;
+
+        private TestPolicyCmptDragAdapter(ISelectionProvider selectionProvider, TestCaseSection testCaseSection) {
             this.selectionProvider = selectionProvider;
+            this.testCaseSection = testCaseSection;
         }
 
         @Override
         public void dragStart(DragSourceEvent event) {
             Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
             if (selected instanceof ITestPolicyCmpt) {
+                testCaseSection.localDragAndDropAllowed = true;
                 ITestPolicyCmpt parentTestPolicyCmpt = ((ITestPolicyCmpt)selected).getParentTestPolicyCmpt();
-                event.doit = isDataChangeable() && parentTestPolicyCmpt != null;
+                event.doit = testCaseSection.isDataChangeable() && parentTestPolicyCmpt != null;
                 LocalSelectionTransfer.getTransfer().setSelection(selectionProvider.getSelection());
             }
         }
 
     }
+
 }
