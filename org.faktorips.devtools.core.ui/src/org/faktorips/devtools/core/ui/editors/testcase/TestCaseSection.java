@@ -250,7 +250,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private Section structureSection;
 
-    private boolean localDragAndDropAllowed;
+    /**
+     * Indicates whether a drag and drop operation was started from within this section. If this
+     * flag is {@code false} and a drop event occurs, the drag was started from outside the section.
+     */
+    private boolean localDragAndDrop;
 
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
@@ -3083,7 +3087,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public boolean validateDrop(final Object target, int operation, TransferData transferData) {
-            if (localDragAndDropAllowed) {
+            if (localDragAndDrop) {
                 return validateDropToMove(target);
             } else {
                 try {
@@ -3148,10 +3152,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public boolean performDrop(Object data) {
-            if (localDragAndDropAllowed) {
+            if (localDragAndDrop) {
                 try {
                     move(getDroppedTestPolicyCmpt(data), (ITestPolicyCmpt)getInsertAt());
-                    localDragAndDropAllowed = false;
+                    localDragAndDrop = false;
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
@@ -3348,7 +3352,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         public void dragStart(DragSourceEvent event) {
             Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
             if (selected instanceof ITestPolicyCmpt) {
-                testCaseSection.localDragAndDropAllowed = true;
+                testCaseSection.localDragAndDrop = true;
                 ITestPolicyCmpt parentTestPolicyCmpt = ((ITestPolicyCmpt)selected).getParentTestPolicyCmpt();
                 event.doit = testCaseSection.isDataChangeable() && parentTestPolicyCmpt != null;
                 LocalSelectionTransfer.getTransfer().setSelection(selectionProvider.getSelection());
