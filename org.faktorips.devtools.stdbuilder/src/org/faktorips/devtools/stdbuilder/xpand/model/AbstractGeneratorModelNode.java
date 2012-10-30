@@ -586,7 +586,7 @@ public abstract class AbstractGeneratorModelNode {
      *         definition is <em>getFoo()</em>
      */
     public String method(String methodName) {
-        return method(methodName, new MethodParameter[0]);
+        return methodInternal(methodName, new MethodParameter[0]);
     }
 
     /**
@@ -604,7 +604,7 @@ public abstract class AbstractGeneratorModelNode {
      *         <em>SetFoo(String bar)<em>
      */
     public String method(String methodName, String parameterType, String parameterName) {
-        return method(methodName, new MethodParameter(parameterType, parameterName));
+        return methodInternal(methodName, new MethodParameter(parameterType, parameterName));
     }
 
     /**
@@ -629,7 +629,7 @@ public abstract class AbstractGeneratorModelNode {
             String parameterName1,
             String parameterType2,
             String parameterName2) {
-        return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
+        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
                 parameterType2, parameterName2));
     }
 
@@ -659,7 +659,7 @@ public abstract class AbstractGeneratorModelNode {
             String parameterName2,
             String parameterType3,
             String parameterName3) {
-        return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
+        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
                 parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3));
     }
 
@@ -693,16 +693,16 @@ public abstract class AbstractGeneratorModelNode {
             String parameterName3,
             String parameterType4,
             String parameterName4) {
-        return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
+        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
                 parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3),
                 new MethodParameter(parameterType4, parameterName4));
     }
 
     public String method(String methodName, List<MethodParameter> parameters) {
-        return method(methodName, parameters.toArray(new MethodParameter[parameters.size()]));
+        return methodInternal(methodName, parameters.toArray(new MethodParameter[parameters.size()]));
     }
 
-    public String method(String methodName, MethodParameter... parameters) {
+    private String methodInternal(String methodName, MethodParameter... parameters) {
         MethodDefinition methodSignature = new MethodDefinition(methodName, parameters);
         modelContext.addGeneratedJavaElement(this, methodSignature);
         return methodSignature.getDefinition();

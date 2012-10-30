@@ -67,10 +67,20 @@ public class XPolicyCmptClass extends XType {
     }
 
     /**
-     * Returns <code>true</code> if this policy component type is configurable
+     * Returns <code>true</code> if this policy component type is configured by a valid product
+     * component type
      */
     public boolean isConfigured() {
-        return getType().isConfigurableByProductCmptType();
+        if (getType().isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType productCmptType = getType().findProductCmptType(getIpsProject());
+                return productCmptType != null && productCmptType.isValid(productCmptType.getIpsProject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean isAggregateRoot() {

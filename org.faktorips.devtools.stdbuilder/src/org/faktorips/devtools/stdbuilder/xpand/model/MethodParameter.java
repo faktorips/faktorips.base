@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import org.eclipse.jdt.core.Signature;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This class represents one parameter in a method's definition.
@@ -36,6 +37,7 @@ public class MethodParameter {
      * @param paramName The name of the parameter
      */
     public MethodParameter(String type, String paramName) {
+        ArgumentCheck.notNull(type);
         this.type = type;
         this.paramName = paramName;
     }

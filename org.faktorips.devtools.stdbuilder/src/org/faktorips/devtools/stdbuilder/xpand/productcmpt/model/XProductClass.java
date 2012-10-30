@@ -188,8 +188,21 @@ public abstract class XProductClass extends XType {
         return !getTables().isEmpty();
     }
 
+    /**
+     * Returns true if this type is marked as configured and there is a valid policy component type
+     * that could be configured.
+     */
     public boolean isConfigurationForPolicyCmptType() {
-        return getType().isConfigurationForPolicyCmptType();
+        if (getType().isConfigurationForPolicyCmptType()) {
+            try {
+                IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
+                return policyCmptType != null && policyCmptType.isValid(policyCmptType.getIpsProject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            return false;
+        }
     }
 
     public String getPolicyInterfaceName() {

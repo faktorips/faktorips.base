@@ -18,6 +18,7 @@ import java.util.Arrays;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.Signature;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Class to store the method definition as it is generated. A method consists of the method's name
@@ -45,6 +46,8 @@ public class MethodDefinition implements IGeneratedJavaElement {
      * @param parameters The parameters if you need any
      */
     public MethodDefinition(String name, MethodParameter... parameters) {
+        ArgumentCheck.notNull(name);
+        ArgumentCheck.notNull(parameters);
         this.name = name;
         this.parameters = parameters;
     }
