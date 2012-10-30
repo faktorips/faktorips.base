@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -37,7 +39,7 @@ public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTy
     }
 
     private void computeLinksWithMissingAssociations() throws CoreException {
-        IProductCmptLink[] links = getPropertyValueContainer().getLinks();
+        List<IProductCmptLink> links = getPropertyValueContainer().getLinksAsList();
         for (IProductCmptLink link : links) {
             if (getProductCmptType().findAssociation(link.getAssociation(), getIpsProject()) == null) {
                 LinkWithoutAssociationEntry linkWithoutAssociationEntry = new LinkWithoutAssociationEntry(link);
