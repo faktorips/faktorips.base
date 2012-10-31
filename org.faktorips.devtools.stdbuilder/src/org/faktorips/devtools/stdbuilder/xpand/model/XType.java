@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -125,29 +124,30 @@ public abstract class XType extends XClass {
 
     public abstract Set<? extends XType> getClassHierarchy();
 
-    /**
-     * Returns all interfaces the (generated) published interface for this class extends.
-     */
     @Override
-    public List<String> getExtendedInterfaces() {
-        ArrayList<String> list = new ArrayList<String>();
+    public LinkedHashSet<String> getExtendedInterfaces() {
+        LinkedHashSet<String> list = new LinkedHashSet<String>();
         if (hasSupertype()) {
             String superInterfaceName = getSupertype().getQualifiedName(BuilderAspect.INTERFACE);
             list.add(addImport(superInterfaceName));
         }
+        list.addAll(getExtendedOrImplementedInterfaces());
         return list;
     }
 
-    /**
-     * Returns all interfaces the generated class implements.
-     */
     @Override
-    public List<String> getImplementedInterfaces() {
-        ArrayList<String> list = new ArrayList<String>();
+    protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
+        LinkedHashSet<String> list = new LinkedHashSet<String>();
+        return list;
+    }
+
+    @Override
+    public LinkedHashSet<String> getImplementedInterfaces() {
+        LinkedHashSet<String> list = new LinkedHashSet<String>();
         if (isGeneratePublishedInterfaces()) {
-            String name = getJavaClassNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
-                    getJavaClassNameProvider());
-            list.add(addImport(name));
+            list.add(getInterfaceName());
+        } else {
+            list.addAll(getExtendedOrImplementedInterfaces());
         }
         return list;
     }

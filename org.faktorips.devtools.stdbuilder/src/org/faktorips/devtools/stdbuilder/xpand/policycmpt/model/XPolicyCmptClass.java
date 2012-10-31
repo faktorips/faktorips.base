@@ -124,28 +124,23 @@ public class XPolicyCmptClass extends XType {
     }
 
     @Override
-    public List<String> getImplementedInterfaces() {
-        List<String> list = super.getImplementedInterfaces();
-        if (!isGeneratePublishedInterfaces()) {
-            list.addAll(getExtendedInterfaces());
+    public LinkedHashSet<String> getExtendedInterfaces() {
+        LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<String>();
+        if (!hasSupertype()) {
+            if (isConfigured()) {
+                extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+            } else {
+                extendedInterfaces.add(addImport(IModelObject.class));
+            }
         }
-        return list;
+        extendedInterfaces.addAll(super.getExtendedInterfaces());
+        return extendedInterfaces;
     }
 
     @Override
-    public List<String> getExtendedInterfaces() {
-        List<String> extendedInterfaces = super.getExtendedInterfaces();
+    protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
+        LinkedHashSet<String> extendedInterfaces = super.getExtendedOrImplementedInterfaces();
         if (!hasSupertype()) {
-            if (isGeneratePublishedInterfaces()) {
-                // in case of not generating published interfaces we use all extended interfaces as
-                // implemented interfaces in the implementation. These interfaces are already
-                // implemented by the abstract super class
-                if (isConfigured()) {
-                    extendedInterfaces.add(addImport(IConfigurableModelObject.class));
-                } else {
-                    extendedInterfaces.add(addImport(IModelObject.class));
-                }
-            }
             if (isGenerateDeltaSupport()) {
                 extendedInterfaces.add(addImport(IDeltaSupport.class));
             }

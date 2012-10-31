@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
@@ -105,7 +105,21 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return !getExtendedInterfaces().isEmpty();
     }
 
-    public abstract List<String> getExtendedInterfaces();
+    /**
+     * Returns all interfaces the (generated) published interface for this class extends.
+     * <p>
+     * This method always return {@link #getExtendedOrImplementedInterfaces()} and maybe some
+     * additional interfaces only need for published interfaces to be extended.
+     */
+    public abstract LinkedHashSet<String> getExtendedInterfaces();
+
+    /**
+     * Interfaces returned by this method are extended by published interfaces if we do generate
+     * published interfaces but need to be implemented by the implementation if we do not generate
+     * published interfaces.
+     * 
+     */
+    protected abstract LinkedHashSet<String> getExtendedOrImplementedInterfaces();
 
     /**
      * Returns whether or not the generated class implements interfaces.
@@ -114,6 +128,9 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return !getImplementedInterfaces().isEmpty();
     }
 
-    public abstract List<String> getImplementedInterfaces();
+    /**
+     * Returns all interfaces the generated class implements.
+     */
+    public abstract LinkedHashSet<String> getImplementedInterfaces();
 
 }

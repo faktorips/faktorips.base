@@ -13,8 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.table.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -43,14 +42,19 @@ public class XTable extends XClass {
     }
 
     @Override
-    public List<String> getExtendedInterfaces() {
-        return new ArrayList<String>();
+    public LinkedHashSet<String> getExtendedInterfaces() {
+        return new LinkedHashSet<String>();
     }
 
     @Override
-    public List<String> getImplementedInterfaces() {
-        ArrayList<String> interfaces = new ArrayList<String>();
+    public LinkedHashSet<String> getImplementedInterfaces() {
+        LinkedHashSet<String> interfaces = new LinkedHashSet<String>();
         interfaces.add(addImport(ITable.class));
         return interfaces;
+    }
+
+    @Override
+    protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
+        return new LinkedHashSet<String>();
     }
 }

@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -63,15 +63,10 @@ public class XProductCmptClass extends XProductClass {
     }
 
     @Override
-    public List<String> getExtendedInterfaces() {
-        List<String> extendedInterfaces = super.getExtendedInterfaces();
+    public LinkedHashSet<String> getExtendedInterfaces() {
+        LinkedHashSet<String> extendedInterfaces = super.getExtendedInterfaces();
         if (!hasSupertype()) {
-            if (isGeneratePublishedInterfaces()) {
-                // in case of not generating published interfaces we use all extended interfaces as
-                // implemented interfaces in the implementation. These interfaces are already
-                // implemented by the abstract super class
-                extendedInterfaces.add(addImport(IProductComponent.class));
-            }
+            extendedInterfaces.add(addImport(IProductComponent.class));
         }
         return extendedInterfaces;
     }
