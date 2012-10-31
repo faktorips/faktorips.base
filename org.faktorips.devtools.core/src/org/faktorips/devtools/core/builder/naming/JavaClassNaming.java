@@ -96,7 +96,7 @@ public class JavaClassNaming {
     public String getPackageName(IIpsSrcFile ipsSrcFile,
             BuilderAspect aspect,
             IJavaClassNameProvider javaClassNameProvider) {
-        return javaPackageStructure.getPackageName(ipsSrcFile, aspect.isPublishedArtifact(javaClassNameProvider),
+        return javaPackageStructure.getPackageName(ipsSrcFile, aspect.isInternalArtifact(javaClassNameProvider),
                 mergableArtifacts);
     }
 

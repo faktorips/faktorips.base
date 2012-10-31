@@ -66,7 +66,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             return null;
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackInternal = javaPackageStructure.getBasePackageName(entry, false, false);
+        String basePackInternal = javaPackageStructure.getBasePackageName(entry, true, false);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
         IFolder tocFileLocation = getTocFileLocation(root);
@@ -92,13 +92,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifacts, boolean mergableArtifacts) {
-        return javaPackageStructure.getPackageName(ipsSrcFile, publishedArtifacts, mergableArtifacts);
+    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean internalArtifacts, boolean mergableArtifacts) {
+        return javaPackageStructure.getPackageName(ipsSrcFile, internalArtifacts, mergableArtifacts);
     }
 
     @Override
-    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean publishedArtifact, boolean mergableArtifacts) {
-        return javaPackageStructure.getBasePackageName(entry, publishedArtifact, mergableArtifacts);
+    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean internalArtifacts, boolean mergableArtifacts) {
+        return javaPackageStructure.getBasePackageName(entry, internalArtifacts, mergableArtifacts);
     }
 
     public boolean isGeneratePublishedInterfaces() {

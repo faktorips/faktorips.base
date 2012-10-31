@@ -15,6 +15,11 @@ package org.faktorips.devtools.core.builder.naming;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+/**
+ * An enumeration specifying the different aspect of a builder: the builder could generate
+ * implementation classes or interfaces. Depending on these aspects the the name and package may
+ * differ.
+ */
 public enum BuilderAspect {
 
     IMPLEMENTATION {
@@ -24,8 +29,8 @@ public enum BuilderAspect {
         }
 
         @Override
-        public boolean isPublishedArtifact(IJavaClassNameProvider javaClassNameProvider) {
-            return javaClassNameProvider.isImplClassPublishedArtifact();
+        public boolean isInternalArtifact(IJavaClassNameProvider javaClassNameProvider) {
+            return javaClassNameProvider.isImplClassInternalArtifact();
         }
     },
 
@@ -36,14 +41,26 @@ public enum BuilderAspect {
         }
 
         @Override
-        public boolean isPublishedArtifact(IJavaClassNameProvider javaClassNameProvider) {
-            return javaClassNameProvider.isInterfacePublishedArtifact();
+        public boolean isInternalArtifact(IJavaClassNameProvider javaClassNameProvider) {
+            return javaClassNameProvider.isInterfaceInternalArtifact();
         }
     };
 
+    /**
+     * Returning the fully qualified java class name for the specified source file using the
+     * specified {@link IJavaClassNameProvider} depending on the current builder aspect.
+     */
     public abstract String getJavaClassName(IIpsSrcFile ipsSrcFile, IJavaClassNameProvider javaClassNameProvider);
 
-    public abstract boolean isPublishedArtifact(IJavaClassNameProvider javaClassNameProvider);
+    /**
+     * Returns true if the specified {@link IJavaClassNameProvider} would provide internal artifact
+     * names for the current builder aspect.
+     * 
+     * @param javaClassNameProvider The {@link IJavaClassNameProvider} of your builder
+     * 
+     * @return <code>true</code> if the artifact has an internal name, false if not
+     */
+    public abstract boolean isInternalArtifact(IJavaClassNameProvider javaClassNameProvider);
 
     public static BuilderAspect getValue(boolean isInterface) {
         if (isInterface) {

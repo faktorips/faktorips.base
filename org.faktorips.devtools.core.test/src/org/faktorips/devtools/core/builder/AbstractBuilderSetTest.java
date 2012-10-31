@@ -163,7 +163,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuildingInternalArtefacts() {
+        public boolean isBuildingInternalArtifacts() {
             // Auto-generated method stub
             return false;
         }

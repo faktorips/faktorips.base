@@ -258,7 +258,7 @@ public class GeneratorModelContext {
     }
 
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
-        String baseName = javaPackageStructure.getBasePackageName(entry, false, false) + "."
+        String baseName = javaPackageStructure.getBasePackageName(entry, true, false) + "."
                 + entry.getValidationMessagesBundle();
         return baseName;
     }

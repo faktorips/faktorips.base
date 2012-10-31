@@ -195,7 +195,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
     }
 
     @Override
-    public boolean isBuildingInternalArtefacts() {
+    public boolean isBuildingInternalArtifacts() {
         return getBuilderSet().isGeneratePublishedInterfaces();
     }
 

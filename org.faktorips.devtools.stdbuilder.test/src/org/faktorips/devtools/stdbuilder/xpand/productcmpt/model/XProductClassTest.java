@@ -245,7 +245,7 @@ public class XProductClassTest {
 
         assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
 
-        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        doReturn(true).when(xProductClass).isConfigurationForPolicyCmptType();
 
         when(polAttrNode1.isProductRelevant()).thenReturn(true);
         when(polAttrNode1.isGenerateGetAllowedValuesFor()).thenReturn(true);

@@ -14,9 +14,11 @@
 package org.faktorips.devtools.core.builder.naming;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -29,6 +31,9 @@ public class JavaPackageStructureTest {
 
     @Mock
     private JavaSourceFileBuilder builder;
+
+    @Mock
+    private DefaultBuilderSet builderSet;
 
     @Mock
     private IIpsSrcFile ipsSrcFile;
@@ -51,28 +56,29 @@ public class JavaPackageStructureTest {
 
     @Test
     public void testGetPackageMergablePublished() throws Exception {
-        String package1 = packageStructure.getPackageName(ipsSrcFile, true, true);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, false, true);
         assertEquals("mergable.ubx", package1);
     }
 
     @Test
     public void testGetPackageDerivedPublished() throws Exception {
-        String package1 = packageStructure.getPackageName(ipsSrcFile, true, false);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, false, false);
         assertEquals("derived.ubx", package1);
     }
 
     @Test
     public void testGetPackageMergableInternal() throws Exception {
-        String package1 = packageStructure.getPackageName(ipsSrcFile, false, true);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, true, true);
         assertEquals("mergable.internal.ubx", package1);
     }
 
     @Test
     public void testGetPackageDerivedInternal() throws Exception {
-        when(builder.isBuildingPublishedSourceFile()).thenReturn(false);
+        when(builder.getBuilderSet()).thenReturn(builderSet);
+        doReturn(true).when(builder).isBuildingInternalArtifacts();
         when(builder.buildsDerivedArtefacts()).thenReturn(true);
 
-        String package1 = packageStructure.getPackageName(ipsSrcFile, false, false);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, true, false);
         assertEquals("derived.internal.ubx", package1);
     }
 

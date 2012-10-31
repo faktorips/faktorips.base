@@ -39,42 +39,42 @@ public class JavaPackageStructure implements IJavaPackageStructure {
      * 
      */
     @Override
-    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifacts, boolean mergableArtifacts) {
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, publishedArtifacts, mergableArtifacts);
+    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean internalArtifacts, boolean mergableArtifacts) {
+        return getPackageNameForGeneratedArtefacts(ipsSrcFile, internalArtifacts, mergableArtifacts);
     }
 
     @Override
-    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean publishedArtifacts, boolean mergableArtifacts) {
+    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean internalArtifacts, boolean mergableArtifacts) {
         String basePackName = mergableArtifacts ? entry.getBasePackageNameForMergableJavaClasses() : entry
                 .getBasePackageNameForDerivedJavaClasses();
-        return getPackageName(publishedArtifacts, basePackName, StringUtils.EMPTY);
+        return getPackageName(internalArtifacts, basePackName, StringUtils.EMPTY);
     }
 
     /**
      * Returns the name of the (Java) package that contains the artifacts specified by the
      * parameters generated for the given ips source file.
      * 
-     * @param publishedArtifacts <code>true</code> if the artifacts are published (usable by
-     *            clients), <code>false</code> if they are internal.
+     * @param internalArtifacts <code>true</code> if the artifacts are internal <code>false</code>
+     *            if they are published (usable by clients).
      * @param mergableArtifacts <code>true</code> if the generated artifact is mergable (at the
      *            moment this applies to Java Source files only). <code>false</code) if the artifact
      *            is 100% generated and can't be modified by the user.
      */
     protected String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
-            boolean publishedArtifacts,
+            boolean internalArtifacts,
             boolean mergableArtifacts) {
         try {
             String basePackName = mergableArtifacts ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile
                     .getBasePackageNameForDerivedArtefacts();
             String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-            return getPackageName(publishedArtifacts, basePackName, packageFragName);
+            return getPackageName(internalArtifacts, basePackName, packageFragName);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
-    private String getPackageName(boolean publishedArtifacts, String basePackName, String packageFragName) {
-        if (!publishedArtifacts) {
+    private String getPackageName(boolean internalArtifacts, String basePackName, String packageFragName) {
+        if (internalArtifacts) {
             return getInternalPackage(basePackName, packageFragName);
         } else {
             return QNameUtil.concat(basePackName, packageFragName);

@@ -37,8 +37,8 @@ public class DefaultJavaClassNameProvider implements IJavaClassNameProvider {
     }
 
     @Override
-    public boolean isImplClassPublishedArtifact() {
-        return !isGeneratePublishedInterface;
+    public boolean isImplClassInternalArtifact() {
+        return isGeneratePublishedInterface;
     }
 
     @Override
@@ -64,8 +64,8 @@ public class DefaultJavaClassNameProvider implements IJavaClassNameProvider {
     }
 
     @Override
-    public boolean isInterfacePublishedArtifact() {
-        return true;
+    public boolean isInterfaceInternalArtifact() {
+        return false;
     }
 
 }

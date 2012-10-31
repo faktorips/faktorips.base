@@ -106,7 +106,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
             IFolder outputFolder = ipsObject.getIpsPackageFragment().getRoot().getArtefactDestination(derivedSource);
             IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
                     .getPackageFragmentRoot(outputFolder);
-            String packageName = builderSet.getPackageName(ipsObject.getIpsSrcFile(), published, !derivedSource);
+            String packageName = builderSet.getPackageName(ipsObject.getIpsSrcFile(), !published, !derivedSource);
             IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
             ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
                     + JavaClassNaming.JAVA_EXTENSION);

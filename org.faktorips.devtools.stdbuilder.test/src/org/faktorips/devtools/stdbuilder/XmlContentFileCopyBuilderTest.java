@@ -42,7 +42,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
         structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "TestTable");
         contents.setTableStructure(structure.getQualifiedName());
-        String packageString = getPackageStructure().getPackageName(contents.getIpsSrcFile(), false, true);
+        String packageString = getPackageStructure().getPackageName(contents.getIpsSrcFile(), true, true);
         String packagePath = packageString.replace('.', '/');
         filePath = packagePath + "/TestTable.xml";
         destination = contents.getIpsPackageFragment().getRoot().getArtefactDestination(true);

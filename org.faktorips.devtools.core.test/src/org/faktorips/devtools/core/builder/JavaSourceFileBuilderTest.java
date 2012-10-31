@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,46 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.afterBuild(ipsSrcFile);
     }
 
+    @Test
+    public void testGetQualifiedClassName() throws CoreException {
+        builder = new StubJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), new LocalizedStringsSet(
+                JavaSourceFileBuilderTest.class), ipsSrcFile, false);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        when(packageFragment.getName()).thenReturn("test");
+        when(ipsSrcFile.getBasePackageNameForMergableArtefacts()).thenReturn("org.merge");
+        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+        when(ipsSrcFile.getIpsProject()).thenReturn(ipsProject);
+        when(ipsSrcFile.getIpsObjectName()).thenReturn("myTable");
+
+        String className = builder.getQualifiedClassName(ipsSrcFile);
+
+        assertEquals("org.merge.internal.test.myTable", className);
+    }
+
+    @Test
+    public void testGetQualifiedClassName_noPublishedInterfaces() throws CoreException {
+        TestIpsArtefactBuilderSet standardBuilderSetSpy = spy(new TestIpsArtefactBuilderSet());
+        doReturn(false).when(standardBuilderSetSpy).isGeneratePublishedInterfaces();
+        builder = new StubJavaSourceFileBuilder(standardBuilderSetSpy, new LocalizedStringsSet(
+                JavaSourceFileBuilderTest.class), ipsSrcFile, false);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        when(packageFragment.getName()).thenReturn("test");
+        when(ipsSrcFile.getBasePackageNameForMergableArtefacts()).thenReturn("org.merge");
+        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+        when(ipsSrcFile.getIpsProject()).thenReturn(ipsProject);
+        when(ipsSrcFile.getIpsObjectName()).thenReturn("myTable");
+
+        String className = builder.getQualifiedClassName(ipsSrcFile);
+
+        assertEquals("org.merge.test.myTable", className);
+    }
+
     public static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
         private final IIpsSrcFile ipsSrcFile;
@@ -226,5 +267,4 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
     }
-
 }

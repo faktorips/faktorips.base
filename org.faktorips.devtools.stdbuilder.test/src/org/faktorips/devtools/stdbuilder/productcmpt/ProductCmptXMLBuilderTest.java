@@ -147,7 +147,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     private IFile getXmlFile(IProductCmpt productCmpt) {
         String packageName = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackageName(
-                productCmpt.getIpsSrcFile(), false, false);
+                productCmpt.getIpsSrcFile(), true, false);
         String productXmlFile = packageName + "." + productCmpt.getName();
         productXmlFile = productXmlFile.replaceAll("\\.", "/");
         productXmlFile += ".xml";

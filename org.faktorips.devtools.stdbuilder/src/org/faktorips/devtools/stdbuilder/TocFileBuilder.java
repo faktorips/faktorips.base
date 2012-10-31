@@ -510,7 +510,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuildingInternalArtefacts() {
+    public boolean isBuildingInternalArtifacts() {
         return getBuilderSet().isGeneratePublishedInterfaces();
     }
 }

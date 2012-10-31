@@ -134,7 +134,7 @@ public interface IIpsArtefactBuilder {
      * @return <code>true</code> if this builder generates internal artifacts <code>false</code> for
      *         published artifacts
      */
-    public boolean isBuildingInternalArtefacts();
+    public boolean isBuildingInternalArtifacts();
 
     /**
      * Deletes the artifact that is created by this builder upon the provided IpsSrcFile.

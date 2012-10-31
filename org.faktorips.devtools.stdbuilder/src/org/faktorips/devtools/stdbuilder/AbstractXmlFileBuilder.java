@@ -100,7 +100,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * @return the relative path to the generated XML file
      */
     public IPath getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
-        String packageString = getBuilderSet().getPackageName(ipsSrcFile, !isBuildingInternalArtefacts(),
+        String packageString = getBuilderSet().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return pathToPack.append(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName())).addFileExtension("xml");
@@ -151,7 +151,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuildingInternalArtefacts() {
+    public boolean isBuildingInternalArtifacts() {
         return getBuilderSet().isGeneratePublishedInterfaces();
     }
 

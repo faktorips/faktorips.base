@@ -140,7 +140,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuildingInternalArtefacts() {
+        public boolean isBuildingInternalArtifacts() {
             return false;
         }
 
@@ -177,7 +177,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuildingInternalArtefacts() {
+        public boolean isBuildingInternalArtifacts() {
             return false;
         }
 
@@ -235,7 +235,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuildingInternalArtefacts() {
+        public boolean isBuildingInternalArtifacts() {
             return false;
         }
 

@@ -32,11 +32,11 @@ public interface IJavaClassNameProvider {
     public String getImplClassName(IIpsSrcFile ipsSrcFile);
 
     /**
-     * Returns whether the implementation is a published artifact or not.
+     * Returns whether the implementation is a internal artifact or not.
      * 
-     * @return True if the implementation class is a published artifact, false if not
+     * @return True if the implementation class is a internal artifact, false if not
      */
-    public boolean isImplClassPublishedArtifact();
+    public boolean isImplClassInternalArtifact();
 
     /**
      * Returns the name of the interface generated for this {@link IIpsSrcFile} if there is any
@@ -57,10 +57,10 @@ public interface IJavaClassNameProvider {
     public String getInterfaceName(IIpsSrcFile ipsSrcFile);
 
     /**
-     * Returns whether the interface is a published artifact or not.
+     * Returns whether the interface is a internal artifact or not.
      * 
-     * @return True if the interface class is a published artifact, false if not
+     * @return True if the interface class is a internal artifact, false if not
      */
-    public boolean isInterfacePublishedArtifact();
+    public boolean isInterfaceInternalArtifact();
 
 }
