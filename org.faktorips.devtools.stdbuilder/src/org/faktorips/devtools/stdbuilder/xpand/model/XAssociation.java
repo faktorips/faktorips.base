@@ -13,19 +13,22 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
 
@@ -178,6 +181,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().getType();
     }
 
+    protected XType getSourceType() {
+        return getModelNode(getTypeOfAssociation(), getModelNodeType(true));
+    }
+
     /**
      * Getting the target type of the association
      * 
@@ -208,7 +215,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     protected XClass getTargetModelNode() {
         IType target = getTargetType();
-        XClass xClass = getModelNode(target, getModelNodeType());
+        XClass xClass = getModelNode(target, getModelNodeType(false));
         return xClass;
     }
 
@@ -229,21 +236,36 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return xClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
-    protected Class<? extends XType> getModelNodeType() {
+    /**
+     * Returns the concrete class of {@link XType} that is the source of this association.
+     * 
+     * @param considerChangeOverTime In case of a product association and this parameter is
+     *            <code>true</code> we check whether it is configured to change over time or not and
+     *            return a generation type or the normal product type.
+     * 
+     * @return The class of the {@link XType} that could be used to get the source type of this
+     *         association
+     */
+    protected Class<? extends XType> getModelNodeType(boolean considerChangeOverTime) {
         // TODO is there a better way? Cannot move to subclass because of derived unions
-        Class<? extends IType> typeClass = getTypeOfAssociation().getClass();
-        if (IProductCmptType.class.isAssignableFrom(typeClass)) {
-            return XProductCmptClass.class;
-        } else if (IPolicyCmptType.class.isAssignableFrom(typeClass)) {
+        IAssociation association = getAssociation();
+        if (association instanceof IProductCmptTypeAssociation) {
+            IProductCmptTypeAssociation productAsso = (IProductCmptTypeAssociation)association;
+            if (productAsso.isChangingOverTime() && considerChangeOverTime) {
+                return XProductCmptGenerationClass.class;
+            } else {
+                return XProductCmptClass.class;
+            }
+        } else if (association instanceof IPolicyCmptTypeAssociation) {
             return XPolicyCmptClass.class;
         } else {
-            throw new RuntimeException("Illegal association target type " + typeClass);
+            throw new RuntimeException("Illegal kind of association " + association);
         }
     }
 
     public String getMethodNameGetNumOf() {
         // TODO Bad hack to be compatible with old code generator
-        if (XProductClass.class.isAssignableFrom(getModelNodeType())) {
+        if (XProductClass.class.isAssignableFrom(getModelNodeType(false))) {
             return getJavaNamingConvention().getGetterMethodName("NumOf" + getAssociation().getTargetRolePlural());
         }
         return getJavaNamingConvention().getGetterMethodName(
@@ -258,9 +280,26 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * Returns true if an abstract getter (normally in interface but may be in implementation if we
      * do not generate published interfaces) needs to be generated for this association. This method
      * may be overwritten for special cases.
+     * 
+     * @param generatingInterface true if we just generating an interface, false if we generate an
+     *            implementation class
+     * 
      */
-    public boolean isGenerateAbstractGetter() {
-        return isDerived();
+    public boolean isGenerateAbstractGetter(boolean generatingInterface) {
+        if (!isDerived()) {
+            return false;
+        }
+        if (generatingInterface) {
+            return true;
+        }
+        return !isGeneratePublishedInterfaces() && !isSubsetImplementedInSameType(getSourceType());
+    }
+
+    protected boolean isSubsetImplementedInSameType(XType contextType) {
+        XDerivedUnionAssociation derivedUnionAssociation = getModelNode(getAssociation(),
+                XDerivedUnionAssociation.class);
+        Set<XAssociation> subsetAssociations = derivedUnionAssociation.getSubsetAssociations(contextType);
+        return !subsetAssociations.isEmpty();
     }
 
 }

@@ -20,7 +20,7 @@
 «ENDDEFINE»
 
 «DEFINE abstractMethods FOR XAssociation-»
-	«IF (!generatePublishedInterfaces || genInterface()) && generateAbstractGetter-»
+	«IF isGenerateAbstractGetter(genInterface())-»
 		«IF oneToMany-»
 			/**
 		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»

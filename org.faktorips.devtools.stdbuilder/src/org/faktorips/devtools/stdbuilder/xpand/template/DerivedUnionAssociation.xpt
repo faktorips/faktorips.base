@@ -18,7 +18,7 @@
      * 
      * @generated
      */
-     «overrideAnnotation(!isImplementedInSuperclass(currentContextType))-»
+     «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
      public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextType)-»
@@ -49,7 +49,7 @@
      * 
      * @generated
      */
-     «overrideAnnotation(!isImplementedInSuperclass(currentContextType))-»
+     «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
     public «targetInterfaceName» «methodNameGetter»() {
      	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextType) AS this-»
 		    if («fieldName» != null) {
@@ -70,7 +70,7 @@
      * 
      * @generated
      */
-     «overrideAnnotation(!isImplementedInSuperclass(currentContextType))-»
+     «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
      public int «methodNameGetNumOf»() {
      	return «methodNameGetNumOfInternal»();
      }

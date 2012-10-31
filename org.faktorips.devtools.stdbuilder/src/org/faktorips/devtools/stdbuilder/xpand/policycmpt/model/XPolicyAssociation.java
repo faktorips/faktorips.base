@@ -30,6 +30,7 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -222,11 +223,22 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     @Override
-    public boolean isGenerateAbstractGetter() {
+    public boolean isGenerateAbstractGetter(boolean generatingInterface) {
+        return super.isGenerateAbstractGetter(generatingInterface)
+                && (!isCompositionDetailToMaster() || !hasSuperAssociationWithSameName());
+    }
+
+    @Override
+    protected boolean isSubsetImplementedInSameType(XType currentContextType) {
         if (isCompositionDetailToMaster()) {
-            return isDerived() && !hasSuperAssociationWithSameName();
+            XDetailToMasterDerivedUnionAssociation derivedUnionAssociation = getModelNode(getAssociation(),
+                    XDetailToMasterDerivedUnionAssociation.class);
+            Set<XPolicyAssociation> subsetAssociations = derivedUnionAssociation
+                    .getDetailToMasterSubsetAssociations((XPolicyCmptClass)currentContextType);
+            return !subsetAssociations.isEmpty();
+        } else {
+            return super.isSubsetImplementedInSameType(currentContextType);
         }
-        return super.isGenerateAbstractGetter();
     }
 
     /**

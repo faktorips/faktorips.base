@@ -57,7 +57,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      */
     public String getMethodNameGetNumOfInternal() {
         // TODO Bad hack to be compatible with old code generator
-        if (XProductClass.class.isAssignableFrom(getModelNodeType())) {
+        if (XProductClass.class.isAssignableFrom(getModelNodeType(false))) {
             return getJavaNamingConvention().getGetterMethodName(
                     "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()))
                     + "Internal";
@@ -134,6 +134,10 @@ public class XDerivedUnionAssociation extends XAssociation {
      */
     public boolean isProductCmptTypeAssociation() {
         return getTypeOfAssociation() instanceof IProductCmptType;
+    }
+
+    public boolean needOverride(XType currentContextType) {
+        return (isImplementedInSuperclass(currentContextType) || getSourceType() != currentContextType);
     }
 
     /**

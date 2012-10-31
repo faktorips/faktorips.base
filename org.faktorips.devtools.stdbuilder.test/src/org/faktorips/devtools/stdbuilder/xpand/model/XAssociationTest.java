@@ -84,7 +84,7 @@ public class XAssociationTest {
 
     @Test
     public void testGetMethodNameGetterterNumOf() throws Exception {
-        doReturn(XPolicyCmptClass.class).when(xAssociation).getModelNodeType();
+        doReturn(XPolicyCmptClass.class).when(xAssociation).getModelNodeType(false);
         when(association.getTargetRolePlural()).thenReturn("testTargets");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         String methodName = xAssociation.getMethodNameGetNumOf();
@@ -131,7 +131,7 @@ public class XAssociationTest {
         doReturn(true).when(xAssociation).isGeneratePublishedInterfaces();
         doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
 
-        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType();
+        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType(false);
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
     }
