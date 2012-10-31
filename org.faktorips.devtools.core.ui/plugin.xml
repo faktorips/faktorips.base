@@ -1086,6 +1086,48 @@
 <!-- 
   Product-Definition-Extensions
 -->
+   
+   <extension
+         id="org.faktorips.devtools.core.ipsProblemsDecorator"
+         name="IPS-Problemsdecorator"
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            class="org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator"
+            icon="icons/ovr16/error_ovr.gif"
+            id="org.faktorips.devtools.core.ipsproblemsdecorator"
+            label="Faktor-IPS Problems Decorator"
+            lightweight="true"
+            location="BOTTOM_LEFT"
+            state="true">
+         <description>
+            Decorator to indicate Problems in Faktor-IPS elements
+         </description>
+         <enablement>
+            <objectClass
+                  name="org.faktorips.devtools.core.model.IIpsElement">
+            </objectClass>
+         </enablement>
+      </decorator>
+      <decorator
+            adaptable="false"
+            class="org.faktorips.devtools.core.ui.preferencepages.ObjectPathEntryLabelDecorator"
+            id="org.faktorips.devtools.core.ipsobjectpathentrydecorator"
+            label="Faktor-IPS Object Path Decorator"
+            lightweight="true"
+            location="BOTTOM_LEFT"
+            state="true">
+         <enablement>
+            <or>
+               <objectClass
+                     name="org.faktorips.devtools.core.ui.preferencepages.IIpsObjectPathEntryAttribute">
+               </objectClass>
+               <objectClass
+                     name="org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry">
+               </objectClass></or>
+         </enablement>
+      </decorator>
+   </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -1160,48 +1202,6 @@
             class="org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResultPage"
             id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
             searchResultClass="org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult"/>
-   </extension>
-   
-   <extension
-         id="org.faktorips.devtools.core.ipsProblemsDecorator"
-         name="IPS-Problemsdecorator"
-         point="org.eclipse.ui.decorators">
-      <decorator
-            adaptable="true"
-            class="org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator"
-            icon="icons/ovr16/error_ovr.gif"
-            id="org.faktorips.devtools.core.ipsproblemsdecorator"
-            label="Faktor-IPS Problems Decorator"
-            lightweight="true"
-            location="BOTTOM_LEFT"
-            state="true">
-         <description>
-            Decorator to indicate Problems in Faktor-IPS elements
-         </description>
-         <enablement>
-            <objectClass
-                  name="org.faktorips.devtools.core.model.IIpsElement">
-            </objectClass>
-         </enablement>
-      </decorator>
-      <decorator
-            adaptable="false"
-            class="org.faktorips.devtools.core.ui.preferencepages.ObjectPathEntryLabelDecorator"
-            id="org.faktorips.devtools.core.ipsobjectpathentrydecorator"
-            label="Faktor-IPS Object Path Decorator"
-            lightweight="true"
-            location="BOTTOM_LEFT"
-            state="true">
-         <enablement>
-            <or>
-               <objectClass
-                     name="org.faktorips.devtools.core.ui.preferencepages.IIpsObjectPathEntryAttribute">
-               </objectClass>
-               <objectClass
-                     name="org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry">
-               </objectClass></or>
-         </enablement>
-      </decorator>
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
@@ -2345,6 +2345,13 @@
     <ipsDropAdapterProvider
           class="org.faktorips.devtools.core.ui.LinkDropHandler">
     </ipsDropAdapterProvider>
+ </extension>
+ <extension
+       point="org.eclipse.help.toc">
+    <toc
+          file="help/toc.xml"
+          primary="true">
+    </toc>
  </extension>
 	
 
