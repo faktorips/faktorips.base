@@ -64,6 +64,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer,
             IProductCmptLinkContainer linkContainer, IIpsProject ipsProject) throws CoreException {
 
+        System.out.println("Delta for container: " + linkContainer);
         this.linkContainer = linkContainer;
         ArgumentCheck.notNull(propertyValueContainer);
         ArgumentCheck.notNull(ipsProject);
@@ -75,15 +76,16 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
             return;
         }
         createEntriesForProperties();
-        computeLinkEntries();
+        createEntriesForLinks();
         createAdditionalEntriesAndChildren();
     }
 
-    protected void computeLinkEntries() throws CoreException {
+    protected void createEntriesForLinks() throws CoreException {
         List<IProductCmptLink> links = getLinkContainer().getLinksAsList();
         for (IProductCmptLink link : links) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()
                     .findAssociation(link.getAssociation(), getIpsProject());
+            System.out.println("Link for \"" + link.getAssociation() + "\", association is " + association);
             if (association == null) {
                 LinkWithoutAssociationEntry linkWithoutAssociationEntry = new LinkWithoutAssociationEntry(link);
                 addEntry(linkWithoutAssociationEntry);
@@ -94,7 +96,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
     }
 
-    public IProductCmptLinkContainer getLinkContainer() {
+    protected IProductCmptLinkContainer getLinkContainer() {
         return linkContainer;
     }
 
@@ -211,7 +213,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     @Override
     protected boolean isEmptyThis() {
-        return entries.size() == 0;
+        return entries.isEmpty();
     }
 
     @Override

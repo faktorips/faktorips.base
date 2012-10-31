@@ -121,7 +121,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
                 .forClass(LinkChangingOverTimeMismatchEntry.class);
 
-        delta.computeLinkEntries();
+        delta.createEntriesForLinks();
 
         verify(delta).addEntry(captor.capture());
         assertEquals(link1, captor.getValue().getLink());
@@ -134,7 +134,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
                 .forClass(LinkChangingOverTimeMismatchEntry.class);
 
-        delta.computeLinkEntries();
+        delta.createEntriesForLinks();
 
         verify(delta, times(2)).addEntry(captor.capture());
         assertEquals(link2, captor.getAllValues().get(0).getLink());
@@ -150,7 +150,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
         // fake prod cmpt as link container so mismatch entries will be created for static links
         doReturn(prodCmpt).when(delta).getLinkContainer();
 
-        delta.computeLinkEntries();
+        delta.createEntriesForLinks();
 
         verify(delta, times(2)).addEntry(captor.capture());
         assertEquals(staticLink1, captor.getAllValues().get(0).getLink());
@@ -161,7 +161,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
         when(type.findAssociation(assocName, ipsProject)).thenReturn(null);
         ArgumentCaptor<LinkWithoutAssociationEntry> captor = ArgumentCaptor.forClass(LinkWithoutAssociationEntry.class);
 
-        delta.computeLinkEntries();
+        delta.createEntriesForLinks();
 
         verify(delta, times(links.length)).addEntry(captor.capture());
         for (int i = 0; i < links.length; i++) {
