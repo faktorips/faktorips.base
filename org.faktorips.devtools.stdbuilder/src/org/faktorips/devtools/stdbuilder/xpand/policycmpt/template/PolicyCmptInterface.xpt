@@ -11,7 +11,7 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
-		 * «localizedJDoc("INTERFACE", name)»
+		 * «localizedJDoc("INTERFACE", name)» «description»
 		 *
 		 * @generated
 		 */
