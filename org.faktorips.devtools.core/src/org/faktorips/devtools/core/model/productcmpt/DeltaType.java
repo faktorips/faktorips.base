@@ -26,7 +26,7 @@ public enum DeltaType {
     VALUE_SET_MISMATCH(Messages.DeltaType_ValueSetMismatches),
     VALUE_HOLDER_MISMATCH(Messages.DeltaType_valueHolderMismatch),
     LINK_WITHOUT_ASSOCIATION(Messages.DeltaType_LinksNotFoundInTheModel),
-    LINK_CHANGING_OVER_TIME_MISMATCH("Links that change over time");
+    LINK_CHANGING_OVER_TIME_MISMATCH(Messages.DeltaType_LinksWithWrongParent);
 
     private final String description;
 

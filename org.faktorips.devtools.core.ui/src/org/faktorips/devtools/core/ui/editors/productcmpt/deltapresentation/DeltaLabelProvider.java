@@ -19,6 +19,7 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
@@ -91,6 +92,9 @@ public class DeltaLabelProvider extends LabelProvider {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
+        } else if (deltaType == DeltaType.LINK_CHANGING_OVER_TIME_MISMATCH) {
+            Image baseImage = IpsUIPlugin.getImageHandling().getDefaultImage(ProductCmptTypeAssociation.class);
+            return DeltaCompositeIcon.createModifyImage(baseImage);
         } else if (deltaType == DeltaType.VALUE_HOLDER_MISMATCH) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
         } else {

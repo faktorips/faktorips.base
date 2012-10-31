@@ -54,6 +54,9 @@ public class LinkChangingOverTimeMismatchEntry implements IDeltaEntry {
 
     @Override
     public String getDescription() {
+        // if (getAssociation().isChangingOverTime()) {
+        // return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link)+"";
+        // }
         return getDeltaType() + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link); //$NON-NLS-1$
     }
 

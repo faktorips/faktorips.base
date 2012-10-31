@@ -31,6 +31,8 @@ public class Messages extends NLS {
 
     public static String DeltaType_valueHolderMismatch;
 
+    public static String DeltaType_LinksWithWrongParent;
+
     public static String DeltaType_LinksNotFoundInTheModel;
     public static String DeltaType_missingValue;
 
