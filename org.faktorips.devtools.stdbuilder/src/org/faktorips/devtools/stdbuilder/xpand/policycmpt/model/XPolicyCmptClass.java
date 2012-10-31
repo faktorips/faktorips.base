@@ -68,7 +68,12 @@ public class XPolicyCmptClass extends XType {
 
     /**
      * Returns <code>true</code> if this policy component type is configured by a valid product
-     * component type
+     * component type. It returns false if either this policy component type is not configured or
+     * the configuring product component type is invalid.
+     * <p>
+     * It is necessary to return true only for valid product component type because there may be
+     * many issues where the code generator would throw exceptions for invalid objects. To avoid any
+     * exception we do not consider invalid product component types at all.
      */
     public boolean isConfigured() {
         if (getType().isConfigurableByProductCmptType()) {
