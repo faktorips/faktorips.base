@@ -64,7 +64,6 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer,
             IProductCmptLinkContainer linkContainer, IIpsProject ipsProject) throws CoreException {
 
-        System.out.println("Delta for container: " + linkContainer);
         this.linkContainer = linkContainer;
         ArgumentCheck.notNull(propertyValueContainer);
         ArgumentCheck.notNull(ipsProject);
@@ -85,7 +84,6 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         for (IProductCmptLink link : links) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()
                     .findAssociation(link.getAssociation(), getIpsProject());
-            System.out.println("Link for \"" + link.getAssociation() + "\", association is " + association);
             if (association == null) {
                 LinkWithoutAssociationEntry linkWithoutAssociationEntry = new LinkWithoutAssociationEntry(link);
                 addEntry(linkWithoutAssociationEntry);

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -109,6 +111,7 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(gen2.getProductCmpt()).thenReturn(prodCmpt);
         when(genLatest.getProductCmpt()).thenReturn(prodCmpt);
         when(prodCmpt.getProductCmpt()).thenReturn(prodCmpt);
+        when(prodCmpt.getLatestGeneration()).thenReturn(genLatest);
 
         when(assoc1.isChangingOverTime()).thenReturn(true);
         when(assoc2.isChangingOverTime()).thenReturn(true);
@@ -131,6 +134,7 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(container.getLinksAsList()).thenReturn(genLinks);
         for (IProductCmptLink link : links) {
             when(link.getProductCmptLinkContainer()).thenReturn(container);
+            when(link.getProductCmpt()).thenReturn(prodCmpt);
         }
     }
 
@@ -182,5 +186,33 @@ public class LinkChangingOverTimeMismatchEntryTest {
         verify(newLink2).copyFrom(staticLink1);
         verify(newLinkLatest).copyFrom(staticLink1);
         verify(staticLink1).delete();
+    }
+
+    @Test
+    public void testIsMovingLinkFrom_prodCmpt() {
+        when(staticAssoc1.isChangingOverTime()).thenReturn(true);
+        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(staticAssoc1, staticLink1);
+        assertTrue(entry.isMovingLink());
+    }
+
+    @Test
+    public void testIsMovingLinkFrom_oldGeneration1() {
+        when(assoc1.isChangingOverTime()).thenReturn(false);
+        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc1, link1);
+        assertFalse(entry.isMovingLink());
+    }
+
+    @Test
+    public void testIsMovingLinkFrom_oldGeneration2() {
+        when(assoc2.isChangingOverTime()).thenReturn(false);
+        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc2, linkB);
+        assertFalse(entry.isMovingLink());
+    }
+
+    @Test
+    public void testIsMovingLinkFrom_latestGeneration() {
+        when(assoc2.isChangingOverTime()).thenReturn(false);
+        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc2, linkLatest2);
+        assertTrue(entry.isMovingLink());
     }
 }
