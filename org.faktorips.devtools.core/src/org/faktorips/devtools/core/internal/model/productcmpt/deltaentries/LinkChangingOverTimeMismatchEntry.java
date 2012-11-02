@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
@@ -54,10 +55,18 @@ public class LinkChangingOverTimeMismatchEntry implements IDeltaEntry {
 
     @Override
     public String getDescription() {
-        // if (getAssociation().isChangingOverTime()) {
-        // return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link)+"";
-        // }
-        return getDeltaType() + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link); //$NON-NLS-1$
+        String linkCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link);
+        if (getAssociation().isChangingOverTime()) {
+            return NLS.bind("\"{0}\" will be moved to every generation.", linkCaption);
+        } else {
+            if (isLatestGeneration(getLink().getProductCmptLinkContainer())) {
+                return NLS.bind("\"{0}\" will be moved to the product component.", linkCaption);
+            } else {
+                return NLS
+                        .bind("\"{0}\" will be removed (only links from the latest generation can be moved to the product component).",
+                                linkCaption);
+            }
+        }
     }
 
     /**
@@ -89,13 +98,17 @@ public class LinkChangingOverTimeMismatchEntry implements IDeltaEntry {
 
     private void moveLatestGenerationLinksToProdCmpt() {
         IProductCmptLinkContainer generation = getLink().getProductCmptLinkContainer();
-        IProductCmptGeneration latestGeneration = generation.getProductCmpt().getLatestProductCmptGeneration();
-        if (generation.equals(latestGeneration)) {
+        if (isLatestGeneration(generation)) {
             IProductCmptLink newLink = generation.getProductCmpt().newLink(getAssociation());
             newLink.copyFrom(getLink());
         } else {
             // nothing to do: link is part of an "older" generation
         }
+    }
+
+    private boolean isLatestGeneration(IProductCmptLinkContainer container) {
+        IProductCmptGeneration latestGeneration = getLink().getProductCmpt().getLatestProductCmptGeneration();
+        return container.equals(latestGeneration);
     }
 
     protected IProductCmptTypeAssociation getAssociation() {
