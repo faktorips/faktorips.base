@@ -45,38 +45,47 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
             final Set<IIpsSrcFile> srcFilesToSave = new HashSet<IIpsSrcFile>();
             try {
                 for (Object o : structuredSelection.toArray()) {
-                    if (o instanceof IIpsObjectPart) {
-                        IIpsObjectPart objectPart = (IIpsObjectPart)o;
-                        IIpsSrcFile srcFile = objectPart.getIpsSrcFile();
-                        if (IpsUIPlugin.isEditable(srcFile)) {
-                            if (needToSave(srcFile, event)) {
-                                srcFilesToSave.add(srcFile);
-                            }
-                            objectPart.delete();
-                        }
+                    IIpsObjectPart objectPart = IpsObjectPartTester.castOrAdaptToIpsObjectPart(o);
+                    if (objectPart != null) {
+                        deleteIpsObjectPart(event, srcFilesToSave, objectPart);
                     }
                 }
             } finally {
-                new Job("Save touched Ips-Src-Files") { //$NON-NLS-1$
-
-                    @Override
-                    protected IStatus run(IProgressMonitor monitor) {
-                        MultiStatus result = new MultiStatus(IpsUIPlugin.PLUGIN_ID, IStatus.OK,
-                                "Save touched Ips-Src-Files", null); //$NON-NLS-1$
-                        new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files"); //$NON-NLS-1$
-                        for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
-                            try {
-                                srcFileToSave.save(true, monitor);
-                            } catch (CoreException e) {
-                                result.add(e.getStatus());
-                            }
-                        }
-                        return result;
-                    }
-                }.schedule();
+                saveSrcFilesAsAJob(srcFilesToSave);
             }
         }
         return null;
+    }
+
+    private void saveSrcFilesAsAJob(final Set<IIpsSrcFile> srcFilesToSave) {
+        new Job("Save touched Ips-Src-Files") { //$NON-NLS-1$
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                MultiStatus result = new MultiStatus(IpsUIPlugin.PLUGIN_ID, IStatus.OK,
+                        "Save touched Ips-Src-Files", null); //$NON-NLS-1$
+                new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files"); //$NON-NLS-1$
+                for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
+                    try {
+                        srcFileToSave.save(true, monitor);
+                    } catch (CoreException e) {
+                        result.add(e.getStatus());
+                    }
+                }
+                return result;
+            }
+        }.schedule();
+    }
+
+    private void deleteIpsObjectPart(ExecutionEvent event,
+            final Set<IIpsSrcFile> srcFilesToSave,
+            IIpsObjectPart objectPart) {
+        IIpsSrcFile srcFile = objectPart.getIpsSrcFile();
+        if (IpsUIPlugin.isEditable(srcFile)) {
+            if (needToSave(srcFile, event)) {
+                srcFilesToSave.add(srcFile);
+            }
+            objectPart.delete();
+        }
     }
 
     private boolean needToSave(IIpsSrcFile srcFile, ExecutionEvent event) {

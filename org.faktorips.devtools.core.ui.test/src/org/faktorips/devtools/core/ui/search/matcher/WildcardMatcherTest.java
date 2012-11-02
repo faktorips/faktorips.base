@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.search.matcher;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.junit.Test;
 
 public class WildcardMatcherTest {

@@ -97,7 +97,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     private IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
+        return getProductCmptGeneration().findProductCmptType(ipsProject);
     }
 
     @Override

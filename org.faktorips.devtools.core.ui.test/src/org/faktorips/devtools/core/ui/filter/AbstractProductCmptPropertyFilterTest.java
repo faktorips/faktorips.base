@@ -17,8 +17,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.ui.filter.AbstractProductCmptPropertyFilter;
-import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.junit.Before;
 import org.junit.Test;
 

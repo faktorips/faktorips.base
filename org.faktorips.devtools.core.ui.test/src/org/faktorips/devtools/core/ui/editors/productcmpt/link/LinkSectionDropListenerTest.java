@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -310,7 +311,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
         checkCreateNewLink(2, 0);
 
-        dropListener.setTarget(associationToC.getName());
+        dropListener.setTarget(new AssociationViewItem(cmptAGeneration, associationToC));
         checkCreateNewLink(0, 2);
     }
 
@@ -381,8 +382,8 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         checkMove(b1Link2, b2Link3, b1Link1, cLink1, cLink2, cLink3);
         assertEquals(associationToB2.getName(), b1Link1.getAssociation());
 
-        // test move to association (String target)
-        dropListener.setTarget(associationToB1.getName());
+        // test move to association (view item as target)
+        dropListener.setTarget(new AssociationViewItem(cmptAGeneration, associationToB1));
         checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
 
         // multi move
@@ -414,7 +415,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         assertEquals(associationToB2.getName(), b1Link1.getAssociation());
         assertEquals(associationToB2.getName(), b1Link2.getAssociation());
 
-        dropListener.setTarget(associationToB1.getName());
+        dropListener.setTarget(new AssociationViewItem(cmptAGeneration, associationToB1));
         checkMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, cLink3);
         assertEquals(associationToB1.getName(), b1Link1.getAssociation());
         assertEquals(associationToB1.getName(), b1Link2.getAssociation());
@@ -422,7 +423,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         dropListener.setTarget(cLink3);
         assertFalse(dropListener.performDrop(null));
 
-        dropListener.setTarget(associationToC.getName());
+        dropListener.setTarget(new AssociationViewItem(cmptAGeneration, associationToC));
         assertFalse(dropListener.performDrop(null));
     }
 

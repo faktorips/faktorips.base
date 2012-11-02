@@ -466,7 +466,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        IProductCmptType type = getProductCmpt().findProductCmptType(ipsProject);
+        IProductCmptType type = findProductCmptType(ipsProject);
         // no type information available, so no further validation possible
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound,
@@ -577,6 +577,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public List<IProductCmptLink> getLinksAsList(String associationName) {
         return linkCollection.getLinks(associationName);
+    }
+
+    /**
+     * Returns this generation if it is a container for the given association. Returns this
+     * generation's product component otherwise.
+     * 
+     * @param association the association to retrieve a {@link IProductCmptLinkContainer container}
+     *            for.
+     * @see #isContainerFor(IProductCmptTypeAssociation)
+     */
+    public IProductCmptLinkContainer getContainerFor(IProductCmptTypeAssociation association) {
+        if (isContainerFor(association)) {
+            return this;
+        } else {
+            return getProductCmpt();
+        }
     }
 
 }

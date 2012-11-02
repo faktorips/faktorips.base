@@ -17,8 +17,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.AbstractStringSearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperatorType;
 import org.junit.Test;
 
 public class EqualitySearchOperatorTest {

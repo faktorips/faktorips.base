@@ -1483,9 +1483,9 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <instanceof
-                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
-                  </instanceof>
+				<adapt
+                       type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                 </adapt>
                </iterate>
             </with>
          </activeWhen>
@@ -1498,12 +1498,13 @@
                <iterate
                   ifEmpty="false"
                   operator="and">
-                  <instanceof
-                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
-                  </instanceof>
-                  <test
+				<adapt
+                       type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                    <test
                         property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditableInEditor">
                   </test>
+                 </adapt>
+                  
                </iterate>
             </with>
          </enabledWhen>
@@ -1797,7 +1798,7 @@
                         variable="selection">
                      <iterate>
                         <instanceof
-                              value="java.lang.String">
+                              value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                         </instanceof>
                      </iterate>
                   </with>
@@ -1847,7 +1848,7 @@
                         variable="selection">
                      <iterate>
                         <instanceof
-                              value="java.lang.String">
+                              value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                         </instanceof>
                      </iterate>
                   </with>
@@ -2201,7 +2202,7 @@
                         ifEmpty="true"
                         operator="and">
                      <instanceof
-                           value="java.lang.String">
+                           value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                      </instanceof>
                   </iterate>
                </with>
@@ -2218,7 +2219,7 @@
                      variable="selection">
                   <iterate>
                      <instanceof
-                           value="java.lang.String">
+                           value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                      </instanceof>
                   </iterate>
                </with>
@@ -2338,6 +2339,13 @@
           class="org.faktorips.devtools.core.ui.adapterfactories.FixDifferencesCompositeAdapterFactory">
        <adapter
              type="org.eclipse.ui.model.IWorkbenchAdapter">
+       </adapter>
+    </factory>
+    <factory
+          adaptableType="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem"
+          class="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItemAdapterFactory">
+       <adapter
+             type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
        </adapter>
     </factory>
  </extension>

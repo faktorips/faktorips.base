@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
@@ -76,14 +77,13 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * example a {@link IProductCmptGeneration} is only responsible for associations that may change
      * over time but not for unchanging (static) associations. This method will return
      * <code>false</code> in the latter case.
-     * <p>
-     * The container could use {@link IProductCmptTypeAssociation#isChangingOverTime()} to decide
-     * whether it is responsible for the given association or not.
      * 
      * @param association The association that should be checked by the container
      * 
      * @return <code>true</code> if the association could part of this container, <code>false</code>
      *         otherwise.
+     * 
+     * @throws NullPointerException if the association is <code>null</code>
      */
     boolean isContainerFor(IProductCmptTypeAssociation association);
 
@@ -175,5 +175,18 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
      */
     IProductCmpt getProductCmpt();
+
+    /**
+     * Searches the product component type this link container is based on.
+     * 
+     * @param ipsProject The IPS project which search path is used to search the type.
+     * 
+     * @return The product component type this link container is based on or <code>null</code> if
+     *         the product component type can't be found.
+     * 
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>.
+     */
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

@@ -18,9 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ComparableSearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ComparableSearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.junit.Test;
 
 public class ComparableSearchOperatorTest {

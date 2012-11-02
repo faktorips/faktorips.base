@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IWorkbenchPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -40,7 +42,10 @@ public class IpsObjectPartTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        IIpsObjectPart ipsObjectPart = (IIpsObjectPart)receiver;
+        IIpsObjectPart ipsObjectPart = castOrAdaptToIpsObjectPart(receiver);
+        if (ipsObjectPart == null) {
+            return false;
+        }
         if (PROPERTY_PART_EDITABLE_IN_EDITOR.equals(property)) {
             return isPartEditableInEditor(ipsObjectPart);
         } else if (PROPERTY_PART_EDITABLE.equals(property)) {
@@ -48,6 +53,20 @@ public class IpsObjectPartTester extends PropertyTester {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Checks if the given object is either an instance of, or adapts to {@link IIpsObjectPart} and
+     * returns that part. Returns <code>null</code> if the given object neither is an
+     * {@link IIpsObjectPart} nor does it adapt to it.
+     */
+    public static IIpsObjectPart castOrAdaptToIpsObjectPart(Object object) {
+        if (object instanceof IIpsObjectPart) {
+            return (IIpsObjectPart)object;
+        } else if (object instanceof IAdaptable) {
+            return (IIpsObjectPart)Platform.getAdapterManager().getAdapter(object, IIpsObjectPart.class);
+        }
+        return null;
     }
 
     private boolean isPartEditableInEditor(IIpsObjectPart ipsObjectPart) {

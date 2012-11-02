@@ -32,10 +32,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationConditionType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ReferenceSearchOperatorType;
 import org.junit.Before;
 import org.junit.Test;
 

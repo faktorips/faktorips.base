@@ -96,7 +96,7 @@ public class Formula extends Expression implements IFormula {
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         try {
-            return getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
+            return getProductCmptGeneration().findProductCmptType(ipsProject);
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
@@ -137,8 +137,7 @@ public class Formula extends Expression implements IFormula {
     protected void collectEnumTypesFromAttributes(Map<String, EnumDatatype> enumTypes) {
         try {
             IIpsProject ipsProject = getIpsProject();
-            IProductCmptType productCmptType = getProductCmptGeneration().getProductCmpt().findProductCmptType(
-                    ipsProject);
+            IProductCmptType productCmptType = getProductCmptGeneration().findProductCmptType(ipsProject);
             if (productCmptType != null) {
                 List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
                 for (IAttribute attribute : attributes) {

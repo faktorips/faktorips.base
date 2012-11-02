@@ -34,6 +34,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -49,6 +51,7 @@ import org.faktorips.devtools.core.ui.commands.AbstractAddAndNewProductCmptComma
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
@@ -74,7 +77,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             if (structuredSelection.getFirstElement() instanceof IProductCmptStructureReference) {
                 addLinkOnReference(event);
                 return null;
-            } else if (structuredSelection.getFirstElement() instanceof String) {
+            } else if (structuredSelection.getFirstElement() instanceof AbstractAssociationViewItem) {
                 addLinksOnAssociation(event);
                 return null;
             } else {
@@ -86,7 +89,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
     private void addLinksOnAssociation(ExecutionEvent event) {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+        TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<AbstractAssociationViewItem>(
+                AbstractAssociationViewItem.class, selection);
         if (!typedSelection.isValid()) {
             return;
         }
@@ -99,10 +103,10 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         ProductCmptEditor productCmptEditor = (ProductCmptEditor)editor;
         IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
         try {
+            AbstractAssociationViewItem associationViewItem = typedSelection.getFirstElement();
             IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-            String associationName = typedSelection.getFirstElement();
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType.findAssociation(
-                    associationName, productCmpt.getIpsProject());
+                    associationViewItem.getAssociationName(), productCmpt.getIpsProject());
 
             IProductCmptType targetProductCmptType = association.findTargetProductCmptType(productCmpt.getIpsProject());
             // Possible target product component source files
@@ -129,11 +133,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
     protected List<IProductCmptLink> getExistingLinks(ProductCmptEditor productCmptEditor,
             IProductCmptTypeAssociation association) {
         IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
-        if (association.isChangingOverTime()) {
-            return activeGeneration.getLinksAsList(association.getName());
-        } else {
-            return activeGeneration.getProductCmpt().getLinksAsList(association.getName());
-        }
+        IProductCmptLinkContainer container = ((ProductCmptGeneration)activeGeneration).getContainerFor(association);
+        return container.getLinksAsList(association.getName());
     }
 
     /**

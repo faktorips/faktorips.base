@@ -24,8 +24,6 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.ui.search.matcher.ExtensionPropertyMatcher;
-import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.junit.Before;
 import org.junit.Test;
 

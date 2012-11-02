@@ -27,9 +27,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ValueSetSearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ValueSetSearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.junit.Test;
 
 public class AllowanceSearchOperatorTest {

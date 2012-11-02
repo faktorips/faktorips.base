@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.devtools.core.ui.search.product.conditions.types.LikeSearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.LikeSearchOperatorType;
 import org.junit.Test;
 
 public class LikeSearchOperatorTest {

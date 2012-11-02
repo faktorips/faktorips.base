@@ -108,7 +108,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     public IProductCmptType getProductCmptType() {
         try {
-            return generation.getProductCmpt().findProductCmptType(getIpsProject());
+            return generation.findProductCmptType(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
