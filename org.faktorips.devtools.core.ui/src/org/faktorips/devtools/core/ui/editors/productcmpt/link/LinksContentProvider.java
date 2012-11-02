@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -31,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 /**
  * Provides the content for a generation-based association-tree. The association names are requested
@@ -93,7 +93,7 @@ public class LinksContentProvider implements ITreeContentProvider {
         List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
         List<IProductCmptTypeAssociation> associations = collector.getAssociations();
         for (IProductCmptTypeAssociation association : associations) {
-            IProductCmptLinkContainer container = ((ProductCmptGeneration)generation).getContainerFor(association);
+            IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
             AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
             items.add(associationViewItem);
         }
