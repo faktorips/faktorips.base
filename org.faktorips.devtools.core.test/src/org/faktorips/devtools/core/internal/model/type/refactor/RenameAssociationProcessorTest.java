@@ -202,4 +202,15 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newAssociationName, productCmptLink.getAssociation());
     }
 
+    @Test
+    public void testUpdateChangingLinks() {
+        RenameAssociationProcessor renameProcessor = new RenameAssociationProcessor(productToOtherProductAssociation);
+        renameProcessor.setNewName("DUMMY_NAME");
+        IProductCmptLink staticLink = productCmpt.newLink(productToOtherProductAssociation);
+
+        renameProcessor.updateProductCmptLinksFor(productCmpt);
+
+        assertEquals("DUMMY_NAME", productCmptLink.getAssociation());
+        assertEquals("DUMMY_NAME", staticLink.getAssociation());
+    }
 }
