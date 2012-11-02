@@ -27,10 +27,10 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -159,16 +159,16 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     @Override
     protected void postProcess(IIpsSrcFile newProductCmpt, IProgressMonitor monitor) {
         monitor.beginTask(null, 2);
-        if (getPmo().getAddToProductCmptGeneration() != null
-                && IpsUIPlugin.getDefault().isGenerationEditable(getPmo().getAddToProductCmptGeneration())
-                && getPmo().getAddToAssociation() != null) {
-            IIpsSrcFile srcFile = getPmo().getAddToProductCmptGeneration().getIpsSrcFile();
+        IProductCmptTypeAssociation association = getPmo().getAddToAssociation();
+        IProductCmptGeneration generationToAddTo = getPmo().getAddToProductCmptGeneration();
+        if (generationToAddTo != null && IpsUIPlugin.getDefault().isGenerationEditable(generationToAddTo)
+                && association != null) {
+            IIpsSrcFile srcFile = generationToAddTo.getIpsSrcFile();
             if (getPmo().getValidator().validateAddToGeneration().isEmpty()) {
                 boolean dirty = srcFile.isDirty();
 
-                IProductCmptLink newLink = getPmo().getAddToProductCmptGeneration().newLink(
-                        getPmo().getAddToAssociation());
-                newLink.setTarget(newProductCmpt.getQualifiedNameType().getName());
+                String targetQName = newProductCmpt.getQualifiedNameType().getName();
+                new LinkCreatorUtil(false).createLink(association, generationToAddTo, targetQName);
                 monitor.worked(1);
                 if (!dirty) {
                     try {
