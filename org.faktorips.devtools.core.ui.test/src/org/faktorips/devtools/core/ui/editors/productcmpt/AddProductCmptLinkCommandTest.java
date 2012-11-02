@@ -56,14 +56,20 @@ public class AddProductCmptLinkCommandTest {
 
     @Test
     public void testGetExistingLinksFromGeneration() {
+        when(gen.isContainerFor(association)).thenReturn(true);
+
         command.getExistingLinks(editor, association);
+
         verify(gen).getLinksAsList(anyString());
         verify(prodCmpt, never()).getLinksAsList(anyString());
     }
 
     @Test
     public void testGetExistingLinksFromProdCmpt() {
+        when(prodCmpt.isContainerFor(association)).thenReturn(true);
+
         command.getExistingLinks(editor, staticAssociation);
+
         verify(prodCmpt).getLinksAsList(anyString());
         verify(gen, never()).getLinksAsList(anyString());
     }

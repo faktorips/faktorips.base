@@ -579,20 +579,4 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return linkCollection.getLinks(associationName);
     }
 
-    /**
-     * Returns this generation if it is a container for the given association. Returns this
-     * generation's product component otherwise.
-     * 
-     * @param association the association to retrieve a {@link IProductCmptLinkContainer container}
-     *            for.
-     * @see #isContainerFor(IProductCmptTypeAssociation)
-     */
-    public IProductCmptLinkContainer getContainerFor(IProductCmptTypeAssociation association) {
-        if (isContainerFor(association)) {
-            return this;
-        } else {
-            return getProductCmpt();
-        }
-    }
-
 }

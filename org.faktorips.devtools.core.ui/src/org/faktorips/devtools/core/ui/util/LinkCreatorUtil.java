@@ -228,13 +228,28 @@ public class LinkCreatorUtil {
             IProductCmptGeneration generation,
             String targetQualifiedName) {
         if (generation != null && association != null && IpsUIPlugin.getDefault().isGenerationEditable(generation)) {
-            if (generation.isContainerFor(association)) {
-                return createLinkForContainer(targetQualifiedName, generation, association);
-            } else {
-                return createLinkForContainer(targetQualifiedName, generation.getProductCmpt(), association);
-            }
+            IProductCmptLinkContainer container = getLinkContainerFor(generation, association);
+            return createLinkForContainer(targetQualifiedName, container, association);
         }
         return null;
+    }
+
+    /**
+     * Returns the generation if it is a container for the given association. Returns the
+     * generation's product component otherwise.
+     * 
+     * @param generation the possible link container
+     * @param association the association to retrieve a {@link IProductCmptLinkContainer container}
+     *            for.
+     * @see IProductCmptLinkContainer#isContainerFor(IProductCmptTypeAssociation)
+     */
+    public static IProductCmptLinkContainer getLinkContainerFor(IProductCmptGeneration generation,
+            IProductCmptTypeAssociation association) {
+        if (generation.isContainerFor(association)) {
+            return generation;
+        } else {
+            return generation.getProductCmpt();
+        }
     }
 
     private IProductCmptLink createLinkForContainer(String droppedCmptQName,
