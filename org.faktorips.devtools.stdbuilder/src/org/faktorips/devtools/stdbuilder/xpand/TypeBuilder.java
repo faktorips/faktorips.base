@@ -17,11 +17,11 @@ import java.util.Map;
 
 import org.eclipse.xtend.expression.Variable;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.util.LocalizedStringsSet;
 
-public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends XpandBuilder<T> {
+public abstract class TypeBuilder<T extends XType> extends XpandBuilder<T> {
 
     private static final String GENERATE_INTERFACE = "generateInterface";
     private final boolean interfaceBuilder;

@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.xpand.table.model;
 
 import java.util.LinkedHashSet;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -34,6 +36,15 @@ public class XTable extends XClass {
 
     public XTable(ITableStructure policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
+    }
+
+    @Override
+    public boolean isValidForCodeGeneration() {
+        try {
+            return getIpsObjectPartContainer().isValid(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

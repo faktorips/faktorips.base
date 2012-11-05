@@ -52,6 +52,23 @@ public class XPolicyCmptClass extends XType {
     }
 
     @Override
+    public boolean isValidForCodeGeneration() {
+        try {
+            if (!getType().isValid(getIpsProject())) {
+                return false;
+            } else {
+                if (isConfigured()) {
+                    return getProductCmptType().isValid(getIpsProject());
+                } else {
+                    return true;
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
     public IPolicyCmptType getIpsObjectPartContainer() {
         return (IPolicyCmptType)super.getIpsObjectPartContainer();
     }
@@ -67,25 +84,11 @@ public class XPolicyCmptClass extends XType {
     }
 
     /**
-     * Returns <code>true</code> if this policy component type is configured by a valid product
-     * component type. It returns false if either this policy component type is not configured or
-     * the configuring product component type is invalid.
-     * <p>
-     * It is necessary to return true only for valid product component type because there may be
-     * many issues where the code generator would throw exceptions for invalid objects. To avoid any
-     * exception we do not consider invalid product component types at all.
+     * Returns <code>true</code> if this policy component type is configured by a product component
+     * type.
      */
     public boolean isConfigured() {
-        if (getType().isConfigurableByProductCmptType()) {
-            try {
-                IProductCmptType productCmptType = getType().findProductCmptType(getIpsProject());
-                return productCmptType != null && productCmptType.isValid(productCmptType.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        } else {
-            return false;
-        }
+        return getType().isConfigurableByProductCmptType();
     }
 
     public boolean isAggregateRoot() {

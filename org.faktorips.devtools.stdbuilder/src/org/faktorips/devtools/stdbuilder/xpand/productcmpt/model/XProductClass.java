@@ -43,6 +43,23 @@ public abstract class XProductClass extends XType {
     }
 
     @Override
+    public boolean isValidForCodeGeneration() {
+        try {
+            if (!getType().isValid(getIpsProject())) {
+                return false;
+            } else {
+                if (isConfigurationForPolicyCmptType()) {
+                    return getPolicyCmptClass().getType().isValid(getIpsProject());
+                } else {
+                    return true;
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
     public IProductCmptType getIpsObjectPartContainer() {
         return (IProductCmptType)super.getIpsObjectPartContainer();
     }
@@ -189,25 +206,11 @@ public abstract class XProductClass extends XType {
     }
 
     /**
-     * Returns true if this type is marked as configured and there is a valid policy component type
-     * that could be configured. Returns false if either this product component type does not
-     * configure any policy component type or the corresponding policy component type is invalid.
-     * <p>
-     * It is necessary to return true only for valid policy component type because there may be many
-     * issues where the code generator would throw exceptions for invalid objects. To avoid any
-     * exception we do not consider invalid policy component types at all.
+     * Returns true if this type is marked as configured and there is a policy component type that
+     * could be configured.
      */
     public boolean isConfigurationForPolicyCmptType() {
-        if (getType().isConfigurationForPolicyCmptType()) {
-            try {
-                IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
-                return policyCmptType != null && policyCmptType.isValid(policyCmptType.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        } else {
-            return false;
-        }
+        return getType().isConfigurationForPolicyCmptType();
     }
 
     public String getPolicyInterfaceName() {

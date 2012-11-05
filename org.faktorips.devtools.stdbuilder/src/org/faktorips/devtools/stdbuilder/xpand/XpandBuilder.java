@@ -62,7 +62,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author dirmeier
  */
-public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends JavaSourceFileBuilder {
+public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuilder {
 
     /*
      * If this debug switch is set to true we reload the template with every build!
@@ -202,7 +202,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     @Override
     protected String generate() throws CoreException {
-        if (getIpsObject().isValid(getIpsProject())) {
+        if (getGeneratorModelRoot(getIpsObject()).isValidForCodeGeneration()) {
             StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
             evaluateTemplate(getIpsSrcFile().getIpsObject());
             return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
@@ -229,9 +229,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     protected abstract Class<T> getGeneratorModelNodeClass();
 
-    protected AbstractGeneratorModelNode getGeneratorModelRoot(IIpsObject ipsObject) {
-        AbstractGeneratorModelNode xClass = getModelService().getModelNode(ipsObject, getGeneratorModelNodeClass(),
-                getGeneratorModelContext());
+    protected T getGeneratorModelRoot(IIpsObject ipsObject) {
+        T xClass = getModelService().getModelNode(ipsObject, getGeneratorModelNodeClass(), getGeneratorModelContext());
         return xClass;
     }
 

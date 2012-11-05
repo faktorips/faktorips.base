@@ -37,6 +37,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         javaClassNameProvider = createJavaClassNamingProvider(context.isGeneratePublishedInterfaces());
     }
 
+    public abstract boolean isValidForCodeGeneration();
+
     public static IJavaClassNameProvider createJavaClassNamingProvider(boolean generatePublishedInterface) {
         return new DefaultJavaClassNameProvider(generatePublishedInterface);
     }
