@@ -3,6 +3,8 @@
 
 <toc label="Faktor-IPS">
  <topic label="Aufgaben">
+    <topic href="help/tasks/testCase/buildTestDataStructureViaDragAndDrop.html" label="Test Datenstruktur per Drag and Drop aufbauen">
+    </topic>
  </topic>
  <topic label="Konzept">
  </topic>
