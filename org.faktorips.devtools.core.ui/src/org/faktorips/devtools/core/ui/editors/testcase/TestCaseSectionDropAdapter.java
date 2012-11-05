@@ -385,7 +385,7 @@ class DropToLinkHelper {
                     .getTestPolicyCmptTypeParamChilds()) {
                 IPolicyCmptType policyTypeOfParameter = potentialTargetToChildParam.findPolicyCmptType(productCmpt
                         .getIpsProject());
-                if (policyCmptType.isSubtypeOf(policyTypeOfParameter, productCmpt.getIpsProject())) {
+                if (policyCmptType.isSubtypeOrSameType(policyTypeOfParameter, productCmpt.getIpsProject())) {
                     targetToChildParam = potentialTargetToChildParam;
                     break;
                 }
