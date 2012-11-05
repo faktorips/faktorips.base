@@ -257,15 +257,32 @@ class DropToLinkHelper {
 
         if (target instanceof TestCaseTypeAssociation) {
             TestCaseTypeAssociation testCaseTypeAssociation = (TestCaseTypeAssociation)target;
+
+            // Will be null if drag over root test policy component
+            ITestPolicyCmpt parentTestPolicyCmpt = testCaseTypeAssociation.getParentTestPolicyCmpt();
+            if (parentTestPolicyCmpt == null) {
+                return false;
+            }
+
+            // Will be null if model is invalid
+            ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
+                    parentTestPolicyCmpt);
+            if (targetToChildParam == null) {
+                return false;
+            }
+
             return isValidTarget(testCaseTypeAssociation.getTestPolicyCmptTypeParam(), productCmpt,
-                    testCaseTypeAssociation.getParentTestPolicyCmpt());
+                    parentTestPolicyCmpt);
 
         } else if (target instanceof ITestPolicyCmpt) {
+            // Will be null if model is invalid
             ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
                     (ITestPolicyCmpt)target);
-            if (targetToChildParam != null) {
-                return isValidTarget(targetToChildParam, productCmpt, (ITestPolicyCmpt)target);
+            if (targetToChildParam == null) {
+                return false;
             }
+
+            return isValidTarget(targetToChildParam, productCmpt, (ITestPolicyCmpt)target);
         }
 
         return false;
@@ -283,8 +300,6 @@ class DropToLinkHelper {
         viewerDropAdapter.getCurrentEvent().detail = DND.DROP_LINK;
 
         class DropOnLinkRunnable implements Runnable {
-            private boolean success = true;
-
             private IProductCmpt productCmpt;
 
             private DropOnLinkRunnable(IProductCmpt productCmpt) {
@@ -334,11 +349,6 @@ class DropToLinkHelper {
             private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
                 ITestPolicyCmptTypeParameter targetToChildParameter = getTargetToChildParameter(productCmpt,
                         testPolicyCmpt);
-                if (targetToChildParameter == null) {
-                    success = false;
-                    return null;
-                }
-
                 ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(targetToChildParameter,
                         productCmpt.getQualifiedName(), null, null, true);
                 return testPolicyCmptLink.findTarget();
@@ -350,7 +360,7 @@ class DropToLinkHelper {
         DropOnLinkRunnable dropOnLinkRunnable = new DropOnLinkRunnable(productCmpt);
         BusyIndicator.showWhile(Display.getDefault(), dropOnLinkRunnable);
 
-        return dropOnLinkRunnable.success;
+        return true;
     }
 
     private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
