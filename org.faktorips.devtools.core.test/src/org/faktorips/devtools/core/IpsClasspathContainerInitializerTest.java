@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.faktorips.devtools.core.IpsClasspathContainerInitializer.IpsClasspathContainer;
 import org.junit.Test;
 
 public class IpsClasspathContainerInitializerTest {
@@ -68,6 +69,18 @@ public class IpsClasspathContainerInitializerTest {
         expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
                 + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
         assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true));
+    }
+
+    @Test
+    public void testGetSourceBundlePath() throws Exception {
+        IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
+                new Path("faktorips"));
+        String sourceBundlePath = ipsClasspathContainer.getSourceBundlePath(
+                "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5_1.2.3.test_vla-jztd",
+                "org.faktorips.runtime.java5");
+        assertEquals(
+                "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
+                sourceBundlePath);
     }
 
 }

@@ -38,8 +38,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     public static final IPath ENTRY_PATH = new Path(CONTAINER_ID);
 
-    private static final String NAME_VERSION_SEP = "_"; //$NON-NLS-1$
-
     public static final String RUNTIME_BUNDLE = "org.faktorips.runtime.java5"; //$NON-NLS-1$
 
     public static final String VALUETYPES_BUNDLE = "org.faktorips.valuetypes.java5"; //$NON-NLS-1$
@@ -182,7 +180,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
     }
 
-    class IpsClasspathContainer implements IClasspathContainer {
+    static class IpsClasspathContainer implements IClasspathContainer {
 
         private final IPath containerPath;
         private IClasspathEntry[] entries;
@@ -233,7 +231,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             return containerPath;
         }
 
-        private IPath getBundlePath(String pluginId, boolean sources) {
+        IPath getBundlePath(String pluginId, boolean sources) {
             Bundle bundle = Platform.getBundle(pluginId);
             if (bundle == null) {
                 IpsPlugin
@@ -251,20 +249,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                         URL local = FileLocator.toFileURL(installLocation);
                         fullPath = new File(local.getPath()).getAbsolutePath();
                     } else {
-                        fullPath = FileLocator.getBundleFile(bundle).getAbsolutePath();
-                        String[] split = fullPath.split(NAME_VERSION_SEP);
-                        if (split.length < 2) {
-                            return null;
-                        }
-                        split[split.length - 2] = split[split.length - 2] + ".source"; //$NON-NLS-1$
-                        fullPath = StringUtils.EMPTY;
-                        for (String string : split) {
-                            if (string != split[split.length - 1]) {
-                                fullPath += string + NAME_VERSION_SEP;
-                            } else {
-                                fullPath += string;
-                            }
-                        }
+                        fullPath = getSourceBundlePath(FileLocator.getBundleFile(bundle).getAbsolutePath(), pluginId);
                     }
                     return Path.fromOSString(fullPath);
                 } catch (Exception e) {
@@ -288,6 +273,25 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                     return null;
                 }
             }
+        }
+
+        /* private */String getSourceBundlePath(String fullPath, String pluginId) {
+            // looks strange but does replace every '.' with '\.' to use in split
+            String pluginIdForRegext = pluginId.replaceAll("\\.", "\\."); //$NON-NLS-1$ //$NON-NLS-2$
+            String[] split = fullPath.split(pluginIdForRegext);
+
+            if (split.length < 2) {
+                return null;
+            }
+            fullPath = StringUtils.EMPTY;
+            for (String string : split) {
+                if (string != split[split.length - 1]) {
+                    fullPath += string + pluginId;
+                } else {
+                    fullPath += ".source" + string; //$NON-NLS-1$
+                }
+            }
+            return fullPath;
         }
 
     }
