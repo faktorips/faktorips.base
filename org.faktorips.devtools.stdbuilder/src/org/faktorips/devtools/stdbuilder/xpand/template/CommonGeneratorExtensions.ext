@@ -108,6 +108,12 @@ inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterfac
 inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2,String param3):
 	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param1, param2, param3);
 	
+localizedJDocOrDescription(AbstractGeneratorModelNode this, String key, String param, String description):
+	if description.length > 0 then description else localizedJDoc(key, param);
+
+localizedJDocOrDescription(AbstractGeneratorModelNode this, String key, String param1, String param2, String description):
+	if description.length > 0 then description else localizedJDoc(key, param1, param2);
+	
 abstract(XType this) :
 	if abstract then "abstract";
 

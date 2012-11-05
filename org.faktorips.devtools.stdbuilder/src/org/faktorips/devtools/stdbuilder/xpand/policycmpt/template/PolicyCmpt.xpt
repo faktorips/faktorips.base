@@ -17,7 +17,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 «IF generatePublishedInterfaces-»
 	 *	«localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
 	 «ELSE-»
-	 * «localizedJDoc("CLASS_NO_INTERFACE", name)» «descriptionForJDoc»
+	 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
 	 «ENDIF-»
 	 * @generated
 	 */
