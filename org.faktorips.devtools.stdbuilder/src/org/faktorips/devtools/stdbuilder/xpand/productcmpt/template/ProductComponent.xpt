@@ -16,7 +16,7 @@
 		«IF generatePublishedInterfaces-»
 		 * «localizedJDoc("CLASS", interfaceName)»
 		«ELSE»
-		 * «localizedJDoc("CLASS_NO_INTERFACE", name)»
+		 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
 		«ENDIF»
 		 * @generated
 		 */
