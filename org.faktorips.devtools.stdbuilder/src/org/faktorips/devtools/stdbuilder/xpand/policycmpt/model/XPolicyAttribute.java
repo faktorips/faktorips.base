@@ -44,13 +44,9 @@ import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
 
-    private DatatypeHelper valuesetDatatypeHelper;
-
     public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(attribute, modelContext, modelService);
-        valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(attribute.getIpsProject(),
-                getDatatypeHelper());
     }
 
     @Override
@@ -64,6 +60,10 @@ public class XPolicyAttribute extends XAttribute {
     @Override
     public IPolicyCmptTypeAttribute getAttribute() {
         return getIpsObjectPartContainer();
+    }
+
+    public DatatypeHelper getValuesetDatatypeHelper() {
+        return StdBuilderHelper.getDatatypeHelperForValueSet(getAttribute().getIpsProject(), getDatatypeHelper());
     }
 
     @Override
@@ -154,8 +154,8 @@ public class XPolicyAttribute extends XAttribute {
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetRange()) {
             // call this method to add import statement the type
-            valuesetDatatypeHelper.getJavaClassName();
-            return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
+            getValuesetDatatypeHelper().getJavaClassName();
+            return addImport(getValuesetDatatypeHelper().getRangeJavaClassName(true));
         } else {
             throw new RuntimeException("Unexpected valueset type for attribute " + getName());
         }
@@ -169,11 +169,11 @@ public class XPolicyAttribute extends XAttribute {
      * @return The name of the java class used for value sets.
      */
     public String getJavaClassUsedForValueSet() {
-        return addImport(valuesetDatatypeHelper.getJavaClassName());
+        return addImport(getValuesetDatatypeHelper().getJavaClassName());
     }
 
     public String getValueSetNullValueCode() {
-        JavaCodeFragment nullValueCode = valuesetDatatypeHelper.nullExpression();
+        JavaCodeFragment nullValueCode = getValuesetDatatypeHelper().nullExpression();
         addImport(nullValueCode.getImportDeclaration());
         return nullValueCode.getSourcecode();
     }
@@ -189,7 +189,7 @@ public class XPolicyAttribute extends XAttribute {
      * @return The code needed to create a new instance for a value set
      */
     public String getValueSetNewInstanceFromExpression(String expression, String repositoryExpression) {
-        return getNewInstanceFromExpression(valuesetDatatypeHelper, expression, repositoryExpression);
+        return getNewInstanceFromExpression(getValuesetDatatypeHelper(), expression, repositoryExpression);
     }
 
     public String getToStringExpression() {
@@ -226,7 +226,7 @@ public class XPolicyAttribute extends XAttribute {
             String upperBoundExp,
             String stepExp,
             String containsNullExp) {
-        JavaCodeFragment newRangeInstance = valuesetDatatypeHelper.newRangeInstance(
+        JavaCodeFragment newRangeInstance = getValuesetDatatypeHelper().newRangeInstance(
                 new JavaCodeFragment(lowerBoundExp), new JavaCodeFragment(upperBoundExp),
                 new JavaCodeFragment(stepExp), new JavaCodeFragment(containsNullExp), false);
         addImport(newRangeInstance.getImportDeclaration());
@@ -234,8 +234,8 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String newEnumValueSetInstance(String valueCollection, String containsNullExpression) {
-        JavaCodeFragment newEnumExpression = valuesetDatatypeHelper.newEnumValueSetInstance(new JavaCodeFragment(
-                valueCollection), new JavaCodeFragment(containsNullExpression), true);
+        JavaCodeFragment newEnumExpression = getValuesetDatatypeHelper().newEnumValueSetInstance(
+                new JavaCodeFragment(valueCollection), new JavaCodeFragment(containsNullExpression), true);
         addImport(newEnumExpression.getImportDeclaration());
         return newEnumExpression.getSourcecode();
     }
@@ -421,7 +421,7 @@ public class XPolicyAttribute extends XAttribute {
             IRangeValueSet range = (IRangeValueSet)getAttribute().getValueSet();
             JavaCodeFragment containsNullFrag = new JavaCodeFragment();
             containsNullFrag.append(range.getContainsNull());
-            result = valuesetDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
+            result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
                     createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
                     containsNullFrag, true);
         } else if (isValueSetEnum()) {
@@ -438,7 +438,7 @@ public class XPolicyAttribute extends XAttribute {
                 throw new IllegalArgumentException("This method is only applicable to attributes "
                         + "based on an EnumDatatype or containing an EnumValueSet.");
             }
-            result = valuesetDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull, true);
+            result = getValuesetDatatypeHelper().newEnumValueSetInstance(valueIds, containsNull, true);
         } else {
             throw new RuntimeException("Can't handle value set " + getAttribute().getValueSet());
         }
@@ -448,12 +448,12 @@ public class XPolicyAttribute extends XAttribute {
 
     private JavaCodeFragment createCastExpression(String bound) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        if (StringUtils.isEmpty(bound) && !valuesetDatatypeHelper.getDatatype().hasNullObject()) {
+        if (StringUtils.isEmpty(bound) && !getValuesetDatatypeHelper().getDatatype().hasNullObject()) {
             frag.append('(');
-            frag.appendClassName(valuesetDatatypeHelper.getJavaClassName());
+            frag.appendClassName(getValuesetDatatypeHelper().getJavaClassName());
             frag.append(')');
         }
-        frag.append(valuesetDatatypeHelper.newInstance(bound));
+        frag.append(getValuesetDatatypeHelper().newInstance(bound));
         return frag;
     }
 
@@ -583,7 +583,7 @@ public class XPolicyAttribute extends XAttribute {
      * 
      */
     public String getJavaClassQualifiedNameUsedForValueSet() {
-        return valuesetDatatypeHelper.getJavaClassName();
+        return getValuesetDatatypeHelper().getJavaClassName();
     }
 
 }

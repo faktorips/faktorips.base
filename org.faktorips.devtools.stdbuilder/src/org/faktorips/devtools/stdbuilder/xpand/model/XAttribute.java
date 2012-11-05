@@ -31,15 +31,8 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class XAttribute extends AbstractGeneratorModelNode {
 
-    private DatatypeHelper datatypeHelper;
-
     public XAttribute(IAttribute attribute, GeneratorModelContext context, ModelService modelService) {
         super(attribute, context, modelService);
-        try {
-            datatypeHelper = attribute.getIpsProject().findDatatypeHelper(attribute.getDatatype());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     @Override
@@ -52,7 +45,11 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public DatatypeHelper getDatatypeHelper() {
-        return datatypeHelper;
+        try {
+            return getAttribute().getIpsProject().findDatatypeHelper(getAttribute().getDatatype());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     public String getMethodNameSetter() {
