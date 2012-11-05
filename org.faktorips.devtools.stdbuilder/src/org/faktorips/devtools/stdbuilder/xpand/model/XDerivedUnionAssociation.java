@@ -21,12 +21,16 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
+import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * This is the generator model node for a derived union association. It is very important to
@@ -46,7 +50,9 @@ public class XDerivedUnionAssociation extends XAssociation {
      * @param modelService the model service used to instantiate new generator model nodes
      */
     public XDerivedUnionAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService) {
-        super(association, context, modelService);
+        super(association, context, modelService, new LocalizedStringsSet(
+                association instanceof IPolicyCmptTypeAssociation ? XPolicyAssociation.class
+                        : XProductAssociation.class));
     }
 
     /**

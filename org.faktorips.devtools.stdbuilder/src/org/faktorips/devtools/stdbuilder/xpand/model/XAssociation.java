@@ -29,11 +29,17 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     public XAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService) {
         super(association, context, modelService);
+    }
+
+    public XAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService,
+            LocalizedStringsSet localizedStringsSet) {
+        super(association, context, modelService, localizedStringsSet);
     }
 
     @Override

@@ -55,12 +55,23 @@ import org.faktorips.util.LocalizedStringsSet;
  * Base class for every Xpand generator model object. This class provides some useful methods e.g.
  * for localization and import statements and handles the common needs for every generator model
  * object.
+ * <p>
+ * The class is instantiated by the {@link ModelService}. You need to specify an constructor with
+ * the arguments like
+ * {@link #AbstractGeneratorModelNode(IIpsObjectPartContainer, GeneratorModelContext, ModelService)}
+ * to be isntantiated by the model service.
+ * <p>
+ * It is also very important that the model service may reuse the same instance for more than one
+ * build. Hence the generator model node needs strictly to be stateless! Every information should be
+ * called directly from the Faktor-IPS meta model objects. If you need to cache any information due
+ * to performance issues you could use the {@link GeneratorModelContext} which could hold
+ * information for the lifetime of a build cycle.
  * 
  * @author dirmeier, widmaier
  */
 public abstract class AbstractGeneratorModelNode {
 
-    private final LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(getClass());
+    private final LocalizedStringsSet localizedStringSet;
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
 
@@ -91,13 +102,42 @@ public abstract class AbstractGeneratorModelNode {
      * client code.
      * 
      * @param ipsObjectPartContainer The object this generator model object is responsible for
+     * @param context The generator model context used to store context sensitive information
+     * @param modelService The model service used to instantiate this model node and used to create
+     *            other model nodes
      */
     public AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
+        this(ipsObjectPartContainer, context, modelService, null);
+    }
+
+    /**
+     * Call this constructor if you need to specify another {@link LocalizedStringsSet} as the
+     * default one. Do not provide this constructor to your client. Define a constructor with the
+     * arguments of
+     * {@link #AbstractGeneratorModelNode(IIpsObjectPartContainer, GeneratorModelContext, ModelService)}
+     * instead.
+     * 
+     * @see #AbstractGeneratorModelNode(IIpsObjectPartContainer, GeneratorModelContext,
+     *      ModelService)
+     * 
+     * @param ipsObjectPartContainer The object this generator model object is responsible for
+     * @param context The generator model context used to store context sensitive information
+     * @param modelService The model service used to instantiate this model node and used to create
+     *            other model nodes
+     * @param localizedStringsSet The localized string set used to translate strings
+     */
+    protected AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+            ModelService modelService, LocalizedStringsSet localizedStringsSet) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         this.ipsObjectPartContainer = ipsObjectPartContainer;
         this.modelContext = context;
         this.modelService = modelService;
+        if (localizedStringsSet == null) {
+            this.localizedStringSet = new LocalizedStringsSet(getClass());
+        } else {
+            this.localizedStringSet = localizedStringsSet;
+        }
     }
 
     /**
