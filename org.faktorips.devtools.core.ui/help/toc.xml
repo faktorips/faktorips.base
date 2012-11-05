@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Faktor-IPS">
+ <topic label="Aufgaben">
+    <topic href="help/tasks/testCase/buildTestDataStructureViaDragAndDrop.html" label="Test Datenstruktur per Drag and Drop aufbauen">
+    </topic>
+ </topic>
+ <topic label="Konzept">
+ </topic>
+ <topic label="Referenz">
+    <topic href="help/reference/editors/testcaseEditor.html" label="Testfall-Editor">
+    </topic>
+ </topic>
+</toc>

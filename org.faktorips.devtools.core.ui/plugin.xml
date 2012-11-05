@@ -2374,7 +2374,11 @@
           label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider_label">
     </contentprovider>
  </extension>
-	
-
-	
+ <extension
+       point="org.eclipse.help.toc">
+    <toc
+          file="help/toc.xml"
+          primary="true">
+    </toc>
+ </extension>
 </plugin>

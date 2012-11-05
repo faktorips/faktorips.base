@@ -179,7 +179,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                 action.openEditor();
             }
         });
-        tableViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
+        tableViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new IpsElementDragListener(tableViewer));
 
         GridData errorLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);

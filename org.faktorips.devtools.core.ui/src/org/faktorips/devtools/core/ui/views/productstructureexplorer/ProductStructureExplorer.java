@@ -391,7 +391,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         layoutData.exclude = true;
         errormsg.setLayoutData(layoutData);
         errormsg.setVisible(false);
-
         // dnd for label
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new ProductCmptDropListener(this));

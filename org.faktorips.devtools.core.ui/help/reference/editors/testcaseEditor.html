@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Testfall-Editor</title>
+<link rel="stylesheet" type="text/css" href="../../style.css" />
+</head>
+
+<body>
+
+	<h1>Testfall-Editor</h1>
+
+	<p>Der Testfall-Editor erm&ouml;glicht den Zusammenbau einer
+		Test-Police. Jeder Testfall basiert auf einem Testfalltyp, in welchem
+		die Struktur vorgegeben wird. Außerdem definiert der zugrunde liegende
+		Testfalltyp, welche Werte f&uuml;r den Testfall relevant sind, und ob
+		es sich jeweils um Eingabe- oder Ausgabewerte handelt.</p>
+
+	<p>
+		Der Testfall-Editor ist durch die zwei Reiter <em>Testdaten</em> und <em>Beschreibungen</em>
+		unterteilt.
+	</p>
+
+	<h2>Testdaten</h2>
+
+	<div class="image">
+		<img src="../../img/reference/editors/testcaseEditor_testData.png"
+			alt="Testfall-Editor: Testdaten" />
+	</div>
+
+	<h3>Test Datenstruktur</h3>
+
+	<p>
+		Der Bereich <em>Test Datenstruktur</em> auf der linken Seite zeigt die
+		Test-Police an.
+	</p>
+
+	<h4>
+		<img src="../../img/reference/editors/testCaseEditor_add.gif"
+			alt="Vertragsteile hinzuf&uuml;gen" /> Vertragsteile hinzuf&uuml;gen
+	</h4>
+
+	<p>Erm&ouml;glicht das Hinzuf&uuml;gen von weiteren Vertragsteilen
+		zum Testfall. Es &ouml;ffnet sich ein Dialog, bei dem zun&auml;chst
+		ausgew&auml;hlt werden muss, welche Art von Vertragsteil
+		hinzugef&uuml;gt werden soll:</p>
+
+	<div class="image">
+		<img
+			src="../../img/reference/editors/testcaseEditor_chooseRelationship.png"
+			alt="Vertragsteile hinzuf&uuml;gen: Beziehung ausw&auml;hlen" />
+	</div>
+
+	<p>Auf der zweiten Dialogseite stehen die in Frage kommenden
+		Vertragsteile zur Auswahl. Sind die entsprechenden Vertragsteile
+		produktkonfiguriert, stehen stattdessen die in Frage kommenden
+		Produktbausteine zur Auswahl:</p>
+
+	<div class="image">
+		<img
+			src="../../img/reference/editors/testcaseEditor_chooseProductComponent.png"
+			alt="Vertragsteile hinzuf&uuml;gen: Produktbaustein ausw&auml;hlen" />
+	</div>
+
+	<div class="hint">
+
+		<p class="hint">Hinweis</p>
+
+		<p>Nach dem Hinzuf&uuml;gen eines Vertragsteils kann es sein, dass
+			der hinzugef&uuml;gte Vertragsteil wiederum weitere Vertragsteile
+			ben&ouml;tigt. Der Editor wird in diesem Fall die Test Datenstruktur
+			automatisch erweitern, falls dies m&ouml;glich ist. So kann es
+			passieren, dass beim Hinzuf&uuml;gen eines einzelnen Vertragsteils
+			ein ganzer Teilbaum eingeh&auml;ngt wird.</p>
+
+		<p>Die Test Datenstruktur wird nur automatisch erweitert, wenn der
+			hinzugef&uuml;gte Vertragsteil durch einen Produktbaustein
+			konfiguriert ist. Der Automatismus funktioniert nach folgendem
+			Schema:</p>
+
+		<ol>
+			<li><p>Zun&auml;chst wird durch den zugrunde liegenden
+					Testfalltyp ermittelt, welche Vertragsteile wie oft an dem neuen
+					Vertragsteil angeh&auml;ngt werden m&uuml;ssen. Die zugeh&ouml;rige
+					Modellbeziehung an der Vertragsteilklasse muss zudem eine
+					Komposition sein.</p></li>
+
+			<li><p>F&uuml;r alle Vertragsteile, die mindestens einmal
+					angeh&auml;ngt werden m&uuml;ssen, wird nach m&ouml;glichen
+					Produktbausteinen gesucht. Wird genau ein Produktbaustein gefunden,
+					so wird der Vertragsteil so oft hinzugef&uuml;gt, wie es der
+					Testfalltyp vorgibt. Den neuen Vertragsteilen wird der
+					entsprechende Produktbaustein zugewiesen.</p></li>
+
+			<li><p>F&uuml;r alle Vertragsteile, die optional sind, oder
+					f&uuml;r die kein eindeutiger Produktbaustein gefunden wurde,
+					werden die Beziehungen des Eltern-Produktbausteins untersucht. Gibt
+					es in irgendeiner Anpassungsstufe dieses Eltern-Produktbausteins
+					eine Beziehung zu einem Produktbaustein, dessen Vertragsteilklasse
+					der des gesuchten Vertragsteils entspricht, so wird diese Beziehung
+					n&auml;her untersucht. Ist die Beziehung obligatorisch
+					(Minimum-Kardinalit&auml;t &gt; 0), so werden so viele
+					Vertragsteile hinzugef&uuml;gt, wie es der
+					Minimum-Kardinalit&auml;t entspricht. Jedem Vertragsteil wird der
+					Ziel-Produktbaustein dieser Beziehung zugewiesen.</p></li>
+		</ol>
+
+	</div>
+
+	<div id="relatedHelp">
+		<img src="../../img/relatedTasks.png" alt="Related tasks" />
+		<ul>
+			<li><a
+				href="../../tasks/testCase/buildTestDataStructureViaDragAndDrop.html">Test
+					Datenstruktur per Drag and Drop aufbauen</a></li>
+		</ul>
+	</div>
+
+</body>
+</html>
