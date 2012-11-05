@@ -153,10 +153,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     // The tree view which displays all test policy components and test values which are available
     // in this test
-    TreeViewer treeViewer;
+    private TreeViewer treeViewer;
 
     // Contains the test case which is displayed in this section
-    ITestCase testCase;
+    private ITestCase testCase;
 
     // Contains the test case editor
     private IpsObjectEditor editor;
@@ -227,7 +227,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private IEditorSite site;
 
     // ips project used to search
-    IIpsProject ipsProject;
+    private IIpsProject ipsProject;
 
     private OpenInNewEditorAction openInNewEditorAction;
 
@@ -243,7 +243,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Indicates whether a drag and drop operation was started from within this section. If this
      * flag is {@code false} and a drop event occurs, the drag was started from outside the section.
      */
-    boolean localDragAndDrop;
+    private boolean localDragAndDrop;
 
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
@@ -258,7 +258,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         sectionDetailTitle = detailTitle;
         this.site = site;
         testCase = contentProvider.getTestCase();
-        ipsProject = testCase.getIpsProject();
+        ipsProject = getTestCase().getIpsProject();
 
         initControls();
         setText(title);
@@ -278,7 +278,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // add listener on model,
         // if the model changed reset the test run status
         changeListener = new TestCaseContentChangeListener(this);
-        testCase.getIpsModel().addChangeListener(changeListener);
+        getTestCase().getIpsModel().addChangeListener(changeListener);
         addDisposeListener(new DisposeListener() {
 
             @Override
@@ -333,7 +333,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // refresh and check for delta to the test case type
         // if the test case type changed
         try {
-            ITestCaseType testCaseType = testCase.findTestCaseType(ipsProject);
+            ITestCaseType testCaseType = getTestCase().findTestCaseType(ipsProject);
             if (testCaseType == null) {
                 return;
             }
@@ -367,21 +367,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         structureSection.setClient(structureComposite);
         Tree tree = toolkit.getFormToolkit().createTree(structureComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
-        treeViewer = new TreeViewer(tree);
-        treeViewer.setContentProvider(contentProvider);
+        setTreeViewer(new TreeViewer(tree));
+        getTreeViewer().setContentProvider(contentProvider);
         hookTreeListeners();
 
         createStructureSectionToolbar(structureSection, canShowPolicyComponentType);
         labelProvider = new TestCaseLabelProvider(ipsProject, canShowPolicyComponentType);
 
-        treeViewer.setLabelProvider(new StyledCellMessageCueLabelProvider(labelProvider, ipsProject));
-        treeViewer.setUseHashlookup(true);
-        treeViewer.setInput(testCase);
+        getTreeViewer().setLabelProvider(new StyledCellMessageCueLabelProvider(labelProvider, ipsProject));
+        getTreeViewer().setUseHashlookup(true);
+        getTreeViewer().setInput(getTestCase());
 
-        treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
-                LocalSelectionTransfer.getTransfer() }, new TestCaseSectionDropAdapter(treeViewer, this));
-        treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
-                new TestCaseSectionDragAdapter(treeViewer, this));
+        getTreeViewer().addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
+                new Transfer[] { FileTransfer.getInstance(), LocalSelectionTransfer.getTransfer() },
+                new TestCaseSectionDropAdapter(getTreeViewer(), this));
+        getTreeViewer().addDragSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
+                new TestCaseSectionDragAdapter(getTreeViewer(), this));
         buildContextMenu();
 
         // Details section
@@ -439,8 +440,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         removeAction = new RemoveAction();
         toolBarManager.add(removeAction);
         toolBarManager.add(new Separator());
-        toolBarManager.add(new ExpandAllAction(treeViewer));
-        toolBarManager.add(new CollapseAllAction(treeViewer));
+        toolBarManager.add(new ExpandAllAction(getTreeViewer()));
+        toolBarManager.add(new CollapseAllAction(getTreeViewer()));
         toolBarManager.add(new Separator());
         toolBarManager.add(new ToggleAction(Messages.TestCaseSection_ToolBar_TogglePolicyComponentTypeDisplay,
                 "PolicyCmptType.gif", canShowExtension)); //$NON-NLS-1$
@@ -518,10 +519,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Switch (filter) to the selected content type. And reresh the editor contents.
      */
     private void switchContentType(int contentType) {
-        ISelection selection = treeViewer.getSelection();
+        ISelection selection = getTreeViewer().getSelection();
         contentProvider.setContentType(contentType);
         refreshTreeAndDetailArea();
-        treeViewer.setSelection(selection);
+        getTreeViewer().setSelection(selection);
     }
 
     /**
@@ -612,7 +613,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     objectsToDisplay.add((ITestValue)domainObject);
                 } else if (domainObject instanceof TestCaseTypeRule) {
                     // show all test rule objects if the corresponding parameter is chosen
-                    ITestRule[] testRules = testCase.getTestRule(((TestCaseTypeRule)domainObject).getName());
+                    ITestRule[] testRules = getTestCase().getTestRule(((TestCaseTypeRule)domainObject).getName());
                     for (ITestRule testRule : testRules) {
                         objectsToDisplay.add(testRule);
                     }
@@ -736,7 +737,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private boolean isNoTestPolicyCmptExistsFor(TestCaseTypeAssociation association) {
-        ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
+        ITestPolicyCmpt[] testPolicyCmpts = getTestCase().getTestPolicyCmpts();
         for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
             if (association.getName().equals(testPolicyCmpt.getTestParameterName())) {
                 return false;
@@ -749,7 +750,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Add the tree listener to the tree.
      */
     private void hookTreeListeners() {
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        getTreeViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
@@ -758,7 +759,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
         });
-        new TreeMessageHoverService(treeViewer) {
+        new TreeMessageHoverService(getTreeViewer()) {
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element instanceof Validatable) {
@@ -769,7 +770,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
 
-        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+        getTreeViewer().addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(DoubleClickEvent event) {
                 if (!(event.getSelection() instanceof IStructuredSelection)) {
@@ -796,7 +797,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
         });
-        treeViewer.getTree().addKeyListener(new KeyListener() {
+        getTreeViewer().getTree().addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.DEL) {
@@ -819,7 +820,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
         };
-        treeViewer.getTree().addMouseListener(adapter);
+        getTreeViewer().getTree().addMouseListener(adapter);
     }
 
     /**
@@ -828,7 +829,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void buildContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(false);
-        manager.add(new ExpandSelectedAction(treeViewer));
+        manager.add(new ExpandSelectedAction(getTreeViewer()));
         manager.add(new Separator());
         manager.add(new AddAction());
         manager.add(new RemoveAction());
@@ -842,8 +843,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         manager.add(new Separator());
         openInNewEditorAction = new OpenInNewEditorAction();
         manager.add(openInNewEditorAction);
-        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
-        treeViewer.getControl().setMenu(contextMenu);
+        Menu contextMenu = manager.createContextMenu(getTreeViewer().getControl());
+        getTreeViewer().getControl().setMenu(contextMenu);
     }
 
     /**
@@ -948,10 +949,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Show associations toolbar button was clicked.
      */
     private void showAssociationsClicked() {
-        ISelection selection = treeViewer.getSelection();
+        ISelection selection = getTreeViewer().getSelection();
         contentProvider.setWithoutAssociations(!contentProvider.isWithoutAssociations());
         refreshTreeAndDetailArea();
-        treeViewer.setSelection(selection);
+        getTreeViewer().setSelection(selection);
     }
 
     private void addRootTestPolicyCmptObject(final TestCaseTypeAssociation associationType,
@@ -960,7 +961,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
-                ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
+                ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)getTestCase())
+                        .addRootTestPolicyCmpt(testPolicyCmptTypeParam);
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
                     boolean productCmptAssigned = changeProductCmpt(newTestPolicyCmpt);
                     if (productCmptAssigned) {
@@ -970,7 +972,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 refreshTreeAndDetailArea();
                 expandTreeAfterAdd(associationType, newTestPolicyCmpt);
                 selectInTreeByObject(newTestPolicyCmpt, true);
-                selectionInTreeChanged((IStructuredSelection)treeViewer.getSelection());
+                selectionInTreeChanged((IStructuredSelection)getTreeViewer().getSelection());
             }
         };
 
@@ -1018,10 +1020,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
 
-        treeViewer.expandToLevel(parentItem, 1);
+        getTreeViewer().expandToLevel(parentItem, 1);
         for (Object child : contentProvider.getChildren(parentItem)) {
             if (child.equals(testPolicyCmpt)) {
-                treeViewer.expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
+                getTreeViewer().expandToLevel(child, AbstractTreeViewer.ALL_LEVELS);
             }
         }
     }
@@ -1086,23 +1088,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void changeProductCmpt() throws CoreException {
-        ISelection selection = treeViewer.getSelection();
+        ISelection selection = getTreeViewer().getSelection();
         if (selection instanceof IStructuredSelection) {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
             if (selectedObj instanceof ITestPolicyCmpt) {
                 changeProductCmpt((ITestPolicyCmpt)selectedObj);
-                treeViewer.setSelection(selection);
+                getTreeViewer().setSelection(selection);
             }
         }
     }
 
     private void resetProductCmptToEmpty() {
-        ISelection selection = treeViewer.getSelection();
+        ISelection selection = getTreeViewer().getSelection();
         if (selection instanceof IStructuredSelection) {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
             if (selectedObj instanceof ITestPolicyCmpt) {
                 ((ITestPolicyCmpt)selectedObj).setProductCmptAndNameAfterIfApplicable(""); //$NON-NLS-1$
-                treeViewer.setSelection(selection);
+                getTreeViewer().setSelection(selection);
             }
         }
     }
@@ -1141,9 +1143,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void showAllClicked() {
-        ISelection selection = treeViewer.getSelection();
+        ISelection selection = getTreeViewer().getSelection();
         showAll(!showAll);
-        treeViewer.setSelection(selection);
+        getTreeViewer().setSelection(selection);
     }
 
     private void runAndStoreExpectedResultClicked() {
@@ -1174,10 +1176,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (showAll) {
             // show all test objects which are provided by the content provider
             createDetailsSectionsForAll();
-            treeViewer.expandAll();
+            getTreeViewer().expandAll();
         } else {
             // show only the selected test objects
-            ISelection selection = treeViewer.getSelection();
+            ISelection selection = getTreeViewer().getSelection();
             if (selection instanceof IStructuredSelection) {
                 Object domainObject = ((IStructuredSelection)selection).getFirstElement();
                 testCaseDetailArea.clearDetailArea();
@@ -1226,7 +1228,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private boolean containsErrors() {
         try {
-            if (testCase.validate(ipsProject).containsErrorMsg()) {
+            if (getTestCase().validate(ipsProject).containsErrorMsg()) {
                 MessageDialog.openWarning(getShell(), Messages.TestCaseSection_MessageDialog_TitleInfoTestNotExecuted,
                         Messages.TestCaseSection_MessageDialog_TextInfoTestNotExecuted);
                 return true;
@@ -1242,12 +1244,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Returns the toc file package name which stores the current test case.
      */
     private String getTocFilePackage() {
-        if (testCase.isContainedInArchive()) {
+        if (getTestCase().isContainedInArchive()) {
             // not available for archived files, because archives doesn't have toc files (the
             // content is not based on source folder)
             return null;
         }
-        IIpsPackageFragment packageFragment = testCase.getIpsPackageFragment();
+        IIpsPackageFragment packageFragment = getTestCase().getIpsPackageFragment();
         if (packageFragment == null) {
             return null;
         }
@@ -1368,7 +1370,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Refresh the tree.
      */
     void refreshTree() {
-        treeViewer.refresh();
+        getTreeViewer().refresh();
     }
 
     /**
@@ -1392,7 +1394,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
             // this must be the root node
             // find and return the correspondinf test object in the test case
-            ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
+            ITestPolicyCmpt[] testPolicyCmpts = getTestCase().getTestPolicyCmpts();
             for (ITestPolicyCmpt testPolicyCmpt2 : testPolicyCmpts) {
                 if (testCaseTypeAssociation.getTestPolicyCmptTypeParam().getName()
                         .equals(testPolicyCmpt2.getTestParameterName())) {
@@ -1412,7 +1414,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     void selectInTreeByObject(ITestRule testRule) {
-        treeViewer.setSelection(new StructuredSelection(testRule));
+        getTreeViewer().setSelection(new StructuredSelection(testRule));
     }
 
     /**
@@ -1427,13 +1429,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
 
             // goto the corresponding test policy component in the tree
-            Tree tree = treeViewer.getTree();
+            Tree tree = getTreeViewer().getTree();
             TreeItem found = searchChildsByObject(testPolicyCmpt, link, tree.getItems());
             if (found != null) {
                 // select the tree entry
-                treeViewer.setSelection(new StructuredSelection(found.getData()));
+                getTreeViewer().setSelection(new StructuredSelection(found.getData()));
                 if (focusChange) {
-                    treeViewer.getTree().setFocus();
+                    getTreeViewer().getTree().setFocus();
                     updateStructureSectionToolBarEnableStates(found.getData());
                 }
             }
@@ -1450,7 +1452,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // goto the corresponding test policy component in the tree
         TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(label);
 
-        Tree tree = treeViewer.getTree();
+        Tree tree = getTreeViewer().getTree();
         TreeItem found = null;
         if (hierarchyPath.count() > 1) {
             found = searchChildsByHierarchyPath(hierarchyPath, tree.getItems());
@@ -1462,7 +1464,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             TreeItem[] select = new TreeItem[1];
             select[0] = found;
             tree.setSelection(select);
-            treeViewer.getTree().setFocus();
+            getTreeViewer().getTree().setFocus();
             updateStructureSectionToolBarEnableStates(found.getData());
         }
     }
@@ -1474,7 +1476,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (!isDoubleClicked) {
             selectInDetailArea(testObject, false);
             // goto the corresponding value object in the tree
-            Tree tree = treeViewer.getTree();
+            Tree tree = getTreeViewer().getTree();
 
             TreeItem found = searchChildsByLabel(labelProvider.getText(testObject), tree.getItems());
             if (found != null) {
@@ -1512,7 +1514,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private ITestPolicyCmpt selectAssoziationByTreeDialog(String filteredPolicyCmptType) {
         ITestPolicyCmpt testPolicyCmpt = null;
-        TestPolicyCmptSelectionDialog dialog = new TestPolicyCmptSelectionDialog(getShell(), toolkit, testCase,
+        TestPolicyCmptSelectionDialog dialog = new TestPolicyCmptSelectionDialog(getShell(), toolkit, getTestCase(),
                 TestCaseContentProvider.COMBINED, filteredPolicyCmptType);
         if (dialog.open() == Window.OK) {
             if (dialog.getResult().length > 0) {
@@ -1736,7 +1738,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return;
         }
 
-        if (testCase.getIpsSrcFile() == null || !testCase.getIpsSrcFile().isDirty()) {
+        if (getTestCase().getIpsSrcFile() == null || !getTestCase().getIpsSrcFile().isDirty()) {
             postSetTestRunStatus(isTestRunError, isTestRunFailure, failureCount);
         }
 
@@ -1840,7 +1842,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * case.
      */
     private boolean canListenToTestRun(String testCaseQualifiedName) {
-        return testCaseQualifiedName.equals(testCase.getQualifiedName());
+        return testCaseQualifiedName.equals(getTestCase().getQualifiedName());
     }
 
     void postSetTestRunStatus(final boolean isError, final boolean isFailure, final int failureCount) {
@@ -1911,7 +1913,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     }
                     ITestCaseType type = null;
                     try {
-                        type = testCase.findTestCaseType(ipsProject);
+                        type = getTestCase().findTestCaseType(ipsProject);
                     } catch (CoreException e) {
                         IpsPlugin.log(e);
                         return;
@@ -2039,7 +2041,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             testRunner.setIpsProject(ipsProject);
             String repositoryPackage = getTocFilePackage();
             if (repositoryPackage != null) {
-                testRunner.startTestRunnerJob(repositoryPackage, testCase.getQualifiedName());
+                testRunner.startTestRunnerJob(repositoryPackage, getTestCase().getQualifiedName());
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -2075,7 +2077,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Removes the listener for the ips test runner
      */
     private void removeAllListener() {
-        testCase.getIpsModel().removeChangeListener(changeListener);
+        getTestCase().getIpsModel().removeChangeListener(changeListener);
         if (runAndStoreExpectedResultListener != null) {
             IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(runAndStoreExpectedResultListener);
         }
@@ -2124,7 +2126,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Forwarded listener function for test run and store expected result
      */
     public void testRunEndedToStoreExpResult(String qualifiedTestName) {
-        if (!qualifiedTestName.equals(testCase.getQualifiedName())) {
+        if (!qualifiedTestName.equals(getTestCase().getQualifiedName())) {
             return;
         }
 
@@ -2212,7 +2214,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // refresh content
             refreshTreeAndDetailArea();
             if (showAll) {
-                treeViewer.expandAll();
+                getTreeViewer().expandAll();
             }
         } else {
             hasNewDialogSettings = true;
@@ -2246,6 +2248,35 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
         testCaseDetailArea.removeDetailAreaRedrawListener(listener);
+    }
+
+    boolean isLocalDragAndDrop() {
+        return localDragAndDrop;
+    }
+
+    public void setLocalDragAndDrop(boolean localDragAndDrop) {
+        this.localDragAndDrop = localDragAndDrop;
+    }
+
+    /**
+     * Returns the test case.
+     */
+    ITestCase getTestCase() {
+        return testCase;
+    }
+
+    /**
+     * Returns the treeViewer.
+     */
+    TreeViewer getTreeViewer() {
+        return treeViewer;
+    }
+
+    /**
+     * Sets the treeViewer.
+     */
+    void setTreeViewer(TreeViewer treeViewer) {
+        this.treeViewer = treeViewer;
     }
 
     /**
@@ -2613,7 +2644,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             selectDialog.setTitle(Messages.TestCaseSection_DialogSelectTestAssociation_Title);
             selectDialog.setMessage(Messages.TestCaseSection_DialogSelectTestAssociation_Description);
 
-            ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptTypeParameter(testCase
+            ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptTypeParameter(getTestCase()
                     .getIpsProject());
             TestCaseTypeAssociation[] dummyAssociations = new TestCaseTypeAssociation[param
                     .getTestPolicyCmptTypeParamChilds().length];
@@ -2648,7 +2679,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             selectDialog.setMessage(Messages.TestCaseSection_SelectDialogValidationRule_Decription);
 
             try {
-                IValidationRule[] rules = testCase.getTestRuleCandidates(testCase.getIpsProject());
+                IValidationRule[] rules = getTestCase().getTestRuleCandidates(getTestCase().getIpsProject());
                 selectDialog.setElements(rules);
                 if (selectDialog.open() == Window.OK) {
                     if (selectDialog.getResult().length > 0) {
@@ -2681,7 +2712,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     // validation error
                     return;
                 }
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)association.findTarget(testCase.getIpsProject());
+                IPolicyCmptType policyCmptType = (IPolicyCmptType)association.findTarget(getTestCase().getIpsProject());
                 if (policyCmptType == null) {
                     // validation error
                     return;
@@ -2907,7 +2938,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private class ProductCmptChangeAction extends IpsAction {
 
         public ProductCmptChangeAction() {
-            super(treeViewer);
+            super(getTreeViewer());
             setText(Messages.TestCaseSection_ChangeProductCmpt);
         }
 
@@ -2933,7 +2964,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private class ProductCmptRemoveAction extends IpsAction {
 
         public ProductCmptRemoveAction() {
-            super(treeViewer);
+            super(getTreeViewer());
             setText(Messages.TestCaseSection_RemoveProductComponentAction_Text);
         }
 
@@ -2961,7 +2992,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         private boolean up;
 
         public MoveAction(boolean up) {
-            super(treeViewer);
+            super(getTreeViewer());
             this.up = up;
             setText(up ? Messages.TestCaseSection_Menu_Up : Messages.TestCaseSection_Menu_Down);
         }
@@ -2983,7 +3014,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     int newIndex = parentPolicyCmpt.moveTestPolicyCmptLink(new int[] { index }, up)[0];
                     if (newIndex != index) {
                         refreshTreeAndDetailArea();
-                        treeViewer.setSelection(selection);
+                        getTreeViewer().setSelection(selection);
                     }
                 } else {
                     throw new RuntimeException("Move action not supported for: " + firstElement.getClass().getName()); //$NON-NLS-1$
@@ -2997,7 +3028,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private class OpenInNewEditorAction extends IpsAction {
 
         public OpenInNewEditorAction() {
-            super(treeViewer);
+            super(getTreeViewer());
             setText(Messages.TestCaseSection_Menu_OpenInNewEditor);
         }
 
@@ -3052,7 +3083,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private class RenamePolicyCmptAction extends IpsAction {
 
         public RenamePolicyCmptAction() {
-            super(treeViewer);
+            super(getTreeViewer());
             setText(Messages.TestCaseSection_RenameActionLabel);
         }
 

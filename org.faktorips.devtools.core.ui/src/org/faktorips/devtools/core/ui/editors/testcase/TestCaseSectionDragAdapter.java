@@ -50,7 +50,7 @@ class TestCaseSectionDragAdapter extends DragSourceAdapter {
             ITestPolicyCmpt parentTestPolicyCmpt = ((ITestPolicyCmpt)selected).getParentTestPolicyCmpt();
             event.doit = testCaseSection.isDataChangeable() && parentTestPolicyCmpt != null;
             if (event.doit) {
-                testCaseSection.localDragAndDrop = true;
+                testCaseSection.setLocalDragAndDrop(true);
                 LocalSelectionTransfer.getTransfer().setSelection(selectionProvider.getSelection());
             }
         }
@@ -58,7 +58,7 @@ class TestCaseSectionDragAdapter extends DragSourceAdapter {
 
     @Override
     public void dragFinished(DragSourceEvent event) {
-        testCaseSection.localDragAndDrop = false;
+        testCaseSection.setLocalDragAndDrop(false);
     }
 
 }

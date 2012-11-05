@@ -239,7 +239,7 @@ public class TestCaseDetailArea {
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
         applyHeight(scrolledComposite);
-        testCaseSection.treeViewer.getTree().addListener(SWT.Resize, new Listener() {
+        testCaseSection.getTreeViewer().getTree().addListener(SWT.Resize, new Listener() {
             @Override
             public void handleEvent(Event event) {
                 if (!scrolledComposite.isDisposed()) {
@@ -260,7 +260,7 @@ public class TestCaseDetailArea {
 
     private int computeScrolledCompositeHeight() {
         // TODO AW 04-01-2012: I don't know where the 25 comes from
-        return testCaseSection.treeViewer.getTree().getSize().y - 25;
+        return testCaseSection.getTreeViewer().getTree().getSize().y - 25;
     }
 
     /**

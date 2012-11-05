@@ -109,7 +109,7 @@ class TestCaseSectionDropAdapter extends ViewerDropAdapter {
             return true;
         }
 
-        if (testCaseSection.localDragAndDrop) {
+        if (testCaseSection.isLocalDragAndDrop()) {
             return dropToMoveHelper.validateDrop(target, transferType);
         } else {
             return dropToLinkHelper.validateDrop(target, transferType);
@@ -125,7 +125,7 @@ class TestCaseSectionDropAdapter extends ViewerDropAdapter {
 
     @Override
     public boolean performDrop(Object data) {
-        if (testCaseSection.localDragAndDrop) {
+        if (testCaseSection.isLocalDragAndDrop()) {
             return dropToMoveHelper.performDrop(data, (ITestPolicyCmpt)getInsertAt());
         } else {
             if (dropToLinkHelper.validateDrop(getCurrentTarget(), getCurrentEvent().currentDataType)) {
@@ -283,6 +283,8 @@ class DropToLinkHelper {
         viewerDropAdapter.getCurrentEvent().detail = DND.DROP_LINK;
 
         class DropOnLinkRunnable implements Runnable {
+            private boolean success = true;
+
             private IProductCmpt productCmpt;
 
             private DropOnLinkRunnable(IProductCmpt productCmpt) {
@@ -322,26 +324,33 @@ class DropToLinkHelper {
             private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
                     throws CoreException {
 
-                ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)getTestCaseSection().testCase)
+                ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)getTestCaseSection().getTestCase())
                         .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());
                 rootTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt.getQualifiedName());
-                rootTestPolicyCmpt.addRequiredLinks(getTestCaseSection().ipsProject);
+                rootTestPolicyCmpt.addRequiredLinks(productCmpt.getIpsProject());
                 return rootTestPolicyCmpt;
             }
 
             private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
-                ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(
-                        getTargetToChildParameter(productCmpt, testPolicyCmpt), productCmpt.getQualifiedName(), null,
-                        null, true);
+                ITestPolicyCmptTypeParameter targetToChildParameter = getTargetToChildParameter(productCmpt,
+                        testPolicyCmpt);
+                if (targetToChildParameter == null) {
+                    success = false;
+                    return null;
+                }
+
+                ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(targetToChildParameter,
+                        productCmpt.getQualifiedName(), null, null, true);
                 return testPolicyCmptLink.findTarget();
             }
 
         }
 
         IProductCmpt productCmpt = getProductCmpt(data);
-        BusyIndicator.showWhile(Display.getDefault(), new DropOnLinkRunnable(productCmpt));
+        DropOnLinkRunnable dropOnLinkRunnable = new DropOnLinkRunnable(productCmpt);
+        BusyIndicator.showWhile(Display.getDefault(), dropOnLinkRunnable);
 
-        return true;
+        return dropOnLinkRunnable.success;
     }
 
     private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
