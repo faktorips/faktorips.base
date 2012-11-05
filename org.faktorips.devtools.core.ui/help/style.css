@@ -1,0 +1,24 @@
+body {
+	font-family: sans-serif;
+}
+
+div#relatedHelp {
+	margin-top: 2em;
+}
+
+div.image {
+	text-align: center;
+}
+
+div.hint {
+	margin: 1em 0 1em 0;
+	border: 1px solid black;
+	padding: 0 1em 0 1em;
+	background-color: #fbfbfb;
+}
+
+p.hint {
+	marign-top: 0;
+	text-align: center;
+	font-weight: bold;
+}
