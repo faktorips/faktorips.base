@@ -23,6 +23,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -41,7 +43,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -173,7 +177,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
             final LinksMessageCueLabelProvider labelProvider = new LinksMessageCueLabelProvider(
                     generation.getIpsProject());
-            treeViewer.setLabelProvider(labelProvider);
+            IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+            DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(
+                    labelProvider, decoManager.getLabelDecorator(), new DecorationContext());
+            treeViewer.setLabelProvider(decoratedLabelProvider);
+
             new TreeMessageHoverService(treeViewer) {
                 @Override
                 protected MessageList getMessagesFor(Object element) throws CoreException {

@@ -15,7 +15,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -56,7 +58,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         return super.getMessages(element);
     }
 
-    private static class InternalLabelProvider extends LabelProvider {
+    private static class InternalLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
         public InternalLabelProvider() {
         }
@@ -115,6 +117,18 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                 return ((ILinkSectionViewItem)element).getImage();
             }
             return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
+        }
+
+        @Override
+        public StyledString getStyledText(Object element) {
+            StyledString styledString = new StyledString(getText(element));
+            if (element instanceof AssociationViewItem) {
+                AssociationViewItem associationViewItem = (AssociationViewItem)element;
+                IAssociation association = associationViewItem.getAssociation();
+                styledString.append(new StyledString(getCardinalitiesFromPolicy(association),
+                        StyledString.COUNTER_STYLER));
+            }
+            return styledString;
         }
     }
 }

@@ -18,8 +18,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -36,7 +38,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
-public class MessageCueLabelProvider extends LabelProvider {
+public class MessageCueLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
     private ResourceManager resourceManager;
 
@@ -125,6 +127,14 @@ public class MessageCueLabelProvider extends LabelProvider {
     public void dispose() {
         resourceManager.dispose();
         super.dispose();
+    }
+
+    @Override
+    public StyledString getStyledText(Object element) {
+        if (baseProvider instanceof IStyledLabelProvider) {
+            return ((IStyledLabelProvider)baseProvider).getStyledText(element);
+        }
+        return new StyledString(baseProvider.getText(element));
     }
 
 }
