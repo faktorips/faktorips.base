@@ -61,6 +61,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -791,6 +792,12 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
              * Either no contents are set or the event concerns different source file - nothing to
              * refresh.
              */
+            IIpsSrcFile eventFile = event.getIpsSrcFile();
+            if (eventFile != null && event.getPart() instanceof PolicyCmptTypeAssociation) {
+                // However, if an association in a policy cmpt type is modified (e.g. different
+                // cardinalities are set), the tree should refresh its labels.
+                postRefresh();
+            }
             return;
         }
         int type = event.getEventType();

@@ -182,6 +182,8 @@ public class DeepCopyWizard extends ResizableWizard {
         }
         getPresentationModel().setNewValidFrom(IpsUIPlugin.getDefault().getDefaultValidityDate());
 
+        getPresentationModel().setSourcePackageRoot(packRoot);
+        getPresentationModel().setSourcePackage(defaultPackage);
         getPresentationModel().setTargetPackageRoot(packRoot);
         getPresentationModel().setTargetPackage(defaultPackage);
     }
@@ -224,6 +226,8 @@ public class DeepCopyWizard extends ResizableWizard {
                     DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
+                    dco.setSourceIpsPackageFragment(presentationModel.getSourcePackage());
+                    dco.setTargetIpsPackageFragment(presentationModel.getTargetPackage());
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
                     configureFixups(dco);
                     dco.run(new SubProgressMonitor(monitor, 1));

@@ -18,8 +18,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.util.message.MessageList;
@@ -56,6 +59,46 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     private static class InternalLabelProvider extends LabelProvider {
 
         public InternalLabelProvider() {
+        }
+
+        private String getCardinalityString(boolean showDefault,
+                int minCardinality,
+                int maxCardinality,
+                int defaultCardinality) {
+            StringBuilder cardinalityString = new StringBuilder(" ["); //$NON-NLS-1$
+            cardinalityString.append(minCardinality);
+            cardinalityString.append(".."); //$NON-NLS-1$
+            cardinalityString.append(maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : maxCardinality); //$NON-NLS-1$
+            if (showDefault) {
+                cardinalityString.append(", "); //$NON-NLS-1$
+                cardinalityString.append(defaultCardinality);
+            }
+            cardinalityString.append("]"); //$NON-NLS-1$
+            return cardinalityString.toString();
+        }
+
+        private String getCardinalitiesFromPolicy(IAssociation association) {
+            String policyCardinalityString = ""; //$NON-NLS-1$
+            try {
+                IProductCmptTypeAssociation productCmptAssociation = null;
+                IPolicyCmptTypeAssociation policyAssociation = null;
+
+                if (association instanceof IProductCmptTypeAssociation) {
+                    productCmptAssociation = (IProductCmptTypeAssociation)association;
+                    policyAssociation = productCmptAssociation
+                            .findMatchingPolicyCmptTypeAssociation(productCmptAssociation.getIpsProject());
+                } else if (association instanceof IPolicyCmptTypeAssociation) {
+                    policyAssociation = (IPolicyCmptTypeAssociation)association;
+                }
+                if (policyAssociation != null) {
+                    policyCardinalityString = getCardinalityString(false, policyAssociation.getMinCardinality(),
+                            policyAssociation.getMaxCardinality(), 0);
+                }
+            } catch (CoreException e) {
+                // Ignore, because in this case we simply do not show any cardinality
+                // information.
+            }
+            return policyCardinalityString;
         }
 
         @Override

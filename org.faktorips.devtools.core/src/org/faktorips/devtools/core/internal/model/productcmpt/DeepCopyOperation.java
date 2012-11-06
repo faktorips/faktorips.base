@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
@@ -59,6 +60,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private final Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
     private boolean createEmptyTableContents = false;
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
+    private IIpsPackageFragment sourceIpsPackageFragment;
+    private IIpsPackageFragment targetIpsPackageFragment;
     private final IProductCmptReference structureRoot;
     private final GregorianCalendar oldValidFrom;
     private final GregorianCalendar newValidFrom;
@@ -87,6 +90,14 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
     public void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
         this.ipsPackageFragmentRoot = ipsPackageFragmentRoot;
+    }
+
+    public void setSourceIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) {
+        this.sourceIpsPackageFragment = ipsPackageFragment;
+    }
+
+    public void setTargetIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) {
+        this.targetIpsPackageFragment = ipsPackageFragment;
     }
 
     /**
@@ -176,10 +187,44 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             monitor.worked(1);
         }
 
+        // copy all existing sort order files (if any)
+        copySortOrder(monitor);
+
         if (newIpsObjects.size() == 0) {
             throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
         }
         monitor.done();
+    }
+
+    private void copySortOrder(IProgressMonitor monitor,
+            IIpsPackageFragment sourceParent,
+            IIpsPackageFragment targetParent) throws CoreException {
+        for (IIpsPackageFragment fragment : sourceParent.getChildIpsPackageFragments()) {
+            IIpsPackageFragment destination = ((IIpsPackageFragmentRoot)targetParent.getParent())
+                    .getIpsPackageFragment(targetParent.getName() + IIpsPackageFragment.SEPARATOR
+                            + fragment.getLastSegmentName());
+            if (destination.getCorrespondingResource().exists()) {
+                IFile sortOrder = fragment.getSortOrderFile();
+                if (sortOrder.exists() && !destination.getSortOrderFile().exists()) {
+                    IFile file = destination.getSortOrderFile();
+                    file.create(sortOrder.getContents(true), true, monitor);
+                }
+                copySortOrder(monitor, fragment, destination);
+            }
+        }
+    }
+
+    private void copySortOrder(IProgressMonitor monitor) {
+        try {
+            IFile sortOrder = sourceIpsPackageFragment.getSortOrderFile();
+            if (sortOrder.exists() && !targetIpsPackageFragment.getSortOrderFile().exists()) {
+                IFile file = targetIpsPackageFragment.getSortOrderFile();
+                file.create(sortOrder.getContents(true), true, monitor);
+            }
+            copySortOrder(monitor, sourceIpsPackageFragment, targetIpsPackageFragment);
+        } catch (CoreException e) {
+            throw new RuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
+        }
     }
 
     /**

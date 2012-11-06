@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -23,6 +24,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -137,26 +139,28 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         return generationDate;
     }
 
+    public StyledString getStyledCardinalityString(boolean showDefault,
+            int minCardinality,
+            int maxCardinality,
+            int defaultCardinality) {
+        return new StyledString(" [" + minCardinality + ".." + //$NON-NLS-1$//$NON-NLS-2$
+                (maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : maxCardinality) + //$NON-NLS-1$
+                (showDefault ? ", " + defaultCardinality + "]" : "]"), //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+                StyledString.COUNTER_STYLER);
+    }
+
     @Override
     public StyledString getStyledText(Object element) {
         StyledString styledString = new StyledString(getText(element));
         if (element instanceof IProductCmptReference) {
-
             // Product component
             IProductCmptReference productCmptReference = (IProductCmptReference)element;
 
             // show cardinality
             if (productCmptReference.getLink() != null && showCardinalities) {
                 IProductCmptLink link = productCmptReference.getLink();
-                int maxCardinality = link.getMaxCardinality();
-
-                String maxCardinalityString = String.valueOf(maxCardinality);
-                if (maxCardinality == IAssociation.CARDINALITY_MANY) {
-                    maxCardinalityString = "*"; //$NON-NLS-1$
-                }
-
-                styledString
-                        .append(" [" + link.getMinCardinality() + ".." + maxCardinalityString + ", " + link.getDefaultCardinality() + "]", StyledString.COUNTER_STYLER); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                styledString.append(getStyledCardinalityString(true, link.getMinCardinality(),
+                        link.getMaxCardinality(), link.getDefaultCardinality()));
             }
 
             // show association nodes
@@ -176,6 +180,22 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                 styledString.setStyle(0, styledString.length(), StyledString.QUALIFIER_STYLER);
                 styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration,
                         StyledString.QUALIFIER_STYLER);
+            }
+        } else if (element instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
+            if (showCardinalities) {
+                try {
+                    IPolicyCmptTypeAssociation policyAssociation = association
+                            .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
+                    if (policyAssociation != null) {
+                        styledString.append(getStyledCardinalityString(false, policyAssociation.getMinCardinality(),
+                                policyAssociation.getMaxCardinality(), 0));
+                    }
+                } catch (CoreException e) {
+                    // Ignore, because if no matching policy association exists, we don't show
+                    // anything;
+                    // so, if an error occurs, don't make it worse; i.e. don't show anything.
+                }
             }
         }
         return styledString;

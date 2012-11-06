@@ -58,6 +58,8 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     private String replaceInputString = ""; //$NON-NLS-1$
     private IIpsPackageFragment targetPackage;
     private IIpsPackageFragmentRoot targetPackageRoot;
+    private IIpsPackageFragment sourcePackage;
+    private IIpsPackageFragmentRoot sourcePackageRoot;
     private boolean copyTable;
 
     private IProductCmptTreeStructure structure;
@@ -178,6 +180,22 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
         IIpsPackageFragmentRoot oldValue = targetPackageRoot;
         targetPackageRoot = newValue;
         notifyListeners(new PropertyChangeEvent(this, TARGET_PACKAGE_ROOT, oldValue, newValue));
+    }
+
+    public IIpsPackageFragment getSourcePackage() {
+        return sourcePackage;
+    }
+
+    public void setSourcePackage(IIpsPackageFragment newValue) {
+        sourcePackage = newValue;
+    }
+
+    public IIpsPackageFragmentRoot getSourcePackageRoot() {
+        return sourcePackageRoot;
+    }
+
+    public void setSourcePackageRoot(IIpsPackageFragmentRoot newValue) {
+        sourcePackageRoot = newValue;
     }
 
     public IProductCmptTreeStructure getStructure() {
