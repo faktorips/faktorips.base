@@ -2339,7 +2339,16 @@
                label="%openInNewEditor"
                style="push">
             <visibleWhen
-                  checkEnabled="true">
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem">
+                     </adapt>
+                  </iterate>
+               </with>
             </visibleWhen>
          </command>
          <separator
@@ -2392,9 +2401,9 @@
                      variable="selection">
                   <iterate
                         ifEmpty="false">
-                     <instanceof
-                           value="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
-                     </instanceof>
+                     <adapt
+                           type="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem">
+                     </adapt>
                   </iterate>
                </with>
             </visibleWhen>
@@ -2407,7 +2416,16 @@
                label="%openIpsPartProperty"
                style="push">
             <visibleWhen
-                  checkEnabled="true">
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem">
+                     </adapt>
+                  </iterate>
+               </with>
             </visibleWhen>
          </command>
       </menuContribution>
@@ -2504,6 +2522,9 @@
           class="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItemAdapterFactory">
        <adapter
              type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+       </adapter>
+       <adapter
+             type="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
        </adapter>
     </factory>
  </extension>

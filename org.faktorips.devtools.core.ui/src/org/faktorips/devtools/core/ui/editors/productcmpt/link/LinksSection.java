@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.commands.IpsObjectPartTester;
 import org.faktorips.devtools.core.ui.editors.ICompositeWithSelectableViewer;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.productcmpt.CardinalityPanel;
@@ -228,10 +230,14 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(DoubleClickEvent event) {
-                TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<IProductCmptLink>(
-                        IProductCmptLink.class, event.getSelection());
+                TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, event
+                        .getSelection());
                 if (typedSelection.isValid()) {
-                    openLink(typedSelection.getFirstElement());
+                    IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(
+                            typedSelection.getFirstElement(), IProductCmptLink.class);
+                    if (link != null) {
+                        openLink(link);
+                    }
                 }
             }
         });

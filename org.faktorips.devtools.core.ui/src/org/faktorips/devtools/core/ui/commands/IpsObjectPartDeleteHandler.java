@@ -45,7 +45,7 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
             final Set<IIpsSrcFile> srcFilesToSave = new HashSet<IIpsSrcFile>();
             try {
                 for (Object o : structuredSelection.toArray()) {
-                    IIpsObjectPart objectPart = IpsObjectPartTester.castOrAdaptToIpsObjectPart(o);
+                    IIpsObjectPart objectPart = IpsObjectPartTester.castOrAdaptToPart(o, IIpsObjectPart.class);
                     if (objectPart != null) {
                         deleteIpsObjectPart(event, srcFilesToSave, objectPart);
                     }
