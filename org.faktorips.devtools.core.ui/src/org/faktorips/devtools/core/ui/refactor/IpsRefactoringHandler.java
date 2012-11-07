@@ -21,6 +21,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -102,10 +103,13 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
         Set<IIpsElement> selectedIpsElements = new LinkedHashSet<IIpsElement>(structuredSelection.size());
         for (Object selectedElement : structuredSelection.toArray()) {
-            if (!(selectedElement instanceof IIpsElement)) {
+            if (!(selectedElement instanceof IAdaptable)) {
                 break;
             }
-            IIpsElement selectedIpsElement = (IIpsElement)selectedElement;
+            IIpsElement selectedIpsElement = (IIpsElement)((IAdaptable)selectedElement).getAdapter(IIpsElement.class);
+            if (selectedIpsElement == null) {
+                break;
+            }
             if (selectedIpsElement instanceof IIpsSrcFile) {
                 try {
                     selectedIpsElement = ((IIpsSrcFile)selectedIpsElement).getIpsObject();
