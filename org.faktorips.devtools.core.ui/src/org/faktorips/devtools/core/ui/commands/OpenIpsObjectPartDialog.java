@@ -17,6 +17,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
@@ -42,13 +43,15 @@ public class OpenIpsObjectPartDialog extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<IIpsObjectPart> typedSelection = new TypedSelection<IIpsObjectPart>(IIpsObjectPart.class,
-                currentSelection);
+
+        TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, currentSelection);
         if (typedSelection.isValid()) {
-            IIpsObjectPart ipsObjectPart = typedSelection.getFirstElement();
-            if (ipsObjectPart instanceof IProductCmptLink) {
-                IProductCmptLink productCmptLink = (IProductCmptLink)ipsObjectPart;
-                openLinkEditDialog(productCmptLink, event);
+            IAdaptable firstElement = typedSelection.getFirstElement();
+
+            IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(firstElement,
+                    IProductCmptLink.class);
+            if (link != null) {
+                openLinkEditDialog(link, event);
             }
         }
         return null;

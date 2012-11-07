@@ -42,7 +42,7 @@ public class IpsObjectPartTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        IIpsObjectPart ipsObjectPart = castOrAdaptToIpsObjectPart(receiver);
+        IIpsObjectPart ipsObjectPart = castOrAdaptToPart(receiver, IIpsObjectPart.class);
         if (ipsObjectPart == null) {
             return false;
         }
@@ -56,15 +56,20 @@ public class IpsObjectPartTester extends PropertyTester {
     }
 
     /**
-     * Checks if the given object is either an instance of, or adapts to {@link IIpsObjectPart} and
-     * returns that part. Returns <code>null</code> if the given object neither is an
-     * {@link IIpsObjectPart} nor does it adapt to it.
+     * Checks if the given object is either an instance of, or adapts to the given
+     * {@link IIpsObjectPart} class and returns that part. Returns <code>null</code> if the given
+     * object neither is an {@link IIpsObjectPart} nor does it adapt to the specific class.
+     * 
      */
-    public static IIpsObjectPart castOrAdaptToIpsObjectPart(Object object) {
-        if (object instanceof IIpsObjectPart) {
-            return (IIpsObjectPart)object;
+    public static <T extends IIpsObjectPart> T castOrAdaptToPart(Object object, Class<T> partClass) {
+        if (partClass.isAssignableFrom(object.getClass())) {
+            @SuppressWarnings("unchecked")
+            T part = (T)object;
+            return part;
         } else if (object instanceof IAdaptable) {
-            return (IIpsObjectPart)Platform.getAdapterManager().getAdapter(object, IIpsObjectPart.class);
+            @SuppressWarnings("unchecked")
+            T part = (T)Platform.getAdapterManager().getAdapter(object, partClass);
+            return part;
         }
         return null;
     }

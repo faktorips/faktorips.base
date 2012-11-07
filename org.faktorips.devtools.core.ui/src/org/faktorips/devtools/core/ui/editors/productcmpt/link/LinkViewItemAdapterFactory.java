@@ -28,7 +28,7 @@ public class LinkViewItemAdapterFactory implements IAdapterFactory {
     // IAdaptable forces raw type upon implementing classes
     @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if (IIpsObjectPart.class.equals(adapterType)) {
+        if (IIpsObjectPart.class.equals(adapterType) || IProductCmptLink.class.equals(adapterType)) {
             return ((LinkViewItem)adaptableObject).getLink();
         }
         return null;
@@ -38,7 +38,7 @@ public class LinkViewItemAdapterFactory implements IAdapterFactory {
     // IAdaptable forces raw type upon implementing classes
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { IIpsObjectPart.class };
+        return new Class[] { IIpsObjectPart.class, IProductCmptLink.class };
     }
 
 }
