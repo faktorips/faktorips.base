@@ -142,7 +142,7 @@ public abstract class XProductClass extends XType {
             Set<XPolicyAttribute> allAttributes = policyCmptClass.getAttributes();
             for (XPolicyAttribute attr : allAttributes) {
                 if (attr.isProductRelevant()) {
-                    if (attr.isGenerateGetAllowedValuesFor()) {
+                    if (attr.isGenerateGetAllowedValuesForAndGetDefaultValue()) {
                         resultingAttributes.add(attr);
                     }
                 }

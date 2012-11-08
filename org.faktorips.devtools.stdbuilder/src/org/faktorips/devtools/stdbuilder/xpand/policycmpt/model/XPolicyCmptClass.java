@@ -377,6 +377,16 @@ public class XPolicyCmptClass extends XType {
         return resultingSet;
     }
 
+    public Set<XPolicyAttribute> getAttributesToInitWithoutProductDataAndOverwritten() {
+        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : getAttributes()) {
+            if (attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite()) {
+                resultingSet.add(attribute);
+            }
+        }
+        return resultingSet;
+    }
+
     public Set<XPolicyAttribute> getAttributesForDeltaComputation() {
         Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
         for (XPolicyAttribute attribute : getAttributes()) {

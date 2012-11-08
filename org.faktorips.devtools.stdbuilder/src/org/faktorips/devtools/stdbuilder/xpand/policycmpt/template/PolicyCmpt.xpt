@@ -60,6 +60,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
 			«EXPAND PolicyCmptAttribute::getter-»
 			«EXPAND PolicyCmptAttribute::setter-»
+			«EXPAND PolicyCmptAttribute::setterInternal-»
 		«ENDFOREACH-»
 
 		«EXPAND PolicyCmptAssociation::methods FOREACH associations-»
@@ -81,14 +82,14 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    public void «initialize()» {
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
-	        «ENDIF-»
-	    	«IF !attributesToInitWithProductData.isEmpty-»
-		        if («methodNameGetProductCmptGeneration»() == null) {
-		            return;
-		        }
-		        «FOREACH attributesToInitWithProductData AS this-»
-					«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-		        «ENDFOREACH-»
+		        «EXPAND initializeAttributesWithProductData-»
+		        «IF !attributesToInitWithoutProductDataAndOverwritten.isEmpty-»
+		        	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
+		        		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+		        	«ENDFOREACH-»
+		        «ENDIF-»
+	        «ELSE-»
+		    	«EXPAND initializeAttributesWithProductData-»
 	        «ENDIF-»
 	        «IF !configured-»
 	        «REM» TODO Empty line to match old code generator«ENDREM»
@@ -115,6 +116,17 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		}
 	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE initializeAttributesWithProductData FOR XPolicyCmptClass-»
+	«IF !attributesToInitWithProductData.isEmpty-»
+		if («methodNameGetProductCmptGeneration»() == null) {
+			return;
+		}
+		«FOREACH attributesToInitWithProductData AS this-»
+			«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+		«ENDFOREACH-»
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE constructors FOR XPolicyCmptClass-»
@@ -177,7 +189,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE initializationForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
-			«methodNameSetter»(«defaultValueCode»);
+			«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
 		«ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»

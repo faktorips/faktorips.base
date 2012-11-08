@@ -234,4 +234,55 @@ public class XPolicyCmptClassTest {
         verify(associationNode2, times(0)).getSubsettedDetailToMasterAssociations();
     }
 
+    @Test
+    public void testGetAttributesToInitWithProductData() {
+        // Set up
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+
+        XPolicyAttribute a1 = mock(XPolicyAttribute.class);
+        when(a1.isGenerateInitWithProductData()).thenReturn(true);
+        when(a1.isOverwrite()).thenReturn(true);
+
+        XPolicyAttribute a2 = mock(XPolicyAttribute.class);
+
+        XPolicyAttribute a3 = mock(XPolicyAttribute.class);
+        when(a3.isGenerateInitWithProductData()).thenReturn(true);
+
+        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
+
+        // Execute
+        Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInitWithProductData();
+
+        // Verify
+        assertTrue(result.contains(a1));
+        assertTrue(result.contains(a3));
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testGetAttributesToInitWithoutProductDataAndOverwritten() {
+        // Set up
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+
+        XPolicyAttribute a1 = mock(XPolicyAttribute.class);
+        when(a1.isOverwrite()).thenReturn(true);
+
+        XPolicyAttribute a2 = mock(XPolicyAttribute.class);
+        when(a2.isOverwrite()).thenReturn(true);
+        when(a2.isGenerateInitWithProductData()).thenReturn(true);
+
+        XPolicyAttribute a3 = mock(XPolicyAttribute.class);
+        when(a3.isOverwrite()).thenReturn(true);
+        when(a3.isGenerateInitWithoutProductData()).thenReturn(true);
+
+        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
+
+        // Execute
+        Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInitWithoutProductDataAndOverwritten();
+
+        // Verify
+        assertTrue(result.contains(a3));
+        assertEquals(1, result.size());
+    }
+
 }
