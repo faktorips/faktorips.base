@@ -282,8 +282,10 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isOverrideGetAllowedValuesFor() {
-        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesFor()
-                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor() == getMethodNameGetAllowedValuesFor();
+        return isOverwrite()
+                && getOverwrittenAttribute().isGenerateGetAllowedValuesFor()
+                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor().equals(
+                        getMethodNameGetAllowedValuesFor());
     }
 
     public boolean isGenerateConstantForValueSet() {

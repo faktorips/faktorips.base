@@ -14,6 +14,9 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -24,6 +27,8 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -39,7 +44,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class XPolicyAttributeTest {
 
     @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
     private IPolicyCmptTypeAttribute attribute;
+
+    @Mock
+    private IPolicyCmptTypeAttribute superAttribute;
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -53,7 +64,7 @@ public class XPolicyAttributeTest {
 
     @Before
     public void createXPolicyAttribute() throws Exception {
-        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(attribute.getIpsProject()).thenReturn(ipsProject);
         DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
         when(ipsProject.findDatatypeHelper(anyString())).thenReturn(datatypeHelper);
@@ -154,6 +165,31 @@ public class XPolicyAttributeTest {
         verify(xPolicyAttribute, never()).isValueSetUnrestricted();
         verify(xPolicyAttribute, never()).isProductRelevant();
         verify(xPolicyAttribute, never()).isDatatypeContentSeparatedEnum();
+    }
+
+    @Test
+    public void testIsOverrideGetAllowedValuesFor() throws Exception {
+        XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
+        when(attribute.getName()).thenReturn("testAttribute");
+        when(attribute.isOverwrite()).thenReturn(false);
+
+        assertFalse(xPolicyAttribute.isOverrideGetAllowedValuesFor());
+
+        when(attribute.isOverwrite()).thenReturn(true);
+        when(attribute.findOverwrittenAttribute(any(IIpsProject.class))).thenReturn(superAttribute);
+        when(attribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
+        when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext)).thenReturn(
+                superXPolicyAttribute);
+        when(superAttribute.getIpsProject()).thenReturn(ipsProject);
+        when(superAttribute.isChangeable()).thenReturn(false);
+
+        assertFalse(xPolicyAttribute.isOverrideGetAllowedValuesFor());
+
+        when(superAttribute.isChangeable()).thenReturn(true);
+        when(superAttribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
+        when(superAttribute.getName()).thenReturn("testAttribute");
+
+        assertTrue(xPolicyAttribute.isOverrideGetAllowedValuesFor());
     }
 
 }
