@@ -144,8 +144,4 @@ public class XProductAttribute extends XAttribute {
     public boolean isChangingOverTime() {
         return getAttribute().isChangingOverTime();
     }
-
-    public String getMethodNameSetterInternal() {
-        return getJavaNamingConvention().getSetterMethodName(getName() + "Internal"); //$NON-NLS-1$
-    }
 }

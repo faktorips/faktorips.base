@@ -98,8 +98,22 @@
 	«ENDIF-»
 «ENDDEFINE»
 
+«DEFINE setterInternal FOR XPolicyAttribute-»
+	«IF generateSetterInternal-»
+		/**
+		 * «localizedJDoc("METHOD_SETVALUE_INTERNAL", name)»
+		 *
+		 * @generated
+		 */
+		protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»
+		{
+			this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
+		}
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE allowedValuesMethod FOR XPolicyAttribute-»
-	«IF generateGetAllowedValuesFor-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
 		 *
@@ -121,7 +135,7 @@
 
 «DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF generateInitWithProductData-»
-        «fieldName» = «getProductCmptGeneration(published)».«methodNameGetDefaultValue»();
+		«methodNameSetterInternalIfGenerateChangeSupport»(«getProductCmptGeneration(published)».«methodNameGetDefaultValue»());
     «ENDIF-»
 «ENDDEFINE»
 

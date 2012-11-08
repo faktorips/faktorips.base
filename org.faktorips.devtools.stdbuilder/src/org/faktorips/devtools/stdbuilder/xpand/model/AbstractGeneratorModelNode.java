@@ -504,7 +504,7 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns whether or not published interfaces should be generated.
+     * Returns whether or not change support should be generated.
      */
     public boolean isGenerateChangeSupport() {
         return getContext().isGenerateChangeSupport();

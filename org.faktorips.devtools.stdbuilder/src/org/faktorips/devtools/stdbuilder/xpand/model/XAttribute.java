@@ -56,6 +56,14 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getJavaNamingConvention().getSetterMethodName(getName());
     }
 
+    public String getMethodNameSetterInternal() {
+        return getJavaNamingConvention().getSetterMethodName(getName() + "Internal"); //$NON-NLS-1$
+    }
+
+    public String getMethodNameSetterInternalIfGenerateChangeSupport() {
+        return isGenerateChangeSupport() ? getMethodNameSetterInternal() : getMethodNameSetter();
+    }
+
     public String getMethodNameGetter() {
         return getJavaNamingConvention().getGetterMethodName(getName(), getDatatype());
     }

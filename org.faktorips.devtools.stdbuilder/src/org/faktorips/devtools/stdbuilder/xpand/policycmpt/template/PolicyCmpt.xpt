@@ -60,6 +60,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
 			«EXPAND PolicyCmptAttribute::getter-»
 			«EXPAND PolicyCmptAttribute::setter-»
+			«EXPAND PolicyCmptAttribute::setterInternal-»
 		«ENDFOREACH-»
 
 		«EXPAND PolicyCmptAssociation::methods FOREACH associations-»
@@ -81,17 +82,15 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    public void «initialize()» {
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
-	        «ENDIF-»
-	    	«IF !attributesToInitWithProductData.isEmpty-»
-		        if («methodNameGetProductCmptGeneration»() == null) {
-		            return;
-		        }
-		        «FOREACH attributesToInitWithProductData AS this-»
-					«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-		        «ENDFOREACH-»
-	        «ENDIF-»
-	        «IF !configured-»
-	        «REM» TODO Empty line to match old code generator«ENDREM»
+		    «ENDIF-»
+		    «IF configured-»
+				if («methodNameGetProductCmptGeneration»() == null) {
+					return;
+				}
+		    «ENDIF-»
+	        «EXPAND initializeAttributesWithProductData-»
+	    	«IF hasSupertype()-»
+		        «EXPAND initializeAttributesWithoutProductDataAndOverwritten-»
 	        «ENDIF-»
 		    // begin-user-code
 		    // end-user-code
@@ -115,6 +114,18 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		}
 	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE initializeAttributesWithProductData FOR XPolicyCmptClass-»
+	«FOREACH attributesToInitWithProductData AS this-»
+		«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE initializeAttributesWithoutProductDataAndOverwritten FOR XPolicyCmptClass-»
+   	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
+   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+   	«ENDFOREACH-»
 «ENDDEFINE»
 
 «DEFINE constructors FOR XPolicyCmptClass-»
@@ -175,7 +186,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE initializationForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
-			«methodNameSetter»(«defaultValueCode»);
+			«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
 		«ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»

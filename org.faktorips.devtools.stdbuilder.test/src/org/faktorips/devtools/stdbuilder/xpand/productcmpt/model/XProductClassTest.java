@@ -248,7 +248,7 @@ public class XProductClassTest {
         doReturn(true).when(xProductClass).isConfigurationForPolicyCmptType();
 
         when(polAttrNode1.isProductRelevant()).thenReturn(true);
-        when(polAttrNode1.isGenerateGetAllowedValuesFor()).thenReturn(true);
+        when(polAttrNode1.isGenerateGetAllowedValuesForAndGetDefaultValue()).thenReturn(true);
         when(polAttrNode2.isProductRelevant()).thenReturn(true);
 
         Set<XPolicyAttribute> associations = new LinkedHashSet<XPolicyAttribute>();
