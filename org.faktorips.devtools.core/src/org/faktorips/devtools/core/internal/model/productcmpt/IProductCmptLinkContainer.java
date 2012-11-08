@@ -158,7 +158,7 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * Returns all {@link ProductCmptLink product component links} this class contains as a typed
      * list.
      */
-    List<IProductCmptLink> getLinksAsList();
+    public List<IProductCmptLink> getLinksAsList();
 
     /**
      * Returns all {@link ProductCmptLink product component links} for the given association name as
@@ -167,14 +167,14 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * @param associationName the name (=target role singular) of the association to return links
      *            for
      */
-    List<IProductCmptLink> getLinksAsList(String associationName);
+    public List<IProductCmptLink> getLinksAsList(String associationName);
 
     /**
      * Returns the product component for this link container. If this container is a
      * {@link IProductCmptGeneration product component generation} the corresponding product
      * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
      */
-    IProductCmpt getProductCmpt();
+    public IProductCmpt getProductCmpt();
 
     /**
      * Searches the product component type this link container is based on.

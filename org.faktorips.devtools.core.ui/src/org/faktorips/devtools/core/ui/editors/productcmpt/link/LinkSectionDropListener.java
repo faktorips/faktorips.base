@@ -210,16 +210,17 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             String associationName = ((LinkSectionViewItem)target).getAssociationName();
             // move to first position of this association
             boolean result = false;
-            for (IProductCmptLink firstTarget : generation.getLinks()) {
+            IProductCmptLinkContainer linkContainer = link.getProductCmptLinkContainer();
+            for (IProductCmptLink firstTarget : linkContainer.getLinksAsList()) {
                 if (firstTarget.getAssociation().equals(associationName)) {
                     // first link of correct association type, move after this and break
-                    result = generation.moveLink(link, firstTarget, true);
+                    result = linkContainer.moveLink(link, firstTarget, true);
                     break;
                 }
             }
             // no link of this association type found, move to first position (if there is any)
-            if (generation.getLinks().length > 0) {
-                result = generation.moveLink(link, generation.getLinks()[0], true);
+            if (linkContainer.getLinksAsList().size() > 0) {
+                result = linkContainer.moveLink(link, linkContainer.getLinksAsList().get(0), true);
             } else {
                 // if there is no element yet, move is ok
                 return true;
@@ -244,9 +245,12 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         IProductCmptTypeAssociation association = getAssociation(target);
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
-            if (generation != null
-                    && generation.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
-                result = true;
+            if (generation != null) {
+                IProductCmptLinkContainer linkContainer = LinkCreatorUtil.getLinkContainerFor(generation, association);
+                if (linkContainer.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
+                    result = true;
+
+                }
             } else {
                 return false;
             }
