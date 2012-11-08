@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
@@ -42,8 +42,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     public MessageList getMessages(Object element) throws CoreException {
         if (element instanceof AbstractAssociationViewItem) {
             AbstractAssociationViewItem viewItem = (AbstractAssociationViewItem)element;
-            IProductCmptLinkContainer linkContainer = viewItem.getLinkContainer();
-            return linkContainer.validate(linkContainer.getIpsProject()).getMessagesFor(viewItem.getAssociationName());
+            IProductCmpt productCmpt = viewItem.getProductCmpt();
+            MessageList msgList = productCmpt.validate(productCmpt.getIpsProject());
+            return msgList.getMessagesFor(viewItem.getAssociationName());
         }
         if (element instanceof LinkViewItem) {
             LinkViewItem viewItem = (LinkViewItem)element;

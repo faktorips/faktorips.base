@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 /**
@@ -47,6 +48,17 @@ public abstract class AbstractAssociationViewItem implements LinkSectionViewItem
 
     public IProductCmptLinkContainer getLinkContainer() {
         return linkContainer;
+    }
+
+    /**
+     * Returns the product component of the {@link IProductCmptLinkContainer}. This may be the link
+     * container itself or in case of the link container is a generation it is the generation's
+     * product component.
+     * 
+     * @return The product component associated with this view item
+     */
+    public IProductCmpt getProductCmpt() {
+        return linkContainer.getProductCmpt();
     }
 
 }
