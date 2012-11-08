@@ -82,12 +82,15 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    public void «initialize()» {
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
+		    «ENDIF-»
+		    «IF configured-»
+				if («methodNameGetProductCmptGeneration»() == null) {
+					return;
+				}
+		    «ENDIF-»
+	    	«IF hasSupertype()-»
 		        «EXPAND initializeAttributesWithProductData-»
-		        «IF !attributesToInitWithoutProductDataAndOverwritten.isEmpty-»
-		        	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
-		        		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
-		        	«ENDFOREACH-»
-		        «ENDIF-»
+		        «EXPAND initializeAttributesWithoutProductDataAndOverwritten-»
 	        «ELSE-»
 		    	«EXPAND initializeAttributesWithProductData-»
 	        «ENDIF-»
@@ -120,12 +123,17 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 «DEFINE initializeAttributesWithProductData FOR XPolicyCmptClass-»
 	«IF !attributesToInitWithProductData.isEmpty-»
-		if («methodNameGetProductCmptGeneration»() == null) {
-			return;
-		}
 		«FOREACH attributesToInitWithProductData AS this-»
 			«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
 		«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initializeAttributesWithoutProductDataAndOverwritten FOR XPolicyCmptClass-»
+	«IF !attributesToInitWithoutProductDataAndOverwritten.isEmpty-»
+	   	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
+	   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+	   	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
 
