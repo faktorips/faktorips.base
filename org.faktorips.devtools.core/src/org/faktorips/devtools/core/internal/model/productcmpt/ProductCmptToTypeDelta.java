@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTy
 public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
 
     public ProductCmptToTypeDelta(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException {
-        super(productCmpt, ipsProject);
+        super(productCmpt, productCmpt, ipsProject);
     }
 
     @Override

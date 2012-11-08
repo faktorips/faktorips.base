@@ -64,7 +64,8 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     public String getDescription() {
         String description = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
         if (hasPredecessorValue()) {
-            IPropertyValueContainer predecessorContainer = predecessor.getPropertyValue().getPropertyValueContainer();
+            IPropertyValueContainer predecessorContainer = getPredecessor().getPropertyValue()
+                    .getPropertyValueContainer();
             String name = predecessorContainer.getName();
             if (predecessorContainer instanceof IProductCmptGeneration) {
                 name = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
@@ -100,13 +101,13 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
         IPropertyValue newPropertyValue = propertyValueContainer.newPropertyValue(property);
         if (hasPredecessorValue()) {
             // if there was a predecessor value we copy the whole value
-            IPropertyValue predecessorValue = predecessor.getPropertyValue();
+            IPropertyValue predecessorValue = getPredecessor().getPropertyValue();
             newPropertyValue.copyFrom(predecessorValue);
         }
     }
 
     private boolean hasPredecessorValue() {
-        return predecessor != null && predecessor.getPropertyValue() != null;
+        return getPredecessor() != null && getPredecessor().getPropertyValue() != null;
     }
 
 }
