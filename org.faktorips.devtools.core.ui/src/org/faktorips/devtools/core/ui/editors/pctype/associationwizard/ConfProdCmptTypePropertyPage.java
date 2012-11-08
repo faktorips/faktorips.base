@@ -18,14 +18,17 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -48,6 +51,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
     private ArrayList<String> visibleProperties = new ArrayList<String>(10);
 
+    private Checkbox changeOverTimeCheckbox;
     private Text targetRoleSingularTextProdCmptType;
     private Text targetRolePluralTextProdCmptType;
     private CardinalityField cardinalityFieldMinProdCmptType;
@@ -130,6 +134,13 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelType);
         typeCombo = toolkit.createCombo(workArea);
 
+        // Changing over time checkbox
+        toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_changeOverTimeLabel);
+        changeOverTimeCheckbox = toolkit.createCheckbox(
+                workArea,
+                NLS.bind(Messages.ConfProdCmptTypePropertyPage_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+
         // role singular
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelTargetRoleSingular);
         targetRoleSingularTextProdCmptType = toolkit.createText(workArea);
@@ -195,10 +206,9 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     }
 
     private void setDefaults() {
-        association.setDerivedUnion(wizard.getAssociation().isDerivedUnion());
-        if (!wizard.getAssociation().isSubsetOfADerivedUnion()) {
-            derivedUnionGroup.setDefaultSubset(false);
-        }
+        IPolicyCmptTypeAssociation policyAssociation = wizard.getAssociation();
+        association.setDerivedUnion(policyAssociation.isDerivedUnion());
+        derivedUnionGroup.setDefaultSubset(policyAssociation.isSubsetOfADerivedUnion());
     }
 
     private void refreshPageConrolLayouts() {
@@ -211,6 +221,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private void resetControlsAndBinding() {
         bindingContext.removeBindings(targetText);
         bindingContext.removeBindings(typeCombo);
+        bindingContext.removeBindings(changeOverTimeCheckbox);
         bindingContext.removeBindings(targetRoleSingularTextProdCmptType);
         bindingContext.removeBindings(targetRolePluralTextProdCmptType);
         bindingContext.removeBindings(cardinalityFieldMinProdCmptType.getControl());
@@ -234,6 +245,8 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         bindingContext.bindContent(targetText, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                 IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        bindingContext.bindContent(changeOverTimeCheckbox, association,
+                IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME);
         bindingContext.bindContent(targetRoleSingularTextProdCmptType, productCmptAssociation,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         bindingContext.bindContent(targetRolePluralTextProdCmptType, productCmptAssociation,

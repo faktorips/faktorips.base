@@ -99,8 +99,14 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return type.isCompositionDetailToMaster();
     }
 
+    @Deprecated
     @Override
     public boolean isContainerRelationApplicable() {
+        return isDerivedUnionApplicable();
+    }
+
+    @Override
+    public boolean isDerivedUnionApplicable() {
         return isAssoziation() || isCompositionMasterToDetail();
     }
 

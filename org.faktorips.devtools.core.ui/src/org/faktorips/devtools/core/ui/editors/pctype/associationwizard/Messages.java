@@ -63,6 +63,10 @@ public class Messages extends NLS {
 
     public static String ConfProdCmptTypePropertyPage_labelType;
 
+    public static String ConfProdCmptTypePropertyPage_changeOverTimeLabel;
+
+    public static String ConfProdCmptTypePropertyPage_changeOverTimeCheckbox;
+
     public static String ConfProdCmptTypePropertyPage_pageDescription;
 
     public static String ConfProdCmptTypePropertyPage_pageName;
