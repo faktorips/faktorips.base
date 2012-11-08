@@ -1940,11 +1940,15 @@
             <with
                   variable="selection">
                <iterate
-                     ifEmpty="false"
-                     operator="or">
-                  <adapt
-                        type="org.eclipse.core.resources.IFile">
-                  </adapt>
+                     ifEmpty="false">
+                  <or>
+                  	<adapt
+                         type="org.eclipse.core.resources.IFile">
+                  	</adapt>
+                    <adapt 
+                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                    </adapt>
+                  </or>
                </iterate>
             </with>
          </activeWhen>
@@ -1959,9 +1963,9 @@
                   variable="selection">
                <iterate
                      ifEmpty="false">
-                  <instanceof
-                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
-                  </instanceof>
+                  <adapt 
+                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                  </adapt>
                </iterate>
             </with>
          </activeWhen>
@@ -2339,16 +2343,7 @@
                label="%openInNewEditor"
                style="push">
             <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="selection">
-                  <iterate
-                        ifEmpty="false">
-                     <adapt
-                           type="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem">
-                     </adapt>
-                  </iterate>
-               </with>
+                  checkEnabled="true">
             </visibleWhen>
          </command>
          <separator
@@ -2402,7 +2397,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem">
+                           type="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
                      </adapt>
                   </iterate>
                </with>
@@ -2416,16 +2411,7 @@
                label="%openIpsPartProperty"
                style="push">
             <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="selection">
-                  <iterate
-                        ifEmpty="false">
-                     <adapt
-                           type="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem">
-                     </adapt>
-                  </iterate>
-               </with>
+                  checkEnabled="true">
             </visibleWhen>
          </command>
       </menuContribution>
@@ -2525,6 +2511,9 @@
        </adapter>
        <adapter
              type="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
+       </adapter>
+       <adapter
+             type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
        </adapter>
     </factory>
  </extension>
