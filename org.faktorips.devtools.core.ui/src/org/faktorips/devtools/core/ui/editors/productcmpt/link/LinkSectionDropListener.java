@@ -244,13 +244,13 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         // should only return true if all dragged cmpts are valid
         IProductCmptTypeAssociation association = getAssociation(target);
         boolean result = false;
+        if (generation == null) {
+            return false;
+        }
+        IProductCmptLinkContainer linkContainer = LinkCreatorUtil.getLinkContainerFor(generation, association);
         for (IProductCmpt draggedCmpt : draggedCmpts) {
-            if (generation != null) {
-                IProductCmptLinkContainer linkContainer = LinkCreatorUtil.getLinkContainerFor(generation, association);
-                if (linkContainer.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
-                    result = true;
-
-                }
+            if (linkContainer.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
+                result = true;
             } else {
                 return false;
             }
