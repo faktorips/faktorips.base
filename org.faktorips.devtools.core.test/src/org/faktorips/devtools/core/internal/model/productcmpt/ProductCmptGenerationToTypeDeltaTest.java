@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -46,6 +47,12 @@ public class ProductCmptGenerationToTypeDeltaTest {
     private IProductCmptGeneration gen;
     @Mock
     private IProductCmpt prodCmpt;
+    @Mock
+    private IProductCmpt target1;
+    @Mock
+    private IProductCmpt target2;
+    @Mock
+    private IProductCmpt target3;
     @Mock
     private IIpsProject ipsProject;
     @Mock
@@ -83,15 +90,20 @@ public class ProductCmptGenerationToTypeDeltaTest {
         when(prodCmpt.getLinksAsList()).thenReturn(cmptLinks);
 
         when(link1.getAssociation()).thenReturn("assoc1");
-        when(link2.getAssociation()).thenReturn("assoc2");
-        when(link3.getAssociation()).thenReturn("assoc2");
         when(link1.getProductCmptLinkContainer()).thenReturn(gen);
+        when(link1.findTarget(any(IIpsProject.class))).thenReturn(target1);
+        when(link2.getAssociation()).thenReturn("assoc2");
         when(link2.getProductCmptLinkContainer()).thenReturn(gen);
+        when(link2.findTarget(any(IIpsProject.class))).thenReturn(target2);
+        when(link3.getAssociation()).thenReturn("assoc2");
         when(link3.getProductCmptLinkContainer()).thenReturn(gen);
+        when(link3.findTarget(any(IIpsProject.class))).thenReturn(target3);
         when(staticLink1.getAssociation()).thenReturn("staticAssociation");
-        when(staticLink2.getAssociation()).thenReturn("staticAssociation");
         when(staticLink1.getProductCmptLinkContainer()).thenReturn(prodCmpt);
+        when(staticLink1.findTarget(any(IIpsProject.class))).thenReturn(target1);
+        when(staticLink2.getAssociation()).thenReturn("staticAssociation");
         when(staticLink2.getProductCmptLinkContainer()).thenReturn(prodCmpt);
+        when(staticLink2.findTarget(any(IIpsProject.class))).thenReturn(target2);
 
         doReturn(type).when(delta).getProductCmptType();
         doReturn(ipsProject).when(delta).getIpsProject();

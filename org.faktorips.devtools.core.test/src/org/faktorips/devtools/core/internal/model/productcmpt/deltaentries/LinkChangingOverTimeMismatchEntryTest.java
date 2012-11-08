@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -53,6 +54,8 @@ public class LinkChangingOverTimeMismatchEntryTest {
     private IProductCmptGeneration genLatest;
     @Mock
     private IProductCmpt prodCmpt;
+    @Mock
+    private IProductCmpt target;
     @Mock
     private IProductCmptTypeAssociation assoc1;
     @Mock
@@ -97,15 +100,25 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(type.findAssociation("staticAssoc2", ipsProject)).thenReturn(staticAssoc2);
 
         when(link1.getAssociation()).thenReturn("assoc1");
+        when(link1.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(link2.getAssociation()).thenReturn("assoc2");
+        when(link2.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(linkA.getAssociation()).thenReturn("assoc1");
+        when(linkA.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(linkB.getAssociation()).thenReturn("assoc2");
+        when(linkB.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(linkLatest1.getAssociation()).thenReturn("assoc1");
+        when(linkLatest1.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(linkLatest2.getAssociation()).thenReturn("assoc2");
+        when(linkLatest2.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(linkLatest3.getAssociation()).thenReturn("assoc2");
+        when(linkLatest2.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(staticLink1.getAssociation()).thenReturn("staticAssoc1");
+        when(staticLink1.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(staticLink2.getAssociation()).thenReturn("staticAssoc1");
+        when(staticLink2.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(staticLink3.getAssociation()).thenReturn("staticAssoc2");
+        when(staticLink3.findTarget(any(IIpsProject.class))).thenReturn(target);
 
         when(gen1.getProductCmpt()).thenReturn(prodCmpt);
         when(gen2.getProductCmpt()).thenReturn(prodCmpt);
