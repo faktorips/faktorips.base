@@ -88,14 +88,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 					return;
 				}
 		    «ENDIF-»
+	        «EXPAND initializeAttributesWithProductData-»
 	    	«IF hasSupertype()-»
-		        «EXPAND initializeAttributesWithProductData-»
 		        «EXPAND initializeAttributesWithoutProductDataAndOverwritten-»
-	        «ELSE-»
-		    	«EXPAND initializeAttributesWithProductData-»
-	        «ENDIF-»
-	        «IF !configured-»
-	        «REM» TODO Empty line to match old code generator«ENDREM»
 	        «ENDIF-»
 		    // begin-user-code
 		    // end-user-code
@@ -122,19 +117,15 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «ENDDEFINE»
 
 «DEFINE initializeAttributesWithProductData FOR XPolicyCmptClass-»
-	«IF !attributesToInitWithProductData.isEmpty-»
-		«FOREACH attributesToInitWithProductData AS this-»
-			«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-		«ENDFOREACH-»
-	«ENDIF-»
+	«FOREACH attributesToInitWithProductData AS this-»
+		«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+	«ENDFOREACH-»
 «ENDDEFINE»
 
 «DEFINE initializeAttributesWithoutProductDataAndOverwritten FOR XPolicyCmptClass-»
-	«IF !attributesToInitWithoutProductDataAndOverwritten.isEmpty-»
-	   	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
-	   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
-	   	«ENDFOREACH-»
-	«ENDIF-»
+   	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
+   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+   	«ENDFOREACH-»
 «ENDDEFINE»
 
 «DEFINE constructors FOR XPolicyCmptClass-»
