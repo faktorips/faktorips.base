@@ -9,7 +9,7 @@
  <topic label="Konzept">
  </topic>
  <topic label="Referenz">
-    <topic href="help/reference/editors/testcaseEditor.html" label="Testfall-Editor">
+    <topic href="help/reference/editors/testCaseEditor.html" label="Testfall-Editor">
     </topic>
  </topic>
 </toc>
