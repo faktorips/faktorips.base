@@ -29,7 +29,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author widmaier
  */
-public class LinkViewItem extends PlatformObject implements LinkSectionViewItem {
+public class LinkViewItem extends PlatformObject implements ILinkSectionViewItem {
 
     private final IProductCmptLink link;
 

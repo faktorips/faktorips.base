@@ -88,7 +88,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return false;
         }
         if (movedCmptLinks != null) {
-            if ((target instanceof IProductCmptLink || target instanceof LinkSectionViewItem)
+            if ((target instanceof IProductCmptLink || target instanceof ILinkSectionViewItem)
                     && (getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
                 boolean result = canMove(target);
                 return result;
@@ -203,11 +203,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     }
 
     private boolean moveLink(IProductCmptLink link, Object target) {
-        if (target instanceof LinkViewItem) {
-            return moveLink(link, ((LinkViewItem)target).getLink());
-        }
-        if (target instanceof LinkSectionViewItem) {
-            String associationName = ((LinkSectionViewItem)target).getAssociationName();
+        if (target instanceof AbstractAssociationViewItem) {
+            String associationName = ((AbstractAssociationViewItem)target).getAssociationName();
             // move to first position of this association
             boolean result = false;
             IProductCmptLinkContainer linkContainer = link.getProductCmptLinkContainer();
@@ -230,6 +227,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 link.setAssociation(associationName);
             }
             return result;
+        } else if (target instanceof LinkViewItem) {
+            return moveLink(link, ((LinkViewItem)target).getLink());
         } else if (target instanceof IProductCmptLink) {
             IProductCmptLink targetLink = (IProductCmptLink)target;
             IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
@@ -293,7 +292,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return LOCATION_NONE;
         }
         // dropping on an associationReference means moving on first position of this node
-        if (getCurrentTarget() instanceof LinkSectionViewItem) {
+        if (getCurrentTarget() instanceof ILinkSectionViewItem) {
             return LOCATION_AFTER;
         }
         Item item = (Item)event.item;
@@ -321,8 +320,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         if (target instanceof IProductCmptLink) {
             IProductCmptLink targetCmptLink = (IProductCmptLink)target;
             associationName = targetCmptLink.getAssociation();
-        } else if (target instanceof LinkSectionViewItem) {
-            associationName = ((LinkSectionViewItem)target).getAssociationName();
+        } else if (target instanceof ILinkSectionViewItem) {
+            associationName = ((ILinkSectionViewItem)target).getAssociationName();
         }
         return associationName;
     }

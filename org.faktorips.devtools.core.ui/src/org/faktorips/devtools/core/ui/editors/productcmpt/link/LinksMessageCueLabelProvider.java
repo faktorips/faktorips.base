@@ -60,16 +60,16 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof LinkSectionViewItem) {
-                return ((LinkSectionViewItem)element).getText();
+            if (element instanceof ILinkSectionViewItem) {
+                return ((ILinkSectionViewItem)element).getText();
             }
             return element.toString();
         }
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof LinkSectionViewItem) {
-                return ((LinkSectionViewItem)element).getImage();
+            if (element instanceof ILinkSectionViewItem) {
+                return ((ILinkSectionViewItem)element).getImage();
             }
             return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
         }

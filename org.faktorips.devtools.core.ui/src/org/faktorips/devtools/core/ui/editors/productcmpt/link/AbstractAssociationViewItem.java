@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
  * 
  * @author widmaier
  */
-public abstract class AbstractAssociationViewItem implements LinkSectionViewItem {
+public abstract class AbstractAssociationViewItem implements ILinkSectionViewItem {
 
     private final IProductCmptLinkContainer linkContainer;
 
@@ -37,8 +37,8 @@ public abstract class AbstractAssociationViewItem implements LinkSectionViewItem
     /**
      * Returns the link items for this association item.
      */
-    public List<LinkSectionViewItem> getChildren() {
-        List<LinkSectionViewItem> items = new ArrayList<LinkSectionViewItem>();
+    public List<ILinkSectionViewItem> getChildren() {
+        List<ILinkSectionViewItem> items = new ArrayList<ILinkSectionViewItem>();
         List<IProductCmptLink> links = getLinkContainer().getLinksAsList(getAssociationName());
         for (IProductCmptLink link : links) {
             items.add(new LinkViewItem(link));

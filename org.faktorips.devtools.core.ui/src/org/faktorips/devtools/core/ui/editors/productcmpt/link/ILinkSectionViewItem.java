@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author widmaier
  */
-public abstract interface LinkSectionViewItem {
+public interface ILinkSectionViewItem {
 
     /**
      * Returns the text to be displayed for this item in the tree. To be used by label providers.
