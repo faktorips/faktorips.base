@@ -99,6 +99,16 @@ public class XPolicyAttribute extends XAttribute {
         return !isDerived() && !isConstant() && !isOverwrite();
     }
 
+    /**
+     * Returns {@code true} if internal setters should be generated.
+     * <p>
+     * This is the case if both {@link #isGenerateSetter()} and {@link #isGenerateChangeSupport()}
+     * return {@code true}.
+     */
+    public boolean isGenerateSetterInternal() {
+        return isGenerateSetter() && isGenerateChangeSupport();
+    }
+
     public boolean isDerived() {
         return getAttribute().isDerived();
     }
@@ -108,7 +118,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateInitWithProductData() {
-        return isProductRelevant() && isChangeable() && !isOverwrite();
+        return isProductRelevant() && isChangeable();
+    }
+
+    public boolean isGenerateInitWithoutProductData() {
+        return !isProductRelevant() && isChangeable();
     }
 
     public boolean isGenerateInitPropertiesFromXML() {
@@ -267,7 +281,14 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().isProductRelevant();
     }
 
-    public boolean isGenerateGetAllowedValuesFor() {
+    /**
+     * Returns whether this attribute is product relevant at some point in the class hierarchy.
+     */
+    public boolean isProductRelevantInHierarchy() {
+        return isProductRelevant() || isOverwrite() && getOverwrittenAttribute().isProductRelevantInHierarchy();
+    }
+
+    public boolean isGenerateGetAllowedValuesForAndGetDefaultValue() {
         if (isChangeable()) {
             if (isValueSetUnrestricted() && !isProductRelevant()) {
                 return false;
@@ -282,8 +303,18 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isOverrideGetAllowedValuesFor() {
-        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesFor()
-                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor() == getMethodNameGetAllowedValuesFor();
+        if (!isOverwrite()) {
+            return false;
+        }
+        boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
+                .isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor().equals(
+                        getMethodNameGetAllowedValuesFor());
+        return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
+    }
+
+    public boolean isOverrideGetDefaultValue() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue();
     }
 
     public boolean isGenerateConstantForValueSet() {

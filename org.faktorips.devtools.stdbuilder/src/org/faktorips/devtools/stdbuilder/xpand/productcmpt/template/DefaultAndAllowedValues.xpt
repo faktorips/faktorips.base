@@ -7,7 +7,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE defaultAndAllowedValuesFields FOR XPolicyAttribute-»
-	«IF generateGetAllowedValuesFor-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
 		«EXPAND defaultField-»
 		«EXPAND allowedValueSetField-»
 	«ENDIF-»
@@ -32,7 +32,7 @@
 «ENDDEFINE»
 
 «DEFINE getter FOR XPolicyAttribute-»
-	«IF generateGetAllowedValuesFor-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
 		«EXPAND getterDefaultValue-»
 		«EXPAND getterAllowedValues-»
 	«ENDIF-»
@@ -44,7 +44,7 @@
      * 
      * @generated
      */
-	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)-»
     public «javaClassName» «method(methodNameGetDefaultValue)»
     «IF genInterface()»;«ELSE-»
     {
@@ -59,7 +59,7 @@
      * 
      * @generated
      */
-	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)-»
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)-»
     public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
     «IF genInterface()»;«ELSE-»
     {
@@ -69,7 +69,7 @@
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
-	«IF generateGetAllowedValuesFor-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
         configElement = configMap.get("«name»");
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
@@ -105,7 +105,7 @@
 
 
 «DEFINE writeAttributeToXML FOR XPolicyAttribute-»
-	«IF generateGetAllowedValuesFor-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
         configElement = element.getOwnerDocument().createElement("ConfigElement");
         configElement.setAttribute("attribute", "«name»");
         «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", "\"Value\"")»;
