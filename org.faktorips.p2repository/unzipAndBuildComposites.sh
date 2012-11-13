@@ -32,7 +32,7 @@ footer="
 </repository>"
 printf "$contentHeader" "$timestamp" "$number" > $contentFile
 printf "$artifactHeader" "$timestamp" "$number" > $artifactFile
-SUBDIRS=$(ls -tr1d $COMPOSITE_DIR/*/ | grep -v $IGNORE)
+SUBDIRS=$(ls -tr1d $COMPOSITE_DIR/* | grep -v $IGNORE)
 for dir in $SUBDIRS; do
     if test -d "$dir"; then
 	REL_DIR=./${dir##/*/}
