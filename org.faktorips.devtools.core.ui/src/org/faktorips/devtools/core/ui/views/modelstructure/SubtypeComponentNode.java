@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import java.util.ArrayList;
 import java.util.Collection;

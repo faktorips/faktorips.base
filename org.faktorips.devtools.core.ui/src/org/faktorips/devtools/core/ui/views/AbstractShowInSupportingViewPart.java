@@ -23,6 +23,12 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * Abstract ViewPart implementation for all classes that should be navigatable by show-in
+ * functionality.
+ * 
+ * @author dirmeier
+ */
 public abstract class AbstractShowInSupportingViewPart extends ViewPart implements IShowInSource, IShowInTarget {
 
     @Override
@@ -30,6 +36,9 @@ public abstract class AbstractShowInSupportingViewPart extends ViewPart implemen
         return new ShowInContext(this, getSelection());
     }
 
+    /**
+     * Get the current selection for the show in context.#
+     */
     protected abstract ISelection getSelection();
 
     @Override
@@ -60,5 +69,8 @@ public abstract class AbstractShowInSupportingViewPart extends ViewPart implemen
         return false;
     }
 
+    /**
+     * Open the adaptable object in the view and return true if it was successful.
+     */
     protected abstract boolean show(IAdaptable adaptable);
 }

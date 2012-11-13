@@ -11,9 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import static org.faktorips.devtools.core.ui.views.modeloverview.AssociationComponentNode.newAssociationComponentNode;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode.newAssociationComponentNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public final class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
+public final class ModelStructureInheritAssociationsContentProvider extends AbstractModelStructureContentProvider {
 
     private List<ComponentNode> storedRootElements;
     private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
@@ -45,7 +45,7 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
 
     @Override
     protected String getWaitingLabel() {
-        return Messages.ModelOverview_waitingLabel;
+        return Messages.ModelStructure_waitingLabel;
     }
 
     @Override
@@ -189,18 +189,17 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
                     supertype = supertype.findSupertype(project);
                 }
 
+                ArrayList<AssociationComponentNode> superAssociationNodes = new ArrayList<AssociationComponentNode>();
                 for (IAssociation supertypeAssociation : supertypeAssociations) {
                     if (!supertypeAssociation.isDerivedUnion()) {
-                        List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
-                                project);
-                        for (IType subtype : subtypes) {
-                            AssociationComponentNode associationComponentNode = newAssociationComponentNode(subtype,
-                                    supertypeAssociation, parent, project);
-                            associationComponentNode.setInherited(true);
-                            associationNodes.add(associationComponentNode);
-                        }
+                        IType target = supertypeAssociation.findTarget(project);
+                        AssociationComponentNode associationComponentNode = newAssociationComponentNode(target,
+                                supertypeAssociation, parent, project);
+                        associationComponentNode.setInherited(true);
+                        superAssociationNodes.add(associationComponentNode);
                     }
                 }
+                associationNodes.addAll(0, superAssociationNodes);
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

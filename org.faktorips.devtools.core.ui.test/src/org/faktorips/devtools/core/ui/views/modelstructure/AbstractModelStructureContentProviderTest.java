@@ -11,15 +11,15 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.getAssociatingTypes;
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.getAssociationsForAssociationTypes;
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.getExistingSupertypeFromList;
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.getProjectITypes;
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.getProjectRootElementsFromComponentList;
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.hasExistingSupertype;
-import static org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.isAssociationTarget;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.getAssociatingTypes;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.getAssociationsForAssociationTypes;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.getExistingSupertypeFromList;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.getProjectITypes;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.getProjectRootElementsFromComponentList;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.hasExistingSupertype;
+import static org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.isAssociationTarget;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,9 +39,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider;
 import org.junit.Test;
 
-public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginTest {
+public class AbstractModelStructureContentProviderTest extends AbstractIpsPluginTest {
 
     private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
@@ -557,7 +558,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         allComponents.add(root2);
         allComponents.add(descendant);
 
-        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+        AbstractModelStructureContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
                 ASSOCIATION_TYPES);
 
         // tests
@@ -585,7 +586,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         allComponents.add(root);
         allComponents.add(descendant);
 
-        AbstractModelOverviewContentProvider.removeDescendants(rootCandidatesComponents, rootComponents, allComponents,
+        AbstractModelStructureContentProvider.removeDescendants(rootCandidatesComponents, rootComponents, allComponents,
                 ASSOCIATION_TYPES);
 
         // tests
@@ -617,7 +618,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         allComponents.add(root2);
         allComponents.add(descendant);
 
-        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+        AbstractModelStructureContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
                 ASSOCIATION_TYPES);
 
         // tests
@@ -647,7 +648,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         allComponents.add(root);
         allComponents.add(descendant);
 
-        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+        AbstractModelStructureContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
                 ASSOCIATION_TYPES);
 
         // tests
@@ -692,7 +693,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         allComponents.add(descendant3);
         allComponents.add(descendant4);
 
-        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+        AbstractModelStructureContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
                 ASSOCIATION_TYPES);
 
         // tests
@@ -711,9 +712,9 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association.setAssociationType(AssociationType.AGGREGATION);
 
         // test
-        List<IType> types = AbstractModelOverviewContentProvider.getProjectITypes(projectA,
+        List<IType> types = AbstractModelStructureContentProvider.getProjectITypes(projectA,
                 IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
-        boolean isAssociated = AbstractModelOverviewContentProvider.isAssociated(aB, types, types, projectA,
+        boolean isAssociated = AbstractModelStructureContentProvider.isAssociated(aB, types, types, projectA,
                 AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertTrue(isAssociated);
     }
@@ -741,14 +742,14 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         projectB.setIpsObjectPath(path);
 
         // test
-        List<IType> allTypes = AbstractModelOverviewContentProvider.getProjectITypes(projectB,
+        List<IType> allTypes = AbstractModelStructureContentProvider.getProjectITypes(projectB,
                 IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
 
         List<IType> projectBTypes = new ArrayList<IType>();
         projectBTypes.add(bA);
         projectBTypes.add(bB);
 
-        boolean isAssociated = AbstractModelOverviewContentProvider.isAssociated(bB, projectBTypes, allTypes, projectB,
+        boolean isAssociated = AbstractModelStructureContentProvider.isAssociated(bB, projectBTypes, allTypes, projectB,
                 AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertTrue(isAssociated);
     }
@@ -789,14 +790,14 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         projectC.setIpsObjectPath(path2);
 
         // test
-        List<IType> allTypes = AbstractModelOverviewContentProvider.getProjectITypes(projectC,
+        List<IType> allTypes = AbstractModelStructureContentProvider.getProjectITypes(projectC,
                 IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
 
         List<IType> projectCTypes = new ArrayList<IType>();
         projectCTypes.add(cA);
         projectCTypes.add(cB);
 
-        boolean isAssociated = AbstractModelOverviewContentProvider.isAssociated(cB, projectCTypes, allTypes, projectC,
+        boolean isAssociated = AbstractModelStructureContentProvider.isAssociated(cB, projectCTypes, allTypes, projectC,
                 AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertTrue(isAssociated);
     }

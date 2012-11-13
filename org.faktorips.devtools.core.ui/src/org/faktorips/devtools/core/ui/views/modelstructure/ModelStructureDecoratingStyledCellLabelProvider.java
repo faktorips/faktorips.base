@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import java.util.Arrays;
 
@@ -22,11 +22,11 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.custom.StyleRange;
 
-public final class ModelOverviewDecoratingStyledCellLabelProvider extends DecoratingStyledCellLabelProvider {
+public final class ModelStructureDecoratingStyledCellLabelProvider extends DecoratingStyledCellLabelProvider {
 
-    private ModelOverviewLabelProvider labelProvider;
+    private ModelStructureLabelProvider labelProvider;
 
-    public ModelOverviewDecoratingStyledCellLabelProvider(ModelOverviewLabelProvider labelProvider,
+    public ModelStructureDecoratingStyledCellLabelProvider(ModelStructureLabelProvider labelProvider,
             ILabelDecorator decorator, IDecorationContext decorationContext) {
         super(labelProvider, decorator, decorationContext);
         this.labelProvider = labelProvider;

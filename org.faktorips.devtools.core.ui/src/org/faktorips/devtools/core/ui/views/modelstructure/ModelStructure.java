@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -51,11 +52,12 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -71,17 +73,23 @@ import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
+import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
 
-public final class ModelOverview extends ViewPart implements ICollectorFinishedListener {
+/**
+ * This is the main class for the model structure view.
+ * 
+ * @author noschinski2
+ */
+public final class ModelStructure extends AbstractShowInSupportingViewPart implements ICollectorFinishedListener {
 
     private static final String CONTEXT_MENU_GROUP_OPEN = "open"; //$NON-NLS-1$
 
     private static final String OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID = "OpenParentAssociationTypeEditorAction"; //$NON-NLS-1$
 
-    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"; //$NON-NLS-1$
 
     private static final String MENU_GROUP_INFO = "group.info"; //$NON-NLS-1$
     private static final String MENU_GROUP_CONTENT_PROVIDER = "group.contentprovider"; //$NON-NLS-1$
@@ -96,7 +104,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private static final String PROVIDER_SHOW_STATE = "show_state"; //$NON-NLS-1$
     private static final String INITIAL_CONTENT_PROVIDER = "initial_content_provider"; //$NON-NLS-1$
 
-    private static final String MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID = "org.faktorips.devtools.core.ui.modelOverviewContentProvider"; //$NON-NLS-1$
+    private static final String MODEL_STRUCTURE_CONTENT_PROVIDER_EXTENSION_POINT_ID = "org.faktorips.devtools.core.ui.modelStructureContentProvider"; //$NON-NLS-1$
 
     private static final boolean DEFAULT_SHOW_CARDINALITIES = true;
     private static final boolean DEFAULT_SHOW_ROLENAMES = true;
@@ -111,8 +119,8 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private Label label;
     private Label infoMessageLabel;
 
-    private ModelOverviewLabelProvider labelProvider;
-    private AbstractModelOverviewContentProvider provider;
+    private ModelStructureLabelProvider labelProvider;
+    private AbstractModelStructureContentProvider provider;
 
     private Action toggleProductPolicyAction;
     private ExpandAllAction expandAllAction;
@@ -141,7 +149,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         treeViewer = new TreeViewer(panel);
 
         // initializes with a default content provider
-        provider = new ModelOverviewInheritAssociationsContentProvider();
+        provider = new ModelStructureInheritAssociationsContentProvider();
 
         initContentProviders();
         // set default show state and the according toggle-button image
@@ -149,11 +157,11 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         treeViewer.setContentProvider(provider);
 
         ColumnViewerToolTipSupport.enableFor(treeViewer);
-        labelProvider = new ModelOverviewLabelProvider();
+        labelProvider = new ModelStructureLabelProvider();
         IDecoratorManager decoratorManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
         // decoratorManager.setEnabled(decoratorId, enabled)
 
-        DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelOverviewDecoratingStyledCellLabelProvider(
+        DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelStructureDecoratingStyledCellLabelProvider(
                 labelProvider, decoratorManager.getLabelDecorator(), DecorationContext.DEFAULT_CONTEXT);
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
@@ -172,7 +180,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
 
-        showInfoMessage(Messages.ModelOverview_emptyMessage);
+        showInfoMessage(Messages.ModelStructure_emptyMessage);
     }
 
     private void showInfoMessage(String message) {
@@ -263,7 +271,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             };
             openParentAssociationTypeEditorAction
-                    .setText(Messages.ModelOverview_contextMenuOpenAssociationTargetingTypeEditor
+                    .setText(Messages.ModelStructure_contextMenuOpenAssociationTargetingTypeEditor
                             + ((AssociationComponentNode)node).getTargetingType().getName());
             manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
         }
@@ -310,13 +318,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
      * 
      * @param input the selected {@link IIpsProject}
      */
-    public void showOverview(IIpsProject input) {
-        List<IType> result = AbstractModelOverviewContentProvider.getProjectITypes(input, new IpsObjectType[] {
+    public void showStructure(IIpsProject input) {
+        List<IType> result = AbstractModelStructureContentProvider.getProjectITypes(input, new IpsObjectType[] {
                 IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
-        List<IType> projectSpecificITypes = AbstractModelOverviewContentProvider
-                .getProjectSpecificITypes(result, input);
+        List<IType> projectSpecificITypes = AbstractModelStructureContentProvider.getProjectSpecificITypes(result,
+                input);
         if (projectSpecificITypes.isEmpty()) {
-            showInfoMessage(Messages.ModelOverview_NothingToShow_message);
+            showInfoMessage(Messages.ModelStructure_NothingToShow_message);
         } else {
             this.treeViewer.setInput(input);
             this.showTree();
@@ -329,7 +337,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
      * 
      * @param input the selected {@link IType}
      */
-    public void showOverview(IType input) {
+    public void showStructure(IType input) {
         toggleProductPolicyAction.setEnabled(true);
         try {
             if (input instanceof PolicyCmptType) {
@@ -426,7 +434,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
     private Action createRefreshAction() {
         // refresh action
-        Action newRefreshAction = new Action(Messages.ModelOverview_tooltipRefreshContents, IpsUIPlugin
+        Action newRefreshAction = new Action(Messages.ModelStructure_tooltipRefreshContents, IpsUIPlugin
                 .getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
@@ -435,7 +443,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.ModelOverview_tooltipRefreshContents;
+                return Messages.ModelStructure_tooltipRefreshContents;
             }
         };
         return newRefreshAction;
@@ -482,7 +490,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             IExtensionRegistry registry = Platform.getExtensionRegistry();
             IExtensionPoint extensionPoint = registry
-                    .getExtensionPoint(MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID);
+                    .getExtensionPoint(MODEL_STRUCTURE_CONTENT_PROVIDER_EXTENSION_POINT_ID);
             IExtension[] extensions = extensionPoint.getExtensions();
 
             for (int i = 0; i < extensions.length; i++) {
@@ -490,17 +498,17 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
                 for (int j = 0; j < elements.length; j++) {
                     try {
                         Object contentProvider = elements[j].createExecutableExtension("class"); //$NON-NLS-1$
-                        if (contentProvider instanceof AbstractModelOverviewContentProvider) {
+                        if (contentProvider instanceof AbstractModelStructureContentProvider) {
                             String label = elements[j].getAttribute("label"); //$NON-NLS-1$
 
                             Action contentProviderAction = createContentProviderAction(label,
-                                    (AbstractModelOverviewContentProvider)contentProvider);
+                                    (AbstractModelStructureContentProvider)contentProvider);
                             contentProviderActions.add(contentProviderAction);
                             if (initialContentProvider == null) {
                                 initialContentProvider = contentProvider.getClass().getCanonicalName();
                             }
                             if (initialContentProvider.equals(contentProvider.getClass().getCanonicalName())) {
-                                provider = (AbstractModelOverviewContentProvider)contentProvider;
+                                provider = (AbstractModelStructureContentProvider)contentProvider;
                                 contentProviderAction.setChecked(true);
                             }
                         }
@@ -514,7 +522,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     }
 
     private Action createShowCardinalitiesAction() {
-        return new Action(Messages.ModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelStructure_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getImageHandling().createImageDescriptor(CARDINALITY_IMAGE);
@@ -528,13 +536,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.ModelOverview_menuShowCardinalities_tooltip;
+                return Messages.ModelStructure_menuShowCardinalities_tooltip;
             }
         };
     }
 
     private Action createShowRoleNameAction() {
-        return new Action(Messages.ModelOverview_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelStructure_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
@@ -548,13 +556,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.ModelOverview_menuShowRoleName_tooltip;
+                return Messages.ModelStructure_menuShowRoleName_tooltip;
             }
         };
     }
 
     private Action createShowProjectsAction() {
-        return new Action(Messages.ModelOverview_menuShowProjects_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelStructure_menuShowProjects_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
@@ -568,13 +576,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.ModelOverview_menuShowProjects_tooltip;
+                return Messages.ModelStructure_menuShowProjects_tooltip;
             }
         };
     }
 
     private Action createToggleProductPolicyAction() {
-        return new Action(Messages.ModelOverview_tooltipToggleButton, SWT.DEFAULT) {
+        return new Action(Messages.ModelStructure_tooltipToggleButton, SWT.DEFAULT) {
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -583,7 +591,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.ModelOverview_tooltipToggleButton;
+                return Messages.ModelStructure_tooltipToggleButton;
             }
 
             @Override
@@ -595,9 +603,9 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     }
 
     private Action createContentProviderAction(final String label,
-            final AbstractModelOverviewContentProvider contentProvider) {
+            final AbstractModelStructureContentProvider contentProvider) {
         return new Action(label, IAction.AS_RADIO_BUTTON) {
-            AbstractModelOverviewContentProvider newProvider = contentProvider;
+            AbstractModelStructureContentProvider newProvider = contentProvider;
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -628,7 +636,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         refreshAction.setEnabled(state);
     }
 
-    private void switchContentProvider(AbstractModelOverviewContentProvider newProvider) {
+    private void switchContentProvider(AbstractModelStructureContentProvider newProvider) {
         Object input = treeViewer.getInput();
         ShowTypeState currentShowTypeState;
         currentShowTypeState = provider.getShowTypeState();
@@ -647,8 +655,8 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     /**
      * Toggles the view between ProductCmpTypes and PolicyCmptTypes. The toggle action takes
      * originally selected element as input for the content provider and shows the corresponding
-     * ModelOverview. If the initial content provider input was an IpsProject and the user has not
-     * selected any element, the ModelOverview simply switches the view for the complete project.
+     * ModelStructure. If the initial content provider input was an IpsProject and the user has not
+     * selected any element, the ModelStructure simply switches the view for the complete project.
      */
     private void toggleShowTypeState() {
         Object input = treeViewer.getInput();
@@ -754,7 +762,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         // initialize the parameter stored in the memento with meaningful values
         showCardinalities = true;
         showRolenames = true;
-        showProjectnames = true;
+        showProjectnames = false;
         providerShowState = ShowTypeState.SHOW_POLICIES;
 
         if (memento != null) {
@@ -776,5 +784,29 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
                 providerShowState = ShowTypeState.SHOW_PRODUCTS;
             }
         }
+    }
+
+    @Override
+    protected ISelection getSelection() {
+        return treeViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        if (ipsObject instanceof IType) {
+            IType type = (IType)ipsObject;
+            showStructure(type);
+            return true;
+        } else if (ipsObject != null) {
+            // it is an ipsObject but no type
+            return false;
+        }
+        IIpsElement ipsElement = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+        if (ipsElement != null) {
+            showStructure(ipsElement.getIpsProject());
+            return true;
+        }
+        return false;
     }
 }

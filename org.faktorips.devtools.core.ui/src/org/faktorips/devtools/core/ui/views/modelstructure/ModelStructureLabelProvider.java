@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.JFaceResources;
@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public final class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
+public final class ModelStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
     private static final String PRODUCT_SUBTYPE_IMAGE = "product_subtype.gif"; //$NON-NLS-1$
     private static final String POLICY_SUBTYPE_IMAGE = "policy_subtype.gif"; //$NON-NLS-1$
@@ -43,7 +43,7 @@ public final class ModelOverviewLabelProvider extends LabelProvider implements I
 
     private LocalResourceManager resourceManager;
 
-    public ModelOverviewLabelProvider() {
+    public ModelStructureLabelProvider() {
         super();
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
@@ -235,10 +235,10 @@ public final class ModelOverviewLabelProvider extends LabelProvider implements I
         if (element instanceof ComponentNode) {
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
                 AssociationComponentNode node = (AssociationComponentNode)element;
-                text += Messages.ModelOverview_tooltipInheritedAssociations
+                text += Messages.ModelStructure_tooltipInheritedAssociations
                         + " " + node.getTargetingType().getQualifiedName(); //$NON-NLS-1$
             } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {
-                text += Messages.ModelOverview_tooltipHasInheritedAssociation;
+                text += Messages.ModelStructure_tooltipHasInheritedAssociation;
             }
             if (!text.isEmpty()) {
                 return text;

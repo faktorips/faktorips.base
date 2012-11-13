@@ -11,10 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
+import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ToChildAssociationType;
 import org.faktorips.util.ArgumentCheck;
 
 class PathElement {
@@ -23,7 +23,7 @@ class PathElement {
     private ToChildAssociationType associationType;
 
     /**
-     * Represents a path element in a tree created by the {@link ModelOverviewContentProvider}.
+     * Represents a path element in a tree created by the {@link ModelStructureContentProvider}.
      * 
      * @param component the contained {@link IType} element
      * @param associationType the {@link ToChildAssociationType} to the next path element
@@ -36,7 +36,7 @@ class PathElement {
         this.associationType = associationType;
     }
 
-    public ModelOverviewContentProvider.ToChildAssociationType getAssociationType() {
+    public ModelStructureContentProvider.ToChildAssociationType getAssociationType() {
         return associationType;
     }
 

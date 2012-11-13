@@ -3,10 +3,10 @@
 <schema targetNamespace="org.faktorips.devtools.core.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.faktorips.devtools.core.ui" id="modelOverviewContentProvider" name="modelOverviewContentProvider"/>
+         <meta.schema plugin="org.faktorips.devtools.core.ui" id="modelStructureContentProvider" name="modelStructureContentProvider"/>
       </appInfo>
       <documentation>
-         Allows to define content providers for the ModelOverview
+         Allows to define content providers for the ModelStructure
       </documentation>
    </annotation>
 
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider:"/>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider:"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -83,11 +83,11 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-          &lt;extension
-       point=&quot;org.faktorips.devtools.core.ui.modelOverviewContentProvider&quot;&gt;
+         &lt;extension
+       point=&quot;org.faktorips.devtools.core.ui.modelStructureContentProvider&quot;&gt;
     &lt;contentprovider
-          class=&quot;org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider&quot;
-          label=&quot;%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider_label&quot;&gt;
+          class=&quot;org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider&quot;
+          label=&quot;%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider_label&quot;&gt;
     &lt;/contentprovider&gt;
  &lt;/extension&gt;
       </documentation>

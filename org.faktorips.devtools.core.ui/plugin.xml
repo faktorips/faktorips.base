@@ -13,7 +13,7 @@
    <extension-point id="ipsDropListenerProvider" name="ipsDropListenerProvider" schema="schema/ipsDropListenerProvider.exsd"/>
    <extension-point id="productCmptPropertyFilter" name="Product Component Property Filter" schema="schema/productCmptPropertyFilter.exsd"/>
    <extension-point id="deepCopyWizard" name="Deep Copy Wizard" schema="schema/deepCopyWizard.exsd"/>
-   <extension-point id="modelOverviewContentProvider" name="modelOverviewContentProvider" schema="schema/modelOverviewContentProvider.exsd"/>
+   <extension-point id="modelStructureContentProvider" name="modelStructureContentProvider" schema="schema/modelStructureContentProvider.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -313,9 +313,9 @@
       </command>
       <command
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
-            description="%ShowModelOverviewHandler.tooltip"
-            id="org.faktorips.devtools.core.ui.commands.showModelOverview"
-            name="%ShowModelOverviewHandler.name">
+            description="%ShowModelStructureHandler.tooltip"
+            id="org.faktorips.devtools.core.ui.commands.showModelStructure"
+            name="%ShowModelStructureHandler.name">
       </command>
       <command
             id="org.faktorips.devtools.core.ui.command.DeepCopyProduct"
@@ -437,6 +437,17 @@
                standalone="false"
                visible="false">
          </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
          <showInPart
                id="org.faktorips.devtools.core.ui.views.productStructureExplorer">
          </showInPart>
@@ -448,6 +459,9 @@
          </showInPart>
          <showInPart
                id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure">
          </showInPart>
       </perspectiveExtension>
       <perspectiveExtension
@@ -1162,10 +1176,10 @@
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
-            class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"
-            icon="icons/IpsHierarchyView.gif"
-            id="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"
-            name="%IpsModelOverviewTitle"
+            class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
+            icon="icons/ModelStructure.gif"
+            id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
+            name="%IpsModelStructureTitle"
             restorable="true">
       </view>
    </extension>
@@ -1971,8 +1985,8 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.faktorips.devtools.core.ui.commands.ShowModelOverviewHandler"
-            commandId="org.faktorips.devtools.core.ui.commands.showModelOverview">
+            class="org.faktorips.devtools.core.ui.commands.ShowModelStructureHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.showModelStructure">
          <enabledWhen>
             <with
                   variable="selection">
@@ -2305,11 +2319,11 @@
             </visibleWhen>
          </command>
          <command
-               commandId="org.faktorips.devtools.core.ui.commands.showModelOverview"
-               icon="icons/IpsHierarchyView.gif"
-               label="%ShowModelOverviewHandler.name"
+               commandId="org.faktorips.devtools.core.ui.commands.showModelStructure"
+               icon="icons/ModelStructure.gif"
+               label="%ShowModelStructureHandler.name"
                style="push"
-               tooltip="%ShowModelOverviewHandler.tooltip">
+               tooltip="%ShowModelStructureHandler.tooltip">
             <visibleWhen
                   checkEnabled="false">
                <with
@@ -2532,14 +2546,14 @@
     </ipsDropAdapterProvider>
  </extension>
  <extension
-       point="org.faktorips.devtools.core.ui.modelOverviewContentProvider">
+       point="org.faktorips.devtools.core.ui.modelStructureContentProvider">
     <contentprovider
-          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider"
-          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider_label">
+          class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider_label">
     </contentprovider>
     <contentprovider
-          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider"
-          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider_label">
+          class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider_label">
     </contentprovider>
  </extension>
  <extension

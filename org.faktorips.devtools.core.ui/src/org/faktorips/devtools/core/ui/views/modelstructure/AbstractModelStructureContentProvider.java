@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +29,12 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 
-public abstract class AbstractModelOverviewContentProvider extends DeferredStructuredContentProvider implements
+public abstract class AbstractModelStructureContentProvider extends DeferredStructuredContentProvider implements
         ITreeContentProvider {
 
     /**
      * Provides information about the currently shown {@link IType}s. It will be set by the
-     * {@link ModelOverview}, but the content provider is responsible to act on this state.
+     * {@link ModelStructure}, but the content provider is responsible to act on this state.
      */
     private ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
 

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,9 +28,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider;
+import org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode;
+import org.faktorips.devtools.core.ui.views.modelstructure.ComponentNode;
+import org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider;
+import org.faktorips.devtools.core.ui.views.modelstructure.SubtypeComponentNode;
 import org.junit.Test;
 
-public class ModelOverviewInheritAssociationContentProviderTest extends AbstractIpsPluginTest {
+public class ModelStructureInheritAssociationContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCollectElements_FindCorrectRootElementInASingleProject() throws CoreException {
@@ -41,7 +46,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
 
         subType.setSupertype(superType.getQualifiedName());
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // tests
@@ -75,7 +80,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(baseProject);
         customProject.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(customProject, new NullProgressMonitor());
 
         // tests
@@ -116,7 +121,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(baseProject);
         customProject.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(customProject, new NullProgressMonitor());
 
         // tests
@@ -170,7 +175,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(baseProject);
         customProject.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(customProject, new NullProgressMonitor());
 
         // tests
@@ -205,7 +210,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         project2.setIpsObjectPath(path);
 
         // tests
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(project2, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(root, ((ComponentNode)elements[0]).getValue());
@@ -243,7 +248,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         projectC.setIpsObjectPath(pathC);
 
         // tests
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(projectC, new NullProgressMonitor());
 
         assertEquals(1, elements.length);
@@ -270,7 +275,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(projectA);
         projectB.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(projectB, new NullProgressMonitor());
 
         // tests
@@ -307,7 +312,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(projectA);
         projectB.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] elements = provider.collectElements(projectB, new NullProgressMonitor());
 
         // tests
@@ -330,7 +335,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         association.setTarget(typeB.getQualifiedName());
         association.setAssociationType(AssociationType.AGGREGATION);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
 
         Object[] children = provider.getChildren(new ComponentNode(typeA, project));
 
@@ -350,7 +355,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
 
         typeB.setSupertype(typeA.getQualifiedName());
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
 
         Object[] children = provider.getChildren(new ComponentNode(typeA, project));
 
@@ -384,7 +389,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(projectA);
         projectB.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
 
         Object[] children = provider.getChildren(new ComponentNode(typeBA, projectB));
 
@@ -429,7 +434,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         path.newIpsProjectRefEntry(baseProject);
         customProject.setIpsObjectPath(path);
 
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        ModelStructureInheritAssociationsContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
 
         // tests
         Object[] elements = provider.collectElements(customProject, new NullProgressMonitor());
@@ -481,7 +486,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         customProject.setIpsObjectPath(path);
 
         // test
-        AbstractModelOverviewContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        AbstractModelStructureContentProvider provider = new ModelStructureInheritAssociationsContentProvider();
         Object[] children = provider.getChildren(new SubtypeComponentNode(hausratVertrag, new ComponentNode(vertrag,
                 customProject), customProject));
 

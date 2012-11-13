@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public final class ModelOverviewContentProvider extends AbstractModelOverviewContentProvider {
+public final class ModelStructureContentProvider extends AbstractModelStructureContentProvider {
 
     // it is important that this list does not contain a set of AssociationTypes which would cause
     // association loops
@@ -112,7 +112,7 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
      * @param element the starting point
      * @param componentList the list of all concerned elements
      * @param association the
-     *            {@link org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType
+     *            {@link org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ToChildAssociationType
      *            ToChildAssociationType} of the parent element to this element
      * @param rootCandidates a {@link Collection} of {@link IType}. elements
      * @param callHierarchy a {@link List} which contains the path from the current element to the
@@ -157,7 +157,8 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
 
         // If a supertype has been added in the first run, it has to be added now, too
         if (rootElements.isEmpty() && association == ToChildAssociationType.SUPERTYPE
-                && rootCandidates.contains(element)) {
+        // && rootCandidates.contains(element)
+        ) {
             rootElements.add(element);
         }
 
@@ -237,7 +238,7 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
 
     @Override
     protected String getWaitingLabel() {
-        return Messages.ModelOverview_waitingLabel;
+        return Messages.ModelStructure_waitingLabel;
     }
 
     @Override

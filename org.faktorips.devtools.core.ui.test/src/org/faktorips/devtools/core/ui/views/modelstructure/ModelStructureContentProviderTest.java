@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modeloverview;
+package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,10 +33,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
+import org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode;
+import org.faktorips.devtools.core.ui.views.modelstructure.ComponentNode;
+import org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider;
+import org.faktorips.devtools.core.ui.views.modelstructure.SubtypeComponentNode;
+import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
 import org.junit.Test;
 
-public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
+public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testHasChildren_NoChildren() throws CoreException {
@@ -44,7 +48,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
@@ -54,7 +58,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testHasChildren_CyclicNodeIsRepeatedOnlyOnce() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -71,7 +75,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetChildren_PolicyChildrenEmpty() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
 
         IIpsProject project = newIpsProject();
@@ -87,7 +91,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetChildren_ProductChildrenEmpty() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
 
         IIpsProject project = newIpsProject();
@@ -110,7 +114,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         association.setTarget(selfReferencingVertrag.getQualifiedName());
         association.setAssociationType(AssociationType.AGGREGATION);
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // tests
@@ -146,7 +150,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         ac.setTarget(typeA.getQualifiedName());
         ac.setAssociationType(AssociationType.AGGREGATION);
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         assertEquals(1, elements.length);
@@ -168,7 +172,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         typeB.setSupertype(typeA.getQualifiedName());
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         Object[] children = provider.getChildren(new ComponentNode(typeA, project));
 
@@ -203,7 +207,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         projectB.setIpsObjectPath(path);
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] children = provider.getChildren(new ComponentNode(typeAB, projectB));
         assertTrue(((ComponentNode)children[0]).isTargetOfInheritedAssociation());
     }
@@ -228,7 +232,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         projectB.setIpsObjectPath(path);
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] children = provider.getChildren(new ComponentNode(typeAB, projectB));
         assertFalse(((ComponentNode)children[0]).isTargetOfInheritedAssociation());
     }
@@ -244,7 +248,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         association.setTarget(typeB.getQualifiedName());
         association.setAssociationType(AssociationType.AGGREGATION);
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         Object[] children = provider.getChildren(new ComponentNode(typeA, project));
 
@@ -263,7 +267,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
@@ -283,7 +287,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IAssociation association2 = prodCmptType.newAssociation();
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
@@ -307,7 +311,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
@@ -331,7 +335,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         association.setTarget(associatedCmptType.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
@@ -341,7 +345,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testHasChildren_HasAssociationAndSubtypeChildren() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
 
         IIpsProject project = newIpsProject();
@@ -396,7 +400,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         associationHausratVertrag2HausratGrunddeckung.setTarget(hausratGrunddeckung.getQualifiedName());
         associationHausratVertrag2HausratGrunddeckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // tests
@@ -437,7 +441,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         associationVertrag2Deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // tests
@@ -467,7 +471,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         leafPolicy.setSupertype(superPolicy.getQualifiedName());
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
@@ -501,7 +505,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         rootPolicy.setSupertype(superPolicy.getQualifiedName());
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
@@ -535,7 +539,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         leafPolicy.setSupertype(superPolicy.getQualifiedName());
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
@@ -556,7 +560,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
@@ -594,7 +598,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         hausratGrunddeckungstyp2hausratProdukt.setTarget(hausratGrunddeckungstyp.getQualifiedName());
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(hausratGrunddeckungstyp, new NullProgressMonitor());
 
         assertEquals(1, elements.length);
@@ -615,7 +619,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         superPolicy.setSupertype(superSuperPolicy.getQualifiedName());
 
         // test
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
@@ -624,7 +628,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testCollectElements_OnIType_DetectCycleOnSelfreferencingELement() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -642,7 +646,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testCollectElements_OnIType_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -670,7 +674,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testCollectElements_OnIIpsProject_DetectCycleOnSelfreferencingELement() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -688,7 +692,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testCollectElements_OnIIpsProject_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
         // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -722,7 +726,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         ComponentNode root = new ComponentNode(vertrag, project);
 
         // tests
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         assertNull(provider.getComponentNodeAssociationChildren(root));
     }
 
@@ -739,7 +743,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         vertrag2deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         ComponentNode root = new ComponentNode(vertrag, project);
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         List<AssociationComponentNode> children = provider.getComponentNodeAssociationChildren(root);
 
         // tests
@@ -759,7 +763,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
         ComponentNode root = new ComponentNode(vertrag, project);
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        ModelStructureContentProvider provider = new ModelStructureContentProvider();
         List<SubtypeComponentNode> child = provider.getComponentNodeSubtypeChildren(root);
 
         // tests
