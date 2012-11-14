@@ -28,11 +28,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider;
-import org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode;
-import org.faktorips.devtools.core.ui.views.modelstructure.ComponentNode;
-import org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider;
-import org.faktorips.devtools.core.ui.views.modelstructure.SubtypeComponentNode;
 import org.junit.Test;
 
 public class ModelStructureInheritAssociationContentProviderTest extends AbstractIpsPluginTest {
@@ -396,7 +391,7 @@ public class ModelStructureInheritAssociationContentProviderTest extends Abstrac
         assertEquals(1, children.length);
         assertTrue(children[0] instanceof AssociationComponentNode);
         AssociationComponentNode componentNodeBB = (AssociationComponentNode)children[0];
-        assertEquals(typeBB, componentNodeBB.getValue());
+        assertEquals(typeAB, componentNodeBB.getValue());
         assertEquals(typeBA, componentNodeBB.getParent().getValue());
         assertTrue(componentNodeBB.isInherited());
     }
@@ -453,8 +448,8 @@ public class ModelStructureInheritAssociationContentProviderTest extends Abstrac
         List<IType> associationChildrenList = new ArrayList<IType>();
         associationChildrenList.add(((ComponentNode)associationChildren[0]).getValue());
         associationChildrenList.add(((ComponentNode)associationChildren[1]).getValue());
-        assertTrue(associationChildrenList.contains(clauseType));
-        assertTrue(associationChildrenList.contains(deductibleType));
+        assertTrue(associationChildrenList.contains(stdClauseType));
+        assertTrue(associationChildrenList.contains(stdDeductibleType));
     }
 
     @Test

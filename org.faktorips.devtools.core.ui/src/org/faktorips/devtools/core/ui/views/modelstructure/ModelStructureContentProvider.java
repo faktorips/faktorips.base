@@ -155,10 +155,11 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
                     rootCandidates, callHierarchyTemp));
         }
 
-        // If a supertype has been added in the first run, it has to be added now, too
-        if (rootElements.isEmpty() && association == ToChildAssociationType.SUPERTYPE
-        // && rootCandidates.contains(element)
-        ) {
+        // Add supertype if it has any aggregation or composition
+        if (rootElements.isEmpty()
+                && association == ToChildAssociationType.SUPERTYPE
+                && !element.getAssociations(AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL)
+                        .isEmpty()) {
             rootElements.add(element);
         }
 
