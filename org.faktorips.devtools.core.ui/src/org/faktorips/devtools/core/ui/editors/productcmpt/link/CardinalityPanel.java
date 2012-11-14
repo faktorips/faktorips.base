@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 
@@ -55,7 +55,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     private Button mandatory;
     private Button other;
 
-    private IpsObjectUIController uiController;
+    private BindingContext bindingContext;
     private CardinalityField minCardField;
     private CardinalityField maxCardField;
     private CardinalityField defaultCardField;
@@ -149,15 +149,13 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                 deactivate();
                 return;
             } else {
-                if (uiController != null) {
-                    removeFields();
-                }
-                if (uiController == null || !uiController.getIpsObjectPartContainer().equals(currentLink)) {
-                    uiController = new IpsObjectUIController(currentLink);
+                if (bindingContext != null) {
+                    bindingContext.clear();
+                } else {
+                    bindingContext = new BindingContext();
                 }
                 addFields(currentLink);
-
-                uiController.updateUI();
+                bindingContext.updateUI();
                 setEnabled(true);
             }
         }
@@ -169,7 +167,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      */
     public void deactivate() {
         setEnabled(false);
-
         removeFields();
         mandatory.setSelection(false);
         optional.setSelection(false);
@@ -180,10 +177,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     }
 
     private void removeFields() {
-        if (uiController != null) {
-            uiController.remove(minCardField);
-            uiController.remove(maxCardField);
-            uiController.remove(defaultCardField);
+        if (bindingContext != null) {
+            bindingContext.clear();
         }
     }
 
@@ -191,14 +186,14 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         minCardField = new CardinalityField(getMinCardinalityTextControl());
         maxCardField = new CardinalityField(getMaxCardinalityTextControl());
         defaultCardField = new CardinalityField(getDefaultCardinalityTextControl());
-        uiController.add(minCardField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
-        uiController.add(maxCardField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
-        uiController.add(defaultCardField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
+        bindingContext.bindContent(minCardField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(maxCardField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(defaultCardField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
     }
 
     public void refresh() {
-        if (uiController != null) {
-            uiController.updateUI();
+        if (bindingContext != null) {
+            bindingContext.updateUI();
         }
     }
 
@@ -249,6 +244,44 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         }
     }
 
+    protected void setFieldValue(CardinalityField field, Integer integer, boolean triggerValueChanged) {
+        if (field != null) {
+            field.setValue(integer, triggerValueChanged);
+        }
+    }
+
+    /**
+     * Returns the Text control which displays the min cardinality
+     */
+    private Text getMinCardinalityTextControl() {
+        return minCard;
+    }
+
+    /**
+     * Returns the Text control which displays the max cardinality
+     */
+    private Text getMaxCardinalityTextControl() {
+        return maxCard;
+    }
+
+    /**
+     * Returns the control which displays the default cardinality
+     */
+    private Text getDefaultCardinalityTextControl() {
+        return defaultCard;
+    }
+
+    @Override
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        dataChangeable = changeable;
+        setEnabled(changeable);
+    }
+
     /**
      * Listener to update on cardinality modifications.
      * 
@@ -294,44 +327,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             widgetSelected(e);
         }
 
-    }
-
-    protected void setFieldValue(CardinalityField field, Integer integer, boolean triggerValueChanged) {
-        if (field != null) {
-            field.setValue(integer, triggerValueChanged);
-        }
-    }
-
-    /**
-     * Returns the Text control which displays the min cardinality
-     */
-    private Text getMinCardinalityTextControl() {
-        return minCard;
-    }
-
-    /**
-     * Returns the Text control which displays the max cardinality
-     */
-    private Text getMaxCardinalityTextControl() {
-        return maxCard;
-    }
-
-    /**
-     * Returns the control which displays the default cardinality
-     */
-    private Text getDefaultCardinalityTextControl() {
-        return defaultCard;
-    }
-
-    @Override
-    public boolean isDataChangeable() {
-        return dataChangeable;
-    }
-
-    @Override
-    public void setDataChangeable(boolean changeable) {
-        dataChangeable = changeable;
-        setEnabled(changeable);
     }
 
 }

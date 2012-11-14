@@ -57,4 +57,34 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
         return association;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((association == null) ? 0 : association.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AssociationViewItem other = (AssociationViewItem)obj;
+        if (association == null) {
+            if (other.association != null) {
+                return false;
+            }
+        } else if (!association.equals(other.association)) {
+            return false;
+        }
+        return true;
+    }
+
 }
