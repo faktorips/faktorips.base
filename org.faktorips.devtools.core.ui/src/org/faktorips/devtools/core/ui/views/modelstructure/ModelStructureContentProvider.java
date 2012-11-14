@@ -156,10 +156,8 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
         }
 
         // Add supertype if it has any aggregation or composition
-        if (rootElements.isEmpty()
-                && association == ToChildAssociationType.SUPERTYPE
-                && !element.getAssociations(AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL)
-                        .isEmpty()) {
+        if (rootElements.isEmpty() && association == ToChildAssociationType.SUPERTYPE
+                && !element.getAssociations(ASSOCIATION_TYPES).isEmpty()) {
             rootElements.add(element);
         }
 
@@ -178,7 +176,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
     }
 
     @Override
-    List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {
+    protected List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {
         IIpsProject project = parent.getSourceIpsProject();
         List<IType> subtypes = parent.getValue().findSubtypes(false, false, project);
         List<SubtypeComponentNode> subtypeNodeChildren = new ArrayList<SubtypeComponentNode>();
@@ -201,9 +199,8 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
     }
 
     @Override
-    List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent) {
-        List<IAssociation> associations = parent.getValue().getAssociations(
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.AGGREGATION);
+    protected List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent) {
+        List<IAssociation> associations = parent.getValue().getAssociations(ASSOCIATION_TYPES);
         if (!associations.isEmpty()) {
             List<AssociationComponentNode> compositeNodeChildren = new ArrayList<AssociationComponentNode>();
 
@@ -243,7 +240,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
     }
 
     @Override
-    List<ComponentNode> getStoredRootElements() {
+    protected List<ComponentNode> getStoredRootElements() {
         return storedRootElements;
     }
 }

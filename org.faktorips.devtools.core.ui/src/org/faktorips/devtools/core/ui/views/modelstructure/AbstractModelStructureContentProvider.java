@@ -395,7 +395,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param parent the node for which the children should be computed
      * @return a {@link SubtypeComponentNode}, or {@code null} if there are no subtypes.
      */
-    abstract List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent);
+    protected abstract List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent);
 
     /**
      * Computes the {@link AssociationComponentNode} children of this node, if there are any
@@ -405,7 +405,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param parent the node for which the children should be computed
      * @return a {@link AssociationComponentNode}, or {@code null} if there are no associated types.
      */
-    abstract List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent);
+    protected abstract List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent);
 
     /**
      * Checks if this type is directly or indirectly associated by another {@link IType} of the
@@ -471,5 +471,5 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
         return projectComponents;
     }
 
-    abstract List<ComponentNode> getStoredRootElements();
+    protected abstract List<ComponentNode> getStoredRootElements();
 }

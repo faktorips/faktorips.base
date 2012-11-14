@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -806,6 +807,10 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         if (ipsElement != null) {
             showStructure(ipsElement.getIpsProject());
             return true;
+        }
+        IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+        if (resource != null) {
+            show(resource);
         }
         return false;
     }
