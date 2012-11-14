@@ -173,23 +173,8 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         return sb.toString();
     }
 
-    @Deprecated
-    public IProductComponentGeneration getSource() {
-        if (source instanceof IProductComponentGeneration) {
-            return (IProductComponentGeneration)source;
-        } else {
-            throw new UnsupportedOperationException(
-                    "This link does not originate from a product component generation but from a product component.");
-        }
+    public IProductComponentLinkSource getSource() {
+        return source;
     }
-    //
-    // /**
-    // * Returns the {@link IProductComponentSource} this link originates from.
-    // *
-    // * @since 3.8
-    // */
-    // public IProductComponentSource getProductComponentSource() {
-    // return source;
-    // }
 
 }
