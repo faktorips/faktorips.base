@@ -235,7 +235,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         final Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
-        MenuCleaner.addAdditionsCleaner(manager);
+        MenuCleaner.addDefaultCleaner(manager);
 
         manager.addMenuListener(new IMenuListener() {
             @Override

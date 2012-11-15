@@ -405,7 +405,7 @@
                type="org.eclipse.core.resources.IFile">
          </adapter>
          <adapter
-               type="org.eclipse.jface.resource.ResourceManager">
+               type="org.eclipse.core.resources.mapping.ResourceMapping">
          </adapter>
       </factory>
       <factory

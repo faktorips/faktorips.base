@@ -41,13 +41,13 @@ public class MenuCleanerTest {
     }
 
     @Test
-    public void testAddAdditionsCleanerNoAdditionsGroup() {
-        IMenuManager menuManager = new MenuManager();
-
-        MenuCleaner.addAdditionsCleaner(menuManager);
-
-        assertEquals(IWorkbenchActionConstants.MB_ADDITIONS, menuManager.getItems()[0].getId());
-    }
+        public void testAddDefaultCleanerNoAdditionsGroup() {
+            IMenuManager menuManager = new MenuManager();
+    
+            MenuCleaner.addDefaultCleaner(menuManager);
+    
+            assertEquals(IWorkbenchActionConstants.MB_ADDITIONS, menuManager.getItems()[0].getId());
+        }
 
     @Test
     public void testDefaultConstructor() {
