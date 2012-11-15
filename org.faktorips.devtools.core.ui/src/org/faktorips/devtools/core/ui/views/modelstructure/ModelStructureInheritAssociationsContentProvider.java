@@ -18,6 +18,7 @@ import static org.faktorips.devtools.core.ui.views.modelstructure.AssociationCom
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -252,13 +253,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
              * general root element or supertype is from the same project, therefore we have no
              * derived associations
              */
-            if (parentType.findSupertype(project) == null) {
-                if (!associationNodes.isEmpty()) {
-                    return associationNodes;
-                } else {
-                    return null;
-                }
-            } else {
+            if (parentType.findSupertype(project) != null) {
                 // compute the derived associations -> go up in the inheritance hierarchy
                 IType supertype = parentType.findSupertype(project);
                 List<IAssociation> supertypeAssociations = new ArrayList<IAssociation>();
@@ -284,10 +279,37 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
             throw new CoreRuntimeException(e);
         }
 
+        removeImplementedDerivedUnions(associationNodes);
+
         if (!associationNodes.isEmpty()) {
             return associationNodes;
+        } else {
+            return null;
         }
-        return null;
+    }
+
+    void removeImplementedDerivedUnions(List<AssociationComponentNode> associationNodes) {
+        for (Iterator<AssociationComponentNode> iterator = associationNodes.iterator(); iterator.hasNext();) {
+            AssociationComponentNode associationComponentNode = iterator.next();
+            boolean subsetted = false;
+            if (associationComponentNode.isDerivedUnion()) {
+                for (AssociationComponentNode otherAssociationComponentNode : associationNodes) {
+                    if (otherAssociationComponentNode == associationComponentNode) {
+                        continue;
+                    }
+                    if (otherAssociationComponentNode.isSubsetOfADerivedUnion()
+                            && otherAssociationComponentNode.getSubsettedDerivedUnion().equals(
+                                    associationComponentNode.getTargetRoleSingular())) {
+                        subsetted = true;
+                        break;
+                    }
+                }
+            }
+            if (subsetted) {
+                iterator.remove();
+            }
+        }
+
     }
 
     private List<AssociationComponentNode> getDirectAssociationComponentNodes(ComponentNode parent, IIpsProject project) {

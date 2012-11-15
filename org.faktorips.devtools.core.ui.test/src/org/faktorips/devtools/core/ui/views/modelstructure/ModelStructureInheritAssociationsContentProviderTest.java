@@ -14,7 +14,11 @@
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +34,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Test;
 
-public class ModelStructureInheritAssociationContentProviderTest extends AbstractIpsPluginTest {
+public class ModelStructureInheritAssociationsContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCollectElements_FindCorrectRootElementInASingleProject() throws CoreException {
@@ -488,4 +492,50 @@ public class ModelStructureInheritAssociationContentProviderTest extends Abstrac
         assertEquals(1, children.length);
         assertEquals(hausratGrunddeckung, ((ComponentNode)children[0]).getValue());
     }
+
+    @Test
+    public void testRemoveImplementedDerivedUnions_nothingToRemove() throws Exception {
+        ModelStructureInheritAssociationsContentProvider contentProvider = new ModelStructureInheritAssociationsContentProvider();
+        List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
+        AssociationComponentNode node1 = mock(AssociationComponentNode.class);
+        associationNodes.add(node1);
+        AssociationComponentNode node2 = mock(AssociationComponentNode.class);
+        when(node2.isDerivedUnion()).thenReturn(true);
+        when(node2.getTargetRoleSingular()).thenReturn("abc123");
+        associationNodes.add(node2);
+        AssociationComponentNode node3 = mock(AssociationComponentNode.class);
+        when(node3.isSubsetOfADerivedUnion()).thenReturn(true);
+        when(node3.getSubsettedDerivedUnion()).thenReturn("nononever");
+        associationNodes.add(node3);
+
+        contentProvider.removeImplementedDerivedUnions(associationNodes);
+
+        assertEquals(3, associationNodes.size());
+        assertThat(associationNodes, hasItem(node1));
+        assertThat(associationNodes, hasItem(node2));
+        assertThat(associationNodes, hasItem(node3));
+    }
+
+    @Test
+    public void testRemoveImplementedDerivedUnions() throws Exception {
+        ModelStructureInheritAssociationsContentProvider contentProvider = new ModelStructureInheritAssociationsContentProvider();
+        List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
+        AssociationComponentNode node1 = mock(AssociationComponentNode.class);
+        associationNodes.add(node1);
+        AssociationComponentNode node2 = mock(AssociationComponentNode.class);
+        when(node2.isDerivedUnion()).thenReturn(true);
+        when(node2.getTargetRoleSingular()).thenReturn("abc123");
+        associationNodes.add(node2);
+        AssociationComponentNode node3 = mock(AssociationComponentNode.class);
+        when(node3.isSubsetOfADerivedUnion()).thenReturn(true);
+        when(node3.getSubsettedDerivedUnion()).thenReturn("abc123");
+        associationNodes.add(node3);
+
+        contentProvider.removeImplementedDerivedUnions(associationNodes);
+
+        assertEquals(2, associationNodes.size());
+        assertThat(associationNodes, hasItem(node1));
+        assertThat(associationNodes, hasItem(node3));
+    }
+
 }

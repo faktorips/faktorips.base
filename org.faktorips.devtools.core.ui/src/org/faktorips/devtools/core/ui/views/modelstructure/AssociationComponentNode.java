@@ -19,15 +19,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public final class AssociationComponentNode extends ComponentNode {
+public class AssociationComponentNode extends ComponentNode {
 
-    private int minCardinality;
-    private int maxCardinality;
-    private String targetRoleSingular;
+    private final int minCardinality;
+    private final int maxCardinality;
+    private final String targetRoleSingular;
     private IType targetingType;
     private boolean isInherited;
-    private boolean isDerivedUnion;
-    private boolean isSubsetOfADerivedUnion;
+    private final boolean isDerivedUnion;
+    private final boolean isSubsetOfADerivedUnion;
+    private final String subsettedDerivedUnion;
 
     /**
      * Creates a new AssociationComponentNode with designated parent node and value.
@@ -48,6 +49,7 @@ public final class AssociationComponentNode extends ComponentNode {
         this.isInherited = false;
         this.isDerivedUnion = targetingAssociation.isDerivedUnion();
         this.isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
+        this.subsettedDerivedUnion = targetingAssociation.getSubsettedDerivedUnion();
         this.setParent(parent);
     }
 
@@ -161,6 +163,10 @@ public final class AssociationComponentNode extends ComponentNode {
 
     public boolean isSubsetOfADerivedUnion() {
         return isSubsetOfADerivedUnion;
+    }
+
+    public String getSubsettedDerivedUnion() {
+        return subsettedDerivedUnion;
     }
 
     public void setInherited(boolean inherited) {
