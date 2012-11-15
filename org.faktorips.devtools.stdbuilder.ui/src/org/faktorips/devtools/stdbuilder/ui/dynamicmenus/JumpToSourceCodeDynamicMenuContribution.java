@@ -193,7 +193,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
         for (IType type : javaTypes) {
             try {
-                if (type.isInterface()) {
+                if (!type.isInterface()) {
                     sortedTypes.add(type);
                     IType implementation = getImplementationForInterface(javaTypes, type);
                     if (implementation != null) {
