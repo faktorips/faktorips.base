@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
 /**
  * Abstract class to search the references of a given {@link IIpsObject}.
@@ -52,14 +53,14 @@ public abstract class AbstractReferenceFromProductSearchQuery extends ReferenceS
      * <p>
      * This method should be called in implementations of {@link #findReferences()} of subclasses.
      */
-    protected List<IProductCmptGeneration> getReferencingProductCmptGenerations() throws CoreException {
-        List<IProductCmptGeneration> referencingProductCmptGenerations = new ArrayList<IProductCmptGeneration>();
+    protected List<IProductPartsContainer> getReferencingProductCmptGenerations() throws CoreException {
+        List<IProductPartsContainer> referencingProductCmptGenerations = new ArrayList<IProductPartsContainer>();
 
         IIpsProject[] referencingProjects = referenced.getIpsProject().findReferencingProjectLeavesOrSelf();
         QualifiedNameType referencedQualifiedNameType = referenced.getQualifiedNameType();
 
         for (IIpsProject referencingIpsProject : referencingProjects) {
-            IProductCmptGeneration[] findReferencingProductCmptGenerations = referencingIpsProject
+            IProductPartsContainer[] findReferencingProductCmptGenerations = referencingIpsProject
                     .findReferencingProductCmptGenerations(referencedQualifiedNameType);
             referencingProductCmptGenerations.addAll(Arrays.asList(findReferencingProductCmptGenerations));
         }

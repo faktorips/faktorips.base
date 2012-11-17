@@ -102,10 +102,10 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             return result;
         }
 
-        List<IIpsObjectGeneration> generations = productCmpt.getGenerations();
+        List<IProductCmptGeneration> generations = productCmpt.getProductCmptGenerations();
         try {
             monitor.beginTask(productCmpt.getName(), generations.size());
-            for (IIpsObjectGeneration generation : generations) {
+            for (IProductCmptGeneration generation : generations) {
                 result.addAll(collectValidFromDates(generation, generation.getValidFrom(), alreadyPassed, ipsProject,
                         monitor));
             }
@@ -115,7 +115,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
         return result;
     }
 
-    private Set<GregorianCalendar> collectValidFromDates(IIpsObjectGeneration generation,
+    private Set<GregorianCalendar> collectValidFromDates(IProductCmptGeneration generation,
             GregorianCalendar smallestValidFrom,
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
@@ -129,35 +129,31 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             result.add(generation.getValidFrom());
             smallestValidFrom = generation.getValidFrom();
         }
-        if (generation instanceof IProductCmptGeneration) {
-            IProductCmptGeneration prodCmptGeneration = (IProductCmptGeneration)generation;
-            IProductCmptLink[] links = prodCmptGeneration.getLinks();
-            IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-            try {
-                subMonitor.beginTask(null, links.length);
-                for (IProductCmptLink link : links) {
-                    if (monitor.isCanceled()) {
-                        return result;
-                    }
-                    IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
-                    if (linkAssociation != null && !linkAssociation.isAssoziation()) {
-                        IProductCmpt target = link.findTarget(ipsProject);
-                        if (target != null) {
-                            IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
-                            List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target,
-                                    generation);
-                            for (IProductCmptGeneration aGeneration : relevantGenerations) {
-                                if (alreadyPassed.add(aGeneration)) {
-                                    result.addAll(collectValidFromDates(aGeneration, smallestValidFrom, alreadyPassed,
-                                            ipsProject, recMonitor));
-                                }
+        List<IProductCmptLink> links = generation.getLinksIncludingProductCmpt();
+        IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        try {
+            subMonitor.beginTask(null, links.size());
+            for (IProductCmptLink link : links) {
+                if (monitor.isCanceled()) {
+                    return result;
+                }
+                IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
+                if (linkAssociation != null && !linkAssociation.isAssoziation()) {
+                    IProductCmpt target = link.findTarget(ipsProject);
+                    if (target != null) {
+                        IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
+                        List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target, generation);
+                        for (IProductCmptGeneration aGeneration : relevantGenerations) {
+                            if (alreadyPassed.add(aGeneration)) {
+                                result.addAll(collectValidFromDates(aGeneration, smallestValidFrom, alreadyPassed,
+                                        ipsProject, recMonitor));
                             }
                         }
                     }
                 }
-            } finally {
-                subMonitor.done();
             }
+        } finally {
+            subMonitor.done();
         }
         return result;
     }

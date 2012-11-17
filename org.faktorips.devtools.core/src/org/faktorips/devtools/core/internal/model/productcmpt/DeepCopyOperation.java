@@ -351,7 +351,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             Set<Object> objectsToRefer) {
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
-        IProductCmptLink[] links = generation.getLinks();
+        List<IProductCmptLink> links = generation.getLinksIncludingProductCmpt();
         for (IProductCmptLink link : links) {
             LinkData linkData;
             try {

@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
@@ -34,7 +34,7 @@ public class ReferencesToTableContentsSearchQuery extends AbstractReferenceFromP
 
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
-        List<IProductCmptGeneration> referencingProductCmptGenerations = getReferencingProductCmptGenerations();
+        List<IProductPartsContainer> referencingProductCmptGenerations = getReferencingProductCmptGenerations();
         return referencingProductCmptGenerations.toArray(new IIpsElement[referencingProductCmptGenerations.size()]);
     }
 }

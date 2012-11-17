@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -101,6 +102,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         attr2 = new ProductCmptTypeAttribute(type, "IDAttr2");
         attr2.setName("TypeAttr2");
 
+    }
+
+    @Test
+    public void testDependsOn() throws Exception {
+        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+        association.setTargetRoleSingular("testAsso");
+        association.setTarget(type.getQualifiedName());
+        ProductCmpt targetProductCmpt = newProductCmpt(type, "referenced");
+        IProductCmptLink link = productCmpt.newLink(association);
+        link.setTarget(targetProductCmpt.getQualifiedName());
+
+        IDependency[] dependsOn = productCmpt.dependsOn();
+
+        assertEquals(1, dependsOn.length);
+        assertEquals(targetProductCmpt.getQualifiedNameType(), dependsOn[0].getTarget());
     }
 
     @Test
@@ -743,6 +760,24 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         staticAssoc.setChangingOverTime(false);
 
         assertTrue(productCmpt.isContainerFor(staticAssoc));
+    }
+
+    @Test
+    public void testGetLinksIncludingGenerations() throws Exception {
+        IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2011, 0, 1));
+        ArrayList<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
+        links.add(productCmpt.newLink("asdff"));
+        links.add(productCmpt.newLink("asdff2"));
+        links.add(generation1.newLink("asd1"));
+        links.add(generation1.newLink("asd2"));
+        links.add(generation2.newLink("asd3"));
+        links.add(generation2.newLink("asd4"));
+
+        List<IProductCmptLink> linksIncludingGenerations = productCmpt.getLinksIncludingGenerations();
+        assertEquals(links, linksIncludingGenerations);
     }
 
 }

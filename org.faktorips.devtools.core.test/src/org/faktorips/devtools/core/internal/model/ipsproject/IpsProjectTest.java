@@ -19,7 +19,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -82,7 +84,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -1392,12 +1395,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 "tobereferenced");
         IProductCmpt noref = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "noref");
         IProductCmpt ref1 = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "ref1");
+        IProductCmpt refStatic = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "refStatic");
+        ITableContents tableContents = (ITableContents)this.newIpsObject(pack, IpsObjectType.TABLE_CONTENTS, "table");
 
         IProductCmptGeneration gen1 = (IProductCmptGeneration)ref1.newGeneration();
         IProductCmptGeneration genNoref = (IProductCmptGeneration)noref.newGeneration();
         IProductCmptGeneration genTobereferenced = (IProductCmptGeneration)tobereferenced.newGeneration();
 
-        IPropertyValueContainer[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced
+        IProductPartsContainer[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced
                 .getQualifiedNameType());
         assertEquals(0, result.length);
 
@@ -1406,21 +1411,31 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         genNoref.setValidFrom(cal);
         genTobereferenced.setValidFrom(cal);
         gen1.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
+        refStatic.newLink("staticLink").setTarget(tobereferenced.getQualifiedName());
 
         result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
-        assertEquals(1, result.length);
-        assertEquals(gen1, result[0]);
+        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)refStatic));
+        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen1));
+        assertEquals(2, result.length);
 
         IProductCmptGeneration gen2 = (IProductCmptGeneration)ref1.newGeneration();
+        gen1.newLink("secondLink").setTarget(tobereferenced.getQualifiedName());
         gen2.setValidFrom(cal);
         gen2.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
-        IProductCmptGeneration[] generations = ipsProject.findReferencingProductCmptGenerations(tobereferenced
-                .getQualifiedNameType());
+        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
 
-        List<IProductCmptGeneration> resultList = Arrays.asList(generations);
-        assertEquals(2, resultList.size());
-        assertTrue(resultList.contains(gen1));
-        assertTrue(resultList.contains(gen2));
+        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)refStatic));
+        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen1));
+        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen2));
+        assertEquals(3, result.length);
+
+        ITableContentUsage tableUsage = gen1.newTableContentUsage();
+        tableUsage.setTableContentName(tableContents.getQualifiedName());
+        result = ipsProject.findReferencingProductCmptGenerations(tableContents.getQualifiedNameType());
+
+        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen1));
+        assertEquals(1, result.length);
+
     }
 
     @Test

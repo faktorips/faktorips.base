@@ -33,8 +33,8 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 /**
  * A part (or component) of a product.
  */
-public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IPropertyValueContainer,
-        IProductCmptLinkContainer {
+public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
+        IPropertyValueContainer {
 
     /**
      * The name of the product component type property
@@ -262,5 +262,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
 
     @Override
     public IProductCmptGeneration getFirstGeneration();
+
+    /**
+     * Returns a list containing all links defined in this product component including all links of
+     * every generation.
+     * 
+     * @return A list containing every link of this product component and its generations
+     */
+    public List<IProductCmptLink> getLinksIncludingGenerations();
 
 }

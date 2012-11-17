@@ -92,10 +92,10 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      */
     public ProductCmptTreeStructure(IProductCmpt root, GregorianCalendar date, IIpsProject project)
             throws CycleInProductStructureException {
-    
+
         ArgumentCheck.notNull(root);
         ArgumentCheck.notNull(project);
-    
+
         workingDate = date;
         ipsProject = project;
         this.root = buildNode(root, null, null);
@@ -315,9 +315,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             // Sort links by association
             Hashtable<String, List<IProductCmptLink>> mapping = new Hashtable<String, List<IProductCmptLink>>();
 
-            IProductCmptLink[] links = cmpt.getLinksAsList().toArray(new IProductCmptLink[0]);
-            putLinksToMap(links, mapping);
-            links = activeGeneration.getLinks();
+            List<IProductCmptLink> links = activeGeneration.getLinksIncludingProductCmpt();
             putLinksToMap(links, mapping);
 
             List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
@@ -360,7 +358,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         return children.toArray(result);
     }
 
-    private void putLinksToMap(IProductCmptLink[] links, Hashtable<String, List<IProductCmptLink>> mapping) {
+    private void putLinksToMap(List<IProductCmptLink> links, Hashtable<String, List<IProductCmptLink>> mapping) {
         for (IProductCmptLink link : links) {
             try {
                 IProductCmptTypeAssociation association = link.findAssociation(ipsProject);

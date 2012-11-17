@@ -29,6 +29,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,7 +95,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmpt productCmpt = ipsProject.findProductCmpt("products.ComfortMotorProduct");
         assertNotNull(productCmpt);
 
-        IProductCmptTreeStructure structure = productCmpt.getStructure(ipsProject);
+        IProductCmptTreeStructure structure = productCmpt.getStructure(productCmpt.getFirstGeneration().getValidFrom(),
+                ipsProject);
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
@@ -177,8 +179,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     public void testCopySome() throws Exception {
         createTestContent();
 
-        IProductCmptReference[] toCopy = new IProductCmptReference[3];
-        IProductCmptReference[] toRefer = new IProductCmptReference[2];
+        IProductCmptReference[] toCopy = new IProductCmptReference[4];
+        IProductCmptReference[] toRefer = new IProductCmptReference[3];
         int copyCount = 0;
         int refCount = 0;
 
@@ -197,7 +199,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmpt standardTplCoverage = ipsProject.findProductCmpt("products.StandardTplCoverage");
         assertNotNull(standardTplCoverage);
 
-        IProductCmptTreeStructure structure = comfortMotorProduct.getStructure(ipsProject);
+        IProductCmptTreeStructure structure = comfortMotorProduct.getStructure(comfortMotorProduct.getFirstGeneration()
+                .getValidFrom(), ipsProject);
         IProductCmptReference node = structure.getRoot();
         IProductCmptReference[] children = structure.getChildProductCmptReferences(node);
         for (IProductCmptReference element : children) {
@@ -215,8 +218,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         toCopy[copyCount] = node;
         copyCount++;
 
-        assertEquals(3, copyCount);
-        assertEquals(2, refCount);
+        assertEquals(4, copyCount);
+        assertEquals(3, refCount);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
@@ -245,7 +248,27 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
 
         IProductCmpt base = (IProductCmpt)handles.get(toCopy[toCopy.length - 1]).getIpsObject();
+
+        List<IProductCmptLink> allLinks = base.getLinksAsList();
+        assertEquals(2, allLinks.size());
+        List<IProductCmptLink> linksAsList = base.getLinksAsList("VehicleTypeStatic");
+        assertEquals(1, linksAsList.size());
+        assertEquals("products.DeepCopyOfStandardVehicle", linksAsList.get(0).getName());
+
+        linksAsList = base.getLinksAsList("TplCoverageTypeStatic");
+        assertEquals(1, linksAsList.size());
+        assertEquals("products.StandardTplCoverage", linksAsList.get(0).getName());
+
         IProductCmptGeneration gen = (IProductCmptGeneration)base.getGenerationsOrderedByValidDate()[0];
+        linksAsList = gen.getLinksAsList("VehicleType");
+        assertEquals(1, linksAsList.size());
+        assertEquals("products.DeepCopyOfStandardVehicle", linksAsList.get(0).getName());
+
+        linksAsList = gen.getLinksAsList("CollisionCoverageType");
+        assertEquals(2, linksAsList.size());
+        assertEquals("products.DeepCopyOfComfortCollisionCoverageA", linksAsList.get(0).getName());
+        assertEquals("products.ComfortCollisionCoverageB", linksAsList.get(1).getName());
+
         IProductCmptLink[] rels = gen.getLinks("TplCoverageType");
         assertEquals(1, rels.length);
         assertEquals("products.StandardTplCoverage", rels[0].getName());
@@ -258,7 +281,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     @Test
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
-        IProductCmptTreeStructure structure = product.getStructure(ipsProject);
+        IProductCmptTreeStructure structure = product.getStructure(new GregorianCalendar(), ipsProject);
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
@@ -401,26 +424,37 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         createPolicyCmptTypeAssociation(contract, coverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL, "Coverage",
                 "Coverages", 0, Integer.MAX_VALUE);
         createProductCmptTypeAssociation(contract.findProductCmptType(ipsProject),
-                coverage.findProductCmptType(ipsProject), "CoverageType", "CoverageTypes", 0, 1);
+                coverage.findProductCmptType(ipsProject), "CoverageType", "CoverageTypes", 0, 1, true);
 
         // create association: MotorContract to Vehicle
         createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "Vehicle", "Vehicles", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
-                vehicle.findProductCmptType(ipsProject), "VehicleType", "VehicleTypes", 0, 1);
+                vehicle.findProductCmptType(ipsProject), "VehicleType", "VehicleTypes", 0, 1, true);
 
         // create association: MotorContract to CollisionCoverage
         createPolicyCmptTypeAssociation(motorContract, collisionCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "CollisionCoverage", "CollisionCoverages", 0, 2);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
                 collisionCoverage.findProductCmptType(ipsProject), "CollisionCoverageType", "CollisionCoverageTypes",
-                0, 2);
+                0, 2, true);
 
         // create association: MotorContract to TplCoverage
         createPolicyCmptTypeAssociation(motorContract, tplCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "TplCoverage", "TplCoverages", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
-                tplCoverage.findProductCmptType(ipsProject), "TplCoverageType", "TplCoverageTypes", 0, 1);
+                tplCoverage.findProductCmptType(ipsProject), "TplCoverageType", "TplCoverageTypes", 0, 1, true);
+
+        // create static associations
+        createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
+                "VehicleStatic", "VehicleStatics", 0, 1);
+        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
+                vehicle.findProductCmptType(ipsProject), "VehicleTypeStatic", "VehicleTypeStatics", 0, 1, false);
+        createPolicyCmptTypeAssociation(motorContract, tplCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
+                "TplCoverageStatic", "TplCoverageStatics", 0, 1);
+        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
+                tplCoverage.findProductCmptType(ipsProject), "TplCoverageTypeStatic", "TplCoverageTypeStatics", 0, 1,
+                false);
 
         salesNameAttribute = motorContract.newPolicyCmptTypeAttribute("salesName");
         salesNameAttribute.setProductRelevant(true);
@@ -459,6 +493,11 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         link = generation.newLink("TplCoverageType");
         link.setTarget("products.StandardTplCoverage");
 
+        link = comfortMotorProduct.newLink("VehicleTypeStatic");
+        link.setTarget("products.StandardVehicle");
+        link = comfortMotorProduct.newLink("TplCoverageTypeStatic");
+        link.setTarget("products.StandardTplCoverage");
+
         standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
     }
 
@@ -467,15 +506,17 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             String roleNameSingular,
             String roleNamePlural,
             int minCardinality,
-            int maxCardinality) {
+            int maxCardinality,
+            boolean changeOverTime) {
 
-        IProductCmptTypeAssociation coverageTypeAssoc = source.newProductCmptTypeAssociation();
-        coverageTypeAssoc.setTarget(target.getQualifiedName());
-        coverageTypeAssoc.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        coverageTypeAssoc.setTargetRoleSingular(roleNameSingular);
-        coverageTypeAssoc.setTargetRolePlural(roleNamePlural);
-        coverageTypeAssoc.setMinCardinality(minCardinality);
-        coverageTypeAssoc.setMaxCardinality(maxCardinality);
+        IProductCmptTypeAssociation assoc = source.newProductCmptTypeAssociation();
+        assoc.setTarget(target.getQualifiedName());
+        assoc.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assoc.setTargetRoleSingular(roleNameSingular);
+        assoc.setTargetRolePlural(roleNamePlural);
+        assoc.setMinCardinality(minCardinality);
+        assoc.setMaxCardinality(maxCardinality);
+        assoc.setChangingOverTime(changeOverTime);
     }
 
     private void createPolicyCmptTypeAssociation(IPolicyCmptType source,

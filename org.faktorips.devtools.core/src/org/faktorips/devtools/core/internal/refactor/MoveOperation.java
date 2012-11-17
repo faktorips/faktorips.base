@@ -52,7 +52,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -624,14 +624,14 @@ public class MoveOperation implements IRunnableWithProgress {
      */
     private void move(ITableContents source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
         try {
-            IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(
+            IProductPartsContainer[] refs = source.getIpsProject().findReferencingProductCmptGenerations(
                     source.getQualifiedNameType());
 
             // copy
             createCopy(source.getIpsSrcFile(), targetFile, monitor);
 
             // update references
-            for (IProductCmptGeneration ref : refs) {
+            for (IProductPartsContainer ref : refs) {
                 fixTableContentsRelations(ref, source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(),
                         monitor);
             }
@@ -673,16 +673,16 @@ public class MoveOperation implements IRunnableWithProgress {
      * Resets the target of all table content usages of the given generation, if the table content
      * usage equals the old name, to the new name.
      * 
-     * @param generation The generation to fix the table content.
+     * @param propertyValueContainer The generation to fix the table content.
      * @param oldName The old, qualified name of the target.
      * @param newName The new, qualified name of the target
      * @param monitor Progress monitor to show progress.
      */
-    private void fixTableContentsRelations(IProductCmptGeneration generation,
+    private void fixTableContentsRelations(IProductPartsContainer propertyValueContainer,
             String oldName,
             String newName,
             IProgressMonitor monitor) throws CoreException {
-        ITableContentUsage[] tcu = generation.getTableContentUsages();
+        List<ITableContentUsage> tcu = propertyValueContainer.getProductParts(ITableContentUsage.class);
 
         for (ITableContentUsage element : tcu) {
             String target = element.getTableContentName();
@@ -690,7 +690,7 @@ public class MoveOperation implements IRunnableWithProgress {
                 element.setTableContentName(newName);
             }
         }
-        generation.getIpsSrcFile().save(true, monitor);
+        propertyValueContainer.getIpsSrcFile().save(true, monitor);
     }
 
     /**

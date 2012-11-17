@@ -72,8 +72,14 @@ import org.w3c.dom.Element;
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private final ProductCmptLinkCollection linkCollection = new ProductCmptLinkCollection();
+
     private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
+
+    private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
+            linkCollection);
+
     private String productCmptType = ""; //$NON-NLS-1$
+
     private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
@@ -228,8 +234,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             dependencySet.add(dependency);
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
         }
-
-        // add dependency to related product cmpt's and add dependency to table contents
+        linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencySet, details);
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             ((ProductCmptGeneration)generation).dependsOn(dependencySet, details);
@@ -303,14 +308,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
-        int numOfGenerations = getNumOfGenerations();
-        for (int i = 0; i < numOfGenerations; i++) {
-            IProductCmptGeneration generation = (IProductCmptGeneration)getGeneration(i);
-            IProductCmptLink[] links = generation.getLinks();
-            for (IProductCmptLink link : links) {
-                if (productCmptCandidate.getQualifiedName().equals(link.getTarget())) {
-                    return true;
-                }
+        List<IProductCmptLink> links = getLinksIncludingGenerations();
+        for (IProductCmptLink link : links) {
+            if (productCmptCandidate.getQualifiedName().equals(link.getTarget())) {
+                return true;
             }
         }
         return false;
@@ -344,6 +345,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         return propertyValueCollection.getPropertyValue(propertyName);
+    }
+
+    @Override
+    public <T extends IIpsObjectPart> List<T> getProductParts(Class<T> type) {
+        return productPartCollection.getProductParts(type);
     }
 
     @Override
@@ -596,6 +602,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public List<IProductCmptLink> getLinksAsList(String associationName) {
         return linkCollection.getLinks(associationName);
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinksIncludingGenerations() {
+        List<IProductCmptLink> linksAsList = getLinksAsList();
+        for (IProductCmptGeneration generation : getProductCmptGenerations()) {
+            linksAsList.addAll(generation.getLinksAsList());
+        }
+        return linksAsList;
     }
 
     @Override

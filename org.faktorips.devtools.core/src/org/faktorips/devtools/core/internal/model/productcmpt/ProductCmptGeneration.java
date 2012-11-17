@@ -67,6 +67,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
 
+    private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
+            linkCollection);
+
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
     }
@@ -91,7 +94,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
-        addRelatedProductCmptQualifiedNameTypes(dependencies, details);
+        linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencies, details);
         addRelatedTableContentsQualifiedNameTypes(dependencies, details);
     }
 
@@ -109,22 +112,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
-        }
-    }
-
-    /**
-     * Add the qualified name types of all related product cmpt's inside the given generation to the
-     * given set
-     */
-    private void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes,
-            Map<IDependency, List<IDependencyDetail>> details) {
-
-        IProductCmptLink[] relations = getLinks();
-        for (IProductCmptLink relation : relations) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
-                    .getQualifiedNameType(), new QualifiedNameType(relation.getTarget(), IpsObjectType.PRODUCT_CMPT));
-            qaTypes.add(dependency);
-            addDetails(details, dependency, relation, IProductCmptLink.PROPERTY_TARGET);
         }
     }
 
@@ -158,6 +145,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
         objectHasChanged();
         return newPropertyValue;
+    }
+
+    @Override
+    public <T extends IIpsObjectPart> List<T> getProductParts(Class<T> type) {
+        return productPartCollection.getProductParts(type);
     }
 
     public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
@@ -577,6 +569,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public List<IProductCmptLink> getLinksAsList(String associationName) {
         return linkCollection.getLinks(associationName);
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinksIncludingProductCmpt() {
+        List<IProductCmptLink> linksAsList = getProductCmpt().getLinksAsList();
+        linksAsList.addAll(getLinksAsList());
+        return linksAsList;
     }
 
 }

@@ -205,8 +205,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         if (partOfProductCmpt == null) {
             return null;
         }
-        // both tableUsages and links are part of the generation. So we have to call getParent twice
-        IIpsElement parent = partOfProductCmpt.getParent().getParent();
+        IIpsElement parent = partOfProductCmpt.getIpsObject();
         if (parent instanceof IProductCmpt) {
             return (IProductCmpt)parent;
         } else {
