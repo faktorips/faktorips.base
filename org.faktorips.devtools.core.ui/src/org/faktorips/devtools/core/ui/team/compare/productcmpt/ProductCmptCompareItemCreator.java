@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
@@ -73,6 +74,9 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
                 List<IPropertyValue> propertyValues = productCmpt.getAllPropertyValues();
                 for (IPropertyValue propertyValue : propertyValues) {
                     new ProductCmptCompareItem(productCmptItem, propertyValue);
+                }
+                for (IProductCmptLink link : productCmpt.getLinksAsList()) {
+                    new ProductCmptCompareItem(productCmptItem, link);
                 }
                 // Generations of product
                 IIpsObjectGeneration[] gens = productCmpt.getGenerationsOrderedByValidDate();

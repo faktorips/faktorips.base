@@ -51,6 +51,8 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     private IConfigElement configElement2;
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
+    private IProductCmptLink staticLink1;
+    private IProductCmptLink staticLink2;
 
     @Override
     @Before
@@ -60,6 +62,9 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         root = proj.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
+
+        staticLink1 = product.newLink(productReferenced.getQualifiedName());
+        staticLink2 = product.newLink(productReferenced.getQualifiedName());
 
         GregorianCalendar calendar = new GregorianCalendar();
         generation1 = (IProductCmptGeneration)product.newGeneration(calendar);
@@ -93,10 +98,14 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         assertEquals(product, compareItem.getIpsElement());
 
         children = compareItem.getChildren();
-        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareStaticLink1 = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareStaticLink2 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[3];
+        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[4];
 
+        assertEquals(staticLink1, compareStaticLink1.getIpsElement());
+        assertEquals(staticLink2, compareStaticLink2.getIpsElement());
         assertEquals(generation1, compareItemGen1.getIpsElement());
         assertEquals(generation2, compareItemGen2.getIpsElement());
         assertEquals(generation3, compareItemGen3.getIpsElement());
