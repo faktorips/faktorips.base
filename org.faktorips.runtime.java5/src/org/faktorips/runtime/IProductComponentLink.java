@@ -15,6 +15,8 @@ package org.faktorips.runtime;
 
 /**
  * This class represents a link between two product components.
+ * <p>
+ * The generic type T specifies the target type of this link.
  * 
  * @author Daniel Hohenberger
  */
@@ -29,9 +31,9 @@ public interface IProductComponentLink<T extends IProductComponent> extends IRun
      * Returns the {@link IProductComponentLinkSource} this link originates from. This may be a
      * {@link IProductComponentGeneration} or a {@link IProductComponent} (since 3.8).
      * 
-     * @since 3.8 The return value of this method changed in version 3.8 from
-     *        {@link IProductComponentGeneration} to {@link IProductComponentLinkSource}. This is a
-     *        compatible change on source code level but incompatible in byte code!
+     * @since The return value of this method changed in version 3.8 from
+     *        {@link IProductComponentGeneration} to {@link IProductComponentLinkSource} because the
+     *        link source may be a product component or a product component generation.
      */
     public IProductComponentLinkSource getSource();
 

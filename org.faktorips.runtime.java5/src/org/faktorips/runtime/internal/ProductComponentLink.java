@@ -31,8 +31,8 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public class ProductComponentLink<E extends IProductComponent> extends RuntimeObject implements
-        IProductComponentLink<E>, IXmlPersistenceSupport {
+public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject implements
+        IProductComponentLink<T>, IXmlPersistenceSupport {
 
     private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
@@ -54,7 +54,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * @throws NullPointerException if any of the parameters is {@code null}.
      * 
      */
-    public ProductComponentLink(IProductComponentGeneration source, E target) {
+    public ProductComponentLink(IProductComponentGeneration source, T target) {
         this((IProductComponentLinkSource)source, target, CardinalityRange.FULL_RANGE);
     }
 
@@ -64,7 +64,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
-    public ProductComponentLink(IProductComponentGeneration source, E target, CardinalityRange cardinality) {
+    public ProductComponentLink(IProductComponentGeneration source, T target, CardinalityRange cardinality) {
         this((IProductComponentLinkSource)source, target, cardinality);
     }
 
@@ -83,7 +83,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * @throws NullPointerException if any of the parameters is {@code null}.
      * 
      */
-    public ProductComponentLink(IProductComponentLinkSource source, E target) {
+    public ProductComponentLink(IProductComponentLinkSource source, T target) {
         this(source, target, CardinalityRange.FULL_RANGE);
     }
 
@@ -93,7 +93,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
-    public ProductComponentLink(IProductComponentLinkSource source, E target, CardinalityRange cardinality) {
+    public ProductComponentLink(IProductComponentLinkSource source, T target, CardinalityRange cardinality) {
         if (source == null) {
             throw new NullPointerException("The source for the ProductComponentLink may not be null.");
         }
@@ -143,9 +143,9 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
     }
 
     @SuppressWarnings("unchecked")
-    public E getTarget() {
+    public T getTarget() {
         try {
-            return (E)source.getRepository().getExistingProductComponent(targetId);
+            return (T)source.getRepository().getExistingProductComponent(targetId);
         } catch (NullPointerException e) {
             return null;
         }

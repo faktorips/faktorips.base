@@ -13,9 +13,19 @@
 
 package org.faktorips.runtime;
 
+/**
+ * The source of an {@link IProductComponentLink}. This may be a {@link IProductComponent} or a
+ * {@link IProductComponentGeneration}.
+ * 
+ */
 public interface IProductComponentLinkSource {
 
-    IRuntimeRepository getRepository();
+    /**
+     * Getting the runtime repository of this link source.
+     * 
+     * @return The {@link IRuntimeRepository} that was used to create this
+     *         {@link IProductComponentLinkSource}
+     */
+    public IRuntimeRepository getRepository();
 
-    // public IProductComponent getProductComponent();
 }
