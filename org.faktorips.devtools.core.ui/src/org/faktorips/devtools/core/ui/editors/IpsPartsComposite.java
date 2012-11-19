@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -158,7 +159,12 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (!contextMenuManager.isEmpty()) {
             final Menu contextMenu = contextMenuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
-            site.registerContextMenu(contextMenuManager, getViewer());
+            if (site instanceof IEditorSite) {
+                IEditorSite editorSite = (IEditorSite)site;
+                editorSite.registerContextMenu(contextMenuManager, getViewer(), false);
+            } else {
+                site.registerContextMenu(contextMenuManager, getViewer());
+            }
 
             MenuCleaner.addDefaultCleaner(contextMenuManager);
             // Hide the context menu if nothing is selected

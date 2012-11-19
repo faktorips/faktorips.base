@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -45,6 +46,9 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         }
 
         IIpsElement ipsElement = (IIpsElement)adaptableObject;
+        if (ipsElement instanceof IIpsObjectPart) {
+            return null;
+        }
 
         try {
             IResource enclosingResource = ipsElement.getEnclosingResource();

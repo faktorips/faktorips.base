@@ -17,7 +17,6 @@ import java.beans.PropertyChangeEvent;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -196,17 +195,18 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     // ok, to suppress unchecked warnings, because the method signature is defined by Eclipse
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(Class adapterType) {
-        if (IResource.class.equals(adapterType) || ResourceMapping.class.isAssignableFrom(adapterType)) {
-            /*
-             * This prevents the CVSLightweightDecorator from displaying decorations for
-             * ipsobjectparts in ModelExplorer and ProductExplorer.
-             */
-            return null;
-        }
-        return super.getAdapter(adapterType);
-    }
+    // @SuppressWarnings("rawtypes")
+    // @Override
+    // public Object getAdapter(Class adapterType) {
+    // if (IResource.class.equals(adapterType) ||
+    // ResourceMapping.class.isAssignableFrom(adapterType)) {
+    // /*
+    // * This prevents the CVSLightweightDecorator from displaying decorations for
+    // * ipsobjectparts in ModelExplorer and ProductExplorer.
+    // */
+    // return null;
+    // }
+    // return super.getAdapter(adapterType);
+    // }
 
 }
