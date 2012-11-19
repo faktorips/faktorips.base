@@ -287,7 +287,13 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * Returns the IPS project the build is currently building.
      */
     private IIpsProject getIpsProject() {
-        return IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
+        // need null check because builder sometimes still running when shutdown platform and
+        // IpsPlugin is already down
+        if (IpsPlugin.getDefault() != null) {
+            return IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
+        } else {
+            return null;
+        }
     }
 
     private void collectIpsSrcFilesForFullBuild(List<IIpsSrcFile> allIpsSrcFiles) throws CoreException {
