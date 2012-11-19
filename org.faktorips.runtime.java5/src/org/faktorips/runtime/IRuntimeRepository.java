@@ -206,7 +206,7 @@ public interface IRuntimeRepository {
      * Returns all product components that are instances of the indicated class. Returns an empty
      * list if no such component exists.
      */
-    public <T extends IProductComponent> List<IProductComponent> getAllProductComponents(Class<T> productComponentType);
+    public <T extends IProductComponent> List<T> getAllProductComponents(Class<T> productComponentType);
 
     /**
      * Returns all product components available in this repository. Returns an empty list if no

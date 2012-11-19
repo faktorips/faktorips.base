@@ -249,8 +249,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract IProductComponentGeneration getProductComponentGenerationInternal(String id,
             Calendar effectiveDate);
 
-    public final <T extends IProductComponent> List<IProductComponent> getAllProductComponents(Class<T> productCmptClass) {
-        List<IProductComponent> result = new ArrayList<IProductComponent>();
+    public final <T extends IProductComponent> List<T> getAllProductComponents(Class<T> productCmptClass) {
+        List<T> result = new ArrayList<T>();
         getAllProductComponentsInternal(productCmptClass, result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -266,12 +266,16 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @param productCmptClass The class you want to search product components for
      * @param result adding the found product components to result list
      */
-    protected void getAllProductComponentsInternal(Class<?> productCmptClass, List<IProductComponent> result) {
+    protected <T extends IProductComponent> void getAllProductComponentsInternal(Class<T> productCmptClass,
+            List<T> result) {
         List<IProductComponent> allPCmpsOfThisRepos = new ArrayList<IProductComponent>();
         getAllProductComponents(allPCmpsOfThisRepos);
         for (IProductComponent productCmpt : allPCmpsOfThisRepos) {
             if (productCmptClass.isAssignableFrom(productCmpt.getClass())) {
-                result.add(productCmpt);
+                // checked by isAssignableFrom
+                @SuppressWarnings("unchecked")
+                T castedProductCmpt = (T)productCmpt;
+                result.add(castedProductCmpt);
             }
         }
     }

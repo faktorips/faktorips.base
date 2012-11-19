@@ -140,7 +140,7 @@ public class ClassloaderRuntimeRepositoryTest {
     @Test
     public void testGetAllProductComponents_ByClass() {
         // get all motor products
-        List<IProductComponent> list = repository.getAllProductComponents(MotorProduct.class);
+        List<? extends IProductComponent> list = repository.getAllProductComponents(MotorProduct.class);
         assertEquals(2, list.size());
         assertTrue(list.contains(repository.getProductComponent("motor.MotorBasic")));
         assertTrue(list.contains(repository.getProductComponent("motor.MotorPlus")));

@@ -242,7 +242,7 @@ public class TestAbstractRuntimeRepositoryTest {
 
     @Test
     public void testGetAllProductComponents_ByClass() {
-        List<IProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
+        List<TestProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
         assertEquals(5, result.size());
         assertTrue(mainPc + " not exists", result.contains(mainPc));
         assertTrue(validToPc + " not exists", result.contains(validToPc));

@@ -199,12 +199,16 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
      * use the information in the toc to filter the list of product components before instantiation.
      */
     @Override
-    protected void getAllProductComponentsInternal(Class<?> productCmptClass, List<IProductComponent> result) {
+    protected <T extends IProductComponent> void getAllProductComponentsInternal(Class<T> productCmptClass,
+            List<T> result) {
         List<ProductCmptTocEntry> entries = getTableOfContents().getProductCmptTocEntries();
         for (ProductCmptTocEntry entry : entries) {
             Class<?> clazz = getClass(entry.getImplementationClassName(), cl);
             if (productCmptClass.isAssignableFrom(clazz)) {
-                result.add(getProductComponentInternal(entry.getIpsObjectId()));
+                // checked by isAssignableFrom
+                @SuppressWarnings("unchecked")
+                T productComponentInternal = (T)getProductComponentInternal(entry.getIpsObjectId());
+                result.add(productComponentInternal);
             }
         }
     }

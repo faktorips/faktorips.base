@@ -205,7 +205,7 @@ public class InMemoryRuntimeRepositoryTest {
 
     @Test
     public void testGetAllProductComponents() {
-        List<IProductComponent> list = repository.getAllProductComponents(TestProductComponent.class);
+        List<TestProductComponent> list = repository.getAllProductComponents(TestProductComponent.class);
         assertEquals(3, list.size());
         assertTrue(list.contains(a));
         assertTrue(list.contains(b));
