@@ -125,7 +125,11 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
         IWorkspaceRunnable op = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-                monitor.beginTask(Messages.NewProductCmptWizard_title, 4);
+                monitor.beginTask(Messages.NewProductCmptWizard_title, 5);
+                if (!pmo.getIpsPackage().exists()) {
+                    pmo.getPackageRoot().createPackageFragment(pmo.getIpsPackage().getName(), true,
+                            new SubProgressMonitor(monitor, 1));
+                }
                 IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
                 finishIpsSrcFile(ipsSrcFile, monitor);
                 ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
