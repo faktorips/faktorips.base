@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -903,7 +902,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         toolkit.createFormLabel(composite, Messages.NewPcTypeAssociationWizard_labelDescription);
         Text description = toolkit.createMultilineText(composite);
 
-        bindingContext.bindContent(description, association, IIpsObjectPart.PROPERTY_DESCRIPTION);
+        // bindingContext.bindContent(description, association,
+        // IIpsObjectPart.PROPERTY_DESCRIPTION);
         return description;
     }
 

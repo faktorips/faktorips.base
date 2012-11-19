@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -41,7 +43,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class XPolicyAttributeTest {
 
     @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
     private IPolicyCmptTypeAttribute attribute;
+
+    @Mock
+    private IPolicyCmptTypeAttribute superAttribute;
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -55,7 +63,7 @@ public class XPolicyAttributeTest {
 
     @Before
     public void createXPolicyAttribute() throws Exception {
-        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(attribute.getIpsProject()).thenReturn(ipsProject);
         DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
         when(ipsProject.findDatatypeHelper(anyString())).thenReturn(datatypeHelper);
@@ -314,5 +322,4 @@ public class XPolicyAttributeTest {
 
         assertFalse(xPolicyAttribute.isOverrideGetDefaultValue());
     }
-
 }

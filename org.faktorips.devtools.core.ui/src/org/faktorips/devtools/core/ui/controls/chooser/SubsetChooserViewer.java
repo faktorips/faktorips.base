@@ -327,7 +327,7 @@ public class SubsetChooserViewer {
     }
 
     public void setTargetLabel(String label) {
-        uiBuilder.setSourceLabel(label);
+        uiBuilder.setTargetLabel(label);
     }
 
 }

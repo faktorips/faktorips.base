@@ -179,8 +179,20 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns <code>true</code> if this relation can be marked as container relation or can
      * implement a container relation. This is the case for associations and master-to-detail
      * composites.
+     * 
+     * @deprecated since 3.8, Use {@link #isDerivedUnionApplicable()} instead
      */
+    @Deprecated
     public boolean isContainerRelationApplicable();
+
+    /**
+     * Returns <code>true</code> if this association can be marked as derived union or can be a
+     * subset of a derived union association. This is the case for associations and master-to-detail
+     * composites.
+     * 
+     * @since 3.8
+     */
+    public boolean isDerivedUnionApplicable();
 
     /**
      * Returns the qualified name of the target policy component class.

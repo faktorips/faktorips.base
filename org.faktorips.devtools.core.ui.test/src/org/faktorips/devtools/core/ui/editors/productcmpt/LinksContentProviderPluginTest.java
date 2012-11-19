@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionViewItem;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.ILinkSectionViewItem;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksContentProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,9 +91,9 @@ public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
         Object[] elements = linksContentProvider.getElements(generation);
 
         assertEquals(3, elements.length);
-        assertEquals(ASSOCIATION, ((LinkSectionViewItem)elements[0]).getAssociationName());
-        assertEquals(OTHER_ASSOCIATION, ((LinkSectionViewItem)elements[1]).getAssociationName());
-        assertEquals(EMPTY_ASSOCIATION, ((LinkSectionViewItem)elements[2]).getAssociationName());
+        assertEquals(ASSOCIATION, ((ILinkSectionViewItem)elements[0]).getAssociationName());
+        assertEquals(OTHER_ASSOCIATION, ((ILinkSectionViewItem)elements[1]).getAssociationName());
+        assertEquals(EMPTY_ASSOCIATION, ((ILinkSectionViewItem)elements[2]).getAssociationName());
     }
 
     @Test
@@ -106,9 +106,9 @@ public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
         Object[] elements = linksContentProvider.getElements(generation);
 
         assertEquals(3, elements.length);
-        assertEquals(OTHER_ASSOCIATION, ((LinkSectionViewItem)elements[0]).getAssociationName());
-        assertEquals(ASSOCIATION, ((LinkSectionViewItem)elements[1]).getAssociationName());
-        assertEquals(UNDEFINED_ASSOCIATION, ((LinkSectionViewItem)elements[2]).getAssociationName());
+        assertEquals(OTHER_ASSOCIATION, ((ILinkSectionViewItem)elements[0]).getAssociationName());
+        assertEquals(ASSOCIATION, ((ILinkSectionViewItem)elements[1]).getAssociationName());
+        assertEquals(UNDEFINED_ASSOCIATION, ((ILinkSectionViewItem)elements[2]).getAssociationName());
     }
 
     private IProductCmptGeneration createGenerationWithAssociations(IProductCmpt productCmpt) {

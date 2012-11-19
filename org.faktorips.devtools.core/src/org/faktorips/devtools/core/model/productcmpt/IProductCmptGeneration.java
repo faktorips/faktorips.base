@@ -199,6 +199,13 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IProductCmptLink[] getLinks(String association);
 
     /**
+     * Returns a list containing all links defined in the product component and this product
+     * component generation.
+     * 
+     */
+    public List<IProductCmptLink> getLinksIncludingProductCmpt();
+
+    /**
      * Returns a new table content usage.
      */
     public ITableContentUsage newTableContentUsage();

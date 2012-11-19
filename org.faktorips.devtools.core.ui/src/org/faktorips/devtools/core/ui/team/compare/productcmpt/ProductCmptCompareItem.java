@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -78,7 +79,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * <p>
      * A CompareItem representing a product component or one of its generations is processed
      * separately in
-     * {@link #initPropertyValueContainerContentString(IPropertyValueContainer, StringBuffer, int)}.
+     * {@link #initPropertyValueContainerContentString(IProductPartsContainer, StringBuffer, int)}.
      * 
      * @see #getContentString()
      */
@@ -93,7 +94,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                  * End recursion and initialize string with custom method (for the component and its
                  * children)
                  */
-                child.initPropertyValueContainerContentString((IPropertyValueContainer)child.getIpsElement(), sb,
+                child.initPropertyValueContainerContentString((IProductPartsContainer)child.getIpsElement(), sb,
                         sb.length() - startIndex + offset);
             } else {
                 child.initTreeContentString(sb, sb.length() - startIndex + offset);
@@ -115,7 +116,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * CompareItem and its children. The children of a generation or product component (e.g.
      * relations and config-elements) are ordered and displayed in separate groups.
      */
-    private int initPropertyValueContainerContentString(IPropertyValueContainer valueContainer,
+    private int initPropertyValueContainerContentString(IProductPartsContainer partContainer,
             StringBuffer sb,
             int offset) {
 
@@ -124,12 +125,12 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
         List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(children, IConfigElement.class);
         List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(children, IFormula.class);
-        List<ProductCmptCompareItem> relations = getCompareItemsOfClass(children, IProductCmptLink.class);
+        List<ProductCmptCompareItem> links = getCompareItemsOfClass(children, IProductCmptLink.class);
         List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
         List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
-            sb.append(getAttributeListHeader(valueContainer));
+            sb.append(getAttributeListHeader(partContainer));
             for (ProductCmptCompareItem attribute : attributes) {
                 sb.append(NEWLINE);
                 attribute.initTreeContentString(sb, sb.length() - startIndex + offset);
@@ -137,7 +138,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (!configElements.isEmpty()) {
             sb.append(NEWLINE);
-            sb.append(getConfigElementListHeader(valueContainer));
+            sb.append(getConfigElementListHeader(partContainer));
             for (ProductCmptCompareItem configElement : configElements) {
                 sb.append(NEWLINE);
                 configElement.initTreeContentString(sb, sb.length() - startIndex + offset);
@@ -145,33 +146,32 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (!formulas.isEmpty()) {
             sb.append(NEWLINE);
-            sb.append(getFormulaListHeader(valueContainer));
+            sb.append(getFormulaListHeader(partContainer));
             for (ProductCmptCompareItem formula : formulas) {
                 sb.append(NEWLINE);
                 formula.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
-        if (!relations.isEmpty()) {
-            IProductCmptGeneration generation = (IProductCmptGeneration)valueContainer;
+        if (!links.isEmpty()) {
             sb.append(NEWLINE);
-            String relationsHeader = getRelationListHeader(valueContainer);
-            sb.append(relationsHeader);
-            String[] relationTypes = getRelationTypes(generation);
-            for (String relationType : relationTypes) {
-                List<ProductCmptCompareItem> relationsByType = getRelations(relations, relationType);
-                if (!relationsByType.isEmpty()) {
-                    String relTypeHeader = getRelationTypeHeader(generation, relationType);
-                    sb.append(relTypeHeader);
+            String linksHeader = getLinkListHeader(partContainer);
+            sb.append(linksHeader);
+            String[] associations = getAssociations(partContainer);
+            for (String association : associations) {
+                List<ProductCmptCompareItem> linksByType = getRelations(links, association);
+                if (!linksByType.isEmpty()) {
+                    String linkTypeHeader = getRelationTypeHeader(partContainer, association);
+                    sb.append(linkTypeHeader);
                 }
-                for (ProductCmptCompareItem rel : relationsByType) {
+                for (ProductCmptCompareItem link : linksByType) {
                     sb.append(NEWLINE);
-                    rel.initTreeContentString(sb, sb.length() - startIndex + offset);
+                    link.initTreeContentString(sb, sb.length() - startIndex + offset);
                 }
             }
         }
         if (!tableUsages.isEmpty()) {
             sb.append(NEWLINE);
-            sb.append(getTableUsageListHeader(valueContainer));
+            sb.append(getTableUsageListHeader(partContainer));
             for (ProductCmptCompareItem tableUsage : tableUsages) {
                 sb.append(NEWLINE);
                 tableUsage.initTreeContentString(sb, sb.length() - startIndex + offset);
@@ -179,7 +179,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (!rules.isEmpty()) {
             sb.append(NEWLINE);
-            sb.append(getRuleListHeader(valueContainer));
+            sb.append(getRuleListHeader(partContainer));
             for (ProductCmptCompareItem rule : rules) {
                 sb.append(NEWLINE);
                 rule.initTreeContentString(sb, sb.length() - startIndex + offset);
@@ -199,13 +199,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     }
 
-    protected void conditionalAppendGenerationDateAndTab(IPropertyValueContainer valueContainer, StringBuffer sb) {
+    protected void conditionalAppendGenerationDateAndTab(IProductPartsContainer valueContainer, StringBuffer sb) {
         if (valueContainer instanceof IIpsObjectGeneration) {
             sb.append(getGenerationDateText((IIpsObjectGeneration)valueContainer)).append(TAB);
         }
     }
 
-    private String getRuleListHeader(IPropertyValueContainer valueContainer) {
+    private String getRuleListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String ruleHeaderName = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
@@ -213,7 +213,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         return sb.toString();
     }
 
-    private Object getTableUsageListHeader(IPropertyValueContainer valueContainer) {
+    private Object getTableUsageListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String headerName = Messages.ProductCmptCompareItem_TableUsagesHeader;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
@@ -225,7 +225,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * Returns a string used as header for the list of attributes (configelements) in the string
      * representation of this CompareItem.
      */
-    private String getAttributeListHeader(IPropertyValueContainer valueContainer) {
+    private String getAttributeListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
@@ -233,14 +233,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         return sb.toString();
     }
 
-    private Object getConfigElementListHeader(IPropertyValueContainer valueContainer) {
+    private Object getConfigElementListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(Messages.ProductCmptCompareItem_DefaultsAndValueSets).append(COLON_BLANK);
         return sb.toString();
     }
 
-    private Object getFormulaListHeader(IPropertyValueContainer valueContainer) {
+    private Object getFormulaListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(Messages.ProductCmptCompareItem_FormulaHeader).append(COLON_BLANK);
@@ -251,7 +251,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * Returns a string used as header for the list of relations in the string representation of
      * this CompareItem.
      */
-    private String getRelationListHeader(IPropertyValueContainer valueContainer) {
+    private String getLinkListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String relString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
@@ -263,10 +263,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * Returns a string used as header for the list of relations of a common relationType (the given
      * String).
      */
-    private String getRelationTypeHeader(IIpsObjectGeneration gen, String relationType) {
+    private String getRelationTypeHeader(IProductPartsContainer partContainer, String relationType) {
         StringBuffer sb = new StringBuffer();
         sb.append(NEWLINE);
-        sb.append(getGenerationDateText(gen));
+        conditionalAppendGenerationDateAndTab(partContainer, sb);
         sb.append(TAB).append(TAB).append(TAB).append(relationType);
         return sb.toString();
     }
@@ -311,11 +311,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * <p>
      * Thus a list of relations with the IDs 1,2,1,3,1 returns the array {1,2,3}.
      */
-    private String[] getRelationTypes(IProductCmptGeneration gen) {
+    private String[] getAssociations(IProductPartsContainer gen) {
         // use TreeSet to avoid duplicate IDs and at the same time maintain their order.
         Set<String> relationTypes = new TreeSet<String>();
-        IProductCmptLink[] relations = gen.getLinks();
-        for (IProductCmptLink relation : relations) {
+        List<IProductCmptLink> links = gen.getProductParts(IProductCmptLink.class);
+        for (IProductCmptLink relation : links) {
             relationTypes.add(relation.getAssociation());
         }
         return relationTypes.toArray(new String[relationTypes.size()]);
@@ -336,7 +336,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (getIpsElement() instanceof IProductCmptLink) {
             IProductCmptLink rel = (IProductCmptLink)getIpsElement();
-            sb.append(getGenerationDateText(rel.getProductCmptGeneration()));
+            conditionalAppendGenerationDateAndTab(rel.getProductCmptLinkContainer(), sb);
             sb.append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
             sb.append(BLANK).append(BLANK);
             sb.append('[')

@@ -542,16 +542,14 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
         IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(),
                 originalProductCmpt);
+        List<IProductCmptLink> links = originalProductCmpt.getLinksIncludingGenerations();
         for (IIpsSrcFile allowedProductCmptSrcFile : allowedProductCmptSrcFiles) {
-            for (IProductCmptGeneration generation : originalProductCmpt.getProductCmptGenerations()) {
-                for (IProductCmptLink link : generation.getLinks()) {
-                    if (link.getTarget().equals(allowedProductCmptSrcFile.getQualifiedNameType().getName())) {
-                        // add as many links as defined by the minimum cardinality
-                        for (int i = 0; i < link.getMinCardinality(); i++) {
-                            addTestPcTypeLink(testParameter,
-                                    allowedProductCmptSrcFile.getQualifiedNameType().getName(), null, null, true);
-                        }
-                        break;
+            for (IProductCmptLink link : links) {
+                if (link.getTarget().equals(allowedProductCmptSrcFile.getQualifiedNameType().getName())) {
+                    // add as many links as defined by the minimum cardinality
+                    for (int i = 0; i < link.getMinCardinality(); i++) {
+                        addTestPcTypeLink(testParameter, allowedProductCmptSrcFile.getQualifiedNameType().getName(),
+                                null, null, true);
                     }
                 }
             }

@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
@@ -42,8 +42,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     public MessageList getMessages(Object element) throws CoreException {
         if (element instanceof AbstractAssociationViewItem) {
             AbstractAssociationViewItem viewItem = (AbstractAssociationViewItem)element;
-            IProductCmptLinkContainer linkContainer = viewItem.getLinkContainer();
-            return linkContainer.validate(linkContainer.getIpsProject()).getMessagesFor(viewItem.getAssociationName());
+            IProductCmpt productCmpt = viewItem.getProductCmpt();
+            MessageList msgList = productCmpt.validate(productCmpt.getIpsProject());
+            return msgList.getMessagesFor(viewItem.getAssociationName());
         }
         if (element instanceof LinkViewItem) {
             LinkViewItem viewItem = (LinkViewItem)element;
@@ -59,16 +60,16 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof LinkSectionViewItem) {
-                return ((LinkSectionViewItem)element).getText();
+            if (element instanceof ILinkSectionViewItem) {
+                return ((ILinkSectionViewItem)element).getText();
             }
             return element.toString();
         }
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof LinkSectionViewItem) {
-                return ((LinkSectionViewItem)element).getImage();
+            if (element instanceof ILinkSectionViewItem) {
+                return ((ILinkSectionViewItem)element).getImage();
             }
             return IpsUIPlugin.getImageHandling().getImage(ImageDescriptor.getMissingImageDescriptor());
         }

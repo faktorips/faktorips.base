@@ -63,11 +63,10 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * Creates a new ProductCmptStructure for the given product component. Instead of a specified
      * working date this constructor uses the latest adjustment (generation).
-     * <p>
-     * Do not use this constructor anymore! This builds a structure with the latest generation of
-     * every product component. This could lead to invalid structures containing invalid generation
-     * pairs.
-     * <p>
+     * 
+     * @deprecated Do not use this constructor anymore! This builds a structure with the latest
+     *             generation of every product component. This could lead to invalid structures
+     *             containing invalid generation pairs.
      * 
      * @param root The product component to create a structure for.
      * 
@@ -77,6 +76,29 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     @Deprecated
     public ProductCmptTreeStructure(IProductCmpt root, IIpsProject project) throws CycleInProductStructureException {
         this(root, null, project);
+    }
+
+    /**
+     * Creates a new ProductCmptStructure for the given product component and the given date.
+     * 
+     * @param root The product component to create a structure for.
+     * @param date The date the structure has to be valid for. That means that the relations between
+     *            the product components represented by this structure are valid for the given date.
+     * @param project The ips project which ips object path is used as search path.
+     * 
+     * @throws CycleInProductStructureException if a cycle is detected.
+     * @throws NullPointerException if the given product component is <code>null</code> or the given
+     *             date is <code>null</code>.
+     */
+    public ProductCmptTreeStructure(IProductCmpt root, GregorianCalendar date, IIpsProject project)
+            throws CycleInProductStructureException {
+
+        ArgumentCheck.notNull(root);
+        ArgumentCheck.notNull(project);
+
+        workingDate = date;
+        ipsProject = project;
+        this.root = buildNode(root, null, null);
     }
 
     @Override
@@ -143,29 +165,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Creates a new ProductCmptStructure for the given product component and the given date.
-     * 
-     * @param root The product component to create a structure for.
-     * @param date The date the structure has to be valid for. That means that the relations between
-     *            the product components represented by this structure are valid for the given date.
-     * @param project The ips project which ips object path is used as search path.
-     * 
-     * @throws CycleInProductStructureException if a cycle is detected.
-     * @throws NullPointerException if the given product component is <code>null</code> or the given
-     *             date is <code>null</code>.
-     */
-    public ProductCmptTreeStructure(IProductCmpt root, GregorianCalendar date, IIpsProject project)
-            throws CycleInProductStructureException {
-
-        ArgumentCheck.notNull(root);
-        ArgumentCheck.notNull(project);
-
-        workingDate = date;
-        ipsProject = project;
-        this.root = buildNode(root, null, null);
     }
 
     @Override
@@ -313,30 +312,11 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 return new ProductCmptReference[0];
             }
 
-            IProductCmptLink[] links = activeGeneration.getLinks();
-
             // Sort links by association
             Hashtable<String, List<IProductCmptLink>> mapping = new Hashtable<String, List<IProductCmptLink>>();
 
-            for (IProductCmptLink link : links) {
-                try {
-                    IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
-                    if (association == null) {
-                        // no relation type found - inconsinstent model or product definition -
-                        // ignore it.
-                        continue;
-                    }
-                    List<IProductCmptLink> linksForAssociation = mapping.get(association.getName());
-                    if (linksForAssociation == null) {
-                        linksForAssociation = new ArrayList<IProductCmptLink>();
-                        mapping.put(association.getName(), linksForAssociation);
-                        // associations.add(association);
-                    }
-                    linksForAssociation.add(link);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
+            List<IProductCmptLink> links = activeGeneration.getLinksIncludingProductCmpt();
+            putLinksToMap(links, mapping);
 
             List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
             try {
@@ -376,6 +356,28 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
         ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
         return children.toArray(result);
+    }
+
+    private void putLinksToMap(List<IProductCmptLink> links, Hashtable<String, List<IProductCmptLink>> mapping) {
+        for (IProductCmptLink link : links) {
+            try {
+                IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
+                if (association == null) {
+                    // no relation type found - inconsinstent model or product definition -
+                    // ignore it.
+                    continue;
+                }
+                List<IProductCmptLink> linksForAssociation = mapping.get(association.getName());
+                if (linksForAssociation == null) {
+                    linksForAssociation = new ArrayList<IProductCmptLink>();
+                    mapping.put(association.getName(), linksForAssociation);
+                    // associations.add(association);
+                }
+                linksForAssociation.add(link);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
     }
 
     @Override

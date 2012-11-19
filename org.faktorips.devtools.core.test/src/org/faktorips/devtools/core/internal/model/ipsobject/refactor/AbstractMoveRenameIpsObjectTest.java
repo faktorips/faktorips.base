@@ -619,8 +619,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsPluginT
 
         private IProductCmpt createOtherProductCmpt() throws CoreException {
             IProductCmpt otherProductCmpt = newProductCmpt(productCmptType, "OtherProductCmpt");
-            IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)otherProductCmpt
-                    .getFirstGeneration();
+            IProductCmptGeneration productCmptGeneration = otherProductCmpt.getFirstGeneration();
             IProductCmptLink productCmptLink = productCmptGeneration.newLink(productCmptTypeAssociation);
             productCmptLink.setTarget(productCmpt.getQualifiedName());
             return otherProductCmpt;
@@ -635,7 +634,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsPluginT
 
         protected final void check(String newQualifiedName) {
             // Check for update of referring product component generation
-            IProductCmptGeneration generation = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
+            IProductCmptGeneration generation = otherProductCmpt.getFirstGeneration();
             IProductCmptLink[] links = generation.getLinks();
             assertEquals(1, links.length);
             assertEquals(newQualifiedName, links[0].getTarget());

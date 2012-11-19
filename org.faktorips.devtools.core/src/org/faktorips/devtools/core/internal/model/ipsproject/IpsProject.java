@@ -94,6 +94,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -1460,23 +1461,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Find all product cmpt generations which refer to other procuct coponents and table contents.
      */
     @Override
-    public IProductCmptGeneration[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
+    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
             throws CoreException {
 
-        Set<IProductCmptGeneration> result = new HashSet<IProductCmptGeneration>();
+        Set<IProductPartsContainer> result = new LinkedHashSet<IProductPartsContainer>();
         String qualifiedName = qualifiedNameType.getName();
-        IIpsObject[] allProductCmpts = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
+        IIpsSrcFile[] allProductCmpts = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         if (IpsObjectType.PRODUCT_CMPT.equals(qualifiedNameType.getIpsObjectType())) {
-            for (IIpsObject allProductCmpt : allProductCmpts) {
-                findReferencingProductCmptGenerationsToProductCmpts((IProductCmpt)allProductCmpt, qualifiedName, result);
+            for (IIpsSrcFile ipsSrcFile : allProductCmpts) {
+                findReferencingProductCmptGenerationsToProductCmpts((IProductCmpt)ipsSrcFile.getIpsObject(),
+                        qualifiedName, result);
             }
         } else if (IpsObjectType.TABLE_CONTENTS.equals(qualifiedNameType.getIpsObjectType())) {
-            for (IIpsObject allProductCmpt : allProductCmpts) {
-                findReferencingProductCmptGenerationsToTableContents((IProductCmpt)allProductCmpt, qualifiedName,
-                        result);
+            for (IIpsSrcFile ipsSrcFile : allProductCmpts) {
+                findReferencingProductCmptGenerationsToTableContents((IProductCmpt)ipsSrcFile.getIpsObject(),
+                        qualifiedName, result);
             }
         }
-        IProductCmptGeneration[] resultArray = new IProductCmptGeneration[result.size()];
+        IProductPartsContainer[] resultArray = new IProductPartsContainer[result.size()];
         result.toArray(resultArray);
 
         return resultArray;
@@ -1488,17 +1490,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private void findReferencingProductCmptGenerationsToProductCmpts(IProductCmpt toBeSearched,
             String qualifiedProductCmptName,
-            Set<IProductCmptGeneration> result) {
-
-        int max = toBeSearched.getNumOfGenerations();
-        for (int i = 0; i < max; i++) {
-            IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
-            IProductCmptLink[] relations = generation.getLinks();
-            for (IProductCmptLink relation : relations) {
-                if (relation.getTarget().equals(qualifiedProductCmptName)) {
-                    result.add(generation);
-                    break;
-                }
+            Set<IProductPartsContainer> result) {
+        List<IProductCmptLink> links = toBeSearched.getLinksIncludingGenerations();
+        for (IProductCmptLink link : links) {
+            if (link.getTarget().equals(qualifiedProductCmptName)) {
+                result.add(link.getProductCmptLinkContainer());
             }
         }
     }
@@ -1509,7 +1505,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private void findReferencingProductCmptGenerationsToTableContents(IProductCmpt toBeSearched,
             String qualifiedTableContentsName,
-            Set<IProductCmptGeneration> result) {
+            Set<IProductPartsContainer> result) {
 
         int max = toBeSearched.getNumOfGenerations();
         for (int i = 0; i < max; i++) {

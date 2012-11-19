@@ -37,15 +37,20 @@ public class OpenEditorHandler extends AbstractHandler {
         TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selection);
         IAdaptable firstElement = typedSelection.getFirstElement();
 
-        if (firstElement instanceof IProductCmptLink) {
-            IProductCmptGeneration targetGeneration = getTargetProductCmptGeneration((IProductCmptLink)firstElement);
-            openEditorForProductCmptGeneration(targetGeneration);
+        IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(firstElement, IProductCmptLink.class);
+        if (link != null) {
+            openEditorForLink(link);
         }
 
         IFile file = (IFile)typedSelection.getFirstElement().getAdapter(IFile.class);
         openEditorForFile(file);
 
         return null;
+    }
+
+    private void openEditorForLink(IProductCmptLink link) {
+        IProductCmptGeneration targetGeneration = getTargetProductCmptGeneration(link);
+        openEditorForProductCmptGeneration(targetGeneration);
     }
 
     private IProductCmptGeneration getTargetProductCmptGeneration(IProductCmptLink link) {

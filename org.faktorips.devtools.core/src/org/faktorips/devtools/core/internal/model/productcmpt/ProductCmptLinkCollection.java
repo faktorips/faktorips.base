@@ -17,8 +17,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.faktorips.devtools.core.model.DependencyDetail;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -286,6 +293,29 @@ public class ProductCmptLinkCollection {
 
     private boolean containsLinkInternal(IProductCmptLink link) {
         return links.contains(link);
+    }
+
+    /**
+     * Add the qualified name types of all related product cmpt's inside the given generation to the
+     * given set
+     */
+    public void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes,
+            Map<IDependency, List<IDependencyDetail>> details) {
+        List<IProductCmptLink> links = getLinks();
+        for (IProductCmptLink link : links) {
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(link.getIpsObject()
+                    .getQualifiedNameType(), new QualifiedNameType(link.getTarget(), IpsObjectType.PRODUCT_CMPT));
+            qaTypes.add(dependency);
+
+            if (details != null) {
+                List<IDependencyDetail> detailList = details.get(dependency);
+                if (detailList == null) {
+                    detailList = new ArrayList<IDependencyDetail>();
+                    details.put(dependency, detailList);
+                }
+                detailList.add(new DependencyDetail(link, IProductCmptLink.PROPERTY_TARGET));
+            }
+        }
     }
 
     /**

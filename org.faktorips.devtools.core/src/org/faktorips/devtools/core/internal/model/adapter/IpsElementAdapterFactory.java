@@ -24,7 +24,6 @@ import org.eclipse.core.resources.mapping.ResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ResourceManager;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -65,7 +64,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
     // the eclipse API uses raw type
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { IResource.class, IProject.class, IFolder.class, IFile.class, ResourceManager.class };
+        return new Class[] { IResource.class, IProject.class, IFolder.class, IFile.class, ResourceMapping.class };
     }
 
     /**

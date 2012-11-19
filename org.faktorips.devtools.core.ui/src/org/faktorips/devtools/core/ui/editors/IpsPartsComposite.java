@@ -147,11 +147,11 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     void createContextMenu() {
         MenuManager contextMenuManager = new MenuManager();
 
-        createRefactoringSubContextMenu(contextMenuManager);
-
         if (jumpToSourceCodeSupported) {
             contextMenuManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         }
+
+        createRefactoringSubContextMenu(contextMenuManager);
 
         createContextMenuThis(contextMenuManager);
 
@@ -160,7 +160,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             getViewer().getControl().setMenu(contextMenu);
             site.registerContextMenu(contextMenuManager, getViewer());
 
-            MenuCleaner.addAdditionsCleaner(contextMenuManager);
+            MenuCleaner.addDefaultCleaner(contextMenuManager);
             // Hide the context menu if nothing is selected
             contextMenuManager.addMenuListener(new IMenuListener() {
                 @Override
@@ -188,7 +188,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID,
                     Messages.IpsPartsComposite_labelPullUpRefactoring));
         }
-
+        contextMenuManager.add(new Separator(IpsMenuId.GROUP_REFACTORING.getId()));
         contextMenuManager.add(refactorSubmenu);
     }
 

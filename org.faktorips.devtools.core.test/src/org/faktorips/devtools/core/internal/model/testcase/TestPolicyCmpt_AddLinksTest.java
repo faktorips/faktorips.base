@@ -85,8 +85,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -142,8 +142,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 0, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 0, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 0, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 0, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 0, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 0, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -199,8 +199,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 2, 3);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 2, 3);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 2, 3);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 2, 3);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 2, 3, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 2, 3, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -265,9 +265,9 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 3, 3);
         IPolicyCmptTypeAssociation policy3ToPolicy4 = createAssociation(policyType3, policyType4, 0, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 2, 3);
-        IProductCmptTypeAssociation product3ToProduct4 = createAssociation(productType3, productType4, 0, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 2, 3, true);
+        IProductCmptTypeAssociation product3ToProduct4 = createAssociation(productType3, productType4, 0, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -339,10 +339,10 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation policy2ToPolicy3_1 = createAssociation(policyType2, policyType3_1, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3_2 = createAssociation(policyType2, policyType3_2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3_3 = createAssociation(policyType2, policyType3_3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3_1 = createAssociation(productType2, productType3_1, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3_2 = createAssociation(productType2, productType3_2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3_3 = createAssociation(productType2, productType3_3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3_1 = createAssociation(productType2, productType3_1, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3_2 = createAssociation(productType2, productType3_2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3_3 = createAssociation(productType2, productType3_3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -413,8 +413,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -474,8 +474,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -534,8 +534,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -597,8 +597,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -665,8 +665,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -735,8 +735,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 0, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 0, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 0, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 0, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -825,7 +825,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
 
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(rootPolicyType, policyType2, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(rootProductType, productType2, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(rootProductType, productType2, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -890,9 +890,94 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation rootPolicyToPolicy1 = createAssociation(rootPolicyType, policyType1, 1, 1);
         IPolicyCmptTypeAssociation rootPolicyToPolicy2 = createAssociation(rootPolicyType, policyType2, 0, 1);
         IPolicyCmptTypeAssociation rootPolicyToPolicy3 = createAssociation(rootPolicyType, policyType3, 2, 2);
-        IProductCmptTypeAssociation rootProductToProduct1 = createAssociation(rootProductType, productType1, 1, 1);
-        IProductCmptTypeAssociation rootProductToProduct2 = createAssociation(rootProductType, productType2, 0, 1);
-        IProductCmptTypeAssociation rootProductToProduct3 = createAssociation(rootProductType, productType3, 2, 2);
+        IProductCmptTypeAssociation rootProductToProduct1 = createAssociation(rootProductType, productType1, 1, 1, true);
+        IProductCmptTypeAssociation rootProductToProduct2 = createAssociation(rootProductType, productType2, 0, 1, true);
+        IProductCmptTypeAssociation rootProductToProduct3 = createAssociation(rootProductType, productType3, 2, 2, true);
+
+        // Create test case type
+        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+        ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
+        ITestPolicyCmptTypeParameter rootToPolicy1Parameter = createTestParameter(rootParameter, policyType1,
+                rootPolicyToPolicy1, 1, 1);
+        ITestPolicyCmptTypeParameter rootToPolicy2Parameter = createTestParameter(rootParameter, policyType2,
+                rootPolicyToPolicy2, 0, 1);
+        ITestPolicyCmptTypeParameter rootToPolicy3Parameter = createTestParameter(rootParameter, policyType3,
+                rootPolicyToPolicy3, 2, 2);
+
+        // Create product components
+        IProductCmpt rootProductCmpt = newProductCmpt(rootProductType, "RootProduct");
+        IProductCmpt productCmpt1 = newProductCmpt(productType1, "Product1");
+        IProductCmpt productCmpt2 = newProductCmpt(productType2, "Product2");
+        IProductCmpt productCmpt3 = newProductCmpt(productType3, "Product3");
+
+        // Create product links
+        createProductCmptLink(rootProductCmpt, productCmpt1, rootProductToProduct1, 1, 1);
+        createProductCmptLink(rootProductCmpt, productCmpt2, rootProductToProduct2, 1, 1);
+        createProductCmptLink(rootProductCmpt, productCmpt3, rootProductToProduct3, 1, 1);
+
+        // Create test case
+        ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
+        ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(rootParameter);
+        rootTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(rootProductCmpt.getQualifiedName());
+
+        // Execute
+        rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+
+        // Verify
+        ITestPolicyCmpt child1 = rootTestPolicyCmpt.getTestPolicyCmptLinks(rootToPolicy1Parameter.getName())[0]
+                .findTarget();
+        ITestPolicyCmpt child2 = rootTestPolicyCmpt.getTestPolicyCmptLinks(rootToPolicy2Parameter.getName())[0]
+                .findTarget();
+        ITestPolicyCmpt child3 = rootTestPolicyCmpt.getTestPolicyCmptLinks(rootToPolicy3Parameter.getName())[0]
+                .findTarget();
+        assertSame(productCmpt1, child1.findProductCmpt(ipsProject));
+        assertSame(productCmpt2, child2.findProductCmpt(ipsProject));
+        assertSame(productCmpt3, child3.findProductCmpt(ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * <ul>
+     * <li>Policy types are linked together as following:
+     * <ul>
+     * <li>Root -&gt; 1 &nbsp;(1..1)
+     * <li>Root -&gt; 2 &nbsp;(0..1)
+     * <li>Root -&gt; 3 &nbsp;(2..2)
+     * </ul>
+     * <li>Product components can be non-ambiguously assigned to each association
+     * </ul>
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * When adding the required links to the root policy , following links should be added:
+     * <ul>
+     * <li>1 link from root to policy 1
+     * <li>2 links from root to policy 3
+     * </ul>
+     * <p>
+     * There is no link to policy 2 because the corresponding association is optional.
+     */
+    @Test
+    public void testAddRequiredLinks_staticLinks() throws CoreException {
+        // Create model types
+        IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+        IPolicyCmptType policyType3 = newPolicyAndProductCmptType(ipsProject, "PolicyType3", "ProductType3");
+        IProductCmptType rootProductType = rootPolicyType.findProductCmptType(ipsProject);
+        IProductCmptType productType1 = policyType1.findProductCmptType(ipsProject);
+        IProductCmptType productType2 = policyType2.findProductCmptType(ipsProject);
+        IProductCmptType productType3 = policyType3.findProductCmptType(ipsProject);
+
+        // Create associations
+        IPolicyCmptTypeAssociation rootPolicyToPolicy1 = createAssociation(rootPolicyType, policyType1, 1, 1);
+        IPolicyCmptTypeAssociation rootPolicyToPolicy2 = createAssociation(rootPolicyType, policyType2, 0, 1);
+        IPolicyCmptTypeAssociation rootPolicyToPolicy3 = createAssociation(rootPolicyType, policyType3, 2, 2);
+        IProductCmptTypeAssociation rootProductToProduct1 = createAssociation(rootProductType, productType1, 1, 1,
+                false);
+        IProductCmptTypeAssociation rootProductToProduct2 = createAssociation(rootProductType, productType2, 0, 1,
+                false);
+        IProductCmptTypeAssociation rootProductToProduct3 = createAssociation(rootProductType, productType3, 2, 2,
+                false);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -1013,8 +1098,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         // Create associations
         IPolicyCmptTypeAssociation policy1ToPolicy2 = createAssociation(policyType1, policyType2, 1, 1);
         IPolicyCmptTypeAssociation policy2ToPolicy3 = createAssociation(policyType2, policyType3, 1, 1);
-        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1);
-        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1);
+        IProductCmptTypeAssociation product1ToProduct2 = createAssociation(productType1, productType2, 1, 1, true);
+        IProductCmptTypeAssociation product2ToProduct3 = createAssociation(productType2, productType3, 1, 1, true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
@@ -1070,11 +1155,13 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation createAssociation(IProductCmptType source,
             IProductCmptType target,
             int minCardinality,
-            int maxCardinality) {
+            int maxCardinality,
+            boolean changingOverTime) {
 
-        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)createAssociation((IType)source,
-                (IType)target, minCardinality, maxCardinality);
+        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)createAssociation(source, target,
+                minCardinality, maxCardinality);
         association.setAssociationType(AssociationType.AGGREGATION);
+        association.setChangingOverTime(changingOverTime);
         return association;
     }
 
@@ -1127,8 +1214,12 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
             IProductCmptTypeAssociation association,
             int minCardinality,
             int maxCardinality) {
-
-        IProductCmptLink link = source.getFirstGeneration().newLink(association);
+        IProductCmptLink link;
+        if (association.isChangingOverTime()) {
+            link = source.getFirstGeneration().newLink(association);
+        } else {
+            link = source.newLink(association);
+        }
         link.setTarget(target.getQualifiedName());
         link.setMinCardinality(minCardinality);
         link.setMaxCardinality(maxCardinality);
@@ -1140,8 +1231,12 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
             IProductCmptTypeAssociation association,
             int minCardinality,
             int maxCardinality) {
-
-        IProductCmptLink link = source.newLink(association);
+        IProductCmptLink link;
+        if (association.isChangingOverTime()) {
+            link = source.newLink(association);
+        } else {
+            link = source.getProductCmpt().newLink(association);
+        }
         link.setTarget(target.getQualifiedName());
         link.setMinCardinality(minCardinality);
         link.setMaxCardinality(maxCardinality);

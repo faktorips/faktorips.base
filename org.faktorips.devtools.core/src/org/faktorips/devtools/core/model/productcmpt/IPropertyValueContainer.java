@@ -17,13 +17,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
-public interface IPropertyValueContainer extends IIpsObjectPartContainer {
+public interface IPropertyValueContainer extends IProductPartsContainer {
 
     /**
      * Returns the property value for the given property or <code>null</code> if no value is defined
@@ -88,19 +87,13 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      */
     public boolean isContainerFor(IProductCmptProperty property);
 
-    /**
-     * Returns the qualified name of the product component type this property value container is
-     * based on.
-     */
+    @Override
+    public IProductCmpt getProductCmpt();
+
+    @Override
     public String getProductCmptType();
 
-    /**
-     * Finds the {@link IProductCmptType} this this property value container is based on.
-     * 
-     * @param ipsProject The {@link IIpsProject} used as base project to search
-     * @return the product component type or null if no one was found
-     * @throws CoreException in case of getting a core exception while searching the model
-     */
+    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**

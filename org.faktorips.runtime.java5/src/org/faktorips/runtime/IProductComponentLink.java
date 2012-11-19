@@ -26,17 +26,14 @@ public interface IProductComponentLink<T extends IProductComponent> extends IRun
     public CardinalityRange getCardinality();
 
     /**
-     * Returns the {@link IProductComponentGeneration} this link originates from (if applicable). If
-     * this link originates from a product component an {@link UnsupportedOperationException} is
-     * thrown.
+     * Returns the {@link IProductComponentLinkSource} this link originates from. This may be a
+     * {@link IProductComponentGeneration} or a {@link IProductComponent} (since 3.8).
      * 
-     * @throws UnsupportedOperationException if this link's source is not a product component
-     *             generation but a product component
-     * @deprecated As of 3.8 links can originate both from product components and generations. No
-     *             replacement available.
+     * @since 3.8 The return value of this method changed in version 3.8 from
+     *        {@link IProductComponentGeneration} to {@link IProductComponentLinkSource}. This is a
+     *        compatible change on source code level but incompatible in byte code!
      */
-    @Deprecated
-    public IProductComponentGeneration getSource();
+    public IProductComponentLinkSource getSource();
 
     /**
      * Returns the target product component.

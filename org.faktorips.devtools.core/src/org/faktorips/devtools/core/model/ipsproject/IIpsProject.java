@@ -42,8 +42,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -668,7 +668,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @throws CoreException if an exception occurs while searching.
      */
-    public IProductCmptGeneration[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
+    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
             throws CoreException;
 
     /**

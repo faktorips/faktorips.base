@@ -98,40 +98,46 @@ public class DeepCopyTreeStatusTest {
 
         when(links[0].findAssociation(any(IIpsProject.class))).thenReturn(associations[0]);
         when(links[0].getProductCmpt()).thenReturn(productCmpts[0]);
-        when(links[0].getParent()).thenReturn(productCmptsGenerations[0]);
+        when(links[0].getIpsObject()).thenReturn(productCmpts[0]);
         when(links[0].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[1]);
 
         when(links[1].findAssociation(any(IIpsProject.class))).thenReturn(associations[0]);
         when(links[1].getProductCmpt()).thenReturn(productCmpts[0]);
-        when(links[1].getParent()).thenReturn(productCmptsGenerations[0]);
+        when(links[1].getIpsObject()).thenReturn(productCmpts[0]);
         when(links[1].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[2]);
 
         when(links[2].findAssociation(any(IIpsProject.class))).thenReturn(associations[1]);
         when(links[2].getProductCmpt()).thenReturn(productCmpts[0]);
-        when(links[2].getParent()).thenReturn(productCmptsGenerations[0]);
+        when(links[2].getIpsObject()).thenReturn(productCmpts[0]);
         when(links[2].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[3]);
 
         when(links[3].findAssociation(any(IIpsProject.class))).thenReturn(associations[2]);
         when(links[3].getProductCmpt()).thenReturn(productCmpts[1]);
-        when(links[3].getParent()).thenReturn(productCmptsGenerations[1]);
+        when(links[3].getIpsObject()).thenReturn(productCmpts[0]);
         when(links[3].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[4]);
 
         when(links[4].findAssociation(any(IIpsProject.class))).thenReturn(associations[2]);
         when(links[4].getProductCmpt()).thenReturn(productCmpts[1]);
-        when(links[4].getParent()).thenReturn(productCmptsGenerations[1]);
+        when(links[4].getIpsObject()).thenReturn(productCmpts[1]);
         when(links[4].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[2]);
 
         when(links[5].findAssociation(any(IIpsProject.class))).thenReturn(associations[3]);
         when(links[5].getProductCmpt()).thenReturn(productCmpts[2]);
-        when(links[5].getParent()).thenReturn(productCmptsGenerations[2]);
+        when(links[5].getIpsObject()).thenReturn(productCmpts[2]);
         when(links[5].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[5]);
 
-        when(productCmptsGenerations[0].getLinks()).thenReturn(new IProductCmptLink[] { links[0], links[1], links[2] });
-        when(productCmptsGenerations[1].getLinks()).thenReturn(new IProductCmptLink[] { links[3], links[4] });
-        when(productCmptsGenerations[2].getLinks()).thenReturn(new IProductCmptLink[] { links[5] });
-        when(productCmptsGenerations[3].getLinks()).thenReturn(new IProductCmptLink[] {});
-        when(productCmptsGenerations[4].getLinks()).thenReturn(new IProductCmptLink[] {});
-        when(productCmptsGenerations[5].getLinks()).thenReturn(new IProductCmptLink[] {});
+        when(productCmptsGenerations[0].getLinksIncludingProductCmpt()).thenReturn(
+                Arrays.asList(new IProductCmptLink[] { links[0], links[1], links[2] }));
+        when(productCmptsGenerations[1].getLinksIncludingProductCmpt()).thenReturn(
+                Arrays.asList(new IProductCmptLink[] { links[3], links[4] }));
+        when(productCmptsGenerations[2].getLinksIncludingProductCmpt()).thenReturn(
+                Arrays.asList(new IProductCmptLink[] { links[5] }));
+        when(productCmptsGenerations[3].getLinksIncludingProductCmpt()).thenReturn(
+                Arrays.asList(new IProductCmptLink[] {}));
+        when(productCmptsGenerations[4].getLinksIncludingProductCmpt()).thenReturn(
+                Arrays.asList(new IProductCmptLink[] {}));
+        when(productCmptsGenerations[5].getLinksIncludingProductCmpt()).thenReturn(
+                Arrays.asList(new IProductCmptLink[] {}));
 
         List<IValidationRuleConfig> ruleConfigs = new ArrayList<IValidationRuleConfig>();
         ruleConfigs.add(mock(IValidationRuleConfig.class));

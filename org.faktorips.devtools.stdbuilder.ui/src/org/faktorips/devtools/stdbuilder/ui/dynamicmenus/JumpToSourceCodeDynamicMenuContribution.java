@@ -193,7 +193,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
         for (IType type : javaTypes) {
             try {
-                if (type.isInterface()) {
+                if (!type.isInterface()) {
                     sortedTypes.add(type);
                     IType implementation = getImplementationForInterface(javaTypes, type);
                     if (implementation != null) {
@@ -247,9 +247,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private IIpsElement getSelectedIpsElementFromEvaluationService() {
         ISelectionService service = (ISelectionService)serviceLocator.getService(ISelectionService.class);
         ISelection selectedObject = service.getSelection();
-        TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class, selectedObject);
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selectedObject);
         if (typedSelection.isValid()) {
-            return typedSelection.getElement();
+            return (IIpsElement)typedSelection.getElement().getAdapter(IIpsElement.class);
         }
         return null;
     }

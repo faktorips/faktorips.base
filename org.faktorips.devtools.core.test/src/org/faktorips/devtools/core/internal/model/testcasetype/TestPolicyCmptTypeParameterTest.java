@@ -558,12 +558,12 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // => child no result
         IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct
                 .newGeneration(new GregorianCalendar());
-        IProductCmptLink productCmptAssociation = generation.newLink("Coverage");
+        IProductCmptLink productCmptLink = generation.newLink("Coverage");
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(0, allowedProductCmpt.length);
 
         // one association with target
-        productCmptAssociation.setTarget(testContent.coverageProductA.getQualifiedName());
+        productCmptLink.setTarget(testContent.coverageProductA.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
 
         assertEquals(1, allowedProductCmpt.length);
@@ -572,8 +572,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // association exists twice
         // find product cmpt only once
         generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        productCmptAssociation = generation.newLink("Coverage");
-        productCmptAssociation.setTarget(testContent.coverageProductA.getQualifiedName());
+        productCmptLink = generation.newLink("Coverage");
+        productCmptLink.setTarget(testContent.coverageProductA.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(1, allowedProductCmpt.length);
         assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
@@ -589,11 +589,21 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // coverageProductA specified in generation 1
         // coverageProductB specified in generation 2
         generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        productCmptAssociation = generation.newLink("Coverage");
-        productCmptAssociation.setTarget(testContent.coverageProductB.getQualifiedName());
+        productCmptLink = generation.newLink("Coverage");
+        productCmptLink.setTarget(testContent.coverageProductB.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(2, allowedProductCmpt.length);
         asserContains(allowedProductCmpt, testContent.coverageProductA);
+        asserContains(allowedProductCmpt, testContent.coverageProductB);
+
+        productCmptLink.delete();
+
+        productCmptLink = testContent.policyProduct.newLink("Coverage");
+        productCmptLink.setTarget(testContent.coverageProductB.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(2, allowedProductCmpt.length);
+        asserContains(allowedProductCmpt, testContent.coverageProductA);
+        asserContains(allowedProductCmpt, testContent.coverageProductB);
         asserContains(allowedProductCmpt, testContent.coverageProductB);
     }
 

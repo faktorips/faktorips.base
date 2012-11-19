@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -48,9 +49,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.commands.IpsObjectPartTester;
 import org.faktorips.devtools.core.ui.editors.ICompositeWithSelectableViewer;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.productcmpt.CardinalityPanel;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropListener.MoveLinkDragListener;
@@ -228,10 +229,14 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(DoubleClickEvent event) {
-                TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<IProductCmptLink>(
-                        IProductCmptLink.class, event.getSelection());
+                TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, event
+                        .getSelection());
                 if (typedSelection.isValid()) {
-                    openLink(typedSelection.getFirstElement());
+                    IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(typedSelection.getFirstElement(),
+                            IProductCmptLink.class);
+                    if (link != null) {
+                        openLink(link);
+                    }
                 }
             }
         });
@@ -303,21 +308,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     /**
-     * Returns the name of the product component type relation identified by the target. The target
-     * is either the name itself (the top level nodes of the relation section tree) or instances of
-     * IProductCmptRelation. (the nodes below the relation type nodes).
-     */
-    String getAssociationName(Object target) {
-        if (target instanceof String) {
-            return (String)target;
-        }
-        if (target instanceof IProductCmptLink) {
-            return ((IProductCmptLink)target).getAssociation();
-        }
-        return null;
-    }
-
-    /**
      * To get access to the informations which depend on the selections that can be made in this
      * section, only some parts can be disabled, other parts need special handling.
      */
@@ -353,8 +343,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             if (!isDataChangeable()) {
                 cardinalityPanel.setDataChangeable(false);
             }
-            if (selected instanceof IProductCmptLink) {
-                cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
+            if (selected instanceof LinkViewItem) {
+                cardinalityPanel.setProductCmptLinkToEdit(((LinkViewItem)selected).getLink());
             } else {
                 cardinalityPanel.setProductCmptLinkToEdit(null);
             }

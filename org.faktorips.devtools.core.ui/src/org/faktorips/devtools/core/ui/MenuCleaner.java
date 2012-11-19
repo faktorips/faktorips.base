@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.faktorips.util.ArgumentCheck;
 
@@ -64,7 +65,8 @@ public final class MenuCleaner implements IMenuListener {
     private String matchingGroup;
 
     /**
-     * Creates a menu cleaner that filters out the "additions" menu group.
+     * Creates a menu cleaner that filters out the some default menu groups like "additions" and
+     * "group.reorganize".
      * <p>
      * <strong>Important:</strong> This only works correctly if the "additions" menu group really
      * exists in the given {@link IMenuManager}. If
@@ -79,7 +81,7 @@ public final class MenuCleaner implements IMenuListener {
      * 
      * @param menuManager The {@link IMenuManager} from which to remove the "additions" menu group
      */
-    public static MenuCleaner addAdditionsCleaner(IMenuManager menuManager) {
+    public static MenuCleaner addDefaultCleaner(IMenuManager menuManager) {
         if (!menuManager.getRemoveAllWhenShown()) {
             boolean foundAdditionsGroup = false;
             for (IContributionItem item : menuManager.getItems()) {
@@ -95,6 +97,8 @@ public final class MenuCleaner implements IMenuListener {
 
         MenuCleaner additionsCleaner = new MenuCleaner();
         additionsCleaner.addFilteredMenuGroup(IWorkbenchActionConstants.MB_ADDITIONS);
+        additionsCleaner.addFilteredMenuGroup(IContextMenuConstants.GROUP_ADDITIONS);
+        additionsCleaner.addFilteredMenuGroup(IContextMenuConstants.GROUP_REORGANIZE);
         menuManager.addMenuListener(additionsCleaner);
 
         return additionsCleaner;

@@ -14,36 +14,19 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTypeDelta {
 
     public ProductCmptGenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject)
             throws CoreException {
-        super(generation, ipsProject);
-    }
-
-    @Override
-    public IProductCmptGeneration getPropertyValueContainer() {
-        return (IProductCmptGeneration)super.getPropertyValueContainer();
+        super(generation, generation, ipsProject);
     }
 
     @Override
     protected void createAdditionalEntriesAndChildren() throws CoreException {
-        computeLinksWithMissingAssociations();
-    }
-
-    private void computeLinksWithMissingAssociations() throws CoreException {
-        IProductCmptLink[] links = getPropertyValueContainer().getLinks();
-        for (IProductCmptLink link : links) {
-            if (getProductCmptType().findAssociation(link.getAssociation(), getIpsProject()) == null) {
-                LinkWithoutAssociationEntry linkWithoutAssociationEntry = new LinkWithoutAssociationEntry(link);
-                addEntry(linkWithoutAssociationEntry);
-            }
-        }
+        // nothing to do
     }
 
 }

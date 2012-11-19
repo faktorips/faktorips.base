@@ -1,5 +1,7 @@
 #!/bin/bash
 
+IGNORE="downloads"
+
 createComposite()
 {
 #Creates a composite p2 site from all subdirectories of the working directory and deletes old snapshots from the plugins and features subdirectories of those subdirectories
@@ -14,7 +16,7 @@ contentHeader="<?xml version='1.0' encoding='UTF-8'?>
 child="
     <child location='%s'/>"
 timestamp=$(date +"%s")
-number=$(ls -tr1d $COMPOSITE_DIR/*/ | wc -l)
+number=$(ls -tr1d $COMPOSITE_DIR/*/ | grep -v $IGNORE | wc -l)
 contentFile=$COMPOSITE_DIR/compositeContent.xml
 artifactFile=$COMPOSITE_DIR/compositeArtifacts.xml
 artifactHeader="<?xml version='1.0' encoding='UTF-8'?>
@@ -30,7 +32,8 @@ footer="
 </repository>"
 printf "$contentHeader" "$timestamp" "$number" > $contentFile
 printf "$artifactHeader" "$timestamp" "$number" > $artifactFile
-for dir in $COMPOSITE_DIR/*; do
+SUBDIRS=$(ls -tr1d $COMPOSITE_DIR/* | grep -v $IGNORE)
+for dir in $SUBDIRS; do
     if test -d "$dir"; then
 	REL_DIR=./${dir##/*/}
         printf "$child" "$REL_DIR" >> $contentFile

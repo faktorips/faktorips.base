@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -220,11 +221,18 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(associationObj);
             String msg;
             if (associationObj.isChangingOverTime()) {
-                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent, associationLabel);
+                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent, associationLabel,
+                        getName());
             } else {
-                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration, associationLabel);
+                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration, new Object[] {
+                        associationLabel,
+                        getName(),
+                        IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                                .getGenerationConceptNameSingular(true) });
             }
-            list.add(new Message(MSGCODE_CHANGING_OVER_TIME_MISMATCH, msg, Message.ERROR, this, PROPERTY_ASSOCIATION));
+            ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
+            ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
+            list.add(new Message(MSGCODE_CHANGING_OVER_TIME_MISMATCH, msg, Message.ERROR, prop1, prop2));
         }
     }
 

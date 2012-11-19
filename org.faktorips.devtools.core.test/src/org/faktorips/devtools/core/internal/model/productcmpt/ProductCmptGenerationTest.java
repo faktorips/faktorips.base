@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -672,6 +673,24 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         staticAssoc.setChangingOverTime(false);
 
         assertFalse(generation.isContainerFor(staticAssoc));
+    }
+
+    @Test
+    public void testGetLinksIncludingProductCmpt() throws Exception {
+        IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2011, 0, 1));
+        ArrayList<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
+        links.add(productCmpt.newLink("asdff"));
+        links.add(productCmpt.newLink("asdff2"));
+        links.add(generation1.newLink("asd1"));
+        links.add(generation1.newLink("asd2"));
+        generation2.newLink("notExpected1");
+        generation2.newLink("notExpected2");
+
+        List<IProductCmptLink> linksIncludingGenerations = generation1.getLinksIncludingProductCmpt();
+        assertEquals(links, linksIncludingGenerations);
     }
 
 }

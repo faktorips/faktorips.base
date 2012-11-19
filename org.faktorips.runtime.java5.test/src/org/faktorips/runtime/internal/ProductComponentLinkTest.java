@@ -70,13 +70,4 @@ public class ProductComponentLinkTest {
         verify(linkElement).setAttribute("defaultCardinality", "1");
     }
 
-    @SuppressWarnings("deprecation")
-    // Deliberately tests the (changed) functionality of the deprecated method
-    @Test(expected = UnsupportedOperationException.class)
-    public void testUnsupportedOperationIfSourceIsProductComponent() {
-        ProductComponent prodCmpt = mock(ProductComponent.class);
-        ProductComponentLink<IProductComponent> link = new ProductComponentLink<IProductComponent>(prodCmpt);
-        link.getSource();
-    }
-
 }

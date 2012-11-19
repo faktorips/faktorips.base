@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueHolderMismatchEntry;
@@ -32,10 +34,12 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -55,10 +59,12 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     private final IPropertyValueContainer propertyValueContainer;
     private final IProductCmptType productCmptType;
     private final List<IDeltaEntry> entries = new ArrayList<IDeltaEntry>();
+    private final IProductCmptLinkContainer linkContainer;
 
-    public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer, IIpsProject ipsProject)
-            throws CoreException {
+    public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer,
+            IProductCmptLinkContainer linkContainer, IIpsProject ipsProject) throws CoreException {
 
+        this.linkContainer = linkContainer;
         ArgumentCheck.notNull(propertyValueContainer);
         ArgumentCheck.notNull(ipsProject);
 
@@ -69,7 +75,27 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
             return;
         }
         createEntriesForProperties();
+        createEntriesForLinks();
         createAdditionalEntriesAndChildren();
+    }
+
+    protected void createEntriesForLinks() throws CoreException {
+        List<IProductCmptLink> links = getLinkContainer().getLinksAsList();
+        for (IProductCmptLink link : links) {
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()
+                    .findAssociation(link.getAssociation(), getIpsProject());
+            if (association == null) {
+                LinkWithoutAssociationEntry linkWithoutAssociationEntry = new LinkWithoutAssociationEntry(link);
+                addEntry(linkWithoutAssociationEntry);
+            } else if (!link.getProductCmptLinkContainer().isContainerFor(association)) {
+                LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(association, link);
+                addEntry(entry);
+            }
+        }
+    }
+
+    protected IProductCmptLinkContainer getLinkContainer() {
+        return linkContainer;
     }
 
     @Override
@@ -185,7 +211,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     @Override
     protected boolean isEmptyThis() {
-        return entries.size() == 0;
+        return entries.isEmpty();
     }
 
     @Override

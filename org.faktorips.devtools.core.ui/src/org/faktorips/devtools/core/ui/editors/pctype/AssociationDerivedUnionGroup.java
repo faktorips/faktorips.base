@@ -27,7 +27,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -146,7 +148,6 @@ public class AssociationDerivedUnionGroup extends Composite {
      */
     public void setDefaultSubset(boolean subset) {
         pmoAssociation.setSubset(subset);
-        pmoAssociation.ignoreAutomaticSubsetEnabling();
     }
 
     private void addCompletionProcessor(IAssociation association) {
@@ -165,8 +166,6 @@ public class AssociationDerivedUnionGroup extends Composite {
 
         private boolean subset;
 
-        private boolean ignoreAutomaticSubsetEnabling = false;
-
         private boolean derivedUnionsInitialized;
 
         public PmoAssociation(IAssociation association) {
@@ -179,14 +178,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                     dispose();
                 }
             });
-            initDerivedUnionCandidates(association);
-        }
-
-        /**
-         * Ignores the automatically enabling of the subset checkbox.
-         */
-        public void ignoreAutomaticSubsetEnabling() {
-            ignoreAutomaticSubsetEnabling = true;
+            initDerivedUnionCandidates();
         }
 
         public boolean isSubset() {
@@ -199,13 +191,23 @@ public class AssociationDerivedUnionGroup extends Composite {
                 association.setSubsettedDerivedUnion(StringUtils.EMPTY);
             } else {
                 association.setSubsettedDerivedUnion(derivedUnionCombo.getItem(0));
+                if (association instanceof IProductCmptTypeAssociation) {
+                    try {
+                        IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
+                                .findSubsettedDerivedUnion(association.getIpsProject());
+                        ((IProductCmptTypeAssociation)association).setChangingOverTime(subsettedDerivedUnion
+                                .isChangingOverTime());
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
+                }
             }
             notifyListeners();
         }
 
         @Override
         protected void partHasChanged() {
-            initDerivedUnionCandidates(association);
+            initDerivedUnionCandidates();
 
             // special handling for policy component type associations
             if (association instanceof IPolicyCmptTypeAssociation) {
@@ -213,14 +215,14 @@ public class AssociationDerivedUnionGroup extends Composite {
             }
         }
 
-        private void initDerivedUnionCandidates(IAssociation policyCmptTypeAssociation) {
+        private void initDerivedUnionCandidates() {
             Set<String> derivedUnions = new LinkedHashSet<String>(1);
             if (association.isSubsetOfADerivedUnion()) {
                 derivedUnions.add(association.getSubsettedDerivedUnion());
             }
 
             // set derived union candidates
-            String currentTarget = policyCmptTypeAssociation.getTarget();
+            String currentTarget = association.getTarget();
             if (StringUtils.isEmpty(currentTarget)) {
                 setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
                 derivedUnionsInitialized = true;
@@ -232,23 +234,16 @@ public class AssociationDerivedUnionGroup extends Composite {
 
                 try {
                     // init drop down with available candidates
-                    IAssociation[] associations = policyCmptTypeAssociation.findDerivedUnionCandidates(association
-                            .getIpsProject());
+                    IAssociation[] associations = association.findDerivedUnionCandidates(association.getIpsProject());
                     for (int i = 0; i < associations.length; i++) {
                         derivedUnions.add(associations[i].getName());
                     }
                     setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
 
-                    if (ignoreAutomaticSubsetEnabling) {
-                        derivedUnionsInitialized = true;
-                        return;
-                    }
-
                     // if at least one derived union candidate is available
                     // then set the first derived union as default
                     if (associations.length > 0 && !association.isSubsetOfADerivedUnion() && derivedUnionsInitialized) {
                         setSubset(true);
-                        association.setSubsettedDerivedUnion(associations[0].getName());
                     }
                     derivedUnionsInitialized = true;
                 } catch (CoreException e) {
@@ -260,7 +255,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         private void partHasChangedFor(IPolicyCmptTypeAssociation association) {
             IPolicyCmptTypeAssociation policyCmptTypeAssociation = association;
             // enable subset
-            if (!policyCmptTypeAssociation.isContainerRelationApplicable()) {
+            if (!policyCmptTypeAssociation.isDerivedUnionApplicable()) {
                 subset = false;
             }
         }

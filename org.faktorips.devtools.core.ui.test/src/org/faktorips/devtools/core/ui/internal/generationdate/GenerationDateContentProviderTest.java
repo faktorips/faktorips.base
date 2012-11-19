@@ -112,7 +112,14 @@ public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
     public void testCollectElements() {
         checkAdjustmentDates(5, 3, 1);
 
-        IProductCmptLink link1 = rootCmpt.getProductCmptGeneration(0).newLink(association);
+        // link not changing over time
+        IProductCmptLink link1 = rootCmpt.newLink(association);
+        link1.setTarget(subCmpt1.getQualifiedName());
+        checkAdjustmentDates(5, 4, 3, 2, 1);
+
+        link1.delete();
+        // same link but changing over time
+        link1 = rootCmpt.getProductCmptGeneration(0).newLink(association);
         link1.setTarget(subCmpt1.getQualifiedName());
         // link only exists in first generation of rootCmpt
         checkAdjustmentDates(5, 3, 2, 1);
@@ -148,6 +155,11 @@ public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
         link6.setTarget(subSubCmpt.getQualifiedName());
         checkAdjustmentDates(6, 5, 3, 2, 1);
 
+        // no changeover time for link6:
+        link6.delete();
+        link6 = subCmpt2.newLink(association);
+        link6.setTarget(subSubCmpt.getQualifiedName());
+        checkAdjustmentDates(6, 5, 3, 2, 1);
     }
 
     private void checkAdjustmentDates(int... expectedDateIndices) {

@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -29,7 +28,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -466,38 +464,34 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             return new IIpsSrcFile[0];
         }
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(100);
-        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            // check all links, if the target matches the defined target in the test case type
-            IProductCmptLink[] links = ((IProductCmptGeneration)generation).getLinks();
-            for (IProductCmptLink link : links) {
-                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
-                        link.getTarget());
-                if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
-                    IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
-                    if (productCmptFound == null) {
-                        continue;
-                    }
-                    IPolicyCmptType pcType = findPolicyCmptType(ipsProjectToSearch);
-                    IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(ipsProjectToSearch);
-                    if (pcType != null && pcTypeOfProduct != null) {
-                        /*
-                         * check if the specified policy cmpt type is the same or a supertype of the
-                         * found product cmpt policy cmpt type
-                         */
-                        if (!pcTypeOfProduct.isSubtypeOrSameType(pcType, ipsProjectToSearch)) {
-                            continue;
-                        }
-                    }
-                    if (pcType == null || pcTypeOfProduct == null) {
-                        /*
-                         * in case of product cmpt types with a missing or not configurated poliy
-                         * cmpt type the product cmpt couldn't be used
-                         */
-                        continue;
-                    }
-                    result.add(productCmptFoundSrc);
+        List<IProductCmptLink> links = productCmpt.getLinksIncludingGenerations();
+        for (IProductCmptLink link : links) {
+            IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
+                    link.getTarget());
+            if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
+                IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
+                if (productCmptFound == null) {
+                    continue;
                 }
+                IPolicyCmptType pcType = findPolicyCmptType(ipsProjectToSearch);
+                IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(ipsProjectToSearch);
+                if (pcType != null && pcTypeOfProduct != null) {
+                    /*
+                     * check if the specified policy cmpt type is the same or a supertype of the
+                     * found product cmpt policy cmpt type
+                     */
+                    if (!pcTypeOfProduct.isSubtypeOrSameType(pcType, ipsProjectToSearch)) {
+                        continue;
+                    }
+                }
+                if (pcType == null || pcTypeOfProduct == null) {
+                    /*
+                     * in case of product cmpt types with a missing or not configurated poliy cmpt
+                     * type the product cmpt couldn't be used
+                     */
+                    continue;
+                }
+                result.add(productCmptFoundSrc);
             }
         }
 

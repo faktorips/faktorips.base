@@ -42,10 +42,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link for the given product component generation. Target and cardinality must be
      * set by invoking <code>initFromXml</code>.
-     * 
-     * @deprecated Use {@link #ProductComponentLink(IProductComponentLinkSource)} instead.
      */
-    @Deprecated
     public ProductComponentLink(IProductComponentGeneration source) {
         this((IProductComponentLinkSource)source);
     }
@@ -56,10 +53,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
      * 
-     * @deprecated Use {@link #ProductComponentLink(IProductComponentLinkSource, IProductComponent)}
-     *             instead.
      */
-    @Deprecated
     public ProductComponentLink(IProductComponentGeneration source, E target) {
         this((IProductComponentLinkSource)source, target, CardinalityRange.FULL_RANGE);
     }
@@ -69,11 +63,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * component generation.
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
-     * @deprecated use
-     *             {@link #ProductComponentLink(IProductComponentGeneration, IProductComponent, CardinalityRange)}
-     *             instead.
      */
-    @Deprecated
     public ProductComponentLink(IProductComponentGeneration source, E target, CardinalityRange cardinality) {
         this((IProductComponentLinkSource)source, target, cardinality);
     }
@@ -183,23 +173,8 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         return sb.toString();
     }
 
-    @Deprecated
-    public IProductComponentGeneration getSource() {
-        if (source instanceof IProductComponentGeneration) {
-            return (IProductComponentGeneration)source;
-        } else {
-            throw new UnsupportedOperationException(
-                    "This link does not originate from a product component generation but from a product component.");
-        }
+    public IProductComponentLinkSource getSource() {
+        return source;
     }
-    //
-    // /**
-    // * Returns the {@link IProductComponentSource} this link originates from.
-    // *
-    // * @since 3.8
-    // */
-    // public IProductComponentSource getProductComponentSource() {
-    // return source;
-    // }
 
 }

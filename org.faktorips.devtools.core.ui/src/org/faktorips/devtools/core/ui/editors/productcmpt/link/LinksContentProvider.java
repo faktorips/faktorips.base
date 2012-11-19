@@ -116,8 +116,8 @@ public class LinksContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof AbstractAssociationViewItem) {
-            List<LinkSectionViewItem> children = ((AbstractAssociationViewItem)parentElement).getChildren();
-            return children.toArray(new LinkSectionViewItem[children.size()]);
+            List<ILinkSectionViewItem> children = ((AbstractAssociationViewItem)parentElement).getChildren();
+            return children.toArray(new ILinkSectionViewItem[children.size()]);
         }
         return new Object[0];
     }

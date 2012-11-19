@@ -16,11 +16,11 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * @since 3.8
  * @author widmaier
  */
-public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
+public interface IProductCmptLinkContainer extends IProductPartsContainer {
 
     public final static String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
 
@@ -158,7 +158,7 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * Returns all {@link ProductCmptLink product component links} this class contains as a typed
      * list.
      */
-    List<IProductCmptLink> getLinksAsList();
+    public List<IProductCmptLink> getLinksAsList();
 
     /**
      * Returns all {@link ProductCmptLink product component links} for the given association name as
@@ -167,26 +167,15 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * @param associationName the name (=target role singular) of the association to return links
      *            for
      */
-    List<IProductCmptLink> getLinksAsList(String associationName);
+    public List<IProductCmptLink> getLinksAsList(String associationName);
 
-    /**
-     * Returns the product component for this link container. If this container is a
-     * {@link IProductCmptGeneration product component generation} the corresponding product
-     * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
-     */
-    IProductCmpt getProductCmpt();
+    @Override
+    public IProductCmpt getProductCmpt();
 
-    /**
-     * Searches the product component type this link container is based on.
-     * 
-     * @param ipsProject The IPS project which search path is used to search the type.
-     * 
-     * @return The product component type this link container is based on or <code>null</code> if
-     *         the product component type can't be found.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
+    @Override
+    public String getProductCmptType();
+
+    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }
