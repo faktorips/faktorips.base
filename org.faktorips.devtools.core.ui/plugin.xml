@@ -249,7 +249,6 @@
       </command>
       <command
             categoryId="org.faktorips.devtools.core.ui.category.refactoring"
-            defaultHandler="org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler"
             description="%PullUpRefactoring_description"
             id="org.faktorips.devtools.core.refactor.pullUp"
             name="%PullUpRefactoring_name">
@@ -1620,9 +1619,16 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
-                  </adapt>
+                  <and>
+	                  <adapt
+	                        type="org.faktorips.devtools.core.model.IIpsElement">
+	                  </adapt>
+	                  <not>
+		                  <adapt
+		                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+		                  </adapt>
+	                  </not>
+	              </and>
                </iterate>
             </with>
          </activeWhen>
@@ -1655,7 +1661,8 @@
          <enabledWhen>
             <count
                   value="1">
-            </count></enabledWhen>
+            </count>
+         </enabledWhen>
       </handler>
       <handler
             class="org.faktorips.devtools.core.ui.commands.ShowHierarchyHandler"
@@ -2173,7 +2180,7 @@
             <menu
                   label="Faktor-IPS" id="faktorIPSMenu">
                <separator
-                     name="group.new"
+                     name="group.new.product"
                      visible="false">
                </separator>
                <dynamic
@@ -2195,18 +2202,24 @@
                  name="refactoring"
                  visible="true">
            </separator>
-           <command
-                 commandId="org.eclipse.ui.edit.rename"
-                 id="Rename"
-                 label="%ModelExplorerRefactoringMenu_labelRename"
-                 style="push">
-           </command>
-           <command
-                 commandId="org.eclipse.ui.edit.move"
-                 id="Move"
-                 label="%ModelExplorerRefactoringMenu_labelMove"
-                 style="push">
-           </command>
+           <menu
+                 label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor">
+              <command
+                    commandId="org.eclipse.ui.edit.rename"
+                    id="Rename"
+                    label="%ModelExplorerRefactoringMenu_labelRename"
+                    style="push">
+              </command>
+              <command
+                    commandId="org.eclipse.ui.edit.move"
+                    id="Move"
+                    label="%ModelExplorerRefactoringMenu_labelMove"
+                    style="push">
+              </command>
+              <visibleWhen
+                    checkEnabled="true">
+              </visibleWhen>
+           </menu>
            <separator
                  name="additions"
                  visible="true">
@@ -2448,6 +2461,55 @@
       <menuContribution
             class="org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorerContributionFactory"
             locationURI="popup:org.faktorips.devtools.core.ui.views.productStructureExplorer?after=edit">
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=group.new.product">
+         <dynamic
+               class="org.faktorips.devtools.core.ui.commands.CreateNewProductMenu"
+               id="org.faktorips.devtools.core.ui.dynamicCreateGenerationAndVersion">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </dynamic>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=refactoring">
+         <menu
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor">
+            <command
+                  commandId="org.eclipse.ui.edit.rename"
+                  id="Rename"
+                  label="%ModelExplorerRefactoringMenu_labelRename"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.move"
+                  id="Move"
+                  label="%ModelExplorerRefactoringMenu_labelMove"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <separator
+                  name="refactoring.pullup"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.faktorips.devtools.core.refactor.pullUp"
+                  label="%PullUpRefactoring_name"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </menu>
       </menuContribution>
    </extension>
       <extension

@@ -34,6 +34,8 @@ public enum IpsMenuId {
     TOOLBAR_TABLE_STRUCTURE_EDITOR_PAGE(
             "org.faktorips.devtools.core.ui.editors.tablestructure.tableStructureEditorPage.toolbar"), //$NON-NLS-1$
 
+    GROUP_NEW_PRODUCTC("group.new.product"), //$NON-NLS-1$
+
     GROUP_JUMP_TO_SOURCE_CODE("jumpToSourceCode"), //$NON-NLS-1$
 
     GROUP_REFACTORING("refactoring"); //$NON-NLS-1$

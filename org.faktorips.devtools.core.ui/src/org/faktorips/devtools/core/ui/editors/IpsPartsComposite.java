@@ -194,7 +194,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID,
                     Messages.IpsPartsComposite_labelPullUpRefactoring));
         }
-        contextMenuManager.add(new Separator(IpsMenuId.GROUP_REFACTORING.getId()));
+        contextMenuManager.add(new Separator());
         contextMenuManager.add(refactorSubmenu);
     }
 
