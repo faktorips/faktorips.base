@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
 /**
  * An implementation of {@link ISearchOperator} for String operands with a defined
@@ -30,7 +30,7 @@ public abstract class AbstractStringSearchOperator<S extends ISearchOperatorType
     }
 
     @Override
-    protected final boolean check(Object operand, IProductCmptGeneration productCmptGeneration) {
+    protected final boolean check(Object operand, IProductPartsContainer productPartsContainer) {
         if (operand instanceof String && getValueDatatype().isParsable((String)operand)) {
             return checkInternal((String)operand);
         }

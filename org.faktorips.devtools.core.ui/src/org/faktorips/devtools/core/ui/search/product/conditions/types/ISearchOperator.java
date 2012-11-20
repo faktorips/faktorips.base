@@ -13,21 +13,21 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
 /**
  * A ISearchOperator provides the core for the search
  * <p>
- * The method {@link #check(IProductCmptGeneration)} returns whether the given
- * {@link IProductCmptGeneration} is a hit of of the search.
+ * The method {@link #check(IProductPartsContainer)} returns whether the given
+ * {@link IProductPartsContainer} is a hit of of the search.
  * 
  * @author dicker
  */
 public interface ISearchOperator {
 
     /**
-     * returns true, if the given {@link IProductCmptGeneration} is a hit
+     * returns true, if the given {@link IProductPartsContainer} is a hit
      */
-    public boolean check(IProductCmptGeneration productCmptGeneration);
+    public boolean check(IProductPartsContainer productPartsContainer);
 
 }

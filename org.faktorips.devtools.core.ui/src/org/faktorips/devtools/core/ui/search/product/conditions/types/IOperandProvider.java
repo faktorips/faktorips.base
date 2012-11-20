@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
 /**
  * Interface, that provides an operand for a condition of the product search
@@ -26,5 +26,5 @@ public interface IOperandProvider {
      * Returns the operand of an given (=searched) IProductCmptGeneration e.g. an attribute value or
      * a used table.
      */
-    public Object getSearchOperand(IProductCmptGeneration productComponentGeneration);
+    public Object getSearchOperand(IProductPartsContainer productComponentGeneration);
 }

@@ -138,4 +138,35 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
         assertTrue(searchOperand.contains(linkedProduct));
         assertTrue(searchOperand.contains(linkedProduct2));
     }
+
+    @Test
+    public void testOperandProvider_staticLinks() throws CoreException {
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+
+        IProductCmptLink link = productCmpt.newLink(association);
+
+        String linkedProduct = "bbb.LinkedProduct";
+        newProductCmpt(linkedProductCmptType, linkedProduct);
+
+        link.setTarget(linkedProduct);
+
+        IProductCmptLink link2 = productCmpt.newLink(association);
+
+        String linkedProduct2 = "bbb.LinkedProductTwo";
+        newProductCmpt(linkedProductCmptType, linkedProduct2);
+
+        link2.setTarget(linkedProduct2);
+
+        IOperandProvider operandProvider = condition.createOperandProvider(association);
+
+        List<?> searchOperand = (List<?>)operandProvider.getSearchOperand(productCmpt);
+
+        assertEquals(2, searchOperand.size());
+        assertTrue(searchOperand.contains(linkedProduct));
+        assertTrue(searchOperand.contains(linkedProduct2));
+    }
+
 }

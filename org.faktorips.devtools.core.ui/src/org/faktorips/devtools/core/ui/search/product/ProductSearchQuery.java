@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
@@ -72,7 +73,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         }
 
         for (IIpsSrcFile srcFile : matchingSrcFiles) {
-            searchDetailProductCmptGenerations(srcFile, searchOperators);
+            searchDetailProductPartContainers(srcFile, searchOperators);
         }
     }
 
@@ -88,7 +89,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         return searchOperator;
     }
 
-    private void searchDetailProductCmptGenerations(IIpsSrcFile srcFile, List<ISearchOperator> searchOperators)
+    private void searchDetailProductPartContainers(IIpsSrcFile srcFile, List<ISearchOperator> searchOperators)
             throws CoreException {
         if (!IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType())) {
             return;
@@ -98,18 +99,22 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
         List<IProductCmptGeneration> generations = productComponent.getProductCmptGenerations();
 
+        if (isMatchingProductPartContainer(searchOperators, productComponent)) {
+            getSearchResult().addMatch(new Match(productComponent, 0, 0));
+        }
+
         for (IProductCmptGeneration productCmptGeneration : generations) {
-            if (isMatchingProductCmptGeneration(searchOperators, productCmptGeneration)) {
+            if (isMatchingProductPartContainer(searchOperators, productCmptGeneration)) {
                 getSearchResult().addMatch(new Match(productCmptGeneration, 0, 0));
             }
         }
     }
 
-    private boolean isMatchingProductCmptGeneration(List<ISearchOperator> searchOperators,
-            IProductCmptGeneration productCmptGeneration) {
+    private boolean isMatchingProductPartContainer(List<ISearchOperator> searchOperators,
+            IProductPartsContainer productPartsContainer) {
 
         for (ISearchOperator searchOperator : searchOperators) {
-            if (!searchOperator.check(productCmptGeneration)) {
+            if (!searchOperator.check(productPartsContainer)) {
                 return false;
             }
         }

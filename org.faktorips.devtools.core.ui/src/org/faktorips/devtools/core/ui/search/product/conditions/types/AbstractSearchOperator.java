@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
 /**
  * Abstract implementation of the {@link ISearchOperator}
@@ -37,15 +38,15 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
     }
 
     @Override
-    public final boolean check(IProductCmptGeneration productCmptGeneration) {
-        return check(operandProvider.getSearchOperand(productCmptGeneration), productCmptGeneration);
+    public final boolean check(IProductPartsContainer productPartsContainer) {
+        return check(operandProvider.getSearchOperand(productPartsContainer), productPartsContainer);
     }
 
     /**
      * returns true, if the given {@link IProductCmptGeneration} is a hit regarding the given
      * searchOperand
      */
-    protected abstract boolean check(Object searchOperand, IProductCmptGeneration productCmptGeneration);
+    protected abstract boolean check(Object searchOperand, IProductPartsContainer productCmptGeneration);
 
     S getSearchOperatorType() {
         return searchOperatorType;

@@ -132,4 +132,21 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
 
         assertEquals(value, operandProvider.getSearchOperand(generation));
     }
+
+    @Test
+    public void testOperandProvider_staticAttribute() throws CoreException {
+        String value = "monatlich";
+
+        IProductCmptTypeAttribute attribut = productCmptType.newProductCmptTypeAttribute("zahlweise");
+        attribut.setChangingOverTime(false);
+
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
+        IAttributeValue attributeValue = (IAttributeValue)productCmpt.newPropertyValue(attribut);
+        attributeValue.setValueHolder(new SingleValueHolder(attributeValue, value));
+
+        IOperandProvider operandProvider = condition.createOperandProvider(attribut);
+
+        assertEquals(value, operandProvider.getSearchOperand(productCmpt));
+    }
+
 }

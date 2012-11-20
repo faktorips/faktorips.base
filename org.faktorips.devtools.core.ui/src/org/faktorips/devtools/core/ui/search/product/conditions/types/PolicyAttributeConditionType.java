@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -52,10 +52,14 @@ public class PolicyAttributeConditionType extends AbstractAttributeConditionType
         }
 
         @Override
-        public Object getSearchOperand(IProductCmptGeneration productComponentGeneration) {
-            IConfigElement configElement = productComponentGeneration.getConfigElement(attribute.getName());
-
-            return configElement.getValueSet();
+        public Object getSearchOperand(IProductPartsContainer productPartsContainer) {
+            List<IConfigElement> configElements = productPartsContainer.getProductParts(IConfigElement.class);
+            for (IConfigElement configElement : configElements) {
+                if (configElement.getPolicyCmptTypeAttribute().equals(attribute.getName())) {
+                    return configElement.getValueSet();
+                }
+            }
+            return null;
         }
 
     }

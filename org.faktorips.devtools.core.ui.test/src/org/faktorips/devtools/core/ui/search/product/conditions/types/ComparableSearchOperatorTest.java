@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.junit.Test;
 
 public class ComparableSearchOperatorTest {
@@ -31,7 +31,7 @@ public class ComparableSearchOperatorTest {
         IOperandProvider operandProvider = new IOperandProvider() {
 
             @Override
-            public String getSearchOperand(IProductCmptGeneration productComponentGeneration) {
+            public String getSearchOperand(IProductPartsContainer productPartsContainer) {
                 return null;
             }
         };

@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -59,14 +60,14 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
         }
 
         @Override
-        public Object getSearchOperand(IProductCmptGeneration productComponentGeneration) {
+        public Object getSearchOperand(IProductPartsContainer linkContainer) {
             List<String> targetNames = new ArrayList<String>();
 
-            IProductCmptLink[] links = productComponentGeneration.getLinks();
+            List<IProductCmptLink> links = linkContainer.getProductParts(IProductCmptLink.class);
             for (IProductCmptLink link : links) {
                 try {
                     boolean linkOfAssociation = link.isLinkOfAssociation(productCmptTypeAssociation,
-                            productComponentGeneration.getIpsProject());
+                            linkContainer.getIpsProject());
                     if (linkOfAssociation) {
                         targetNames.add(link.getTarget());
                     }

@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.runtime.IProductComponent;
@@ -54,16 +55,14 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
         }
 
         @Override
-        public String getSearchOperand(IProductCmptGeneration productComponentGeneration) {
-            IAttributeValue attributeValue = productComponentGeneration.getAttributeValue(attribute.getName());
-
-            // null-check necessary, because attributeValue maybe null if a product component is not
-            // migrated
-            if (attributeValue == null) {
-                return null;
+        public String getSearchOperand(IProductPartsContainer productPartsContainer) {
+            List<IAttributeValue> attributeValues = productPartsContainer.getProductParts(IAttributeValue.class);
+            for (IAttributeValue attributeValue : attributeValues) {
+                if (attributeValue.getAttribute().equals(attribute.getName())) {
+                    return attributeValue.getPropertyValue();
+                }
             }
-
-            return attributeValue.getPropertyValue();
+            return null;
         }
     }
 

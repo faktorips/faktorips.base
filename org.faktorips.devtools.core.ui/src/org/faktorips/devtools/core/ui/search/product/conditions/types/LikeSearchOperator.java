@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 
 /**
@@ -36,7 +36,7 @@ public class LikeSearchOperator extends AbstractSearchOperator<LikeSearchOperato
     }
 
     @Override
-    protected boolean check(Object searchOperand, IProductCmptGeneration productCmptGeneration) {
+    protected boolean check(Object searchOperand, IProductPartsContainer productPartsContainer) {
         if (searchOperand instanceof String) {
             return checkInternal((String)searchOperand);
         }

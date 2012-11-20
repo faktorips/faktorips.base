@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -35,7 +35,7 @@ public class ReferenceSearchOperator extends AbstractSearchOperator<ReferenceSea
     }
 
     @Override
-    protected boolean check(Object operand, IProductCmptGeneration productCmptGeneration) {
+    protected boolean check(Object operand, IProductPartsContainer productPartsContainer) {
         ArgumentCheck.notNull(operand);
         List<?> operandList = (List<?>)operand;
 
