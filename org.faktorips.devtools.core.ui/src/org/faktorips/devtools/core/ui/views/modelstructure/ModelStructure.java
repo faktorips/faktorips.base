@@ -42,6 +42,11 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -75,7 +80,9 @@ import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
+import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
 
@@ -143,6 +150,11 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     @Override
     public void createPartControl(Composite parent) {
+
+        DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
+        dropTarget.addDropListener(new ModelStructureDropListener(this));
+        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+
         panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true, true));
         label = uiToolkit.createLabel(panel, "", SWT.LEFT, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, false));
@@ -814,4 +826,55 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         }
         return false;
     }
+
+    private static class ModelStructureDropListener extends IpsElementDropListener {
+
+        private final ModelStructure modelStructure;
+
+        public ModelStructureDropListener(ModelStructure modelStructure) {
+            this.modelStructure = modelStructure;
+        }
+
+        @Override
+        public void dragEnter(DropTargetEvent event) {
+            dropAccept(event);
+        }
+
+        @Override
+        public void drop(DropTargetEvent event) {
+            Object[] transferred = super.getTransferedElements(event.currentDataType);
+            if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
+                modelStructure.show((IIpsSrcFile)transferred[0]);
+            }
+        }
+
+        @Override
+        public void dropAccept(DropTargetEvent event) {
+            event.detail = DND.DROP_NONE;
+            Object[] transferred = super.getTransferedElements(event.currentDataType);
+            if (transferred == null) {
+                if (super.getTransfer().isSupportedType(event.currentDataType)) {
+                    event.detail = DND.DROP_LINK;
+                }
+                return;
+            }
+            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
+                try {
+                    IIpsObject selected = ipsSrcFile.getIpsObject();
+                    if (InstanceExplorer.supports(selected)) {
+                        event.detail = DND.DROP_LINK;
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        }
+
+        @Override
+        public int getSupportedOperations() {
+            return DND.DROP_LINK;
+        }
+    }
+
 }
