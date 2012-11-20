@@ -14,8 +14,10 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -573,14 +575,29 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    private void createMarkersFromMessageList(IResource resource, MessageList list, String markerType)
-            throws CoreException {
-
-        resource.deleteMarkers(markerType, true, IResource.DEPTH_ZERO);
+    void createMarkersFromMessageList(IResource resource, MessageList list, String markerType) throws CoreException {
+        List<IMarker> markers = new ArrayList<IMarker>(Arrays.asList(resource.findMarkers(markerType, true,
+                IResource.DEPTH_ZERO)));
         for (int i = 0; i < list.size(); i++) {
             Message msg = list.getMessage(i);
-            IMarker marker = resource.createMarker(markerType);
-            updateMarker(marker, msg.getText(), getMarkerSeverity(msg));
+            boolean foundMarked = false;
+            for (Iterator<IMarker> iterator = markers.iterator(); iterator.hasNext();) {
+                IMarker marker = iterator.next();
+                String message = (String)marker.getAttribute(IMarker.MESSAGE);
+                Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
+                if (msg.getText().equals(message) && getMarkerSeverity(msg) == severity) {
+                    foundMarked = true;
+                    iterator.remove();
+                    break;
+                }
+            }
+            if (!foundMarked) {
+                IMarker marker = resource.createMarker(markerType);
+                updateMarker(marker, msg.getText(), getMarkerSeverity(msg));
+            }
+        }
+        for (IMarker marker : markers) {
+            marker.delete();
         }
     }
 

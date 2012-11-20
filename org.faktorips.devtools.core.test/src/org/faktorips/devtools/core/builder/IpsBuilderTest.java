@@ -16,6 +16,13 @@ package org.faktorips.devtools.core.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -907,6 +914,90 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
                 builderSet) };
         ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
+    }
+
+    @Test
+    public void testCreateMarkersFromMessageList_keepSameMarkers() throws Exception {
+        IMarker marker1 = mock(IMarker.class);
+        when(marker1.getAttribute(IMarker.MESSAGE)).thenReturn("text1");
+        when(marker1.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_ERROR);
+        IMarker marker2 = mock(IMarker.class);
+        when(marker2.getAttribute(IMarker.MESSAGE)).thenReturn("text2");
+        when(marker2.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_WARNING);
+        IResource resource = mock(IResource.class);
+        when(resource.findMarkers(anyString(), anyBoolean(), anyInt())).thenReturn(new IMarker[] { marker1, marker2 });
+        MessageList list = new MessageList();
+        list.add(new Message("", "text2", Message.WARNING));
+        list.add(new Message("", "text1", Message.ERROR));
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        ipsBuilder.createMarkersFromMessageList(resource, list, "");
+
+        verify(resource).findMarkers(anyString(), anyBoolean(), anyInt());
+        verifyNoMoreInteractions(resource);
+    }
+
+    @Test
+    public void testCreateMarkersFromMessageList_newMarkers() throws Exception {
+        IMarker marker1 = mock(IMarker.class);
+        when(marker1.getAttribute(IMarker.MESSAGE)).thenReturn("text1");
+        when(marker1.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_ERROR);
+        IMarker marker2 = mock(IMarker.class);
+        IResource resource = mock(IResource.class);
+        when(resource.findMarkers(anyString(), anyBoolean(), anyInt())).thenReturn(new IMarker[] { marker1 });
+        when(resource.createMarker("")).thenReturn(marker2);
+        MessageList list = new MessageList();
+        list.add(new Message("", "text2", Message.WARNING));
+        list.add(new Message("", "text1", Message.ERROR));
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        ipsBuilder.createMarkersFromMessageList(resource, list, "");
+
+        verify(resource).findMarkers(anyString(), anyBoolean(), anyInt());
+        verify(resource).createMarker("");
+        verifyNoMoreInteractions(resource);
+    }
+
+    @Test
+    public void testCreateMarkersFromMessageList_deleteMarkers() throws Exception {
+        IMarker marker1 = mock(IMarker.class);
+        when(marker1.getAttribute(IMarker.MESSAGE)).thenReturn("text1");
+        when(marker1.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_ERROR);
+        IMarker marker2 = mock(IMarker.class);
+        when(marker2.getAttribute(IMarker.MESSAGE)).thenReturn("text2");
+        when(marker2.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_WARNING);
+        IResource resource = mock(IResource.class);
+        when(resource.findMarkers(anyString(), anyBoolean(), anyInt())).thenReturn(new IMarker[] { marker1, marker2 });
+        MessageList list = new MessageList();
+        list.add(new Message("", "text1", Message.ERROR));
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        ipsBuilder.createMarkersFromMessageList(resource, list, "");
+
+        verify(marker2).delete();
+        verify(resource).findMarkers(anyString(), anyBoolean(), anyInt());
+        verifyNoMoreInteractions(resource);
+    }
+
+    @Test
+    public void testCreateMarkersFromMessageList_duplicatedMarkers() throws Exception {
+        IMarker marker1 = mock(IMarker.class);
+        when(marker1.getAttribute(IMarker.MESSAGE)).thenReturn("text1");
+        when(marker1.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_ERROR);
+        IMarker marker2 = mock(IMarker.class);
+        when(marker2.getAttribute(IMarker.MESSAGE)).thenReturn("text1");
+        when(marker2.getAttribute(IMarker.SEVERITY)).thenReturn(IMarker.SEVERITY_ERROR);
+        IResource resource = mock(IResource.class);
+        when(resource.findMarkers(anyString(), anyBoolean(), anyInt())).thenReturn(new IMarker[] { marker1, marker2 });
+        MessageList list = new MessageList();
+        list.add(new Message("", "text1", Message.ERROR));
+        list.add(new Message("", "text1", Message.ERROR));
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        ipsBuilder.createMarkersFromMessageList(resource, list, "");
+
+        verify(resource).findMarkers(anyString(), anyBoolean(), anyInt());
+        verifyNoMoreInteractions(resource);
     }
 
 }
