@@ -14,7 +14,7 @@
 
 «DEFINE getter(XType currentContextType) FOR XDerivedUnionAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(needOverride(currentContextType), "METHOD_GET_MANY", getName(true))»
+     * «inheritDocOrJavaDocIf(!needOverride(currentContextType) && genInterface(), "METHOD_GET_MANY", getName(true))»
      * 
      * @generated
      */
@@ -45,7 +45,7 @@
 
 «DEFINE getterForDetailToMaster(XPolicyCmptClass currentContextType) FOR XDetailToMasterDerivedUnionAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(needOverride(currentContextType), "METHOD_GET_ONE", getName(true))»
+     * «inheritDocOrJavaDocIf(!needOverride(currentContextType) && genInterface(), "METHOD_GET_ONE", getName(false))»
      * 
      * @generated
      */
@@ -66,7 +66,7 @@
 
 «DEFINE getterNumOf(XType currentContextType) FOR XDerivedUnionAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(needOverride(currentContextType), "METHOD_GET_NUM_OF", getName(true))»
+     * «inheritDocOrJavaDocIf(!needOverride(currentContextType) && genInterface(), "METHOD_GET_NUM_OF", getName(true))»
      * 
      * @generated
      */
