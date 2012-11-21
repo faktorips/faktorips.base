@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.migrationextensions.messages"; //$NON-NLS-1$
     public static String Migration_3_7_0_description;
+    public static String Migration_3_8_0_description;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
