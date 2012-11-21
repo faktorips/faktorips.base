@@ -363,7 +363,15 @@ public class IpsPreferences {
         return prefStore.getBoolean(MODIFY_RUNTIME_ID);
     }
 
+    /**
+     * @deprecated Use {@link #isAvancedTeamFunctionsForProductDefExplorerEnabled()} instead
+     */
+    @Deprecated
     public boolean areAvancedTeamFunctionsForProductDefExplorerEnabled() {
+        return isAvancedTeamFunctionsForProductDefExplorerEnabled();
+    }
+
+    public boolean isAvancedTeamFunctionsForProductDefExplorerEnabled() {
         return prefStore.getBoolean(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER);
     }
 
