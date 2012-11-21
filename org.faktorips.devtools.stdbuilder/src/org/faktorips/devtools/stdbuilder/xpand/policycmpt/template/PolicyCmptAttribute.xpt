@@ -52,7 +52,7 @@
 «ENDDEFINE»
 
 «DEFINE getter FOR XPolicyAttribute-» 
-	«IF generateGetter && !(overwrite && genInterface())-»
+	«IF generateGetter && !(overwrite && genInterface() && !attributeTypeChangedByOverwrite)-»
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
 		 *
@@ -86,7 +86,7 @@
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)-»
 		public void «method(methodNameSetter, javaClassName, "newValue")»
 		«IF genInterface()-»;«ELSE-»
 		{

@@ -89,14 +89,14 @@ public class XPolicyAttribute extends XAttribute {
      * Returns true for all attributes except for constant and overridden attributes.
      */
     public boolean isGenerateGetter() {
-        return !isConstant() && (!isOverwrite() || isDerivedOnTheFly());
+        return !isConstant() && (!isOverwrite() || isAttributeTypeChangedByOverwrite() || isDerivedOnTheFly());
     }
 
     /**
      * Returns true for all attributes except for derived, constant and overridden attributes.
      */
     public boolean isGenerateSetter() {
-        return !isDerived() && !isConstant() && !isOverwrite();
+        return !isDerived() && !isConstant() && (!isOverwrite() || isAttributeTypeChangedByOverwrite());
     }
 
     public boolean isDerived() {
@@ -108,7 +108,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateInitWithProductData() {
-        return isProductRelevant() && isChangeable() && !isOverwrite();
+        return isProductRelevant() && isChangeable() && (!isOverwrite() || isAttributeTypeChangedByOverwrite());
     }
 
     public boolean isGenerateInitPropertiesFromXML() {
@@ -116,7 +116,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateDefaultInitialize() {
-        return isOverwrite() && isChangeable();
+        return isOverwrite() && isChangeable() && !isAttributeTypeChangedByOverwrite();
     }
 
     public XPolicyAttribute getOverwrittenAttribute() {
@@ -330,7 +330,8 @@ public class XPolicyAttribute extends XAttribute {
      * method call. But not for constant attributes as they require a constant but not a variable.
      */
     public boolean isRequireMemberVariable() {
-        return (isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwrite();
+        return (isChangeable() || isDerivedByExplicitMethodCall())
+                && (!isOverwrite() || isAttributeTypeChangedByOverwrite());
     }
 
     protected boolean isDerivedByExplicitMethodCall() {
@@ -339,6 +340,10 @@ public class XPolicyAttribute extends XAttribute {
 
     protected boolean isDerivedOnTheFly() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
+    }
+
+    public boolean isAttributeTypeChangedByOverwrite() {
+        return isOverwrite() && isChangeable() && getOverwrittenAttribute().isDerivedOnTheFly();
     }
 
     /**

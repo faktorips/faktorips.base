@@ -291,9 +291,13 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                     result.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$
                 }
                 if (!attributeType.equals(superAttr.getAttributeType())) {
-                    String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this,
-                            new String[] { PROPERTY_ATTRIBUTE_TYPE }));
+                    // there is only one allowed change: superAttribute is deived on the fly and
+                    // this attribute is changeable. See FIPS-1103
+                    if (!(superAttr.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY && attributeType == AttributeType.CHANGEABLE)) {
+                        String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
+                        result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR,
+                                this, new String[] { PROPERTY_ATTRIBUTE_TYPE }));
+                    }
                 }
             }
         }

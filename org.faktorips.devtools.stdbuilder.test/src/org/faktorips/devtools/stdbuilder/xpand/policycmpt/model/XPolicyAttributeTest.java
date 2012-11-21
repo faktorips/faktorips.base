@@ -58,6 +58,9 @@ public class XPolicyAttributeTest {
     @Mock
     private ModelService modelService;
 
+    @Mock
+    private XPolicyAttribute xSuperAttribute;
+
     private XPolicyAttribute xPolicyAttribute;
 
     private XPolicyCmptClass policyClass;
@@ -190,6 +193,67 @@ public class XPolicyAttributeTest {
         when(superAttribute.getName()).thenReturn("testAttribute");
 
         assertTrue(xPolicyAttribute.isOverrideGetAllowedValuesFor());
+    }
+
+    @Test
+    public void testIsGenerateInitWithProductData_notProductRelevant() throws Exception {
+        when(attribute.isProductRelevant()).thenReturn(false);
+        when(attribute.isChangeable()).thenReturn(true);
+        when(attribute.isOverwrite()).thenReturn(false);
+
+        boolean generateInitWithProductData = xPolicyAttribute.isGenerateInitWithProductData();
+
+        assertFalse(generateInitWithProductData);
+    }
+
+    @Test
+    public void testIsGenerateInitWithProductData_notCangeable() throws Exception {
+        when(attribute.isProductRelevant()).thenReturn(true);
+        when(attribute.isChangeable()).thenReturn(false);
+        when(attribute.isOverwrite()).thenReturn(false);
+
+        boolean generateInitWithProductData = xPolicyAttribute.isGenerateInitWithProductData();
+
+        assertFalse(generateInitWithProductData);
+    }
+
+    @Test
+    public void testIsGenerateInitWithProductData_notOverwrite() throws Exception {
+        when(attribute.isProductRelevant()).thenReturn(true);
+        when(attribute.isChangeable()).thenReturn(true);
+        when(attribute.isOverwrite()).thenReturn(false);
+
+        boolean generateInitWithProductData = xPolicyAttribute.isGenerateInitWithProductData();
+
+        assertTrue(generateInitWithProductData);
+    }
+
+    @Test
+    public void testIsGenerateInitWithProductData_typeNotChanged() throws Exception {
+        XPolicyAttribute xPolicyAttributeSpy = spy(xPolicyAttribute);
+        when(attribute.isProductRelevant()).thenReturn(true);
+        when(attribute.isChangeable()).thenReturn(true);
+        when(attribute.isOverwrite()).thenReturn(true);
+        when(xSuperAttribute.isDerivedOnTheFly()).thenReturn(false);
+        when(xPolicyAttributeSpy.getOverwrittenAttribute()).thenReturn(xSuperAttribute);
+
+        boolean generateInitWithProductData = xPolicyAttributeSpy.isGenerateInitWithProductData();
+
+        assertFalse(generateInitWithProductData);
+    }
+
+    @Test
+    public void testIsGenerateInitWithProductData_typeChanged() throws Exception {
+        XPolicyAttribute xPolicyAttributeSpy = spy(xPolicyAttribute);
+        when(attribute.isProductRelevant()).thenReturn(true);
+        when(attribute.isChangeable()).thenReturn(true);
+        when(attribute.isOverwrite()).thenReturn(true);
+        when(xSuperAttribute.isDerivedOnTheFly()).thenReturn(true);
+        when(xPolicyAttributeSpy.getOverwrittenAttribute()).thenReturn(xSuperAttribute);
+
+        boolean generateInitWithProductData = xPolicyAttributeSpy.isGenerateInitWithProductData();
+
+        assertTrue(generateInitWithProductData);
     }
 
 }
