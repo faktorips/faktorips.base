@@ -411,6 +411,7 @@ schutz” abgerufen und ausgedruckt werden.
    </license>
 
    <requires>
+      <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.ant.core"/>
@@ -440,6 +441,11 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core.manipulation"/>
       <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.xpand" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtend" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.5.2" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.logging" version="1.0.4" match="greaterOrEqual"/>
+      <import plugin="org.antlr.runtime" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
@@ -451,12 +457,6 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.eclipse.xpand" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtend" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.5.2" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.logging" version="1.0.4" match="greaterOrEqual"/>
-      <import plugin="org.antlr.runtime" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtend" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore"/>
@@ -602,6 +602,27 @@ schutz” abgerufen und ausgedruckt werden.
 
    <plugin
          id="org.apache.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.cli"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"
