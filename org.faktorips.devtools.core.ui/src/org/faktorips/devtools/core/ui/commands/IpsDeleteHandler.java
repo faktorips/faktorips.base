@@ -11,31 +11,42 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.commands;
 
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.DeleteResourceAction;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
-public class ModelExplorerDeleteAction extends IpsAction implements IShellProvider {
+public class IpsDeleteHandler extends IpsAbstractHandler {
 
-    private DeleteResourceAction deleteAction;
-    private Shell shell;
-
-    public ModelExplorerDeleteAction(ISelectionProvider provider, Shell shell) {
-        super(provider);
+    @Override
+    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
+            throws ExecutionException {
+        final Shell shell = HandlerUtil.getActiveShell(event);
         ArgumentCheck.notNull(shell, this);
-        this.shell = shell;
-        deleteAction = new DeleteResourceAction(this);
-        provider.addSelectionChangedListener(deleteAction);
-        ISelection selection = provider.getSelection();
+        DeleteResourceAction deleteAction = new DeleteResourceAction(new IShellProvider() {
+
+            @Override
+            public Shell getShell() {
+                return shell;
+            }
+        });
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
         if (selection instanceof IStructuredSelection) {
             deleteAction.selectionChanged((IStructuredSelection)selection);
+        }
+        if (canDelete((IStructuredSelection)selection)) {
+            deleteAction.run();
         }
     }
 
@@ -43,34 +54,11 @@ public class ModelExplorerDeleteAction extends IpsAction implements IShellProvid
         Object[] items = selection.toArray();
         boolean canDelete = true;
         for (Object item : items) {
-            if (item instanceof IIpsObjectPart) {
+            if (item instanceof IAdaptable && ((IAdaptable)item).getAdapter(IIpsObjectPart.class) != null) {
                 canDelete = false;
             }
         }
         return canDelete;
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        selectionProvider.removeSelectionChangedListener(deleteAction);
-    }
-
-    @Override
-    protected boolean computeEnabledProperty(IStructuredSelection selection) {
-        return canDelete(selection);
-    }
-
-    @Override
-    public void run(IStructuredSelection selection) {
-        if (canDelete(selection)) {
-            deleteAction.run();
-        }
-    }
-
-    @Override
-    public Shell getShell() {
-        return shell;
     }
 
 }

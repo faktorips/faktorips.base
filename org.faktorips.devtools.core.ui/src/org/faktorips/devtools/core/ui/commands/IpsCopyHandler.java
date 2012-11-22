@@ -15,10 +15,9 @@ import java.util.List;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.ui.IWorkbenchPage;
@@ -54,12 +53,17 @@ public class IpsCopyHandler extends IpsAbstractHandler {
 
         IIpsObjectPart part;
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
-            Object selected = iter.next();
+            Object object = iter.next();
+            if (!(object instanceof IAdaptable)) {
+                return;
+            }
+            IAdaptable adaptable = (IAdaptable)object;
 
-            if (selected instanceof IIpsObjectPart) {
-                part = (IIpsObjectPart)selected;
+            if (adaptable.getAdapter(IIpsObjectPart.class) != null) {
+                part = (IIpsObjectPart)adaptable.getAdapter(IIpsObjectPart.class);
                 copiedObjects.add(new IpsObjectPartState(part));
-            } else if (selected instanceof IIpsElement) {
+            } else if (adaptable.getAdapter(IIpsElement.class) != null) {
+                IIpsElement selected = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
                 IIpsPackageFragmentRoot root = null;
                 IIpsArchive ipsArchive = null;
                 if (selected instanceof IIpsObject) {
@@ -85,12 +89,12 @@ public class IpsCopyHandler extends IpsAbstractHandler {
                     }
                 }
 
-                IResource resource = ((IIpsElement)selected).getEnclosingResource();
+                IResource resource = selected.getEnclosingResource();
                 if (resource != null) {
                     copiedResources.add(resource);
                 }
-            } else if (selected instanceof IFolder | selected instanceof IFile) {
-                copiedResources.add((IResource)selected);
+            } else if (adaptable.getAdapter(IResource.class) != null) {
+                copiedResources.add((IResource)adaptable.getAdapter(IResource.class));
             }
         }
 

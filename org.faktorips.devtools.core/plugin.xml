@@ -340,6 +340,9 @@
          <adapter
                type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
          </adapter>
+         <adapter
+               type="org.eclipse.core.resources.IResource">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"

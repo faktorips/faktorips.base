@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -69,7 +70,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
@@ -245,12 +245,15 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         manager.add(new Separator("open")); //$NON-NLS-1$
         manager.add(new OpenEditorAction(tableViewer));
         manager.add(new Separator(IpsMenuId.GROUP_NEW_PRODUCTC.getId()));
+        manager.add(new Separator(IContextMenuConstants.GROUP_EDIT));
         manager.add(new Separator(IpsMenuId.GROUP_REFACTORING.getId()));
         manager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+        manager.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
+        manager.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
         Menu contextMenu = manager.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, tableViewer);
-        MenuCleaner.addDefaultCleaner(manager);
+        // MenuCleaner.addDefaultCleaner(manager);
     }
 
     /**

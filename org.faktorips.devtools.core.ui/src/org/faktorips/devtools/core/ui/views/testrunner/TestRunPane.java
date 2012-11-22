@@ -38,9 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IPerspectiveDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -151,20 +149,15 @@ public class TestRunPane {
 
             // show debug entry only if the current perspective is not the produduct definition
             // perspective
-            IPerspectiveDescriptor pd = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-                    .getActivePage().getPerspective();
-            if (pd != null) {
-                String perspective = pd.getId();
-                if (!IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID.equals(perspective)) {
-                    Action debugAction = new Action("actionDebug", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
-                        @Override
-                        public void run() {
-                            startSelectedTest(ILaunchManager.DEBUG_MODE);
-                        }
-                    };
-                    debugAction.setText(Messages.TestRunPane_MenuDebug);
-                    manager.add(debugAction);
-                }
+            if (!IpsUIPlugin.getDefault().isProductDefinitionPerspective()) {
+                Action debugAction = new Action("actionDebug", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                    @Override
+                    public void run() {
+                        startSelectedTest(ILaunchManager.DEBUG_MODE);
+                    }
+                };
+                debugAction.setText(Messages.TestRunPane_MenuDebug);
+                manager.add(debugAction);
             }
         }
     }

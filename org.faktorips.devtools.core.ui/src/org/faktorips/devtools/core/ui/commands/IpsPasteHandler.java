@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IContainer;
@@ -25,6 +27,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -46,6 +49,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -53,6 +57,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -66,6 +71,8 @@ import org.faktorips.util.StringUtil;
  * A handler to paste IpsObjectPartContainer-objects from the clipboard into the model.
  */
 public class IpsPasteHandler extends IpsAbstractHandler {
+
+    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
 
     private Clipboard clipboard;
     private Shell shell;
@@ -87,17 +94,37 @@ public class IpsPasteHandler extends IpsAbstractHandler {
         this.clipboard = clipboard;
         this.shell = shell;
         this.forceUseNameSuggestionIfFileExists = forceUseNameSuggestionIfFileExists;
-        Object selected = selection.getFirstElement();
-        if (selected instanceof IpsObjectPartContainer) {
-            paste((IpsObjectPartContainer)selected);
-        } else if (selected instanceof IIpsProject) {
-            paste(((IIpsProject)selected).getProject());
-        } else if (selected instanceof IIpsPackageFragmentRoot) {
-            paste(((IIpsPackageFragmentRoot)selected).getDefaultIpsPackageFragment());
-        } else if (selected instanceof IIpsPackageFragment) {
-            paste((IIpsPackageFragment)selected);
-        } else if (selected instanceof IContainer) {
-            paste((IContainer)selected);
+        Object object = selection.getFirstElement();
+        if (!(object instanceof IAdaptable)) {
+            return;
+        }
+        IAdaptable adaptable = (IAdaptable)object;
+        if (adaptable.getAdapter(IIpsElement.class) != null) {
+            IIpsElement selected = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+            if (selected instanceof IIpsSrcFile) {
+                try {
+                    IIpsObject ipsObject = ((IIpsSrcFile)selected).getIpsObject();
+                    if (ipsObject instanceof IpsObjectPartContainer) {
+                        IpsObjectPartContainer ipsObjectPartContainer = (IpsObjectPartContainer)ipsObject;
+                        paste(ipsObjectPartContainer);
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            } else if (selected instanceof IpsObjectPartContainer) {
+                paste((IpsObjectPartContainer)selected);
+            } else if (selected instanceof IIpsProject) {
+                paste(((IIpsProject)selected).getProject());
+            } else if (selected instanceof IIpsPackageFragmentRoot) {
+                paste(((IIpsPackageFragmentRoot)selected).getDefaultIpsPackageFragment());
+            } else if (selected instanceof IIpsPackageFragment) {
+                paste((IIpsPackageFragment)selected);
+            }
+        } else if (adaptable.getAdapter(IResource.class) != null) {
+            IResource selected = (IResource)adaptable.getAdapter(IResource.class);
+            if (selected instanceof IContainer) {
+                paste((IContainer)selected);
+            }
         }
     }
 
@@ -289,6 +316,68 @@ public class IpsPasteHandler extends IpsAbstractHandler {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return result;
+    }
+
+    /**
+     * Returns all objects which are represented by links inside the clipboard. If there are no
+     * resource links inside the clipboard an empty array will ne returned. If the linked object
+     * wasn't found then the object will be ignored (not returned).
+     */
+    public Object[] getObjectsFromResourceLinks(String resourceLinks) {
+        if (resourceLinks == null || !resourceLinks.startsWith(ARCHIVE_LINK)) {
+            // no resource links
+            return EMPTY_IPS_OBJECT_ARRAY;
+        }
+        resourceLinks = resourceLinks.substring(ARCHIVE_LINK.length(), resourceLinks.length());
+
+        StringTokenizer tokenizer = new StringTokenizer(resourceLinks, ","); //$NON-NLS-1$
+        int count = tokenizer.countTokens();
+        List<Object> result = new ArrayList<Object>(1);
+        List<String> links = new ArrayList<String>(count);
+
+        while (tokenizer.hasMoreTokens()) {
+            links.add(tokenizer.nextToken());
+        }
+
+        for (String resourceLink : links) {
+            String[] copiedResource = StringUtils.split(resourceLink, "#"); //$NON-NLS-1$
+            // 1. find the project
+            IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(copiedResource[0]);
+            try {
+                // 2. find the root
+                IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
+                IIpsPackageFragmentRoot archive = null;
+                for (IIpsPackageFragmentRoot root : roots) {
+                    if (root.getName().equals(copiedResource[1])) {
+                        archive = root;
+                        break;
+                    }
+                }
+                if (archive == null) {
+                    continue;
+                }
+                // 3. find the object or package
+                if (copiedResource.length >= 4) {
+                    // the link represents an object (object [3] contains the type of the object)
+                    // try to find the object
+                    IIpsObject ipsObject = archive.findIpsObject(IpsObjectType.getTypeForExtension(copiedResource[3]),
+                            copiedResource[2]);
+                    if (ipsObject != null) {
+                        result.add(ipsObject);
+                    }
+                } else {
+                    // the link represents a package fragment
+                    // try to obtain the package fragment
+                    IIpsPackageFragment packageFrgmt = archive.getIpsPackageFragment(copiedResource[2]);
+                    if (packageFrgmt != null) {
+                        result.add(packageFrgmt);
+                    }
+                }
+            } catch (Exception e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return result.toArray();
     }
 
     protected String getContentsOfIpsObject(IIpsObject ipsObject) {

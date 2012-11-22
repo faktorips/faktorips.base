@@ -22,11 +22,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -42,8 +40,6 @@ import org.faktorips.util.StringUtil;
  */
 public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActionDelegate {
 
-    private String perspective;
-
     public OpenIpsObjectAction() {
         super();
         setText(Messages.OpenIpsObjectAction_titleText);
@@ -57,10 +53,8 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     public void run() {
         IWorkbenchWindow activeWorkbenchWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         Shell parent = activeWorkbenchWindow.getShell();
-        perspective = getCurrentPerspective().getId();
         try {
-            boolean onlyProdDefs = perspective
-                    .equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID);
+            boolean onlyProdDefs = IpsUIPlugin.getDefault().isProductDefinitionPerspective();
             OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
                     Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs));
             String selectedText = getSelectedText(activeWorkbenchWindow);
@@ -91,10 +85,6 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
             selectedText = textSelection.getText();
         }
         return selectedText;
-    }
-
-    public IPerspectiveDescriptor getCurrentPerspective() {
-        return IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
     }
 
     @Override

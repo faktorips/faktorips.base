@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.commands;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.AbstractHandler;
@@ -40,18 +39,14 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.util.StringUtil;
 
 public abstract class IpsAbstractHandler extends AbstractHandler {
 
-    private static final String ARCHIVE_LINK = "ARCHIVE_LINK"; //$NON-NLS-1$
-
-    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
+    protected static final String ARCHIVE_LINK = "ARCHIVE_LINK"; //$NON-NLS-1$
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -116,8 +111,9 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
 
     /**
      * Builds the data-array for clipboard operations (copy, drag,...).
-     * @param copiedObjects The list of {@link IpsObjectPartState IpsObjectPartStates}
-     *            to put to the clipboard
+     * 
+     * @param copiedObjects The list of {@link IpsObjectPartState IpsObjectPartStates} to put to the
+     *            clipboard
      * @param resourceItems The list of resources to put to the clipboard
      * @param copiedResourceLinks The list of resource links to put in the clipboard
      */
@@ -183,68 +179,6 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
         IIpsPackageFragmentRoot root = fragment.getRoot();
         String content = root.getIpsProject().getName() + "#" + root.getName() + "#" + fragment.getName(); //$NON-NLS-1$ //$NON-NLS-2$
         return content;
-    }
-
-    /**
-     * Returns all objects which are represented by links inside the clipboard. If there are no
-     * resource links inside the clipboard an empty array will ne returned. If the linked object
-     * wasn't found then the object will be ignored (not returned).
-     */
-    public Object[] getObjectsFromResourceLinks(String resourceLinks) {
-        if (resourceLinks == null || !resourceLinks.startsWith(ARCHIVE_LINK)) {
-            // no resource links
-            return EMPTY_IPS_OBJECT_ARRAY;
-        }
-        resourceLinks = resourceLinks.substring(ARCHIVE_LINK.length(), resourceLinks.length());
-
-        StringTokenizer tokenizer = new StringTokenizer(resourceLinks, ","); //$NON-NLS-1$
-        int count = tokenizer.countTokens();
-        List<Object> result = new ArrayList<Object>(1);
-        List<String> links = new ArrayList<String>(count);
-
-        for (int i = 0; tokenizer.hasMoreTokens(); i++) {
-            links.add(tokenizer.nextToken());
-        }
-
-        for (String resourceLink : links) {
-            String[] copiedResource = StringUtils.split(resourceLink, "#"); //$NON-NLS-1$
-            // 1. find the project
-            IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(copiedResource[0]);
-            try {
-                // 2. find the root
-                IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-                IIpsPackageFragmentRoot archive = null;
-                for (IIpsPackageFragmentRoot root : roots) {
-                    if (root.getName().equals(copiedResource[1])) {
-                        archive = root;
-                        break;
-                    }
-                }
-                if (archive == null) {
-                    continue;
-                }
-                // 3. find the object or package
-                if (copiedResource.length >= 4) {
-                    // the link represents an object (object [3] contains the type of the object)
-                    // try to find the object
-                    IIpsObject ipsObject = archive.findIpsObject(IpsObjectType.getTypeForExtension(copiedResource[3]),
-                            copiedResource[2]);
-                    if (ipsObject != null) {
-                        result.add(ipsObject);
-                    }
-                } else {
-                    // the link represents a package fragment
-                    // try to obtain the package fragment
-                    IIpsPackageFragment packageFrgmt = archive.getIpsPackageFragment(copiedResource[2]);
-                    if (packageFrgmt != null) {
-                        result.add(packageFrgmt);
-                    }
-                }
-            } catch (Exception e) {
-                IpsPlugin.log(e);
-            }
-        }
-        return result.toArray();
     }
 
 }

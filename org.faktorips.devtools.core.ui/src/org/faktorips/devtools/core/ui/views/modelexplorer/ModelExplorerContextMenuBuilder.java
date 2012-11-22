@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.ui.actions.IpsPropertiesAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestCaseCopyAction;
 import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
-import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
 import org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumContentAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumTypeAction;
@@ -110,8 +109,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private ActionGroup openActionGroup;
 
-    private IAction deleteAction;
-
     private IpsPropertiesAction propertiesAction;
 
     private IWorkbenchAction copy;
@@ -145,7 +142,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         this.treeViewer = treeViewer;
 
         openActionGroup = new OpenActionGroup(modelExplorer);
-        deleteAction = new ModelExplorerDeleteAction(treeViewer, viewSite.getShell());
         propertiesAction = new IpsPropertiesAction(viewSite, treeViewer);
         copy = ActionFactory.COPY.create(viewSite.getWorkbenchWindow());
         paste = ActionFactory.PASTE.create(viewSite.getWorkbenchWindow());
@@ -158,7 +154,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 new IpsCopyAction(treeViewer, workbenchPartSite.getShell()));
         actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(),
                 new IpsPasteAction(treeViewer, workbenchPartSite.getShell()));
-        actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
         actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refresh);
         actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);
     }
@@ -311,18 +306,15 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         copy.setEnabled(true);
         paste.setEnabled(true);
-        deleteAction.setEnabled(true);
 
         if (selected instanceof IIpsObjectPart) {
             copy.setEnabled(false);
             paste.setEnabled(false);
-            deleteAction.setEnabled(false);
             return;
         }
 
         if (isRootArchive(selected)) {
             paste.setEnabled(false);
-            deleteAction.setEnabled(false);
         }
     }
 

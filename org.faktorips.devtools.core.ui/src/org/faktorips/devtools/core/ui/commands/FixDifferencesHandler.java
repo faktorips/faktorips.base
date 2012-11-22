@@ -17,27 +17,26 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.actions.CreateNewGenerationAction;
+import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
 
 /**
- * This command handler simply uses the existing {@link CreateNewGenerationAction} to execute the
- * command
+ * This command handler simply uses the existing {@link FixDifferencesAction} to execute the command
  * 
  * @author dirmeier
  */
-public class CreateNewGenerationHandler extends IpsAbstractHandler {
+public class FixDifferencesHandler extends IpsAbstractHandler {
 
     @Override
     public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
             throws ExecutionException {
-        Shell activeShell = HandlerUtil.getActiveShell(event);
+        IWorkbenchWindow workbenchWindow = HandlerUtil.getActiveWorkbenchWindow(event);
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
         if (currentSelection instanceof IStructuredSelection) {
-            new CreateNewGenerationAction(activeShell, null).run((IStructuredSelection)currentSelection);
+            new FixDifferencesAction(workbenchWindow, (IStructuredSelection)currentSelection).run();
         }
     }
 

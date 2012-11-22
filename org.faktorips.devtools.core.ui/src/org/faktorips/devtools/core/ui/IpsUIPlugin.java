@@ -85,6 +85,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.ISaveableFilter;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -106,6 +107,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.IpsElement;
@@ -719,6 +721,21 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         IEditorInput editorInput = new FileEditorInput(ipsSrcFile.getCorrespondingFile());
         IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
         return workbench.getActiveWorkbenchWindow().getActivePage().findEditor(editorInput) != null;
+    }
+
+    /**
+     * Returns whether the product definition perspective is currently active or not
+     * 
+     * @return <code>true</code> if the current active perspective is the product definition
+     *         perspective, <code>false</code> if not.
+     */
+    public boolean isProductDefinitionPerspective() {
+        IPerspectiveDescriptor perspective = getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
+        if (perspective != null) {
+            return perspective.getId().equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID);
+        } else {
+            return false;
+        }
     }
 
     /**
