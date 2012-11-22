@@ -75,12 +75,12 @@ public class LinkCreatorUtil {
             IIpsSrcFile ipsSrcFile;
             if (target instanceof IProductCmptReference) {
                 IProductCmptReference cmptReference = (IProductCmptReference)target;
-                ipsSrcFile = cmptReference.getWrappedIpsObject().getIpsSrcFile();
+                ipsSrcFile = cmptReference.getWrappedIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processProductCmptReference(droppedCmpts, cmptReference, true);
             } else if (target instanceof IProductCmptTypeAssociationReference) {
                 IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)target;
-                ipsSrcFile = relationReference.getParent().getWrappedIpsObject().getIpsSrcFile();
+                ipsSrcFile = relationReference.getParent().getWrappedIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processAssociationReference(droppedCmpts, relationReference, true);
             } else {

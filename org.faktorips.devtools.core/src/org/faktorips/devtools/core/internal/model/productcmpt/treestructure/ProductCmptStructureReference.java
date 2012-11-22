@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -81,6 +82,15 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     public IIpsSrcFile getWrappedIpsSrcFile() {
         if (getWrappedIpsObject() != null) {
             return getWrappedIpsObject().getIpsSrcFile();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        if (getWrappedIpsSrcFile() != null) {
+            return getWrappedIpsSrcFile().getIpsProject();
         } else {
             return null;
         }

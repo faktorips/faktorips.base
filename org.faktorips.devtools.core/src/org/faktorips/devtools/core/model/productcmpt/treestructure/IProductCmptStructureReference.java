@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt.treestructure;
 import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * A reference to unspecified objects (see sub interfaces / -classes for further details) for used
@@ -35,6 +36,13 @@ public interface IProductCmptStructureReference extends IIpsSrcFileWrapper {
      *         referenced IPS object doesn't exists.
      */
     public IIpsObject getWrappedIpsObject();
+
+    /**
+     * Returns the {@link IIpsProject} this structure reference belongs to.
+     * 
+     * @return The {@link IIpsProject} this reference belongs to
+     */
+    public IIpsProject getIpsProject();
 
     /**
      * Returns the parent structure object of <code>null</code> if this element is the root.

@@ -22,9 +22,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
+import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 
 /**
  * Standard drag listener for IPS elements in a structured viewer.
@@ -90,14 +89,9 @@ public class IpsElementDragListener implements DragSourceListener {
             if (((IIpsElement)selected).getEnclosingResource() != null) {
                 list.add(((IIpsElement)selected).getEnclosingResource().getLocation().toOSString());
             }
-        } else if (selected instanceof IProductCmptStructureReference) {
-            IProductCmptStructureReference reference = (IProductCmptStructureReference)selected;
-            if (reference.getWrappedIpsObject() != null) {
-                list.add(reference.getWrappedIpsObject().getEnclosingResource().getLocation().toOSString());
-            }
-        } else if (selected instanceof IpsSrcFileViewItem) {
-            IpsSrcFileViewItem ipsSrcFileWrapper = (IpsSrcFileViewItem)selected;
-            list.add(ipsSrcFileWrapper.getIpsSrcFile().getEnclosingResource().getLocation().toOSString());
+        } else if (selected instanceof IIpsSrcFileWrapper) {
+            IIpsSrcFileWrapper ipsSrcFileWrapper = (IIpsSrcFileWrapper)selected;
+            list.add(ipsSrcFileWrapper.getWrappedIpsSrcFile().getEnclosingResource().getLocation().toOSString());
         }
     }
 

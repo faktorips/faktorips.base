@@ -189,7 +189,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         try {
             IIpsProject ipsProject = null;
             IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
-            ipsProject = structureReference.getWrappedIpsObject().getIpsProject();
+            ipsProject = structureReference.getIpsProject();
             if (ipsProject != null) {
                 List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference,
                         HandlerUtil.getActiveShell(event));

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
@@ -49,10 +50,12 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
 
     @Override
     public IIpsObject getWrappedIpsObject() {
-        if (association == null) {
-            return null;
-        }
-        return association.getIpsObject();
+        return null;
+    }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        return getParent().getIpsProject();
     }
 
 }

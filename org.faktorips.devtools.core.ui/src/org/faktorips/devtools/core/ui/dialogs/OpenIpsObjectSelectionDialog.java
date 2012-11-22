@@ -228,8 +228,8 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         private static final String ALL_PATTERN = "?"; //$NON-NLS-1$
 
         public IpsSrcFileFilter() {
-            // empty string should match all columns
             super();
+            // empty string should match all columns
             if (StringUtils.isEmpty(patternMatcher.getPattern())) {
                 patternMatcher.setPattern(ALL_PATTERN);
             }
@@ -249,7 +249,6 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             if (object instanceof IIpsSrcFile) {
                 IIpsSrcFile srcFile = (IIpsSrcFile)object;
                 return matches(srcFile.getName());
-                // }
             }
             return false;
         }
