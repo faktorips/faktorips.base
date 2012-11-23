@@ -18,12 +18,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -98,8 +97,8 @@ public class UniqueKeyValidatorRange {
             ColumnRange columnRange,
             SortedMap<AbstractKeyValue, List<Row>> keyValueRangeMap) {
 
-        KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure,
-                uniqueKeyValidator.getCachedValueDatatypes(), uniqueKey, row, columnRange);
+        KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure, uniqueKeyValidator
+                .getCachedValueDatatypes(), uniqueKey, row, columnRange);
         /*
          * add the key value range, if the value is not parsable then the key value are not added to
          * the cache, otherwise the sorted map can not work correctly (compareTo method fails)
@@ -176,8 +175,8 @@ public class UniqueKeyValidatorRange {
 
         MessageList uniqueKeyValidationErrors = new MessageList();
         for (Row row : rowsUniqueKeyViolation) {
-            uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors,
-                    keyValue.getUniqueKey(), row);
+            uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors, keyValue
+                    .getUniqueKey(), row);
             if (isMaxNoOfUniqueKeyViolationsReached(uniqueKeyValidationErrors)) {
                 break;
             }
@@ -325,7 +324,13 @@ public class UniqueKeyValidatorRange {
 
             if (rowsChecked != null) {
                 // update the valid rows for the key value entry
-                entry.setValue(rowsChecked);
+
+                // Issue FIPS-1386: setValue not supported, Problems using +XX:+AggressiveOpts
+                // entry.setValue(rowsChecked);
+
+                // Note that put with the same key is a valid operation - see JavaDoc
+                // put with a non-existing key results in a ModificationException
+                keyValueRangeMap.put(entry.getKey(), rowsChecked);
             }
 
             prevKeyValueFrom = keyValueFrom;
@@ -398,8 +403,8 @@ public class UniqueKeyValidatorRange {
 
     private boolean collisionInAllRanges(Row row1, Row row2) {
         for (ColumnRange columnRange : twoColumnRanges) {
-            if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(),
-                    uniqueKeyValidator.getCachedValueDatatypes(), columnRange, row1, row2)) {
+            if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(), uniqueKeyValidator
+                    .getCachedValueDatatypes(), columnRange, row1, row2)) {
                 return false;
             }
 
