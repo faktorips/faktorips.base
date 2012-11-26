@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -35,6 +36,17 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  * together with {@link AnyValueSetEditDialog}.
  */
 public class AnyValueSetEditDialog extends IpsPartEditDialog {
+    /**
+     * Prefix to store the settings (size/position) of this dialog, used together with the
+     * attribute.
+     */
+    private static final String SETTINGS_KEY_PREFIX = "AnyValueSetEditDialog_"; //$NON-NLS-1$
+
+    /** Initial width of the dialog. */
+    private static final int INITIAL_WIDTH = 500;
+
+    /** Initial height of the dialog. */
+    private static final int INITIAL_HEIGHT = 400;
 
     /** The config element that owns the value set being shown/edited. */
     private IConfigElement configElement;
@@ -57,6 +69,8 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         this.viewOnly = viewOnly;
         allowedValuesSetTypes = allowedTypes;
         setDescriptionEnabled(!(viewOnly));
+        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configElement.getId(),
+                new Point(INITIAL_WIDTH, INITIAL_HEIGHT), null);
     }
 
     @Override
@@ -91,5 +105,4 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         }
         return vsEdit;
     }
-
 }

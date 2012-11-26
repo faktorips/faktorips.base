@@ -13,14 +13,19 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -44,6 +49,10 @@ import org.faktorips.util.memento.Memento;
  */
 @Deprecated
 public abstract class IpsPartEditDialog extends EditDialog {
+    private static final String SETTINGS_X = "XPos"; //$NON-NLS-1$
+    private static final String SETTINGS_Y = "YPos"; //$NON-NLS-1$
+    private static final String SETTINGS_WIDTH = "Width"; //$NON-NLS-1$
+    private static final String SETTINGS_HEIGHT = "Height"; //$NON-NLS-1$
 
     protected IpsObjectUIController uiController;
 
@@ -54,6 +63,11 @@ public abstract class IpsPartEditDialog extends EditDialog {
     private boolean dirty = false;
 
     private boolean descriptionEnabled = true;
+
+    private boolean dialogSizePersistence = false;
+    private String dialogSizeSettingsKey;
+    private Point initialDialogSize;
+    private Point initialDialogPosition;
 
     public IpsPartEditDialog(IIpsObjectPart part, Shell parentShell, String windowTitle) {
         this(part, parentShell, windowTitle, false);
@@ -205,4 +219,84 @@ public abstract class IpsPartEditDialog extends EditDialog {
         this.descriptionEnabled = descriptionEnabled;
     }
 
+    public boolean isDialogSizePersistent() {
+        return dialogSizePersistence;
+    }
+
+    protected void enableDialogSizePersistence(String settingsPrefix,
+            String settingsDisambiguator,
+            Point initialSize,
+            Point initialPosition) {
+        dialogSizePersistence = true;
+        dialogSizeSettingsKey = settingsPrefix + (settingsDisambiguator == null ? "" : settingsDisambiguator); //$NON-NLS-1$
+        initialDialogSize = initialSize;
+        initialDialogPosition = initialPosition;
+    }
+
+    private void storePosition(Shell shell) {
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(dialogSizeSettingsKey);
+        if (settings == null) {
+            settings = IpsPlugin.getDefault().getDialogSettings().addNewSection(dialogSizeSettingsKey);
+        }
+        settings.put(SETTINGS_X, shell.getLocation().x);
+        settings.put(SETTINGS_Y, shell.getLocation().y);
+        settings.put(SETTINGS_WIDTH, shell.getSize().x);
+        settings.put(SETTINGS_HEIGHT, shell.getSize().y);
+    }
+
+    protected void configurePosition(IDialogSettings settings, Shell shell) {
+        int posX, posY, width, height;
+
+        if (settings == null) {
+            Composite parent = shell.getParent();
+            Rectangle bounds = null;
+            if (parent == null) {
+                bounds = shell.getDisplay().getPrimaryMonitor().getBounds();
+            } else {
+                bounds = parent.getBounds();
+            }
+            width = initialDialogSize.x;
+            height = initialDialogSize.y;
+            if (initialDialogPosition == null) {
+                posX = bounds.x + (bounds.width - width) / 2;
+                posY = bounds.y + (bounds.height - height) / 2;
+            } else {
+                posX = initialDialogPosition.x;
+                posY = initialDialogPosition.y;
+            }
+            IDialogSettings newSection = IpsPlugin.getDefault().getDialogSettings()
+                    .addNewSection(dialogSizeSettingsKey);
+            newSection.put(SETTINGS_X, posX);
+            newSection.put(SETTINGS_Y, posY);
+            newSection.put(SETTINGS_WIDTH, width);
+            newSection.put(SETTINGS_HEIGHT, height);
+        } else {
+            posX = settings.getInt(SETTINGS_X);
+            posY = settings.getInt(SETTINGS_Y);
+            width = settings.getInt(SETTINGS_WIDTH);
+            height = settings.getInt(SETTINGS_HEIGHT);
+        }
+        shell.setBounds(posX, posY, width, height);
+    }
+
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        if (dialogSizePersistence) {
+            shell.addListener(SWT.Move, new Listener() {
+                @Override
+                public void handleEvent(Event event) {
+                    storePosition(shell);
+                }
+            });
+            shell.addListener(SWT.Resize, new Listener() {
+                @Override
+                public void handleEvent(Event event) {
+                    storePosition(shell);
+                }
+            });
+            IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(dialogSizeSettingsKey);
+            configurePosition(settings, shell);
+        }
+    }
 }

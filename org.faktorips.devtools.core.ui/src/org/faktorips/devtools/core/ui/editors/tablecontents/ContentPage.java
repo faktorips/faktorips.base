@@ -15,11 +15,13 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
@@ -72,6 +74,9 @@ import org.faktorips.util.message.MessageList;
 public class ContentPage extends IpsObjectEditorPage {
 
     final static String PAGE_ID = "Contents"; //$NON-NLS-1$
+    private static final String TABLE_SETTINGS_PREFIX = "TableColumnWidths_"; //$NON-NLS-1$
+    private static final String COLUMN_PREFIX = "col_"; //$NON-NLS-1$
+    private static final int DEFAULT_COLUMN_WIDTH = 125;
 
     private TableViewer tableViewer;
 
@@ -210,6 +215,43 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     /**
+     * Reads the widths of the table columns stored for this table content. If no widths have been
+     * stored, the default width for each column is returned.
+     * 
+     * @return the stored widths for each table column.
+     */
+    private List<Integer> readColumnWidths() {
+        String tableSettingsKey = TABLE_SETTINGS_PREFIX + getTableContents().getQualifiedName();
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(tableSettingsKey);
+        List<Integer> sizes = new ArrayList<Integer>();
+        for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
+            String val = settings == null ? null : settings.get(COLUMN_PREFIX + i);
+            try {
+                sizes.add(val == null ? DEFAULT_COLUMN_WIDTH : Integer.parseInt(val));
+            } catch (NumberFormatException e) {
+                sizes.add(DEFAULT_COLUMN_WIDTH);
+            }
+        }
+        return sizes;
+    }
+
+    /**
+     * Stores the width of a column in the dialog settings of the user's workspace. Thus, whenever
+     * the user reopens the editor, the width of the column can be set to the same width as before.
+     * 
+     * @param index the index of the column.
+     * @param column the column of the table.
+     */
+    private void storeColumnWidth(final int index, TableColumn column) {
+        String tableSettingsKey = TABLE_SETTINGS_PREFIX + getTableContents().getQualifiedName();
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(tableSettingsKey);
+        if (settings == null) {
+            settings = IpsPlugin.getDefault().getDialogSettings().addNewSection(tableSettingsKey);
+        }
+        settings.put(COLUMN_PREFIX + index, column.getWidth());
+    }
+
+    /**
      * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column
      * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
      * hoverservice.
@@ -227,6 +269,8 @@ public class ContentPage extends IpsObjectEditorPage {
 
             ITableStructure tableStructure = getTableStructure();
             String[] columnProperties = new String[getTableContents().getNumOfColumns()];
+            List<Integer> columnSizes = readColumnWidths();
+            int numReadSizes = columnSizes.size();
             for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
                 String columnName;
                 ValueDatatype valueDatatype = null;
@@ -238,8 +282,15 @@ public class ContentPage extends IpsObjectEditorPage {
                 }
                 ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                         .getValueDatatypeControlFactory(valueDatatype);
-                TableColumn column = new TableColumn(table, valueDatatypeControlFactory.getDefaultAlignment(), i);
-                column.setWidth(125);
+                final TableColumn column = new TableColumn(table, valueDatatypeControlFactory.getDefaultAlignment(), i);
+                column.setWidth(i < numReadSizes ? columnSizes.get(i) : DEFAULT_COLUMN_WIDTH);
+                final int columnIndex = i;
+                column.addListener(SWT.Resize, new Listener() {
+                    @Override
+                    public void handleEvent(Event arg0) {
+                        storeColumnWidth(columnIndex, column);
+                    }
+                });
                 column.setText(columnName);
                 columnProperties[i] = columnName;
             }

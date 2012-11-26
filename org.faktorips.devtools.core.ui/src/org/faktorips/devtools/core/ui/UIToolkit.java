@@ -29,6 +29,7 @@ import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -244,6 +245,33 @@ public class UIToolkit {
         newComposite.setLayout(layout);
         newComposite.setLayoutData(gridData);
         return newComposite;
+    }
+
+    /**
+     * Creates a new sash form with a grid layout and no borders.
+     */
+    public SashForm createSashForm(Composite parent, int numColumns, boolean equalSize, boolean margin) {
+        return createSashForm(parent, numColumns, equalSize, margin, new GridData(GridData.FILL_BOTH));
+    }
+
+    public SashForm createSashForm(Composite parent,
+            int numColumns,
+            boolean equalSize,
+            boolean margin,
+            GridData gridData) {
+        SashForm newSashForm = new SashForm(parent, SWT.NONE);
+        if (formToolkit != null) {
+            formToolkit.adapt(newSashForm, true, true);
+        }
+        GridLayout layout = new GridLayout(numColumns, equalSize);
+        if (!margin) {
+            layout.marginHeight = 0;
+            layout.marginWidth = 0;
+        }
+        layout.horizontalSpacing = 10;
+        newSashForm.setLayout(layout);
+        newSashForm.setLayoutData(gridData);
+        return newSashForm;
     }
 
     /**

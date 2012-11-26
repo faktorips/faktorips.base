@@ -172,9 +172,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             MoveLinkDragListener dragListener = dropListener.new MoveLinkDragListener(treeViewer);
             treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, dragListener);
 
-            treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
-            treeViewer.expandAll();
-
             final LinksMessageCueLabelProvider labelProvider = new LinksMessageCueLabelProvider(
                     generation.getIpsProject());
             IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
@@ -189,6 +186,9 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
                 }
             };
 
+            treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
+            treeViewer.expandAll();
+
             buildContextMenu();
 
             cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
@@ -197,6 +197,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
             addFocusControl(treeViewer.getTree());
             registerDoubleClickListener();
+            treeViewer.refresh(true);
         }
         toolkit.getFormToolkit().paintBordersFor(relationRootPane);
     }

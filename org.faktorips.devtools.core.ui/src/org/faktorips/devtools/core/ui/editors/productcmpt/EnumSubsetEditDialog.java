@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
@@ -32,6 +34,17 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  * @author Jan Ortmann
  */
 public class EnumSubsetEditDialog extends IpsPartEditDialog {
+    /**
+     * Prefix to store the settings (size/position) of this dialog, used together with the
+     * attribute.
+     */
+    private static final String SETTINGS_KEY_PREFIX = "EnumSubsetEditDialog_"; //$NON-NLS-1$
+
+    /** Initial width of the dialog. */
+    private static final int INITIAL_WIDTH = 500;
+
+    /** Initial height of the dialog. */
+    private static final int INITIAL_HEIGHT = 400;
 
     private ValueDatatype valueDatatype;
 
@@ -39,14 +52,15 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
     private final IEnumValueSetProvider enumValueSetProvider;
 
-    public EnumSubsetEditDialog(IEnumValueSetProvider provider, ValueDatatype datatype, Shell parentShell,
-            boolean viewOnly) {
-
+    public EnumSubsetEditDialog(final IPolicyCmptTypeAttribute attribute, IEnumValueSetProvider provider,
+            ValueDatatype datatype, Shell parentShell, boolean viewOnly) {
         super(provider.getTargetConfigElement(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.enumValueSetProvider = provider;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
         setDescriptionEnabled(!(viewOnly));
+        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, attribute.getId(), new Point(INITIAL_WIDTH, INITIAL_HEIGHT),
+                null);
     }
 
     @Override
@@ -79,5 +93,4 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         viewer.setTargetLabel(enumValueSetProvider.getTargetLabel());
         return viewer.getChooserComposite();
     }
-
 }

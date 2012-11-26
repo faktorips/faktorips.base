@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -92,7 +93,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-
         pageRoot = formBody;
         this.toolkit = toolkit;
         updatePageMessage();
@@ -112,17 +112,21 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createAndSetStackTopControl() {
-        stack.topControl = toolkit.createGridComposite(pageRoot, 2, true, true);
+        final Composite topControl = toolkit.createGridComposite(pageRoot, 1, true, true);
+        stack.topControl = topControl;
     }
 
     private void createPageContent() {
-        Composite left = createColumnComposite();
-        Composite right = createColumnComposite();
+        SashForm sashForm = toolkit.createSashForm((Composite)stack.topControl, 2, true, true);
+        Composite left = createColumnComposite(sashForm);
+        Composite right = createColumnComposite(sashForm);
+
         createSections(left, right);
         setFocusSuccessors();
         registerSelectionProviderActivation(stack.topControl);
 
         reduceToOneColumnAsNecessary(left, right);
+        sashForm.setWeights(new int[] { 40, 60 });
     }
 
     private void reduceToOneColumnAsNecessary(Composite left, Composite right) {
@@ -142,9 +146,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         return false;
     }
 
-    private Composite createColumnComposite() {
-        return createGridComposite(toolkit, (Composite)stack.topControl, 1, true, GridData.FILL_BOTH
+    private Composite createColumnComposite(SashForm parent) {
+        Composite columnComposite = createGridComposite(toolkit, parent, 1, true, GridData.FILL_BOTH
                 | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+        return columnComposite;
     }
 
     private void createSections(Composite left, Composite right) {
