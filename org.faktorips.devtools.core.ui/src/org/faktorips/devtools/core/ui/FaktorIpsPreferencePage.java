@@ -170,7 +170,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.DATATYPE_FORMATTING_LOCALE,
                 Messages.FaktorIpsPreferencePage_LabelFormattingOfValues, localeDisplayNameValues,
                 getFieldEditorParent());
-        field.getComboBoxControl(getFieldEditorParent()).setEnabled(false);
         addField(field);
     }
 
