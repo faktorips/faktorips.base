@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -190,7 +190,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<!-- For Debug add these parameters: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -->
-					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256M</argLine>
+					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
 					<useUIHarness>true</useUIHarness>
 					<includes>
 						<include>**/*Test.java</include>
