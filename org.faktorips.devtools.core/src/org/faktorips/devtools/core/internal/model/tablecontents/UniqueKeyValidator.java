@@ -275,7 +275,7 @@ public class UniqueKeyValidator {
 
             // iterate all key values and check if there is a unique key violation
             for (Entry<AbstractKeyValue, List<Row>> keyValueEntry : keyValuesForUniqueKeyCache.entrySet()) {
-                validateKeyValue(list, keyValueEntry, invalidkeyValues);
+                validateKeyValue(list, keyValueEntry, invalidkeyValues, keyValuesForUniqueKeyCache);
             }
 
             // remove invalid (obsolete key items)
@@ -297,7 +297,8 @@ public class UniqueKeyValidator {
      */
     void validateKeyValue(MessageList list,
             Entry<AbstractKeyValue, List<Row>> keyValueEntry,
-            List<AbstractKeyValue> invalidkeyValues) {
+            List<AbstractKeyValue> invalidkeyValues,
+            Map<AbstractKeyValue, List<Row>> keyValuesForUniqueKeyCache) {
 
         AbstractKeyValue keyValue = keyValueEntry.getKey();
 
@@ -327,7 +328,10 @@ public class UniqueKeyValidator {
         }
 
         // update key value object
-        keyValueEntry.setValue(rowsChecked);
+
+        // Issue FIPS-1386: setValue not supported, Problems using +XX:+AggressiveOpts
+        // keyValueEntry.setValue(rowsChecked);
+        keyValuesForUniqueKeyCache.put(keyValueEntry.getKey(), rowsChecked);
 
         // check unique key violation
         if (rowsChecked.size() > 1) {
@@ -403,8 +407,8 @@ public class UniqueKeyValidator {
      * Creates a unique key validation error and adds it to the give message list.
      */
     void createValidationErrorUniqueKeyViolation(MessageList list, IUniqueKey uniqueKey, Row row) {
-        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(),
-                uniqueKey.getName());
+        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(), uniqueKey
+                .getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
         createObjectProperties(uniqueKey, row, objectProperties);
         list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, objectProperties
