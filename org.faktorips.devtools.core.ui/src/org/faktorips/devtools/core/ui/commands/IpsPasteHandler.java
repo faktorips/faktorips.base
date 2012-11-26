@@ -43,7 +43,6 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
@@ -70,7 +69,7 @@ import org.faktorips.util.StringUtil;
 /**
  * A handler to paste IpsObjectPartContainer-objects from the clipboard into the model.
  */
-public class IpsPasteHandler extends IpsAbstractHandler {
+public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
 
@@ -79,12 +78,11 @@ public class IpsPasteHandler extends IpsAbstractHandler {
     private boolean forceUseNameSuggestionIfFileExists;
 
     @Override
-    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
-            throws ExecutionException {
+    public Object execute(ExecutionEvent event) throws ExecutionException {
         IStructuredSelection selection = (IStructuredSelection)HandlerUtil.getCurrentSelectionChecked(event);
         Clipboard clipboard = new Clipboard(HandlerUtil.getActiveShellChecked(event).getDisplay());
-
         pasteFromClipboard(selection, clipboard, HandlerUtil.getActiveShellChecked(event), true);
+        return null;
     }
 
     public void pasteFromClipboard(IStructuredSelection selection,

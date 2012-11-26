@@ -20,14 +20,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -35,15 +33,15 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 /**
  * Copy of objects controlled by FaktorIps.
  */
-public class IpsCopyHandler extends IpsAbstractHandler {
+public class IpsCopyHandler extends AbstractCopyPasteHandler {
 
     @Override
-    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
-            throws ExecutionException {
+    public Object execute(ExecutionEvent event) throws ExecutionException {
         IStructuredSelection selection = (IStructuredSelection)HandlerUtil.getCurrentSelectionChecked(event);
         Clipboard clipboard = new Clipboard(HandlerUtil.getActiveShellChecked(event).getDisplay());
 
         copyToClipboard(selection, clipboard);
+        return null;
     }
 
     public void copyToClipboard(IStructuredSelection selection, Clipboard clipboard) {

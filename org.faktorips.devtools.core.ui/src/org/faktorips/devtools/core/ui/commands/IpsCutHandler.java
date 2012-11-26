@@ -18,24 +18,21 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
  * A handler to cut IpsObjectPartContainer-objects out of the model into the clipboard.
  */
-public class IpsCutHandler extends IpsAbstractHandler {
+public class IpsCutHandler extends AbstractCopyPasteHandler {
 
     @Override
-    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
-            throws ExecutionException {
+    public Object execute(ExecutionEvent event) throws ExecutionException {
         IStructuredSelection selection = (IStructuredSelection)HandlerUtil.getCurrentSelectionChecked(event);
         Clipboard clipboard = new Clipboard(HandlerUtil.getActiveShellChecked(event).getDisplay());
-
         cutToClipboard(selection, clipboard);
+        return null;
     }
 
     public void cutToClipboard(IStructuredSelection selection, Clipboard clipboard) {

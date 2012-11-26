@@ -48,24 +48,28 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
             return null;
         }
 
+        IIpsSrcFile adaptedIpsSrcFile = adaptToIpsSrcFile(adaptableObject);
+        if (adaptedIpsSrcFile == null) {
+            return null;
+        }
         if (adapterType.isAssignableFrom(IIpsSrcFile.class)) {
-            return adaptToIpsSrcFile(adaptableObject);
+            return adaptedIpsSrcFile;
         }
 
         if (adapterType.isAssignableFrom(IIpsObject.class)) {
-            return adaptToIpsObject(adaptToIpsSrcFile(adaptableObject));
+            return adaptToIpsObject(adaptedIpsSrcFile);
         }
 
         if (adapterType.isAssignableFrom(IProductCmpt.class)) {
-            return adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
+            return adaptToProductCmpt(adaptedIpsSrcFile);
         }
 
         if (adapterType.isAssignableFrom(IType.class)) {
-            return adaptToType(adaptToIpsSrcFile(adaptableObject));
+            return adaptToType(adaptedIpsSrcFile);
         }
 
         if (adapterType.isAssignableFrom(IFile.class)) {
-            return adaptToIpsSrcFile(adaptableObject).getCorrespondingFile();
+            return adaptedIpsSrcFile.getCorrespondingFile();
         }
 
         return null;

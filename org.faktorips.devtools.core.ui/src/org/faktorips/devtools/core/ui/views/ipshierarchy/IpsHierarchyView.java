@@ -27,6 +27,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -44,6 +45,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener;
@@ -83,9 +85,11 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMe
  * @author Quirin Stoll
  */
 public class IpsHierarchyView extends AbstractShowInSupportingViewPart implements IIpsSrcFilesChangeListener {
+
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
     protected static final String LINK_WITH_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
     private static final String MEMENTO = "ipsHierarchyView.memento"; //$NON-NLS-1$
+
     private TreeViewer treeViewer;
     private Label errormsg;
     private Composite panel;
@@ -128,7 +132,11 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         selected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
         treeViewer = new TreeViewer(panel);
-        treeViewer.setLabelProvider(new DefaultLabelProvider());
+        DefaultLabelProvider labelProvider = new DefaultLabelProvider();
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        DecoratingLabelProvider decoratedLabelProvider = new DecoratingLabelProvider(labelProvider,
+                decoManager.getLabelDecorator());
+        treeViewer.setLabelProvider(decoratedLabelProvider);
         treeViewer.setContentProvider(hierarchyContentProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         getSite().setSelectionProvider(treeViewer);

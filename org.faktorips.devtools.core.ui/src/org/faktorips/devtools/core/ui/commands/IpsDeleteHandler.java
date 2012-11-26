@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.commands;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -20,18 +21,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.DeleteResourceAction;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
-public class IpsDeleteHandler extends IpsAbstractHandler {
+public class IpsDeleteHandler extends AbstractHandler {
 
     @Override
-    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
-            throws ExecutionException {
+    public Object execute(ExecutionEvent event) throws ExecutionException {
         final Shell shell = HandlerUtil.getActiveShell(event);
         ArgumentCheck.notNull(shell, this);
         DeleteResourceAction deleteAction = new DeleteResourceAction(new IShellProvider() {
@@ -48,6 +46,7 @@ public class IpsDeleteHandler extends IpsAbstractHandler {
         if (canDelete((IStructuredSelection)selection)) {
             deleteAction.run();
         }
+        return null;
     }
 
     private boolean canDelete(IStructuredSelection selection) {
