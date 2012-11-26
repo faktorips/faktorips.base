@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -33,8 +32,8 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
     private static final String PRODUCT_ASSOCIATION_IMAGE = "product_AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_orange.gif"; //$NON-NLS-1$
     private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
-    private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
-    private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
+    private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType_width30.gif"; //$NON-NLS-1$
+    private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType_width30.gif"; //$NON-NLS-1$
     private static final String OVERLAY_ABSTRACT_IMAGE = "AbstractIndicator.gif"; //$NON-NLS-1$
 
     private boolean showCardinalities = true;
@@ -88,17 +87,13 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
                     imageName = PRODUCT_SUBTYPE_IMAGE;
                 }
             }
-            overlayed = true;
 
             if (overlayed) {
-                return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
+                return resourceManager.createImage(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
                         overlayImages));
             } else {
-                IAdaptable adaptable = node.getValue();
-                Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
-                if (result != null) {
-                    return result;
-                }
+                Image image = IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);
+                return image;
             }
         }
         return null;
@@ -119,7 +114,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
     public StyledString getStyledText(Object element) {
         String label = getText(element);
 
-        StyledString styledLabel = new StyledString("    " + label); //$NON-NLS-1$
+        StyledString styledLabel = new StyledString(label);
 
         if (element instanceof AssociationComponentNode) {
             AssociationComponentNode node = ((AssociationComponentNode)element);
@@ -246,4 +241,5 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
         }
         return null;
     }
+
 }
