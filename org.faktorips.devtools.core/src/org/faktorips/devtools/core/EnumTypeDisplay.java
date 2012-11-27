@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-
 /**
  * Enumeration to specify the display type of enumeration type controls.
  * <ul>
@@ -26,33 +23,39 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
  * 
  * @author Joerg Ortmann
  */
-public class EnumTypeDisplay extends DefaultEnumValue {
+public enum EnumTypeDisplay {
 
-    public final static EnumTypeDisplay ID;
+    ID("id", Messages.EnumTypeDisplay_id), //$NON-NLS-1$
 
-    public final static EnumTypeDisplay NAME;
+    NAME("name", Messages.EnumTypeDisplay_name), //$NON-NLS-1$
 
-    public final static EnumTypeDisplay NAME_AND_ID;
+    NAME_AND_ID("nameAndId", Messages.EnumTypeDisplay_nameAndId), //$NON-NLS-1$
 
-    public final static EnumTypeDisplay DEFAULT;
+    DEFAULT("nameAndId", Messages.EnumTypeDisplay_nameAndId); //$NON-NLS-1$
 
-    private final static DefaultEnumType enumType;
+    private final String id;
 
-    static {
-        enumType = new DefaultEnumType("EnumTypeDisplay", EnumTypeDisplay.class); //$NON-NLS-1$
-        ID = new EnumTypeDisplay(enumType, "id", Messages.EnumTypeDisplay_id); //$NON-NLS-1$
-        NAME = new EnumTypeDisplay(enumType, "name", Messages.EnumTypeDisplay_name); //$NON-NLS-1$
-        NAME_AND_ID = new EnumTypeDisplay(enumType, "nameAndId", Messages.EnumTypeDisplay_nameAndId); //$NON-NLS-1$
+    private final String text;
 
-        DEFAULT = NAME_AND_ID;
+    private EnumTypeDisplay(String id, String text) {
+        this.id = id;
+        this.text = text;
     }
 
-    public EnumTypeDisplay(DefaultEnumType type, String id, String name) {
-        super(type, id, name);
+    public String getId() {
+        return id;
     }
 
-    public static DefaultEnumType getEnumType() {
-        return enumType;
+    public String getText() {
+        return text;
     }
 
+    public static EnumTypeDisplay getValueById(String id) {
+        for (EnumTypeDisplay value : values()) {
+            if (value.getId().equals(id)) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

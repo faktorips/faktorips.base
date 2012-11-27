@@ -294,7 +294,7 @@ public class IpsPreferences {
      */
     public EnumTypeDisplay getEnumTypeDisplay() {
         String id = prefStore.getString(ENUM_TYPE_DISPLAY);
-        EnumTypeDisplay enumTypeDisplay = (EnumTypeDisplay)EnumTypeDisplay.getEnumType().getEnumValue(id);
+        EnumTypeDisplay enumTypeDisplay = EnumTypeDisplay.getValueById(id);
         if (enumTypeDisplay == null) {
             IpsPlugin.log(new IpsStatus("Unknown enum type with id: " + id //$NON-NLS-1$
                     + ". Use default enum type display."));//$NON-NLS-1$

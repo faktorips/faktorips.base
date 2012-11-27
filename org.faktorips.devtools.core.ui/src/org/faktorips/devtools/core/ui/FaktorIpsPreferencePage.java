@@ -24,7 +24,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 
 public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -80,10 +79,10 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     }
 
     private void createEnumTypeDisplayField() {
-        EnumValue[] values = EnumTypeDisplay.getEnumType().getValues();
+        EnumTypeDisplay[] values = EnumTypeDisplay.values();
         String[][] enumTypeDisplayNameValues = new String[values.length][2];
         for (int i = 0; i < enumTypeDisplayNameValues.length; i++) {
-            enumTypeDisplayNameValues[i][0] = values[i].getName();
+            enumTypeDisplayNameValues[i][0] = values[i].getText();
             enumTypeDisplayNameValues[i][1] = values[i].getId();
         }
         ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.ENUM_TYPE_DISPLAY,
