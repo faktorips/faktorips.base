@@ -48,7 +48,8 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
 
         createWorkingModeField();
         createSectionsInTypeEditorsField();
-        createRefactoringModeField();
+        // TODO FIPS-1029
+        // createRefactoringModeField();
 
         createDatatypeFormattingField();
     }

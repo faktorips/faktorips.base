@@ -352,11 +352,15 @@ public class IpsPreferences {
     }
 
     public boolean isRefactoringModeDirect() {
-        return prefStore.getString(REFACTORING_MODE).equals(REFACTORING_MODE_DIRECT);
+        // TODO need to fix: FIPS-1029
+        // return prefStore.getString(REFACTORING_MODE).equals(REFACTORING_MODE_DIRECT);
+        return false;
     }
 
     public boolean isRefactoringModeExplicit() {
-        return prefStore.getString(REFACTORING_MODE).equals(REFACTORING_MODE_EXPLICIT);
+        // TODO need to fix: FIPS-1029
+        // return prefStore.getString(REFACTORING_MODE).equals(REFACTORING_MODE_EXPLICIT);
+        return true;
     }
 
     public boolean canModifyRuntimeId() {
