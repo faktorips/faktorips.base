@@ -313,7 +313,7 @@ public class ProductExplorer extends ModelExplorer {
             teamCleaner.clearFilteredPrefixes();
 
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
-                    .areAvancedTeamFunctionsForProductDefExplorerEnabled();
+                    .isAvancedTeamFunctionsForProductDefExplorerEnabled();
             if (advancedTeamFunctionsEnabled || config.representsProject(structuredSelection.getFirstElement())) {
                 configureAdvancedCvsTeamActions();
                 configureAdvancedSubversiveTeamActions();
