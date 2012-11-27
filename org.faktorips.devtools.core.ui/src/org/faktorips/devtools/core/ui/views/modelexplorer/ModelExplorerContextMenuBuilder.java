@@ -97,8 +97,6 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  */
 public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
-    public static final String GROUP_NAVIGATE = "navigate"; //$NON-NLS-1$
-
     public static final String NEW_MENU_ID = "group.new"; //$NON-NLS-1$
 
     public static final String GROUP_MODELDEF = "group.modeldef"; //$NON-NLS-1$
@@ -194,7 +192,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(new Separator("reorg")); //$NON-NLS-1$
         createReorgActions(manager, selected);
         manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-        manager.add(new GroupMarker(GROUP_NAVIGATE));
+        manager.add(new GroupMarker(IpsMenuId.GROUP_NAVIGATE.getId()));
         manager.add(new Separator("misc")); //$NON-NLS-1$
         createRefreshAction(manager, selected);
         createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());

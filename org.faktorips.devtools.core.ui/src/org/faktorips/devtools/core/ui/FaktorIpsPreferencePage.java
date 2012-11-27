@@ -44,6 +44,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createEnableGeneratingField();
         createCanNavigateToModelField();
         createAdvancedTeamFunctionInProductDefExplorerField();
+        createEasyContextMenuField();
 
         createWorkingModeField();
         createSectionsInTypeEditorsField();
@@ -119,6 +120,12 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         BooleanFieldEditor field = new BooleanFieldEditor(
                 IpsPreferences.ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER,
                 Messages.FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer, getFieldEditorParent());
+        addField(field);
+    }
+
+    private void createEasyContextMenuField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.SIMPLE_CONTEXT_MENU,
+                Messages.FaktorIpsPreferencePage_simpleContextMenu, getFieldEditorParent());
         addField(field);
     }
 

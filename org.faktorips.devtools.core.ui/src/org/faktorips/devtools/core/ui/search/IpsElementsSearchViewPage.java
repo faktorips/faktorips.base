@@ -29,8 +29,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
 /**
  * An implementation of the {@link ISearchResultPage} for searches of {@link IIpsElement
@@ -94,8 +94,7 @@ public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
         mgr.appendToGroup(IContextMenuConstants.GROUP_OPEN, new OpenEditorAction(getViewer()));
         IIpsSrcFile ipsSrcFile = getIpsSrcFileForSelection();
         if (ipsSrcFile != null && IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-            mgr.appendToGroup(IContextMenuConstants.GROUP_SHOW, new Separator(
-                    ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+            mgr.appendToGroup(IContextMenuConstants.GROUP_SHOW, new Separator(IpsMenuId.GROUP_NAVIGATE.getId()));
         }
         super.fillContextMenu(mgr);
     }

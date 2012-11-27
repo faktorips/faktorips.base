@@ -82,12 +82,10 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
-import org.faktorips.devtools.core.ui.actions.CreateNewGenerationAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
-import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkEditDialog;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
@@ -96,8 +94,6 @@ import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateCont
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
-import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
-import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
  * Navigate all Products defined in the active Project.
@@ -517,24 +513,13 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             menumanager.add(toggleRuleAction);
         }
 
-        if (selectedRef instanceof IProductCmptReference) {
-            menumanager.add(new Separator("copy")); //$NON-NLS-1$
-            IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                    DeepCopyWizard.TYPE_NEW_VERSION);
-            menumanager.add(copyNewVersionAction);
-            IpsAction createNewGenerationAction = new CreateNewGenerationAction(getSite().getShell(), treeViewer);
-            menumanager.add(createNewGenerationAction);
-            IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                    DeepCopyWizard.TYPE_COPY_PRODUCT);
-            menumanager.add(copyProductAction);
-            boolean copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
-            createNewGenerationAction.setEnabled(copyEnabled);
-            copyNewVersionAction.setEnabled(copyEnabled);
-            copyProductAction.setEnabled(copyEnabled);
-        }
-
         if (!(selectedRef instanceof IProductCmptVRuleReference || selectedRef instanceof IProductCmptTypeAssociationReference)) {
-            menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+            IpsMenuId.GROUP_COPY_PRODUCTC.addSeparator(menumanager);
+            IpsMenuId.GROUP_REFACTORING.addSeparator(menumanager);
+            IpsMenuId.GROUP_NAVIGATE.addSeparator(menumanager);
+            IpsMenuId.GROUP_GOTO.addGroupMarker(menumanager);
+            IpsMenuId.GROUP_ADDITIONS.addSeparator(menumanager);
+            IpsMenuId.GROUP_PROPERTIES.addSeparator(menumanager);
         }
     }
 
@@ -543,7 +528,16 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         if (selectedRef instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
 
-            if (productCmptReference.getLink() != null) {
+            IProductCmptLink currentLink = productCmptReference.getLink();
+            boolean canChangeCardinality = false;
+            if (currentLink != null) {
+                try {
+                    canChangeCardinality = currentLink.constrainsPolicyCmptTypeAssociation(currentLink.getIpsProject());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+            if (canChangeCardinality && currentLink != null) {
                 MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities,
                         IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"), null); //$NON-NLS-1$
 
@@ -582,9 +576,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 cardinalitiesSub.add(cardinalitiesMandatoryAction);
                 cardinalitiesSub.add(cardinalitiesOtherAction);
 
-                int minCardinality = productCmptReference.getLink().getMinCardinality();
-                int maxCardinality = productCmptReference.getLink().getMaxCardinality();
-                int defaultCardinality = productCmptReference.getLink().getDefaultCardinality();
+                int minCardinality = currentLink.getMinCardinality();
+                int maxCardinality = currentLink.getMaxCardinality();
+                int defaultCardinality = currentLink.getDefaultCardinality();
 
                 if (maxCardinality == 1) {
                     if (minCardinality == 1) {
@@ -599,7 +593,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 } else {
                     cardinalitiesOtherAction.setChecked(true);
                 }
-
                 menumanager.add(cardinalitiesSub);
             } else {
                 Action dummyCardinalityAction = createDummyCardinalityAction();
@@ -1004,12 +997,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     private Action createDummyCardinalityAction() {
-        return new Action(Messages.ProductStructureExplorer_setCardinalities, IAction.AS_CHECK_BOX) {
-
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
-            }
+        return new Action(Messages.ProductStructureExplorer_setCardinalities, IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("Cardinality.gif")) { //$NON-NLS-1$
 
             @Override
             public String getToolTipText() {

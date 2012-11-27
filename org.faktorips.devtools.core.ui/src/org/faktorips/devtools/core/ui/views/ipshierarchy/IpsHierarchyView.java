@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -77,7 +76,6 @@ import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
-import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
 /**
  * The <tt>IpsHierarchyView</tt> is a <tt>ViewPart</tt> for displaying a<tt>hierarchy of ITypes</tt>
@@ -238,8 +236,8 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         MenuManager manager = new MenuManager();
         manager.add(new Separator("open")); //$NON-NLS-1$
         manager.add(new OpenEditorAction(treeViewer));
-        manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-        manager.add(new GroupMarker(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+        IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.addSeparator(manager);
+        IpsMenuId.addDefaultGroups(manager);
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);

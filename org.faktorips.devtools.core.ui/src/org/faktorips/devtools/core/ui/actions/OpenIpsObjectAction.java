@@ -54,7 +54,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         IWorkbenchWindow activeWorkbenchWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         Shell parent = activeWorkbenchWindow.getShell();
         try {
-            boolean onlyProdDefs = IpsUIPlugin.getDefault().isProductDefinitionPerspective();
+            boolean onlyProdDefs = IpsPlugin.getDefault().isProductDefinitionPerspective();
             OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
                     Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs));
             String selectedText = getSelectedText(activeWorkbenchWindow);

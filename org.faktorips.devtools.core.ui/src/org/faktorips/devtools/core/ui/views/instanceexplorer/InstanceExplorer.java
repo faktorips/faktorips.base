@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -30,7 +32,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -75,7 +76,6 @@ import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -242,18 +242,20 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
     private void createContextMenu() {
         MenuManager manager = new MenuManager();
-        manager.add(new Separator("open")); //$NON-NLS-1$
-        manager.add(new OpenEditorAction(tableViewer));
-        manager.add(new Separator(IpsMenuId.GROUP_NEW_PRODUCTC.getId()));
-        manager.add(new Separator(IContextMenuConstants.GROUP_EDIT));
-        manager.add(new Separator(IpsMenuId.GROUP_REFACTORING.getId()));
-        manager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
-        manager.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
-        manager.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                IpsMenuId.GROUP_NEW_PRODUCTC.addGroupMarker(manager);
+                manager.add(new Separator("open")); //$NON-NLS-1$
+                manager.add(new OpenEditorAction(tableViewer));
+                IpsMenuId.addDefaultGroups(manager);
+            }
+
+        });
         Menu contextMenu = manager.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, tableViewer);
-        // MenuCleaner.addDefaultCleaner(manager);
     }
 
     /**

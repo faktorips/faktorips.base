@@ -149,7 +149,7 @@ public class TestRunPane {
 
             // show debug entry only if the current perspective is not the produduct definition
             // perspective
-            if (!IpsUIPlugin.getDefault().isProductDefinitionPerspective()) {
+            if (!IpsPlugin.getDefault().isProductDefinitionPerspective()) {
                 Action debugAction = new Action("actionDebug", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
                     @Override
                     public void run() {

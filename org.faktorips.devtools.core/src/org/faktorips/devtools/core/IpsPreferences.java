@@ -102,6 +102,11 @@ public class IpsPreferences {
             + ".advancedTeamFunctionsInProductDefExplorer"; //$NON-NLS-1$
 
     /**
+     * Constant that identifies the easy context menu preferencee
+     */
+    public final static String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
+
+    /**
      * Constant that identifies the number of sections in type editors preference.
      */
     public final static String SECTIONS_IN_TYPE_EDITORS = IpsPlugin.PLUGIN_ID + ".sectionsInTypeEditors"; //$NON-NLS-1$
@@ -149,6 +154,7 @@ public class IpsPreferences {
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
+        prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
 
         setDefaultForDatatypeFormatting(prefStore);
@@ -381,6 +387,14 @@ public class IpsPreferences {
 
     public void setAvancedTeamFunctionsForProductDefExplorerEnabled(boolean enabled) {
         prefStore.setValue(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, enabled);
+    }
+
+    public boolean isSimpleContextMenuEnabled() {
+        return prefStore.getBoolean(SIMPLE_CONTEXT_MENU) && !IpsPlugin.getDefault().isProductDefinitionPerspective();
+    }
+
+    public void setSimpleContextMenuEnabled(boolean enabled) {
+        prefStore.setValue(SIMPLE_CONTEXT_MENU, enabled);
     }
 
     /**

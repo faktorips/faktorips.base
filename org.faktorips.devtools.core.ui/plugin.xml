@@ -340,6 +340,13 @@
             id="org.faktorips.devtools.core.ui.command.CleanUpTranslations"
             name="%cleanUpTranslationsAction">
       </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.productcreate"
+            description="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.tooltip"
+            id="org.faktorips.devtools.core.ui.command.newProductCmpt"
+            name="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.label"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.NewProductCmptHandler">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1566,6 +1573,20 @@
                </iterate>
             </with>
          </activeWhen>
+         <enabledWhen>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+         </enabledWhen>
          <class
                class="org.faktorips.devtools.core.ui.commands.IpsDeleteHandler">
          </class>
@@ -1590,9 +1611,18 @@
                class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler">
          </class>
          <enabledWhen>
-            <count
-                  value="1">
-            </count>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
          </enabledWhen>
       </handler>
       <handler
@@ -1614,9 +1644,18 @@
                class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler">
          </class>
          <enabledWhen>
-            <count
-                  value="1">
-            </count>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
          </enabledWhen>
       </handler>
       <handler
@@ -1638,9 +1677,18 @@
                class="org.faktorips.devtools.core.ui.refactor.IpsMoveHandler">
          </class>
          <enabledWhen>
-            <count
-                  value="+">
-            </count>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
          </enabledWhen>
       </handler>
       <handler
@@ -1669,9 +1717,18 @@
                class="org.faktorips.devtools.core.ui.refactor.IpsMoveHandler">
          </class>
          <enabledWhen>
-            <count
-                  value="+">
-            </count>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
          </enabledWhen>
       </handler>
       <handler
@@ -1692,9 +1749,18 @@
                class="org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler">
          </class>
          <enabledWhen>
-            <count
-                  value="1">
-            </count>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
          </enabledWhen>
       </handler>
       <handler
@@ -2154,6 +2220,20 @@
                </iterate>
             </with>
          </activeWhen>
+         <enabledWhen>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+         </enabledWhen>
       </handler>
       <handler
             commandId="org.eclipse.ui.edit.copy">
@@ -2189,6 +2269,20 @@
                </iterate>
             </with>
          </activeWhen>
+         <enabledWhen>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isContainerEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+         </enabledWhen>
       </handler>
    </extension>
 
@@ -2220,7 +2314,7 @@
             id="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
             namespace="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
             properties="isModelIpsProject"
-            type="org.faktorips.devtools.core.internal.model.ipsproject.IpsProject">
+            type="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
       </propertyTester>
       <propertyTester
             class="org.faktorips.devtools.core.ui.commands.IpsPerspectivePropertyTester"
@@ -2228,6 +2322,13 @@
             namespace="org.faktorips.devtools.core.ui.commands.IpsPerspectivePropertyTester"
             properties="isPerspectiveOpen,isProductDefinitionPerspectiveOpen"
             type="org.eclipse.ui.IWorkbenchWindow">
+      </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.IpsElementTester"
+            id="org.faktorips.devtools.core.ui.commands.IpsElementTester"
+            namespace="org.faktorips.devtools.core.ui.commands.IpsElementTester"
+            properties="isEditable,isContainerEditable"
+            type="org.faktorips.devtools.core.model.IIpsElement">
       </propertyTester>
    </extension>
    
@@ -2303,24 +2404,40 @@
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
             <menu
-                  label="Faktor-IPS" id="faktorIPSMenu">
+                  id="faktorIPSMenu"
+                  label="Faktor-IPS"
+                  mnemonic="s">
                <separator
-                     name="group.new.product"
+                     name="fips.new.product"
                      visible="false">
                </separator>
                <dynamic
                      id="org.faktorips.devtools.core.ui.dynamicCreateGenerationAndVersion"
                      class="org.faktorips.devtools.core.ui.commands.CreateNewProductMenu">
+                  <visibleWhen
+                        checkEnabled="true">
+                     <with
+                           variable="selection">
+                        <iterate>
+                           <adapt
+                                 type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                              <instanceof
+                                    value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                              </instanceof>
+                           </adapt>
+                        </iterate>
+                     </with>
+                  </visibleWhen>
                </dynamic>
 	           <separator
                  name="navigate"
-                 visible="false">
+                 visible="true">
 		         </separator>
 		         <command
 		               commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
 		               style="push">
               <visibleWhen
-                    checkEnabled="false">
+                    checkEnabled="true">
               </visibleWhen>
 		         </command>
            <separator
@@ -2350,6 +2467,18 @@
                  visible="true">
            </separator>
             </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=fips.goto">
+         <menu
+               commandId="org.eclipse.ui.navigate.showInQuickMenu"
+               label="Show In..."
+               mnemonic="w">
+            <dynamic
+                  class="org.eclipse.ui.ExtensionFactory:showInContribution"
+                  id="org.eclipse.ui.menus.dynamicShowInMenu">
+            </dynamic>
+         </menu>
       </menuContribution>
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=navigate">
@@ -2588,19 +2717,42 @@
             locationURI="popup:org.faktorips.devtools.core.ui.views.productStructureExplorer?after=edit">
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=group.new.product">
+            locationURI="popup:org.eclipse.ui.popup.any?after=fips.new">
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.newProductCmpt"
+               icon="icons/NewProductCmptWizard.gif"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=fips.copy.product">
          <dynamic
                class="org.faktorips.devtools.core.ui.commands.CreateNewProductMenu"
                id="org.faktorips.devtools.core.ui.dynamicCreateGenerationAndVersion">
             <visibleWhen
                   checkEnabled="true">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                        </instanceof>
+                     </adapt>
+                  </iterate>
+               </with>
             </visibleWhen>
          </dynamic>
       </menuContribution>
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=refactoring">
          <menu
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor">
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor"
+               mnemonic="r">
             <command
                   commandId="org.eclipse.ui.edit.rename"
                   id="Rename"
@@ -2645,7 +2797,8 @@
             </visibleWhen>
          </menu>
          <menu
-               label="%cleanUpMenu">
+               label="%cleanUpMenu"
+               mnemonic="c">
             <command
                   commandId="org.faktorips.devtools.core.ui.command.FixDiffereneces"
                   icon="icons/FixDifferencesToModel.gif"
@@ -2697,7 +2850,7 @@
          </menu>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=group.edit">
+            locationURI="popup:org.eclipse.ui.popup.any?after=fips.edit">
          <command
                commandId="org.eclipse.ui.edit.copy"
                style="push">
@@ -2721,13 +2874,21 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=group.properties">
+            locationURI="popup:org.eclipse.ui.popup.any?after=fips.properties">
          <command
                commandId="org.eclipse.ui.file.properties"
                label="Properties"
                style="push">
             <visibleWhen
-                  checkEnabled="false">
+                  checkEnabled="true">
+                  <with
+                        variable="selection">
+	                  <iterate>
+	                  	<adapt
+                          type="org.eclipse.core.resources.IResource">
+	                  	</adapt>
+	                  </iterate>
+                  </with>
             </visibleWhen>
          </command>
       </menuContribution>

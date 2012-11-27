@@ -26,6 +26,12 @@ import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConven
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
+/**
+ * This dynamic menu builder creates commands for work with products. With these commands you could
+ * create a new copy of a product, create a new version or add a new generation.
+ * 
+ * @author dirmeier
+ */
 public class CreateNewProductMenu extends CompoundContributionItem implements IWorkbenchContribution {
 
     public static final String COMMAND_DEEP_COPY_PRODUCT = "org.faktorips.devtools.core.ui.command.DeepCopyProduct"; //$NON-NLS-1$

@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.PlatformObject;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -68,7 +69,8 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
             return adaptToType(adaptedIpsSrcFile);
         }
 
-        if (adapterType.isAssignableFrom(IFile.class)) {
+        if (!IpsPlugin.getDefault().getIpsPreferences().isSimpleContextMenuEnabled()
+                && adapterType.isAssignableFrom(IFile.class)) {
             return adaptedIpsSrcFile.getCorrespondingFile();
         }
 

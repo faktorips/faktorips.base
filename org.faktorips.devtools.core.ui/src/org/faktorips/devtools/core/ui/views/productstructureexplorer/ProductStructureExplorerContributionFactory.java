@@ -43,6 +43,12 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptComma
 import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler;
 
+/**
+ * This contribution factory creates menu contributions for adding new and existing product
+ * components.
+ * 
+ * @author dirmeier
+ */
 public class ProductStructureExplorerContributionFactory extends ExtensionContributionFactory {
 
     public ProductStructureExplorerContributionFactory() {

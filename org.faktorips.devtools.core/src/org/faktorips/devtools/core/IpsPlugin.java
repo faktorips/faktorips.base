@@ -35,6 +35,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -340,6 +343,29 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public IpsPreferences getIpsPreferences() {
         return preferences;
+    }
+
+    /**
+     * Returns whether the product definition perspective is currently active or not
+     * 
+     * @return <code>true</code> if the current active perspective is the product definition
+     *         perspective, <code>false</code> if not.
+     */
+    public boolean isProductDefinitionPerspective() {
+        IWorkbenchWindow activeWorkbenchWindow = getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow == null) {
+            return false;
+        }
+        IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+        if (activePage == null) {
+            return false;
+        }
+        IPerspectiveDescriptor perspective = activePage.getPerspective();
+        if (perspective != null) {
+            return perspective.getId().equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID);
+        } else {
+            return false;
+        }
     }
 
     /**
