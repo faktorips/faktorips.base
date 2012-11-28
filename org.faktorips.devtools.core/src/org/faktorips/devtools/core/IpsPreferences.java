@@ -390,7 +390,7 @@ public class IpsPreferences {
     }
 
     public boolean isSimpleContextMenuEnabled() {
-        return prefStore.getBoolean(SIMPLE_CONTEXT_MENU) && !IpsPlugin.getDefault().isProductDefinitionPerspective();
+        return prefStore.getBoolean(SIMPLE_CONTEXT_MENU) || IpsPlugin.getDefault().isProductDefinitionPerspective();
     }
 
     public void setSimpleContextMenuEnabled(boolean enabled) {
