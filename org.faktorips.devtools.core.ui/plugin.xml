@@ -1563,13 +1563,21 @@
                <iterate
                   ifEmpty="false"
                   operator="and">
-				<adapt
-                       type="org.faktorips.devtools.core.model.IIpsElement">
-                    <not>
-                    	<instanceof value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
-                    	</instanceof>
-                   	</not>
-                 </adapt>
+    <and>
+       <adapt
+             type="org.faktorips.devtools.core.model.IIpsElement">
+          <not>
+             <instanceof
+                   value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+             </instanceof>
+          </not>
+       </adapt>
+       <not>
+          <instanceof
+                value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference">
+          </instanceof>
+       </not>
+    </and>
                </iterate>
             </with>
          </activeWhen>
