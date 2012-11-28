@@ -2472,7 +2472,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=fips.goto">
          <menu
                commandId="org.eclipse.ui.navigate.showInQuickMenu"
-               label="Show In..."
+               label="%ShowIn_label"
                mnemonic="w">
             <dynamic
                   class="org.eclipse.ui.ExtensionFactory:showInContribution"
