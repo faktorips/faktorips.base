@@ -143,14 +143,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getterForProductAttributes(XPolicyCmptClass currentClass) FOR XProductAttribute-»
 	 /**
      * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
-     «IF description.length > 0-»
-     * <p>
-     * «description»
-     «ENDIF-»
-     * 
+     * «descriptionForJDoc»
      * @generated
      */
-    public «javaClassName» «method(methodNameGetter)» {
+    «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
     	«IF changingOverTime-»
         	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
         «ELSE-»
