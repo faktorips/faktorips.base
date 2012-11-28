@@ -103,7 +103,6 @@ public enum IpsMenuId {
     }
 
     public static void addDefaultGroups(IMenuManager manager) {
-        GROUP_COPY_PRODUCTC.addSeparator(manager);
         GROUP_EDIT.addSeparator(manager);
         GROUP_REFACTORING.addSeparator(manager);
         GROUP_NAVIGATE.addSeparator(manager);

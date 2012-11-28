@@ -53,6 +53,15 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
                 .getChangesOverTimeNamingConvention();
         IContributionItem[] contributionItems = new IContributionItem[3];
 
+        CommandContributionItemParameter createNewVersionParameter = new CommandContributionItemParameter(
+                serviceLocator, null, COMMAND_CREATE_NEW_VERSION, SWT.PUSH);
+        createNewVersionParameter.label = NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion,
+                changesOverTimeNamingConvention.getVersionConceptNameSingular());
+        createNewVersionParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.gif"); //$NON-NLS-1$
+        CommandContributionItem createNewVersionItem = new CommandContributionItem(createNewVersionParameter);
+        createNewVersionItem.setVisible(createNewVersionItem.isEnabled());
+        contributionItems[0] = createNewVersionItem;
+
         CommandContributionItemParameter createNewGenerationParameter = new CommandContributionItemParameter(
                 serviceLocator, null, COMMAND_CREATE_NEW_GENERATION, SWT.PUSH);
         createNewGenerationParameter.label = NLS.bind(Messages.CreateNewGenerationAction_title,
@@ -61,16 +70,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
                 "NewProductCmptGeneration.gif"); //$NON-NLS-1$
         CommandContributionItem createNewGenerationItem = new CommandContributionItem(createNewGenerationParameter);
         createNewGenerationItem.setVisible(createNewGenerationItem.isEnabled());
-        contributionItems[0] = createNewGenerationItem;
-
-        CommandContributionItemParameter createNewVersionParameter = new CommandContributionItemParameter(
-                serviceLocator, null, COMMAND_CREATE_NEW_VERSION, SWT.PUSH);
-        createNewVersionParameter.label = NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion,
-                changesOverTimeNamingConvention.getVersionConceptNameSingular());
-        createNewVersionParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.gif"); //$NON-NLS-1$
-        CommandContributionItem createNewVersionItem = new CommandContributionItem(createNewVersionParameter);
-        createNewVersionItem.setVisible(createNewVersionItem.isEnabled());
-        contributionItems[1] = createNewVersionItem;
+        contributionItems[1] = createNewGenerationItem;
 
         CommandContributionItemParameter copyProductParameter = new CommandContributionItemParameter(serviceLocator,
                 null, COMMAND_DEEP_COPY_PRODUCT, SWT.PUSH);

@@ -247,6 +247,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 IpsMenuId.GROUP_NEW_PRODUCTC.addGroupMarker(manager);
+                IpsMenuId.GROUP_COPY_PRODUCTC.addSeparator(manager);
                 manager.add(new Separator("open")); //$NON-NLS-1$
                 manager.add(new OpenEditorAction(tableViewer));
                 IpsMenuId.addDefaultGroups(manager);
