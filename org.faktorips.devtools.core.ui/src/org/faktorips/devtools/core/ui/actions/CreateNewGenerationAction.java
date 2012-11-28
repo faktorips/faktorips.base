@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -26,7 +25,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
@@ -91,17 +90,9 @@ public class CreateNewGenerationAction extends IpsAction {
         TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
         List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
         for (IAdaptable selectedElement : typedSelection.getElements()) {
-            if (selectedElement instanceof IProductCmpt) {
-                timedIpsObjects.add((IProductCmpt)selectedElement);
-            } else if (selectedElement instanceof IProductCmptReference) {
-                timedIpsObjects.add(((IProductCmptReference)selectedElement).getProductCmpt());
-            } else if (selectedElement instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selectedElement;
-                try {
-                    timedIpsObjects.add((IProductCmpt)ipsSrcFile.getIpsObject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+            IIpsObject ipsObject = (IIpsObject)selectedElement.getAdapter(IIpsObject.class);
+            if (ipsObject instanceof IProductCmpt) {
+                timedIpsObjects.add((IProductCmpt)ipsObject);
             }
         }
 
