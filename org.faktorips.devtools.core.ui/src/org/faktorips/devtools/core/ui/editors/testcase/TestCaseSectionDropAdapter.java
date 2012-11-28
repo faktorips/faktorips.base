@@ -258,17 +258,19 @@ class DropToLinkHelper {
         if (target instanceof TestCaseTypeAssociation) {
             TestCaseTypeAssociation testCaseTypeAssociation = (TestCaseTypeAssociation)target;
 
-            // Will be null if drag over root test policy component
             ITestPolicyCmpt parentTestPolicyCmpt = testCaseTypeAssociation.getParentTestPolicyCmpt();
-            if (parentTestPolicyCmpt == null) {
-                return false;
-            }
+            if (!testCaseTypeAssociation.isRoot()) {
+                // Will be null if drag over root test policy component
+                if (parentTestPolicyCmpt == null) {
+                    return false;
+                }
 
-            // Will be null if model is invalid
-            ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
-                    parentTestPolicyCmpt);
-            if (targetToChildParam == null) {
-                return false;
+                // Will be null if model is invalid
+                ITestPolicyCmptTypeParameter targetToChildParam = getTargetToChildParameter(productCmpt,
+                        parentTestPolicyCmpt);
+                if (targetToChildParam == null) {
+                    return false;
+                }
             }
 
             return isValidTarget(testCaseTypeAssociation.getTestPolicyCmptTypeParam(), productCmpt,
