@@ -17,18 +17,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-// TODO Improve comment, the methods beforeFullBuild and afterFullBuild no longer exist ...
 /**
  * An implementation of this interface is supposed to create one artifact for an IpsObject. The
- * isBuilderFor() method indicates to the IPS build framework which kind of IpsObjects this builder
- * is interested in. This interface describes a defined build cycle. For every IpsObject this
- * builder builds an artifact for, the following methods are called sequentially beforeBuild(),
- * build(), afterBuild(). If a full build is started the beforeFullBuild() method is called before
- * the first IpsSrcFile that hosts the IpsObject is provided to this builder and the
- * afterFullBuild() method is called after the last IpsSrcFile has been provided to this builder. A
- * set of IpsArtefactBuilders are collected within an IpsArtefactBuilderSet. The builders are made
- * available to the building system by registering the IpsArtefactBuilderSet at the according
- * extension point.
+ * {@link #isBuilderFor(IIpsSrcFile)} method indicates to the IPS build framework which kind of
+ * IpsObjects this builder is interested in. This interface describes a defined build cycle. For
+ * every IpsObject this builder builds an artifact for, the following methods are called
+ * sequentially {@link #beforeBuild(IIpsSrcFile, MultiStatus)}, {@link #build(IIpsSrcFile)},
+ * {@link #afterBuild(IIpsSrcFile)}. A set of IpsArtefactBuilders are collected within an
+ * IpsArtefactBuilderSet. The builders are made available to the building system by registering the
+ * IpsArtefactBuilderSet at the according extension point.
  * 
  * @author Peter Erzberger
  */
