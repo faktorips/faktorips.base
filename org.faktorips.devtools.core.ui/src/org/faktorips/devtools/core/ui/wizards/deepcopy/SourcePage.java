@@ -49,8 +49,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -109,6 +111,8 @@ public class SourcePage extends WizardPage {
     private final int type;
 
     private Checkbox copyTableContentsBtn;
+
+    private Checkbox copyAllGenerationsBtn;
 
     private DeepCopyContentProvider contentProvider;
 
@@ -172,7 +176,7 @@ public class SourcePage extends WizardPage {
         String changeOverTimeLabel = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
                 .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 
-        int[] height = new int[4];
+        int[] height = new int[5];
         // create content in copy group
         // first create right group to get correct heights
         {
@@ -180,25 +184,29 @@ public class SourcePage extends WizardPage {
             newWorkingDateControl = new DateControl(copyComposite, toolkit);
             height[0] = newWorkingDateControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
+            toolkit.createVerticalSpacer(copyComposite, 25);
+            toolkit.createVerticalSpacer(copyComposite, 25);
+            height[1] = 25;
+
             toolkit.createLabel(copyComposite, changeOverTimeLabel);
             versionId = toolkit.createText(copyComposite);
-            height[1] = versionId.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+            height[2] = versionId.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
             toolkit.createLabel(copyComposite, Messages.SourcePage_labelTargetRoot);
             targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(copyComposite, true);
-            height[2] = targetPackRootControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+            height[3] = targetPackRootControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
             toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage);
             targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel()
                     .getTargetPackageRoot(), copyComposite);
-            height[3] = targetPackageControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+            height[4] = targetPackageControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
             toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
             copyTableContentsBtn = toolkit.createCheckbox(copyComposite,
                     Messages.SourcePage_labelRadioBtnCopyTableContents);
             copyTableContentsBtn.setChecked(true);
         }
-        // create content in origin grou
+        // create content in origin group
         {
             createOldValidFromControl(toolkit, masterComposite);
             toolkit.createVerticalSpacer(masterComposite, height[0]);
@@ -210,14 +218,23 @@ public class SourcePage extends WizardPage {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[1]);
+
+            toolkit.createLabel(masterComposite, ""); //$NON-NLS-1$
+            String labelCopyAllGenerations = NLS.bind(Messages.SourcePage_labelCheckboxCopyAllGenerations, IpsPlugin
+                    .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNamePlural(true));
+            copyAllGenerationsBtn = toolkit.createCheckbox(masterComposite, labelCopyAllGenerations);
+            copyAllGenerationsBtn.setChecked(false);
+            toolkit.createVerticalSpacer(masterComposite, height[1]);
+
+            createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[2]);
 
             createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot,
                     rootProductCmpt.getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath()
-                            .toString().substring(1), height[2]);
+                            .toString().substring(1), height[3]);
 
             createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
-                    .getIpsPackageFragment().getName(), height[3]);
+                    .getIpsPackageFragment().getName(), height[4]);
         }
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -357,6 +374,22 @@ public class SourcePage extends WizardPage {
         bindingContext.bindContent(versionField, getPresentationModel(), DeepCopyPresentationModel.VERSION_ID);
 
         bindingContext.bindContent(copyTableContentsBtn, getPresentationModel(), DeepCopyPresentationModel.COPY_TABLE);
+        bindingContext.bindContent(copyAllGenerationsBtn, getPresentationModel(),
+                DeepCopyPresentationModel.COPY_ALL_GENERATIONS);
+        copyAllGenerationsBtn.addListener(SWT.Selection, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                if (copyAllGenerationsBtn.isChecked()) {
+                    getPresentationModel().setOldValidFrom(getPresentationModel().getOldValidFrom());
+                    // The above line re-initializes the structure, so that _all_ product components
+                    // are copied. Unfortunately, it also resets the state of the check box, hence,
+                    // we have to manually set it here again...
+                    getPresentationModel().setCopyAllGenerations(true);
+                    copyAllGenerationsBtn.setChecked(true);
+                }
+                tree.getTree().setEnabled(!copyAllGenerationsBtn.isChecked());
+            }
+        });
 
         tree.addCheckStateListener(new ICheckStateListener() {
 
@@ -398,7 +431,7 @@ public class SourcePage extends WizardPage {
     }
 
     /**
-     * updating the checked and gayed state of the specified element and returns the grayed state
+     * updating the checked and grayed state of the specified element and returns the grayed state
      * for recursive use.
      * 
      */
@@ -763,6 +796,7 @@ public class SourcePage extends WizardPage {
         }
         // otherwise buttons are disabled after run and save ui state?
         copyTableContentsBtn.setEnabled(true);
+        copyAllGenerationsBtn.setEnabled(true);
     }
 
     @Override

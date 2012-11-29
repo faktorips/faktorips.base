@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 
 /**
@@ -211,6 +212,16 @@ public class DeepCopyWizard extends ResizableWizard {
             final Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
             final Set<IProductCmptStructureReference> toLink = presentationModel.getLinkedElements();
 
+            if (presentationModel.isCopyAllGenerations()) {
+                GenerationDate selectedDate = presentationModel.getOldValidFrom();
+                for (GenerationDate date : presentationModel.getGenerationDates()) {
+                    if (!date.equals(selectedDate)) {
+                        presentationModel.setOldValidFrom(date);
+                        toCopy.addAll(presentationModel.getAllCopyElements(true));
+                    }
+                }
+            }
+
             final boolean createEmptyTableContents = presentationModel.isCreateEmptyTable();
 
             final IWorkspaceRoot schedulingRule = getStructure().getRoot().getProductCmpt().getIpsProject()
@@ -221,14 +232,15 @@ public class DeepCopyWizard extends ResizableWizard {
                 protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                         InterruptedException {
                     monitor.beginTask("", 2); //$NON-NLS-1$
-                    final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
-                            .getHandles(new SubProgressMonitor(monitor, 1));
+                    final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview.getHandles(
+                            new SubProgressMonitor(monitor, 1), toCopy);
                     DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
                     dco.setSourceIpsPackageFragment(presentationModel.getSourcePackage());
                     dco.setTargetIpsPackageFragment(presentationModel.getTargetPackage());
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
+                    dco.setCopyAllGenerations(presentationModel.isCopyAllGenerations());
                     configureFixups(dco);
                     dco.run(new SubProgressMonitor(monitor, 1));
                     copyResultRoot = dco.getCopiedRoot();

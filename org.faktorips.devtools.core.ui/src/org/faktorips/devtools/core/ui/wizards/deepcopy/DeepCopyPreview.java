@@ -369,8 +369,8 @@ public class DeepCopyPreview {
      * 
      * @throws CoreException if any error exists (e.g. naming collisions).
      */
-    public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IProgressMonitor progressMonitor)
-            throws CoreException {
+    public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IProgressMonitor progressMonitor,
+            Set<IProductCmptStructureReference> toCopy) throws CoreException {
         if (!isValid(progressMonitor)) {
             StringBuffer message = new StringBuffer();
             Collection<String> errors = getErrorElements().values();
@@ -381,7 +381,7 @@ public class DeepCopyPreview {
             throw new CoreException(status);
         }
 
-        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
+        // Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
         Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
 
         int segmentsToIgnore = getSegmentsToIgnore(toCopy);

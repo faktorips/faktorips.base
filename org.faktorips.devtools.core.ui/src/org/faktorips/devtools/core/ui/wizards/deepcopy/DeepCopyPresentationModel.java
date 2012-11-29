@@ -46,6 +46,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
     public static final String TARGET_PACKAGE_ROOT = "targetPackageRoot"; //$NON-NLS-1$
     public static final String COPY_TABLE = "copyTable"; //$NON-NLS-1$
+    public static final String COPY_ALL_GENERATIONS = "copyAllGenerations"; //$NON-NLS-1$
 
     private final IProductCmptGeneration productCmptGeneration;
 
@@ -61,6 +62,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     private IIpsPackageFragment sourcePackage;
     private IIpsPackageFragmentRoot sourcePackageRoot;
     private boolean copyTable;
+    private boolean copyAllGenerations;
 
     private IProductCmptTreeStructure structure;
 
@@ -252,6 +254,16 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
         return copyTable;
     }
 
+    public void setCopyAllGenerations(boolean copyAllGenerations) {
+        boolean oldValue = isCopyAllGenerations();
+        this.copyAllGenerations = copyAllGenerations;
+        notifyListeners(new PropertyChangeEvent(this, COPY_ALL_GENERATIONS, oldValue, copyAllGenerations));
+    }
+
+    public boolean isCopyAllGenerations() {
+        return copyAllGenerations;
+    }
+
     public boolean isCreateEmptyTable() {
         return !isCopyTable();
     }
@@ -276,7 +288,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
      * @see DeepCopyTreeStatus#isEnabled(IProductCmptStructureReference)
      */
     public Set<IProductCmptStructureReference> getAllCopyElements(boolean includingAssociations) {
-        return treeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, includingAssociations);
+        return treeStatus.getAllEnabledElements(CopyOrLink.COPY, this.structure, includingAssociations);
     }
 
     /**

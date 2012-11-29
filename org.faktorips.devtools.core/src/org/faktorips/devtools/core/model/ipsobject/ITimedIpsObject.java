@@ -156,4 +156,23 @@ public interface ITimedIpsObject extends IIpsObject {
      */
     public void setValidTo(GregorianCalendar validTo);
 
+    /**
+     * Reassigns the generations of this timed ips object in such a way that all generations present
+     * that expire prior to the new date, will be deleted and the first generation in this object
+     * will be set to the new date given.
+     * 
+     * @param newDate new valid from date of this object
+     */
+    public void reassignGenerations(GregorianCalendar newDate);
+
+    /**
+     * Retains only one generation in this object. If a generation exists at the given old date,
+     * this generation is retained and set to be valid from the new date. If no such generation
+     * exists, a new generation, valid from the new date, is created and retained as the only
+     * generation.
+     * 
+     * @param oldDate effective date of the generation to retain.
+     * @param newDate new effective date of the only generation in this object.
+     */
+    public void retainOnlyGeneration(GregorianCalendar oldDate, GregorianCalendar newDate);
 }

@@ -321,4 +321,63 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         }
     }
 
+    @Override
+    public void reassignGenerations(GregorianCalendar newDate) {
+        int generationIndex = 0;
+        int newGenerationCount = 0;
+        int oldGenerationCount = getNumOfGenerations();
+        boolean hasMoreGenerations;
+
+        for (IIpsObjectGeneration generation : getGenerationsOrderedByValidDate()) {
+            hasMoreGenerations = generationIndex < oldGenerationCount - 1;
+            if (newGenerationCount == 0) {
+                if (hasMoreGenerations) {
+                    // The generation expires before the new valid from date, hence do not add
+                    // it to the target.
+                    if (generation.getValidTo() != null && generation.getValidTo().before(newDate)) {
+                        generationIndex++;
+                        generation.delete();
+                        continue;
+                    }
+                }
+                boolean validBefore = generation.getValidFrom().before(newDate);
+                boolean validAfter = generation.getValidFrom().after(newDate)
+                        && (generation.getValidTo() == null || generation.getValidTo().after(newDate));
+                if (validBefore || validAfter) {
+                    // The first generation in the target must be valid from the new date.
+                    generation.setValidFrom(newDate);
+                    generationIndex++;
+                    newGenerationCount++;
+                    continue;
+                }
+            }
+            generationIndex++;
+            newGenerationCount++;
+        }
+        IIpsObjectGeneration generationEffectiveOn = getGenerationEffectiveOn(newDate);
+        if (generationEffectiveOn == null) {
+            generationEffectiveOn = getFirstGeneration();
+        }
+        if (generationEffectiveOn == null) {
+            generationEffectiveOn = newGeneration(newDate);
+        }
+    }
+
+    @Override
+    public void retainOnlyGeneration(GregorianCalendar oldDate, GregorianCalendar newDate) {
+        IIpsObjectGeneration generationEffectiveOn = getGenerationEffectiveOn(oldDate);
+        if (generationEffectiveOn == null) {
+            generationEffectiveOn = getFirstGeneration();
+        }
+        for (IIpsObjectGeneration generation : getGenerations()) {
+            if (!generation.equals(generationEffectiveOn)) {
+                generation.delete();
+            }
+        }
+        if (generationEffectiveOn == null) {
+            generationEffectiveOn = newGeneration(newDate);
+        } else {
+            generationEffectiveOn.setValidFrom(newDate);
+        }
+    }
 }

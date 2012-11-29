@@ -370,4 +370,24 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         return result;
     }
 
+    public Set<IProductCmptStructureReference> getAllElements(CopyOrLink copyOrLink,
+            IProductCmptTreeStructure structure,
+            boolean includeAssociations) {
+        HashSet<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
+        Set<IProductCmptStructureReference> set = structure.toSet(false);
+        for (IProductCmptStructureReference reference : set) {
+            if (reference instanceof IProductCmptTypeAssociationReference) {
+                continue;
+            }
+            if (!includeAssociations && reference instanceof IProductCmptReference
+                    && associationLinks.containsKey(reference.getWrapped())) {
+                continue;
+            }
+            LinkStatus status = getStatus(reference);
+            if (status.getCopyOrLink() == copyOrLink) {
+                result.add(reference);
+            }
+        }
+        return result;
+    }
 }

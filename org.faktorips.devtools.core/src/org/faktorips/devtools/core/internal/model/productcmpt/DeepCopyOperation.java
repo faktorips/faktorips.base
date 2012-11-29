@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -59,6 +60,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private final Set<IProductCmptStructureReference> linkElements;
     private final Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
     private boolean createEmptyTableContents = false;
+    private boolean copyAllGenerations = false;
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
     private IIpsPackageFragment sourceIpsPackageFragment;
     private IIpsPackageFragment targetIpsPackageFragment;
@@ -108,6 +110,10 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         this.createEmptyTableContents = createEmptyTableContents;
     }
 
+    public void setCopyAllGenerations(boolean copyAllGenerations) {
+        this.copyAllGenerations = copyAllGenerations;
+    }
+
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -126,7 +132,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
         Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<IProductCmpt, IProductCmpt>();
         List<IIpsObject> newIpsObjects = new ArrayList<IIpsObject>();
-
         for (IProductCmptStructureReference element : copyElements) {
             IIpsObject newIpsObject = createNewIpsObjectIfNecessary(element, productNew2ProductOld, oldValidFrom,
                     newValidFrom, monitor);
@@ -146,11 +151,14 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
             monitor.worked(1);
         }
+
         List<IDeepCopyOperationFixup> additionalFixups = getAdditionalFixups();
         // fix links, on of the following options:
-        // a) change target to new (copied) productCmpt's: if the target should also be copied ->
+        // a) change target to new (copied) productCmpt's: if the target should also be copied
+        // ->
         // checked on the 1st wizard page and checked on the 2nd page
-        // b) leave old target: if the target shouldn't be changed -> check on 1st wizard page and
+        // b) leave old target: if the target shouldn't be changed -> check on 1st wizard page
+        // and
         // unchecked on the 2nd page
         // c) delete link: if target are not copied -> not check on 1st wizard page
         // fix tableContentUsages, on of the following options:
@@ -161,9 +169,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             final IProductCmpt productCmptNew = entry.getKey();
             final IProductCmpt productCmptTemplate = entry.getValue();
 
-            fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
-                    objectsToRefer);
-            fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
+            fixLinks(productCmptNew, productCmptTemplate, linkData2newProductCmptQName,
+                    tblContentData2newTableContentQName, objectsToRefer);
             for (final IDeepCopyOperationFixup fixup : additionalFixups) {
                 ISafeRunnable runnable = new ISafeRunnable() {
                     @Override
@@ -186,13 +193,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             ipsSrcFile.save(true, monitor);
             monitor.worked(1);
         }
+        if (newIpsObjects.size() == 0) {
+            throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
+        }
 
         // copy all existing sort order files (if any)
         copySortOrder(monitor);
 
-        if (newIpsObjects.size() == 0) {
-            throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
-        }
         monitor.done();
     }
 
@@ -273,15 +280,20 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             if (!createEmptyFile) {
                 // try to create the file as copy
                 try {
-                    file = targetPackage.createIpsFileFromTemplate(newName, templateObject, oldValidFrom, newValidFrom,
-                            false, monitor);
+                    if (targetPackage instanceof IpsPackageFragment && copyAllGenerations) {
+                        file = ((IpsPackageFragment)targetPackage).createIpsFileWithGenerationsFromTemplate(newName,
+                                templateObject, newValidFrom, false, monitor);
+                    } else {
+                        file = targetPackage.createIpsFileFromTemplate(newName, templateObject, oldValidFrom,
+                                newValidFrom, false, monitor);
+                    }
                 } catch (CoreException e) {
                     // exception occurred thus create empty file below
                     createEmptyFile = true;
                 }
             } else {
                 // if table contents should be created empty or
-                // or if the file could not be created from template then create an empty file
+                // if the file could not be created from template then create an empty file
                 file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);
                 TimedIpsObject ipsObject = (TimedIpsObject)file.getIpsObject();
                 IIpsObjectGeneration generation = ipsObject.newGeneration();
@@ -350,6 +362,43 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     /**
+     * Fixes all table content usages and all links. Calls the appropriate fix methods with the
+     * correct generation(s).
+     * 
+     * @param productCmptNew the new productCmpt which will be fixed
+     * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
+     *            productCmpt
+     * @param linkData2newProductCmptQName A map containing the link-identifier as key and the new
+     *            created productCmpt which was initiated by the key link
+     * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier
+     *            as key and the new created tableContent which was initiated by the key
+     *            tableContentUsage
+     * @param objectsToRefer A set containing the not copied objects
+     */
+    private void fixLinks(IProductCmpt productCmptNew,
+            IProductCmpt productCmptTemplate,
+            Map<LinkData, String> linkData2newProductCmptQName,
+            Map<TblContentUsageData, String> tblContentData2newTableContentQName,
+            Set<Object> objectsToRefer) {
+        if (copyAllGenerations) {
+            for (IIpsObjectGeneration objectGeneration : productCmptNew.getGenerationsOrderedByValidDate()) {
+                IProductCmptGeneration generation = (IProductCmptGeneration)objectGeneration;
+                fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
+                        objectsToRefer, generation);
+                fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName,
+                        objectsToRefer, generation);
+            }
+        } else {
+            IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew
+                    .getGenerationsOrderedByValidDate()[0];
+            fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
+                    objectsToRefer, generation);
+            fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer,
+                    generation);
+        }
+    }
+
+    /**
      * Fix all tableContentUsages
      * 
      * @param productCmptNew the new productCmpt which will be fixed
@@ -359,13 +408,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      *            as key and the new created tableContent which was initiated by the key
      *            tableContentUsage
      * @param objectsToRefer A set containing the not copied objects
+     * @param generation the affected generation
      */
     private void fixLinksToTableContents(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
             Map<TblContentUsageData, String> tblContentData2newTableContentQName,
-            Set<Object> objectsToRefer) {
-
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
+            Set<Object> objectsToRefer,
+            IProductCmptGeneration generation) {
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate,
@@ -389,13 +438,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      * @param linkData2newProductCmptQName A map containing the link-identifier as key and the new
      *            created productCmpt which was initiated by the key link
      * @param objectsToRefer A set containing the not copied objects
+     * @param generation the generation which is affected
      */
     private void fixLinksToProductCmpt(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
             Map<LinkData, String> linkData2newProductCmptQName,
-            Set<Object> objectsToRefer) {
-
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
+            Set<Object> objectsToRefer,
+            IProductCmptGeneration generation) {
         List<IProductCmptLink> links = generation.getLinksIncludingProductCmpt();
         for (IProductCmptLink link : links) {
             LinkData linkData;
