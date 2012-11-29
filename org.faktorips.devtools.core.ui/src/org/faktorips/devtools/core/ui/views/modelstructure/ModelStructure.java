@@ -482,8 +482,11 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
         menuManager.add(new Separator(MENU_GROUP_CONTENT_PROVIDER));
 
-        for (IAction contentProviderAction : getContentProviderActions()) {
-            menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, contentProviderAction);
+        List<IAction> actions = getContentProviderActions();
+        if (actions.size() > 1) {
+            for (IAction contentProviderAction : actions) {
+                menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, contentProviderAction);
+            }
         }
     }
 

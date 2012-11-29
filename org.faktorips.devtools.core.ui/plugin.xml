@@ -3018,10 +3018,15 @@
           class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider"
           label="%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider_label">
     </contentprovider>
+    <!--
+    
+    Disabled in version 3.8 because it does not realy works correctly
+    
     <contentprovider
           class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider"
           label="%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider_label">
     </contentprovider>
+    -->
  </extension>
  <extension
        point="org.eclipse.help.toc">
