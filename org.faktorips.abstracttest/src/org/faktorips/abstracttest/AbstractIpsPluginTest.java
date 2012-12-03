@@ -42,7 +42,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -52,28 +51,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
-import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.Util;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -81,8 +73,8 @@ import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
@@ -99,7 +91,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -255,10 +246,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new IpsProject with the given name.
      */
     protected IIpsProject newIpsProject(final String name) throws CoreException {
-        List<Locale> supportedLocales = new ArrayList<Locale>(2);
-        supportedLocales.add(Locale.GERMAN);
-        supportedLocales.add(Locale.US);
-        return newIpsProject(name, supportedLocales);
+        return newIpsProject(name, new ArrayList<Locale>());
     }
 
     /**
@@ -274,89 +262,29 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * locales. The first locale in the list will be used as default language.
      */
     private IIpsProject newIpsProject(final String name, List<Locale> supportedLocales) throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IProject project = newPlatformProject(name);
-                addJavaCapabilities(project);
-                addIpsCapabilities(project);
-            }
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        return newIpsProjectBuilder().name(name).supportedLocales(supportedLocales).build();
+    }
 
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setProductCmptNamingStrategy(new NoVersionIdProductCmptNamingStrategyFactory()
-                .newProductCmptNamingStrategy(ipsProject));
-        if (supportedLocales.size() > 0) {
-            for (Locale locale : supportedLocales) {
-                properties.addSupportedLanguage(locale);
-            }
-            properties.setDefaultLanguage(supportedLocales.get(0));
-            ipsProject.setProperties(properties);
-        }
-
-        return ipsProject;
+    /**
+     * Returns an {@linkplain IpsProjectBuilder} that allows easy creation of
+     * {@linkplain IpsProject IPS Projects}.
+     */
+    protected IpsProjectBuilder newIpsProjectBuilder() {
+        return new IpsProjectBuilder();
     }
 
     /**
      * Creates a new platform project with the given name and opens it.
      */
     protected IProject newPlatformProject(final String name) throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                internalNewPlatformProject(name);
-            }
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
-        return workspace.getRoot().getProject(name);
-    }
-
-    /**
-     * Creates a new platform project with the given name and opens it.
-     */
-    private IProject internalNewPlatformProject(final String name) throws CoreException {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject project = root.getProject(name);
-        project.create(null);
-        project.open(null);
-        return project;
+        return new PlatformProjectBuilder().name(name).build();
     }
 
     /**
      * Creates a new Java Project for the given platform project.
      */
     protected IJavaProject addJavaCapabilities(IProject project) throws CoreException {
-        IJavaProject javaProject = JavaCore.create(project);
-        // add Java nature
-        Util.addNature(project, JavaCore.NATURE_ID);
-        javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-        // create bin folder and set as output folder.
-        IFolder binFolder = project.getFolder("bin");
-        if (!binFolder.exists()) {
-            binFolder.create(true, true, null);
-        }
-        IFolder srcFolder = project.getFolder(OUTPUT_FOLDER_NAME_MERGABLE);
-        javaProject.setOutputLocation(binFolder.getFullPath(), null);
-        if (!srcFolder.exists()) {
-            srcFolder.create(true, true, null);
-        }
-        IFolder extFolder = project.getFolder(OUTPUT_FOLDER_NAME_DERIVED);
-        if (!extFolder.exists()) {
-            extFolder.create(true, true, null);
-        }
-        IPackageFragmentRoot srcRoot = javaProject.getPackageFragmentRoot(srcFolder);
-        IPackageFragmentRoot extRoot = javaProject.getPackageFragmentRoot(extFolder);
-        IClasspathEntry[] entries = new IClasspathEntry[2];
-        entries[0] = JavaCore.newSourceEntry(srcRoot.getPath());
-        entries[1] = JavaCore.newSourceEntry(extRoot.getPath());
-        // set classpath
-        javaProject.setRawClasspath(entries, null);
-        addSystemLibraries(javaProject);
-        return javaProject;
+        return IpsProjectBuilder.addJavaCapabilities(project);
     }
 
     protected void addClasspathEntry(IJavaProject project, IClasspathEntry entry) throws JavaModelException {
@@ -368,24 +296,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected void addIpsCapabilities(IProject project) throws CoreException {
-        Util.addNature(project, IIpsProject.NATURE_ID);
-        IFolder rootFolder = project.getFolder("productdef");
-        rootFolder.create(true, true, null);
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.setOutputDefinedPerSrcFolder(true);
-        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(rootFolder);
-        entry.setSpecificBasePackageNameForMergableJavaClasses(BASE_PACKAGE_NAME_MERGABLE);
-        entry.setSpecificOutputFolderForMergableJavaFiles(project.getFolder(OUTPUT_FOLDER_NAME_MERGABLE));
-        entry.setSpecificBasePackageNameForDerivedJavaClasses(BASE_PACKAGE_NAME_DERIVED);
-        entry.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder(OUTPUT_FOLDER_NAME_DERIVED));
-
-        ipsProject.setIpsObjectPath(path);
-
-        IIpsProjectProperties props = ipsProject.getProperties();
-        setTestArtefactBuilderSet(props, ipsProject);
         // @formatter:off
-        props.setPredefinedDatatypesUsed(new String[] {
+        IpsProjectBuilder.addIpsCapabilities(project, new String[] {
                 Datatype.DECIMAL.getName(),
                 Datatype.MONEY.getName(),
                 Datatype.INTEGER.getName(),
@@ -395,42 +307,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.STRING.getName(),
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
-
-        props.setMinRequiredVersionNumber(
-                "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        ipsProject.setProperties(props);
     }
 
     protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
             throws CoreException {
 
-        // Create the builder set for the project
-        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { new TestBuilder() });
-        builderSet.setIpsProject(project);
-
-        // Set the builder set id in the project's properties
-        properties.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-
-        // Add the new builder set to the builder set infos of the IPS model
-        IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
-        List<IIpsArtefactBuilderSetInfo> newBuilderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>(
-                builderSetInfos.length + 1);
-        for (IIpsArtefactBuilderSetInfo info : builderSetInfos) {
-            newBuilderSetInfos.add(info);
-        }
-        newBuilderSetInfos.add(new TestArtefactBuilderSetInfo(builderSet));
-        ipsModel.setIpsArtefactBuilderSetInfos(newBuilderSetInfos
-                .toArray(new IIpsArtefactBuilderSetInfo[newBuilderSetInfos.size()]));
-    }
-
-    private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException {
-        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-        IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
-        System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-        newEntries[oldEntries.length] = JavaRuntime.getDefaultJREContainerEntry();
-        javaProject.setRawClasspath(newEntries, null);
+        IpsProjectBuilder.setTestArtefactBuilderSet(properties, project);
     }
 
     protected void waitForIndexer() throws JavaModelException {
@@ -1516,39 +1398,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         public void contentsChanged(ContentChangeEvent event) {
             lastContentChangeEvent = event;
             numberContentChangeEvents++;
-        }
-
-    }
-
-    private static class TestBuilder extends AbstractArtefactBuilder {
-
-        public TestBuilder() throws CoreException {
-            super(new TestIpsArtefactBuilderSet());
-        }
-
-        @Override
-        public String getName() {
-            return null;
-        }
-
-        @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-
-        }
-
-        @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-            return false;
-        }
-
-        @Override
-        public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-
-        }
-
-        @Override
-        public boolean isBuildingInternalArtifacts() {
-            return false;
         }
 
     }
