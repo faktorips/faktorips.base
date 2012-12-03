@@ -279,7 +279,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     public IIpsSrcFile createCopy(IIpsPackageFragment targetFragment,
             String name,
             boolean force,
-            IProgressMonitor monitor) throws RuntimeException {
+            IProgressMonitor monitor) {
         IpsObjectType type = getIpsObjectType();
         String filename = type.getFileName(name);
         Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();

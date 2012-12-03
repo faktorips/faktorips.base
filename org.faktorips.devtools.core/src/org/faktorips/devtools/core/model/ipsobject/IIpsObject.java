@@ -140,5 +140,5 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
     public IIpsSrcFile createCopy(IIpsPackageFragment targetFragment,
             String name,
             boolean force,
-            IProgressMonitor monitor) throws RuntimeException;
+            IProgressMonitor monitor);
 }
