@@ -24,9 +24,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -63,37 +63,13 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         public InternalLabelProvider() {
         }
 
-        private String getCardinalityString(boolean showDefault,
-                int minCardinality,
-                int maxCardinality,
-                int defaultCardinality) {
-            StringBuilder cardinalityString = new StringBuilder(" ["); //$NON-NLS-1$
-            cardinalityString.append(minCardinality);
-            cardinalityString.append(".."); //$NON-NLS-1$
-            cardinalityString.append(maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : maxCardinality); //$NON-NLS-1$
-            if (showDefault) {
-                cardinalityString.append(", "); //$NON-NLS-1$
-                cardinalityString.append(defaultCardinality);
-            }
-            cardinalityString.append("]"); //$NON-NLS-1$
-            return cardinalityString.toString();
-        }
-
-        private String getCardinalitiesFromPolicy(IAssociation association) {
+        private String getCardinalitiesFromPolicy(IProductCmptTypeAssociation association) {
             String policyCardinalityString = ""; //$NON-NLS-1$
             try {
-                IProductCmptTypeAssociation productCmptAssociation = null;
-                IPolicyCmptTypeAssociation policyAssociation = null;
-
-                if (association instanceof IProductCmptTypeAssociation) {
-                    productCmptAssociation = (IProductCmptTypeAssociation)association;
-                    policyAssociation = productCmptAssociation
-                            .findMatchingPolicyCmptTypeAssociation(productCmptAssociation.getIpsProject());
-                } else if (association instanceof IPolicyCmptTypeAssociation) {
-                    policyAssociation = (IPolicyCmptTypeAssociation)association;
-                }
+                IPolicyCmptTypeAssociation policyAssociation = association
+                        .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
                 if (policyAssociation != null) {
-                    policyCardinalityString = getCardinalityString(false, policyAssociation.getMinCardinality(),
+                    policyCardinalityString = StringUtil.getRangeString(false, policyAssociation.getMinCardinality(),
                             policyAssociation.getMaxCardinality(), 0);
                 }
             } catch (CoreException e) {
@@ -124,7 +100,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             StyledString styledString = new StyledString(getText(element));
             if (element instanceof AssociationViewItem) {
                 AssociationViewItem associationViewItem = (AssociationViewItem)element;
-                IAssociation association = associationViewItem.getAssociation();
+                IProductCmptTypeAssociation association = associationViewItem.getAssociation();
                 styledString.append(new StyledString(getCardinalitiesFromPolicy(association),
                         StyledString.COUNTER_STYLER));
             }

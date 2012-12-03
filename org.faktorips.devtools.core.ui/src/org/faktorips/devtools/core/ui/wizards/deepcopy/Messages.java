@@ -37,6 +37,7 @@ public class Messages extends NLS {
     public static String SourcePage_columnNameSourceStructure;
     public static String SourcePage_copyFrom;
     public static String SourcePage_copyTo;
+    public static String SourcePage_deactivationHintText;
     public static String SourcePage_errorPrefixWorkingDateFormat;
     public static String SourcePage_errorWorkingDateFormat;
     public static String SourcePage_labelSourceValidFrom;

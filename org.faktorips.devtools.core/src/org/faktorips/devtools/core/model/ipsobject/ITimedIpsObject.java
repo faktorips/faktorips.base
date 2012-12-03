@@ -161,6 +161,26 @@ public interface ITimedIpsObject extends IIpsObject {
      * that expire prior to the new date, will be deleted and the first generation in this object
      * will be set to the new date given.
      * 
+     * For example, consider an ITimedIpsObject with three {@link IIpsObjectGeneration
+     * IIpsObjectGenerations}:
+     * <ul>
+     * <li>G1: valid from 2010-01-01</li>
+     * <li>G2: valid from 2011-01-01</li>
+     * <li>G3: valid from 2012-01-01</li>
+     * </ul>
+     * 
+     * Calling reassignGenerations on this object with 2011-06-01 as new date, would produce these
+     * generations:
+     * <ul>
+     * <li>G1: valid from 2011-06-01</li>
+     * <li>G2: valid from 2012-01-01</li>
+     * </ul>
+     * 
+     * The original G1 would be deleted, because it expired before the new date. The original G2
+     * would begin 5 months later, because it was valid on the new date and after the method call,
+     * this is the first valid from date (i.e. G2 is now G1). The original G3 would remain
+     * unmodified, because it is valid only after the new date.
+     * 
      * @param newDate new valid from date of this object
      */
     public void reassignGenerations(GregorianCalendar newDate);
@@ -170,6 +190,24 @@ public interface ITimedIpsObject extends IIpsObject {
      * this generation is retained and set to be valid from the new date. If no such generation
      * exists, a new generation, valid from the new date, is created and retained as the only
      * generation.
+     * 
+     * For example, consider an ITimedIpsObject with three {@link IIpsObjectGeneration
+     * IIpsObjectGenerations}:
+     * <ul>
+     * <li>G1: valid from 2010-01-01</li>
+     * <li>G2: valid from 2011-01-01</li>
+     * <li>G3: valid from 2012-01-01</li>
+     * </ul>
+     * 
+     * Calling retainOnlyGeneration on this object with 2011-01-01 as the old and 2011-06-01 as new
+     * date, would produce this generation:
+     * 
+     * <ul>
+     * <li>G1: valid from 2011-06-01</li>
+     * </ul>
+     * 
+     * So, the new G1 would correspond to the old G2 and it would be the only generation left in
+     * this object.
      * 
      * @param oldDate effective date of the generation to retain.
      * @param newDate new effective date of the only generation in this object.

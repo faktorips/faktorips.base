@@ -381,7 +381,6 @@ public class DeepCopyPreview {
             throw new CoreException(status);
         }
 
-        // Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
         Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
 
         int segmentsToIgnore = getSegmentsToIgnore(toCopy);

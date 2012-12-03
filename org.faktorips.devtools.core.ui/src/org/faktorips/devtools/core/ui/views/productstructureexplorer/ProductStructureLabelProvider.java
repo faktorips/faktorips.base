@@ -139,16 +139,6 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         return generationDate;
     }
 
-    public StyledString getStyledCardinalityString(boolean showDefault,
-            int minCardinality,
-            int maxCardinality,
-            int defaultCardinality) {
-        return new StyledString(" [" + minCardinality + ".." + //$NON-NLS-1$//$NON-NLS-2$
-                (maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : maxCardinality) + //$NON-NLS-1$
-                (showDefault ? ", " + defaultCardinality + "]" : "]"), //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                StyledString.COUNTER_STYLER);
-    }
-
     @Override
     public StyledString getStyledText(Object element) {
         StyledString styledString = new StyledString(getText(element));
@@ -159,8 +149,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             // show cardinality
             if (productCmptReference.getLink() != null && showCardinalities) {
                 IProductCmptLink link = productCmptReference.getLink();
-                styledString.append(getStyledCardinalityString(true, link.getMinCardinality(),
-                        link.getMaxCardinality(), link.getDefaultCardinality()));
+                styledString.append(new StyledString(StringUtil.getRangeString(true, link.getMinCardinality(),
+                        link.getMaxCardinality(), link.getDefaultCardinality()), StyledString.COUNTER_STYLER));
             }
 
             // show association nodes
@@ -188,8 +178,9 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                     IPolicyCmptTypeAssociation policyAssociation = association
                             .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
                     if (policyAssociation != null) {
-                        styledString.append(getStyledCardinalityString(false, policyAssociation.getMinCardinality(),
-                                policyAssociation.getMaxCardinality(), 0));
+                        styledString.append(new StyledString(StringUtil.getRangeString(false,
+                                policyAssociation.getMinCardinality(), policyAssociation.getMaxCardinality(), 0),
+                                StyledString.COUNTER_STYLER));
                     }
                 } catch (CoreException e) {
                     // Ignore, because if no matching policy association exists, we don't show

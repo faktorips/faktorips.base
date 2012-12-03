@@ -21,8 +21,7 @@ public interface OverlayIcons {
 
     public final static String WARNING_OVR = "ovr16/warning_co.gif"; //$NON-NLS-1$
 
-    // TODO eigenes INFO Bild!
-    public final static String INFO_OVR = "ovr16/warning_co.gif"; //$NON-NLS-1$
+    public final static String INFO_OVR = "ovr16/info_ovr.gif"; //$NON-NLS-1$
 
     public final static String FAILURE_OVR = "ovr16/failed_ovr.gif"; //$NON-NLS-1$
 

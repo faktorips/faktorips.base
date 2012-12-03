@@ -287,4 +287,29 @@ public class StringUtil {
         return result.toString();
     }
 
+    /**
+     * Returns a String of the form ' [x..y, z]', where x and y are the minimum and maximum values
+     * of a range, and z is the default value of that range. If z is unknown and showDefault set to
+     * false, no default is present in the String and the result will have the form ' [x..y]'. Note
+     * that maxValue will be represented as an asterisk (*) if its value is Integer.MAX_VALUE.
+     * 
+     * @param showDefault flag to indicate if the default value should be included in the result.
+     * @param minValue minimum value of the range.
+     * @param maxValue maximum value of the range or Integer.MAX_VALUE to indicate an unbound range.
+     * @param defaultValue default value of the range (if showDefault is false, this value will be
+     *            ignored).
+     * @return a String representation of the range in the form ' [min..max, default]'.
+     */
+    public static String getRangeString(boolean showDefault, int minValue, int maxValue, int defaultValue) {
+        StringBuilder cardinalityString = new StringBuilder(" ["); //$NON-NLS-1$
+        cardinalityString.append(minValue);
+        cardinalityString.append(".."); //$NON-NLS-1$
+        cardinalityString.append(maxValue == Integer.MAX_VALUE ? "*" : maxValue); //$NON-NLS-1$
+        if (showDefault) {
+            cardinalityString.append(", "); //$NON-NLS-1$
+            cardinalityString.append(defaultValue);
+        }
+        cardinalityString.append("]"); //$NON-NLS-1$
+        return cardinalityString.toString();
+    }
 }

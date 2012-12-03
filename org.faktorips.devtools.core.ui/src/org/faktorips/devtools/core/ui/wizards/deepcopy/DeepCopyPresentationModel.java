@@ -208,42 +208,6 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
         return structure.getRoot().getProductCmpt().getIpsProject();
     }
 
-    // /**
-    // * Note: The linked objects are populated by the source page. It is not updated by the binding
-    // * context and does NEVER trigger a change event!
-    // */
-    // public Set<IProductCmptStructureReference> getLinkedElements() {
-    // return new HashSet<IProductCmptStructureReference>();
-    // }
-
-    // /**
-    // * Returns all {@link IProductCmptReference} and {@link
-    // IProductCmptStructureTblUsageReference}
-    // * that should be copied (checked and not linked).
-    // */
-    // Set<IProductCmptStructureReference> getAllCopyElements() {
-    // if (allCopyElementsCached != null) {
-    // return allCopyElementsCached;
-    // }
-    // Set<IProductCmptStructureReference> result = new
-    // HashSet<IProductCmptStructureReference>();
-    // Set<IProductCmptStructureReference> linkedElements =
-    // presentationModel.getLinkedElements();
-    // for (IProductCmptStructureReference checkedElement :
-    // presentationModel.getCheckedElementsSet()) {
-    // if (linkedElements.contains(checkedElement)) {
-    // continue;
-    // }
-    // if (checkedElement instanceof IProductCmptReference
-    // || checkedElement instanceof IProductCmptStructureTblUsageReference) {
-    // result.add(checkedElement);
-    // }
-    // }
-    // allCopyElementsCached = result;
-    // return allCopyElementsCached;
-    // return new HashSet<IProductCmptStructureReference>();
-    // }
-
     public void setCopyTable(boolean copyTable) {
         boolean oldValue = isCopyTable();
         this.copyTable = copyTable;

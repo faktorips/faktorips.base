@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
@@ -52,15 +51,15 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
     private final IEnumValueSetProvider enumValueSetProvider;
 
-    public EnumSubsetEditDialog(final IPolicyCmptTypeAttribute attribute, IEnumValueSetProvider provider,
-            ValueDatatype datatype, Shell parentShell, boolean viewOnly) {
+    public EnumSubsetEditDialog(IEnumValueSetProvider provider, ValueDatatype datatype, Shell parentShell,
+            boolean viewOnly) {
         super(provider.getTargetConfigElement(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.enumValueSetProvider = provider;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
         setDescriptionEnabled(!(viewOnly));
-        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, attribute.getId(), new Point(INITIAL_WIDTH, INITIAL_HEIGHT),
-                null);
+        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, datatype.getQualifiedName(), new Point(INITIAL_WIDTH,
+                INITIAL_HEIGHT), null);
     }
 
     @Override

@@ -138,7 +138,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             return null;
         }
         if (attribute.getValueSet().canBeUsedAsSupersetForAnotherEnumValueSet() || datatype.isEnum()) {
-            return new EnumSubsetEditDialog(attribute, getEnumValueSetProvider(), datatype, shell, !dataChangeable);
+            return new EnumSubsetEditDialog(getEnumValueSetProvider(), datatype, shell, !dataChangeable);
         }
         return null;
     }

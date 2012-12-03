@@ -44,15 +44,14 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -63,6 +62,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
@@ -77,6 +77,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -91,6 +92,9 @@ public class SourcePage extends WizardPage {
     static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
     private CheckboxTreeViewer tree;
+
+    private CLabel deactivationHint;
+    private GridData deactivationHintData;
 
     // Control for search pattern
     private Text searchInput;
@@ -254,6 +258,17 @@ public class SourcePage extends WizardPage {
         Label horizonzalLine = toolkit.createHorizonzalLine(root);
         ((GridData)horizonzalLine.getLayoutData()).horizontalSpan = 2;
 
+        deactivationHint = new CLabel(root, SWT.NONE);
+        String deactivationHintText = NLS.bind(Messages.SourcePage_deactivationHintText, IpsPlugin.getDefault()
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
+        deactivationHint.setText(deactivationHintText);
+        deactivationHint.setImage(IpsUIPlugin.getImageHandling().getImage(
+                IpsProblemOverlayIcon.getOverlay(Message.INFO), false));
+        deactivationHintData = new GridData();
+        deactivationHintData.exclude = true;
+        deactivationHint.setLayoutData(deactivationHintData);
+        deactivationHint.setVisible(false);
+
         tree = new CheckboxTreeViewer(root, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         tree.setUseHashlookup(true);
         contentProvider = new DeepCopyContentProvider(true, false);
@@ -376,20 +391,6 @@ public class SourcePage extends WizardPage {
         bindingContext.bindContent(copyTableContentsBtn, getPresentationModel(), DeepCopyPresentationModel.COPY_TABLE);
         bindingContext.bindContent(copyAllGenerationsBtn, getPresentationModel(),
                 DeepCopyPresentationModel.COPY_ALL_GENERATIONS);
-        copyAllGenerationsBtn.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                if (copyAllGenerationsBtn.isChecked()) {
-                    getPresentationModel().setOldValidFrom(getPresentationModel().getOldValidFrom());
-                    // The above line re-initializes the structure, so that _all_ product components
-                    // are copied. Unfortunately, it also resets the state of the check box, hence,
-                    // we have to manually set it here again...
-                    getPresentationModel().setCopyAllGenerations(true);
-                    copyAllGenerationsBtn.setChecked(true);
-                }
-                tree.getTree().setEnabled(!copyAllGenerationsBtn.isChecked());
-            }
-        });
 
         tree.addCheckStateListener(new ICheckStateListener() {
 
@@ -837,7 +838,15 @@ public class SourcePage extends WizardPage {
                 tree.expandAll();
                 updateCheckedAndGrayedStatus(getStructure());
             }
-
+            if (evt.getPropertyName().equals(DeepCopyPresentationModel.COPY_ALL_GENERATIONS)) {
+                deactivationHint.setVisible(copyAllGenerationsBtn.isChecked());
+                deactivationHintData.exclude = !copyAllGenerationsBtn.isChecked();
+                if (copyAllGenerationsBtn.isChecked()) {
+                    getPresentationModel().setOldValidFrom(getPresentationModel().getOldValidFrom());
+                }
+                tree.getTree().setEnabled(!copyAllGenerationsBtn.isChecked());
+                tree.getTree().getParent().layout();
+            }
             refreshPageAfterValueChange();
         }
 
