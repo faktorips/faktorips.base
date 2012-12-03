@@ -90,6 +90,7 @@ public class IpsProjectBuilder {
     }
 
     public IpsProjectBuilder predefinedDatatypes(Datatype... datatypes) {
+        predefinedDatatypes.clear();
         for (Datatype datatype : datatypes) {
             predefinedDatatypes.add(datatype.getName());
         }
@@ -97,6 +98,7 @@ public class IpsProjectBuilder {
     }
 
     public IpsProjectBuilder predefinedDatatypes(List<Datatype> datatypes) {
+        predefinedDatatypes.clear();
         for (Datatype datatype : datatypes) {
             predefinedDatatypes.add(datatype.getName());
         }
@@ -104,11 +106,13 @@ public class IpsProjectBuilder {
     }
 
     public IpsProjectBuilder supportedLocales(Locale... locales) {
+        supportedLocales.clear();
         supportedLocales.addAll(Arrays.asList(locales));
         return this;
     }
 
     public IpsProjectBuilder supportedLocales(List<Locale> locales) {
+        supportedLocales.clear();
         supportedLocales.addAll(locales);
         return this;
     }
