@@ -128,7 +128,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                             .createIpsFileFromTemplate(testCaseCopyDestinationPage.getTargetTestCaseName(),
                                     sourceTestCase, null, null, true, null);
                     targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
-                    // replace product cmpts of root objetcs
+                    // replace product cmpts of root objects
                     ITestObject[] testObjects = sourceTestCase.getTestObjects();
                     ITestObject[] testObjectsTarget = targetTestCase.getTestObjects();
                     for (int i = 0; i < testObjects.length; i++) {
@@ -151,12 +151,12 @@ public class TestCaseCopyWizard extends ResizableWizard {
                             }
                             IProductCmpt newProductCmpt = (IProductCmpt)newProductCmptScrFile.getIpsObject();
                             if (productCmpt.equals(newProductCmpt)) {
-                                // same product cmpt, product cmpt will not changed
+                                // same product cmpt, product cmpt will not be changed
                                 continue;
                             }
 
                             // replace all product cmpts
-                            // (because the target is a copy of the source we could use the same
+                            // (because the target is a copy of the source we can use the same
                             // index: testObjectsTarget[i])
                             replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], newProductCmpt);
                         }
@@ -172,7 +172,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     }
 
     /**
-     * Replace all product cmpt (inclusive childs)
+     * Replace all product cmpt (including children)
      */
     private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt, IProductCmpt newProductCmpt)
             throws CoreException {

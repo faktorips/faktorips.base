@@ -210,7 +210,17 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             <li>The name is not a valid object name
      *             <li>The template has no generation valid on the given date
      *             </ul>
+     * 
+     * @deprecated since 3.9 because the dates specified here are only used in case that the
+     *             template object is an {@link ITimedIpsObject}. Please use
+     *             {@link IIpsObject#createCopy(IIpsPackageFragment, String, boolean, IProgressMonitor)}
+     *             instead. Note that the new method creates an exact copy of the source
+     *             {@link IIpsObject}, to mimic the exact behavior of this method, it is afterwards
+     *             necessary to call
+     *             {@link ITimedIpsObject#retainOnlyGeneration(GregorianCalendar, GregorianCalendar)}
+     *             if the copied object is an {@link ITimedIpsObject}.
      */
+    @Deprecated
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
             GregorianCalendar oldDate,

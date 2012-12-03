@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -117,4 +118,27 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
     @Override
     public void delete() throws CoreException;
 
+    /**
+     * Creates a new IpsSrcFile based on a this IIpsObject. The filename is constructed by appending
+     * the type specific file extension to the given object name (separated by a dot). The content
+     * of the IpsSrcFile is copied from this object.
+     * 
+     * @param targetFragment the {@link IIpsPackageFragment} where the new file will be created
+     * @param name the file name
+     * @param force a flag controlling how to deal with resources that are not in sync with the
+     *            local file system
+     * @param monitor the given progress monitor
+     * 
+     * @throws RuntimeException if the element could not be created. Reasons include:
+     *             <ul>
+     *             <li>The folder does not exist</li>
+     *             <li>A <code>CoreException</code> occurred while creating an underlying resource
+     *             <li>The root folder is read only
+     *             <li>The name is not a valid object name
+     *             </ul>
+     */
+    public IIpsSrcFile createCopy(IIpsPackageFragment targetFragment,
+            String name,
+            boolean force,
+            IProgressMonitor monitor) throws RuntimeException;
 }

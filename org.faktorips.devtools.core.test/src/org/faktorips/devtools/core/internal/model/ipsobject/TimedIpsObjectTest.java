@@ -258,4 +258,40 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         timedObject.initFromXml(element);
         assertEquals(2, timedObject.getNumOfGenerations());
     }
+
+    @Test
+    public void testRetainOnlyGeneration() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2005, 0, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2006, 0, 1));
+
+        timedObject.retainOnlyGeneration(new GregorianCalendar(2005, 0, 1), new GregorianCalendar(2004, 0, 1));
+        assertEquals(1, timedObject.getNumOfGenerations());
+        assertEquals(new GregorianCalendar(2004, 0, 1), timedObject.getGeneration(0).getValidFrom());
+        assertNull(timedObject.getGeneration(0).getValidTo());
+    }
+
+    @Test
+    public void testReassignGenerations() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2005, 0, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2006, 0, 1));
+        IIpsObjectGeneration gen3 = timedObject.newGeneration();
+        gen3.setValidFrom(new GregorianCalendar(2007, 0, 1));
+        GregorianCalendar validToFirst = new GregorianCalendar();
+        validToFirst.setTimeInMillis(new GregorianCalendar(2006, 0, 1).getTimeInMillis() - 1);
+        GregorianCalendar validToSecond = new GregorianCalendar();
+        validToSecond.setTimeInMillis(new GregorianCalendar(2007, 0, 1).getTimeInMillis() - 1);
+
+        timedObject.reassignGenerations(new GregorianCalendar(2005, 5, 1));
+        assertEquals(3, timedObject.getNumOfGenerations());
+        assertEquals(new GregorianCalendar(2005, 5, 1), timedObject.getGeneration(0).getValidFrom());
+        assertEquals(validToFirst, timedObject.getGeneration(0).getValidTo());
+        assertEquals(new GregorianCalendar(2006, 0, 1), timedObject.getGeneration(1).getValidFrom());
+        assertEquals(validToSecond, timedObject.getGeneration(1).getValidTo());
+        assertEquals(new GregorianCalendar(2007, 0, 1), timedObject.getGeneration(2).getValidFrom());
+        assertNull(timedObject.getGeneration(2).getValidTo());
+    }
 }

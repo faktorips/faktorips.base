@@ -17,11 +17,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
@@ -99,4 +101,14 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
         assertFalse(ipsObject.exists());
     }
 
+    @Test
+    public void testCreateCopy() throws RuntimeException {
+        IIpsPackageFragment packageFragment = ipsObject.getIpsPackageFragment();
+        IIpsSrcFile copiedObject = ipsObject.createCopy(packageFragment, "testKopie", false, new NullProgressMonitor());
+        assertNotNull(copiedObject);
+        assertTrue(copiedObject.exists());
+        assertEquals("TestProduct", ipsObject.getName());
+        assertEquals("testKopie.ipspolicycmpttype", copiedObject.getName());
+        assertEquals(IpsObjectType.POLICY_CMPT_TYPE, ipsObject.getIpsObjectType());
+    }
 }

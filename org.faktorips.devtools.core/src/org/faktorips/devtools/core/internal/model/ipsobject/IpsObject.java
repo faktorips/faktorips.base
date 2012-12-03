@@ -19,14 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -270,4 +275,28 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         getIpsSrcFile().delete();
     }
 
+    @Override
+    public IIpsSrcFile createCopy(IIpsPackageFragment targetFragment,
+            String name,
+            boolean force,
+            IProgressMonitor monitor) throws RuntimeException {
+        IpsObjectType type = getIpsObjectType();
+        String filename = type.getFileName(name);
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
+        Element element;
+
+        IIpsSrcFile ipsSrcFile;
+        element = toXml(doc);
+        try {
+            String encoding = getIpsProject().getXmlFileCharset();
+            String contents = XmlUtil.nodeToString(element, encoding);
+            ipsSrcFile = targetFragment.createIpsFile(filename, contents, force, monitor);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ipsSrcFile;
+    }
 }

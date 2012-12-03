@@ -34,11 +34,11 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -280,12 +280,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             if (!createEmptyFile) {
                 // try to create the file as copy
                 try {
-                    if (targetPackage instanceof IpsPackageFragment && copyAllGenerations) {
-                        file = ((IpsPackageFragment)targetPackage).createIpsFileWithGenerationsFromTemplate(newName,
-                                templateObject, newValidFrom, false, monitor);
+                    file = templateObject.createCopy(targetPackage, newName, false, monitor);
+                    if (templateObject instanceof ITimedIpsObject) {
+                        if (copyAllGenerations) {
+                            ((ITimedIpsObject)file.getIpsObject()).reassignGenerations(newValidFrom);
                     } else {
-                        file = targetPackage.createIpsFileFromTemplate(newName, templateObject, oldValidFrom,
-                                newValidFrom, false, monitor);
+                            ((ITimedIpsObject)file.getIpsObject()).retainOnlyGeneration(oldValidFrom, newValidFrom);
+                        }
                     }
                 } catch (CoreException e) {
                     // exception occurred thus create empty file below

@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -331,6 +332,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
+    @Deprecated
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
             GregorianCalendar oldDate,
@@ -353,109 +355,25 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             throw new RuntimeException(e);
         }
         if (template instanceof ITimedIpsObject) {
-            ((ITimedIpsObject)ipsSrcFile.getIpsObject()).retainOnlyGeneration(oldDate, newDate);
-            // ITimedIpsObject copyProductCmpt = ((ITimedIpsObject)ipsSrcFile.getIpsObject());
-            // IIpsObjectGeneration generationEffectiveOn =
-            // copyProductCmpt.getGenerationEffectiveOn(oldDate);
-            // if (generationEffectiveOn == null) {
-            // generationEffectiveOn = copyProductCmpt.getFirstGeneration();
-            // }
-            // for (IIpsObjectGeneration generation : copyProductCmpt.getGenerations()) {
-            // if (!generation.equals(generationEffectiveOn)) {
-            // generation.delete();
-            // }
-            // }
-            // if (generationEffectiveOn == null) {
-            // generationEffectiveOn = copyProductCmpt.newGeneration(newDate);
-            // } else {
-            // generationEffectiveOn.setValidFrom(newDate);
-            // }
+            ITimedIpsObject copyProductCmpt = ((ITimedIpsObject)ipsSrcFile.getIpsObject());
+            IIpsObjectGeneration generationEffectiveOn = copyProductCmpt.getGenerationEffectiveOn(oldDate);
+            if (generationEffectiveOn == null) {
+                generationEffectiveOn = copyProductCmpt.getFirstGeneration();
+            }
+            for (IIpsObjectGeneration generation : copyProductCmpt.getGenerations()) {
+                if (!generation.equals(generationEffectiveOn)) {
+                    generation.delete();
+                }
+            }
+            if (generationEffectiveOn == null) {
+                generationEffectiveOn = copyProductCmpt.newGeneration(newDate);
+            } else {
+                generationEffectiveOn.setValidFrom(newDate);
+            }
         }
 
         return ipsSrcFile;
     }
-
-    public IIpsSrcFile createIpsFileWithGenerationsFromTemplate(String name,
-            IIpsObject template,
-            GregorianCalendar newDate,
-            boolean force,
-            IProgressMonitor monitor) throws CoreException {
-        IpsObjectType type = template.getIpsObjectType();
-        String filename = type.getFileName(name);
-        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-        Element element;
-
-        IIpsSrcFile ipsSrcFile;
-        element = template.toXml(doc);
-        try {
-            String encoding = getIpsProject().getXmlFileCharset();
-            String contents = XmlUtil.nodeToString(element, encoding);
-            ipsSrcFile = createIpsFile(filename, contents, force, monitor);
-        } catch (TransformerException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (template instanceof ITimedIpsObject) {
-            ((ITimedIpsObject)ipsSrcFile.getIpsObject()).reassignGenerations(newDate);
-        }
-
-        return ipsSrcFile;
-    }
-
-    // private void reassignGenerations() {
-    // if (template instanceof ITimedIpsObject) {
-    // ITimedIpsObject copyProductCmpt = ((ITimedIpsObject)ipsSrcFile.getIpsObject());
-    // int counter = 0;
-    // int numberOfGenerationsInTarget = 0;
-    // boolean hasMoreGenerations;
-    // int numberOfGenerations = copyProductCmpt.getNumOfGenerations();
-    // for (IIpsObjectGeneration generation : copyProductCmpt.getGenerations()) {
-    // generation.delete();
-    // }
-    // for (IIpsObjectGeneration generation :
-    // ((ITimedIpsObject)template).getGenerationsOrderedByValidDate()) {
-    // hasMoreGenerations = counter < numberOfGenerations - 1;
-    // if (numberOfGenerationsInTarget == 0 && hasMoreGenerations) {
-    // if (generation.getValidTo() != null && generation.getValidTo().before(newDate)) {
-    // counter++;
-    // continue;
-    // }
-    // }
-    // if (numberOfGenerationsInTarget == 0) {
-    // if (generation.getValidFrom().after(newDate)
-    // && (generation.getValidTo() == null || generation.getValidTo().after(newDate))) {
-    // IIpsObjectGeneration newGeneration = copyProductCmpt.newGeneration(newDate);
-    // newGeneration.copyFrom(generation);
-    // newGeneration.setValidFrom(newDate);
-    // counter++;
-    // numberOfGenerationsInTarget++;
-    // continue;
-    // } else if (generation.getValidFrom().before(newDate)) {
-    // IIpsObjectGeneration newGeneration = copyProductCmpt.newGeneration(newDate);
-    // newGeneration.copyFrom(generation);
-    // newGeneration.setValidFrom(newDate);
-    // counter++;
-    // numberOfGenerationsInTarget++;
-    // continue;
-    // }
-    // }
-    // IIpsObjectGeneration newGeneration =
-    // copyProductCmpt.newGeneration(generation.getValidFrom());
-    // newGeneration.copyFrom(generation);
-    // newGeneration.setValidFrom(generation.getValidFrom());
-    // counter++;
-    // numberOfGenerationsInTarget++;
-    // }
-    // IIpsObjectGeneration generationEffectiveOn =
-    // copyProductCmpt.getGenerationEffectiveOn(oldDate);
-    // if (generationEffectiveOn == null) {
-    // generationEffectiveOn = copyProductCmpt.getFirstGeneration();
-    // }
-    // if (generationEffectiveOn == null) {
-    // generationEffectiveOn = copyProductCmpt.newGeneration(newDate);
-    // }
-    // }
-    // }
 
     @Override
     public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
