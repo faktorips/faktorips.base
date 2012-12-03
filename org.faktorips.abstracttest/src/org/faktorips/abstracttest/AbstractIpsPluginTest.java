@@ -246,7 +246,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new IpsProject with the given name.
      */
     protected IIpsProject newIpsProject(final String name) throws CoreException {
-        return newIpsProject(name, new ArrayList<Locale>());
+        List<Locale> supportedLocales = new ArrayList<Locale>();
+        supportedLocales.add(Locale.GERMAN);
+        supportedLocales.add(Locale.US);
+        return newIpsProject(name, supportedLocales);
     }
 
     /**
