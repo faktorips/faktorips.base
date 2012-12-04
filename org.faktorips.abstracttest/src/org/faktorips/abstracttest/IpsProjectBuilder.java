@@ -139,7 +139,8 @@ public class IpsProjectBuilder {
         // Add predefined datatypes
         if (predefinedDatatypes.size() > 0) {
             String[] projectDatatypes = properties.getPredefinedDatatypesUsed();
-            String[] newProjectDatatypes = new String[projectDatatypes.length + predefinedDatatypes.size()];
+            String[] newProjectDatatypes = Arrays.copyOf(projectDatatypes, projectDatatypes.length
+                    + predefinedDatatypes.size());
             for (int i = 0, j = projectDatatypes.length; i < predefinedDatatypes.size(); i++, j++) {
                 newProjectDatatypes[j] = predefinedDatatypes.get(i);
             }
