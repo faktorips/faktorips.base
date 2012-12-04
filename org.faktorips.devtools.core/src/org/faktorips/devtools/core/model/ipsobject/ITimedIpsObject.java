@@ -172,14 +172,14 @@ public interface ITimedIpsObject extends IIpsObject {
      * Calling reassignGenerations on this object with 2011-06-01 as new date, would produce these
      * generations:
      * <ul>
-     * <li>G1: valid from 2011-06-01</li>
-     * <li>G2: valid from 2012-01-01</li>
+     * <li>G2: valid from 2011-06-01</li>
+     * <li>G3: valid from 2012-01-01</li>
      * </ul>
      * 
      * The original G1 would be deleted, because it expired before the new date. The original G2
      * would begin 5 months later, because it was valid on the new date and after the method call,
-     * this is the first valid from date (i.e. G2 is now G1). The original G3 would remain
-     * unmodified, because it is valid only after the new date.
+     * this is the first valid from date. The original G3 would remain unmodified, because it is
+     * valid only after the new date.
      * 
      * @param newDate new valid from date of this object
      */
@@ -203,11 +203,11 @@ public interface ITimedIpsObject extends IIpsObject {
      * date, would produce this generation:
      * 
      * <ul>
-     * <li>G1: valid from 2011-06-01</li>
+     * <li>G2: valid from 2011-06-01</li>
      * </ul>
      * 
-     * So, the new G1 would correspond to the old G2 and it would be the only generation left in
-     * this object.
+     * G2 would be the only generation left in this object because it was valid at the oldDate
+     * parameter and its valid from would be set to the new date 2011-06-01.
      * 
      * @param oldDate effective date of the generation to retain.
      * @param newDate new effective date of the only generation in this object.
