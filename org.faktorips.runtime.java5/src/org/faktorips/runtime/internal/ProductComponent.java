@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -228,11 +229,11 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
-        throw new RuntimeException("Not implemented yet.");
+        return null;
     }
 
     public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
-        throw new RuntimeException("Not implemented yet.");
+        return new ArrayList<IProductComponentLink<? extends IProductComponent>>();
     }
 
     /**
