@@ -119,6 +119,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             int rc = d.open();
             if (rc == Window.CANCEL) {
                 getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
+            } else {
+                refreshIncludingStructuralChanges();
             }
         }
     }
