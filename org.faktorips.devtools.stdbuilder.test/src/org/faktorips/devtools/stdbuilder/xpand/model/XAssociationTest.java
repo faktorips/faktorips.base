@@ -53,11 +53,15 @@ public class XAssociationTest {
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private XAssociation xAssociation;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     @Before
     public void initMocks() {
         when(association.getTargetRoleSingular()).thenReturn("singular");
         when(association.getTargetRolePlural()).thenReturn("plural");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        when(xAssociation.getIpsProject()).thenReturn(ipsProject);
         doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
         doReturn(modelContext).when(xAssociation).getContext();
         doReturn(modelService).when(xAssociation).getModelService();
@@ -92,17 +96,34 @@ public class XAssociationTest {
     }
 
     @Test
-    public void testIsSubsetOf() throws Exception {
+    public void testIsSubsetOf_noMatch() throws Exception {
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-
         XDerivedUnionAssociation xAssociation2 = mock(XDerivedUnionAssociation.class);
         when(xAssociation2.getName()).thenReturn("abc123");
-
         when(association.getSubsettedDerivedUnion()).thenReturn("other");
-        assertFalse(xAssociation.isSubsetOf(xAssociation2));
 
+        assertFalse(xAssociation.isSubsetOf(xAssociation2));
+    }
+
+    @Test
+    public void testIsSubsetOf_sameNameButNoSubset() throws Exception {
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        XDerivedUnionAssociation xAssociation2 = mock(XDerivedUnionAssociation.class);
+        when(xAssociation2.getName()).thenReturn("abc123");
         when(association.getSubsettedDerivedUnion()).thenReturn("abc123");
-        assertTrue(xAssociation.isSubsetOf(xAssociation2));
+
+        assertFalse(xAssociation.isSubsetOf(xAssociation2));
+    }
+
+    @Test
+    public void testIsSubsetOf_foundSubset() throws Exception {
+        XDerivedUnionAssociation xDerivedUnionAsso = mock(XDerivedUnionAssociation.class);
+        IAssociation derivedUnion = mock(IAssociation.class);
+        when(xDerivedUnionAsso.getAssociation()).thenReturn(derivedUnion);
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        when(association.isSubsetOfDerivedUnion(derivedUnion, ipsProject)).thenReturn(true);
+
+        assertTrue(xAssociation.isSubsetOf(xDerivedUnionAsso));
     }
 
     @Test

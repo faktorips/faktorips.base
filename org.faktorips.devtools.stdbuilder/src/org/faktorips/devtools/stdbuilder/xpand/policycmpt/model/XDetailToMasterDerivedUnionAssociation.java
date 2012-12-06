@@ -72,17 +72,16 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
      */
     public Set<XPolicyAssociation> getDetailToMasterSubsetAssociations(XPolicyCmptClass policyClass) {
         Set<XPolicyAssociation> subsets = new LinkedHashSet<XPolicyAssociation>();
-        for (XPolicyAssociation assoc : policyClass.getAssociations()) {
-            if (assoc.isCompositionDetailToMaster()) {
-                if (assoc.isSharedAssociation() && getName().equals(assoc.getName())) {
-                    subsets.add(assoc);
-                }
-                if (assoc.hasInverseAssociation()) {
-                    XPolicyAssociation inverseAssociation = assoc.getInverseAssociation();
+        for (XPolicyAssociation detailToMaster : policyClass.getAssociations()) {
+            if (detailToMaster.isCompositionDetailToMaster()) {
+                if (detailToMaster.isSharedAssociation() && getName().equals(detailToMaster.getName())) {
+                    subsets.add(detailToMaster);
+                } else {
+                    XPolicyAssociation inverseAssociation = detailToMaster.getInverseAssociation();
                     if (!inverseAssociation.isDerived()
-                            && (getName().equals(assoc.getName()) || inverseAssociation
+                            && (getName().equals(detailToMaster.getName()) || inverseAssociation
                                     .isRecursiveSubsetOf(getDerivedUnion()))) {
-                        subsets.add(assoc);
+                        subsets.add(detailToMaster);
                     }
                 }
             }

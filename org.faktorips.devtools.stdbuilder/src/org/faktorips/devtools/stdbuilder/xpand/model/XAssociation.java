@@ -120,8 +120,12 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * @param derivedUnionAssociation the derived union to test against.
      */
     public boolean isSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
-        if (getAssociation().getSubsettedDerivedUnion().equals(derivedUnionAssociation.getName())) {
-            return true;
+        try {
+            if (getAssociation().isSubsetOfDerivedUnion(derivedUnionAssociation.getAssociation(), getIpsProject())) {
+                return true;
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
         return false;
     }

@@ -27,21 +27,21 @@
 			 *
 			 * @generated
 			 */
-		     public «IF !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «methodNameGetter»();
+		     public «IF !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»;
 
 			/**
 		     * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
 			 *
 			 * @generated
 			 */
-			 public «IF !genInterface()»abstract«ENDIF» int «methodNameGetNumOf»();
+			 public «IF !genInterface()»abstract«ENDIF» int «method(methodNameGetNumOf)»;
 		«ELSE-»
 			/**
 		     * «localizedJDoc("METHOD_GET_ONE", name)»
 			 *
 			 * @generated
 			 */
-		    public «IF !genInterface()»abstract«ENDIF» «targetInterfaceName» «methodNameGetter»();
+		    public «IF !genInterface()»abstract«ENDIF» «targetInterfaceName» «method(methodNameGetter)»;
 		«ENDIF-»
 	«ENDIF»
 «ENDDEFINE»
