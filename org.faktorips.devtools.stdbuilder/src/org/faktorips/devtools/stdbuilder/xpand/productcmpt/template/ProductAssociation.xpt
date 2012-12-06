@@ -289,11 +289,7 @@
 		    	«ENDIF-»
 		    «ENDIF-»
         «ENDFOREACH-»
-	    «IF hasSupertype() -»
-	        return list;
-	    «ELSE-»
-	        return list;
-	    «ENDIF-»
+        return list;
     }
 «ENDDEFINE»
 
