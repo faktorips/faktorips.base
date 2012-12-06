@@ -172,7 +172,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     public IIpsObjectGeneration newGeneration() {
         IpsObjectGeneration generation = newGenerationInternal(getNextPartId());
-        objectHasChanged();
+        partWasAdded(generation);
         return generation;
     }
 

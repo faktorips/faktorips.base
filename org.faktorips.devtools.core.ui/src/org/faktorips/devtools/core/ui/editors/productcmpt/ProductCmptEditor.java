@@ -17,12 +17,13 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -136,12 +137,19 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
-        if (!isActive()) {
-            super.propertyChange(event);
-            return;
+    public void contentsChanged(ContentChangeEvent event) {
+        super.contentsChanged(event);
+        if (event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED
+                && event.getPart() instanceof IProductCmptGeneration) {
+            Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
+            display.syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    refreshIncludingStructuralChanges();
+                }
+            });
         }
-        super.propertyChange(event);
     }
 
     @Override
