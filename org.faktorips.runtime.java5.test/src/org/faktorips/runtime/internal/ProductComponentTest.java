@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -20,12 +22,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentLink;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class ProductComponentTest {
 
+    @SuppressWarnings("unchecked")
+    // the verify for the parameterized map cannot be type safe
     @Test
     public void testCallInitReferencesOnInitFromXML() {
         ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
@@ -49,17 +57,19 @@ public class ProductComponentTest {
         return element;
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetLinks() {
         ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
-        // base implementation throws exception
-        cmpt.getLinks();
+        List<IProductComponentLink<? extends IProductComponent>> links = cmpt.getLinks();
+
+        assertEquals(0, links.size());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetLinkForName() {
         ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
-        // base implementation throws exception
-        cmpt.getLink("", null);
+        IProductComponentLink<? extends IProductComponent> link = cmpt.getLink("", null);
+
+        assertNull(link);
     }
 }
