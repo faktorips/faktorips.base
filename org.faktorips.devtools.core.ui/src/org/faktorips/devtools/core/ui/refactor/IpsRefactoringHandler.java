@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.refactor;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,11 +26,12 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.IShellProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
+import org.eclipse.ltk.ui.refactoring.resource.RenameResourceWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.RenameResourceAction;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -137,18 +139,18 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
          * function has not returned by this point).
          */
         Object selected = structuredSelection.getFirstElement();
-        if (selected instanceof IIpsElement) {
-            WizardDialog wd = new WizardDialog(shell, getMoveWizard(structuredSelection));
+        if (!selectedIpsElements.isEmpty()) {
+            WizardDialog wd = new WizardDialog(shell, getMoveWizard(new StructuredSelection(new ArrayList<IIpsElement>(
+                    selectedIpsElements))));
             wd.open();
         } else if (selected instanceof IResource) {
-            RenameResourceAction action = new RenameResourceAction(new IShellProvider() {
-                @Override
-                public Shell getShell() {
-                    return shell;
-                }
-            });
-            action.selectionChanged(structuredSelection);
-            action.run();
+            RenameResourceWizard refactoringWizard = new RenameResourceWizard((IResource)selected);
+            RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(refactoringWizard);
+            try {
+                op.run(shell, Messages.IpsRefactoringHandler_renameResource);
+            } catch (InterruptedException e) {
+                // do nothing
+            }
         }
 
         return null;
