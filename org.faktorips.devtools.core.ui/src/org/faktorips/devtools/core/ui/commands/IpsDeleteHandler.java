@@ -52,7 +52,7 @@ public class IpsDeleteHandler extends AbstractHandler {
 
     private IResource[] getSelectedResources(ISelection sel) {
         ArrayList<IResource> result = new ArrayList<IResource>();
-        TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, sel);
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, sel);
         if (typedSelection.isValid()) {
             for (IAdaptable adaptable : typedSelection.getElements()) {
                 IResource resource = getAdaptedResource(adaptable);
