@@ -64,6 +64,9 @@ public class XDetailToMasterDerivedUnionAssociationTest {
     private IPolicyCmptType subParent;
 
     @Mock
+    private IPolicyCmptType subSubTypeChild;
+
+    @Mock
     private IPolicyCmptTypeAssociation derivedUnion;
 
     @Mock
@@ -175,6 +178,51 @@ public class XDetailToMasterDerivedUnionAssociationTest {
                 Arrays.asList(new IPolicyCmptTypeAssociation[] { derivedUnion, subset1 }));
         when(type.getPolicyCmptTypeAssociations()).thenReturn(
                 Arrays.asList(new IPolicyCmptTypeAssociation[] { detailToMasterDerivedUnion, inverseSubset1 }));
+        assertTrue(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
+    }
+
+    @Test
+    public void testIsImplementedInSuperclass_withSharedAsso() throws Exception {
+        when(xPolicyCmptClass.getIpsProject()).thenReturn(ipsProject);
+
+        XDetailToMasterDerivedUnionAssociation detailDUAssoc = new XDetailToMasterDerivedUnionAssociation(
+                detailToMasterDerivedUnion, modelContext, modelService);
+        when(detailToMasterDerivedUnion.getType()).thenReturn(type);
+        when(xPolicyCmptClass.getType()).thenReturn(type);
+        when(derivedUnion.isDerivedUnion()).thenReturn(true);
+        when(detailToMasterDerivedUnion.getInverseAssociation()).thenReturn("derivedUnion");
+        when(detailToMasterDerivedUnion.isCompositionDetailToMaster()).thenReturn(true);
+        when(inverseSubset1.findInverseAssociation(ipsProject)).thenReturn(null);
+        when(inverseSubset1.isCompositionDetailToMaster()).thenReturn(true);
+        when(inverseSubset1.isSharedAssociation()).thenReturn(true);
+        when(inverseSubset1.findSharedAssociationHost(ipsProject)).thenReturn(detailToMasterDerivedUnion);
+
+        when(subset2.getSubsettedDerivedUnion()).thenReturn("derivedUnion");
+        when(subset2.findInverseAssociation(ipsProject)).thenReturn(inverseSubset2);
+        when(inverseSubset2.findInverseAssociation(ipsProject)).thenReturn(subset2);
+        when(inverseSubset2.isCompositionDetailToMaster()).thenReturn(true);
+
+        when(subTypeChild.findSupertype(ipsProject)).thenReturn(type);
+        when(subSubTypeChild.findSupertype(ipsProject)).thenReturn(subTypeChild);
+        when(subParent.findSupertype(ipsProject)).thenReturn(parent);
+
+        when(parent.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { derivedUnion }));
+        when(type.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { detailToMasterDerivedUnion }));
+        when(subParent.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { subset2 }));
+        when(subSubTypeChild.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { inverseSubset2 }));
+
+        when(xPolicyCmptClass.getType()).thenReturn(subSubTypeChild);
+
+        when(parent.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { derivedUnion }));
+        when(type.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { detailToMasterDerivedUnion }));
+        when(subTypeChild.getPolicyCmptTypeAssociations()).thenReturn(
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { inverseSubset1 }));
         assertTrue(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
     }
 

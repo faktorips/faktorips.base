@@ -132,6 +132,13 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
             List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation asso : associations) {
                 if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
+                    if (asso.isSharedAssociation()) {
+                        IPolicyCmptTypeAssociation sharedAssociationHost = asso.findSharedAssociationHost(ipsProject);
+                        if (sharedAssociationHost.equals(detailToMasterDU)) {
+                            foundSubset = true;
+                            return false;
+                        }
+                    }
                     IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
                     if (!masterToDetail.isDerivedUnion()
                             && masterToDetail.getSubsettedDerivedUnion().equals(
