@@ -68,7 +68,7 @@ public class IpsElementTester extends PropertyTester {
             return ipsSrcFile.isMutable();
         }
         IResource resource = (IResource)ipsElement.getAdapter(IResource.class);
-        if (resource != null) {
+        if (resource != null && resource.getResourceAttributes() != null) {
             return !resource.getResourceAttributes().isReadOnly();
         }
         return true;
