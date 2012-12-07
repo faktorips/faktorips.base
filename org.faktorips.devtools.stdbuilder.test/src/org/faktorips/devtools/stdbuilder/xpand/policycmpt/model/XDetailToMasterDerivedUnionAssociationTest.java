@@ -79,6 +79,12 @@ public class XDetailToMasterDerivedUnionAssociationTest {
     private IPolicyCmptTypeAssociation inverseSubset1;
 
     @Mock
+    private IPolicyCmptTypeAssociation shared1;
+
+    @Mock
+    private IPolicyCmptTypeAssociation shared2;
+
+    @Mock
     private IPolicyCmptTypeAssociation subset2;
 
     @Mock
@@ -192,10 +198,13 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         when(derivedUnion.isDerivedUnion()).thenReturn(true);
         when(detailToMasterDerivedUnion.getInverseAssociation()).thenReturn("derivedUnion");
         when(detailToMasterDerivedUnion.isCompositionDetailToMaster()).thenReturn(true);
-        when(inverseSubset1.findInverseAssociation(ipsProject)).thenReturn(null);
-        when(inverseSubset1.isCompositionDetailToMaster()).thenReturn(true);
-        when(inverseSubset1.isSharedAssociation()).thenReturn(true);
-        when(inverseSubset1.findSharedAssociationHost(ipsProject)).thenReturn(detailToMasterDerivedUnion);
+        when(shared1.isCompositionDetailToMaster()).thenReturn(true);
+        when(shared1.isSharedAssociation()).thenReturn(true);
+        // shared2 is an invalid shared association
+        when(shared1.findSharedAssociationHost(ipsProject)).thenReturn(detailToMasterDerivedUnion);
+        when(shared2.isCompositionDetailToMaster()).thenReturn(true);
+        when(shared2.isSharedAssociation()).thenReturn(true);
+        when(shared2.findSharedAssociationHost(ipsProject)).thenReturn(inverseSubset1);
 
         when(subset2.getSubsettedDerivedUnion()).thenReturn("derivedUnion");
         when(subset2.findInverseAssociation(ipsProject)).thenReturn(inverseSubset2);
@@ -222,7 +231,7 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         when(type.getPolicyCmptTypeAssociations()).thenReturn(
                 Arrays.asList(new IPolicyCmptTypeAssociation[] { detailToMasterDerivedUnion }));
         when(subTypeChild.getPolicyCmptTypeAssociations()).thenReturn(
-                Arrays.asList(new IPolicyCmptTypeAssociation[] { inverseSubset1 }));
+                Arrays.asList(new IPolicyCmptTypeAssociation[] { shared2, shared1 }));
         assertTrue(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
     }
 

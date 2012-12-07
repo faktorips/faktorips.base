@@ -138,13 +138,14 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
                             foundSubset = true;
                             return false;
                         }
-                    }
-                    IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
-                    if (!masterToDetail.isDerivedUnion()
-                            && masterToDetail.getSubsettedDerivedUnion().equals(
-                                    detailToMasterDU.getInverseAssociation())) {
-                        foundSubset = true;
-                        return false;
+                    } else {
+                        IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
+                        if (!masterToDetail.isDerivedUnion()
+                                && masterToDetail.getSubsettedDerivedUnion().equals(
+                                        detailToMasterDU.getInverseAssociation())) {
+                            foundSubset = true;
+                            return false;
+                        }
                     }
                 }
             }
