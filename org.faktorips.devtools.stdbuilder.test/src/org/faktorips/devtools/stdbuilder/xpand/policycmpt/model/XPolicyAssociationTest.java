@@ -244,4 +244,30 @@ public class XPolicyAssociationTest {
         assertThat(detailToMasterAssociations, hasItems(asDtoM_DU(derivedUnions1[1])));
     }
 
+    @Test
+    public void testIsImplementedDetailToMasterAssociation_notShared() throws Exception {
+        when(typeAssoc.isCompositionDetailToMaster()).thenReturn(true);
+        doReturn(false).when(assoc).isDerived();
+
+        assertTrue(assoc.isImplementedDetailToMasterAssociation());
+    }
+
+    @Test
+    public void testIsImplementedDetailToMasterAssociation_shared() throws Exception {
+        when(typeAssoc.isCompositionDetailToMaster()).thenReturn(true);
+        doReturn(true).when(assoc).isSharedAssociation();
+        doReturn(false).when(assoc).isSharedAssociationImplementedInSuperclass();
+
+        assertTrue(assoc.isImplementedDetailToMasterAssociation());
+    }
+
+    @Test
+    public void testIsImplementedDetailToMasterAssociation_sharedImplementedInSuperclass() throws Exception {
+        when(typeAssoc.isCompositionDetailToMaster()).thenReturn(true);
+        doReturn(true).when(assoc).isSharedAssociation();
+        doReturn(true).when(assoc).isSharedAssociationImplementedInSuperclass();
+
+        assertFalse(assoc.isImplementedDetailToMasterAssociation());
+    }
+
 }

@@ -74,8 +74,11 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         Set<XPolicyAssociation> subsets = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation detailToMaster : policyClass.getAssociations()) {
             if (detailToMaster.isCompositionDetailToMaster()) {
-                if (detailToMaster.isSharedAssociation() && getName().equals(detailToMaster.getName())) {
-                    subsets.add(detailToMaster);
+                if (detailToMaster.isSharedAssociation()) {
+                    if (getName().equals(detailToMaster.getName())
+                            && !detailToMaster.isSharedAssociationImplementedInSuperclass()) {
+                        subsets.add(detailToMaster);
+                    }
                 } else {
                     XPolicyAssociation inverseAssociation = detailToMaster.getInverseAssociation();
                     if (!inverseAssociation.isDerived()

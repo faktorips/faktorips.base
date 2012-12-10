@@ -39,7 +39,7 @@
 				super.notifyChangeListeners(event);
 			«ENDIF-»
 	        «FOREACH associations AS this-»
-	    		«IF compositionDetailToMaster && !derived-»
+	    		«IF implementedDetailToMasterAssociation-»
 			        if («fieldName» != null) {
 			            ((«INotificationSupport()»)«fieldName»).notifyChangeListeners(event);
 			        }

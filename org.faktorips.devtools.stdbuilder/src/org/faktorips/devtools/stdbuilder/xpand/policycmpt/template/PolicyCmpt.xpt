@@ -280,7 +280,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 «overrideAnnotation(!(supertypeGenerateGetParentModelObject))-»
 	    public «IModelObject()» «getParentModelObject()» {
 	    	«FOREACH associations AS this-»
-	    		«IF compositionDetailToMaster && !derived-»
+	    		«IF implementedDetailToMasterAssociation-»
 			        if («fieldName» != null) {
 			            return «fieldName»;
 			        }

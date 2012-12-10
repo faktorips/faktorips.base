@@ -302,6 +302,15 @@ public class XPolicyAssociation extends XAssociation {
         return getTargetPolicyCmptClass().isConfigured();
     }
 
+    /**
+     * Returns true if this association is a detail-to-master composition that is directly
+     * implemented. Not implemented associations are for example derived associations and shared
+     * associations that are already implemented in super class.
+     */
+    public boolean isImplementedDetailToMasterAssociation() {
+        return isCompositionDetailToMaster() && isGenerateField();
+    }
+
     public String getConstantNamePropertyName() {
         String constName = getName(isOneToMany());
         if (isGenerateSeparatedCamelCase()) {

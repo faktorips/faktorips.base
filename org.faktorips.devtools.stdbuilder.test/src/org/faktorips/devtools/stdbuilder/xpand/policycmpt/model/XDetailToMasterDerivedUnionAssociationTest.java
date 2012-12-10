@@ -254,14 +254,38 @@ public class XDetailToMasterDerivedUnionAssociationTest {
                 detailToMasterDerivedUnion, modelContext, modelService);
         XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
         when(associationNode1.isSharedAssociation()).thenReturn(true);
-        when(associationNode1.getName()).thenReturn("theName");
+        when(associationNode1.getInverseAssociation()).thenReturn(null);
+        when(associationNode2.isSharedAssociation()).thenReturn(true);
+        when(associationNode2.getInverseAssociation()).thenReturn(null);
+        when(associationNode2.getName()).thenReturn("theName");
         when(detailToMasterDerivedUnion.getName()).thenReturn("theName");
 
         Set<XPolicyAssociation> detailToMasterSubsetAssociations = detailDUAssoc
                 .getDetailToMasterSubsetAssociations(policyCmptClass);
 
         assertEquals(1, detailToMasterSubsetAssociations.size());
-        assertThat(detailToMasterSubsetAssociations, hasItem(associationNode1));
+        assertThat(detailToMasterSubsetAssociations, hasItem(associationNode2));
+    }
+
+    @Test
+    public void testGetDetailToMasterSubsetAssociations_sharedAssociationImplementedInSuperclass() throws Exception {
+        XDetailToMasterDerivedUnionAssociation detailDUAssoc = new XDetailToMasterDerivedUnionAssociation(
+                detailToMasterDerivedUnion, modelContext, modelService);
+        XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
+        when(associationNode1.isSharedAssociation()).thenReturn(true);
+        when(associationNode1.getInverseAssociation()).thenReturn(null);
+        when(associationNode1.getName()).thenReturn("theName");
+        when(associationNode1.isSharedAssociationImplementedInSuperclass()).thenReturn(true);
+        when(associationNode2.isSharedAssociation()).thenReturn(true);
+        when(associationNode2.getInverseAssociation()).thenReturn(null);
+        when(associationNode2.getName()).thenReturn("theName");
+        when(detailToMasterDerivedUnion.getName()).thenReturn("theName");
+
+        Set<XPolicyAssociation> detailToMasterSubsetAssociations = detailDUAssoc
+                .getDetailToMasterSubsetAssociations(policyCmptClass);
+
+        assertEquals(1, detailToMasterSubsetAssociations.size());
+        assertThat(detailToMasterSubsetAssociations, hasItem(associationNode2));
     }
 
     @Test
