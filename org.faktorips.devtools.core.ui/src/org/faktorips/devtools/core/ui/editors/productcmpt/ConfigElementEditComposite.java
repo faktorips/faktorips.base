@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +37,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxGroupField;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -51,7 +57,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see IValueSet
  */
 public class ConfigElementEditComposite extends EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
-
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
@@ -103,13 +108,22 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         if (areRangeValueEditFieldsRequired()) {
             createValueSetEditFieldForRange(editFields);
         } else {
-            createValueSetEditFieldForOtherThanRange(editFields);
+            if (areBooleanValueEditFieldsRequired()) {
+                createValueSetEditFieldForBoolean(editFields);
+            } else {
+                createValueSetEditFieldForOtherThanRange(editFields);
+            }
         }
     }
 
     private boolean areRangeValueEditFieldsRequired() {
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
         return valueSet != null ? valueSet.isRange() : getPropertyValue().getValueSet().isRange();
+    }
+
+    private boolean areBooleanValueEditFieldsRequired() {
+        String datatype = getProperty() == null ? null : getProperty().getDatatype();
+        return datatype != null ? datatype.equalsIgnoreCase("Boolean") : false; //$NON-NLS-1$
     }
 
     private void createValueSetEditFieldForRange(List<EditField<?>> editFields) {
@@ -137,6 +151,40 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         getBindingContext().bindContent(stepField, range, IRangeValueSet.PROPERTY_STEP);
 
         getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
+    }
+
+    private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields) {
+        createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
+
+        final BooleanValueSetControl valueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
+                getPropertyValue());
+        valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
+
+        List<Checkbox> checkboxes = new ArrayList<Checkbox>();
+        checkboxes.add(valueSetControl.getTrueCheckBox());
+        checkboxes.add(valueSetControl.getFalseCheckBox());
+        if (valueSetControl.getNullCheckBox() != null) {
+            checkboxes.add(valueSetControl.getNullCheckBox());
+        }
+
+        final CheckboxGroupField checkboxGroupField = new CheckboxGroupField(checkboxes, getProperty(),
+                getPropertyValue());
+        editFields.add(checkboxGroupField);
+        checkboxGroupField.addChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChanged(FieldValueChangedEvent e) {
+                if (checkboxGroupField.getRadioButtonGroupField() == null) {
+                    for (EditField<?> editField : editFields) {
+                        if (editField instanceof RadioButtonGroupField) {
+                            checkboxGroupField.setRadioButtonGroupField((RadioButtonGroupField<?>)editField);
+                        }
+                    }
+                }
+                checkboxGroupField.refreshRadioButtonState();
+            }
+        });
+
+        getBindingContext().bindContent(checkboxGroupField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
 
     private EditField<String> createRangeEditField(ValueDatatypeControlFactory controlFactory,

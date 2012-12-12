@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
@@ -749,11 +750,38 @@ public class UIToolkit {
             String falseRepresentation) {
         Combo newCombo = createCombo(parent);
         if (inclNull) {
-            setComboValues(newCombo, new String[] { null, trueRepresentation, falseRepresentation });
+            setComboValues(newCombo, new String[] { IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(),
+                    trueRepresentation, falseRepresentation });
         } else {
             setComboValues(newCombo, new String[] { trueRepresentation, falseRepresentation });
         }
         return newCombo;
+    }
+
+    public Composite createRadioSetForBoolean(Composite parent,
+            boolean inclNull,
+            String trueRepresentation,
+            String falseRepresentation) {
+        Map<String, String> optionsMap = new LinkedHashMap<String, String>();
+        optionsMap.put(Boolean.toString(true), trueRepresentation);
+        optionsMap.put(Boolean.toString(false), falseRepresentation);
+        if (inclNull) {
+            optionsMap.put(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), IpsPlugin.getDefault()
+                    .getIpsPreferences().getNullPresentation());
+        }
+
+        Composite newComposite = createGridComposite(parent, inclNull ? 3 : 2, false, false);
+        RadioButtonGroup<String> radioGroup = createRadioButtonGroup(newComposite, optionsMap);
+        newComposite.setData(radioGroup);
+        return newComposite;
+    }
+
+    public Composite createCheckboxSetForBoolean(Composite parent, String trueRepresentation, String falseRepresentation) {
+        Composite newComposite = createGridComposite(parent, 3, true, true);
+        createCheckbox(newComposite, trueRepresentation);
+        createCheckbox(newComposite, falseRepresentation);
+        createCheckbox(newComposite, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        return newComposite;
     }
 
     /**

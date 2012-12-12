@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
+import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 
 public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropertyMapping<T> {
@@ -112,6 +113,13 @@ public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropert
                     if (((StringValueComboField)field).getCombo().getSelectionIndex() != -1) {
                         // the selection in the combo is valid and equal to the property value,
                         // don't set the new value
+                        return;
+                    }
+                } else if (field instanceof RadioButtonGroupField) {
+                    /*
+                     * Unfortunately, the same special case applies to radio button groups as well.
+                     */
+                    if (((RadioButtonGroupField<?>)field).getRadioButtonGroup().getSelectedButton() != null) {
                         return;
                     }
                 } else {

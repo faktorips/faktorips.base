@@ -18,6 +18,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     private final RadioButtonGroup<T> radioButtonGroup;
+    private T nullOption = null;
 
     /**
      * <strong>Important:</strong> Do not add further radio buttons to the provided
@@ -48,6 +50,14 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
         this.radioButtonGroup = radioButtonGroup;
     }
 
+    public RadioButtonGroup<T> getRadioButtonGroup() {
+        return radioButtonGroup;
+    }
+
+    public void setNullOption(T nullOption) {
+        this.nullOption = nullOption;
+    }
+
     @Override
     public Control getControl() {
         return radioButtonGroup.getComposite();
@@ -55,6 +65,10 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     @Override
     public void setValue(T newValue) {
+        if (newValue == null && nullOption != null) {
+            radioButtonGroup.setSelection(nullOption);
+            return;
+        }
         radioButtonGroup.setSelection(newValue);
     }
 
@@ -81,7 +95,9 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     @Override
     protected T parseContent() throws Exception {
-        return radioButtonGroup.getSelectedOption();
+        return radioButtonGroup.getSelectedOption().equals(
+                IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) ? null : radioButtonGroup
+                .getSelectedOption();
     }
 
     @Override

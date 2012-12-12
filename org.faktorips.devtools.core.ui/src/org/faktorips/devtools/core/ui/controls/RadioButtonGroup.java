@@ -231,10 +231,11 @@ public class RadioButtonGroup<T> {
      */
     public final void setSelection(T option) {
         for (Button button : getRadioButtons()) {
-            if (option.equals(getOption(button))) {
-                button.setSelection(true);
-                break;
-            }
+            button.setSelection(option.equals(getOption(button)));
+            // if (option.equals(getOption(button))) {
+            // button.setSelection(true);
+            // break;
+            // }
         }
     }
 

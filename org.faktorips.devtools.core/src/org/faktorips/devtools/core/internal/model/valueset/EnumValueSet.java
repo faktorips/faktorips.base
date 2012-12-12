@@ -76,6 +76,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
+    public void setValues(String[] values) {
+        while (size() != 0) {
+            removeWithoutTriggeringChangeEvents(getValue(0));
+        }
+        for (String s : values) {
+            addValueWithoutTriggeringChangeEvent(s);
+        }
+        objectHasChanged();
+    }
+
+    @Override
     public List<String> getValuesAsList() {
         return new ArrayList<String>(values);
     }

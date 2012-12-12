@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 
 /**
@@ -48,7 +49,8 @@ public class PreviewTextButtonField extends DefaultEditField<IValueSet> {
 
     @Override
     public IValueSet parseContent() {
-        if (currentValue != null && getText().equals(currentValue.toShortString())) {
+        if (currentValue != null
+                && getText().equals(IpsUIPlugin.getDefault().getDatatypeFormatter().formatValueSet(currentValue))) {
             /*
              * The text in the control equals the text representation of the current value. To avoid
              * changes, return the current value.
@@ -66,7 +68,7 @@ public class PreviewTextButtonField extends DefaultEditField<IValueSet> {
     @Override
     public void setValue(IValueSet newValue) {
         currentValue = newValue;
-        control.setText(newValue.toShortString());
+        control.setText((IpsUIPlugin.getDefault().getDatatypeFormatter().formatValueSet(newValue)));
     }
 
     @Override

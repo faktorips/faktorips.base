@@ -327,6 +327,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
+    public void setValueSet(IValueSet source) {
+        setValueSetCopy(source);
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }

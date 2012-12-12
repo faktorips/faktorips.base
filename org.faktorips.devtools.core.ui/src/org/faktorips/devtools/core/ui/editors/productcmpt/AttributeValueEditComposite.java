@@ -95,7 +95,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
             return editField;
         }
-        throw new RuntimeException("Illegal value holder isntance in attribute " + getProperty().getName()); //$NON-NLS-1$
+        throw new RuntimeException("Illegal value holder instance in attribute " + getProperty().getName()); //$NON-NLS-1$
     }
 
     protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<String> editField) {

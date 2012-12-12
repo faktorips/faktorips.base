@@ -182,4 +182,6 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
      */
     public void setValueSetCopy(IValueSet source);
 
+    void setValueSet(IValueSet source);
+
 }

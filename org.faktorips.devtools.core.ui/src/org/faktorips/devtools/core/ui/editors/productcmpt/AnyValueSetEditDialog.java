@@ -85,7 +85,6 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-        // createControlsForDefaultValue(c);
         createValueSetControl(c);
         return c;
     }
