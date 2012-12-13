@@ -400,7 +400,7 @@ public class ContentPage extends IpsObjectEditorPage {
     private void insertColumnsAt(String insertIndices) {
         int[] indices = getIndices(insertIndices);
         for (int i = 0; i < indices.length; i++) {
-            ((TableContents)getTableContents()).newColumnAt(indices[i] + i, ""); //$NON-NLS-1$
+            ((TableContents)getTableContents()).newColumnAt(indices[i] + i, null);
         }
     }
 
