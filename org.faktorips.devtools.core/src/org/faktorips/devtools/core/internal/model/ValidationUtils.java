@@ -322,7 +322,13 @@ public class ValidationUtils {
     public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
         String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        return JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
+        IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name), sourceLevel,
+                complianceLevel);
+        if (validateFieldName.isOK()) {
+            return JavaConventions.validateFieldName(StringUtils.uncapitalize(name), sourceLevel, complianceLevel);
+        } else {
+            return validateFieldName;
+        }
     }
 
     /**
