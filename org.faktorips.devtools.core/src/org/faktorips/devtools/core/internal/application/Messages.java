@@ -38,6 +38,12 @@ public class Messages extends NLS {
     public static String IpsActionBarAdvisor_shortcuts;
     public static String IpsActionBarAdvisor_help;
 
+    public static String IpsApplication_cannotCreateWorkspace_msg;
+    public static String IpsApplication_cannotCreateWorkspace_title;
+    public static String IpsApplication_cannotLockWorkspace_msg;
+    public static String IpsApplication_cannotLockWorkspace_title;
+    public static String IpsApplication_workspaceNotSet_msg;
+    public static String IpsApplication_workspaceNotSet_title;
     public static String IpsWorkbenchAdvisor_title;
 
     public static String ProblemsSavingWorkspace;
