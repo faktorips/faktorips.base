@@ -1,7 +1,120 @@
+/*
+ * -------------------------------------------------------------
+ * Global settings
+ * -------------------------------------------------------------
+ */
 body {
 	font-family: sans-serif;
 }
 
+h2 {
+	margin-top: 2em;
+}
+
+/*
+ * -------------------------------------------------------------
+ * Add space between list items
+ * -------------------------------------------------------------
+ */
+ul>li {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+ul>li:first-child {
+	margin-top: 0;
+	margin-bottom: 1em;
+}
+
+ul>li:last-child {
+	margin-top: 1em;
+	margin-bottom: 0;
+}
+
+ol>li {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+ol>li:first-child {
+	margin-top: 0;
+	margin-bottom: 1em;
+}
+
+ol>li:last-child {
+	margin-top: 1em;
+	margin-bottom: 0;
+}
+
+/*
+ * -------------------------------------------------------------
+ * Table rules
+ * -------------------------------------------------------------
+ */
+table {
+	border: 1px solid black;
+	border-spacing: 0;
+}
+
+th,td {
+	border: 1px solid black;
+	padding: 0.5em;
+}
+
+th {
+	text-align: left;
+}
+
+/*
+ * -------------------------------------------------------------
+ * Avoid empty space between elements and bounds of table cells
+ * -------------------------------------------------------------
+ */
+td>div:first-child {
+	margin-top: 0;
+}
+
+td>div:last-child {
+	margin-bottom: 0;
+}
+
+td>p:first-child {
+	margin-top: 0;
+}
+
+td>p:last-child {
+	margin-bottom: 0;
+}
+
+td>ul {
+	padding-left: 1em;
+}
+
+td>ul:first-child {
+	margin-top: 0;
+}
+
+td>ul:last-child {
+	margin-bottom: 0;
+}
+
+td>ol {
+	padding-left: 1em;
+}
+
+td>ol:first-child {
+	margin-top: 0;
+}
+
+td>ol:last-child {
+	margin-bottom: 0;
+}
+
+/*
+ * -------------------------------------------------------------
+ * div
+ * -------------------------------------------------------------
+ */
 div#relatedHelp {
 	margin-top: 2em;
 }
@@ -12,13 +125,17 @@ div.image {
 
 div.hint {
 	margin: 1em 0 1em 0;
-	border: 1px solid black;
+	border: 2px solid black;
 	padding: 0 1em 0 1em;
 	background-color: #fbfbfb;
 }
 
-p.hint {
+div.hint>p:first-child {
 	marign-top: 0;
 	text-align: center;
 	font-weight: bold;
+}
+
+td>div.hint {
+	font-size: 0.9em;
 }
