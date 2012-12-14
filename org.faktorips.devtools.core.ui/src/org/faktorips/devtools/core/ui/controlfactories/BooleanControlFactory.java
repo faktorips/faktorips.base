@@ -23,7 +23,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -59,11 +58,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Composite comp = (Composite)createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        // We know that the returned value contains a RadioButtonGroup<String>, but we can't cast
-        // safely, hence we ignore the warning.
-        @SuppressWarnings("unchecked")
-        RadioButtonGroup<String> radioButtonGroup = (RadioButtonGroup<String>)comp.getData();
+        RadioButtonGroup<String> radioButtonGroup = createRadioGroup(toolkit, parent, datatype);
         if (valueSet instanceof IEnumValueSet) {
             for (Button b : radioButtonGroup.getRadioButtons()) {
                 b.setEnabled(false);
@@ -77,10 +72,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
                 }
             }
         }
-        RadioButtonGroupField<String> groupField = new RadioButtonGroupField<String>(radioButtonGroup);
-        groupField.setNullOption(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        return groupField;
-
+        return new RadioButtonGroupField<String>(radioButtonGroup);
     }
 
     @Override
@@ -89,6 +81,10 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
+        return parent;
+    }
+
+    private RadioButtonGroup<String> createRadioGroup(UIToolkit toolkit, Composite parent, ValueDatatype datatype) {
         return toolkit.createRadioSetForBoolean(parent, !datatype.isPrimitive(), getTrueValue(), getFalseValue());
     }
 

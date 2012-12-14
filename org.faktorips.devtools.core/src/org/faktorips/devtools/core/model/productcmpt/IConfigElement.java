@@ -16,10 +16,13 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -153,6 +156,20 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
      */
     @Override
     public void setValueSetType(ValueSetType type);
+
+    /**
+     * Converts the current value set to an enumeration type value set. If the current value set
+     * type already is an enumeration type, nothing is changed. If the data type of the value set is
+     * a {@link BooleanDatatype} or a {@link PrimitiveBooleanDatatype}, the values true, false are
+     * added to the value set enumeration; in case of {@link BooleanDatatype}, null is also added to
+     * the set.
+     * 
+     * @return the new enumeration value set or the unchanged set if it has already been of type
+     *         enumeration.
+     * 
+     * @since 3.9
+     */
+    public IEnumValueSet convertValueSetToEnumType();
 
     /**
      * Finds the corresponding attribute in the product component type this product component is an

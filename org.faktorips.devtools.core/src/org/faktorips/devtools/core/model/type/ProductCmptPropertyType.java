@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.type;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
@@ -214,6 +215,13 @@ public enum ProductCmptPropertyType {
                 configElement.setPolicyCmptTypeAttribute(attribute.getName());
                 configElement.setValue(attribute.getDefaultValue());
                 configElement.setValueSetCopy(attribute.getValueSet());
+                if (Datatype.BOOLEAN.getQualifiedName().equals(attribute.getDatatype())
+                        || Datatype.PRIMITIVE_BOOLEAN.getQualifiedName().equals(attribute.getDatatype())) {
+                    // Special case (FIPS-1344): For boolean values, we only support
+                    // enum value sets, because unrestricted value sets do not yield
+                    // any benefit.
+                    configElement.convertValueSetToEnumType();
+                }
             }
             return configElement;
         }

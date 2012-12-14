@@ -294,7 +294,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                                     });
                 }
             }
-
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
             boolean enabled = newDatatype != null;
             if (defaultValueField != null && valueSetEditControl != null) {

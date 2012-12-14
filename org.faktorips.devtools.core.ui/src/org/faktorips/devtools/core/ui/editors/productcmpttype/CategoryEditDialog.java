@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -101,7 +100,7 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPositionGroup(Composite page) {
-        Map<Position, String> options = new LinkedHashMap<Position, String>();
+        LinkedHashMap<Position, String> options = new LinkedHashMap<Position, String>();
         options.put(Position.LEFT, Messages.CategoryEditDialog_positionLeft);
         options.put(Position.RIGHT, Messages.CategoryEditDialog_positionRight);
         RadioButtonGroup<Position> positionRadioGroup = getToolkit().createRadioButtonGroup(page,

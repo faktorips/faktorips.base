@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
@@ -220,7 +219,9 @@ public class UIToolkit {
      * Creates a new composite with a grid layout and no borders.
      */
     public Composite createGridComposite(Composite parent, int numColumns, boolean equalSize, boolean margin) {
-        return createGridComposite(parent, numColumns, equalSize, margin, new GridData(GridData.FILL_BOTH));
+        Composite composite = createGridComposite(parent, numColumns, equalSize, margin, new GridData(
+                GridData.FILL_BOTH));
+        return composite;
     }
 
     /**
@@ -758,22 +759,23 @@ public class UIToolkit {
         return newCombo;
     }
 
-    public Composite createRadioSetForBoolean(Composite parent,
+    public RadioButtonGroup<String> createRadioSetForBoolean(Composite parent,
             boolean inclNull,
             String trueRepresentation,
             String falseRepresentation) {
-        Map<String, String> optionsMap = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> optionsMap = new LinkedHashMap<String, String>();
         optionsMap.put(Boolean.toString(true), trueRepresentation);
         optionsMap.put(Boolean.toString(false), falseRepresentation);
         if (inclNull) {
-            optionsMap.put(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), IpsPlugin.getDefault()
-                    .getIpsPreferences().getNullPresentation());
+            optionsMap.put(null, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         }
 
-        Composite newComposite = createGridComposite(parent, inclNull ? 3 : 2, false, false);
+        Composite newComposite = createGridComposite(parent, inclNull ? 3 : 2, false, false, new GridData(SWT.LEAD,
+                SWT.TOP, false, false));
+        ((GridLayout)newComposite.getLayout()).horizontalSpacing = 20;
         RadioButtonGroup<String> radioGroup = createRadioButtonGroup(newComposite, optionsMap);
-        newComposite.setData(radioGroup);
-        return newComposite;
+
+        return radioGroup;
     }
 
     public Composite createCheckboxSetForBoolean(Composite parent, String trueRepresentation, String falseRepresentation) {
@@ -866,7 +868,7 @@ public class UIToolkit {
     public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent,
             String groupText,
             int numberColumns,
-            Map<T, String> options) {
+            LinkedHashMap<T, String> options) {
 
         return new RadioButtonGroup<T>(parent, groupText, numberColumns, options, this);
     }
@@ -881,7 +883,7 @@ public class UIToolkit {
      * @param options the options the user can choose from. The map associates each value with it's
      *            label. For each option, a radio button is created
      */
-    public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent, Map<T, String> options) {
+    public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent, LinkedHashMap<T, String> options) {
         return new RadioButtonGroup<T>(parent, options, this);
     }
 

@@ -46,15 +46,6 @@ public interface IEnumValueSet extends IValueSet {
     public String[] getValues();
 
     /**
-     * Sets all values of the set. If values are currently present, they are overwritten.
-     * 
-     * @param values the new values to set.
-     * 
-     * @since 3.9
-     */
-    public void setValues(String[] values);
-
-    /**
      * Returns a List of all positions/indexes the given value occurs in the set.
      */
     public List<Integer> getPositions(String value);

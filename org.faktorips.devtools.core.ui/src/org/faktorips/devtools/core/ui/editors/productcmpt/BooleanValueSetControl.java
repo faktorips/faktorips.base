@@ -68,17 +68,12 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
         this.property = property;
 
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
-        GridLayout layout = new GridLayout(3, false);
-        layout.horizontalSpacing = 10;
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        setLayout(layout);
-        setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         IValueSet valueSet = configElement.getValueSet();
         ValueDatatype valueDatatype = valueSet instanceof ValueSet ? ((ValueSet)valueSet).getValueDatatype() : null;
 
+        int components;
         if (valueDatatype != null) {
             trueBox = toolkit
                     .createCheckbox(this, datatypeFormatter.formatValue(valueDatatype, Boolean.toString(true)));
@@ -88,12 +83,22 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
                 nullBox = toolkit
                         .createCheckbox(this, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
             }
+            components = valueDatatype.isPrimitive() ? 2 : 3;
         } else {
             // Fallback to default formatting for true/false
             trueBox = toolkit.createCheckbox(this, "True"); //$NON-NLS-1$
             falseBox = toolkit.createCheckbox(this, "False"); //$NON-NLS-1$
             nullBox = toolkit.createCheckbox(this, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+            components = 3;
         }
+
+        GridLayout layout = new GridLayout(components, false);
+        layout.horizontalSpacing = 20;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        setLayout(layout);
+
+        setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
     }
 
@@ -112,12 +117,13 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
             // cases, all values are allowed.
             allowedValues.add(Boolean.toString(true));
             allowedValues.add(Boolean.toString(false));
-            allowedValues.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+            allowedValues.add(null);
         }
         trueBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(true)));
         falseBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(false)));
         if (nullBox != null) {
             nullBox.setEnabled(false);
+            nullBox.setChecked(allowedValues.contains(null));
         }
     }
 

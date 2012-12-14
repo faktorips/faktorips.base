@@ -13,13 +13,13 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -37,12 +37,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.CheckboxGroupField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -73,11 +70,46 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        createValueSetEditField(editFields);
+        if (isRangeValueEditFieldsRequired()) {
+            createEditFieldsForRange(editFields);
+        } else {
+            if (isBooleanDatatype()) {
+                createEditFieldForBoolean(editFields);
+            } else {
+                createEditFieldForOthers(editFields);
+            }
+        }
+    }
+
+    private void createEditFieldsForRange(List<EditField<?>> editFields) {
+        createValueSetEditFieldForRange(editFields);
         createDefaultValueEditField(editFields);
     }
 
-    private void createDefaultValueEditField(List<EditField<?>> editFields) {
+    private void createEditFieldForBoolean(List<EditField<?>> editFields) {
+        final BooleanValueSetPMO pmo = new BooleanValueSetPMO(getPropertyValue());
+        createValueSetEditFieldForBoolean(editFields, pmo);
+        EditField<String> editField = createDefaultValueEditField(editFields);
+        if (editField instanceof RadioButtonGroupField) {
+            final RadioButtonGroupField<String> radioButtonGroupField = (RadioButtonGroupField<String>)editField;
+
+            getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.TRUE.toString()), pmo,
+                    BooleanValueSetPMO.PROPERTY_TRUE_ENABLED);
+            getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.FALSE.toString()), pmo,
+                    BooleanValueSetPMO.PROPERTY_FALSE_ENABLED);
+            Button nullButton = radioButtonGroupField.getButton(null);
+            if (nullButton != null) {
+                getBindingContext().bindEnabled(nullButton, pmo, BooleanValueSetPMO.PROPERTY_NULL_ENABLED);
+            }
+        }
+    }
+
+    private void createEditFieldForOthers(List<EditField<?>> editFields) {
+        createValueSetEditFieldForOtherThanRange(editFields);
+        createDefaultValueEditField(editFields);
+    }
+
+    private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_defaultValue);
 
         ValueDatatype datatype = getProperty() == null ? null : findDatatypeForDefaultValueEditField();
@@ -90,6 +122,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 .getValueSet(), getGeneration().getIpsProject());
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
+        return editField;
     }
 
     private ValueDatatype findDatatypeForDefaultValueEditField() {
@@ -104,26 +137,15 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         return datatype;
     }
 
-    private void createValueSetEditField(List<EditField<?>> editFields) {
-        if (areRangeValueEditFieldsRequired()) {
-            createValueSetEditFieldForRange(editFields);
-        } else {
-            if (areBooleanValueEditFieldsRequired()) {
-                createValueSetEditFieldForBoolean(editFields);
-            } else {
-                createValueSetEditFieldForOtherThanRange(editFields);
-            }
-        }
-    }
-
-    private boolean areRangeValueEditFieldsRequired() {
+    private boolean isRangeValueEditFieldsRequired() {
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
         return valueSet != null ? valueSet.isRange() : getPropertyValue().getValueSet().isRange();
     }
 
-    private boolean areBooleanValueEditFieldsRequired() {
+    private boolean isBooleanDatatype() {
         String datatype = getProperty() == null ? null : getProperty().getDatatype();
-        return datatype != null ? datatype.equalsIgnoreCase("Boolean") : false; //$NON-NLS-1$
+        return datatype != null ? datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName())
+                || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
     private void createValueSetEditFieldForRange(List<EditField<?>> editFields) {
@@ -153,38 +175,25 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
     }
 
-    private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields) {
+    private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
         final BooleanValueSetControl valueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
 
-        List<Checkbox> checkboxes = new ArrayList<Checkbox>();
-        checkboxes.add(valueSetControl.getTrueCheckBox());
-        checkboxes.add(valueSetControl.getFalseCheckBox());
+        CheckboxField trueField = new CheckboxField(valueSetControl.getTrueCheckBox());
+        CheckboxField falseField = new CheckboxField(valueSetControl.getFalseCheckBox());
+        editFields.add(trueField);
+        editFields.add(falseField);
+
+        getBindingContext().bindContent(trueField, pmo, BooleanValueSetPMO.PROPERTY_TRUE);
+        getBindingContext().bindContent(falseField, pmo, BooleanValueSetPMO.PROPERTY_FALSE);
         if (valueSetControl.getNullCheckBox() != null) {
-            checkboxes.add(valueSetControl.getNullCheckBox());
+            CheckboxField nullField = new CheckboxField(valueSetControl.getNullCheckBox());
+            editFields.add(nullField);
+            getBindingContext().bindContent(nullField, pmo, BooleanValueSetPMO.PROPERTY_NULL);
         }
-
-        final CheckboxGroupField checkboxGroupField = new CheckboxGroupField(checkboxes, getProperty(),
-                getPropertyValue());
-        editFields.add(checkboxGroupField);
-        checkboxGroupField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                if (checkboxGroupField.getRadioButtonGroupField() == null) {
-                    for (EditField<?> editField : editFields) {
-                        if (editField instanceof RadioButtonGroupField) {
-                            checkboxGroupField.setRadioButtonGroupField((RadioButtonGroupField<?>)editField);
-                        }
-                    }
-                }
-                checkboxGroupField.refreshRadioButtonState();
-            }
-        });
-
-        getBindingContext().bindContent(checkboxGroupField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
 
     private EditField<String> createRangeEditField(ValueDatatypeControlFactory controlFactory,
@@ -244,7 +253,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     @Override
     protected int getFirstControlMarginHeight() {
-        return areRangeValueEditFieldsRequired() ? 4 : 0;
+        return isRangeValueEditFieldsRequired() ? 4 : 0;
     }
 
 }

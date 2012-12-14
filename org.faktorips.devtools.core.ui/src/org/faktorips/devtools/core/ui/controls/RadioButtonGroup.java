@@ -43,9 +43,10 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  */
 public class RadioButtonGroup<T> {
 
-    private final List<Button> radioButtons;
+    private final LinkedHashMap<T, Button> radioButtons;
+    private final LinkedHashMap<Button, T> buttonsToOptions;
 
-    private final Map<T, String> options;
+    private final LinkedHashMap<T, String> options;
 
     private final Composite composite;
 
@@ -75,7 +76,8 @@ public class RadioButtonGroup<T> {
     @Deprecated
     public RadioButtonGroup(Composite parent, int style, String text, UIToolkit toolkit) {
         this.toolkit = toolkit;
-        radioButtons = new ArrayList<Button>();
+        radioButtons = new LinkedHashMap<T, Button>();
+        buttonsToOptions = new LinkedHashMap<Button, T>();
         options = null;
         composite = createGroupControl(parent, style, text, 1, toolkit);
     }
@@ -90,10 +92,11 @@ public class RadioButtonGroup<T> {
      * @param options the options the user can choose from. The map associates each value with it's
      *            label. For each option, a radio button is created
      */
-    public RadioButtonGroup(Composite parent, String text, int numberColumns, Map<T, String> options,
+    public RadioButtonGroup(Composite parent, String text, int numberColumns, LinkedHashMap<T, String> options,
             UIToolkit uiToolkit) {
         this.options = new LinkedHashMap<T, String>(options);
-        radioButtons = new ArrayList<Button>(options.size());
+        radioButtons = new LinkedHashMap<T, Button>(options.size());
+        buttonsToOptions = new LinkedHashMap<Button, T>(options.size());
         toolkit = uiToolkit;
         composite = createGroupControl(parent, SWT.NONE, text, numberColumns, uiToolkit);
         createRadioButtons(uiToolkit);
@@ -109,9 +112,10 @@ public class RadioButtonGroup<T> {
      * @param options the options the user can choose from. The map associates each value with it's
      *            label. For each option, a radio button is created
      */
-    public RadioButtonGroup(Composite parent, Map<T, String> options, UIToolkit uiToolkit) {
+    public RadioButtonGroup(Composite parent, LinkedHashMap<T, String> options, UIToolkit uiToolkit) {
         this.options = new LinkedHashMap<T, String>(options);
-        radioButtons = new ArrayList<Button>(options.size());
+        radioButtons = new LinkedHashMap<T, Button>(options.size());
+        buttonsToOptions = new LinkedHashMap<Button, T>(options.size());
         toolkit = uiToolkit;
         composite = parent;
         createRadioButtons(uiToolkit);
@@ -128,14 +132,15 @@ public class RadioButtonGroup<T> {
     }
 
     private void createRadioButtons(UIToolkit uiToolkit) {
-        for (String optionLabel : options.values()) {
-            addRadioButton(optionLabel, uiToolkit);
+        for (T key : options.keySet()) {
+            addRadioButton(key, options.get(key), uiToolkit);
         }
     }
 
-    private Button addRadioButton(String text, UIToolkit uiTookit) {
+    private Button addRadioButton(T value, String text, UIToolkit uiTookit) {
         Button radioButton = uiTookit.createRadioButton(composite, text);
-        radioButtons.add(radioButton);
+        radioButtons.put(value, radioButton);
+        buttonsToOptions.put(radioButton, value);
         return radioButton;
     }
 
@@ -181,7 +186,7 @@ public class RadioButtonGroup<T> {
      * Returns the radio buttons belonging to this {@link RadioButtonGroup}.
      */
     public final List<Button> getRadioButtons() {
-        return new ArrayList<Button>(radioButtons);
+        return new ArrayList<Button>(radioButtons.values());
     }
 
     /**
@@ -189,17 +194,18 @@ public class RadioButtonGroup<T> {
      * associated with the button.
      */
     public final T getOption(Button button) {
-        return getButtonsToOptions().get(button);
+        return buttonsToOptions.get(button);
     }
 
-    private Map<Button, T> getButtonsToOptions() {
-        Map<Button, T> buttonsToValues = new LinkedHashMap<Button, T>(options.size());
-        int i = 0;
-        for (T option : options.keySet()) {
-            buttonsToValues.put(radioButtons.get(i), option);
-            i++;
-        }
-        return buttonsToValues;
+    /**
+     * Returns the button that is associated with the indicated option or null if no button is
+     * associated with the option.
+     * 
+     * @param option the option to get the button for
+     * @return the button representing the option
+     */
+    public final Button getRadioButton(T option) {
+        return radioButtons.get(option);
     }
 
     /**
@@ -211,14 +217,14 @@ public class RadioButtonGroup<T> {
         if (selectedButton == null) {
             return null;
         }
-        return getButtonsToOptions().get(selectedButton);
+        return buttonsToOptions.get(selectedButton);
     }
 
     /**
      * Returns the radio button that is currently selected or null if no button is selected.
      */
     public final Button getSelectedButton() {
-        for (Button button : radioButtons) {
+        for (Button button : radioButtons.values()) {
             if (button.getSelection()) {
                 return button;
             }
@@ -230,12 +236,13 @@ public class RadioButtonGroup<T> {
      * Selects the radio button associated with indicated value.
      */
     public final void setSelection(T option) {
-        for (Button button : getRadioButtons()) {
-            button.setSelection(option.equals(getOption(button)));
-            // if (option.equals(getOption(button))) {
-            // button.setSelection(true);
-            // break;
-            // }
+        Button currentSelection = getSelectedButton();
+        if (currentSelection != null) {
+            currentSelection.setSelection(false);
+        }
+        Button toSelect = radioButtons.get(option);
+        if (toSelect != null) {
+            toSelect.setSelection(true);
         }
     }
 

@@ -20,10 +20,12 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -311,6 +313,25 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         IValueSet oldset = valueSet;
         valueSet = type.newValueSet(this, getNextPartId());
         valueChanged(oldset, valueSet);
+    }
+
+    @Override
+    public IEnumValueSet convertValueSetToEnumType() {
+        ValueSetType newValueSetType = ValueSetType.ENUM;
+        if (valueSet.getValueSetType().equals(newValueSetType)) {
+            return (IEnumValueSet)valueSet; // unchanged
+        }
+        setValueSetType(newValueSetType);
+        EnumValueSet newValueSet = (EnumValueSet)valueSet;
+        if (Datatype.BOOLEAN.equals(newValueSet.getValueDatatype())
+                || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSet.getValueDatatype())) {
+            newValueSet.addValue(Boolean.TRUE.toString());
+            newValueSet.addValue(Boolean.FALSE.toString());
+            if (!newValueSet.getValueDatatype().isPrimitive()) {
+                newValueSet.addValue(null);
+            }
+        }
+        return newValueSet;
     }
 
     @Override
