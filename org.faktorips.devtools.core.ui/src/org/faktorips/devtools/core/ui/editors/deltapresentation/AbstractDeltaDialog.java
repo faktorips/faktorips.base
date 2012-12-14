@@ -49,5 +49,4 @@ public abstract class AbstractDeltaDialog extends TitleAreaDialog {
     }
 
     protected abstract TreeViewer getTreeViewer();
-
 }

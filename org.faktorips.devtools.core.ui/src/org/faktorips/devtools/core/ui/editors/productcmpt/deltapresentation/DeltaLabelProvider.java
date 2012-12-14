@@ -19,6 +19,7 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
@@ -33,18 +34,20 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIc
  * @author Jan Ortmann
  */
 public class DeltaLabelProvider extends LabelProvider {
+    private WorkbenchLabelProvider workbenchLabelProvider;
 
     private ResourceManager resourceManager;
 
     public DeltaLabelProvider() {
+        workbenchLabelProvider = new WorkbenchLabelProvider();
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
     @Override
     public Image getImage(Object element) {
-        ImageDescriptor descriptor = ImageDescriptor.getMissingImageDescriptor();
-        if (element instanceof DeltaType) {
-            descriptor = getBaseImage(((DeltaType)element));
+        ImageDescriptor descriptor = null;
+        if (element instanceof DeltaTypeWrapper) {
+            descriptor = getBaseImage(((DeltaTypeWrapper)element).type);
         } else if (element instanceof IDeltaEntryForProperty) {
             IDeltaEntryForProperty entry = (IDeltaEntryForProperty)element;
             Image baseImage = getBaseImage(entry.getPropertyType());
@@ -57,6 +60,12 @@ public class DeltaLabelProvider extends LabelProvider {
             }
         } else if (element instanceof IDeltaEntry) {
             descriptor = getImageDescriptorForDeltaEntry((IDeltaEntry)element);
+        }
+        if (descriptor == null) {
+            if (element instanceof ProductCmptGenerationToTypeDeltaWrapper) {
+                return workbenchLabelProvider.getImage(((ProductCmptGenerationToTypeDeltaWrapper)element).getDelta());
+            }
+            return workbenchLabelProvider.getImage(element);
         }
         return (Image)resourceManager.get(descriptor);
     }
@@ -118,18 +127,22 @@ public class DeltaLabelProvider extends LabelProvider {
 
     @Override
     public String getText(Object element) {
-        if (element instanceof DeltaType) {
-            return ((DeltaType)element).getDescription();
+        if (element instanceof DeltaTypeWrapper) {
+            return ((DeltaTypeWrapper)element).type.getDescription();
         }
         if (element instanceof IDeltaEntry) {
             return ((IDeltaEntry)element).getDescription();
         }
-        return super.getText(element);
+        if (element instanceof ProductCmptGenerationToTypeDeltaWrapper) {
+            return ((ProductCmptGenerationToTypeDeltaWrapper)element).getDates();
+        }
+        return workbenchLabelProvider.getText(element);
     }
 
     @Override
     public void dispose() {
         resourceManager.dispose();
+        workbenchLabelProvider.dispose();
     }
 
 }

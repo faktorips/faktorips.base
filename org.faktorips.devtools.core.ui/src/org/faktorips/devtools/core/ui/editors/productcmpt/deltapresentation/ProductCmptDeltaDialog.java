@@ -14,23 +14,19 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
-import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
  * Dialog to display differences between a product component and its type.
@@ -38,9 +34,12 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
  * @author Thorsten Guenther
  */
 public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
+    /**
+     * Make sure the dialog's initial size is never greater than this. The user can resize, though.
+     */
+    protected static final int MAX_INITIAL_HEIGHT = 400;
 
     private IFixDifferencesComposite deltaComposite;
-    private TreeViewer productCmptGenTree;
     private TreeViewer tree;
 
     /**
@@ -51,18 +50,22 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
      * @param parentShell The SWT parent-shell
      */
     public ProductCmptDeltaDialog(IFixDifferencesComposite deltaComposite, Shell parentShell) {
-
         super(parentShell);
         super.setShellStyle(getShellStyle() | SWT.RESIZE);
         this.deltaComposite = deltaComposite;
     }
 
     @Override
+    protected Point getInitialSize() {
+        Point p = super.getInitialSize();
+        p.y = Math.min(MAX_INITIAL_HEIGHT, p.y);
+        return p;
+    }
+
+    @Override
     protected Control createDialogArea(Composite parent) {
         String genTextPlural = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNamePlural();
-        String genTextSingular = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptNameSingular();
         Composite root = (Composite)super.createDialogArea(parent);
 
         // layouting
@@ -70,40 +73,17 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         // create composite with margins
         Composite listParent = toolkit.createGridComposite(root, 3, false, false);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gridData.minimumHeight = 10 + 30 + 50 + 10;
+        gridData.minimumHeight = 100;
         listParent.setLayoutData(gridData);
 
-        // line 1 (label for list)
+        // line 1 (label for tree)
         toolkit.createVerticalSpacer(listParent, 1);
-        String text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectGeneration, genTextPlural);
+        String text = NLS.bind(Messages.ProductCmptDeltaDialog_labelDifferencesHeader, genTextPlural);
         Label label = toolkit.createLabel(listParent, text, false);
         ((GridData)label.getLayoutData()).minimumHeight = 10;
         toolkit.createVerticalSpacer(listParent, 1);
 
-        // line 2 (list)
-        toolkit.createVerticalSpacer(listParent, 1);
-        productCmptGenTree = new TreeViewer(listParent, SWT.SINGLE | SWT.BORDER);
-        toolkit.createVerticalSpacer(listParent, 1);
-        productCmptGenTree.setLabelProvider(new WorkbenchLabelProvider());
-        productCmptGenTree.setContentProvider(new WorkbenchContentProvider() {
-            @Override
-            public Object[] getElements(Object element) {
-                return new Object[] { deltaComposite };
-            }
-        });
-
-        gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gridData.minimumHeight = 70;
-        productCmptGenTree.getTree().setLayoutData(gridData);
-
-        // line 3 (label for tree)
-        toolkit.createVerticalSpacer(listParent, 1);
-        text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectedDifferences, genTextSingular);
-        label = toolkit.createLabel(listParent, text, false);
-        ((GridData)label.getLayoutData()).minimumHeight = 10;
-        toolkit.createVerticalSpacer(listParent, 1);
-
-        // line 4 (tree)
+        // line 2 (tree)
         toolkit.createVerticalSpacer(listParent, 1);
         tree = new TreeViewer(listParent);
         gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -119,31 +99,15 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         tree.setContentProvider(new DeltaContentProvider());
         tree.setLabelProvider(new DeltaLabelProvider());
 
-        productCmptGenTree.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateDeltaView();
-            }
-        });
-
         // initialize view
         // need to set any element different form the deltaComposite itself because the content
         // provider does return the deltaComposite as root element. The root element could not be
         // the same as the input element @see IStructuredContentProvider#getElemement(Object)
-        productCmptGenTree.setInput(deltaComposite.getCorrespondingIpsElement());
-        productCmptGenTree.expandAll();
-        productCmptGenTree.setSelection(new StructuredSelection(deltaComposite));
-        updateDeltaView();
+        tree.setInput(deltaComposite);
+        tree.expandAll();
+        tree.setSelection(new StructuredSelection(deltaComposite));
 
         return root;
-    }
-
-    private void updateDeltaView() {
-        TypedSelection<IFixDifferencesComposite> selection = new TypedSelection<IFixDifferencesComposite>(
-                IFixDifferencesComposite.class, productCmptGenTree.getSelection());
-        if (selection.isValid())
-            updateDeltaView(selection.getFirstElement());
     }
 
     public IFixDifferencesComposite getDeltaComposite() {

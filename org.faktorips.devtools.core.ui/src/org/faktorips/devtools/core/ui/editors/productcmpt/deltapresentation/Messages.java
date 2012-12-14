@@ -27,9 +27,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String ProductCmptDeltaDialog_labelSelectGeneration;
-
-    public static String ProductCmptDeltaDialog_labelSelectedDifferences;
+    public static String ProductCmptDeltaDialog_labelDifferencesHeader;
 
     public static String ProductCmptDeltaDialog_title;
 
