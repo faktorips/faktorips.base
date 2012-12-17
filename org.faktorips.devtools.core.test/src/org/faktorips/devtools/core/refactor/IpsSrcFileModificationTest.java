@@ -13,12 +13,13 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -59,19 +60,20 @@ public class IpsSrcFileModificationTest {
     }
 
     @Test
-    @Ignore
-    // TODO using static refactoring util, cannot test currently
     public void testUndo_rename() throws Exception {
         IpsSrcFileModification modification = IpsSrcFileModification.createBeforeRename(ipsSrcFile, ipsSrcFile2);
+        IpsSrcFileModification modificationSpy = spy(modification);
+        doNothing().when(modificationSpy).move(ipsSrcFile2, ipsSrcFile);
+
         verify(ipsSrcFile).newMemento();
 
         when(ipsSrcFile.exists()).thenReturn(false);
         when(ipsSrcFile2.exists()).thenReturn(true);
-        modification.undo();
+        modificationSpy.undo();
 
+        verify(ipsSrcFile2).discardChanges();
         verify(ipsSrcFile).exists();
-        verify(ipsSrcFile).discardChanges();
-        verify(ipsSrcFile).setMemento(modification.getOriginalContent());
+        verify(ipsSrcFile).setMemento(modificationSpy.getOriginalContent());
 
         verifyNoMoreInteractions(ipsSrcFile);
     }

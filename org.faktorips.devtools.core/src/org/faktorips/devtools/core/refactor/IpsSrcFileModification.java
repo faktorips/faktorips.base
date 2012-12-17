@@ -145,8 +145,7 @@ public class IpsSrcFileModification {
         if (!targetIpsSrcFile.equals(originalIpsSrcFile) && targetIpsSrcFile.exists()) {
             try {
                 targetIpsSrcFile.discardChanges();
-                RefactorUtil.moveIpsSrcFile(targetIpsSrcFile, originalIpsSrcFile.getIpsPackageFragment(),
-                        originalIpsSrcFile.getIpsObjectName(), new NullProgressMonitor());
+                move(targetIpsSrcFile, originalIpsSrcFile);
                 resetChanges(originalIpsSrcFile);
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
@@ -154,7 +153,11 @@ public class IpsSrcFileModification {
         }
     }
 
-    private void resetChanges(IIpsSrcFile iIpsSrcFile) {
+    protected void move(IIpsSrcFile from, IIpsSrcFile to) throws CoreException {
+        RefactorUtil.moveIpsSrcFile(from, to.getIpsPackageFragment(), to.getIpsObjectName(), new NullProgressMonitor());
+    }
+
+    protected void resetChanges(IIpsSrcFile iIpsSrcFile) {
         try {
             iIpsSrcFile.setMemento(getOriginalContent());
         } catch (CoreException e) {
