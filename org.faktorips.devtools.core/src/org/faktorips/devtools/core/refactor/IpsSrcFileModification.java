@@ -144,6 +144,7 @@ public class IpsSrcFileModification {
         }
         if (!targetIpsSrcFile.equals(originalIpsSrcFile) && targetIpsSrcFile.exists()) {
             try {
+                targetIpsSrcFile.discardChanges();
                 RefactorUtil.moveIpsSrcFile(targetIpsSrcFile, originalIpsSrcFile.getIpsPackageFragment(),
                         originalIpsSrcFile.getIpsObjectName(), new NullProgressMonitor());
                 resetChanges(originalIpsSrcFile);
