@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -926,7 +927,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private void initJControlModel(IIpsProject project) throws CoreException {
         model = new JControlModel();
         if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
-            facadeHelper = new ASTFacadeHelper();
+            ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
+            configureDefaults(astFacadeHelper.getJavaCoreOptions(), project);
+            facadeHelper = astFacadeHelper;
         } else {
             facadeHelper = new JDOMFacadeHelper();
         }
@@ -935,6 +938,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void configureDefaults(Map<?, ?> javaCoreOptions, IIpsProject project) {
+        IJavaProject javaProject = project.getJavaProject();
+        javaCoreOptions.putAll(javaProject.getOptions(true));
     }
 
     private String getJMergeConfigLocation(IIpsProject ipsProject) {
