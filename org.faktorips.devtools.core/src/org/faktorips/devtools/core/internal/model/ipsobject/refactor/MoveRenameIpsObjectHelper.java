@@ -134,11 +134,9 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     /**
-     * The source file of the {@link IIpsObject} will be copied this early. Based on that new source
-     * file and on the copied {@link IIpsObject} validation is performed. If the validation fails
-     * the copy will be deleted so everything is left in a clean state (as it was before). If only a
-     * warning or information validation message results the copy must also be deleted and recreated
-     * later if the user really starts the refactoring.
+     * The source file of the {@link IIpsObject} will be moved this early. Based on that new source
+     * file and on the moved {@link IIpsObject} validation is performed. After validation the file
+     * is moved back to perform the real model refactoring.
      * <p>
      * Returns the list of validation messages that should be added to the return status by the
      * calling refactoring processor.
@@ -148,30 +146,10 @@ public final class MoveRenameIpsObjectHelper {
             RefactoringStatus status,
             IProgressMonitor pm) throws CoreException {
 
-        IIpsSrcFile fileToBeCopied = toBeRefactored.getIpsSrcFile();
+        IIpsSrcFile originalFile = toBeRefactored.getIpsSrcFile();
         IIpsSrcFile targetFile = null;
         try {
-            if (targetIpsPackageFragment.equals(fileToBeCopied.getIpsPackageFragment())
-                    && RefactorUtil.isOnlyCapitalizationChanged(fileToBeCopied, newName)) {
-                // Copy original file to temporary file with time stamp to avoid file system
-                // problems
-                IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(fileToBeCopied,
-                        targetIpsPackageFragment, newName, pm);
-
-                // Delete original file
-                fileToBeCopied.delete();
-
-                // Copy temporary file to target file and delete temporary file
-                targetFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, pm);
-                tempSrcFile.delete();
-
-            } else {
-                // Copy original file to target file
-                targetFile = RefactorUtil.copyIpsSrcFile(fileToBeCopied, targetIpsPackageFragment, newName, pm);
-
-                // Delete original file
-                fileToBeCopied.delete();
-            }
+            targetFile = RefactorUtil.moveIpsSrcFile(originalFile, targetIpsPackageFragment, newName, pm);
 
             // Perform validation on target file.
             IIpsObject copiedIpsObject = targetFile.getIpsObject();
@@ -179,33 +157,14 @@ public final class MoveRenameIpsObjectHelper {
 
             return validationMessageList;
 
-        } catch (CoreException e) {
+        } catch (RuntimeException e) {
             status.addFatalError(e.getLocalizedMessage());
             return new MessageList();
 
         } finally {
             if (targetFile != null) {
-                /*
-                 * Roll-back original source file - first copy to temporary to avoid problems
-                 * because of same file with different case.
-                 */
-                IIpsSrcFile temporaryRestore = RefactorUtil.copyIpsSrcFileToTemporary(targetFile,
-                        fileToBeCopied.getIpsPackageFragment(), fileToBeCopied.getIpsObjectName(), pm);
-
-                /*
-                 * Delete target file (can't leave it at target already because participants
-                 * condition checking may fail which would abort the refactoring completely and we
-                 * don't want to have the copy around in this case).
-                 */
-                targetFile.delete();
-
-                /*
-                 * Roll-back original source file from temporary restored file, delete temporary
-                 * file
-                 */
-                RefactorUtil.copyIpsSrcFile(temporaryRestore, fileToBeCopied.getIpsPackageFragment(),
-                        fileToBeCopied.getIpsObjectName(), pm);
-                temporaryRestore.delete();
+                RefactorUtil.moveIpsSrcFile(targetFile, originalFile.getIpsPackageFragment(),
+                        originalFile.getIpsObjectName(), pm);
             }
         }
     }

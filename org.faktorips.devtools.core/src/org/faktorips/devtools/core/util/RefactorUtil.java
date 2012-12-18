@@ -88,10 +88,26 @@ public final class RefactorUtil {
         return copyIpsSrcFile(toBeCopied, targetIpsPackageFragment, copyName + timestamp, progressMonitor);
     }
 
+    /**
+     * Moves the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination
+     * package. Returns a handle to the new <tt>IIpsSrcFile</tt>.
+     * 
+     * @param originalSrcFile The <tt>IIpsSrcFile</tt> to be moved.
+     * @param targetIpsPackageFragment The destination IPS package.
+     * @param newName The new name of the source file.
+     * @param pm A progress monitor to report progress to or <tt>null</tt>.
+     * 
+     * @throws NullPointerException If <tt>originalSrcFile</tt>, <tt>targetIpsPackageFragment</tt>
+     *             or <tt>newName</tt> is <tt>null</tt>
+     * @throws IllegalArgumentException if the source file to be copied is dirty
+     * 
+     */
     public static IIpsSrcFile moveIpsSrcFile(IIpsSrcFile originalSrcFile,
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             IProgressMonitor pm) throws CoreException {
+        // we need to copy and delete the file because at least the subclipse svn adaptder get some
+        // problems when we moving the files there and back again twice
         IIpsSrcFile targetSrcFile;
         if (targetIpsPackageFragment.equals(originalSrcFile.getIpsPackageFragment())
                 && isOnlyCapitalizationChanged(originalSrcFile, newName)) {
