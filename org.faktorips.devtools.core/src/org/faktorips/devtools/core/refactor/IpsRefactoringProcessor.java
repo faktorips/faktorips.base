@@ -28,6 +28,7 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -292,36 +293,43 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         }
         if (ipsElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)ipsElement;
-            if (ipsObject.exists()) {
-                return ipsObject;
+            try {
+                // this would reload the content or simply returns the existing one
+                return ipsObject.getIpsSrcFile().getIpsObject();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> ids = new ArrayList<String>();
         IIpsElement element = ipsElement;
         if (element instanceof IIpsObjectPartContainer) {
+            IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
             try {
-                while (!(element instanceof IIpsSrcFile)) {
-                    names.add(0, element.getName());
-                    element = element.getParent();
+                while (!(ipsObjectPartContainer instanceof IIpsObject)) {
+                    ids.add(0, ((IIpsObjectPart)ipsObjectPartContainer).getId());
+                    ipsObjectPartContainer = (IpsObjectPartContainer)ipsObjectPartContainer.getParent();
                 }
-                for (String name : names) {
-                    for (IIpsElement child : element.getChildren()) {
-                        if (child.getName().equals(name)) {
-                            element = child;
+                ipsObjectPartContainer = ipsObjectPartContainer.getIpsSrcFile().getIpsObject();
+                for (String id : ids) {
+                    for (IIpsElement child : ipsObjectPartContainer.getChildren()) {
+                        IIpsObjectPart childIpsObjectPart = (IIpsObjectPart)child;
+                        if (childIpsObjectPart.getId().equals(id)) {
+                            ipsObjectPartContainer = childIpsObjectPart;
                             break;
                         }
                     }
-                    if (!element.getName().equals(name)) {
-                        throw new RuntimeException("Cannot find element with name " + name + " in " + element); //$NON-NLS-1$//$NON-NLS-2$
+                    if (!((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
+                        throw new RuntimeException(
+                                "Cannot find element with id " + id + " in " + ipsObjectPartContainer); //$NON-NLS-1$//$NON-NLS-2$
                     }
                 }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+            return ipsObjectPartContainer;
         } else {
             return ipsElement;
         }
-        return element;
     }
 
     /**
