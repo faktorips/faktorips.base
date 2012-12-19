@@ -635,6 +635,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     boolean findCorrectMatchingPolicyCmptTypeRecoursive(IPolicyCmptType parentPolicyCmptType,
             IIpsProject ipsProject,
             Set<IPolicyCmptType> visited) throws CoreException {
+        if (parentPolicyCmptType == null) {
+            return false;
+        }
         if (!visited.add(parentPolicyCmptType)) {
             return false;
         }

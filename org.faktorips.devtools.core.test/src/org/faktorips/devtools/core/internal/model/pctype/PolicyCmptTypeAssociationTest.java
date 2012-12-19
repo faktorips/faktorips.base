@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
@@ -46,7 +47,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IPolicyCmptType pcType;
     private IPolicyCmptType targetType;
-    private IPolicyCmptTypeAssociation association;
+    private PolicyCmptTypeAssociation association;
     private IPolicyCmptTypeAssociation implementationAssociation;
 
     @Override
@@ -55,7 +56,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         pcType = newPolicyCmptType(ipsProject, "PolicyType");
-        association = pcType.newPolicyCmptTypeAssociation();
+        association = (PolicyCmptTypeAssociation)pcType.newPolicyCmptTypeAssociation();
         association.setTargetRoleSingular("Coverage");
         targetType = newPolicyCmptType(ipsProject, "Coverage");
         association.setTarget(targetType.getQualifiedName());
@@ -465,7 +466,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        association = pcType.newPolicyCmptTypeAssociation();
+        association = (PolicyCmptTypeAssociation)pcType.newPolicyCmptTypeAssociation();
         association.setAssociationType(AssociationType.ASSOCIATION);
         association.setDerivedUnion(true);
         association.setQualified(true);
@@ -1061,5 +1062,13 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         tarifToProdukt.setTargetRolePlural("produkts");
 
         assertNull(tarifverToPolice.findMatchingProductCmptTypeAssociation(ipsProject));
+    }
+
+    @Test
+    public void testFindCorrectMatchingPolicyCmptTypeRecoursive_null() throws Exception {
+        boolean result = association.findCorrectMatchingPolicyCmptTypeRecoursive(null, ipsProject,
+                new HashSet<IPolicyCmptType>());
+
+        assertFalse(result);
     }
 }
