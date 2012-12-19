@@ -28,7 +28,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -307,7 +306,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
             try {
                 while (!(ipsObjectPartContainer instanceof IIpsObject)) {
                     ids.add(0, ((IIpsObjectPart)ipsObjectPartContainer).getId());
-                    ipsObjectPartContainer = (IpsObjectPartContainer)ipsObjectPartContainer.getParent();
+                    ipsObjectPartContainer = (IIpsObjectPartContainer)ipsObjectPartContainer.getParent();
                 }
                 ipsObjectPartContainer = ipsObjectPartContainer.getIpsSrcFile().getIpsObject();
                 for (String id : ids) {
@@ -318,7 +317,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
                             break;
                         }
                     }
-                    if (!((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
+                    if (!(ipsObjectPartContainer instanceof IIpsObjectPart)
+                            || !((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
                         throw new RuntimeException(
                                 "Cannot find element with id " + id + " in " + ipsObjectPartContainer); //$NON-NLS-1$//$NON-NLS-2$
                     }

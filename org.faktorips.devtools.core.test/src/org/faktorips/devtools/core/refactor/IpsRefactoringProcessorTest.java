@@ -59,6 +59,12 @@ public class IpsRefactoringProcessorTest {
 
     private TestProcessor testProcessorSpy;
 
+    @Mock
+    private IIpsObject ipsObject;
+
+    @Mock
+    private IIpsSrcFile ipsSrcFile;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -228,9 +234,6 @@ public class IpsRefactoringProcessorTest {
     @Test
     public void testGetIpsElement_ipsObjectPart() throws Exception {
         IIpsObjectPart ipsObjectPart = mock(IIpsObjectPart.class);
-        IIpsObject ipsObject = mock(IIpsObject.class);
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-
         IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsObjectPart);
 
         when(ipsObjectPart.isDeleted()).thenReturn(false);
@@ -238,15 +241,13 @@ public class IpsRefactoringProcessorTest {
 
         IIpsObjectPart ipsObjectPart2 = mock(IIpsObjectPart.class);
 
-        when(ipsObjectPart.getName()).thenReturn("ipsObjectPart");
-        when(ipsObjectPart2.getName()).thenReturn("ipsObjectPart");
-        when(ipsObject.getName()).thenReturn("ipsObject");
-        when(ipsSrcFile.getName()).thenReturn("ipsSrcFile");
+        when(ipsObjectPart.getId()).thenReturn("1");
+        when(ipsObjectPart2.getId()).thenReturn("1");
 
         when(ipsObjectPart.isDeleted()).thenReturn(true);
         when(ipsObjectPart.getParent()).thenReturn(ipsObject);
-        when(ipsObject.getParent()).thenReturn(ipsSrcFile);
-        when(ipsSrcFile.getChildren()).thenReturn(new IIpsElement[] { ipsObject });
+        when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getIpsObject()).thenReturn(ipsObject);
         when(ipsObject.getChildren()).thenReturn(new IIpsElement[] { ipsObjectPart2 });
 
         assertSame(ipsObjectPart2, refactoringProcessor.getIpsElement());
@@ -254,23 +255,12 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void testGetIpsElement_ipsObject() throws Exception {
-        IIpsObject ipsObject = mock(IIpsObject.class);
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-
         IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsObject);
-
-        when(ipsObject.exists()).thenReturn(true);
-        assertSame(ipsObject, refactoringProcessor.getIpsElement());
-
         IIpsObject ipsObject2 = mock(IIpsObject.class);
 
-        when(ipsObject.getName()).thenReturn("ipsObject");
-        when(ipsObject2.getName()).thenReturn("ipsObject");
-        when(ipsSrcFile.getName()).thenReturn("ipsSrcFile");
-
-        when(ipsObject.exists()).thenReturn(false);
-        when(ipsObject.getParent()).thenReturn(ipsSrcFile);
-        when(ipsSrcFile.getChildren()).thenReturn(new IIpsElement[] { ipsObject2 });
+        when(ipsObject.exists()).thenReturn(true);
+        when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getIpsObject()).thenReturn(ipsObject2);
 
         assertSame(ipsObject2, refactoringProcessor.getIpsElement());
     }
