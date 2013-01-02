@@ -1927,17 +1927,6 @@
                      operator="and">
                  <adapt
                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
-                    <or>
-                       <instanceof
-                             value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
-                       </instanceof>
-                       <instanceof
-                             value="org.faktorips.devtools.core.model.tablecontents.ITableContents">
-                       </instanceof>
-                       <instanceof
-                             value="org.faktorips.devtools.core.model.pctype.IPolicyCmptType">
-                       </instanceof>
-                    </or>
                  </adapt>
                </iterate>
             </with>

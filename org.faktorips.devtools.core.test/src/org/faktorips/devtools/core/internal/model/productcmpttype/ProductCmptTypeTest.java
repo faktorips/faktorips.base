@@ -1130,6 +1130,51 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
+    public void testDependsOn_Tables() throws CoreException {
+        ITableStructure a = newTableStructure(ipsProject, "A");
+        ITableStructure b = newTableStructure(ipsProject, "B");
+        ITableStructure c = newTableStructure(ipsProject, "C");
+
+        IProductCmptType aProductType = newProductCmptType(ipsProject, "D");
+        IProductCmptType bProductType = newProductCmptType(ipsProject, "E");
+
+        List<IDependency> dependencies0 = Arrays.asList(aProductType.dependsOn());
+        assertEquals(1, dependencies0.size());
+
+        ITableStructureUsage structureUsage = aProductType.newTableStructureUsage();
+        structureUsage.setRoleName("Table");
+        structureUsage.addTableStructure(a.getQualifiedName());
+
+        ITableStructureUsage structureUsage2 = bProductType.newTableStructureUsage();
+        structureUsage2.setRoleName("Table2");
+        structureUsage2.addTableStructure(b.getQualifiedName());
+
+        List<IDependency> dependencies = Arrays.asList(aProductType.dependsOn());
+        // dependencies always have a reference to the policy type of the product component type,
+        // hence, assertEquals is the number of found referenced tables +1.
+        assertEquals(2, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(a.getQualifiedName(), IpsObjectType.TABLE_STRUCTURE), DependencyType.REFERENCE)));
+
+        List<IDependency> dependencies2 = Arrays.asList(bProductType.dependsOn());
+        assertEquals(2, dependencies2.size());
+        assertTrue(dependencies2.contains(IpsObjectDependency.create(bProductType.getQualifiedNameType(),
+                b.getQualifiedNameType(), DependencyType.REFERENCE)));
+
+        ITableStructureUsage structureUsage3 = aProductType.newTableStructureUsage();
+        structureUsage3.setRoleName("Table3");
+        structureUsage3.addTableStructure(c.getQualifiedName());
+
+        dependencies = Arrays.asList(aProductType.dependsOn());
+        assertEquals(3, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(a.getQualifiedName(), IpsObjectType.TABLE_STRUCTURE), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
+                new QualifiedNameType(c.getQualifiedName(), IpsObjectType.TABLE_STRUCTURE), DependencyType.REFERENCE)));
+
+    }
+
+    @Test
     public void testGetPropertyReferences() throws CoreException {
         IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
         IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");

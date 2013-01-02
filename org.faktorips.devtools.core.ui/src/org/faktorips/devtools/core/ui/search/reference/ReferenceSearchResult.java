@@ -80,9 +80,4 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
         }
         return projects.toArray();
     }
-
-    // TODO wieder rausnehmen, wenn der tree richtig gefuellt wird
-    public Object[] getMatchingElements() {
-        return super.getElements();
-    }
 }

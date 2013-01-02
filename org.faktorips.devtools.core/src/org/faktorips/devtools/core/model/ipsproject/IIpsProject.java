@@ -559,9 +559,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findAllIpsObjects(List<IIpsObject> result) throws CoreException;
 
     /**
-     * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on.
+     * Adds all IPS source files within this IpsProject and the IpsProjects this one depends on to
+     * the given list.
      */
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException;
+
+    /**
+     * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on.
+     */
+    public List<IIpsSrcFile> findAllIpsSrcFiles();
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on

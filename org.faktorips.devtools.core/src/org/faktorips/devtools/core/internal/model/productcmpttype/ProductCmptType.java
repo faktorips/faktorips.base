@@ -762,10 +762,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
                 getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
 
-        /*
-         * Adding dependency for explicitly specified matching associations for differing policy and
-         * product structure. @see FIPS-563
-         */
+        dependsOnAddExplicitlyMatchingAssociations(dependencies);
+        dependsOnAddTables(dependencies, details);
+
+        super.dependsOn(dependencies, details);
+
+        return dependencies.toArray(new IDependency[dependencies.size()]);
+
+    }
+
+    /**
+     * Adding dependency for explicitly specified matching associations for differing policy and
+     * product structure. @see FIPS-563
+     * 
+     * @param dependencies the result set will contain all dependencies that have been found
+     */
+    private void dependsOnAddExplicitlyMatchingAssociations(Set<IDependency> dependencies) throws CoreException {
         for (IProductCmptTypeAssociation association : getProductCmptTypeAssociations()) {
             if (association.constrainsPolicyCmptTypeAssociation(getIpsProject())) {
                 IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociations = association
@@ -778,10 +790,29 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 }
             }
         }
+    }
 
-        super.dependsOn(dependencies, details);
+    /**
+     * Adding TableStructure dependencies for ProductCompTypes. @see FIPS-1171
+     * 
+     * @param dependencies representing List of all Reference Dependencies
+     * @param details contains all details on the dependencies.
+     */
+    private void dependsOnAddTables(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
+        for (ITableStructureUsage tableUsage : getTableStructureUsages()) {
+            String[] table = tableUsage.getTableStructures();
+            for (String string : table) {
+                QualifiedNameType tableName = new QualifiedNameType(string, IpsObjectType.TABLE_STRUCTURE);
 
-        return dependencies.toArray(new IDependency[dependencies.size()]);
+                IpsObjectDependency dependencyTable = IpsObjectDependency.createReferenceDependency(
+                        getQualifiedNameType(), tableName);
+                dependencies.add(dependencyTable);
+
+                addDetails(details, dependencyTable,
+                        ((TableStructureUsage)tableUsage).getTableStructureReference(string),
+                        ITableStructureUsage.PROPERTY_TABLESTRUCTURE);
+            }
+        }
     }
 
     @Override

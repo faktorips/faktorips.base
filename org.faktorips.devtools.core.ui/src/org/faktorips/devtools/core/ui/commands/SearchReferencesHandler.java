@@ -23,18 +23,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.ui.search.reference.ReferencesToPolicySearchQuery;
-import org.faktorips.devtools.core.ui.search.reference.ReferencesToProductSearchQuery;
-import org.faktorips.devtools.core.ui.search.reference.ReferencesToTableContentsSearchQuery;
+import org.faktorips.devtools.core.ui.search.reference.ReferencesToIpsObjectSearchQuery;
 
 /**
  * Handler for finding references to a given IpsObject. Actually supported are {@link IProductCmpt},
  * {@link ITableContents} and {@link IPolicyCmptType}
  * 
- * @author Thorsten Guenther
- * @author Stefan Widmaier
- * @author dirmeier
- * @author stoll
  */
 public class SearchReferencesHandler extends IpsAbstractHandler {
 
@@ -43,20 +37,9 @@ public class SearchReferencesHandler extends IpsAbstractHandler {
         IIpsObject selected;
         try {
             selected = ipsSrcFile.getIpsObject();
-
             if (selected != null) {
-                if (selected instanceof IProductCmpt) {
-                    NewSearchUI.activateSearchResultView();
-                    NewSearchUI.runQueryInBackground(new ReferencesToProductSearchQuery((IProductCmpt)selected));
-                } else if (selected instanceof ITableContents) {
-                    NewSearchUI.activateSearchResultView();
-                    NewSearchUI
-                            .runQueryInBackground(new ReferencesToTableContentsSearchQuery((ITableContents)selected));
-                } else if (selected instanceof IPolicyCmptType) {
-                    IPolicyCmptType referenced = (IPolicyCmptType)selected;
-                    NewSearchUI.activateSearchResultView();
-                    NewSearchUI.runQueryInBackground(new ReferencesToPolicySearchQuery(referenced));
-                }
+                NewSearchUI.activateSearchResultView();
+                NewSearchUI.runQueryInBackground(new ReferencesToIpsObjectSearchQuery(selected));
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

@@ -65,7 +65,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
     /**
      * Adds all given elements as result match to the result list. Subclasses can overwrite this
      * method to perform special operations before adding the found element to the result list (e.g.
-     * combine the found elements to one match with multiple childs)
+     * combine the found elements to one match with multiple children)
      */
     protected void addFoundMatches(IIpsElement[] found) throws CoreException {
         Match[] resultMatches = new Match[found.length];
@@ -79,7 +79,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
     /**
      * Template method to be implemented by subclasses. This method is called once for each search
      * query and returns all objects the query matches. In this method subclasses realize the actual
-     * search in their object model, Exceptionhandling, progressmonitors etc. are handled by the
+     * search in their object model, exception handling, progress monitors etc. are handled by the
      * abstract superclass. If no objects are found an empty array is returned. This method throws a
      * CoreException which is handled by the calling run() method.
      */

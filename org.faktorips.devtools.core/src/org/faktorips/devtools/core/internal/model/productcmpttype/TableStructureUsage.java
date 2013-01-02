@@ -211,7 +211,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
      * Returns the table structure assignment object by the given name, if there is not table
      * structure assignet return <code>null</code>
      */
-    private TableStructureReference getTableStructureReference(String tableStructure) {
+    protected TableStructureReference getTableStructureReference(String tableStructure) {
         for (TableStructureReference tsr : tableStructures) {
             if (tsr.getTableStructure() != null && tsr.getTableStructure().equals(tableStructure)) {
                 return tsr;

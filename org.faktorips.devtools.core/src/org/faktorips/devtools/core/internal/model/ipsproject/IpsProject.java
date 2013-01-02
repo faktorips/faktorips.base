@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -962,6 +963,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException {
         findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
+    }
+
+    @Override
+    public List<IIpsSrcFile> findAllIpsSrcFiles() {
+        try {
+            List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+            findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
+            return result;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
