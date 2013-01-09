@@ -22,11 +22,19 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTy
  * {@link DeltaContentProvider} and {@link DeltaLabelProvider}.
  */
 class DeltaTypeWrapper {
-    DeltaType type;
-    IPropertyValueContainerToTypeDelta delta;
+    private final DeltaType type;
+    private final IPropertyValueContainerToTypeDelta delta;
 
     DeltaTypeWrapper(DeltaType type, IPropertyValueContainerToTypeDelta delta) {
         this.type = type;
         this.delta = delta;
+    }
+
+    DeltaType getDeltaType() {
+        return type;
+    }
+
+    IPropertyValueContainerToTypeDelta getDelta() {
+        return delta;
     }
 }

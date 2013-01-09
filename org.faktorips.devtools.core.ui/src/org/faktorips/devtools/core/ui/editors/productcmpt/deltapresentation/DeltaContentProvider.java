@@ -87,7 +87,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     @Override
     public boolean hasChildren(Object element) {
         return element instanceof IProductCmpt || element instanceof IPropertyValueContainerToTypeDelta
-                || element instanceof DeltaTypeWrapper || element instanceof ProductCmptGenerationToTypeDeltaWrapper;
+                || element instanceof DeltaTypeWrapper || element instanceof ProductCmptGenerationsDeltaViewItem;
     }
 
     /**
@@ -122,8 +122,8 @@ public class DeltaContentProvider implements ITreeContentProvider {
      *         whose string representation is equal).
      */
     private boolean areDifferenceCompositeEntriesEqual(Object a, IFixDifferencesComposite b) {
-        if (a instanceof ProductCmptGenerationToTypeDeltaWrapper) {
-            a = ((ProductCmptGenerationToTypeDeltaWrapper)a).getDelta();
+        if (a instanceof ProductCmptGenerationsDeltaViewItem) {
+            a = ((ProductCmptGenerationsDeltaViewItem)a).getDelta();
         }
         if (!(a instanceof IPropertyValueContainerToTypeDelta) || !(b instanceof IPropertyValueContainerToTypeDelta)) {
             return false;
@@ -173,13 +173,13 @@ public class DeltaContentProvider implements ITreeContentProvider {
                 for (Object o : kids) {
                     if (areDifferenceCompositeEntriesEqual(o, composite)) {
                         isContained = true;
-                        ((ProductCmptGenerationToTypeDeltaWrapper)o)
+                        ((ProductCmptGenerationsDeltaViewItem)o)
                                 .addDate((ProductCmptGenerationToTypeDelta)composite);
                         break;
                     }
                 }
                 if (!isContained) {
-                    kids.add(new ProductCmptGenerationToTypeDeltaWrapper((ProductCmptGenerationToTypeDelta)composite));
+                    kids.add(new ProductCmptGenerationsDeltaViewItem((ProductCmptGenerationToTypeDelta)composite));
                 }
             }
             if (fixDifferenceComposite instanceof IPropertyValueContainerToTypeDelta) {
@@ -201,12 +201,12 @@ public class DeltaContentProvider implements ITreeContentProvider {
             return getChildrenOfIProductCmpt((IProductCmpt)parentElement);
         } else if (parentElement instanceof DeltaTypeWrapper) {
             DeltaTypeWrapper delta = (DeltaTypeWrapper)parentElement;
-            return delta.delta.getEntries(delta.type);
+            return delta.getDelta().getEntries(delta.getDeltaType());
         } else if (parentElement instanceof IPropertyValueContainerToTypeDelta) {
             IPropertyValueContainerToTypeDelta delta = (IPropertyValueContainerToTypeDelta)parentElement;
             return getPropertyChildren(delta);
-        } else if (parentElement instanceof ProductCmptGenerationToTypeDeltaWrapper) {
-            return getPropertyChildren(((ProductCmptGenerationToTypeDeltaWrapper)parentElement).getDelta());
+        } else if (parentElement instanceof ProductCmptGenerationsDeltaViewItem) {
+            return getPropertyChildren(((ProductCmptGenerationsDeltaViewItem)parentElement).getDelta());
         }
         return null;
     }

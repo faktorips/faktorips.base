@@ -47,7 +47,7 @@ public class DeltaLabelProvider extends LabelProvider {
     public Image getImage(Object element) {
         ImageDescriptor descriptor = null;
         if (element instanceof DeltaTypeWrapper) {
-            descriptor = getBaseImage(((DeltaTypeWrapper)element).type);
+            descriptor = getBaseImage(((DeltaTypeWrapper)element).getDeltaType());
         } else if (element instanceof IDeltaEntryForProperty) {
             IDeltaEntryForProperty entry = (IDeltaEntryForProperty)element;
             Image baseImage = getBaseImage(entry.getPropertyType());
@@ -62,8 +62,8 @@ public class DeltaLabelProvider extends LabelProvider {
             descriptor = getImageDescriptorForDeltaEntry((IDeltaEntry)element);
         }
         if (descriptor == null) {
-            if (element instanceof ProductCmptGenerationToTypeDeltaWrapper) {
-                return workbenchLabelProvider.getImage(((ProductCmptGenerationToTypeDeltaWrapper)element).getDelta());
+            if (element instanceof ProductCmptGenerationsDeltaViewItem) {
+                return workbenchLabelProvider.getImage(((ProductCmptGenerationsDeltaViewItem)element).getDelta());
             }
             return workbenchLabelProvider.getImage(element);
         }
@@ -128,13 +128,13 @@ public class DeltaLabelProvider extends LabelProvider {
     @Override
     public String getText(Object element) {
         if (element instanceof DeltaTypeWrapper) {
-            return ((DeltaTypeWrapper)element).type.getDescription();
+            return ((DeltaTypeWrapper)element).getDeltaType().getDescription();
         }
         if (element instanceof IDeltaEntry) {
             return ((IDeltaEntry)element).getDescription();
         }
-        if (element instanceof ProductCmptGenerationToTypeDeltaWrapper) {
-            return ((ProductCmptGenerationToTypeDeltaWrapper)element).getDates();
+        if (element instanceof ProductCmptGenerationsDeltaViewItem) {
+            return ((ProductCmptGenerationsDeltaViewItem)element).getDates();
         }
         return workbenchLabelProvider.getText(element);
     }

@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
  * {@link ProductCmptGenerationToTypeDelta} object and can afterwards be enriched by further
  * generations, which share the same differences.
  */
-class ProductCmptGenerationToTypeDeltaWrapper {
+class ProductCmptGenerationsDeltaViewItem {
     /**
      * List of all valid from dates of generations in this wrapper.
      */
@@ -42,7 +42,7 @@ class ProductCmptGenerationToTypeDeltaWrapper {
      */
     private static final GregorianCalendarFormat formatter = GregorianCalendarFormat.newInstance();
 
-    ProductCmptGenerationToTypeDeltaWrapper(ProductCmptGenerationToTypeDelta delta) {
+    ProductCmptGenerationsDeltaViewItem(ProductCmptGenerationToTypeDelta delta) {
         validFromDates = new ArrayList<GregorianCalendar>();
         validFromDates.add(delta.getPropertyValueContainer().getValidFrom());
         this.delta = delta;
