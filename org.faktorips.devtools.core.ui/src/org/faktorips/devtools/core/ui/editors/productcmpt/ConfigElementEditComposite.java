@@ -94,12 +94,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
             final RadioButtonGroupField<String> radioButtonGroupField = (RadioButtonGroupField<String>)editField;
 
             getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.TRUE.toString()), pmo,
-                    BooleanValueSetPMO.PROPERTY_TRUE_ENABLED);
+                    BooleanValueSetPMO.PROPERTY_TRUE);
             getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.FALSE.toString()), pmo,
-                    BooleanValueSetPMO.PROPERTY_FALSE_ENABLED);
+                    BooleanValueSetPMO.PROPERTY_FALSE);
             Button nullButton = radioButtonGroupField.getButton(null);
             if (nullButton != null) {
-                getBindingContext().bindEnabled(nullButton, pmo, BooleanValueSetPMO.PROPERTY_NULL_ENABLED);
+                getBindingContext().bindEnabled(nullButton, pmo, BooleanValueSetPMO.PROPERTY_NULL);
             }
         }
     }
