@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
  * This Class filters empty associations of an {@link IProductCmptGeneration}.
  * <p>
  * It works, when an association has an {@link IProductCmptGeneration} as parentElement in the
- * Viewer. The association must be represented by a String.
+ * Viewer. The association must be represented by an {@link AbstractAssociationViewItem}.
  * </p>
  * 
  * @author dicker
@@ -31,9 +31,10 @@ public class EmptyAssociationFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        if (parentElement instanceof IProductCmptGeneration && element instanceof String) {
+        if (parentElement instanceof IProductCmptGeneration && element instanceof AbstractAssociationViewItem) {
             IProductCmptGeneration generation = (IProductCmptGeneration)parentElement;
-            IProductCmptLink[] links = generation.getLinks((String)element);
+            AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
+            IProductCmptLink[] links = generation.getLinks(associationViewItem.getAssociationName());
             return links.length != 0;
         }
         return true;
