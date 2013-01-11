@@ -217,11 +217,6 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
             entry.initFromXml(element, project);
             return entry;
         }
-        if (type.equals(TYPE_PLUGIN)) {
-            entry = new IpsPluginEntry(path);
-            entry.initFromXml(element, project);
-            return entry;
-        }
         throw new RuntimeException("Unknown entry type " + type); //$NON-NLS-1$
     }
 
