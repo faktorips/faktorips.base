@@ -189,9 +189,8 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_TypeCantBeFound;
 
-    public static String AttributesSection_OverrideButton;
-
     public static String PctEditor_title;
+
     public static String PersistentAssociationSection_labelAssociationTarget;
 
     public static String PersistentAssociationSection_labelFetchType;
@@ -269,10 +268,6 @@ public class Messages extends NLS {
     public static String GeneralInfoSection_labelType;
     public static String GeneralInfoSection_linkSuperclass;
     public static String GeneralInfoSection_title;
-
-    public static String OverrideAttributeDialog_labelNoAttributes;
-    public static String OverrideAttributeDialog_labelSelectAttribute;
-    public static String OverrideAttributeDialog_title;
 
     public static String AttributeEditDialog_generalTitle;
     public static String AttributeEditDialog_labelActivateValidationRule;

@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -71,6 +72,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
@@ -1687,10 +1689,37 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * The original {@link IPolicyCmptTypeAttribute} should not be returned.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributes() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesForPolicyCmptTypeAttribute()
+            throws CoreException {
         IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType, "overwrittenAttribute");
         IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)createPolicyAttributeProperty(policyCmptType,
                 "overwrittenAttribute");
+        attribute.setOverwrite(true);
+
+        ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("myCategory");
+        superAttribute.setCategory(category.getName());
+        attribute.setCategory(category.getName());
+
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, true, ipsProject);
+        assertTrue(properties.contains(attribute));
+        assertFalse(properties.contains(superAttribute));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptTypeAttribute} marked as <em>overwrite</em> is assigned to an
+     * {@link IProductCmptCategory}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The original {@link IProductCmptTypeAttribute} should not be returned.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesForProductCmptTypeAttribute()
+            throws CoreException {
+        IProductCmptProperty superAttribute = createProductAttributeProperty(superProductCmptType,
+                "overwrittenAttribute");
+        IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)createProductAttributeProperty(
+                productCmptType, "overwrittenAttribute");
         attribute.setOverwrite(true);
 
         ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("myCategory");
@@ -1715,12 +1744,45 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * returned if the context type is the supertype.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesAcrossDifferentCategories()
+    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesAcrossDifferentCategoriesForPolicyCmptTypeAttribute()
             throws CoreException {
 
         IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType, "overwrittenAttribute");
         IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)createPolicyAttributeProperty(policyCmptType,
                 "overwrittenAttribute");
+        attribute.setOverwrite(true);
+
+        ProductCmptCategory category1 = (ProductCmptCategory)superProductCmptType.newCategory("category1");
+        ProductCmptCategory category2 = (ProductCmptCategory)superProductCmptType.newCategory("category2");
+        superAttribute.setCategory(category1.getName());
+        attribute.setCategory(category2.getName());
+
+        assertTrue(category1.findProductCmptProperties(superProductCmptType, true, ipsProject).contains(superAttribute));
+        assertFalse(category1.findProductCmptProperties(productCmptType, true, ipsProject).contains(superAttribute));
+        assertTrue(category2.findProductCmptProperties(productCmptType, true, ipsProject).contains(attribute));
+        assertFalse(category2.findProductCmptProperties(productCmptType, true, ipsProject).contains(superAttribute));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptTypeAttribute} marked as <em>overwrite</em> is assigned to an
+     * {@link IProductCmptCategory}. The {@link IProductCmptCategory} of the overwriting
+     * {@link IProductCmptTypeAttribute} is different from the {@link IProductCmptCategory} of the
+     * original {@link IProductCmptTypeAttribute}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The original {@link IProductCmptTypeAttribute} should not be returned as property of it's
+     * {@link IProductCmptCategory} with the subtype as context type. However, it must still be
+     * returned if the context type is the supertype.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesAcrossDifferentCategoriesForProductCmptTypeAttribute()
+            throws CoreException {
+
+        IProductCmptProperty superAttribute = createProductAttributeProperty(superProductCmptType,
+                "overwrittenAttribute");
+        IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)createProductAttributeProperty(
+                productCmptType, "overwrittenAttribute");
         attribute.setOverwrite(true);
 
         ProductCmptCategory category1 = (ProductCmptCategory)superProductCmptType.newCategory("category1");
@@ -2772,6 +2834,68 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, "otherCategory");
 
         assertWholeContentChangedEvent(productCmptType.getIpsSrcFile());
+    }
+
+    @Test
+    public void testOverrideAttributes() throws CoreException {
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
+        attribute.setName("override");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setDefaultValue("defaultValue");
+        attribute.setValueSetType(ValueSetType.ENUM);
+        for (IDescription description : attribute.getDescriptions()) {
+            description.setText("Overridden Description");
+        }
+
+        IProductCmptType overridingType = newProductCmptType(ipsProject, "OverridingType");
+        overridingType.overrideAttributes(Arrays.asList(attribute));
+
+        IProductCmptTypeAttribute overriddenAttribute = overridingType.getProductCmptTypeAttribute(attribute.getName());
+        assertEquals(attribute.getDatatype(), overriddenAttribute.getDatatype());
+        assertEquals(attribute.getDefaultValue(), overriddenAttribute.getDefaultValue());
+        assertEquals(attribute.getValueSet().getValueSetType(), overriddenAttribute.getValueSet().getValueSetType());
+        for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
+            assertEquals(attribute.getDescriptions().get(i).getText(), overriddenAttribute.getDescriptions().get(i)
+                    .getText());
+        }
+        assertTrue(overriddenAttribute.isOverwrite());
+    }
+
+    @Test
+    public void testFindOverrideAttributeCandidates() throws CoreException {
+        IProductCmptType superPcType = newProductCmptType(ipsProject, "Super");
+
+        // 1. Attribute
+        IProductCmptTypeAttribute attribute = superPcType.newProductCmptTypeAttribute();
+        attribute.setName("ToOverride");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setDefaultValue("defaultValue");
+        attribute.setValueSetType(ValueSetType.ENUM);
+        for (IDescription description : attribute.getDescriptions()) {
+            description.setText("Overridden Description");
+        }
+
+        // 2. Attribute
+        IProductCmptTypeAttribute attribute2 = superPcType.newProductCmptTypeAttribute();
+        attribute2.setName("NotOverride");
+        attribute2.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute2.setDefaultValue("defaultValue");
+        attribute2.setValueSetType(ValueSetType.ENUM);
+
+        IProductCmptType overridingType = newProductCmptType(ipsProject, "OverridingType");
+        overridingType.setSupertype(superPcType.getQualifiedName());
+
+        List<IAttribute> findOverrideAttributeCandidates = overridingType.findOverrideAttributeCandidates(ipsProject);
+        // 2 to Override
+        assertEquals(2, findOverrideAttributeCandidates.size());
+
+        // now override the first
+        overridingType.overrideAttributes(Arrays.asList(attribute));
+
+        findOverrideAttributeCandidates = overridingType.findOverrideAttributeCandidates(ipsProject);
+        // only the second to find
+        assertEquals(1, findOverrideAttributeCandidates.size());
+        assertEquals("NotOverride", findOverrideAttributeCandidates.get(0).getName());
     }
 
     private Change performDeleteResourceChange(IIpsSrcFile ipsSrcFile, IProgressMonitor pm) throws CoreException {

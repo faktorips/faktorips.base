@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -87,11 +89,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
-    }
-
-    @Override
-    public boolean isOverwrite() {
-        return false;
     }
 
     @Override
@@ -258,4 +255,29 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
+    @Override
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(result, ipsProject);
+        if (isOverwrite()) {
+            IProductCmptTypeAttribute superAttr = (IProductCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
+            if (superAttr != null) {
+                if (isMultiValueAttribute() != superAttr.isMultiValueAttribute()) {
+                    if (isMultiValueAttribute()) {
+                        result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
+                                Messages.ProductCmptTypeAttribute_msgOverwritten_MultiValueAttribute_different,
+                                Message.ERROR, this));
+                    } else {
+                        result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
+                                Messages.ProductCmptTypeAttribute_msgOverwritten_SingleValueAttribute_different,
+                                Message.ERROR, this));
+                    }
+                }
+                if (isChangingOverTime() != superAttr.isChangingOverTime()) {
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
+                            Messages.ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different,
+                            Message.ERROR, this));
+                }
+            }
+        }
+    }
 }

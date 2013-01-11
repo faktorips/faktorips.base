@@ -1554,5 +1554,4 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
     }
-
 }

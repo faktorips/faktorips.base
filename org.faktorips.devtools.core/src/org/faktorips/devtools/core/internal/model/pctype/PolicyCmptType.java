@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +34,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -381,11 +379,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
-        return TypeHierarchy.getSupertypeHierarchy(this);
-    }
-
-    @Override
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchy(this);
     }
@@ -408,64 +401,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             }
         }
         return result;
-    }
-
-    @Override
-    public List<IPolicyCmptTypeAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptType supertype = (IPolicyCmptType)findSupertype(ipsProject);
-
-        if (supertype == null) {
-            // no supertype, no candidates :-)
-            return new ArrayList<IPolicyCmptTypeAttribute>();
-        }
-
-        // for easy finding attributes by name put them in a map with the name as key
-        Map<String, IAttribute> toExclude = new HashMap<String, IAttribute>();
-        for (IAttribute attribute : attributes) {
-            IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)attribute;
-            if (attr.isOverwrite()) {
-                toExclude.put(attr.getName(), attr);
-            }
-        }
-
-        // find all overwrite-candidates
-        List<IAttribute> candidates = getSupertypeHierarchy().getAllAttributes(supertype);
-        List<IPolicyCmptTypeAttribute> result = new ArrayList<IPolicyCmptTypeAttribute>();
-        for (IAttribute candidate : candidates) {
-            if (!toExclude.containsKey(candidate.getName())) {
-                if (candidate instanceof IPolicyCmptTypeAttribute) {
-                    IPolicyCmptTypeAttribute pctAttributeCandidate = (IPolicyCmptTypeAttribute)candidate;
-                    result.add(pctAttributeCandidate);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    @Override
-    public List<IPolicyCmptTypeAttribute> overrideAttributes(List<IPolicyCmptTypeAttribute> attributes) {
-        List<IPolicyCmptTypeAttribute> newAttributes = new ArrayList<IPolicyCmptTypeAttribute>(attributes.size());
-        for (IPolicyCmptTypeAttribute attribute : attributes) {
-            IPolicyCmptTypeAttribute override = getPolicyCmptTypeAttribute(attribute.getName());
-
-            if (override == null) {
-                override = newPolicyCmptTypeAttribute();
-                override.setDatatype(attribute.getDatatype());
-                override.setProductRelevant(attribute.isProductRelevant());
-                override.setName(attribute.getName());
-                override.setDefaultValue(attribute.getDefaultValue());
-                override.setValueSetCopy(attribute.getValueSet());
-                override.setAttributeType(attribute.getAttributeType());
-                for (IDescription description : attribute.getDescriptions()) {
-                    IDescription overrideDescription = override.getDescription(description.getLocale());
-                    overrideDescription.setText(description.getText());
-                }
-            }
-            override.setOverwrite(true);
-            newAttributes.add(override);
-        }
-        return newAttributes;
     }
 
     @Override

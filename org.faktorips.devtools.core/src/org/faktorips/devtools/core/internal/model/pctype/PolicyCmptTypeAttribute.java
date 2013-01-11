@@ -39,9 +39,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -62,8 +60,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private AttributeType attributeType = AttributeType.CHANGEABLE;
 
     private IValueSet valueSet;
-
-    private boolean overwrites;
 
     private String computationMethodSignature = ""; //$NON-NLS-1$
 
@@ -86,19 +82,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
-    }
-
-    @Override
-    public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
-        IType supertype = getPolicyCmptType().findSupertype(ipsProject);
-        if (supertype == null) {
-            return null;
-        }
-        IAttribute candidate = supertype.findAttribute(name, ipsProject);
-        if (candidate == this) {
-            return null; // can happen if we have a cycle in the type hierarchy!
-        }
-        return (IPolicyCmptTypeAttribute)candidate;
     }
 
     @Override
@@ -278,18 +261,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 }
             }
         }
-
-        IPolicyCmptTypeAttribute superAttr = findOverwrittenAttribute(ipsProject);
-        if (overwrites) {
-            if (superAttr == null) {
-                String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
-                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
-                        PROPERTY_OVERWRITES, PROPERTY_NAME }));
-            } else {
-                if (!valueSet.isDetailedSpecificationOf(superAttr.getValueSet())) {
-                    String text = Messages.PolicyCmptTypeAttribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
-                    result.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$
-                }
+        if (isOverwrite()) {
+            IPolicyCmptTypeAttribute superAttr = (IPolicyCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
+            if (superAttr != null) {
                 if (!attributeType.equals(superAttr.getAttributeType())) {
                     // there is only one allowed change: superAttribute is deived on the fly and
                     // this attribute is changeable. See FIPS-1103
@@ -311,7 +285,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
@@ -320,7 +293,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
         element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
@@ -411,18 +383,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             IpsPlugin.log(e);
         }
         return null;
-    }
-
-    @Override
-    public boolean isOverwrite() {
-        return overwrites;
-    }
-
-    @Override
-    public void setOverwrite(boolean overwrites) {
-        boolean old = this.overwrites;
-        this.overwrites = overwrites;
-        valueChanged(old, overwrites);
     }
 
     @Override

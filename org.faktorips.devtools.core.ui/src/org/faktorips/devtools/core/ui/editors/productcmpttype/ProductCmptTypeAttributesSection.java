@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.ui.editors.type.AttributesSection;
  */
 public class ProductCmptTypeAttributesSection extends AttributesSection {
 
+    private ProductCmptTypeAttributesComposite attributesComposite;
+
     public ProductCmptTypeAttributesSection(IProductCmptType productCmptType, Composite parent,
             IWorkbenchPartSite site, UIToolkit toolkit) {
 
@@ -39,11 +41,18 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
+        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
+        return attributesComposite;
     }
 
     private IProductCmptType getProductCmptType() {
         return (IProductCmptType)getType();
+    }
+
+    @Override
+    protected void performRefresh() {
+        super.performRefresh();
+        attributesComposite.updateOverrideButtonEnabledState();
     }
 
     private class ProductCmptTypeAttributesComposite extends AttributesComposite {
@@ -62,6 +71,10 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
             return new AttributeEditDialog((IProductCmptTypeAttribute)part, shell);
         }
 
+        @Override
+        protected void updateOverrideButtonEnabledState() {
+            super.updateOverrideButtonEnabledState();
+        }
     }
 
 }

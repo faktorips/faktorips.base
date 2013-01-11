@@ -23,6 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -125,6 +126,54 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setName("a.b");
         ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttributeHasDifferentDatatype() throws Exception {
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setOverwrite(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+
+        IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
+        type.setSupertype(supertype.getQualifiedName());
+        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
+        superAttr.setName("name");
+        superAttr.setDatatype("Integer");
+
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+
+        attribute.setDatatype(superAttr.getDatatype());
+        ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttributeHasDifferentModifier() throws Exception {
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setModifier(Modifier.PUBLIC);
+        attribute.setOverwrite(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+
+        IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
+        type.setSupertype(supertype.getQualifiedName());
+        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
+        superAttr.setName("name");
+        superAttr.setDatatype("String");
+        superAttr.setModifier(Modifier.PUBLISHED);
+
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+
+        attribute.setModifier(superAttr.getModifier());
+        ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
     }
 
     @Test

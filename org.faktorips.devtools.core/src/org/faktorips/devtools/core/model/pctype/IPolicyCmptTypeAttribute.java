@@ -37,7 +37,6 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
 
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
-    public final static String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute can't be product relevant if the type
@@ -45,12 +44,6 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      */
     public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = IAttribute.MSGCODE_PREFIX
             + "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the attribute is marked overwriting an attribute in
-     * the super type hierarchy, but there is no such attribute.
-     */
-    public final static String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method has a different data type.
@@ -70,13 +63,6 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * exist.
      */
     public final static String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = IAttribute.MSGCODE_PREFIX
-            + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that an attribute overwrites another but has a different
-     * attribute type (which is not allowed).
-     */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
             + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
 
     /**
@@ -189,23 +175,6 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * Creates a copy of the given value set and applies this copy to this attribute.
      */
     public void setValueSetCopy(IValueSet source);
-
-    /**
-     * <code>true</code> to indicate that this attribute overwrites an attribute with the same name
-     * somewhere up the super type hierarchy or <code>false</code> to let this attribute be a new
-     * one.
-     */
-    public void setOverwrite(boolean overwrites);
-
-    /**
-     * Returns the first attribute found with the same name in the super types hierarchy or
-     * <code>null</code> if no such attribute exists.
-     * 
-     * @param ipsProject The project which IPS object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the object containing information about how to persist this policy component type

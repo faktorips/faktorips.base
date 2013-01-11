@@ -46,6 +46,9 @@ public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
                     && !((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
                 overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
             }
+            if (attribute.isOverwrite()) {
+                overlays[3] = OverlayIcons.OVERRIDE_OVR;
+            }
             return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseImage, overlays);
         }
         return getDefaultImageDescriptor();

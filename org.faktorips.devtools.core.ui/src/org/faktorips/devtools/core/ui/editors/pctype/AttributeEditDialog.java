@@ -42,6 +42,8 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -76,10 +78,8 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
@@ -323,28 +323,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
         final Checkbox cb = new Checkbox(workArea, getToolkit());
         cb.setText(Messages.AttributeEditDialog_overwritesNote);
-        EditField<Boolean> overwrittenField = getBindingContext().bindContent(cb, attribute,
-                IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
-        overwrittenField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent event) {
-                if (cb.isChecked()) {
-                    try {
-                        IPolicyCmptTypeAttribute overwrittenAttribute = attribute.findOverwrittenAttribute(ipsProject);
-                        if (overwrittenAttribute != null) {
-                            attribute.setDatatype(overwrittenAttribute.getDatatype());
-                            attribute.setModifier(overwrittenAttribute.getModifier());
-                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
-                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
-                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                        }
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
-                }
-
-            }
-        });
+        getBindingContext().bindContent(cb, attribute, IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
         datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
@@ -628,41 +607,68 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        super.contentsChanged(event);
-        if (attribute.getAttributeType() != currentAttributeType) {
-            currentAttributeType = attribute.getAttributeType();
-            recreateConfigGroupContent();
-        }
-        ValueDatatype newDatatype = null;
+    protected void contentsChangedInternal(ContentChangeEvent event) {
+        super.contentsChangedInternal(event);
         try {
-            newDatatype = attribute.findDatatype(ipsProject);
+            if (attribute.getAttributeType() != currentAttributeType) {
+                currentAttributeType = attribute.getAttributeType();
+                recreateConfigGroupContent();
+            }
+
+            if (event.getPropertyChangeEvent() != null && event.getPart().equals(attribute) && attribute.isOverwrite()
+                    && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName())) {
+                final IPolicyCmptTypeAttribute overwrittenAttribute = (IPolicyCmptTypeAttribute)attribute
+                        .findOverwrittenAttribute(ipsProject);
+                if (overwrittenAttribute != null) {
+                    IpsPlugin
+                            .getDefault()
+                            .getIpsModel()
+                            .executeModificationsWithSingleEvent(
+                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+
+                                        @Override
+                                        protected boolean execute() throws CoreException {
+                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                            attribute.setModifier(overwrittenAttribute.getModifier());
+                                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                            attribute.setCategory(overwrittenAttribute.getCategory());
+                                            return true;
+                                        }
+                                    });
+                }
+            }
+
+            ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
+
+            boolean enabled = newDatatype != null;
+            if (defaultValueField != null) {
+                defaultValueField.getControl().setEnabled(enabled);
+            }
+            if (valueSetSpecificationControl != null) {
+                valueSetSpecificationControl
+                        .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                                : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                valueSetSpecificationControl.setDataChangeable(enabled);
+            }
+            if (newDatatype == null || newDatatype.equals(currentDatatype)) {
+                return;
+            }
+            currentDatatype = newDatatype;
+            if (defaultValueField != null) {
+                getBindingContext().removeBindings(defaultValueField.getControl());
+                defaultValueField.getControl().dispose();
+            }
+            if (valueSetWorkArea != null && !valueSetWorkArea.isDisposed()) {
+                createDefaultValueEditField(valueSetWorkArea);
+                valueSetWorkArea.layout();
+            }
+            updateAllowedValueSetTypes();
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            throw new CoreRuntimeException(e);
         }
-        boolean enabled = newDatatype != null;
-        if (defaultValueField != null) {
-            defaultValueField.getControl().setEnabled(enabled);
-        }
-        if (valueSetSpecificationControl != null) {
-            valueSetSpecificationControl
-                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
-            valueSetSpecificationControl.setDataChangeable(enabled);
-        }
-        if (newDatatype == null || newDatatype.equals(currentDatatype)) {
-            return;
-        }
-        currentDatatype = newDatatype;
-        if (defaultValueField != null) {
-            getBindingContext().removeBindings(defaultValueField.getControl());
-            defaultValueField.getControl().dispose();
-        }
-        if (valueSetWorkArea != null && !valueSetWorkArea.isDisposed()) {
-            createDefaultValueEditField(valueSetWorkArea);
-            valueSetWorkArea.layout();
-        }
-        updateAllowedValueSetTypes();
+
     }
 
     private void updateAllowedValueSetTypes() {

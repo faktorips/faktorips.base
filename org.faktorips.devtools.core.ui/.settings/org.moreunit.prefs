@@ -1,7 +1,5 @@
-#Wed Jul 20 18:31:06 CEST 2011
 eclipse.preferences.version=1
-org.moreunit.flexiblenaming=true
-org.moreunit.prefixes=
+org.moreunit.preferences.version=2
 org.moreunit.test_type=junit4
 org.moreunit.unitsourcefolder=org.faktorips.devtools.core.ui\:src\:org.faktorips.devtools.core.ui.test\:src
 org.moreunit.useprojectsettings=true

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
@@ -398,6 +400,56 @@ public abstract class Type extends BaseIpsObject implements IType {
             newMethods.add(override);
         }
         return newMethods;
+    }
+
+    @Override
+    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
+        IType supertype = findSupertype(ipsProject);
+
+        if (supertype == null) {
+            // no supertype, no candidates :-)
+            return new ArrayList<IAttribute>();
+        }
+
+        // for easy finding attributes by name put them in a map with the name as key
+        Map<String, IAttribute> toExclude = new HashMap<String, IAttribute>();
+        for (IAttribute attribute : getAttributesPartCollection()) {
+            if (attribute.isOverwrite()) {
+                toExclude.put(attribute.getName(), attribute);
+            }
+        }
+
+        // find all overwrite-candidates
+        List<IAttribute> candidates = getSupertypeHierarchy().getAllAttributes(supertype);
+        List<IAttribute> result = new ArrayList<IAttribute>();
+        for (IAttribute candidate : candidates) {
+            if (!toExclude.containsKey(candidate.getName())) {
+                result.add(candidate);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes) {
+        List<IAttribute> newAttributes = new ArrayList<IAttribute>(attributes.size());
+        for (IAttribute attribute : attributes) {
+            IAttribute override = getAttribute(attribute.getName());
+
+            if (override == null) {
+                override = newAttribute();
+                override.copyFrom(attribute);
+            }
+            override.setOverwrite(true);
+            newAttributes.add(override);
+        }
+        return newAttributes;
+    }
+
+    @Override
+    public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
+        return TypeHierarchy.getSupertypeHierarchy(this);
     }
 
     @Override

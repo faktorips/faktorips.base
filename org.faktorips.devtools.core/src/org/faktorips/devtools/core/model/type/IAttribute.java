@@ -27,6 +27,8 @@ public interface IAttribute extends ITypePart {
 
     public final static String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
 
+    public final static String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
+
     /**
      * Prefix for all message codes of this class.
      */
@@ -67,6 +69,19 @@ public interface IAttribute extends ITypePart {
      * in the value set of this attribute.
      */
     public final static String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX + "DefaultNotInValueSet"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the attribute is marked overwriting an attribute in
+     * the super type hierarchy, but there is no such attribute.
+     */
+    public final static String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an attribute overwrites another but has a different
+     * attribute type (which is not allowed).
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeDifferentType"; //$NON-NLS-1$
 
     /**
      * Sets the attribute's name.
@@ -117,6 +132,23 @@ public interface IAttribute extends ITypePart {
      * name somewhere up the supertype hierarchy, <code>false</code> otherwise.
      */
     public boolean isOverwrite();
+
+    /**
+     * <code>true</code> to indicate that this attribute overwrites an attribute with the same name
+     * somewhere up the super type hierarchy or <code>false</code> to let this attribute be a new
+     * one.
+     */
+    public void setOverwrite(boolean overwrites);
+
+    /**
+     * Returns the first attribute found with the same name in the super types hierarchy or
+     * <code>null</code> if no such attribute exists.
+     * 
+     * @param ipsProject The project which IPS object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
 
     public IValueSet getValueSet() throws CoreException;
 

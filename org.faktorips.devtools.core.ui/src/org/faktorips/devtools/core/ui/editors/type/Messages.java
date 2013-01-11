@@ -31,6 +31,7 @@ public class Messages extends NLS {
 
     public static String AttributesSection_title;
     public static String AttributesSection_openEnumContentInNewEditor;
+    public static String AttributesSection_OverrideButton;
 
     public static String AssociationsSection_title;
 
@@ -58,4 +59,7 @@ public class Messages extends NLS {
     public static String ParametersEditControl_columnLabelDefaultValue;
     public static String ParametersEditControl_columnLabelName;
 
+    public static String OverrideAttributeDialog_labelNoAttributes;
+    public static String OverrideAttributeDialog_labelSelectAttribute;
+    public static String OverrideAttributeDialog_title;
 }

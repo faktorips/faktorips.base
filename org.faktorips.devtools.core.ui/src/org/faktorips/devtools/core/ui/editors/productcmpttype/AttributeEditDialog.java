@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -128,6 +130,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Text nameText = getToolkit().createText(workArea);
         nameText.setFocus();
         getBindingContext().bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
+
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
+        final Checkbox cb = new Checkbox(workArea, getToolkit());
+        cb.setText(Messages.AttributeEditDialog_overwritesNote);
+        getBindingContext().bindContent(cb, attribute, IAttribute.PROPERTY_OVERWRITES);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
@@ -229,9 +236,34 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        super.contentsChanged(event);
+    protected void contentsChangedInternal(ContentChangeEvent event) {
+        super.contentsChangedInternal(event);
         try {
+            if (event.getPropertyChangeEvent() != null && event.getPart().equals(attribute) && attribute.isOverwrite()
+                    && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName())) {
+                final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
+                        .findOverwrittenAttribute(ipsProject);
+                if (overwrittenAttribute != null) {
+                    IpsPlugin
+                            .getDefault()
+                            .getIpsModel()
+                            .executeModificationsWithSingleEvent(
+                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+
+                                        @Override
+                                        protected boolean execute() throws CoreException {
+                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                            attribute.setModifier(overwrittenAttribute.getModifier());
+                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                            attribute.setMultiValueAttribute(overwrittenAttribute
+                                                    .isMultiValueAttribute());
+                                            attribute.setCategory(overwrittenAttribute.getCategory());
+                                            return true;
+                                        }
+                                    });
+                }
+            }
+
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
             boolean enabled = newDatatype != null;
             defaultValueField.getControl().setEnabled(enabled);
@@ -249,7 +281,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             createDefaultValueEditField();
             updateValueSetTypes();
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
 
     }

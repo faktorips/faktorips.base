@@ -37,8 +37,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -55,7 +55,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     private Set<IIpsSrcFile> testCaseTypeCmptSrcFiles;
 
     /** Set containing all potentially referencing policy component types. */
-    private Set<IIpsSrcFile> policyCmptTypeSrcFiles;
+    private Set<IIpsSrcFile> typeSrcFiles;
 
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute, attribute.getName());
@@ -76,30 +76,22 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
                 result.add(ipsSrcFile);
             }
+            typeSrcFiles = findReferencingIpsSrcFiles(getAttribute().getIpsObject().getIpsObjectType());
+            for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
+                result.add(ipsSrcFile);
+            }
             if (getAttribute() instanceof IPolicyCmptTypeAttribute) {
                 testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
                 for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
                     result.add(ipsSrcFile);
                 }
-                policyCmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
-                for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
-                    result.add(ipsSrcFile);
-                }
-                // Collect source files for overwritten attributes
-                IPolicyCmptTypeAttribute overwrittenAttribute = null;
-                while (true) {
-                    if (overwrittenAttribute == null) {
-                        overwrittenAttribute = ((IPolicyCmptTypeAttribute)getAttribute())
-                                .findOverwrittenAttribute(getIpsProject());
-                    } else {
-                        overwrittenAttribute = overwrittenAttribute.findOverwrittenAttribute(getIpsProject());
-                    }
-                    if (overwrittenAttribute == null) {
-                        break;
-                    }
-                    result.add(overwrittenAttribute.getIpsSrcFile());
-                }
             }
+            // Collect source files for overwritten attributes
+            List<IAttribute> overwrittenAttributes = getAllOverwrittenAttributes();
+            for (IAttribute overwrittenAttribute : overwrittenAttributes) {
+                result.add(overwrittenAttribute.getIpsSrcFile());
+            }
+
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -122,9 +114,9 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateValidationRule();
             updateProductCmptConfigElementReferences();
             updateTestCaseTypeReferences();
-            updateSuperHierarchyAttributes();
-            updateSubHierarchyAttributes();
         }
+        updateSuperHierarchyAttributes();
+        updateSubHierarchyAttributes();
         updateAttributeName();
         return modificationSet;
     }
@@ -134,16 +126,16 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * the sub type hierarchy.
      */
     private void updateSubHierarchyAttributes() throws CoreException {
-        for (IIpsSrcFile policyCmptTypeSrcFile : policyCmptTypeSrcFiles) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)policyCmptTypeSrcFile.getIpsObject();
+        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
+            IType cmptType = (IType)ipsSrcFile.getIpsObject();
 
             // The policy component type needs to be a sub type of the attribute's type
-            if (!(policyCmptType.isSubtypeOf(getType(), policyCmptType.getIpsProject()))) {
+            if (!(cmptType.isSubtypeOf(getType(), cmptType.getIpsProject()))) {
                 continue;
             }
 
             // An overwriting attribute with the same name must exist
-            IAttribute potentialOverwritingAttribute = policyCmptType.getAttribute(getOriginalName());
+            IAttribute potentialOverwritingAttribute = cmptType.getAttribute(getOriginalName());
             if (potentialOverwritingAttribute == null || !(potentialOverwritingAttribute.isOverwrite())) {
                 continue;
             }
@@ -158,14 +150,25 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * the super type hierarchy.
      */
     private void updateSuperHierarchyAttributes() throws CoreException {
-        List<IPolicyCmptTypeAttribute> attributesToRename = new ArrayList<IPolicyCmptTypeAttribute>(1);
+        List<IAttribute> attributesToRename = getAllOverwrittenAttributes();
+
+        /*
+         * Rename the collected attributes (cannot do this in one step as findOverwrittenAttribute
+         * would not work this way)
+         */
+        for (IAttribute attribute : attributesToRename) {
+            attribute.setName(getNewName());
+        }
+    }
+
+    private List<IAttribute> getAllOverwrittenAttributes() throws CoreException {
+        List<IAttribute> attributesToRename = new ArrayList<IAttribute>(1);
 
         // Collect overwritten attributes
-        IPolicyCmptTypeAttribute overwrittenAttribute = null;
+        IAttribute overwrittenAttribute = null;
         while (true) {
             if (overwrittenAttribute == null) {
-                overwrittenAttribute = ((IPolicyCmptTypeAttribute)getAttribute())
-                        .findOverwrittenAttribute(getIpsProject());
+                overwrittenAttribute = getAttribute().findOverwrittenAttribute(getIpsProject());
             } else {
                 overwrittenAttribute = overwrittenAttribute.findOverwrittenAttribute(getIpsProject());
             }
@@ -174,14 +177,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             }
             attributesToRename.add(overwrittenAttribute);
         }
-
-        /*
-         * Rename the collected attributes (cannot do this in one step as findOverwrittenAttribute
-         * would not work this way)
-         */
-        for (IPolicyCmptTypeAttribute attribute : attributesToRename) {
-            attribute.setName(getNewName());
-        }
+        return attributesToRename;
     }
 
     /**

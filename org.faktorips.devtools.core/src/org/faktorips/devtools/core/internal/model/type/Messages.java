@@ -47,7 +47,10 @@ public class Messages extends NLS {
     public static String Attribute_msg_DefaultValueIsEmptyString;
     public static String Attribute_msg_ValueTypeMismatch;
     public static String Attribute_msg_DefaultNotInValueset;
-
+    public static String Attribute_msgNothingToOverwrite;
+    public static String Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
+    public static String Attribute_msg_Overwritten_datatype_different;
+    public static String Attribute_msg_Overwritten_modifier_different;
     public static String DuplicatePropertyNameValidator_msg;
 
     public static String Method_duplicateParamName;

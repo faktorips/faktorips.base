@@ -261,20 +261,6 @@ public interface IPolicyCmptType extends IType {
     public int[] moveAttributes(int[] indexes, boolean up);
 
     /**
-     * Returns an array of all attributes of all super types not yet overwritten by this policy
-     * component type.
-     */
-    public List<IPolicyCmptTypeAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Creates new attributes in this type overriding the given attributes. Note that it is not
-     * checked, if the attributes really belong to one of the type's super types.
-     * 
-     * @return The created attributes.
-     */
-    public List<IPolicyCmptTypeAttribute> overrideAttributes(List<IPolicyCmptTypeAttribute> attributes);
-
-    /**
      * Returns the type's validation rules.
      */
     public List<IValidationRule> getValidationRules();
@@ -376,11 +362,6 @@ public interface IPolicyCmptType extends IType {
      */
     @Override
     public int[] moveAssociations(int[] indexes, boolean up);
-
-    /**
-     * Creates a new super type hierarchy for the type and returns it.
-     */
-    public ITypeHierarchy getSupertypeHierarchy() throws CoreException;
 
     /**
      * Creates a new sub type hierarchy for the type and returns it.

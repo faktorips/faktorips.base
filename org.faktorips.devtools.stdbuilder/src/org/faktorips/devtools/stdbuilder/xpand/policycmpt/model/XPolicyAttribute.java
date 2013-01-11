@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -122,8 +123,7 @@ public class XPolicyAttribute extends XAttribute {
     public XPolicyAttribute getOverwrittenAttribute() {
         if (isOverwrite()) {
             try {
-                IPolicyCmptTypeAttribute overwrittenAttribute = getAttribute()
-                        .findOverwrittenAttribute(getIpsProject());
+                IAttribute overwrittenAttribute = getAttribute().findOverwrittenAttribute(getIpsProject());
                 return getModelNode(overwrittenAttribute, XPolicyAttribute.class);
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);

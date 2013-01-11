@@ -804,9 +804,9 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException {
-        IIpsProject a = newIpsProject("aProject");
+        IIpsProject a = newIpsProject();
         IProductCmptType aProductTypeProjectA = newProductCmptType(a, "faktorzehn.example.APolicy");
-        IIpsProject b = newIpsProject("bProject");
+        IIpsProject b = newIpsProject();
         IPolicyCmptType aPolicyProjectB = newPolicyCmptTypeWithoutProductCmptType(b, "faktorzehn.example.APolicy");
 
         IIpsObjectPath bPath = b.getIpsObjectPath();
@@ -1014,6 +1014,47 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
                     .getText());
         }
         assertTrue(overriddenAttribute.isOverwrite());
+    }
+
+    @Test
+    public void testFindOverrideAttributeCandidates() throws CoreException {
+        IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
+
+        // 1. Attribute
+        IPolicyCmptTypeAttribute attribute = superPcType.newPolicyCmptTypeAttribute();
+        attribute.setName("ToOverride");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setProductRelevant(true);
+        attribute.setDefaultValue("defaultValue");
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        for (IDescription description : attribute.getDescriptions()) {
+            description.setText("Overridden Description");
+        }
+
+        // 2. Attribute
+        IPolicyCmptTypeAttribute attribute2 = superPcType.newPolicyCmptTypeAttribute();
+        attribute2.setName("NotOverride");
+        attribute2.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute2.setProductRelevant(true);
+        attribute2.setDefaultValue("defaultValue");
+        attribute2.setValueSetType(ValueSetType.ENUM);
+        attribute2.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+
+        IPolicyCmptType overridingType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "OverridingType");
+        overridingType.setSupertype(superPcType.getQualifiedName());
+
+        List<IAttribute> findOverrideAttributeCandidates = overridingType.findOverrideAttributeCandidates(ipsProject);
+        // 2 to override
+        assertEquals(2, findOverrideAttributeCandidates.size());
+
+        // now override the first
+        overridingType.overrideAttributes(Arrays.asList(attribute));
+
+        findOverrideAttributeCandidates = overridingType.findOverrideAttributeCandidates(ipsProject);
+        // only the second to find
+        assertEquals(1, findOverrideAttributeCandidates.size());
+        assertEquals("NotOverride", findOverrideAttributeCandidates.get(0).getName());
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

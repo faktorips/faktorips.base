@@ -509,4 +509,22 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      */
     List<IType> searchSubtypes(boolean transitive, boolean includingSelf);
 
+    /**
+     * Creates new attributes in this type overriding the given attributes. Note that it is not
+     * checked, if the attributes really belong to one of the type's super types.
+     * 
+     * @return The created attributes.
+     */
+    public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes);
+
+    /**
+     * Creates a new super type hierarchy for the type and returns it.
+     */
+    public ITypeHierarchy getSupertypeHierarchy() throws CoreException;
+
+    /**
+     * Returns an array of all attributes of all super types not yet overwritten by this component
+     * type.
+     */
+    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
 }

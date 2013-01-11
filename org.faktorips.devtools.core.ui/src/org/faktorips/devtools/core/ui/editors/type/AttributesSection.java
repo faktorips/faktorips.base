@@ -20,6 +20,11 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -54,6 +59,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
     protected abstract class AttributesComposite extends IpsPartsComposite {
 
         private IpsAction openEnumTypeAction;
+        private Button overrideButton;
 
         protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
             super(type, parent, getSite(), true, true, true, true, true, true, true, true, toolkit);
@@ -84,6 +90,53 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         @Override
         protected void openLink() {
             openEnumTypeAction.run();
+        }
+
+        @Override
+        public void setDataChangeable(boolean flag) {
+            super.setDataChangeable(flag);
+            overrideButton.setEnabled(flag);
+        }
+
+        @Override
+        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
+            super.createButtons(buttons, toolkit);
+            createButtonSpace(buttons, toolkit);
+
+            overrideButton = toolkit.createButton(buttons, Messages.AttributesSection_OverrideButton);
+            overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                    | GridData.VERTICAL_ALIGN_BEGINNING));
+            overrideButton.addSelectionListener(new SelectionListener() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    overrideClicked();
+                }
+
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
+                }
+            });
+            updateOverrideButtonEnabledState();
+
+            return true;
+        }
+
+        protected void updateOverrideButtonEnabledState() {
+            try {
+                boolean supertypeExisting = getType().hasExistingSupertype(getType().getIpsProject());
+                overrideButton.setEnabled(supertypeExisting);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void overrideClicked() {
+            OverrideAttributeDialog dialog = new OverrideAttributeDialog(getType(), getShell());
+            if (dialog.open() == Window.OK) {
+                getType().overrideAttributes(dialog.getSelectedParts());
+                refresh();
+            }
         }
 
         private class AttributeContentProvider implements IStructuredContentProvider {

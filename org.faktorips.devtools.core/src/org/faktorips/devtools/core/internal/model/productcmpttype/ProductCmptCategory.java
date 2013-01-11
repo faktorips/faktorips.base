@@ -27,10 +27,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -186,8 +186,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
              * {@link IProductCmptProperty} from the supertype hierarchy.
              */
             private boolean isOverwriteProperty(IProductCmptProperty property) {
-                if (property instanceof IPolicyCmptTypeAttribute) {
-                    return ((IPolicyCmptTypeAttribute)property).isOverwrite();
+                if (property instanceof IAttribute) {
+                    return ((IAttribute)property).isOverwrite();
                 } else if (property instanceof IProductCmptTypeMethod) {
                     return ((IProductCmptTypeMethod)property).isOverloadsFormula();
                 }

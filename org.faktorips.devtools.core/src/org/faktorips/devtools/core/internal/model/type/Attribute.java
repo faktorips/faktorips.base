@@ -43,6 +43,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     private String defaultValue = null;
 
+    private boolean overwrites;
+
     public Attribute(IType parent, String id) {
         super(parent, id);
         name = ""; //$NON-NLS-1$
@@ -94,11 +96,24 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     @Override
+    public boolean isOverwrite() {
+        return overwrites;
+    }
+
+    @Override
+    public void setOverwrite(boolean overwrites) {
+        boolean old = this.overwrites;
+        this.overwrites = overwrites;
+        valueChanged(old, overwrites, PROPERTY_OVERWRITES);
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$    
+        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
+        overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
     }
 
     @Override
@@ -107,6 +122,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
     }
 
     @Override
@@ -128,6 +144,40 @@ public abstract class Attribute extends TypePart implements IAttribute {
                         PROPERTY_DEFAULT_VALUE));
             }
         }
+        if (overwrites) {
+            IAttribute superAttr = findOverwrittenAttribute(ipsProject);
+            if (superAttr == null) {
+                String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
+                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
+                        PROPERTY_OVERWRITES, PROPERTY_NAME }));
+            } else {
+                if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
+                    String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this));
+                }
+                if (!getDatatype().equals(superAttr.getDatatype())) {
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
+                            Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this));
+                }
+                if (!getModifier().equals(superAttr.getModifier())) {
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
+                            Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this));
+                }
+            }
+        }
+    }
+
+    @Override
+    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
+        IType supertype = ((IType)getIpsObject()).findSupertype(ipsProject);
+        if (supertype == null) {
+            return null;
+        }
+        IAttribute candidate = supertype.findAttribute(name, ipsProject);
+        if (candidate == this) {
+            return null; // can happen if we have a cycle in the type hierarchy!
+        }
+        return candidate;
     }
 
     private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
