@@ -29,11 +29,20 @@ import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
+/**
+ * @deprecated Since 2.0 you should better use the {@link IpsPartEditDialog2} because it uses the
+ *             {@link BindingContext} instead of the deprecated {@link IpsObjectUIController} for
+ *             data binding.
+ * 
+ * @author dirmeier
+ */
+@Deprecated
 public abstract class IpsPartEditDialog extends EditDialog {
 
     protected IpsObjectUIController uiController;
