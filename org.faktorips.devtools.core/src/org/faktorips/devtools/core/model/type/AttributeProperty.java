@@ -39,7 +39,12 @@ public enum AttributeProperty {
      * This property defines whether an attribute supports multiple values. If this property is set
      * the attribute value could have a list of values otherwise it has only one value.
      */
-    MULTI_VALUE_ATTRIBUTE;
+    MULTI_VALUE_ATTRIBUTE,
+
+    /**
+     * This property defines if an attribute is visible in its editor or not.
+     */
+    VISIBLE;
 
     public static void setValue(EnumSet<AttributeProperty> set, AttributeProperty value, boolean active) {
         if (active) {

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
 
     public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    public final static String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
 
     /**
      * This constant defines the multi value property.
@@ -127,4 +128,17 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     void setMultiValueAttribute(boolean multiValueAttribute);
 
+    /**
+     * Setting the property <code>visible</code> for this attribute.
+     * <p>
+     * If this attribute is marked as visible, the attribute will be displayed in the component
+     * editor. If not marked as visible, the attribute will not be displayed in the component
+     * editor.
+     * <p>
+     * This flag is useful in combination with overwritten attributes when an insurance class needs
+     * the attribute but does not need to modify its value.
+     * 
+     * @param visible true to mark the attribute as visible, false to mark it as invisible
+     */
+    void setVisible(boolean visible);
 }

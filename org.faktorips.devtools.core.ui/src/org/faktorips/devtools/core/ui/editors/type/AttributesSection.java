@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -143,7 +146,13 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getAttributes().toArray();
+                List<IAttribute> visibleAttributes = new ArrayList<IAttribute>();
+                for (IAttribute attribute : getType().getAttributes()) {
+                    if (attribute.isVisible()) {
+                        visibleAttributes.add(attribute);
+                    }
+                }
+                return visibleAttributes.toArray();
             }
 
             @Override

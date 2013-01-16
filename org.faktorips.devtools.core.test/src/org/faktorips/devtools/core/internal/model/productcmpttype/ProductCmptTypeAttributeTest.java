@@ -192,4 +192,10 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
+    @Test
+    public void testSetVisible() {
+        assertTrue(productAttribute.isVisible());
+        productAttribute.setVisible(false);
+        assertFalse(productAttribute.isVisible());
+    }
 }

@@ -49,7 +49,8 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    private EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
+    private EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME,
+            AttributeProperty.VISIBLE);
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
@@ -65,7 +66,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         // setting defaults
-        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
+        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME, AttributeProperty.VISIBLE);
 
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
@@ -74,6 +75,10 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         if (element.hasAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE)) {
             String multiValueAttributeElement = element.getAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE);
             setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, Boolean.parseBoolean(multiValueAttributeElement));
+        }
+        if (element.hasAttribute(PROPERTY_VISIBLE)) {
+            String invisibleElement = element.getAttribute(PROPERTY_VISIBLE);
+            setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(invisibleElement));
         }
     }
 
@@ -273,5 +278,17 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return isPropertySet(AttributeProperty.VISIBLE);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        boolean old = isPropertySet(AttributeProperty.VISIBLE);
+        setProperty(AttributeProperty.VISIBLE, visible);
+        valueChanged(old, visible);
     }
 }

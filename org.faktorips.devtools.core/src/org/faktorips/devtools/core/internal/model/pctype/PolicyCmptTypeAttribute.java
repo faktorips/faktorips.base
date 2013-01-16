@@ -441,4 +441,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
+    @Override
+    public boolean isVisible() {
+        return true;
+    }
 }
