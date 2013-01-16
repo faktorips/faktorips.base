@@ -70,8 +70,14 @@
 				<artifactId>wagon-ssh</artifactId>
 				<version>1.0</version>
 			</extension>
+			<!-- Include this build artifact to every child's classpath. This is used for example by the checkstyle or findbugs configuration -->
+		    <extension>
+		      <groupId>org.faktorips</groupId>
+		      <artifactId>org.faktorips.build.config</artifactId>
+		      <version>1.0.0-SNAPSHOT</version>
+		    </extension>
 		</extensions>
-		<pluginManagement>
+  		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -220,7 +226,7 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<configuration>
 						<configLocation>checkstyle/fips_checks.xml</configLocation>
-						<propertyExpansion>config_loc=${project.parent.parent.basedir}/checkstyle/</propertyExpansion>
+						<propertyExpansion>config_loc=checkstyle/</propertyExpansion>
 					</configuration>
 				</plugin>
 				<!-- FindBugs -->
@@ -231,7 +237,7 @@
 						<xmlOutput>true</xmlOutput>
 						<threshold>Low</threshold>
 						<omitVisitors>BadAppletConstructor, CallToUnsupportedMethod, CheckExpectedWarnings, InefficientMemberAccess</omitVisitors>
-						<excludeFilterFile>${project.parent.parent.basedir}/findbugs/fips-exclusion-filter.xml</excludeFilterFile>
+						<excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
 					</configuration>
 				</plugin>
 				<plugin>
