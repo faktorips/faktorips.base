@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -49,6 +51,9 @@ public class CategoryPmoTest {
     @Mock
     private IProductCmptCategory category3;
 
+    @Mock
+    private IIpsModel ipsModel;
+
     private List<IProductCmptCategory> categories;
 
     @Before
@@ -61,7 +66,15 @@ public class CategoryPmoTest {
         when(category3.getName()).thenReturn("category3");
 
         when(property.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
+        when(property.getIpsModel()).thenReturn(ipsModel);
         when(productCmptType.findCategories(any(IIpsProject.class))).thenReturn(categories);
+    }
+
+    @Test
+    public void testListenerAdded() {
+        ContentsChangeListener categoryPmo = new CategoryPmo(property);
+
+        verify(ipsModel).addChangeListener(categoryPmo);
     }
 
     @Test
