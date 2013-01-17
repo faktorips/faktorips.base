@@ -6,56 +6,85 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE constantForPropertyName FOR XProductAttribute-»
-	/**
-	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
-	 * @generated
-	 */
-	public final static String «field(constantNamePropertyName)» = "«name»";
+	«IF !overwrite-»
+		/**
+	 	* «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+	 	* @generated
+	 	*/
+		public final static String «field(constantNamePropertyName)» = "«name»";
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE memberField FOR XProductAttribute-»
-	/**
-	 * «localizedJDoc("FIELD_VALUE", name.toFirstUpper())»
-	 *
-	 * @generated
-	 */
-	 private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+	«IF !overwrite-»
+		/**
+	 	* «localizedJDoc("FIELD_VALUE", name.toFirstUpper())»
+	 	*
+	 	* @generated
+	 	*/
+    	private «javaClassName» «field(fieldName)»;
+    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getterSetter FOR XProductAttribute-»
 	«EXPAND getter-»
 	«EXPAND setter-»
+	«EXPAND internalSetter-»
 «ENDDEFINE»
 
-«DEFINE getter FOR XProductAttribute-» 
-	/**
-	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
-	 *
-	 * @generated
-	 */
-	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
-	public «javaClassName» «method(methodNameGetter)»
-	«IF genInterface()»;«ELSE-»
-	{
-		return «getReferenceOrSafeCopyIfNecessary(fieldName)»;
-	}
+«DEFINE setDefaultValue FOR XProductAttribute-»	
+	«IF (overwrite || !defaultValueNull)-»
+		«methodNameSetterInternal»(«defaultValueCode»);
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getter FOR XProductAttribute-»
+	«IF !overwrite-»
+		/**
+	 	* «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
+	 	*
+	 	* @generated
+	 	*/
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
+		public «javaClassName» «method(methodNameGetter)»
+		«IF genInterface()»;«ELSE-»
+		{
+			return «getReferenceOrSafeCopyIfNecessary(fieldName)»;
+		}
+		«ENDIF»
 	«ENDIF»
 «ENDDEFINE»
 
 
 «DEFINE setter FOR XProductAttribute-»
-	/**
-	 * «localizedJDoc("METHOD_SETVALUE", name, description)»
-	 *
-	 * @generated
-	 */
-	public void «method(methodNameSetter, javaClassName, "newValue")»{
-		«EXPAND ProductCommons::checkRepositoryModifyable-»
-		this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
-	}
+	«IF !overwrite-»
+		/**
+	 	* «localizedJDoc("METHOD_SETVALUE", name, description)»
+	 	*
+	 	* @generated
+	 	*/
+		public void «method(methodNameSetter, javaClassName, "newValue")»{
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
+			«methodNameSetterInternal»(«getReferenceOrSafeCopyIfNecessary("newValue")»);
+		}
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE internalSetter FOR XProductAttribute-»
+	«IF (!overwrite && !genInterface())-»
+		/**
+ 		* «localizedJDoc("METHOD_SETVALUE_INTERNAL", name, description)»
+ 		*
+ 		* @generated
+ 		*/
+		protected void «method(methodNameSetterInternal, javaClassName, "newValue")»{
+			this.«fieldName» = newValue;
+		}
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XProductAttribute-»
+	«IF !overwrite-»
         configElement = configMap.get("«name»");
         if (configElement != null) {
         «IF multiValue-»
@@ -71,15 +100,17 @@
 		            }
                 «ENDLET-»
 	        «ENDIF-»
-   	        this.«fieldName» = valueList;
+        	this.«fieldName» = valueList;
         «ELSE-»
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
-            this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
+           	this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
         «ENDIF-»
-        }        
+        }
+    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE writeAttributeToXML FOR XProductAttribute-»
+	«IF !overwrite-»
         attributeElement = element.getOwnerDocument().createElement("AttributeValue");
         attributeElement.setAttribute("attribute", "«name»");
         «IF multiValue-»
@@ -96,7 +127,8 @@
 		        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList")»;
 	        «ENDIF-»
 	    «ELSE-»
-	        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(fieldName)», attributeElement, "Value");
+        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(fieldName)», attributeElement, "Value");
         «ENDIF-»
         element.appendChild(attributeElement);
+	«ENDIF-»
 «ENDDEFINE»

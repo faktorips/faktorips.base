@@ -40,6 +40,7 @@
 		     */
 			public «method(implClassName, IRuntimeRepository(), "repository", "String", "id", "String", "kindId", "String", "versionId")» {
 		        super(repository, id, kindId, versionId);
+		        «EXPAND ProductAttribute::setDefaultValue FOREACH attributes-»
 			}
 
 			«EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
@@ -50,19 +51,19 @@
 			
 			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions»
 
-		    /**
-		     * «inheritDoc()»
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotation(false)-»
-		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
-		        super.«doInitPropertiesFromXml("configMap")»;
-		        «IF attributes.size > 0-»
-		        	Element configElement = null;
-		        «ENDIF-»
-		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
-		    }
+	    	/**
+	     	* «inheritDoc()»
+	     	* 
+	     	* @generated
+	     	*/
+	    	«overrideAnnotation(false)-»
+	    	protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
+	        	super.«doInitPropertiesFromXml("configMap")»;
+	        	«IF nonOverwrittenAttributePresent-»
+	        		Element configElement = null;
+	        	«ENDIF-»
+	        	«EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+	    	}
 		    
 			«IF containsNotDerivedAssociations»
 			    /**
@@ -132,7 +133,7 @@
 	        «ELSE-»
  			«REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification.
 	        «ENDIF-»
-	        «IF attributes.size > 0-»
+	        «IF nonOverwrittenAttributePresent-»
 		        Element attributeElement = null;
 		        List<String> stringList = null;
 	        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»

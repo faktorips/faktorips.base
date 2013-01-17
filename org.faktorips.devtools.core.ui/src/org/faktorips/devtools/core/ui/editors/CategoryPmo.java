@@ -22,14 +22,14 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 
 /**
  * Presentation model object that can be used to associate a UI control with the
  * {@link IProductCmptCategory} an {@link IProductCmptProperty} is assigned to.
  * <p>
  * Using {@link BindingContext} to bind {@link IProductCmptProperty#PROPERTY_CATEGORY} to the
- * control is not sufficient as the property is of type {@link String} and does not consider
+ * control is not sufficient as the getProperty() is of type {@link String} and does not consider
  * implicit assignments to default categories.
  * 
  * @since 3.6
@@ -38,17 +38,19 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
  * 
  * @see IProductCmptCategory
  */
-public class CategoryPmo extends PresentationModelObject {
+public class CategoryPmo extends IpsObjectPartPmo {
 
     public static final String PROPERTY_CATEGORY = "category"; //$NON-NLS-1$
-
-    private final IProductCmptProperty property;
 
     private final List<IProductCmptCategory> categories;
 
     public CategoryPmo(IProductCmptProperty property) {
-        this.property = property;
+        super(property);
         categories = findCategories();
+    }
+
+    public IProductCmptProperty getProperty() {
+        return (IProductCmptProperty)getIpsObjectPartContainer();
     }
 
     private List<IProductCmptCategory> findCategories() {
@@ -56,7 +58,7 @@ public class CategoryPmo extends PresentationModelObject {
 
         IProductCmptType productCmptType = null;
         try {
-            productCmptType = property.findProductCmptType(property.getIpsProject());
+            productCmptType = getProperty().findProductCmptType(getProperty().getIpsProject());
         } catch (CoreException e) {
             // Recover by not displaying any categories
             IpsPlugin.log(e);
@@ -64,7 +66,7 @@ public class CategoryPmo extends PresentationModelObject {
 
         if (productCmptType != null) {
             try {
-                categories.addAll(productCmptType.findCategories(property.getIpsProject()));
+                categories.addAll(productCmptType.findCategories(getProperty().getIpsProject()));
             } catch (CoreException e) {
                 // Recover by not displaying any categories
                 IpsPlugin.log(e);
@@ -91,10 +93,10 @@ public class CategoryPmo extends PresentationModelObject {
     public IProductCmptCategory getCategory() {
         IProductCmptCategory correspondingDefaultCategory = null;
         for (IProductCmptCategory category : categories) {
-            if (correspondingDefaultCategory == null && category.isDefaultFor(property)) {
+            if (correspondingDefaultCategory == null && category.isDefaultFor(getProperty())) {
                 correspondingDefaultCategory = category;
             }
-            if (category.getName().equals(property.getCategory())) {
+            if (category.getName().equals(getProperty().getCategory())) {
                 return category;
             }
         }
@@ -117,7 +119,7 @@ public class CategoryPmo extends PresentationModelObject {
      * {@link IProductCmptCategory}.
      */
     public void setCategory(IProductCmptCategory category) {
-        property.setCategory(category.getName());
+        getProperty().setCategory(category.getName());
     }
 
 }

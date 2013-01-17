@@ -141,18 +141,20 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «ENDDEFINE»
 
 «DEFINE getterForProductAttributes(XPolicyCmptClass currentClass) FOR XProductAttribute-»
-	 /**
-     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
-     * «descriptionForJDoc»
-     * @generated
-     */
-    «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
-    	«IF changingOverTime-»
-        	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
-        «ELSE-»
-        	return «currentClass.methodNameGetProductCmpt»().«methodNameGetter»();
-        «ENDIF-»
-    }
+	«IF !overwrite-»
+		 /**
+	     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
+	     * «descriptionForJDoc»
+	     * @generated
+	     */
+	    «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
+	    	«IF changingOverTime-»
+	        	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
+	        «ELSE-»
+	        	return «currentClass.methodNameGetProductCmpt»().«methodNameGetter»();
+	        «ENDIF-»
+	    }
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getterForTables(XPolicyCmptClass policyClass) FOR XTableUsage-»

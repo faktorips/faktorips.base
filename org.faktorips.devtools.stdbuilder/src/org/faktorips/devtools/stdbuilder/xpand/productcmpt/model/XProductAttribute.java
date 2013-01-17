@@ -82,6 +82,10 @@ public class XProductAttribute extends XAttribute {
         }
     }
 
+    public boolean isDefaultValueNull() {
+        return getAttribute().getDefaultValue() == null;
+    }
+
     /**
      * {@inheritDoc}
      * <p>
@@ -115,4 +119,7 @@ public class XProductAttribute extends XAttribute {
         return getAttribute().isChangingOverTime();
     }
 
+    public String getMethodNameSetterInternal() {
+        return getJavaNamingConvention().getSetterMethodName(getName() + "Internal"); //$NON-NLS-1$
+    }
 }

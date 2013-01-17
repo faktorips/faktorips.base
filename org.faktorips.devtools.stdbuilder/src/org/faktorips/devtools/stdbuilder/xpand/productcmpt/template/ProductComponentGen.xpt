@@ -44,6 +44,7 @@
 		     */
 			public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
 				super(productCmpt);
+				«EXPAND ProductAttribute::setDefaultValue FOREACH attributes-»
 			}
 
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
@@ -63,21 +64,21 @@
 			«ENDFOREACH-»
 
 			«EXPAND getProductCmpt FOR productCmptClassNode-»
-
-		    /**
-		     * «inheritDoc()»
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotation(false)-»
-		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
+			
+	    	/**
+	     	* «inheritDoc()»
+	     	* 
+	     	* @generated
+	     	*/
+	    	«overrideAnnotation(false)-»
+	    	protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 		        super.«doInitPropertiesFromXml("configMap")»;
-		        «IF attributes.size > 0 || configuredAttributes.size > 0-»
+	        	«IF nonOverwrittenAttributePresent || configuredAttributes.size > 0-»
 		        	Element configElement = null;
-		        «ENDIF-»
-		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
-		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
-		    }
+	        	«ENDIF-»
+	        	«EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+	        	«EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
+	    	}
 		
 			«IF containsNotDerivedAssociations»
 			    /**
@@ -159,7 +160,7 @@
 	        «ELSE-»
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 	        «ENDIF-»
-	        «IF attributes.size > 0-»
+	        «IF nonOverwrittenAttributePresent-»
 		        Element attributeElement = null;
 		        List<String> stringList = null;
 	        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»

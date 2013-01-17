@@ -331,4 +331,16 @@ public abstract class XProductClass extends XType {
         return convention;
     }
 
+    /**
+     * Returns <code>true</code> if at least one attribute does not overwrite an attribute from the
+     * base class. <code>false</code> otherwise.
+     */
+    public boolean isNonOverwrittenAttributePresent() {
+        for (XProductAttribute attr : getAttributes()) {
+            if (!attr.isOverwrite()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
