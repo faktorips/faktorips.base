@@ -182,6 +182,13 @@ public class ContentChangeEvent {
         return false;
     }
 
+    public boolean isPropertyAffected(String propertyName) {
+        if (propertyChangeEvent == null || propertyName == null) {
+            return false;
+        }
+        return propertyName.equals(propertyChangeEvent.getPropertyName());
+    }
+
     public boolean containsAffectedObjects(Class<?> type) {
         ArgumentCheck.notNull(type);
         if (part != null) {

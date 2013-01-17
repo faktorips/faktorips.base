@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
@@ -56,6 +57,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
+
         if (getActiveGeneration() == null) {
             setActiveGeneration(getInitialGeneration());
         }
@@ -139,8 +141,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
-        if (event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED
-                && event.getPart() instanceof IProductCmptGeneration) {
+        if ((event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED && event.getPart() instanceof IProductCmptGeneration)
+                || event.isPropertyAffected(AttributeProperty.VISIBLE.name())) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.syncExec(new Runnable() {
 
@@ -249,5 +251,4 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return null;
         }
     }
-
 }

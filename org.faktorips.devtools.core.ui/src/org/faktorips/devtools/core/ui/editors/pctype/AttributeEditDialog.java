@@ -190,7 +190,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         tabFolder = (TabFolder)parent;
 
         TabItem page = new TabItem(tabFolder, SWT.NONE);
-        page.setText(Messages.AttributeEditDialog_generalTitle);
+        page.setText(Messages.AttributeEditDialog_propertiesTitle);
         page.setControl(createGeneralPage(tabFolder));
 
         page = new TabItem(tabFolder, SWT.NONE);

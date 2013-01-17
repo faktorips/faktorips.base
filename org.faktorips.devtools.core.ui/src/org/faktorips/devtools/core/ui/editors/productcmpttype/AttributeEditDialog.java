@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -111,7 +112,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         folder = (TabFolder)parent;
 
         TabItem generalItem = new TabItem(folder, SWT.NONE);
-        generalItem.setText(Messages.AttributeEditDialog_general);
+        generalItem.setText(Messages.AttributeEditDialog_properties);
         try {
             generalItem.setControl(createGeneralPage(folder));
         } catch (CoreException e) {
@@ -121,8 +122,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         return folder;
     }
 
-    private Control createGeneralPage(TabFolder folder) throws CoreException {
-        Composite c = createTabItemComposite(folder, 1, false);
+    private void createGeneralGroupContent(Composite c) {
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
@@ -131,10 +131,26 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         nameText.setFocus();
         getBindingContext().bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
+        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
         final Checkbox cb = new Checkbox(workArea, getToolkit());
         cb.setText(Messages.AttributeEditDialog_overwritesNote);
         getBindingContext().bindContent(cb, attribute, IAttribute.PROPERTY_OVERWRITES);
+
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
+        Combo modifierCombo = getToolkit().createCombo(workArea);
+        getBindingContext().bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
+
+        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
+        Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
+                workArea,
+                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+        getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
+                IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
+    }
+
+    private void createDatatypeGroupContent(Composite c) {
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
@@ -152,31 +168,28 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IProductCmptTypeAttribute.PROPERTY_MULTI_VALUE_ATTRIBUTE);
         getBindingContext().bindContent(multiValueRadioButtonField, attribute,
                 IProductCmptTypeAttribute.PROPERTY_MULTI_VALUE_ATTRIBUTE);
+    }
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
-        Combo modifierCombo = getToolkit().createCombo(workArea);
-        getBindingContext().bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
+    private void createDisplayGroupContent(Composite c) {
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_changeOverTimeLabel);
-        Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
-                workArea,
-                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
-        getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
-                IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
+        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
+        final Checkbox cb = getToolkit().createCheckbox(workArea, true);
+        cb.setText(Messages.AttributeEditDialog_visibilityNote);
+        getBindingContext().bindContent(cb, attribute, IProductCmptTypeAttribute.PROPERTY_VISIBLE);
+
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_categoryLabel);
+        createCategoryCombo(workArea);
+    }
+
+    private void createDefaultAndValuesGroupContent(Composite c) throws CoreException {
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
         defaultEditFieldPlaceholder = getToolkit().createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(getToolkit().createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
-
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_categoryLabel);
-        createCategoryCombo(workArea);
-
-        getToolkit().createVerticalSpacer(c, 4);
-        getToolkit().createHorizonzalLine(c);
-        getToolkit().createVerticalSpacer(c, 4);
 
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         Composite temp = getToolkit().createGridComposite(c, 1, true, false);
@@ -196,7 +209,24 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             GridData gd = (GridData)layoutData;
             gd.heightHint = 260;
         }
+    }
 
+    private Control createGeneralPage(TabFolder folder) throws CoreException {
+        Composite c = createTabItemComposite(folder, 1, false);
+
+        Group generalPropertiesGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_generalGroup);
+        createGeneralGroupContent(generalPropertiesGroup);
+
+        Group datatypeGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_datatypeGroup);
+        createDatatypeGroupContent(datatypeGroup);
+
+        Group displayGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_displayGroup);
+        createDisplayGroupContent(displayGroup);
+
+        Group defaultAndValuesGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_defaultAndValuesGroup);
+        createDefaultAndValuesGroupContent(defaultAndValuesGroup);
+
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());
 
@@ -220,6 +250,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         });
 
         getBindingContext().bindContent(comboViewerField, pmo, CategoryPmo.PROPERTY_CATEGORY);
+        getBindingContext().bindEnabled(categoryCombo, attribute, IProductCmptTypeAttribute.PROPERTY_VISIBLE);
     }
 
     private void createDefaultValueEditField() {

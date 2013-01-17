@@ -66,14 +66,21 @@ public class Messages extends NLS {
     public static String LinksCategorySection_explanation;
     public static String LinksCategorySection_title;
 
+    public static String AttributeEditDialog_generalGroup;
+    public static String AttributeEditDialog_datatypeGroup;
+    public static String AttributeEditDialog_displayGroup;
+    public static String AttributeEditDialog_defaultAndValuesGroup;
+
     public static String AttributeEditDialog_changeOverTimeCheckbox;
     public static String AttributeEditDialog_changeOverTimeLabel;
 
     public static String AttributeEditDialog_datatypeLabel;
     public static String AttributeEditDialog_defaultvalueLabel;
     public static String AttributeEditDialog_categoryLabel;
-    public static String AttributeEditDialog_general;
+    public static String AttributeEditDialog_properties;
     public static String AttributeEditDialog_modifierLabel;
+    public static String AttributeEditDialog_labelVisibility;
+    public static String AttributeEditDialog_visibilityNote;
 
     public static String AttributeEditDialog_MultiValueRadioButton_Label;
     public static String AttributeEditDialog_nameLabel;

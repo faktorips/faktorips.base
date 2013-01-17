@@ -77,8 +77,8 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, Boolean.parseBoolean(multiValueAttributeElement));
         }
         if (element.hasAttribute(PROPERTY_VISIBLE)) {
-            String invisibleElement = element.getAttribute(PROPERTY_VISIBLE);
-            setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(invisibleElement));
+            String visibleElement = element.getAttribute(PROPERTY_VISIBLE);
+            setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(visibleElement));
         }
     }
 
@@ -89,6 +89,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                 "" + properties.contains(AttributeProperty.CHANGING_OVER_TIME)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
                 "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_VISIBLE, "" + properties.contains(AttributeProperty.VISIBLE)); //$NON-NLS-1$
     }
 
     @Override
@@ -289,6 +290,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     public void setVisible(boolean visible) {
         boolean old = isPropertySet(AttributeProperty.VISIBLE);
         setProperty(AttributeProperty.VISIBLE, visible);
-        valueChanged(old, visible);
+        valueChanged(old, visible, AttributeProperty.VISIBLE.name());
     }
 }

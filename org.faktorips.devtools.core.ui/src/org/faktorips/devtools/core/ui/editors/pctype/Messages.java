@@ -269,7 +269,11 @@ public class Messages extends NLS {
     public static String GeneralInfoSection_linkSuperclass;
     public static String GeneralInfoSection_title;
 
-    public static String AttributeEditDialog_generalTitle;
+    public static String OverrideAttributeDialog_labelNoAttributes;
+    public static String OverrideAttributeDialog_labelSelectAttribute;
+    public static String OverrideAttributeDialog_title;
+
+    public static String AttributeEditDialog_propertiesTitle;
     public static String AttributeEditDialog_labelActivateValidationRule;
     public static String AttributeEditDialog_labelAttributeIsTransient;
 

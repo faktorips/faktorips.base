@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -173,6 +174,16 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                         overwritingProperties.add(property.getPropertyName());
                     }
 
+                    /*
+                     * Now, check if the property is visible. If not, the property will not be added
+                     * to the category. Note that it is still important to check if it is
+                     * overwritten, first, so that super attributes that are not hidden, will not be
+                     * displayed.
+                     */
+                    if (!isVisible(property)) {
+                        continue;
+                    }
+
                     if (findIsContainingProperty(property, currentType, ipsProject) && !properties.contains(property)) {
                         properties.add(property);
                     }
@@ -192,6 +203,16 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                     return ((IProductCmptTypeMethod)property).isOverloadsFormula();
                 }
                 return false;
+            }
+
+            /**
+             * Returns true if the given {@link IProductCmptProperty} is visible, false otherwise.
+             */
+            private boolean isVisible(IProductCmptProperty property) {
+                if (property instanceof IProductCmptTypeAttribute) {
+                    return ((IProductCmptTypeAttribute)property).isVisible();
+                }
+                return true;
             }
 
         }
