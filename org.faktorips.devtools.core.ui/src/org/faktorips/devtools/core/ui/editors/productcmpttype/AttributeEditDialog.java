@@ -266,14 +266,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
             boolean enabled = newDatatype != null;
-            defaultValueField.getControl().setEnabled(enabled);
-            valueSetEditControl.setDataChangeable(enabled);
-            if (newDatatype == null || newDatatype.equals(currentDatatype)) {
-                return;
-            }
+            if (defaultValueField != null && valueSetEditControl != null) {
+                defaultValueField.getControl().setEnabled(enabled);
+                valueSetEditControl.setDataChangeable(enabled);
+                if (newDatatype == null || newDatatype.equals(currentDatatype)) {
+                    return;
+                }
 
-            currentDatatype = newDatatype;
-            if (defaultValueField != null) {
+                currentDatatype = newDatatype;
                 getBindingContext().removeBindings(defaultValueField.getControl());
                 defaultValueField.getControl().dispose();
             }
