@@ -153,15 +153,17 @@ public abstract class Attribute extends TypePart implements IAttribute {
             } else {
                 if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
                     String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this));
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, text, Message.ERROR, getValueSet()));
                 }
                 if (!getDatatype().equals(superAttr.getDatatype())) {
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
-                            Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this));
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
+                            Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this,
+                            PROPERTY_DATATYPE));
                 }
                 if (!getModifier().equals(superAttr.getModifier())) {
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
-                            Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this));
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
+                            Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this,
+                            PROPERTY_MODIFIER));
                 }
             }
         }

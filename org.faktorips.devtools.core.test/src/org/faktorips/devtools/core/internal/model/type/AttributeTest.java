@@ -23,7 +23,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -135,7 +134,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         type.setSupertype(supertype.getQualifiedName());
@@ -144,11 +143,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype("Integer");
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
 
         attribute.setDatatype(superAttr.getDatatype());
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
     }
 
     @Test
@@ -159,7 +158,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         type.setSupertype(supertype.getQualifiedName());
@@ -169,11 +168,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setModifier(Modifier.PUBLISHED);
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
 
         attribute.setModifier(superAttr.getModifier());
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
     }
 
     @Test

@@ -77,11 +77,25 @@ public interface IAttribute extends ITypePart {
     public final static String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an attribute overwrites another but has a different
-     * attribute type (which is not allowed).
+     * Validation message code to indicate that an attribute overwrites another but does has an
+     * incompatible value set.
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
-            + "OverwrittenAttributeDifferentType"; //$NON-NLS-1$
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeModifier"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an attribute overwrites another but has a different
+     * datatype.
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeDifferentDatatype"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an attribute overwrites another but has a different
+     * modifier.
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeDifferentModifier"; //$NON-NLS-1$
 
     /**
      * Sets the attribute's name.

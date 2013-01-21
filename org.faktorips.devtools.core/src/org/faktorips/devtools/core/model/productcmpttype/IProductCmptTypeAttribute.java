@@ -51,6 +51,20 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     public final static String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an attribute overwrites another but single/multiple
+     * value configuration differs
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeSingeMultiValueDiffers"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an attribute overwrites another but change over time
+     * configuration differs
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type the attribute belongs to.
      */
     public IProductCmptType getProductCmptType();
