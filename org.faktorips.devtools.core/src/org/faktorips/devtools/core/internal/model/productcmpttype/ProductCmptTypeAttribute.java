@@ -262,15 +262,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             IProductCmptTypeAttribute superAttr = (IProductCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
                 if (isMultiValueAttribute() != superAttr.isMultiValueAttribute()) {
-                    if (isMultiValueAttribute()) {
-                        result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
-                                Messages.ProductCmptTypeAttribute_msgOverwritten_MultiValueAttribute_different,
-                                Message.ERROR, this));
-                    } else {
-                        result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
-                                Messages.ProductCmptTypeAttribute_msgOverwritten_SingleValueAttribute_different,
-                                Message.ERROR, this));
-                    }
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,
+                            Messages.ProductCmptTypeAttribute_msgOverwritten_singleValueMultipleValuesDifference,
+                            Message.ERROR, this));
                 }
                 if (isChangingOverTime() != superAttr.isChangingOverTime()) {
                     result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE,

@@ -76,7 +76,6 @@ public class Messages extends NLS {
 
     public static String ProductCmptPropertyExternalReference_msgReferencedPropertyCouldNotBeFound;
 
-    public static String ProductCmptTypeAttribute_msgOverwritten_MultiValueAttribute_different;
-    public static String ProductCmptTypeAttribute_msgOverwritten_SingleValueAttribute_different;
+    public static String ProductCmptTypeAttribute_msgOverwritten_singleValueMultipleValuesDifference;
     public static String ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different;
 }
