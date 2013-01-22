@@ -119,7 +119,10 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateInitWithProductData() {
-        return isProductRelevant() && isChangeable() && (!isOverwrite() || isAttributeTypeChangedByOverwrite());
+        return isProductRelevant()
+                && isChangeable()
+                && (!isOverwrite() || isAttributeTypeChangedByOverwrite() || !getOverwrittenAttribute()
+                        .isProductRelevant());
     }
 
     public boolean isGenerateInitWithoutProductData() {

@@ -83,7 +83,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
 		    «ENDIF-»
-		    «IF configured-»
+		    «IF configured && (!attributesToInitWithProductData.isEmpty || !attributesToInitWithoutProductDataAndOverwritten.isEmpty)-»
 				if («methodNameGetProductCmptGeneration»() == null) {
 					return;
 				}
