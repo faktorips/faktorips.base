@@ -355,18 +355,18 @@ public class ContentPage extends IpsObjectEditorPage {
             @Override
             public void handleEvent(Event event) {
                 if (event.type == SWT.MeasureItem) {
-                        if (numOfColumns == 0) {
-                            return;
-                        }
-                        TableItem item = (TableItem)event.item;
-                        // column 0 will be used to determine the height,
-                        // <code>event.index<code> couldn't be used because it is only available
-                        // @since 3.2, that's ok because the height is always the same, even if the
-                        // column contains no text, the height only depends on the font
-                        String text = getText(item, 0);
-                        Point size = event.gc.textExtent(text);
-                        // the height will be increased by 5 pixel
-                        event.height = Math.max(event.height, size.y + 5);
+                    if (numOfColumns == 0) {
+                        return;
+                    }
+                    TableItem item = (TableItem)event.item;
+                    // column 0 will be used to determine the height,
+                    // <code>event.index<code> couldn't be used because it is only available
+                    // @since 3.2, that's ok because the height is always the same, even if the
+                    // column contains no text, the height only depends on the font
+                    String text = getText(item, 0);
+                    Point size = event.gc.textExtent(text);
+                    // the height will be increased by 5 pixel
+                    event.height = Math.max(event.height, size.y + 5);
                 }
             }
 

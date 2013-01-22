@@ -173,8 +173,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
                 for (Object o : kids) {
                     if (areDifferenceCompositeEntriesEqual(o, composite)) {
                         isContained = true;
-                        ((ProductCmptGenerationsDeltaViewItem)o)
-                                .addDate((ProductCmptGenerationToTypeDelta)composite);
+                        ((ProductCmptGenerationsDeltaViewItem)o).addDate((ProductCmptGenerationToTypeDelta)composite);
                         break;
                     }
                 }
@@ -208,7 +207,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
         } else if (parentElement instanceof ProductCmptGenerationsDeltaViewItem) {
             return getPropertyChildren(((ProductCmptGenerationsDeltaViewItem)parentElement).getDelta());
         }
-        return null;
+        return new Object[0];
     }
 
     @Override
