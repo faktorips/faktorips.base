@@ -25,6 +25,11 @@ public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTy
     }
 
     @Override
+    public IProductCmptGeneration getPropertyValueContainer() {
+        return (IProductCmptGeneration)super.getPropertyValueContainer();
+    }
+
+    @Override
     protected void createAdditionalEntriesAndChildren() throws CoreException {
         // nothing to do
     }
