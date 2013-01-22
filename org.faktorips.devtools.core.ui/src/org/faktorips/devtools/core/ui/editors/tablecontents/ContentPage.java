@@ -303,8 +303,7 @@ public class ContentPage extends IpsObjectEditorPage {
         Listener paintListener = new Listener() {
             @Override
             public void handleEvent(Event event) {
-                switch (event.type) {
-                    case SWT.MeasureItem: {
+                if (event.type == SWT.MeasureItem) {
                         if (numOfColumns == 0) {
                             return;
                         }
@@ -317,8 +316,6 @@ public class ContentPage extends IpsObjectEditorPage {
                         Point size = event.gc.textExtent(text);
                         // the height will be increased by 5 pixel
                         event.height = Math.max(event.height, size.y + 5);
-                        break;
-                    }
                 }
             }
 

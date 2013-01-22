@@ -235,6 +235,7 @@ public class XPolicyAttributeTest {
         when(attribute.isChangeable()).thenReturn(true);
         when(attribute.isOverwrite()).thenReturn(true);
         when(xSuperAttribute.isDerivedOnTheFly()).thenReturn(false);
+        when(xPolicyAttribute.isProductRelevant()).thenReturn(true);
         when(xPolicyAttributeSpy.getOverwrittenAttribute()).thenReturn(xSuperAttribute);
 
         boolean generateInitWithProductData = xPolicyAttributeSpy.isGenerateInitWithProductData();
