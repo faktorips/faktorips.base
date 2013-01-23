@@ -25,8 +25,12 @@
 	<properties>
 		<tycho-version>0.16.0</tycho-version>
 		<tycho-extras-version>0.16.0</tycho-extras-version>
+		<checkstyle-version>2.9.1</checkstyle-version>
+		<findbugs-version>2.4.0</findbugs-version>
 		<version.kind>ci</version.kind>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<skip-checkstyle>false</skip-checkstyle>
+		<skip-findbugs>false</skip-findbugs>
 	</properties>
 
 	<repositories>
@@ -174,7 +178,7 @@
                     </compilerArguments>
 				</configuration>
 			</plugin>
-			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
+			<!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
 				<artifactId>target-platform-configuration</artifactId> <version>${tycho-version}</version> 
 				<configuration> <target> <artifact> <groupId>org.faktorips</groupId> <artifactId>org.faktorips.build</artifactId> 
 				<classifier>eclipse-galileo_online</classifier> </artifact> </target> </configuration> 
@@ -211,7 +215,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<!-- For Debug add these parameters: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -->
-					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
+					<argLine>${tycho.testArgLine} -Xms256m -Xmx512m -XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
 					<useUIHarness>true</useUIHarness>
 					<includes>
 						<include>**/*Test.java</include>
@@ -220,11 +224,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-		</plugins>
-	</build>
-
-	<reporting>
-		<plugins>
 			<!-- CheckStyle -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -248,6 +247,7 @@
 					<excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
 				</configuration>
 			</plugin>
+			<!-- Jacoco code coverage -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -264,26 +264,11 @@
 							<goal>report</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<configuration>
-							<check>
-								<classRatio>100</classRatio>
-								<instructionRatio>90</instructionRatio>
-								<methodRatio>95</methodRatio>
-								<branchRatio>85</branchRatio>
-								<complexityRatio>85</complexityRatio>
-								<lineRatio>90</lineRatio>
-							</check>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
+			
 		</plugins>
-	</reporting>
+	</build>
 
 	<profiles>
 		<profile>
