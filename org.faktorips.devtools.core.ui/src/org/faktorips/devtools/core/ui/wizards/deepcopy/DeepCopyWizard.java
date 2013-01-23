@@ -183,8 +183,6 @@ public class DeepCopyWizard extends ResizableWizard {
         }
         getPresentationModel().setNewValidFrom(IpsUIPlugin.getDefault().getDefaultValidityDate());
 
-        getPresentationModel().setSourcePackageRoot(packRoot);
-        getPresentationModel().setSourcePackage(defaultPackage);
         getPresentationModel().setTargetPackageRoot(packRoot);
         getPresentationModel().setTargetPackage(defaultPackage);
     }
@@ -212,7 +210,7 @@ public class DeepCopyWizard extends ResizableWizard {
             final Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
             final Set<IProductCmptStructureReference> toLink = presentationModel.getLinkedElements();
 
-            if (presentationModel.isCopyAllGenerations()) {
+            if (presentationModel.isCopyExistingGenerations()) {
                 GenerationDate selectedDate = presentationModel.getOldValidFrom();
                 for (GenerationDate date : presentationModel.getGenerationDates()) {
                     if (!date.equals(selectedDate)) {
@@ -237,10 +235,10 @@ public class DeepCopyWizard extends ResizableWizard {
                     DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
-                    dco.setSourceIpsPackageFragment(presentationModel.getSourcePackage());
+                    dco.setSourceIpsPackageFragment(getDefaultPackage());
                     dco.setTargetIpsPackageFragment(presentationModel.getTargetPackage());
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
-                    dco.setCopyAllGenerations(presentationModel.isCopyAllGenerations());
+                    dco.setCopyExistingGenerations(presentationModel.isCopyExistingGenerations());
                     configureFixups(dco);
                     dco.run(new SubProgressMonitor(monitor, 1));
                     copyResultRoot = dco.getCopiedRoot();

@@ -80,6 +80,12 @@ public abstract class AbstractCheckbox extends ControlComposite {
         button.setText(s);
     }
 
+    @Override
+    public void setToolTipText(String string) {
+        super.setToolTipText(string);
+        button.setToolTipText(string);
+    }
+
     public String getText() {
         return button.getText();
     }

@@ -116,7 +116,7 @@ public class SourcePage extends WizardPage {
 
     private Checkbox copyTableContentsBtn;
 
-    private Checkbox copyAllGenerationsBtn;
+    private Checkbox copyExistingGenerationsBtn;
 
     private DeepCopyContentProvider contentProvider;
 
@@ -183,63 +183,65 @@ public class SourcePage extends WizardPage {
         int[] height = new int[5];
         // create content in copy group
         // first create right group to get correct heights
-        {
-            toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelValidFrom);
-            newWorkingDateControl = new DateControl(copyComposite, toolkit);
-            height[0] = newWorkingDateControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelValidFrom);
+        newWorkingDateControl = new DateControl(copyComposite, toolkit);
+        height[0] = newWorkingDateControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-            toolkit.createVerticalSpacer(copyComposite, 25);
-            toolkit.createVerticalSpacer(copyComposite, 25);
-            height[1] = 25;
+        toolkit.createVerticalSpacer(copyComposite, 25);
+        toolkit.createVerticalSpacer(copyComposite, 25);
+        height[1] = 25;
 
-            toolkit.createLabel(copyComposite, changeOverTimeLabel);
-            versionId = toolkit.createText(copyComposite);
-            height[2] = versionId.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        toolkit.createLabel(copyComposite, changeOverTimeLabel);
+        versionId = toolkit.createText(copyComposite);
+        height[2] = versionId.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-            toolkit.createLabel(copyComposite, Messages.SourcePage_labelTargetRoot);
-            targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(copyComposite, true);
-            height[3] = targetPackRootControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        toolkit.createLabel(copyComposite, Messages.SourcePage_labelTargetRoot);
+        targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(copyComposite, true);
+        height[3] = targetPackRootControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-            toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-            targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel()
-                    .getTargetPackageRoot(), copyComposite);
-            height[4] = targetPackageControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage);
+        targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel().getTargetPackageRoot(),
+                copyComposite);
+        height[4] = targetPackageControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-            toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
-            copyTableContentsBtn = toolkit.createCheckbox(copyComposite,
-                    Messages.SourcePage_labelRadioBtnCopyTableContents);
-            copyTableContentsBtn.setChecked(true);
-        }
+        toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
+        copyTableContentsBtn = toolkit
+                .createCheckbox(copyComposite, Messages.SourcePage_labelRadioBtnCopyTableContents);
+        copyTableContentsBtn.setChecked(true);
+
         // create content in origin group
-        {
-            createOldValidFromControl(toolkit, masterComposite);
-            toolkit.createVerticalSpacer(masterComposite, height[0]);
+        createOldValidFromControl(toolkit, masterComposite);
+        toolkit.createVerticalSpacer(masterComposite, height[0]);
 
-            IProductCmpt rootProductCmpt = getPresentationModel().getStructure().getRoot().getProductCmpt();
-            String masterVersionId = ""; //$NON-NLS-1$
-            try {
-                masterVersionId = rootProductCmpt.getVersionId();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-
-            toolkit.createLabel(masterComposite, ""); //$NON-NLS-1$
-            String labelCopyAllGenerations = NLS.bind(Messages.SourcePage_labelCheckboxCopyAllGenerations, IpsPlugin
-                    .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                    .getGenerationConceptNamePlural(true));
-            copyAllGenerationsBtn = toolkit.createCheckbox(masterComposite, labelCopyAllGenerations);
-            copyAllGenerationsBtn.setChecked(false);
-            toolkit.createVerticalSpacer(masterComposite, height[1]);
-
-            createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[2]);
-
-            createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot,
-                    rootProductCmpt.getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath()
-                            .toString().substring(1), height[3]);
-
-            createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
-                    .getIpsPackageFragment().getName(), height[4]);
+        IProductCmpt rootProductCmpt = getPresentationModel().getStructure().getRoot().getProductCmpt();
+        String masterVersionId = ""; //$NON-NLS-1$
+        try {
+            masterVersionId = rootProductCmpt.getVersionId();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
         }
+
+        String generationConceptNamePlural = IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true);
+        String generationConceptNamePluralStartOfSentence = IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(false);
+        toolkit.createLabel(masterComposite, ""); //$NON-NLS-1$
+        String labelCopyExistingGenerations = NLS.bind(Messages.SourcePage_labelCheckboxCopyExistingGenerations,
+                generationConceptNamePlural);
+        copyExistingGenerationsBtn = toolkit.createCheckbox(masterComposite, labelCopyExistingGenerations);
+        copyExistingGenerationsBtn.setChecked(false);
+        copyExistingGenerationsBtn.setToolTipText(NLS.bind(Messages.SourcePage_tooltipCheckboxCopyExistingGenerations,
+                generationConceptNamePlural, generationConceptNamePluralStartOfSentence));
+        toolkit.createVerticalSpacer(masterComposite, height[1]);
+
+        createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[2]);
+
+        createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot, rootProductCmpt
+                .getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath().toString().substring(1),
+                height[3]);
+
+        createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
+                .getIpsPackageFragment().getName(), height[4]);
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             Group searchReplaceGroup = toolkit.createGroup(root, Messages.SourcePage_searchAndReplace);
@@ -259,8 +261,7 @@ public class SourcePage extends WizardPage {
         ((GridData)horizonzalLine.getLayoutData()).horizontalSpan = 2;
 
         deactivationHint = new CLabel(root, SWT.NONE);
-        String deactivationHintText = NLS.bind(Messages.SourcePage_deactivationHintText, IpsPlugin.getDefault()
-                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
+        String deactivationHintText = NLS.bind(Messages.SourcePage_deactivationHintText, generationConceptNamePlural);
         deactivationHint.setText(deactivationHintText);
         deactivationHint.setImage(IpsUIPlugin.getImageHandling().getImage(
                 IpsProblemOverlayIcon.getOverlay(Message.INFO), false));
@@ -389,8 +390,8 @@ public class SourcePage extends WizardPage {
         bindingContext.bindContent(versionField, getPresentationModel(), DeepCopyPresentationModel.VERSION_ID);
 
         bindingContext.bindContent(copyTableContentsBtn, getPresentationModel(), DeepCopyPresentationModel.COPY_TABLE);
-        bindingContext.bindContent(copyAllGenerationsBtn, getPresentationModel(),
-                DeepCopyPresentationModel.COPY_ALL_GENERATIONS);
+        bindingContext.bindContent(copyExistingGenerationsBtn, getPresentationModel(),
+                DeepCopyPresentationModel.COPY_EXISTING_GENERATIONS);
 
         tree.addCheckStateListener(new ICheckStateListener() {
 
@@ -797,7 +798,7 @@ public class SourcePage extends WizardPage {
         }
         // otherwise buttons are disabled after run and save ui state?
         copyTableContentsBtn.setEnabled(true);
-        copyAllGenerationsBtn.setEnabled(true);
+        copyExistingGenerationsBtn.setEnabled(true);
     }
 
     @Override
@@ -838,13 +839,13 @@ public class SourcePage extends WizardPage {
                 tree.expandAll();
                 updateCheckedAndGrayedStatus(getStructure());
             }
-            if (evt.getPropertyName().equals(DeepCopyPresentationModel.COPY_ALL_GENERATIONS)) {
-                deactivationHint.setVisible(copyAllGenerationsBtn.isChecked());
-                deactivationHintData.exclude = !copyAllGenerationsBtn.isChecked();
-                if (copyAllGenerationsBtn.isChecked()) {
+            if (evt.getPropertyName().equals(DeepCopyPresentationModel.COPY_EXISTING_GENERATIONS)) {
+                deactivationHint.setVisible(copyExistingGenerationsBtn.isChecked());
+                deactivationHintData.exclude = !copyExistingGenerationsBtn.isChecked();
+                if (copyExistingGenerationsBtn.isChecked()) {
                     getPresentationModel().setOldValidFrom(getPresentationModel().getOldValidFrom());
                 }
-                tree.getTree().setEnabled(!copyAllGenerationsBtn.isChecked());
+                tree.getTree().setEnabled(!copyExistingGenerationsBtn.isChecked());
                 tree.getTree().getParent().layout();
             }
             refreshPageAfterValueChange();

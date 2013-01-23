@@ -54,13 +54,19 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
+/**
+ * The deep copy operation creates the new product components and creates the links to existing
+ * generations. It handles all operations needed to perform a product copy or the creation of a new
+ * product version.
+ * 
+ */
 public class DeepCopyOperation implements IWorkspaceRunnable {
 
     private final Set<IProductCmptStructureReference> copyElements;
     private final Set<IProductCmptStructureReference> linkElements;
     private final Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
     private boolean createEmptyTableContents = false;
-    private boolean copyAllGenerations = false;
+    private boolean copyExistingGenerations = false;
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
     private IIpsPackageFragment sourceIpsPackageFragment;
     private IIpsPackageFragment targetIpsPackageFragment;
@@ -110,8 +116,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         this.createEmptyTableContents = createEmptyTableContents;
     }
 
-    public void setCopyAllGenerations(boolean copyAllGenerations) {
-        this.copyAllGenerations = copyAllGenerations;
+    public void setCopyExistingGenerations(boolean copyExistingGenerations) {
+        this.copyExistingGenerations = copyExistingGenerations;
     }
 
     @Override
@@ -282,9 +288,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 try {
                     file = templateObject.createCopy(targetPackage, newName, false, monitor);
                     if (templateObject instanceof ITimedIpsObject) {
-                        if (copyAllGenerations) {
+                        if (copyExistingGenerations) {
                             ((ITimedIpsObject)file.getIpsObject()).reassignGenerations(newValidFrom);
-                    } else {
+                        } else {
                             ((ITimedIpsObject)file.getIpsObject()).retainOnlyGeneration(oldValidFrom, newValidFrom);
                         }
                     }
@@ -381,7 +387,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             Map<LinkData, String> linkData2newProductCmptQName,
             Map<TblContentUsageData, String> tblContentData2newTableContentQName,
             Set<Object> objectsToRefer) {
-        if (copyAllGenerations) {
+        if (copyExistingGenerations) {
             for (IIpsObjectGeneration objectGeneration : productCmptNew.getGenerationsOrderedByValidDate()) {
                 IProductCmptGeneration generation = (IProductCmptGeneration)objectGeneration;
                 fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,

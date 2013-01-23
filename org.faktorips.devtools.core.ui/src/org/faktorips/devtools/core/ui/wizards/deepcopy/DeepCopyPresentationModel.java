@@ -46,7 +46,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
     public static final String TARGET_PACKAGE_ROOT = "targetPackageRoot"; //$NON-NLS-1$
     public static final String COPY_TABLE = "copyTable"; //$NON-NLS-1$
-    public static final String COPY_ALL_GENERATIONS = "copyAllGenerations"; //$NON-NLS-1$
+    public static final String COPY_EXISTING_GENERATIONS = "copyExistingGenerations"; //$NON-NLS-1$
 
     private final IProductCmptGeneration productCmptGeneration;
 
@@ -59,10 +59,8 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     private String replaceInputString = ""; //$NON-NLS-1$
     private IIpsPackageFragment targetPackage;
     private IIpsPackageFragmentRoot targetPackageRoot;
-    private IIpsPackageFragment sourcePackage;
-    private IIpsPackageFragmentRoot sourcePackageRoot;
     private boolean copyTable;
-    private boolean copyAllGenerations;
+    private boolean copyExistingGenerations;
 
     private IProductCmptTreeStructure structure;
 
@@ -184,22 +182,6 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
         notifyListeners(new PropertyChangeEvent(this, TARGET_PACKAGE_ROOT, oldValue, newValue));
     }
 
-    public IIpsPackageFragment getSourcePackage() {
-        return sourcePackage;
-    }
-
-    public void setSourcePackage(IIpsPackageFragment newValue) {
-        sourcePackage = newValue;
-    }
-
-    public IIpsPackageFragmentRoot getSourcePackageRoot() {
-        return sourcePackageRoot;
-    }
-
-    public void setSourcePackageRoot(IIpsPackageFragmentRoot newValue) {
-        sourcePackageRoot = newValue;
-    }
-
     public IProductCmptTreeStructure getStructure() {
         return structure;
     }
@@ -218,14 +200,14 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
         return copyTable;
     }
 
-    public void setCopyAllGenerations(boolean copyAllGenerations) {
-        boolean oldValue = isCopyAllGenerations();
-        this.copyAllGenerations = copyAllGenerations;
-        notifyListeners(new PropertyChangeEvent(this, COPY_ALL_GENERATIONS, oldValue, copyAllGenerations));
+    public void setCopyExistingGenerations(boolean copyExistingGenerations) {
+        boolean oldValue = isCopyExistingGenerations();
+        this.copyExistingGenerations = copyExistingGenerations;
+        notifyListeners(new PropertyChangeEvent(this, COPY_EXISTING_GENERATIONS, oldValue, copyExistingGenerations));
     }
 
-    public boolean isCopyAllGenerations() {
-        return copyAllGenerations;
+    public boolean isCopyExistingGenerations() {
+        return copyExistingGenerations;
     }
 
     public boolean isCreateEmptyTable() {

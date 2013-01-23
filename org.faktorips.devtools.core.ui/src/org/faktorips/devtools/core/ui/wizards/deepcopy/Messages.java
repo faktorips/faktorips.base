@@ -44,7 +44,8 @@ public class Messages extends NLS {
     public static String SourcePage_labelGroupTableContents;
     public static String SourcePage_labelRadioBtnCopyTableContents;
     public static String SourcePage_labelRadioBtnCreateEmptyTableContents;
-    public static String SourcePage_labelCheckboxCopyAllGenerations;
+    public static String SourcePage_labelCheckboxCopyExistingGenerations;
+    public static String SourcePage_tooltipCheckboxCopyExistingGenerations;
     public static String SourcePage_labelTargetRoot;
     public static String SourcePage_msgBadTargetPackage;
     public static String SourcePage_msgCopyNotPossible;
