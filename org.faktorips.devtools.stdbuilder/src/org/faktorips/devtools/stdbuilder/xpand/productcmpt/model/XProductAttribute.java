@@ -15,12 +15,14 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
+import org.faktorips.values.ListUtil;
 
 /**
  * This is the generator model node for {@link IProductCmptTypeAttribute}.
@@ -76,14 +78,14 @@ public class XProductAttribute extends XAttribute {
     @Override
     public String getDefaultValueCode() {
         if (isMultiValue()) {
-            return getNewMultiValueInstance();
+            return getNewMultiValueInstanceWithDefaultValue();
         } else {
             return super.getDefaultValueCode();
         }
     }
 
     public boolean isDefaultValueNull() {
-        return getAttribute().getDefaultValue() == null;
+        return getAttribute().getDefaultValue() == null && !getAttribute().isMultiValueAttribute();
     }
 
     /**
@@ -101,10 +103,34 @@ public class XProductAttribute extends XAttribute {
         }
     }
 
+    private JavaCodeFragment newListInitializer(String defaultValue) {
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.appendClassName(ListUtil.class.getName());
+        builder.append(".");
+        builder.append("newList");
+        builder.appendParameters(new String[] { defaultValue });
+        return builder.getFragment();
+
+    }
+
+    public String getNewMultiValueInstanceWithDefaultValue() {
+        if (getAttribute().getDefaultValue() == null) {
+            JavaCodeFragment newInstance = getDatatypeHelper().newInstance("");
+            addImport(newInstance.getImportDeclaration());
+            return newInstance.getSourcecode();
+        } else {
+            JavaCodeFragment defaultValueCode = super.getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
+            addImport(defaultValueCode.getImportDeclaration());
+            JavaCodeFragment fragment = newListInitializer(defaultValueCode.getSourcecode());
+            addImport(fragment.getImportDeclaration());
+            return fragment.getSourcecode();
+        }
+    }
+
     public String getNewMultiValueInstance() {
-        JavaCodeFragment fragment = getDatatypeHelper().newInstance("");
-        addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
+        JavaCodeFragment newInstance = getDatatypeHelper().newInstance("");
+        addImport(newInstance.getImportDeclaration());
+        return newInstance.getSourcecode();
     }
 
     public boolean isMultiValue() {
