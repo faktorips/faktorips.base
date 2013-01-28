@@ -80,6 +80,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             String visibleElement = element.getAttribute(PROPERTY_VISIBLE);
             setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(visibleElement));
         }
+        if (element.hasAttribute(PROPERTY_MULTI_LANGUAGE)) {
+            String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTI_LANGUAGE);
+            setProperty(AttributeProperty.MULTI_LANGUAGE, Boolean.parseBoolean(multiLanguageAttribute));
+        }
+
     }
 
     @Override
@@ -90,6 +95,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
                 "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_VISIBLE, "" + properties.contains(AttributeProperty.VISIBLE)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_MULTI_LANGUAGE, "" + properties.contains(AttributeProperty.MULTI_LANGUAGE)); //$NON-NLS-1$
     }
 
     @Override
@@ -172,15 +178,15 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
+    public boolean isChangingOverTime() {
+        return isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
+    }
+
+    @Override
     public void setChangingOverTime(boolean changesOverTime) {
         boolean oldValue = isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
         setProperty(AttributeProperty.CHANGING_OVER_TIME, changesOverTime);
         valueChanged(oldValue, changesOverTime);
-    }
-
-    @Override
-    public boolean isChangingOverTime() {
-        return isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
     }
 
     @Override
@@ -193,6 +199,30 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         boolean oldValue = isPropertySet(AttributeProperty.MULTI_VALUE_ATTRIBUTE);
         setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, multiValueAttribute);
         valueChanged(oldValue, multiValueAttribute);
+    }
+
+    @Override
+    public boolean isVisible() {
+        return isPropertySet(AttributeProperty.VISIBLE);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        boolean old = isPropertySet(AttributeProperty.VISIBLE);
+        setProperty(AttributeProperty.VISIBLE, visible);
+        valueChanged(old, visible, PROPERTY_VISIBLE);
+    }
+
+    @Override
+    public boolean isMultiLanguageAttribute() {
+        return isPropertySet(AttributeProperty.MULTI_LANGUAGE);
+    }
+
+    @Override
+    public void setMultiLanguage(boolean multiLanguage) {
+        boolean old = isPropertySet(AttributeProperty.MULTI_LANGUAGE);
+        setProperty(AttributeProperty.MULTI_LANGUAGE, multiLanguage);
+        valueChanged(old, multiLanguage, PROPERTY_MULTI_LANGUAGE);
     }
 
     @Override
@@ -277,19 +307,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                             Messages.ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different,
                             Message.ERROR, this, PROPERTY_CHANGING_OVER_TIME));
                 }
+                if (isMultiLanguageAttribute() != superAttr.isMultiLanguageAttribute()) {
+                    result.add(Message.newError(MSGCODE_MULTI_LANGUAGE_SUPPORT_VALID_ONLY_FOR_DATATYPE_STRING,
+                            Messages.ProductCmptTypeAttribute_msgMultiLanguageSupport_onlyValidForDatatypeString, this,
+                            PROPERTY_MULTI_LANGUAGE));
+                }
             }
         }
-    }
-
-    @Override
-    public boolean isVisible() {
-        return isPropertySet(AttributeProperty.VISIBLE);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        boolean old = isPropertySet(AttributeProperty.VISIBLE);
-        setProperty(AttributeProperty.VISIBLE, visible);
-        valueChanged(old, visible, PROPERTY_VISIBLE);
     }
 }
