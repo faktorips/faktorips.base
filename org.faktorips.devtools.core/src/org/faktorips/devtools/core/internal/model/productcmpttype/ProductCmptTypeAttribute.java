@@ -290,6 +290,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     public void setVisible(boolean visible) {
         boolean old = isPropertySet(AttributeProperty.VISIBLE);
         setProperty(AttributeProperty.VISIBLE, visible);
-        valueChanged(old, visible, AttributeProperty.VISIBLE.name());
+        valueChanged(old, visible, PROPERTY_VISIBLE);
     }
 }

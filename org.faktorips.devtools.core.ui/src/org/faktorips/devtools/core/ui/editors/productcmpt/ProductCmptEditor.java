@@ -23,13 +23,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
@@ -142,7 +142,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
         if ((event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED && event.getPart() instanceof IProductCmptGeneration)
-                || event.isPropertyAffected(AttributeProperty.VISIBLE.name())) {
+                || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.syncExec(new Runnable() {
 
