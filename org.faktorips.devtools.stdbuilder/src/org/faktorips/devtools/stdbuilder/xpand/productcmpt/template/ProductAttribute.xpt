@@ -77,7 +77,7 @@
  		*
  		* @generated
  		*/
-		protected void «method(methodNameSetterInternal, javaClassName, "newValue")»{
+		protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»{
 			this.«fieldName» = newValue;
 		}
 	«ENDIF-»
