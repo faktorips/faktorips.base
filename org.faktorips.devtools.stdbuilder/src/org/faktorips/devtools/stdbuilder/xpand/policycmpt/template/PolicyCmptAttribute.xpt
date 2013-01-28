@@ -91,7 +91,11 @@
 		«IF genInterface()-»;«ELSE-»
 		{
 			«EXPAND PropertyChangeSupport::storeOldValue-»
-			this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
+			«IF generateSetterInternal-»
+				«methodNameSetterInternal»(newValue);
+			«ELSE-»
+				this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
+			«ENDIF-»
 			«EXPAND PropertyChangeSupport::notify-»
 		}
 		«ENDIF-»
