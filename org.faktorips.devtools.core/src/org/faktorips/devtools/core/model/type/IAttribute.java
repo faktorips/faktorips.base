@@ -165,17 +165,4 @@ public interface IAttribute extends ITypePart {
     public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
 
     public IValueSet getValueSet() throws CoreException;
-
-    /**
-     * Returns whether this attribute is visible or not.
-     * <p>
-     * If this method returns false, the attribute will not be displayed in the component editor and
-     * its value cannot be modified in the editor. If the method returns true, the attribute will be
-     * displayed in the editor and can be edited by the user.
-     * <p>
-     * The default value is true.
-     * 
-     * @return true if the attribute is visible, false otherwise
-     */
-    boolean isVisible();
 }

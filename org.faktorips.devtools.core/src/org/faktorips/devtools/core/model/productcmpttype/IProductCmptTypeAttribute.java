@@ -129,6 +129,19 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     void setMultiValueAttribute(boolean multiValueAttribute);
 
     /**
+     * Returns whether this attribute is visible or not.
+     * <p>
+     * If this method returns false, the attribute will not be displayed in the component editor and
+     * its value cannot be modified in the editor. If the method returns true, the attribute will be
+     * displayed in the editor and can be edited by the user.
+     * <p>
+     * The default value is true.
+     * 
+     * @return true if the attribute is visible, false otherwise
+     */
+    boolean isVisible();
+
+    /**
      * Setting the property <code>visible</code> for this attribute.
      * <p>
      * If this attribute is marked as visible, the attribute will be displayed in the component
