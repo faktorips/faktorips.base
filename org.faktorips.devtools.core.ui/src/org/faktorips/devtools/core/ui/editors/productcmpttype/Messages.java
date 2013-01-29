@@ -73,6 +73,8 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_changeOverTimeCheckbox;
     public static String AttributeEditDialog_changeOverTimeLabel;
+    public static String AttributeEditDialog_multiLingualCheckbox;
+    public static String AttributeEditDialog_multiLingualCheckboxTooltip;
 
     public static String AttributeEditDialog_datatypeLabel;
     public static String AttributeEditDialog_defaultvalueLabel;

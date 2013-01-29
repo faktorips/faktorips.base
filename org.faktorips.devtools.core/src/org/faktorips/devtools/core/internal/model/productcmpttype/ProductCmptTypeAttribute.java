@@ -80,9 +80,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             String visibleElement = element.getAttribute(PROPERTY_VISIBLE);
             setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(visibleElement));
         }
-        if (element.hasAttribute(PROPERTY_MULTI_LANGUAGE)) {
-            String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTI_LANGUAGE);
-            setProperty(AttributeProperty.MULTI_LANGUAGE, Boolean.parseBoolean(multiLanguageAttribute));
+        if (element.hasAttribute(PROPERTY_MULTI_LINGUAL)) {
+            String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTI_LINGUAL);
+            setProperty(AttributeProperty.MULTI_LINGUAL, Boolean.parseBoolean(multiLanguageAttribute));
         }
 
     }
@@ -95,7 +95,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
                 "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_VISIBLE, "" + properties.contains(AttributeProperty.VISIBLE)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_MULTI_LANGUAGE, "" + properties.contains(AttributeProperty.MULTI_LANGUAGE)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_MULTI_LINGUAL, "" + properties.contains(AttributeProperty.MULTI_LINGUAL)); //$NON-NLS-1$
     }
 
     @Override
@@ -214,15 +214,15 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public boolean isMultiLanguageAttribute() {
-        return isPropertySet(AttributeProperty.MULTI_LANGUAGE);
+    public boolean isMultiLingual() {
+        return isPropertySet(AttributeProperty.MULTI_LINGUAL);
     }
 
     @Override
-    public void setMultiLanguage(boolean multiLanguage) {
-        boolean old = isPropertySet(AttributeProperty.MULTI_LANGUAGE);
-        setProperty(AttributeProperty.MULTI_LANGUAGE, multiLanguage);
-        valueChanged(old, multiLanguage, PROPERTY_MULTI_LANGUAGE);
+    public void setMultiLingual(boolean multiLingual) {
+        boolean old = isPropertySet(AttributeProperty.MULTI_LINGUAL);
+        setProperty(AttributeProperty.MULTI_LINGUAL, multiLingual);
+        valueChanged(old, multiLingual, PROPERTY_MULTI_LINGUAL);
     }
 
     @Override
@@ -307,10 +307,10 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                             Messages.ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different,
                             Message.ERROR, this, PROPERTY_CHANGING_OVER_TIME));
                 }
-                if (isMultiLanguageAttribute() != superAttr.isMultiLanguageAttribute()) {
-                    result.add(Message.newError(MSGCODE_MULTI_LANGUAGE_SUPPORT_VALID_ONLY_FOR_DATATYPE_STRING,
-                            Messages.ProductCmptTypeAttribute_msgMultiLanguageSupport_onlyValidForDatatypeString, this,
-                            PROPERTY_MULTI_LANGUAGE));
+                if (isMultiLingual() != superAttr.isMultiLingual()) {
+                    result.add(Message.newError(MSGCODE_ATTRIBUTE_IS_NOT_MULTI_LINGUAL,
+                            Messages.ProductCmptTypeAttribute_msgMultiLingualSupportForAttributeMissing, this,
+                            PROPERTY_MULTI_LINGUAL));
                 }
             }
         }

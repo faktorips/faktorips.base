@@ -51,7 +51,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     public final static String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MULTI_LANGUAGE = "multiLanguage"; //$NON-NLS-1$
+    public final static String PROPERTY_MULTI_LINGUAL = "multiLinugual"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that an attribute overwrites another but single/multiple
      * value configuration differs
@@ -66,8 +66,11 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
 
-    public final static String MSGCODE_MULTI_LANGUAGE_SUPPORT_VALID_ONLY_FOR_DATATYPE_STRING = IAttribute.MSGCODE_PREFIX
-            + "MultiLanguageSupportOnlyForDatatypeString"; //$NON-NLS-1$
+    public final static String MSGCODE_ATTRIBUTE_IS_NOT_MULTI_LINGUAL = IAttribute.MSGCODE_PREFIX
+            + "MultiLingualDeclationMissingInAttribute"; //$NON-NLS-1$
+
+    public final static String MSGCODE_MULTI_LINGUAL_SUPPORT_ONLY_VALID_FOR_DATATYPE_STRING = IAttribute.MSGCODE_PREFIX
+            + "MultiLingualSupport_onlyValidForDatatypeString"; //$NON-NLS-1$
 
     /**
      * Returns the product component type the attribute belongs to.
@@ -160,22 +163,22 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     void setVisible(boolean visible);
 
     /**
-     * Returns whether this attribute support multi language.
+     * Returns whether this attribute support multi Lingual.
      * 
-     * @return true if this attribute is a multi language attribute, false if not
+     * @return true if this attribute is a multi Lingual attribute, false if not
      */
-    boolean isMultiLanguageAttribute();
+    boolean isMultiLingual();
 
     /**
-     * Setting the property <code>Multi Language</code> for this attribute.
+     * Setting the property <code>Multi Lingual</code> for this attribute.
      * <p>
-     * If this attribute is marked as multi Language, the text of this attribute can be entered in
-     * different languages. If it is not marked as multi Language, the text of this attribute can
+     * If this attribute is marked as multi Lingual, the text of this attribute can be entered in
+     * different languages. If it is not marked as multi Lingual, the text of this attribute can
      * only be entered in one language in the Product-Component editor.
      * <p>
      * 
-     * @param multiLanguage to mark this attribute as multi language attribute, false to mark it as
-     *            not supporting multi-language
+     * @param multiLingual to mark this attribute as multi lingual attribute, false to mark it as
+     *            not supporting multi-lingual
      */
-    void setMultiLanguage(boolean multiLanguage);
+    void setMultiLingual(boolean multiLingual);
 }

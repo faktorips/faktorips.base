@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -174,6 +175,16 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         }
         extFactory.bind(getBindingContext());
+
+        getToolkit().createVerticalSpacer(workArea, 0);
+
+        Checkbox multiLingualCheckbox = getToolkit().createCheckbox(workArea,
+                Messages.AttributeEditDialog_multiLingualCheckbox);
+        getBindingContext().bindContent(multiLingualCheckbox, attribute,
+                IProductCmptTypeAttribute.PROPERTY_MULTI_LINGUAL);
+        getBindingContext().bindEnabled(multiLingualCheckbox, attribute, IAttribute.PROPERTY_DATATYPE,
+                Datatype.STRING.getQualifiedName());
+        multiLingualCheckbox.setToolTipText(Messages.AttributeEditDialog_multiLingualCheckboxTooltip);
     }
 
     private void createDisplayGroupContent(Composite c) {
@@ -347,5 +358,4 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
         refactoringOperation.runDirectExecution();
     }
-
 }
