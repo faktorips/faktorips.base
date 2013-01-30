@@ -39,10 +39,13 @@
 			<id>release</id>
 			<build>
 				<plugins>
-					<!-- NEED Tycho 0.15.0 to change name of output p2 repository <plugin> 
-						<groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-repository-plugin</artifactId> 
-						<configuration> <finalName>${deploy.repositoryZipName}</finalName> </configuration> 
-						</plugin> -->
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-p2-repository-plugin</artifactId>
+						<configuration>
+							<finalName>${deploy.repositoryZipName}</finalName>
+						</configuration>
+					</plugin>
 					<!-- Copy license pdf -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -121,9 +124,6 @@
 												includes="org.faktorips.valuetypes.java5*.jar" />
 											<fileset dir="${project.build.directory}" includes="${deploy.license}" />
 										</zip>
-										<!-- remove when switch to tycho 0.15.0 -->
-										<move file="${project.build.directory}/${project.artifactId}.zip"
-											toFile="${project.build.directory}/${deploy.repositoryZipName}.zip" />
 										<zip update="true" destfile="${deploy.repositoryZip}">
 											<fileset dir="${project.build.directory}" includes="${deploy.license}" />
 										</zip>
@@ -189,7 +189,9 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>ssh</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.basedir} ${deploy.deployedRepositoryZip} &lt; ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+									<commandlineArgs>${deploy.user}@${deploy.server} bash -s --
+										${deploy.basedir} ${deploy.deployedRepositoryZip} &lt;
+										${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
