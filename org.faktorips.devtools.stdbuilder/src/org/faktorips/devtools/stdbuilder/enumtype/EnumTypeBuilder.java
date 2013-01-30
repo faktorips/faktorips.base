@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -898,7 +897,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
             if (currentEnumAttribute.isValid(getIpsProject())) {
-                if (EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, getIpsProject())) {
+                if (currentEnumAttribute.findIsUnique(getIpsProject())) {
                     JavaCodeFragment body = new JavaCodeFragment();
                     String parameterName = currentEnumAttribute.getName();
 
@@ -981,7 +980,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (currentEnumAttribute.isValid(getIpsProject())) {
-                if (EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, getIpsProject())) {
+                if (currentEnumAttribute.findIsUnique(getIpsProject())) {
                     JavaCodeFragment methodBody = new JavaCodeFragment();
                     methodBody.append("return "); //$NON-NLS-1$
                     methodBody.append(getMethodNameGetValueBy(currentEnumAttribute));
@@ -1262,7 +1261,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             addMemberVarToGeneratedJavaElements(javaElements, enumAttribute, javaType);
             addGetterMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
             try {
-                if (EnumUtil.findEnumAttributeIsUnique(enumAttribute, enumAttribute.getIpsProject())) {
+                if (enumAttribute.findIsUnique(enumAttribute.getIpsProject())) {
                     addGetValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
                     addIsValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
                 }
@@ -1287,7 +1286,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 addGetterMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
             }
             try {
-                if (EnumUtil.findEnumAttributeIsUnique(enumAttribute, enumAttribute.getIpsProject())) {
+                if (enumAttribute.findIsUnique(enumAttribute.getIpsProject())) {
                     addGetValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
                     addIsValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
                 }

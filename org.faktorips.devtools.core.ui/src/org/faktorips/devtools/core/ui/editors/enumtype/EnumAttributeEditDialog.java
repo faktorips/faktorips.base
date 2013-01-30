@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.enums.EnumAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -72,6 +72,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** The UI control to set the <tt>datatype</tt> property. */
     private DatatypeRefControl datatypeControl;
+
+    /** The UI control to set the <tt>multilingual</tt> property. */
+    private Checkbox multilingualCheckbox;
 
     /** The UI control to set the <tt>unique</tt> property. */
     private Checkbox uniqueCheckbox;
@@ -192,6 +195,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterDatatypes();
 
+        // Multilingual
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelMultilingual);
+        multilingualCheckbox = getToolkit().createCheckbox(workArea);
+        multilingualCheckbox.setToolTipText(Messages.EnumAttributeEditDialog_hintMultilingual);
+
         // Identifier
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIdentifier);
         identifierCheckbox = getToolkit().createCheckbox(workArea);
@@ -279,6 +287,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             getBindingContext().bindContent(displayNameCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
             getBindingContext().bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
+            getBindingContext().bindContent(multilingualCheckbox, enumAttribute, IEnumAttribute.PROPERTY_MULTILINGUAL);
         }
         getBindingContext().bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
 
@@ -291,10 +300,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             Datatype datatype = enumAttribute.findDatatype(ipsProject);
             String datatypeName = (datatype == null) ? "" : datatype.getName(); //$NON-NLS-1$
             datatypeControl.setText(datatypeName);
-            uniqueCheckbox.setChecked(EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject));
-            identifierCheckbox.setChecked(EnumUtil.findEnumAttributeIsIdentifier(enumAttribute, ipsProject));
-            displayNameCheckbox.setChecked(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(enumAttribute,
-                    ipsProject));
+            multilingualCheckbox.setChecked(enumAttribute.findIsMultilingual(ipsProject));
+            uniqueCheckbox.setChecked(enumAttribute.findIsUnique(ipsProject));
+            identifierCheckbox.setChecked(enumAttribute.findIsIdentifier(ipsProject));
+            displayNameCheckbox.setChecked(enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -305,6 +314,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        getBindingContext().bindEnabled(multilingualCheckbox, enumAttribute,
+                EnumAttribute.PROPERTY_MULTILINGUAL_SUPPORTED, true);
     }
 
     @Override

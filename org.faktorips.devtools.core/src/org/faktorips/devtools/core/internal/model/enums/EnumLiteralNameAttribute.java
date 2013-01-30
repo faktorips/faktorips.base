@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.enums;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -141,7 +140,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         }
 
         // The provider attribute must be unique.
-        if (!(EnumUtil.findEnumAttributeIsUnique(providerAttribute, ipsProject))) {
+        if (!(providerAttribute.findIsUnique(ipsProject))) {
             String text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotUnique,
                     defaultValueProviderAttribute);
             Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE,

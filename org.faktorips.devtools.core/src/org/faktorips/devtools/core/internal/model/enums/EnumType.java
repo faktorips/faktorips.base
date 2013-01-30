@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -279,7 +278,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(includeLiteralName)) {
-            if (EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject)) {
+            if (currentEnumAttribute.findIsUnique(ipsProject)) {
                 uniqueEnumAttributes.add(currentEnumAttribute);
             }
         }
@@ -685,7 +684,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
-            if (EnumUtil.findEnumAttributeIsIdentifier(currentEnumAttribute, ipsProject)) {
+            if (currentEnumAttribute.findIsIdentifier(ipsProject)) {
                 return currentEnumAttribute;
             }
         }
@@ -695,7 +694,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
-            if (EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(currentEnumAttribute, ipsProject)) {
+            if (currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject)) {
                 return currentEnumAttribute;
             }
         }

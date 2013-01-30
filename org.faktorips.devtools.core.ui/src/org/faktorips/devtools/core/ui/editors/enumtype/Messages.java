@@ -49,6 +49,8 @@ public class Messages extends NLS {
     public static String EnumAttributeEditDialog_labelDatatype;
     public static String EnumAttributeEditDialog_labelUseAsLiteralName;
     public static String EnumAttributeEditDialog_labelUnique;
+    public static String EnumAttributeEditDialog_labelMultilingual;
+    public static String EnumAttributeEditDialog_hintMultilingual;
     public static String EnumAttributeEditDialog_labelIdentifier;
     public static String EnumAttributeEditDialog_labelDisplayName;
     public static String EnumAttributeEditDialog_labelIsInherited;

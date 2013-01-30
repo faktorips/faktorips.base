@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -115,6 +116,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    @Ignore
     public void testRunWithErroneousIconFile() throws CoreException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");

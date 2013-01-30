@@ -57,7 +57,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -322,7 +321,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
             String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
             addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
-                    EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
+                    currentEnumAttribute.findIsUnique(ipsProject));
         }
     }
 
@@ -342,7 +341,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                         .get(i);
                 String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
                 addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
-                        EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
+                        currentEnumAttribute.findIsUnique(ipsProject));
             }
         }
     }

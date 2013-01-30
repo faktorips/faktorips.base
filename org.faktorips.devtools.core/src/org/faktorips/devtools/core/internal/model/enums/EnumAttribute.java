@@ -46,7 +46,6 @@ import org.w3c.dom.Element;
  * @since 2.3
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
-
     /** The data type of this <tt>IEnumAttribute</tt>. */
     protected String datatype;
 
@@ -64,6 +63,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     /** Flag indicating whether this <tt>IEnumAttribute</tt> is used as display name. */
     protected boolean usedAsNameInFaktorIpsUi;
+
+    /** Flag indicating whether this <tt>IEnumAttribute</tt> is multilingual or not. */
+    protected boolean multilingual;
 
     /**
      * Creates a new <tt>IEnumAttribute</tt>.
@@ -109,6 +111,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         unique = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE));
+        multilingual = Boolean.parseBoolean(element.getAttribute(PROPERTY_MULTILINGUAL));
         identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_IDENTIFIER));
         usedAsNameInFaktorIpsUi = Boolean.parseBoolean(element.getAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI));
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
@@ -123,6 +126,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         element.setAttribute(PROPERTY_UNIQUE, String.valueOf(unique));
+        element.setAttribute(PROPERTY_MULTILINGUAL, String.valueOf(multilingual));
         element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(identifier));
         element.setAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI, String.valueOf(usedAsNameInFaktorIpsUi));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
@@ -326,6 +330,23 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
+    public void setMultilingual(boolean multilingual) {
+        boolean oldMultilingual = this.multilingual;
+        this.multilingual = multilingual;
+        valueChanged(oldMultilingual, multilingual, PROPERTY_MULTILINGUAL);
+    }
+
+    @Override
+    public boolean isMultilingual() {
+        return isMultilingualSupported() && multilingual;
+    }
+
+    @Override
+    public boolean isMultilingualSupported() {
+        return Datatype.STRING.getQualifiedName().equals(getDatatype());
+    }
+
+    @Override
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -402,17 +423,31 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public Boolean findIsUnique(IIpsProject ipsProject) throws CoreException {
+    public boolean findIsUnique(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
             IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
-                return null;
+                return false;
             }
             return superEnumAttribute.isUnique();
         }
         return isUnique();
+    }
+
+    @Override
+    public boolean findIsMultilingual(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
+        if (inherited) {
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
+            if (superEnumAttribute == null) {
+                return false;
+            }
+            return superEnumAttribute.isMultilingual();
+        }
+        return isMultilingual();
     }
 
     @Override
@@ -440,13 +475,13 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public Boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException {
+    public boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
             IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
-                return null;
+                return false;
             }
             return superEnumAttribute.isIdentifier();
         }
@@ -454,13 +489,13 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public Boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
+    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
             IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
-                return null;
+                return false;
             }
             return superEnumAttribute.isUsedAsNameInFaktorIpsUi();
         }

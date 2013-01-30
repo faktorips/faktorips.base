@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -39,7 +38,7 @@ public class EnumAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
 
             try {
                 IIpsProject ipsProject = enumAttribute.getIpsProject();
-                boolean isUniqueIdentifier = EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject);
+                boolean isUniqueIdentifier = enumAttribute.findIsUnique(ipsProject);
                 if (isUniqueIdentifier) {
                     overlayList.add(OverlayIcons.KEY_OVR);
                 }

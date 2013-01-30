@@ -23,14 +23,16 @@ import org.faktorips.util.ArgumentCheck;
  * @author Alexander Weickmann
  * 
  * @since 2.4
+ * @deprecated since 3.9 because the equivalent methods in <tt>IEnumAttribute</tt> no longer return
+ *             null and render the methods defined in this class useless.
  */
+@Deprecated
 public class EnumUtil {
 
     /**
-     * Returns whether the given <tt>IEnumAttribute</tt> is unique. In contrast to the method
-     * <tt>findIsUnique(IIpsProject)</tt> from <tt>IEnumAttribute</tt> this operation never returns
-     * <tt>null</tt>. If the <tt>IEnumAttribute</tt> is inherited and the super type attribute
-     * cannot be found, <tt>false</tt> instead of <tt>null</tt> will be returned.
+     * Returns whether the given <tt>IEnumAttribute</tt> is unique. Works just as the method
+     * <tt>findIsUnique(IIpsProject)</tt> from <tt>IEnumAttribute</tt>. Hence, the
+     * <tt>findIsUnique(IIpsProject)</tt> method should be used instead of this method.
      * 
      * @see org.faktorips.devtools.core.model.enums.IEnumAttribute#findIsUnique(IIpsProject)
      * 
@@ -41,7 +43,10 @@ public class EnumUtil {
      *             given <tt>IEnumAttribute</tt> is inherited.
      * @throws NullPointerException If <tt>enumAttribute</tt> or <tt>ipsProject</tt> is
      *             <tt>null</tt>.
+     * 
+     * @deprecated since 3.9 use IEnumAttribute.findIsUnique, because it no longer returns null.
      */
+    @Deprecated
     public static boolean findEnumAttributeIsUnique(IEnumAttribute enumAttribute, IIpsProject ipsProject)
             throws CoreException {
 
@@ -51,10 +56,9 @@ public class EnumUtil {
     }
 
     /**
-     * Returns whether the given <tt>IEnumAttribute</tt> is the (default) identifier. In contrast to
-     * the method <tt>findIsIdentifier(IIpsProject)</tt> from <tt>IEnumAttribute</tt> this operation
-     * never returns <tt>null</tt>. If the <tt>IEnumAttribute</tt> is inherited and the super type
-     * attribute cannot be found, <tt>false</tt> instead of <tt>null</tt> will be returned.
+     * Returns whether the given <tt>IEnumAttribute</tt> is the (default) identifier. Works just as
+     * the method <tt>findIsIdentifier(IIpsProject)</tt> from <tt>IEnumAttribute</tt>. Hence, the
+     * <tt>findIsIdentifier(IIpsProject)</tt> method should be used instead of this method.
      * 
      * @see org.faktorips.devtools.core.model.enums.IEnumAttribute#findIsIdentifier(IIpsProject)
      * 
@@ -65,7 +69,10 @@ public class EnumUtil {
      *             given <tt>IEnumAttribute</tt> is inherited.
      * @throws NullPointerException If <tt>enumAttribute</tt> or <tt>ipsProject</tt> is
      *             <tt>null</tt>.
+     * 
+     * @deprecated since 3.9 use IEnumAttribute.findIsIdentifier, because it no longer returns null.
      */
+    @Deprecated
     public static boolean findEnumAttributeIsIdentifier(IEnumAttribute enumAttribute, IIpsProject ipsProject)
             throws CoreException {
 
@@ -75,11 +82,10 @@ public class EnumUtil {
     }
 
     /**
-     * Returns whether the given <tt>IEnumAttribute</tt> is used as name in the Faktor-IPS UI. In
-     * contrast to the method <tt>findIsUsedAsNameInFaktorIpsUi(IIpsProject)</tt> from
-     * <tt>IEnumAttribute</tt> this operation never returns <tt>null</tt>. If the
-     * <tt>IEnumAttribute</tt> is inherited and the super type attribute cannot be found,
-     * <tt>false</tt> instead of <tt>null</tt> will be returned.
+     * Returns whether the given <tt>IEnumAttribute</tt> is used as name in the Faktor-IPS UI. Works
+     * just as the method <tt>findIsUsedAsNameInFaktorIpsUi(IIpsProject)</tt> from
+     * <tt>IEnumAttribute</tt>. Hence, the <tt>findIsUsedAsNameInFaktorIpsUi(IIpsProject)</tt>
+     * method should be used instead of this method.
      * 
      * @see org.faktorips.devtools.core.model.enums.IEnumAttribute#findIsUsedAsNameInFaktorIpsUi(IIpsProject)
      * 
@@ -90,7 +96,11 @@ public class EnumUtil {
      *             given <tt>IEnumAttribute</tt> is inherited.
      * @throws NullPointerException If <tt>enumAttribute</tt> or <tt>ipsProject</tt> is
      *             <tt>null</tt>.
+     * 
+     * @deprecated since 3.9 use IEnumAttribute.findIsUsedAsNameInFaktorIpsUi, because it no longer
+     *             returns null.
      */
+    @Deprecated
     public static boolean findEnumAttributeIsUsedAsNameInFaktorIpsUi(IEnumAttribute enumAttribute,
             IIpsProject ipsProject) throws CoreException {
 

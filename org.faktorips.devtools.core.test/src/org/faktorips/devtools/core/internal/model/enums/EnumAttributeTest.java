@@ -391,7 +391,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(inheritedEnumAttributeId.findIsUnique(ipsProject));
 
         genderEnumAttributeId.setInherited(true);
-        assertNull(genderEnumAttributeId.findIsUnique(ipsProject));
+        assertFalse(genderEnumAttributeId.findIsUnique(ipsProject));
     }
 
     @Test
@@ -407,7 +407,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
 
         genderEnumAttributeId.setInherited(true);
-        assertNull(genderEnumAttributeId.findIsIdentifier(ipsProject));
+        assertFalse(genderEnumAttributeId.findIsIdentifier(ipsProject));
     }
 
     @Test
@@ -423,7 +423,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(inheritedEnumAttributeName.findIsUsedAsNameInFaktorIpsUi(ipsProject));
 
         genderEnumAttributeName.setInherited(true);
-        assertNull(genderEnumAttributeName.findIsUsedAsNameInFaktorIpsUi(ipsProject));
+        assertFalse(genderEnumAttributeName.findIsUsedAsNameInFaktorIpsUi(ipsProject));
     }
 
     @Test
@@ -454,4 +454,21 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(paymentMode.getEnumAttributes(true).get(0).isEnumLiteralNameAttribute());
     }
 
+    @Test
+    public void testMultilingual() {
+        assertFalse(genderEnumAttributeName.isMultilingual());
+        genderEnumAttributeName.setMultilingual(true);
+        assertTrue(genderEnumAttributeName.isMultilingual());
+        genderEnumAttributeName.setDatatype("Integer");
+        assertFalse(genderEnumAttributeName.isMultilingual());
+    }
+
+    @Test
+    public void testMultilingualSupported() {
+        assertTrue(((EnumAttribute)genderEnumAttributeName).isMultilingualSupported());
+        genderEnumAttributeName.setDatatype("Integer");
+        assertFalse(((EnumAttribute)genderEnumAttributeName).isMultilingualSupported());
+        genderEnumAttributeName.setMultilingual(true);
+        assertFalse(((EnumAttribute)genderEnumAttributeName).isMultilingualSupported());
+    }
 }

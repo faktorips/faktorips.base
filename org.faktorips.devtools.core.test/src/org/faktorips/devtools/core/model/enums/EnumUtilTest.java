@@ -42,32 +42,32 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindEnumAttributeIsUnique() throws CoreException {
-        assertFalse(EnumUtil.findEnumAttributeIsUnique(inheritedAttribute, ipsProject));
+        assertFalse(inheritedAttribute.findIsUnique(ipsProject));
         inheritedAttribute.setUnique(true);
         inheritedAttribute.setInherited(true);
-        assertFalse(EnumUtil.findEnumAttributeIsUnique(inheritedAttribute, ipsProject));
+        assertFalse(inheritedAttribute.findIsUnique(ipsProject));
         superAttribute.setUnique(true);
-        assertTrue(EnumUtil.findEnumAttributeIsUnique(inheritedAttribute, ipsProject));
+        assertTrue(inheritedAttribute.findIsUnique(ipsProject));
     }
 
     @Test
     public void testFindEnumAttributeIsIdentifier() throws CoreException {
-        assertFalse(EnumUtil.findEnumAttributeIsIdentifier(inheritedAttribute, ipsProject));
+        assertFalse(inheritedAttribute.findIsIdentifier(ipsProject));
         inheritedAttribute.setIdentifier(true);
         inheritedAttribute.setInherited(true);
-        assertFalse(EnumUtil.findEnumAttributeIsIdentifier(inheritedAttribute, ipsProject));
+        assertFalse(inheritedAttribute.findIsIdentifier(ipsProject));
         superAttribute.setIdentifier(true);
-        assertTrue(EnumUtil.findEnumAttributeIsIdentifier(inheritedAttribute, ipsProject));
+        assertTrue(inheritedAttribute.findIsIdentifier(ipsProject));
     }
 
     @Test
     public void testFindEnumAttributeIsUsedAsNameInFaktorIpsUi() throws CoreException {
-        assertFalse(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(inheritedAttribute, ipsProject));
+        assertFalse(inheritedAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
         inheritedAttribute.setUsedAsNameInFaktorIpsUi(true);
         inheritedAttribute.setInherited(true);
-        assertFalse(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(inheritedAttribute, ipsProject));
+        assertFalse(inheritedAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
         superAttribute.setUsedAsNameInFaktorIpsUi(true);
-        assertTrue(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(inheritedAttribute, ipsProject));
+        assertTrue(inheritedAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
     }
 
 }

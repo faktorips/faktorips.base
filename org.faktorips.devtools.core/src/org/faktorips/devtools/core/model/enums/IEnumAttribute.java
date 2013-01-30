@@ -66,6 +66,11 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
     /** Name of the <tt>identifier</tt> property. */
     public final static String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
 
+    /** Name of the <tt>multilingual</tt> property. */
+    public final static String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
+
+    public final static String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
+
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
 
@@ -292,7 +297,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * not.
      * <p>
      * If this attribute is inherited the property of the super type attribute will be returned.
-     * Returns <tt>null</tt> if the super type attribute cannot be found.
+     * Returns <tt>false</tt> if the super type attribute cannot be found.
      * 
      * @see #isUnique()
      * 
@@ -302,7 +307,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @throws CoreException If an error occurs while searching
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public Boolean findIsUnique(IIpsProject ipsProject) throws CoreException;
+    public boolean findIsUnique(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets whether this <tt>IEnumAttribute</tt> is a unique identifier.
@@ -361,7 +366,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * Faktor-IPS UI, <tt>false</tt> if not.
      * <p>
      * If this <tt>IEnumAttribute</tt> is inherited the property of the super
-     * <tt>IEnumAttribute</tt> will be returned. Returns <tt>null</tt> if the super
+     * <tt>IEnumAttribute</tt> will be returned. Returns <tt>false</tt> if the super
      * <tt>IEnumAttribute</tt> cannot be found.
      * 
      * @see #isUsedAsNameInFaktorIpsUi()
@@ -374,7 +379,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *             <tt>IEnumAttribute</tt>.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public Boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
+    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the original <tt>IEnumAttribute</tt> this <tt>IEnumAttribute</tt> is a copy of (if
@@ -390,7 +395,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * Faktor-IPS UI, <tt>false</tt> if not.
      * <p>
      * If this <tt>IEnumAttribute</tt> is inherited the property of the super
-     * <tt>IEnumAttribute</tt> will be returned. Returns <tt>null</tt> if the super
+     * <tt>IEnumAttribute</tt> will be returned. Returns <tt>false</tt> if the super
      * <tt>IEnumAttribute</tt> cannot be found.
      * 
      * @see #isIdentifier()
@@ -402,7 +407,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *             <tt>IEnumAttribute</tt>.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public Boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException;
+    public boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <tt>true</tt> if this <tt>IEnumAttribute</tt> is used by the first
@@ -432,4 +437,45 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      */
     public boolean isEnumLiteralNameAttribute();
 
+    /**
+     * Returns <tt>true</tt> if this enumeration attribute is marked as multilingual, <tt>false</tt>
+     * if not.
+     * <p>
+     * If this attribute is inherited the property of the super type attribute will be returned.
+     * Returns <tt>false</tt> if the super type attribute cannot be found.
+     * 
+     * @see #isMultilingual()
+     * 
+     * @param ipsProject The IPS project that is used to the search the <tt>multilingual</tt>
+     *            property in the super type hierarchy.
+     * 
+     * @throws CoreException If an error occurs while searching
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     */
+    public boolean findIsMultilingual(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Sets the multilingual property of this attribute. If multilingual is set to <tt>true</tt> and
+     * the datatype of this attribute is String, the attribute value can be specified in different
+     * languages.
+     * 
+     * @param multilingual true to enable multi language support, false otherwise.
+     */
+    public void setMultilingual(boolean multilingual);
+
+    /**
+     * Returns true if multi language support for this attribute is activated and supported, false
+     * otherwise.
+     * 
+     * Note that the return value of this method can be false although multi value support has
+     * previously been enabled by calling <tt>setMultilingual(true)</tt>. This happens if multi
+     * language support has been set but is not supported by this attribute (for example, because it
+     * has a data type that does not allow more than one language).
+     */
+    public boolean isMultilingual();
+
+    /**
+     * Returns true if multi language support for this attribute is supported, false otherwise.
+     */
+    public boolean isMultilingualSupported();
 }
