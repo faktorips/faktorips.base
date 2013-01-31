@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -159,6 +158,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(multiValueRadioButtonField, attribute,
                 IProductCmptTypeAttribute.PROPERTY_MULTI_VALUE_ATTRIBUTE);
 
+        getToolkit().createVerticalSpacer(workArea, 0);
+        Checkbox multilingualCheckbox = getToolkit().createCheckbox(workArea,
+                Messages.AttributeEditDialog_multiLingualCheckbox);
+        getBindingContext().bindContent(multilingualCheckbox, attribute,
+                IProductCmptTypeAttribute.PROPERTY_MULTILINGUAL);
+        getBindingContext().bindEnabled(multilingualCheckbox, attribute,
+                IProductCmptTypeAttribute.PROPERTY_MULTILINGUAL_SUPPORTED);
+        multilingualCheckbox.setToolTipText(Messages.AttributeEditDialog_multiLingualCheckboxTooltip);
+
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
         Combo modifierCombo = getToolkit().createCombo(workArea);
         getBindingContext().bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
@@ -175,16 +183,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         }
         extFactory.bind(getBindingContext());
-
-        getToolkit().createVerticalSpacer(workArea, 0);
-
-        Checkbox multiLingualCheckbox = getToolkit().createCheckbox(workArea,
-                Messages.AttributeEditDialog_multiLingualCheckbox);
-        getBindingContext().bindContent(multiLingualCheckbox, attribute,
-                IProductCmptTypeAttribute.PROPERTY_MULTI_LINGUAL);
-        getBindingContext().bindEnabled(multiLingualCheckbox, attribute, IAttribute.PROPERTY_DATATYPE,
-                Datatype.STRING.getQualifiedName());
-        multiLingualCheckbox.setToolTipText(Messages.AttributeEditDialog_multiLingualCheckboxTooltip);
     }
 
     private void createDisplayGroupContent(Composite c) {

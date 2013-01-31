@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
 
     public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+
     public final static String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
 
     /**
@@ -51,7 +52,28 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     public final static String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MULTI_LINGUAL = "multiLinugual"; //$NON-NLS-1$
+    /**
+     * This constant defines the multilingual property.
+     * <p>
+     * If this attribute is defined as multilingual the values could be entered in multiple
+     * languages. An attribute could only be marked as multilingual if the data type is string.
+     * 
+     * @see #isMultilingual()
+     * @see #setMultilingual(boolean)
+     */
+    public final static String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
+
+    /**
+     * This constant defines the multilingualSupported property.
+     * <p>
+     * This is a read only property!
+     * <p>
+     * The property multilingualSupported is true if the datatype of the attribute is string.
+     * 
+     * @see #isMultilingualSupported()
+     */
+    public final static String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
+
     /**
      * Validation message code to indicate that an attribute overwrites another but single/multiple
      * value configuration differs
@@ -66,11 +88,12 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
 
-    public final static String MSGCODE_ATTRIBUTE_IS_NOT_MULTI_LINGUAL = IAttribute.MSGCODE_PREFIX
-            + "MultiLingualDeclationMissingInAttribute"; //$NON-NLS-1$
-
-    public final static String MSGCODE_MULTI_LINGUAL_SUPPORT_ONLY_VALID_FOR_DATATYPE_STRING = IAttribute.MSGCODE_PREFIX
-            + "MultiLingualSupport_onlyValidForDatatypeString"; //$NON-NLS-1$
+    /**
+     * Validation message code to indicate that an attribute overwrites another but multilingual
+     * configuration differs
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeMultilingualDiffers"; //$NON-NLS-1$
 
     /**
      * Returns the product component type the attribute belongs to.
@@ -167,7 +190,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * 
      * @return true if this attribute is a multi Lingual attribute, false if not
      */
-    boolean isMultiLingual();
+    boolean isMultilingual();
 
     /**
      * Setting the property <code>Multi Lingual</code> for this attribute.
@@ -180,5 +203,13 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @param multiLingual to mark this attribute as multi lingual attribute, false to mark it as
      *            not supporting multi-lingual
      */
-    void setMultiLingual(boolean multiLingual);
+    void setMultilingual(boolean multiLingual);
+
+    /**
+     * Returns true if the property multilingual is supported by this attribute. Currently
+     * multilingual is only supported for data type string.
+     * 
+     * @return <code>True</code> if the property multilingual is support, othervise false
+     */
+    boolean isMultilingualSupported();
 }

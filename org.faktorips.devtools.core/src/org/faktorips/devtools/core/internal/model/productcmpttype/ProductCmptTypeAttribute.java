@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
@@ -80,9 +81,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             String visibleElement = element.getAttribute(PROPERTY_VISIBLE);
             setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(visibleElement));
         }
-        if (element.hasAttribute(PROPERTY_MULTI_LINGUAL)) {
-            String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTI_LINGUAL);
-            setProperty(AttributeProperty.MULTI_LINGUAL, Boolean.parseBoolean(multiLanguageAttribute));
+        if (element.hasAttribute(PROPERTY_MULTILINGUAL)) {
+            String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTILINGUAL);
+            setProperty(AttributeProperty.MULTILINGUAL, Boolean.parseBoolean(multiLanguageAttribute));
         }
 
     }
@@ -95,7 +96,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
                 "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_VISIBLE, "" + properties.contains(AttributeProperty.VISIBLE)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_MULTI_LINGUAL, "" + properties.contains(AttributeProperty.MULTI_LINGUAL)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_MULTILINGUAL, "" + properties.contains(AttributeProperty.MULTILINGUAL)); //$NON-NLS-1$
     }
 
     @Override
@@ -214,15 +215,20 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public boolean isMultiLingual() {
-        return isPropertySet(AttributeProperty.MULTI_LINGUAL);
+    public boolean isMultilingualSupported() {
+        return Datatype.STRING.getQualifiedName().equals(getDatatype());
     }
 
     @Override
-    public void setMultiLingual(boolean multiLingual) {
-        boolean old = isPropertySet(AttributeProperty.MULTI_LINGUAL);
-        setProperty(AttributeProperty.MULTI_LINGUAL, multiLingual);
-        valueChanged(old, multiLingual, PROPERTY_MULTI_LINGUAL);
+    public boolean isMultilingual() {
+        return isPropertySet(AttributeProperty.MULTILINGUAL) && isMultilingualSupported();
+    }
+
+    @Override
+    public void setMultilingual(boolean multilingual) {
+        boolean old = isPropertySet(AttributeProperty.MULTILINGUAL);
+        setProperty(AttributeProperty.MULTILINGUAL, multilingual);
+        valueChanged(old, multilingual, PROPERTY_MULTILINGUAL);
     }
 
     @Override
@@ -307,10 +313,10 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                             Messages.ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different,
                             Message.ERROR, this, PROPERTY_CHANGING_OVER_TIME));
                 }
-                if (isMultiLingual() != superAttr.isMultiLingual()) {
-                    result.add(Message.newError(MSGCODE_ATTRIBUTE_IS_NOT_MULTI_LINGUAL,
-                            Messages.ProductCmptTypeAttribute_msgMultiLingualSupportForAttributeMissing, this,
-                            PROPERTY_MULTI_LINGUAL));
+                if (isMultilingual() != superAttr.isMultilingual()) {
+                    result.add(Message.newError(MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS,
+                            Messages.ProductCmptTypeAttribute_msgOverwritten_multilingual_different, this,
+                            PROPERTY_MULTILINGUAL));
                 }
             }
         }

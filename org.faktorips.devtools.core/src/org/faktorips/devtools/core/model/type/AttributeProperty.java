@@ -47,11 +47,11 @@ public enum AttributeProperty {
     VISIBLE,
 
     /**
-     * This property defines whether this attribute supports multi Lingual. Multi Lingual support is
-     * only allowed for attributes having String as a Datatype.
+     * This property defines whether this attribute supports multiLingual. Multilingual support is
+     * only allowed for attributes having String as a data type.
      * 
      */
-    MULTI_LINGUAL;
+    MULTILINGUAL;
 
     public static void setValue(EnumSet<AttributeProperty> set, AttributeProperty value, boolean active) {
         if (active) {

@@ -201,10 +201,10 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetMultiLanguage() {
-        productAttribute.setMultiLingual(true);
-        assertTrue(productAttribute.isMultiLingual());
-        productAttribute.setMultiLingual(false);
-        assertFalse(productAttribute.isMultiLingual());
+        productAttribute.setMultilingual(true);
+        assertTrue(productAttribute.isMultilingual());
+        productAttribute.setMultilingual(false);
+        assertFalse(productAttribute.isMultilingual());
     }
 
 }
