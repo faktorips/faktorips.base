@@ -63,7 +63,6 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         assertEquals(5, getAttributeValueList().size());
         assertEquals(5, model.getElements().size());
 
-        model.applyValueList();
         assertEquals(5, getAttributeValueList().size());
         assertEquals(5, model.getElements().size());
         assertSame(getAttributeValueList().get(4), model.getElements().get(4).getSingleValueHolder());
@@ -111,16 +110,16 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
     @Test
     public void treatViewItemsWithEqualValueAsNotEqual() {
         SingleValueHolder holder = new SingleValueHolder(attributeValue, "value");
-        SingleValueViewItem item1 = new SingleValueViewItem(holder);
-        SingleValueViewItem item2 = new SingleValueViewItem(holder);
+        SingleValueViewItem item1 = new SingleValueViewItem(holder, 0);
+        SingleValueViewItem item2 = new SingleValueViewItem(holder, 1);
         assertFalse(item1.equals(item2));
     }
 
     @Test
     public void treatViewItemsAsNotEqual() {
         SingleValueHolder holder = new SingleValueHolder(attributeValue, "value");
-        SingleValueViewItem item1 = new SingleValueViewItem(holder);
-        SingleValueViewItem item2 = new SingleValueViewItem(holder);
+        SingleValueViewItem item1 = new SingleValueViewItem(holder, 0);
+        SingleValueViewItem item2 = new SingleValueViewItem(holder, 1);
         List<SingleValueViewItem> items = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
         items.add(item1);
         items.add(item2);

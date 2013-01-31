@@ -18,12 +18,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
@@ -72,7 +77,15 @@ public class ValueHolderToFormattedStringWrapper {
             MultiValueHolder multiHolder = (MultiValueHolder)valueHolder;
             List<String> stringValues = new ArrayList<String>();
             for (SingleValueHolder holder : multiHolder.getValue()) {
-                String formattedValue = datatypeFormatter.formatValue(datatype, holder.getStringValue());
+                String stringValue;
+                if (holder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+                    ILocalizedString locString = ((IValue<IInternationalString>)holder.getValue()).getContent().get(
+                            IpsPlugin.getDefault().getUsedLanguagePackLocale());
+                    stringValue = locString == null ? null : locString.getValue();
+                } else {
+                    stringValue = holder.getStringValue();
+                }
+                String formattedValue = datatypeFormatter.formatValue(datatype, stringValue);
                 stringValues.add(formattedValue);
             }
             return convertToString(stringValues);

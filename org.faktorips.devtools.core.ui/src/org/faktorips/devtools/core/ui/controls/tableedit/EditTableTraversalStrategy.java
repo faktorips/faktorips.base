@@ -15,16 +15,17 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import java.util.List;
 
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 
 public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
 
     private final int columnIndex;
-    private final IEditTabelModel listTableModel;
+    private final MultiValueTableModel listTableModel;
 
     public EditTableTraversalStrategy(CellTrackingEditingSupport editingSupport, int columnIndex,
-            IEditTabelModel listTableModel) {
+            MultiValueTableModel listTableModel) {
         super(editingSupport);
         this.columnIndex = columnIndex;
         this.listTableModel = listTableModel;

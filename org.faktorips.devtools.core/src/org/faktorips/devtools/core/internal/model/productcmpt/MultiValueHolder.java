@@ -278,5 +278,4 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         }
 
     }
-
 }

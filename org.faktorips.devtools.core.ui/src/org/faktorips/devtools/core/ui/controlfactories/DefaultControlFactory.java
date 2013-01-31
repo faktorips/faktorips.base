@@ -104,7 +104,6 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-
         Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE | getDefaultAlignment());
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);

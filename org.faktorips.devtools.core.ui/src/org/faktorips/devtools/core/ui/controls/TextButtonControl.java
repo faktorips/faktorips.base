@@ -92,6 +92,10 @@ public abstract class TextButtonControl extends TextAndSecondControlComposite {
         getButtonControl().setImage(image);
     }
 
+    public void setButtonText(String text) {
+        getButtonControl().setText(text);
+    }
+
     protected Button getButtonControl() {
         return getSecondControl();
     }

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -24,10 +25,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -36,8 +41,10 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.MultilingualEditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
+import org.faktorips.devtools.core.ui.controls.MultilingualValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -68,13 +75,14 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
         ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
                 getPropertyValue().getIpsProject());
-        EditField<String> editField = createEditField(datatype);
+        EditField<?> editField = createEditField(datatype);
         registerAndBindEditField(editFields, editField);
     }
 
-    protected EditField<String> createEditField(ValueDatatype datatype) {
-        EditField<String> editField = null;
+    protected EditField<?> createEditField(ValueDatatype datatype) {
+        EditField<?> editField = null;
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
+
         if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
             MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
                     getPropertyValue(), datatype);
@@ -86,13 +94,24 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             getBindingContext().bindProblemMarker(editField, getPropertyValue().getValueHolder(),
                     MultiValueHolder.PROPERTY_VALUE);
         } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
-            ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
+            SingleValueHolder singleValueHolder = (SingleValueHolder)getPropertyValue().getValueHolder();
+            if (singleValueHolder.getValueType() == ValueType.STRING) {
+                ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
 
-            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                    datatype);
-            editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
-                    .getIpsProject());
-            getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
+                ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                        datatype);
+                editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
+                        .getIpsProject());
+                getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
+            } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+                MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
+                        IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
+                MultilingualValueAttributeControl control = new MultilingualValueAttributeControl(this, getToolkit(),
+                        getPropertyValue(), getPropertyValue().getIpsProject(), null);
+                editField = new MultilingualEditField(control);
+                getBindingContext().bindContent(editField, valueHolderPMO,
+                        MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
+            }
         }
         if (editField != null) {
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
@@ -102,7 +121,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         throw new RuntimeException("Illegal value holder instance in attribute " + getProperty().getName()); //$NON-NLS-1$
     }
 
-    protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<String> editField) {
+    protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<?> editField) {
         editFields.add(editField);
         if (getProperty() != null && !getProperty().isChangingOverTime()) {
             addNotChangingOverTimeControlDecoration(editField);
@@ -120,7 +139,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     public static class ValueHolderPmo extends IpsObjectPartPmo {
-
         public static final String PROPERTY_STRING_VALUE = "stringValue"; //$NON-NLS-1$
 
         public ValueHolderPmo(IAttributeValue attributeValue) {
@@ -146,4 +164,38 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
     }
 
+    public static class MultilingualValueHolderPmo extends IpsObjectPartPmo {
+        public static final String PROPERTY_LOCALIZED_STRING_VALUE = "localizedStringValue"; //$NON-NLS-1$
+
+        private final Locale locale;
+
+        public MultilingualValueHolderPmo(IAttributeValue attributeValue, Locale locale) {
+            super(attributeValue);
+            this.locale = locale;
+        }
+
+        public SingleValueHolder getSingleValueHolder() {
+            return (SingleValueHolder)getIpsObjectPartContainer().getValueHolder();
+        }
+
+        public ILocalizedString getLocalizedStringValue() {
+            IValue<?> value = getSingleValueHolder().getValue();
+            return value == null || value.getContent() == null ? null : ((IInternationalString)value.getContent())
+                    .get(locale);
+        }
+
+        @Override
+        public IAttributeValue getIpsObjectPartContainer() {
+            return (IAttributeValue)super.getIpsObjectPartContainer();
+        }
+
+        public void setLocalizedStringValue(ILocalizedString newValue) {
+            IValue<?> value = getSingleValueHolder().getValue();
+            if (value != null) {
+                IInternationalString currentString = (IInternationalString)value.getContent();
+                currentString.add(newValue);
+            }
+            notifyListeners();
+        }
+    }
 }

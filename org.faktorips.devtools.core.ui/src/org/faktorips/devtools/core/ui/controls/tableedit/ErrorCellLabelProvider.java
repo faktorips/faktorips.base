@@ -18,14 +18,15 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
 
 public class ErrorCellLabelProvider extends CellLabelProvider {
 
-    private final IEditTabelModel tableModel;
+    private final MultiValueTableModel tableModel;
 
-    public ErrorCellLabelProvider(IEditTabelModel tableModel) {
+    public ErrorCellLabelProvider(MultiValueTableModel tableModel) {
         this.tableModel = tableModel;
     }
 

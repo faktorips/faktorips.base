@@ -19,12 +19,16 @@ import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableUtil;
 
 /**
  * Factory that creates UI similar to the old {@link EditTableControl}.
@@ -33,16 +37,15 @@ import org.faktorips.devtools.core.ui.table.IpsCellEditor;
  * @author Stefan Widmaier
  */
 public class EditTableControlFactory {
-
     /**
-     * Creates a editable table with its buttons that displays the contents of the given
+     * Creates an editable table with its buttons that displays the contents of the given
      * {@link AbstractListTableModel}. The table only contains a single column. A
      * {@link DatatypeEditingSupport} is used to create cell-editors that allow for changing single
      * values in the table.
      * 
      * @param uiToolkit the toolkit to create {@link IpsCellEditor cell editors} with
      * @param parent the composite the table and button controls should be created in
-     * @param ipsProject the IPS project the IPS object is contained in
+     * @param attributeValue the attribute for which the table is created
      * @param valueDatatype the data type of the values
      * @param tableModel the model that contains the list of elements that can be edited using the
      *            table
@@ -52,9 +55,9 @@ public class EditTableControlFactory {
      */
     public static EditTableControlViewer createListEditTable(UIToolkit uiToolkit,
             Composite parent,
-            IIpsProject ipsProject,
+            IAttributeValue attributeValue,
             ValueDatatype valueDatatype,
-            IEditTabelModel tableModel,
+            MultiValueTableModel tableModel,
             IElementModifier elementModifier,
             String description) {
         EditTableControlViewer viewer = new EditTableControlViewer(parent);
@@ -71,8 +74,17 @@ public class EditTableControlFactory {
                 ctrlFactory.getDefaultAlignment());
         valueColumn.getColumn().setResizable(false);
 
-        DatatypeEditingSupport datatypeEditingSupport = new DatatypeEditingSupport(uiToolkit, viewer.getTableViewer(),
-                ipsProject, valueDatatype, elementModifier);
+        IValueHolder<?> valueHolder = attributeValue.getValueHolder();
+
+        DatatypeEditingSupport datatypeEditingSupport;
+        if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+            TableUtil.increaseHeightOfTableRows(viewer.getTableViewer().getTable(), 2, 12);
+            datatypeEditingSupport = new MultilingualDatatypeEditingSupport(uiToolkit, viewer.getTableViewer(),
+                    attributeValue.getIpsProject(), valueDatatype, elementModifier, attributeValue);
+        } else {
+            datatypeEditingSupport = new DatatypeEditingSupport(uiToolkit, viewer.getTableViewer(),
+                    attributeValue.getIpsProject(), valueDatatype, elementModifier);
+        }
         datatypeEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy(datatypeEditingSupport, 1,
                 tableModel));
         valueColumn.setEditingSupport(datatypeEditingSupport);
@@ -80,6 +92,8 @@ public class EditTableControlFactory {
 
         viewer.setContentProvider(new ListTableModelContentProvider());
         viewer.setTabelModel(tableModel);
+        viewer.getTableViewer().getTable().setHeaderVisible(false);
+
         return viewer;
     }
 }

@@ -21,27 +21,28 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EditTableTraversalStrategyTest {
+public class MultiValueTableTraversalStrategyTest {
 
-    private static final String A = "A";
-    private static final String B1 = "B";
-    private static final String C = "C";
+    private static final SingleValueHolder A = new SingleValueHolder(null, "A");
+    private static final SingleValueHolder B1 = new SingleValueHolder(null, "B");
+    private static final SingleValueHolder C = new SingleValueHolder(null, "C");
     /*
      * Force new String instance as items B1 and B2 should be equal but not same. The search in the
      * models list should be based on identity not equality.
      */
-    private static final String B2 = new String("B");
+    private static final SingleValueHolder B2 = new SingleValueHolder(null, new String("B"));
     private EditTableTraversalStrategy strat;
-    private List<String> list;
+    private List<SingleValueHolder> list;
 
     @Before
     public void setUp() {
-        list = new ArrayList<String>();
-        @SuppressWarnings("unchecked")
-        AbstractListTableModel<String> model = mock(AbstractListTableModel.class);
+        list = new ArrayList<SingleValueHolder>();
+        MultiValueTableModel model = mock(MultiValueTableModel.class);
         doReturn(list).when(model).getElements();
         strat = new EditTableTraversalStrategy(null, 0, model);
     }

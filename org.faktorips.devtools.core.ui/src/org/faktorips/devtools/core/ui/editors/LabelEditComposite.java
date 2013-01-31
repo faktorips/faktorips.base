@@ -134,7 +134,7 @@ public final class LabelEditComposite extends Composite {
     private void createTableColumns(TableViewer tableViewer) {
         TableViewerColumn languageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         languageColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLanguage);
-        languageColumn.getColumn().setWidth(90);
+        languageColumn.getColumn().setWidth(120);
         TableViewerColumn labelColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         labelColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLabel);
         labelColumn.getColumn().setWidth(180);
@@ -152,6 +152,7 @@ public final class LabelEditComposite extends Composite {
 
         // Make the table use all available space.
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData.heightHint = 200;
         table.setLayoutData(gridData);
     }
 
@@ -205,7 +206,7 @@ public final class LabelEditComposite extends Composite {
             switch (columnIndex) {
                 case 0:
                     Locale locale = label.getLocale();
-                    return (locale == null) ? "" : locale.getLanguage(); //$NON-NLS-1$
+                    return (locale == null) ? "" : locale.getDisplayLanguage(); //$NON-NLS-1$
                 case 1:
                     return label.getValue();
                 case 2:

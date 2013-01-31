@@ -133,7 +133,12 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         return super.close();
     }
 
+    protected void handleAdditionalCleanupDuringAbortion() {
+        // the default implementation does nothing
+    }
+
     private void handleAbortion() {
+        // handleAdditionalCleanupDuringAbortion();
         part.getIpsObject().setState(oldState);
         if (!dirty) {
             part.getIpsObject().getIpsSrcFile().markAsClean();

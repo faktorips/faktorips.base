@@ -54,8 +54,12 @@ public final class ValueFactory {
             Node node = childNodes.item(0);
             if (node instanceof Text) {
                 return StringValue.createFromXml((Text)node);
+            } else if (node instanceof Element) {
+                return InternationalStringValue.createFromXml(valueEl);
+            } else {
+                return null;
             }
-        } else {
+        } else if (childNodes.getLength() > 0) {
             return InternationalStringValue.createFromXml(valueEl);
         }
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueEl);

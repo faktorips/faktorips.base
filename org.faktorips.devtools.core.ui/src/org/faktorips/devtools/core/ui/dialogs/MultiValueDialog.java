@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 public class MultiValueDialog extends IpsPartEditDialog2 {
 
     private final IAttributeValue attributeValue;
-    private MultiValueTableModel tabelModel;
+    private MultiValueTableModel tableModel;
     private ValueDatatype datatype;
 
     public MultiValueDialog(Shell parentShell, IAttributeValue attributeValue, ValueDatatype datatype) {
@@ -36,13 +36,7 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
         setShellStyle(getShellStyle() | SWT.RESIZE);
         Assert.isNotNull(attributeValue);
         this.attributeValue = attributeValue;
-        tabelModel = new MultiValueTableModel(attributeValue);
-    }
-
-    @Override
-    protected void okPressed() {
-        tabelModel.applyValueList();
-        super.okPressed();
+        tableModel = new MultiValueTableModel(attributeValue);
     }
 
     @Override
@@ -57,8 +51,9 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
     @Override
     protected Composite createWorkAreaThis(Composite parent) {
         String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
-        EditTableControlFactory.createListEditTable(getToolkit(), parent, attributeValue.getIpsProject(), datatype,
-                tabelModel, new MultiValueElementModifier(), description);
+        EditTableControlFactory.createListEditTable(getToolkit(), parent, attributeValue, datatype, tableModel,
+                new MultiValueElementModifier(), description);
+
         ((GridData)parent.getLayoutData()).heightHint = 300;
         return parent;
     }

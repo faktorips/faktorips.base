@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 
 /**
  * Content provider for a {@link EditTableControlViewer} that uses an {@link AbstractListTableModel}
@@ -36,7 +37,7 @@ public class ListTableModelContentProvider implements IStructuredContentProvider
 
     @Override
     public Object[] getElements(Object inputElement) {
-        IEditTabelModel model = (IEditTabelModel)inputElement;
+        MultiValueTableModel model = (MultiValueTableModel)inputElement;
         return model.getElements().toArray();
     }
 

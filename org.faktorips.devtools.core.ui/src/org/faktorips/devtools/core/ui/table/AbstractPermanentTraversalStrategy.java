@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.table;
 
+
 /**
  * {@link TraversalStrategy} that can be added to different {@link IpsCellEditor}s during its
  * lifetime (the {@link TableTraversalStrategy} in contrast is instantiated for every

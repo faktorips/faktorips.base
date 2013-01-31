@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 
 /**
  * Replaces the {@link EditTableControl}.
@@ -37,7 +38,7 @@ public class EditTableControlViewer {
 
     private EditTableControlUIBuilder uiBuilder;
     private TableViewer tableViewer;
-    private IEditTabelModel tabelModel;
+    private MultiValueTableModel tableModel;
 
     /**
      * Creates a {@link EditTableControlViewer} along with its UI.
@@ -71,14 +72,14 @@ public class EditTableControlViewer {
      * 
      * @param tabelModel the model containing the data to be displayed
      */
-    public void setTabelModel(IEditTabelModel tabelModel) {
-        this.tabelModel = tabelModel;
+    public void setTabelModel(MultiValueTableModel tabelModel) {
+        this.tableModel = tabelModel;
         getTableViewer().setInput(tabelModel);
         updateButtonsEnabledState();
     }
 
-    public IEditTabelModel getTabelModel() {
-        return tabelModel;
+    public MultiValueTableModel getTabelModel() {
+        return tableModel;
     }
 
     private void createViewers() {
@@ -94,9 +95,9 @@ public class EditTableControlViewer {
 
     private void updateButtonsEnabledState() {
         uiBuilder.getAddButton().setEnabled(true);
-        uiBuilder.getRemoveButton().setEnabled(uiBuilder.getTable().getSelectionCount() != 0);
-        uiBuilder.getUpButton().setEnabled(uiBuilder.getTable().getSelectionCount() != 0);
-        uiBuilder.getDownButton().setEnabled(uiBuilder.getTable().getSelectionCount() != 0);
+        uiBuilder.getRemoveButton().setEnabled(!tableViewer.getSelection().isEmpty());
+        uiBuilder.getUpButton().setEnabled(!tableViewer.getSelection().isEmpty());
+        uiBuilder.getDownButton().setEnabled(!tableViewer.getSelection().isEmpty());
     }
 
     public void setTableDescription(String tableDescription) {
@@ -123,7 +124,7 @@ public class EditTableControlViewer {
     private void removeButtonClicked() {
         int[] indices = uiBuilder.getTable().getSelectionIndices();
         for (int i = indices.length - 1; i >= 0; i--) {
-            tabelModel.removeElement(indices[i]);
+            tableModel.removeElement(indices[i]);
         }
         restoreSelection(indices[0]);
     }
@@ -145,7 +146,7 @@ public class EditTableControlViewer {
     }
 
     private void addButtonClicked() {
-        Object addedElement = tabelModel.addElement();
+        Object addedElement = tableModel.addElement();
         tableViewer.refresh();
         tableViewer.getControl().setFocus();
         int row = tableViewer.getTable().getItemCount() - 1;
@@ -172,8 +173,8 @@ public class EditTableControlViewer {
         } else {
             newSelection = moveDown(tableViewer.getTable().getSelectionIndices());
         }
+        restoreSelection(newSelection[0]);
         tableViewer.refresh();
-        tableViewer.getTable().setSelection(newSelection);
         tableViewer.getControl().setFocus();
     }
 
@@ -185,7 +186,7 @@ public class EditTableControlViewer {
         int j = 0;
         for (int i = 1; i < uiBuilder.getTable().getItemCount(); i++) {
             if (contains(indices, i)) {
-                tabelModel.swapElements(i - 1, i);
+                tableModel.swapElements(i - 1, i);
                 newSelection[j] = i - 1;
                 j++;
             }
@@ -201,7 +202,7 @@ public class EditTableControlViewer {
         int j = 0;
         for (int i = uiBuilder.getTable().getItemCount() - 2; i >= 0; i--) {
             if (contains(indices, i)) {
-                tabelModel.swapElements(i, i + 1);
+                tableModel.swapElements(i, i + 1);
                 newSelection[j++] = i + 1;
             }
         }
@@ -238,5 +239,4 @@ public class EditTableControlViewer {
             // ignore
         }
     }
-
 }

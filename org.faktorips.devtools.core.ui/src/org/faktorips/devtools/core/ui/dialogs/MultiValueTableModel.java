@@ -22,8 +22,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.ui.controls.tableedit.AbstractListTableModel;
-import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -31,69 +29,70 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Stefan Widmaier
  */
-public class MultiValueTableModel extends AbstractListTableModel<SingleValueViewItem> {
+public class MultiValueTableModel {
 
     private final IAttributeValue attributeValue;
-    private List<SingleValueHolder> valueHolderList;
 
     public MultiValueTableModel(IAttributeValue attributeValue) {
-        super(getItemList(attributeValue));
         this.attributeValue = attributeValue;
     }
 
+    public List<SingleValueViewItem> getElements() {
+        return getItemList(attributeValue);
+    }
+
+    private List<SingleValueHolder> getValueHolderList() {
+        return getMultiValueHolder(attributeValue).getValue();
+    }
+
     private static List<SingleValueViewItem> getItemList(IAttributeValue attributeValue) {
-        List<SingleValueViewItem> itemList = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
+        List<SingleValueViewItem> list = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
+        int index = 0;
         for (SingleValueHolder holder : getMultiValueHolder(attributeValue).getValue()) {
-            itemList.add(new SingleValueViewItem(holder));
+            list.add(new SingleValueViewItem(holder, index++));
         }
-        return itemList;
+        return list;
     }
 
     protected static MultiValueHolder getMultiValueHolder(IAttributeValue attributeValue) {
         return (MultiValueHolder)attributeValue.getValueHolder();
     }
 
-    private List<SingleValueHolder> getValueHolderList() {
-        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
-        for (SingleValueViewItem item : getElements()) {
-            holderList.add(item.getSingleValueHolder());
+    private void applyValueList(List<SingleValueViewItem> list) {
+        List<SingleValueHolder> result = new ArrayList<SingleValueHolder>();
+        for (SingleValueViewItem item : list) {
+            result.add(item.holder);
         }
-        return holderList;
+        getMultiValueHolder().setValue(result);
     }
 
-    @Override
-    public Object addElement() {
+    public void swapElements(int index1, int index2) {
+        List<SingleValueViewItem> list = getItemList(attributeValue);
+        SingleValueViewItem element1 = list.get(index1);
+        list.set(index1, list.get(index2));
+        list.set(index2, element1);
+        applyValueList(list);
+    }
+
+    public SingleValueViewItem addElement() {
         SingleValueHolder holder = new SingleValueHolder(attributeValue);
-        SingleValueViewItem item = new SingleValueViewItem(holder);
-        getElements().add(item);
-        applyValueList();
+        List<SingleValueViewItem> list = getItemList(attributeValue);
+        SingleValueViewItem item = new SingleValueViewItem(holder, list.size());
+        list.add(item);
+        applyValueList(list);
         return item;
     }
 
-    @Override
     public void removeElement(int index) {
-        getElements().remove(index);
-        applyValueList();
-    }
-
-    /**
-     * Applies the current list this model holds to the attribute's multi-value holder.
-     */
-    public void applyValueList() {
-        getMultiValueHolder().setValue(getValueHolderList());
+        List<SingleValueViewItem> list = getItemList(attributeValue);
+        list.remove(index);
+        applyValueList(list);
     }
 
     protected MultiValueHolder getMultiValueHolder() {
         return getMultiValueHolder(attributeValue);
     }
 
-    @Override
-    public void swapElements(int index1, int index2) {
-        super.swapElements(index1, index2);
-        applyValueList();
-    }
-
-    @Override
     public MessageList validate(Object elementToValidate) {
         SingleValueHolder holder = ((SingleValueViewItem)elementToValidate).getSingleValueHolder();
         if (getValueHolderList().contains(holder)) {
@@ -120,14 +119,29 @@ public class MultiValueTableModel extends AbstractListTableModel<SingleValueView
      */
     public static class SingleValueViewItem {
         private final SingleValueHolder holder;
+        private final int index;
 
-        public SingleValueViewItem(SingleValueHolder holder) {
+        public SingleValueViewItem(SingleValueHolder holder, int index) {
             this.holder = holder;
+            this.index = index;
         }
 
         public SingleValueHolder getSingleValueHolder() {
             return holder;
         }
-    }
 
+        @Override
+        public int hashCode() {
+            return (holder == null ? 11 : holder.hashCode()) + index * 37;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof SingleValueViewItem)) {
+                return false;
+            }
+            SingleValueViewItem otherItem = (SingleValueViewItem)other;
+            return holder.equals(otherItem.holder) && index == otherItem.index;
+        }
+    }
 }

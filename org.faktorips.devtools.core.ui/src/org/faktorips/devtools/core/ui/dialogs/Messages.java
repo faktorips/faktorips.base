@@ -48,6 +48,11 @@ public class Messages extends NLS {
     public static String AddIpsNatureDialog_NamingGroup;
     public static String AddIpsNatureDialog_SupportedLanguagesGroup;
 
+    public static String InternationalValueDialog_languageColumnTitle;
+    public static String InternationalValueDialog_valueColumnTitle;
+    public static String InternationalValueDialog_titleText;
+    public static String InternationalValueDialog_descriptionText;
+
     public static String SupportedLanguagesControl_columnLanguageCode;
     public static String SupportedLanguagesControl_columnLanguageName;
 

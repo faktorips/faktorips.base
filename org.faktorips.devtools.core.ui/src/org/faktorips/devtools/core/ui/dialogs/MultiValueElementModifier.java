@@ -13,8 +13,13 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 
@@ -31,8 +36,16 @@ public class MultiValueElementModifier implements IElementModifier {
      */
     @Override
     public String getValue(Object element) {
-        SingleValueViewItem item = (SingleValueViewItem)element;
-        return item.getSingleValueHolder().getStringValue();
+        SingleValueHolder item = ((SingleValueViewItem)element).getSingleValueHolder();
+        if (item == null || item.getValue() == null) {
+            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        } else if (item.getValueType() == ValueType.STRING) {
+            return (String)item.getValue().getContent();
+        }
+        ILocalizedString locString = ((IValue<IInternationalString>)item.getValue()).getContent().get(
+                IpsPlugin.getDefault().getUsedLanguagePackLocale());
+        return locString == null ? IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() : locString
+                .getValue();
     }
 
     /**
@@ -41,9 +54,8 @@ public class MultiValueElementModifier implements IElementModifier {
      */
     @Override
     public void setValue(Object element, Object value) {
-        SingleValueViewItem item = (SingleValueViewItem)element;
         // TODO FIPS-1469
-        SingleValueHolder singleValueHolder = item.getSingleValueHolder();
+        SingleValueHolder singleValueHolder = ((SingleValueViewItem)element).getSingleValueHolder();
         if (value instanceof String) {
             singleValueHolder.setValue(ValueFactory.createStringValue((String)value));
         }

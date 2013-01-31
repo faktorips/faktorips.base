@@ -37,8 +37,8 @@ public class ListTableModelContentProviderTest {
         Object[] elements = multiValueContentProvider.getElements(model);
         assertEquals(0, elements.length);
 
-        list.add(new SingleValueViewItem(new SingleValueHolder(null)));
-        list.add(new SingleValueViewItem(new SingleValueHolder(null)));
+        list.add(new SingleValueViewItem(new SingleValueHolder(null), 0));
+        list.add(new SingleValueViewItem(new SingleValueHolder(null), 1));
         elements = multiValueContentProvider.getElements(model);
         assertEquals(2, elements.length);
     }

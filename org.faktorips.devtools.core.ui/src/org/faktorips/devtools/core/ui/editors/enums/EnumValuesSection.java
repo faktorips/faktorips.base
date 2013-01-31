@@ -40,16 +40,12 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.datatype.Datatype;
@@ -78,6 +74,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -286,7 +283,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         enumValuesTable.setLayoutData(tableGridData);
 
         createTableColumns();
-        increaseHeightOfTableRows();
+        TableUtil.increaseHeightOfTableRows(enumValuesTable, enumValuesTable.getColumnCount(), 5);
 
         // Key listener for deleting rows with the DEL key.
         enumValuesTable.addKeyListener(new KeyListener() {
@@ -362,26 +359,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             newColumn.setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true)); //$NON-NLS-1$
         }
         columnNames.add(columnName);
-    }
-
-    /** Increases the height of the table rows slightly. */
-    private void increaseHeightOfTableRows() {
-        Listener paintListener = new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                if (event.type == SWT.MeasureItem) {
-                    if (enumValuesTable.getColumnCount() == 0) {
-                        return;
-                    }
-                    TableItem item = (TableItem)event.item;
-                    String text = item.getText(event.index);
-                    Point size = event.gc.textExtent(text);
-                    // The height will be increased by 5 pixel.
-                    event.height = Math.max(event.height, size.y + 5);
-                }
-            }
-        };
-        enumValuesTable.addListener(SWT.MeasureItem, paintListener);
     }
 
     /** Creates the tool bar / context menu actions. */
