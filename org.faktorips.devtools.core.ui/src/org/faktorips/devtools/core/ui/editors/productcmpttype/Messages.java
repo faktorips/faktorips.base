@@ -81,13 +81,11 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_categoryLabel;
     public static String AttributeEditDialog_properties;
     public static String AttributeEditDialog_modifierLabel;
-    public static String AttributeEditDialog_labelVisibility;
     public static String AttributeEditDialog_visibilityNote;
 
     public static String AttributeEditDialog_MultiValueRadioButton_Label;
     public static String AttributeEditDialog_nameLabel;
 
-    public static String AttributeEditDialog_lableOverwrites;
     public static String AttributeEditDialog_overwritesNote;
     public static String AttributesSection_OverrideButton;
 
