@@ -21,7 +21,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.Validatable;
@@ -42,6 +41,10 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public class ValidationUtils {
 
+    private ValidationUtils() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Tests if the given qualified name identifies a policy component type. If not, it adds an
      * error message to the given message list.
@@ -56,7 +59,7 @@ public class ValidationUtils {
      * @param msgCode The message code to use if a message has to be created.
      * @param list The list of messages to add a new one.
      */
-    public final static boolean checkIpsObjectReference(String objectName,
+    public static final boolean checkIpsObjectReference(String objectName,
             IpsObjectType type,
             String propertyDisplayName,
             IIpsObjectPartContainer part,
@@ -100,7 +103,7 @@ public class ValidationUtils {
      * @param msgCode The message code to use if a message has to be created.
      * @param list The list of messages to add a new one.
      */
-    public final static IIpsObject checkAndGetIpsObjectReference(String objectName,
+    public static final IIpsObject checkAndGetIpsObjectReference(String objectName,
             IpsObjectType type,
             String propertyDisplayName,
             IIpsObjectPartContainer part,
@@ -138,7 +141,7 @@ public class ValidationUtils {
      * @param list The list of messages to add a new one.
      * @param ipsProject The ips project which ips object path is used to search the data type.
      */
-    public final static Datatype checkDatatypeReference(String datatypeName,
+    public static final Datatype checkDatatypeReference(String datatypeName,
             boolean voidAllowed,
             IIpsObjectPart part,
             String propertyName,
@@ -182,7 +185,7 @@ public class ValidationUtils {
      * @param msgcode The message code to use if a message has to be created.
      * @param list The list of messages to add a new one.
      */
-    public final static ValueDatatype checkValueDatatypeReference(String datatypeName,
+    public static final ValueDatatype checkValueDatatypeReference(String datatypeName,
             boolean voidAllowed,
             IIpsObjectPart part,
             String propertyName,
@@ -220,7 +223,7 @@ public class ValidationUtils {
      * @param propertyName The (technical) name of the property used if a message has to be created.
      * @param list The list of messages to add a new one.
      */
-    public final static boolean checkValue(String valueDatatype,
+    public static final boolean checkValue(String valueDatatype,
             String value,
             IIpsObjectPart part,
             String propertyName,
@@ -242,31 +245,28 @@ public class ValidationUtils {
      * @param propertyName The (technical) name of the property used if a message has to be created.
      * @param list The list of messages to add a new one.
      */
-    public final static boolean checkValue(ValueDatatype datatype,
+    public static final boolean checkValue(ValueDatatype datatype,
             String value,
-            Validatable part,
+            Object part,
             String propertyName,
-            MessageList list) throws CoreException {
+            MessageList list) {
 
         if (datatype == null) {
             String text = Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND,
-                    text, Message.WARNING, part, propertyName);
+                    text, Message.ERROR, part, propertyName);
             list.add(msg);
             return false;
         }
-        try {
-            if (datatype.checkReadyToUse().containsErrorMsg()) {
-                String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName());
-                Message msg = new Message(
-                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID,
-                        text, Message.WARNING, part, propertyName);
-                list.add(msg);
-                return false;
-            }
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+
+        if (datatype.checkReadyToUse().containsErrorMsg()) {
+            String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName());
+            Message msg = new Message(
+                    IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID,
+                    text, Message.WARNING, part, propertyName);
+            list.add(msg);
+            return false;
         }
 
         if (!datatype.isParsable(value)) {
@@ -294,7 +294,7 @@ public class ValidationUtils {
      * @param msgCode The message code to use if a message has to be created.
      * @param list The list of messages to add a new one.
      */
-    public final static boolean checkStringPropertyNotEmpty(String propertyValue,
+    public static final boolean checkStringPropertyNotEmpty(String propertyValue,
             String propertyDisplayName,
             Validatable object,
             String propertyName,
@@ -370,10 +370,6 @@ public class ValidationUtils {
         String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
         return JavaConventions.validateIdentifier(name, sourceLevel, complianceLevel);
-    }
-
-    private ValidationUtils() {
-        // Utility class not to be instantiated.
     }
 
 }

@@ -68,12 +68,12 @@ public class ValueHolderMismatchEntryTest {
 
         List<SingleValueHolder> list = ((MultiValueHolder)valueHolderCaptor.getValue()).getValue();
         assertEquals(1, list.size());
-        assertEquals(TEST_VALUE, list.get(0).getValue());
+        assertEquals(TEST_VALUE, list.get(0).getValue().getContentAsString());
     }
 
     @Test
     public void testFix_singleToMulti_null() throws Exception {
-        SingleValueHolder holder = new SingleValueHolder(value, null);
+        SingleValueHolder holder = new SingleValueHolder(value, (String)null);
         doReturn(holder).when(value).getValueHolder();
         when(attribute.isMultiValueAttribute()).thenReturn(true);
 
@@ -84,7 +84,7 @@ public class ValueHolderMismatchEntryTest {
         assertTrue(valueHolderCaptor.getValue() instanceof MultiValueHolder);
 
         List<SingleValueHolder> list = ((MultiValueHolder)valueHolderCaptor.getValue()).getValue();
-        assertEquals(0, list.size());
+        assertEquals(1, list.size());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ValueHolderMismatchEntryTest {
         verify(value).setValueHolder(valueHolderCaptor.capture());
         assertTrue(valueHolderCaptor.getValue() instanceof SingleValueHolder);
 
-        String result = ((SingleValueHolder)valueHolderCaptor.getValue()).getValue();
+        String result = ((SingleValueHolder)valueHolderCaptor.getValue()).getValue().getContentAsString();
         assertEquals(TEST_VALUE, result);
     }
 
@@ -118,8 +118,7 @@ public class ValueHolderMismatchEntryTest {
         verify(value).setValueHolder(valueHolderCaptor.capture());
         assertTrue(valueHolderCaptor.getValue() instanceof SingleValueHolder);
 
-        String result = ((SingleValueHolder)valueHolderCaptor.getValue()).getValue();
-        assertNull(result);
+        assertNull(((SingleValueHolder)valueHolderCaptor.getValue()).getValue());
     }
 
     @Test

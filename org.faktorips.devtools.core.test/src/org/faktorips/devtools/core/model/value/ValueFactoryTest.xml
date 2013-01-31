@@ -1,0 +1,9 @@
+<AttributeValue attribute="produktname"
+	id="e971761f-f83b-405c-a1e4-2433f3a6dd6b">
+	<Value isNull="false" valueType="SingleValue">
+		<InternationalString>
+			<LocalizedString locale="de" text="Versicherung" />
+			<LocalizedString locale="en" text="Insurance" />
+		</InternationalString>
+	</Value>
+</AttributeValue>

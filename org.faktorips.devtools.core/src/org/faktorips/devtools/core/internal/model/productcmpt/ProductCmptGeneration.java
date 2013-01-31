@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -191,7 +192,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Deprecated
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
         IAttributeValue attrValue = newAttributeValue(attribute);
-        attrValue.setValueHolder(new SingleValueHolder(attrValue, value));
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, ValueFactory.createValue(attribute, value)));
         return attrValue;
     }
 

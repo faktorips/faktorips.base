@@ -49,7 +49,7 @@ public class LocalizedString implements ILocalizedString {
      */
     @Override
     public String toString() {
-        return "LocalizedString [locale=" + locale + ", value=" + value + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return locale + " = " + value; //$NON-NLS-1$
     }
 
     /**

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -43,7 +44,7 @@ import org.w3c.dom.Element;
  */
 public class AttributeValue extends AtomicIpsObjectPart implements IAttributeValue {
 
-    public final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
+    public static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
     private String attribute;
 
@@ -82,12 +83,26 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         valueChanged(oldAttr, attribute);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * * @deprecated Since 3.7 we support multi valued attributes. You should use
+     * {@link #getValueHolder()} instead.
+     */
     @Override
     @Deprecated
     public String getValue() {
         return getPropertyValue();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 
+     * @deprecated Since 3.7 we support multi valued attributes. You should use
+     *             {@link #setValueHolder(IValueHolder)} instead, for example:
+     *             {@code attributeValue.setValueHolder(AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue, "myValue"));}
+     */
     @Override
     @Deprecated
     public void setValue(String value) {
@@ -95,7 +110,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             valueHolder = null;
         }
         if (valueHolder == null) {
-            valueHolder = new SingleValueHolder(this, value);
+            valueHolder = new SingleValueHolder(this, new StringValue(value));
         } else {
             this.valueHolder.setStringValue(value);
         }
@@ -208,9 +223,9 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         ArgumentCheck.notNull(locale);
 
         String caption = null;
-        IAttribute attribute = findAttribute(getIpsProject());
-        if (attribute != null) {
-            caption = attribute.getLabelValue(locale);
+        IAttribute foundAttribute = findAttribute(getIpsProject());
+        if (foundAttribute != null) {
+            caption = foundAttribute.getLabelValue(locale);
         }
         return caption;
     }

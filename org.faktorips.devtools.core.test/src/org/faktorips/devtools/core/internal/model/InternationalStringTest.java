@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.internal.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -131,6 +133,42 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         Iterator<ILocalizedString> iterator = values.iterator();
         assertEquals(expectedEn, iterator.next());
         assertEquals(expectedDe, iterator.next());
+
+        // localizedString Value null
+        internationalString = new InternationalString();
+        expectedEn = new LocalizedString(Locale.ENGLISH, null);
+        internationalString.add(expectedEn);
+        internationalString.add(expectedDe);
+        xml = internationalString.toXml(getTestDocument());
+        copy = new InternationalString();
+        copy.initFromXml(xml);
+        assertEquals(1, copy.values().size());
+
     }
 
+    @Test
+    public void testEquals() {
+        InternationalString internationalString = new InternationalString();
+
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, "bläblä");
+        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, "blabla");
+
+        internationalString.add(expectedEn);
+        internationalString.add(expectedDe);
+
+        InternationalString internationalStringCopy = new InternationalString();
+        internationalStringCopy.add(expectedDe);
+        internationalStringCopy.add(expectedEn);
+
+        assertTrue(internationalString.equals(internationalStringCopy));
+
+        LocalizedString expectedDe2 = new LocalizedString(Locale.GERMAN, "bläbläblup");
+        LocalizedString expectedEn2 = new LocalizedString(Locale.ENGLISH, "blabla");
+
+        internationalStringCopy = new InternationalString();
+        internationalStringCopy.add(expectedEn2);
+        internationalStringCopy.add(expectedDe2);
+
+        assertFalse(internationalString.equals(internationalStringCopy));
+    }
 }

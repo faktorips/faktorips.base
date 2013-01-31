@@ -19,11 +19,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValueHolderFactory;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -44,18 +48,18 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     public static final String XML_TYPE_NAME = "MultiValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "MULTIVALUEHOLDER-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "MULTIVALUEHOLDER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there an error in any value of this multi value
      * holder
      */
-    public final static String MSGCODE_CONTAINS_INVALID_VALUE = MSGCODE_PREFIX + "ContainsInvalidValue"; //$NON-NLS-1$
+    public static final String MSGCODE_CONTAINS_INVALID_VALUE = MSGCODE_PREFIX + "ContainsInvalidValue"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that this {@link MultiValueHolder value holder's} values
      * are not unique. At least one value has a duplicate.
      */
-    public final static String MSGCODE_CONTAINS_DUPLICATE_VALUE = MSGCODE_PREFIX + "ContainsDuplicateValue"; //$NON-NLS-1$
+    public static final String MSGCODE_CONTAINS_DUPLICATE_VALUE = MSGCODE_PREFIX + "ContainsDuplicateValue"; //$NON-NLS-1$
 
     private List<SingleValueHolder> values;
 
@@ -201,12 +205,58 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      * <p>
      * This implementation set the value as first and single element in the list of values. It is
      * not recommended to use this method because it is not symmetric to {@link #getStringValue()}
+     * 
+     * @deprecated Use {@link #setValue(List)}, because we have a list of SingleValues
      */
-    @Override
     @Deprecated
+    @Override
     public void setStringValue(String value) {
         values = new ArrayList<SingleValueHolder>();
-        values.add(new SingleValueHolder(getParent(), value));
+        values.add(new SingleValueHolder(getParent(), new StringValue(value)));
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * MultiValueHolder Is never null, because the list can be empty but never null.
+     */
+    @Override
+    public boolean isNullValue() {
+        return false;
+    }
+
+    @Override
+    public ValueType getValueType() {
+        if (!values.isEmpty()) {
+            return getValueTypeFromFirstEntry();
+        } else {
+            return getValueTypeForNoEntries();
+        }
+    }
+
+    private ValueType getValueTypeForNoEntries() {
+        try {
+            IProductCmptTypeAttribute attribute = getParent().findAttribute(getIpsProject());
+            if (attribute != null) {
+                return getValueTypeFromAttribute(attribute);
+            } else {
+                return ValueType.STRING;
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private ValueType getValueTypeFromFirstEntry() {
+        return values.get(0).getValueType();
+    }
+
+    private ValueType getValueTypeFromAttribute(IProductCmptTypeAttribute attribute) {
+        if (attribute.isMultilingual()) {
+            return ValueType.INTERNATIONAL_STRING;
+        } else {
+            return ValueType.STRING;
+        }
     }
 
     /**

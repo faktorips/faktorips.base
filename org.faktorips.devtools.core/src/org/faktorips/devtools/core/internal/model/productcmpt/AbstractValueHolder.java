@@ -101,8 +101,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     @Override
     public Element toXml(Document doc) {
         Element valueEl = doc.createElement(ValueToXmlHelper.XML_TAGNAME_VALUE);
-        valueEl.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL, getValue() == null ? Boolean.TRUE.toString()
-                : Boolean.FALSE.toString());
+        valueEl.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL, Boolean.toString(isNullValue()));
         valueEl.setAttribute(XML_ATTRIBUTE_VALUE_TYPE, getType().getXmlTypeName());
         contentToXml(valueEl, doc);
         return valueEl;

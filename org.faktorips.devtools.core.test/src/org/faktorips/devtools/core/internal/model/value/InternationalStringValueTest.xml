@@ -1,0 +1,6 @@
+<Value isNull="false" valueType="SingleValue">
+	<InternationalString>
+		<LocalizedString locale="de" text="Versicherung" />
+		<LocalizedString locale="en" text="Insurance" />
+	</InternationalString>
+</Value>

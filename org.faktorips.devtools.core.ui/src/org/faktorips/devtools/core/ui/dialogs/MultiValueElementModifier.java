@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 
@@ -41,7 +42,11 @@ public class MultiValueElementModifier implements IElementModifier {
     @Override
     public void setValue(Object element, Object value) {
         SingleValueViewItem item = (SingleValueViewItem)element;
-        item.getSingleValueHolder().setValue((String)value);
+        // TODO FIPS-1469
+        SingleValueHolder singleValueHolder = item.getSingleValueHolder();
+        if (value instanceof String) {
+            singleValueHolder.setValue(ValueFactory.createStringValue((String)value));
+        }
     }
 
 }

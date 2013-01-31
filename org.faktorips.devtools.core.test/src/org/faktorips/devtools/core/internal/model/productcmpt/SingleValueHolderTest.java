@@ -21,12 +21,19 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
+
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -144,5 +151,59 @@ public class SingleValueHolderTest {
         assertNotNull(messageByCode);
         assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
         assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testValidate_msgList_MultilingualInvalid() throws Exception {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IIpsProject project = mock(IIpsProject.class);
+        when(attribute.isMultilingual()).thenReturn(true);
+        when(attributeValue.getIpsProject()).thenReturn(project);
+        when(attributeValue.findAttribute(project)).thenReturn(attribute);
+        IIpsProjectProperties projectProperties = mock(IIpsProjectProperties.class);
+        when(project.getReadOnlyProperties()).thenReturn(projectProperties);
+        when(projectProperties.getSupportedLanguages()).thenReturn(new HashSet<ISupportedLanguage>());
+
+        ValueDatatype datatype = mock(ValueDatatype.class);
+        when(attribute.findDatatype(project)).thenReturn(datatype);
+        when(datatype.checkReadyToUse()).thenReturn(new MessageList());
+        when(datatype.isParsable(anyString())).thenReturn(true);
+
+        IValueSet valueSet = mock(IValueSet.class);
+        when(valueSet.containsValue(anyString(), eq(project))).thenReturn(true);
+        when(attribute.getValueSet()).thenReturn(valueSet);
+
+        SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, "Versicherung");
+        MessageList messageList = singleValueHolder.validate(project);
+        assertEquals(1, messageList.size());
+        Message messageByCode = messageList.getMessageByCode(AttributeValue.MSGCODE_INVALID_VALUE_TYPE);
+        assertNotNull(messageByCode);
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+
+        when(attribute.isMultilingual()).thenReturn(false);
+
+        singleValueHolder = new SingleValueHolder(attributeValue, new InternationalStringValue());
+        messageList = singleValueHolder.validate(project);
+        assertEquals(1, messageList.size());
+        messageByCode = messageList.getMessageByCode(AttributeValue.MSGCODE_INVALID_VALUE_TYPE);
+        assertNotNull(messageByCode);
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testGetValueType() {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+
+        SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, "abc");
+        assertEquals(ValueType.STRING, singleValueHolder.getValueType());
+
+        singleValueHolder = new SingleValueHolder(attributeValue, new StringValue("abc"));
+        assertEquals(ValueType.STRING, singleValueHolder.getValueType());
+
+        singleValueHolder = new SingleValueHolder(attributeValue, new InternationalStringValue());
+        assertEquals(ValueType.INTERNATIONAL_STRING, singleValueHolder.getValueType());
     }
 }

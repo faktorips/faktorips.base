@@ -13,13 +13,12 @@
 
 package org.faktorips.devtools.core.ui.controls.chooser;
 
-import javax.swing.text.html.ListView;
-
+import org.eclipse.jface.viewers.ListViewer;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * This class represents a value in the list chooser. It adds the ability to be null. This is
- * important because we could not add null to a {@link ListView}
+ * important because we could not add null to a {@link ListViewer}
  * 
  * @author dirmeier
  */

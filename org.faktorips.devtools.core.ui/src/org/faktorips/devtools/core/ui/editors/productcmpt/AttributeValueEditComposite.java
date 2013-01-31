@@ -25,13 +25,16 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
@@ -83,12 +86,13 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             getBindingContext().bindProblemMarker(editField, getPropertyValue().getValueHolder(),
                     MultiValueHolder.PROPERTY_VALUE);
         } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
+            ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
+
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);
             editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
                     .getIpsProject());
-            getBindingContext().bindContent(editField, getPropertyValue().getValueHolder(),
-                    SingleValueHolder.PROPERTY_VALUE);
+            getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
         }
         if (editField != null) {
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
@@ -113,6 +117,33 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
+    }
+
+    public static class ValueHolderPmo extends IpsObjectPartPmo {
+
+        public static final String PROPERTY_STRING_VALUE = "stringValue"; //$NON-NLS-1$
+
+        public ValueHolderPmo(IAttributeValue attributeValue) {
+            super(attributeValue);
+        }
+
+        public String getStringValue() {
+            return ((SingleValueHolder)getValueHolder()).getValue().getContentAsString();
+        }
+
+        public IValueHolder<?> getValueHolder() {
+            return getIpsObjectPartContainer().getValueHolder();
+        }
+
+        @Override
+        public IAttributeValue getIpsObjectPartContainer() {
+            return (IAttributeValue)super.getIpsObjectPartContainer();
+        }
+
+        public void setStringValue(String value) {
+            ((SingleValueHolder)getValueHolder()).setValue(ValueFactory.createStringValue(value));
+            notifyListeners();
+        }
     }
 
 }

@@ -154,6 +154,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
 
         assertTrue(coreExceptionThrownOnGetResourceAsStream(archive));
+
     }
 
     private boolean coreExceptionThrownOnGetResourceAsStream(IIpsArchive archive) {

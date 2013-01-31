@@ -211,7 +211,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertNotNull(ml
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
         assertEquals(
-                Message.WARNING,
+                Message.ERROR,
                 ml.getMessageByCode(
                         IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND)
                         .getSeverity());

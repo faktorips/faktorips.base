@@ -103,4 +103,7 @@ public class Messages extends NLS {
     public static String MultiValueHolder_AtLeastOneInvalidValueMessageText;
     public static String MultiValueHolder_DuplicateValueMessageText;
 
+    public static String AttributeValue_NotMultiLingual;
+    public static String AttributeValue_MultiLingual;
+
 }

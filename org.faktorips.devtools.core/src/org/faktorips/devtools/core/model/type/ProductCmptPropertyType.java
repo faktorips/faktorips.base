@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.type;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
@@ -41,6 +40,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 
 /**
  * Specifies the different types of product component properties.
@@ -76,28 +77,21 @@ public enum ProductCmptPropertyType {
             AttributeValue attributeValue = new AttributeValue(container, partId,
                     property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
             IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
-            AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
 
-            String defaultStringValue;
-            if (attribute != null) {
-                defaultStringValue = attribute.getDefaultValue();
-            } else {
-                defaultStringValue = StringUtils.EMPTY;
-            }
-            // TODO the default value should also be a ValueHolder
-            Object defaultObject;
+            final IValue<?> defaultValue = ValueFactory.createDefaultValue(attribute);
+
+            AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
+            IValueHolder<?> valueHolder;
             if (attributeValueType == AttributeValueType.MULTI_VALUE) {
                 ArrayList<SingleValueHolder> defaultList = new ArrayList<SingleValueHolder>();
-                if (defaultStringValue != null) {
-                    SingleValueHolder defaultHolder = new SingleValueHolder(attributeValue, defaultStringValue);
+                if (defaultValue.getContent() != null) {
+                    SingleValueHolder defaultHolder = new SingleValueHolder(attributeValue, defaultValue);
                     defaultList.add(defaultHolder);
                 }
-                defaultObject = defaultList;
+                valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultList);
             } else {
-                defaultObject = defaultStringValue;
+                valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
             }
-
-            IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultObject);
             attributeValue.setValueHolderInternal(valueHolder);
             return attributeValue;
         }

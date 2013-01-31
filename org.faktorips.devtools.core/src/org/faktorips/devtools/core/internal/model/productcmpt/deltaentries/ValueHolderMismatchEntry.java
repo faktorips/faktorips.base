@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.IValue;
 
 /**
  * This delta entry describes a mismatch of the value between an attribute and its attribute value.
@@ -64,7 +65,7 @@ public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
         IValueHolder<?> value = getPropertyValue().getValueHolder();
         if (!attribute.isMultiValueAttribute() && value instanceof MultiValueHolder) {
             MultiValueHolder multiValue = (MultiValueHolder)value;
-            String oldValue = null;
+            IValue<?> oldValue = null;
             if (!multiValue.getValue().isEmpty()) {
                 oldValue = multiValue.getValue().get(0).getValue();
             }

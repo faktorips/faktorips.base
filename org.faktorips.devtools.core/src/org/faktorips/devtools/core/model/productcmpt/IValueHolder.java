@@ -17,6 +17,8 @@ import org.faktorips.devtools.core.internal.model.productcmpt.AbstractValueHolde
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueType;
 
 /**
  * This is the public interface for all value holders as they are used by {@link IAttributeValue}.
@@ -30,7 +32,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  */
 public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IValueHolder<T>> {
 
-    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
      * Returning the {@link IIpsObjectPart} of which this value holder is a child of. Every value
@@ -80,4 +82,18 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      */
     public void setValue(T value);
 
+    /**
+     * Returns <code>true</code>, if the value is <code>null</code> otherwise <code>false</code>. It
+     * depends on the specific ValueHolder.
+     * 
+     * @return boolean <code>true</code> if the value is <code>null</code>
+     */
+    boolean isNullValue();
+
+    /**
+     * The ValueType describe the kind of value used in this value holder. The different kinds are
+     * described in the {@link ValueType}. The reason for {@link ValueType} is to distinguish the
+     * kind of {@link IValue}.
+     */
+    ValueType getValueType();
 }

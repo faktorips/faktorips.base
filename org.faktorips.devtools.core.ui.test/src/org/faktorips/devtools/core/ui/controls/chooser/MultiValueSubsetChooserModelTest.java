@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,46 @@ public class MultiValueSubsetChooserModelTest {
     private SingleValueHolder holderB;
     private SingleValueHolder holder1;
     private SingleValueHolder holder2;
+
+    @Before
+    public void setUp() {
+        setUpMultiValueHolder();
+
+        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
+        List<ListChooserValue> values = model.getResultingValues();
+        assertEquals(5, values.size());
+        assertEquals("A", values.get(0).getValue());
+        assertEquals("B", values.get(1).getValue());
+        assertEquals("C", values.get(2).getValue());
+        assertEquals("1", values.get(3).getValue());
+        assertEquals("2", values.get(4).getValue());
+    }
+
+    protected void setUpMultiValueHolder() {
+        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
+        multiValueHolder = mock(MultiValueHolder.class);
+        when(multiValueHolder.getValue()).thenReturn(holderList);
+        holderA = mock(SingleValueHolder.class);
+        when(holderA.getStringValue()).thenReturn("A");
+        doReturn(ValueFactory.createStringValue("A")).when(holderA).getValue();
+        holderList.add(holderA);
+        holderB = mock(SingleValueHolder.class);
+        when(holderB.getStringValue()).thenReturn("B");
+        doReturn(ValueFactory.createStringValue("B")).when(holderB).getValue();
+        holderList.add(holderB);
+        holderC = mock(SingleValueHolder.class);
+        when(holderC.getStringValue()).thenReturn("C");
+        doReturn(ValueFactory.createStringValue("C")).when(holderC).getValue();
+        holderList.add(holderC);
+        holder1 = mock(SingleValueHolder.class);
+        when(holder1.getStringValue()).thenReturn("1");
+        doReturn(ValueFactory.createStringValue("1")).when(holder1).getValue();
+        holderList.add(holder1);
+        holder2 = mock(SingleValueHolder.class);
+        when(holder2.getStringValue()).thenReturn("2");
+        doReturn(ValueFactory.createStringValue("2")).when(holder2).getValue();
+        holderList.add(holder2);
+    }
 
     @Test
     public void testGetValueIndices() {
@@ -155,20 +196,6 @@ public class MultiValueSubsetChooserModelTest {
         assertEquals("X", holderList.get(5).getStringValue());
     }
 
-    @Before
-    public void setUp() {
-        setUpMultiValueHolder();
-
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
-        List<ListChooserValue> values = model.getResultingValues();
-        assertEquals(5, values.size());
-        assertEquals("A", values.get(0).getValue());
-        assertEquals("B", values.get(1).getValue());
-        assertEquals("C", values.get(2).getValue());
-        assertEquals("1", values.get(3).getValue());
-        assertEquals("2", values.get(4).getValue());
-    }
-
     @Test
     public void findSingleValueHolderFor() {
         setUpMultiValueHolder();
@@ -181,7 +208,7 @@ public class MultiValueSubsetChooserModelTest {
     @Test
     public void findSingleValueHolderForNull() {
         setUpMultiValueHolder();
-        multiValueHolder.getValue().add(new SingleValueHolder(null, null));
+        multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
         model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
         SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
@@ -201,37 +228,11 @@ public class MultiValueSubsetChooserModelTest {
     @Test
     public void findSingleValueHolderForNull3() {
         setUpMultiValueHolder();
-        multiValueHolder.getValue().add(new SingleValueHolder(null, null));
+        multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
         model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
         SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("X"));
         assertNull(holder);
-    }
-
-    protected void setUpMultiValueHolder() {
-        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
-        multiValueHolder = mock(MultiValueHolder.class);
-        when(multiValueHolder.getValue()).thenReturn(holderList);
-        holderA = mock(SingleValueHolder.class);
-        when(holderA.getStringValue()).thenReturn("A");
-        when(holderA.getValue()).thenReturn("A");
-        holderList.add(holderA);
-        holderB = mock(SingleValueHolder.class);
-        when(holderB.getStringValue()).thenReturn("B");
-        when(holderB.getValue()).thenReturn("B");
-        holderList.add(holderB);
-        holderC = mock(SingleValueHolder.class);
-        when(holderC.getStringValue()).thenReturn("C");
-        when(holderC.getValue()).thenReturn("C");
-        holderList.add(holderC);
-        holder1 = mock(SingleValueHolder.class);
-        when(holder1.getStringValue()).thenReturn("1");
-        when(holder1.getValue()).thenReturn("1");
-        holderList.add(holder1);
-        holder2 = mock(SingleValueHolder.class);
-        when(holder2.getStringValue()).thenReturn("2");
-        when(holder2.getValue()).thenReturn("2");
-        holderList.add(holder2);
     }
 
     @Test

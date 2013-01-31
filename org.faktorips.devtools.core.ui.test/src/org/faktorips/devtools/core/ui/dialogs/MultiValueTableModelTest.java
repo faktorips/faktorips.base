@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
@@ -77,12 +78,12 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.swapElements(1, 2);
         assertEquals(3, model.getElements().size());
-        assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue());
-        assertEquals("B", model.getElements().get(2).getSingleValueHolder().getValue());
+        assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue().getContentAsString());
+        assertEquals("B", model.getElements().get(2).getSingleValueHolder().getValue().getContentAsString());
         model.swapElements(1, 2);
         assertEquals(3, model.getElements().size());
-        assertEquals("B", model.getElements().get(1).getSingleValueHolder().getValue());
-        assertEquals("C", model.getElements().get(2).getSingleValueHolder().getValue());
+        assertEquals("B", model.getElements().get(1).getSingleValueHolder().getValue().getContentAsString());
+        assertEquals("C", model.getElements().get(2).getSingleValueHolder().getValue().getContentAsString());
     }
 
     @Test
@@ -90,10 +91,10 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.addElement();
         assertEquals(4, model.getElements().size());
-        assertEquals(null, model.getElements().get(3).getSingleValueHolder().getValue());
+        assertNull(model.getElements().get(3).getSingleValueHolder().getValue().getContentAsString());
         model.addElement();
         assertEquals(5, model.getElements().size());
-        assertEquals(null, model.getElements().get(4).getSingleValueHolder().getValue());
+        assertNull(model.getElements().get(4).getSingleValueHolder().getValue().getContentAsString());
     }
 
     @Test
@@ -101,10 +102,10 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.removeElement(1);
         assertEquals(2, model.getElements().size());
-        assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue());
+        assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue().getContentAsString());
         model.removeElement(0);
         assertEquals(1, model.getElements().size());
-        assertEquals("C", model.getElements().get(0).getSingleValueHolder().getValue());
+        assertEquals("C", model.getElements().get(0).getSingleValueHolder().getValue().getContentAsString());
     }
 
     @Test

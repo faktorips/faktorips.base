@@ -119,17 +119,84 @@ public class InternationalString extends Observable implements IInternationalStr
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Only localizedStrings with an value will be saved to xml
+     */
     @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_TAG);
         for (ILocalizedString localizedString : localizedStringMap.values()) {
-            Element partElement = doc.createElement(XML_ELEMENT_LOCALIZED_STRING);
-            Locale locale = localizedString.getLocale();
-            partElement.setAttribute(XML_ATTR_LOCALE, locale.toString());
-            partElement.setAttribute(XML_ATTR_TEXT, localizedString.getValue());
-            element.appendChild(partElement);
+            if (localizedString.getValue() != null) {
+                Element partElement = doc.createElement(XML_ELEMENT_LOCALIZED_STRING);
+                Locale locale = localizedString.getLocale();
+                partElement.setAttribute(XML_ATTR_LOCALE, locale.toString());
+                partElement.setAttribute(XML_ATTR_TEXT, localizedString.getValue());
+                element.appendChild(partElement);
+            }
         }
         return element;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((localizedStringMap == null) ? 0 : localizedStringMap.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof InternationalString)) {
+            return false;
+        }
+        InternationalString other = (InternationalString)obj;
+        if (localizedStringMap == null) {
+            if (other.localizedStringMap != null) {
+                return false;
+            }
+        } else {
+            return equalLocalizedMapValues(other.values());
+        }
+        return true;
+    }
+
+    private boolean equalLocalizedMapValues(Collection<ILocalizedString> otherLocalizedStringMapValues) {
+        Collection<ILocalizedString> values = values();
+        if (otherLocalizedStringMapValues == null) {
+            return false;
+        }
+        if (values.size() != otherLocalizedStringMapValues.size()) {
+            return false;
+        }
+        for (ILocalizedString localizedString : values) {
+            if (!(otherLocalizedStringMapValues.contains(localizedString))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("InternationalString ["); //$NON-NLS-1$
+        if (localizedStringMap != null) {
+            for (ILocalizedString localizedString : values()) {
+                builder.append(localizedString.toString());
+                builder.append(" "); //$NON-NLS-1$
+            }
+        }
+        builder.append("]"); //$NON-NLS-1$
+        return builder.toString();
     }
 
 }

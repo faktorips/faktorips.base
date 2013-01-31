@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -196,7 +198,8 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValueHolder_isNull() throws Exception {
         assertNull(attrValue.getPropertyValue());
-        assertNull(attrValue.getValueHolder().getValue());
+        assertNotNull(attrValue.getValueHolder().getValue());
+        assertTrue(attrValue.getValueHolder().isNullValue());
 
         attrValue.setValueHolder(null);
 
@@ -208,7 +211,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     public void testGetPropertyValue() throws Exception {
         assertNull(attrValue.getPropertyValue());
 
-        ((SingleValueHolder)attrValue.getValueHolder()).setValue("abc");
+        ((SingleValueHolder)attrValue.getValueHolder()).setValue(new StringValue("abc"));
 
         assertEquals("abc", attrValue.getPropertyValue());
     }
