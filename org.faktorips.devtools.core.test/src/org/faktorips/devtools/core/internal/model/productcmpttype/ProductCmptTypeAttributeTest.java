@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -200,9 +201,18 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetMultiLanguage() {
+    public void testSetMultilingual() {
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setMultilingual(true);
         assertTrue(productAttribute.isMultilingual());
+        productAttribute.setMultilingual(false);
+        assertFalse(productAttribute.isMultilingual());
+    }
+
+    @Test
+    public void testSetMultilingual_notString() {
+        productAttribute.setMultilingual(true);
+        assertFalse(productAttribute.isMultilingual());
         productAttribute.setMultilingual(false);
         assertFalse(productAttribute.isMultilingual());
     }

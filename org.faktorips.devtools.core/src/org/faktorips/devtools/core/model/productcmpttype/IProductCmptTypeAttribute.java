@@ -33,9 +33,9 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  */
 public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
 
-    public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    public final static String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
+    public static final String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
 
     /**
      * This constant defines the multi value property.
@@ -50,7 +50,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @see #isMultiValueAttribute()
      * @see #setMultiValueAttribute(boolean)
      */
-    public final static String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
+    public static final String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
 
     /**
      * This constant defines the multilingual property.
@@ -61,7 +61,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @see #isMultilingual()
      * @see #setMultilingual(boolean)
      */
-    public final static String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
+    public static final String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
 
     /**
      * This constant defines the multilingualSupported property.
@@ -72,27 +72,27 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * 
      * @see #isMultilingualSupported()
      */
-    public final static String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
+    public static final String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but single/multiple
      * value configuration differs
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeSingeMultiValueDiffers"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but change over time
      * configuration differs
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but multilingual
      * configuration differs
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeMultilingualDiffers"; //$NON-NLS-1$
 
     /**
