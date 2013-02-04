@@ -320,7 +320,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         nameText = getToolkit().createText(workArea);
         getBindingContext().bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
+        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
         final Checkbox cb = new Checkbox(workArea, getToolkit());
         cb.setText(Messages.AttributeEditDialog_overwritesNote);
         getBindingContext().bindContent(cb, attribute, IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
