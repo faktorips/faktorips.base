@@ -285,7 +285,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             }
             fullPath = StringUtils.EMPTY;
             for (String string : split) {
-                if (string != split[split.length - 1]) {
+                if (!string.equals(split[split.length - 1])) {
                     fullPath += string + pluginId;
                 } else {
                     fullPath += ".source" + string; //$NON-NLS-1$

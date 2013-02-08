@@ -19,37 +19,34 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
 /**
- * {@link CellTrackingEditingSupport} that creates its cell editors based on a specific
+ * {@link FormattedCellEditingSupport} that creates its cell editors based on a specific
  * {@link ValueDatatype}.
  * 
  * @author Stefan Widmaier
  */
-public class DatatypeEditingSupport extends CellTrackingEditingSupport {
+public class DatatypeEditingSupport<T> extends FormattedCellEditingSupport<T, String> {
 
     private final UIToolkit toolkit;
     private final TableViewer tableViewer;
     private final ValueDatatype datatype;
     private ValueDatatypeControlFactory controlFactory;
     private final IIpsProject ipsProject;
-    private final IElementModifier elementModifier;
 
     public DatatypeEditingSupport(UIToolkit toolkit, TableViewer tableViewer, IIpsProject ipsProject,
-            ValueDatatype datatype, IElementModifier elementModifier) {
-        super(tableViewer);
+            ValueDatatype datatype, IElementModifier<T, String> elementModifier) {
+        super(tableViewer, elementModifier);
         this.toolkit = toolkit;
         this.tableViewer = tableViewer;
         this.ipsProject = ipsProject;
         this.datatype = datatype;
-        this.elementModifier = elementModifier;
         controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
     }
 
     @Override
-    protected IpsCellEditor getCellEditorInternal(Object element) {
+    protected IpsCellEditor getCellEditorInternal(T element) {
         return controlFactory.createTableCellEditor(toolkit, datatype, null, tableViewer, 0, ipsProject);
     }
 
@@ -58,25 +55,15 @@ public class DatatypeEditingSupport extends CellTrackingEditingSupport {
         return true;
     }
 
-    @Override
-    protected Object getValue(Object element) {
-        return elementModifier.getValue(element);
-    }
-
-    @Override
-    protected void setValue(Object element, Object value) {
-        elementModifier.setValue(element, value);
-        getViewer().refresh();
-    }
-
     /**
-     * Returns the string representing the given element. The string is formated depending on the
+     * Returns the string representing the given element. The string is formatted depending on the
      * datatype and the current locale.
      * 
      * @param element the element to return a formatted string for
      */
-    public String getFormattedValue(Object element) {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, (String)getValue(element));
+    @Override
+    public String getFormattedValue(T element) {
+        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, getValue(element));
     }
 
 }

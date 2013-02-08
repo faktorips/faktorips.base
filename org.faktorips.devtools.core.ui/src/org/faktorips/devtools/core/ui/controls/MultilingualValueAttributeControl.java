@@ -13,12 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.MultilingualValueDialog;
 
@@ -31,15 +29,32 @@ public class MultilingualValueAttributeControl extends TextButtonControl {
 
     private MultilingualValueAttributeHandler handler;
 
-    public MultilingualValueAttributeControl(Composite parent, UIToolkit toolkit, IAttributeValue attributeValue,
-            IIpsProject ipsProject, IValueHolder<IValue<?>> valueHolder) {
-        super(parent, toolkit, IpsPlugin.getDefault().getUsedLanguagePackLocale().getLanguage());
-        handler = new MultilingualValueAttributeHandler(parent.getShell(), attributeValue, ipsProject, valueHolder);
+    public MultilingualValueAttributeControl(Composite parent, UIToolkit toolkit,
+            ISingleValueHolderProvider valueHolderProvider) {
+        super(parent, toolkit, IpsPlugin.getMultiLanguageSupport().getLocalizationLocale().getLanguage());
+        handler = new MultilingualValueAttributeHandler(parent.getShell(), valueHolderProvider);
         getTextControl().setEditable(true);
     }
 
     @Override
     protected void buttonClicked() {
         handler.editValues();
+    }
+
+    /**
+     * Registers a mouse listener on the button control. On a linux system, the
+     * <code>widgetSelected</code> event, which is bound to the control in the super class is fired
+     * too late. Hence, we add the <code>mouseDown</code> event here, in order to be notified as
+     * soon as the button is clicked. It is only afterwards that the <code>focus lost</code> event
+     * is sent to the cell editor.
+     */
+    @Override
+    protected void addListeners() {
+        getButtonControl().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent event) {
+                buttonClicked();
+            }
+        });
     }
 }

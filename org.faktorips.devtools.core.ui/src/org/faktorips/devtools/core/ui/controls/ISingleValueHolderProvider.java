@@ -13,24 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.ui.dialogs.MultilingualValueDialog;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 
-public class MultilingualValueAttributeHandler {
-    private final Shell shell;
-    private final ISingleValueHolderProvider valueHolderProvider;
-
-    public MultilingualValueAttributeHandler(Shell shell, ISingleValueHolderProvider valueHolderProvider) {
-        this.shell = shell;
-        this.valueHolderProvider = valueHolderProvider;
-    }
-
-    public void editValues() {
-        openMultilingualValueDialog();
-    }
-
-    protected void openMultilingualValueDialog() {
-        MultilingualValueDialog multilingualValueDialog = new MultilingualValueDialog(shell, valueHolderProvider);
-        multilingualValueDialog.open();
-    }
+public interface ISingleValueHolderProvider {
+    SingleValueHolder getSingleValueHolder();
 }

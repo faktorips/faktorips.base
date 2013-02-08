@@ -15,25 +15,24 @@ package org.faktorips.devtools.core.ui.table;
 
 import java.util.Locale;
 
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.ILocalizedString;
-import org.faktorips.devtools.core.ui.controls.MultilingualValueAttributeControl;
 
 /**
- * A cell editor using the {@link MultilingualValueAttributeControl} to enter values in different
- * languages.
+ * A cell editor using the {@link Text} control to enter values in a given language.
  */
-public class MultilingualTextCellEditor extends IpsCellEditor {
+public class LocaleTextCellEditor extends IpsCellEditor {
     private final Locale locale;
 
-    public MultilingualTextCellEditor(Locale locale, MultilingualValueAttributeControl control) {
+    public LocaleTextCellEditor(Locale locale, Text control) {
         super(control);
         this.locale = locale;
     }
 
     @Override
-    public MultilingualValueAttributeControl getControl() {
-        return (MultilingualValueAttributeControl)super.getControl();
+    public Text getControl() {
+        return (Text)super.getControl();
     }
 
     /**
@@ -49,7 +48,7 @@ public class MultilingualTextCellEditor extends IpsCellEditor {
      */
     @Override
     protected void doSetFocus() {
-        getControl().getTextControl().selectAll();
+        getControl().selectAll();
         getControl().setFocus();
     }
 

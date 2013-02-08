@@ -34,20 +34,20 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
  * 
  * @author Stefan Widmaier
  */
-public class EditTableControlViewer {
+public class MultiValueTableControlViewer {
 
-    private EditTableControlUIBuilder uiBuilder;
+    private MultiValueTableControlUIBuilder uiBuilder;
     private TableViewer tableViewer;
     private MultiValueTableModel tableModel;
 
     /**
-     * Creates a {@link EditTableControlViewer} along with its UI.
+     * Creates a {@link MultiValueTableControlViewer} along with its UI.
      * 
      * @param parent the parent composite to which the editable table and its buttons should be
      *            added
      */
-    public EditTableControlViewer(Composite parent) {
-        uiBuilder = new EditTableControlUIBuilder();
+    public MultiValueTableControlViewer(Composite parent) {
+        uiBuilder = new MultiValueTableControlUIBuilder();
         createUI(parent);
     }
 
@@ -124,7 +124,7 @@ public class EditTableControlViewer {
     private void removeButtonClicked() {
         int[] indices = uiBuilder.getTable().getSelectionIndices();
         for (int i = indices.length - 1; i >= 0; i--) {
-            tableModel.removeElement(indices[i]);
+            tableModel.removeValue(indices[i]);
         }
         restoreSelection(indices[0]);
     }
@@ -146,7 +146,7 @@ public class EditTableControlViewer {
     }
 
     private void addButtonClicked() {
-        Object addedElement = tableModel.addElement();
+        Object addedElement = tableModel.addValue();
         tableViewer.refresh();
         tableViewer.getControl().setFocus();
         int row = tableViewer.getTable().getItemCount() - 1;
@@ -186,7 +186,7 @@ public class EditTableControlViewer {
         int j = 0;
         for (int i = 1; i < uiBuilder.getTable().getItemCount(); i++) {
             if (contains(indices, i)) {
-                tableModel.swapElements(i - 1, i);
+                tableModel.swapValues(i - 1, i);
                 newSelection[j] = i - 1;
                 j++;
             }
@@ -202,7 +202,7 @@ public class EditTableControlViewer {
         int j = 0;
         for (int i = uiBuilder.getTable().getItemCount() - 2; i >= 0; i--) {
             if (contains(indices, i)) {
-                tableModel.swapElements(i, i + 1);
+                tableModel.swapValues(i, i + 1);
                 newSelection[j++] = i + 1;
             }
         }

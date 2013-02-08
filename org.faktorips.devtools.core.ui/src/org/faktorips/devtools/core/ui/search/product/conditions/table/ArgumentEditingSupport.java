@@ -48,8 +48,8 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
     }
 
     @Override
-    protected IpsCellEditor getCellEditorInternal(Object element) {
-        ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+    protected IpsCellEditor getCellEditorInternal(ProductSearchConditionPresentationModel element) {
+        ProductSearchConditionPresentationModel model = element;
 
         if (model.getConditionType().isArgumentIpsObject()) {
             UIToolkit toolkit = new UIToolkit(null);

@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
@@ -79,8 +78,8 @@ public class ValueHolderToFormattedStringWrapper {
             for (SingleValueHolder holder : multiHolder.getValue()) {
                 String stringValue;
                 if (holder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-                    ILocalizedString locString = ((IValue<IInternationalString>)holder.getValue()).getContent().get(
-                            IpsPlugin.getDefault().getUsedLanguagePackLocale());
+                    ILocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IpsPlugin
+                            .getMultiLanguageSupport().getLocalizationLocale());
                     stringValue = locString == null ? null : locString.getValue();
                 } else {
                     stringValue = holder.getStringValue();

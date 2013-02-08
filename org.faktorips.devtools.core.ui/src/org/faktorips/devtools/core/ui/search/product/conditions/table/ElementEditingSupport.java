@@ -37,8 +37,8 @@ final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
     }
 
     @Override
-    protected IpsCellEditor getCellEditorInternal(Object element) {
-        ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+    protected IpsCellEditor getCellEditorInternal(ProductSearchConditionPresentationModel element) {
+        ProductSearchConditionPresentationModel model = element;
 
         UIToolkit toolkit = new UIToolkit(null);
         Combo combo = toolkit.createCombo(((TableViewer)getViewer()).getTable());

@@ -138,6 +138,7 @@ public class EnumExportPage extends IpsObjectExportPage {
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
             if (element == null) {
                 setEnum(null);
+                return;
             }
             setIpsProject(element.getIpsProject());
             if (element instanceof IIpsSrcFile) {

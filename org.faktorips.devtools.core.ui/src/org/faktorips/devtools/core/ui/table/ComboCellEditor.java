@@ -96,7 +96,7 @@ public class ComboCellEditor extends IpsCellEditor {
             } else {
                 comboControl.select(getIndexForValue((String)value));
             }
-        } else {
+        } else if (comboControl != null) {
             comboControl.select(0);
         }
     }

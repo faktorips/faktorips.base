@@ -37,20 +37,20 @@ public abstract class ControlPropertyBinding {
      * @param control the control to be bound to
      * @param object the model object containing the property that is bound to the given control
      * @param propertyName the name of the property that is bound to the given control
-     * @param exptectedType the data type (class) of the model object's property. This information
+     * @param expectedType the data type (class) of the model object's property. This information
      *            is used to check the validity of a binding. <code>null</code> can be given to
      *            bypass this type-check e.g. for primitive types.
      * @throws IllegalArgumentException if the bound property's type/class does not match the
      *             expectedType.
      */
-    public ControlPropertyBinding(Control control, Object object, String propertyName, Class<?> exptectedType) {
+    public ControlPropertyBinding(Control control, Object object, String propertyName, Class<?> expectedType) {
         super();
         this.control = control;
         this.object = object;
         property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
-        if (exptectedType != null && !exptectedType.equals(property.getPropertyType())) {
+        if (expectedType != null && !expectedType.equals(property.getPropertyType())) {
             throw new IllegalArgumentException(
-                    "Property " + propertyName + " of type " + object.getClass() + " is not of type " + exptectedType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    "Property " + propertyName + " of type " + object.getClass() + " is not of type " + expectedType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 

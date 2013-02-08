@@ -19,12 +19,12 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 
-public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
+public class MultiValueTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
 
     private final int columnIndex;
     private final MultiValueTableModel listTableModel;
 
-    public EditTableTraversalStrategy(CellTrackingEditingSupport editingSupport, int columnIndex,
+    public MultiValueTableTraversalStrategy(CellTrackingEditingSupport<?> editingSupport, int columnIndex,
             MultiValueTableModel listTableModel) {
         super(editingSupport);
         this.columnIndex = columnIndex;
@@ -48,7 +48,7 @@ public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
      */
     @Override
     protected Object getPreviousVisibleViewItem(Object currentViewItem) {
-        List<?> list = listTableModel.getElements();
+        List<?> list = listTableModel.getItemList();
         int currentIndex = list.indexOf(currentViewItem);
         if (currentIndex < 0) {
             return list.isEmpty() ? null : list.get(0);
@@ -66,7 +66,7 @@ public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
      */
     @Override
     protected Object getNextVisibleViewItem(Object currentViewItem) {
-        List<?> list = listTableModel.getElements();
+        List<?> list = listTableModel.getItemList();
         int currentIndex = list.indexOf(currentViewItem);
         if (currentIndex < 0) {
             return list.isEmpty() ? null : list.get(0);

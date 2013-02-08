@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.MultilingualEditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controls.ISingleValueHolderProvider;
 import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
 import org.faktorips.devtools.core.ui.controls.MultilingualValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -107,8 +108,14 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                 MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
                         IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
                 MultilingualValueAttributeControl control = new MultilingualValueAttributeControl(this, getToolkit(),
-                        getPropertyValue(), getPropertyValue().getIpsProject(), null);
-                editField = new MultilingualEditField(control);
+                        new ISingleValueHolderProvider() {
+                            @Override
+                            public SingleValueHolder getSingleValueHolder() {
+                                return (SingleValueHolder)getPropertyValue().getValueHolder();
+                            }
+                        });
+                editField = new MultilingualEditField(control, IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizationLocale());
                 getBindingContext().bindContent(editField, valueHolderPMO,
                         MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
             }

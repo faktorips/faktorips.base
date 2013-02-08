@@ -84,4 +84,17 @@ public final class InternationalStringXmlHelper {
         }
     }
 
+    /**
+     * Checks if the given element is an element, which holds an {@link IInternationalString}.
+     * 
+     * @param element the element to check
+     * @return true if the element is an IInternationalString, false otherwise.
+     */
+    public static boolean isInternationalStringElement(Element element) {
+        if (element == null) {
+            return false;
+        }
+        NodeList childNodes = element.getElementsByTagName(InternationalString.XML_TAG);
+        return childNodes.getLength() > 0;
+    }
 }

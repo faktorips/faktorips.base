@@ -108,12 +108,12 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
             if (selection instanceof IStructuredSelection) {
                 return (IStructuredSelection)selection;
             }
-        }
-        IWorkbenchPart part = window.getPartService().getActivePart();
-        if (part instanceof IEditorPart) {
-            IEditorInput input = ((IEditorPart)part).getEditorInput();
-            if (input instanceof IFileEditorInput) {
-                return new StructuredSelection(((IFileEditorInput)input).getFile());
+            IWorkbenchPart part = window.getPartService().getActivePart();
+            if (part instanceof IEditorPart) {
+                IEditorInput input = ((IEditorPart)part).getEditorInput();
+                if (input instanceof IFileEditorInput) {
+                    return new StructuredSelection(((IFileEditorInput)input).getFile());
+                }
             }
         }
         return null;

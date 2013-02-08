@@ -16,12 +16,13 @@ package org.faktorips.devtools.core.ui.dialogs;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
+import org.faktorips.devtools.core.model.IInternationalString;
 
 class MultilingualValueCellModifier implements ICellModifier {
-    private final MultilingualValueDialog internationalValueDialog;
+    private final IInternationalString internationalString;
 
-    MultilingualValueCellModifier(MultilingualValueDialog internationalValueDialog) {
-        this.internationalValueDialog = internationalValueDialog;
+    public MultilingualValueCellModifier(IInternationalString internationalString) {
+        this.internationalString = internationalString;
     }
 
     @Override
@@ -30,9 +31,6 @@ class MultilingualValueCellModifier implements ICellModifier {
     }
 
     private int getColumnIndexForProperty(String property) {
-        if (Messages.InternationalValueDialog_languageColumnTitle.equals(property)) {
-            return 0;
-        }
         if (Messages.InternationalValueDialog_valueColumnTitle.equals(property)) {
             return 1;
         }
@@ -44,9 +42,7 @@ class MultilingualValueCellModifier implements ICellModifier {
         if (element instanceof LocalizedString) {
             LocalizedString locString = (LocalizedString)element;
             int colIndex = getColumnIndexForProperty(property);
-            if (colIndex == 0) {
-                return locString.getLocale().getDisplayCountry();
-            } else if (colIndex == 1) {
+            if (colIndex == 1) {
                 return locString.getValue();
             }
         }
@@ -64,7 +60,7 @@ class MultilingualValueCellModifier implements ICellModifier {
                 locString = (LocalizedString)element;
             }
             if (colIndex == 1 && locString != null) {
-                internationalValueDialog.updateTable(new LocalizedString(locString.getLocale(), (String)value));
+                internationalString.add(new LocalizedString(locString.getLocale(), (String)value));
             }
         }
     }

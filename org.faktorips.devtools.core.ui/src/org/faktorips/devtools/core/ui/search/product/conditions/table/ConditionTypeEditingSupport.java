@@ -38,11 +38,11 @@ class ConditionTypeEditingSupport extends EnhancedCellTrackingEditingSupport {
     }
 
     @Override
-    protected IpsCellEditor getCellEditorInternal(Object element) {
+    protected IpsCellEditor getCellEditorInternal(ProductSearchConditionPresentationModel element) {
         UIToolkit toolkit = new UIToolkit(null);
         Combo combo = toolkit.createCombo(((TableViewer)getViewer()).getTable());
 
-        ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+        ProductSearchConditionPresentationModel model = element;
 
         List<IConditionType> conditionTypes = model.getConditionsWithSearchableElements();
         List<String> conditionTypeNames = new ArrayList<String>(conditionTypes.size());

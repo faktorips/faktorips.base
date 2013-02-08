@@ -22,7 +22,8 @@ import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
  * 
  * @author dicker
  */
-public abstract class EnhancedCellTrackingEditingSupport extends CellTrackingEditingSupport {
+public abstract class EnhancedCellTrackingEditingSupport extends
+        CellTrackingEditingSupport<ProductSearchConditionPresentationModel> {
 
     public EnhancedCellTrackingEditingSupport(ColumnViewer viewer) {
         super(viewer);

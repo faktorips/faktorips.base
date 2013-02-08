@@ -28,7 +28,7 @@ import org.eclipse.swt.events.TraverseEvent;
  * between.
  * <p/>
  * Again this class (as {@link AbstractPermanentTraversalStrategy}) is designed to be used with a
- * {@link CellTrackingEditingSupport} that holds one instance of this class during its lifetime.
+ * {@link FormattedCellEditingSupport} that holds one instance of this class during its lifetime.
  * 
  * <p/>
  * This {@link TraversalStrategy} supports two kinds of traversal in the ColumnViewer:

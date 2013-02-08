@@ -18,12 +18,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 
 /**
- * Content provider for a {@link EditTableControlViewer} that uses an {@link AbstractListTableModel}
- * .
+ * Content provider for a {@link MultiValueTableControlViewer} that uses an
+ * {@link MultiValueTableModel} .
  * 
  * @author Stefan Widmaier
  */
-public class ListTableModelContentProvider implements IStructuredContentProvider {
+public class MultiValueTableModelContentProvider implements IStructuredContentProvider {
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -38,7 +38,7 @@ public class ListTableModelContentProvider implements IStructuredContentProvider
     @Override
     public Object[] getElements(Object inputElement) {
         MultiValueTableModel model = (MultiValueTableModel)inputElement;
-        return model.getElements().toArray();
+        return model.getItemList().toArray();
     }
 
 }

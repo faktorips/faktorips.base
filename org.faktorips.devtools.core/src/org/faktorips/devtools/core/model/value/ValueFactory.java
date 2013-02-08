@@ -16,12 +16,13 @@ package org.faktorips.devtools.core.model.value;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.InternationalString;
+import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,17 +50,7 @@ public final class ValueFactory {
         if (valueEl == null || Boolean.parseBoolean(valueEl.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL))) {
             return new StringValue(null);
         }
-        NodeList childNodes = valueEl.getChildNodes();
-        if (childNodes.getLength() == 1) {
-            Node node = childNodes.item(0);
-            if (node instanceof Text) {
-                return StringValue.createFromXml((Text)node);
-            } else if (node instanceof Element) {
-                return InternationalStringValue.createFromXml(valueEl);
-            } else {
-                return null;
-            }
-        } else if (childNodes.getLength() > 0) {
+        if (InternationalStringXmlHelper.isInternationalStringElement(valueEl)) {
             return InternationalStringValue.createFromXml(valueEl);
         }
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueEl);
@@ -69,6 +60,14 @@ public final class ValueFactory {
         String result = ""; //$NON-NLS-1$
         if (cdata != null) {
             result = cdata.getData();
+        } else {
+            NodeList childNodes = valueEl.getChildNodes();
+            if (childNodes.getLength() > 0) {
+                Node node = childNodes.item(0);
+                if (node instanceof Text) {
+                    result = node.getNodeValue();
+                }
+            }
         }
         return new StringValue(result);
     }

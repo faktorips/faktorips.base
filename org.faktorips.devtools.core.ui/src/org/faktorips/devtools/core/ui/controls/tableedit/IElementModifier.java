@@ -13,24 +13,26 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
+
 /**
- * Interface for classes that can access and modify a {@link IEditTabelModel table model's}
+ * Interface for classes that can access and modify a {@link MultiValueTableModel table model's}
  * elements.
  * 
  * @author Stefan Widmaier
  */
-public interface IElementModifier {
+public interface IElementModifier<T, V> {
     /**
      * Returns the value for the given element.
      * 
      * @param element the value to access
      */
-    public Object getValue(Object element);
+    public V getValue(T element);
 
     /**
      * Sets the given value as value for the given element.
      * 
      * @param element the value to modify
      */
-    public void setValue(Object element, Object value);
+    public void setValue(T element, V value);
 }

@@ -13,38 +13,37 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import java.util.Locale;
+import java.util.ArrayList;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.ISingleValueHolderProvider;
+import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
+import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.table.LocalizedStringCellEditor;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.LocaleTextCellEditor;
+import org.faktorips.devtools.core.ui.table.MultilingualTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
@@ -60,30 +59,15 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
      */
     private static final int NUMBER_OF_COLUMNS = 2;
 
-    /**
-     * The table viewer used to present the internationalization data.
-     */
     private TableViewer tableViewer;
 
-    /**
-     * The corresponding project to the modified value.
-     */
-    private final IIpsProject ipsProject;
+    private final ISingleValueHolderProvider valueHolderProvider;
 
-    /**
-     * Value holder of the attribute.
-     */
-    private final IValueHolder<IValue<?>> valueHolder;
-    private final IAttributeValue attributeValue;
-
-    public MultilingualValueDialog(Shell parentShell, IAttributeValue attributeValue, IIpsProject ipsProject,
-            IValueHolder<IValue<?>> valueHolder) {
-        super(attributeValue, parentShell, Messages.InternationalValueDialog_titleText);
-        this.valueHolder = valueHolder;
-        this.ipsProject = ipsProject;
+    public MultilingualValueDialog(Shell parentShell, ISingleValueHolderProvider valueHolderProvider) {
+        super(valueHolderProvider.getSingleValueHolder().getParent(), parentShell,
+                Messages.InternationalValueDialog_titleText);
+        this.valueHolderProvider = valueHolderProvider;
         setShellStyle(getShellStyle() | SWT.RESIZE);
-        Assert.isNotNull(attributeValue);
-        this.attributeValue = attributeValue;
     }
 
     @Override
@@ -104,56 +88,15 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
     protected Composite createWorkAreaThis(Composite parent) {
         Composite mainComposite = getToolkit().createGridComposite(parent, 1, false, true);
 
-        Table table = createTable(mainComposite);
-        initTableViewer(table);
+        // Table table = createTable(mainComposite);
+        initTableViewer(mainComposite);
 
         ((GridData)parent.getLayoutData()).heightHint = 300;
         return parent;
     }
 
-    /**
-     * Creates a Table with the given composite as a parent and returns it. Initializess the look,
-     * layout of the table and adds a KeyListener that enables the editing of the second cell in the
-     * currently selected row by pressing "F2".
-     * 
-     * @return The newly created and initialized Table.
-     */
-    private Table createTable(Composite parent) {
-        // Table: scroll both vertically and horizontally
-        Table table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE | SWT.FULL_SELECTION
-                | SWT.BORDER);
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
-        // occupy all available space
-        GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        tableGridData.widthHint = parent.getClientArea().width;
-        tableGridData.heightHint = parent.getClientArea().height;
-        table.setLayoutData(tableGridData);
-        table.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.keyCode == SWT.F2) {
-                    IRow selectedRow = (IRow)((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
-                    if (selectedRow != null) {
-                        tableViewer.editElement(selectedRow, 1);
-                    }
-                }
-            }
-        });
-
-        return table;
-    }
-
-    private IValueHolder<IValue<?>> getValueHolder() {
-        if (valueHolder != null) {
-            return valueHolder;
-        }
-        return (IValueHolder<IValue<?>>)attributeValue.getValueHolder();
-    }
-
-    void updateTable(final LocalizedString locString) {
-        ((IInternationalString)getValueHolder().getValue().getContent()).add(locString);
-        tableViewer.refresh();
+    private IInternationalString getInternationalString() {
+        return (IInternationalString)valueHolderProvider.getSingleValueHolder().getValue().getContent();
     }
 
     /**
@@ -161,55 +104,49 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
      * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
      * hoverservice.
      */
-    private void initTableViewer(Table table) {
-        table.removeAll();
+    private void initTableViewer(Composite parent) {
+        TableColumnLayout layout = new TableColumnLayout();
+        parent.setLayout(layout);
+
+        tableViewer = new TableViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE
+                | SWT.FULL_SELECTION | SWT.BORDER);
+        Table table = tableViewer.getTable();
+        table.setLinesVisible(true);
+        table.setHeaderVisible(true);
         TableUtil.increaseHeightOfTableRows(table, NUMBER_OF_COLUMNS, 5);
 
-        String[] columnProperties = new String[NUMBER_OF_COLUMNS];
+        final TableViewerColumn languageColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+        languageColumn.getColumn().setText(Messages.InternationalValueDialog_languageColumnTitle);
+        layout.setColumnData(languageColumn.getColumn(), new ColumnPixelData(100, true, true));
 
-        final TableColumn languageColumn = new TableColumn(table, SWT.LEFT, 0);
-        languageColumn.setText(Messages.InternationalValueDialog_languageColumnTitle);
-        columnProperties[0] = Messages.InternationalValueDialog_languageColumnTitle;
-        languageColumn.setWidth(200);
+        final TableViewerColumn valueColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+        valueColumn.getColumn().setText(Messages.InternationalValueDialog_valueColumnTitle);
+        layout.setColumnData(valueColumn.getColumn(), new ColumnPixelData(350, true, true));
 
-        final TableColumn valueColumn = new TableColumn(table, SWT.LEFT, 1);
-        valueColumn.setText(Messages.InternationalValueDialog_valueColumnTitle);
-        columnProperties[1] = Messages.InternationalValueDialog_valueColumnTitle;
-        valueColumn.setWidth(200);
-
-        tableViewer = new TableViewer(table);
         tableViewer.setUseHashlookup(true);
-        tableViewer.setContentProvider(new InternationalValueContentProvider());
+        tableViewer.setContentProvider(new InternationalValueContentProvider(valueHolderProvider.getSingleValueHolder()
+                .getIpsProject()));
         tableViewer.setLabelProvider(new InternationalValueLabelProvider());
-        tableViewer.setColumnProperties(columnProperties);
-        Text textControl = getToolkit().createText(tableViewer.getTable(), SWT.SINGLE | SWT.LEFT);
 
-        LocalizedStringCellEditor cellEditor = new LocalizedStringCellEditor(textControl);
-        cellEditor.setTraversalStrategy(new TableViewerTraversalStrategy(cellEditor, tableViewer, 1) {
-            @Override
-            protected void editNextColumn() {
-                int nextRow = getNextRow();
-                if (nextRow >= ipsProject.getProperties().getSupportedLanguages().size()) {
-                    tableViewer.getTable().forceFocus();
-                } else {
-                    if (isAtNewColumn()) {
-                        editCell(nextRow, 1);
+        LocalizedStringEditingSupport localizedStringEditingSupport = new LocalizedStringEditingSupport(tableViewer,
+                new IElementModifier<ILocalizedString, ILocalizedString>() {
+
+                    @Override
+                    public ILocalizedString getValue(ILocalizedString element) {
+                        return element;
                     }
-                }
-            }
-        });
-        tableViewer.setCellEditors(new CellEditor[] { null, cellEditor });
-        tableViewer.setCellModifier(new MultilingualValueCellModifier(this));
-        if (getValueHolder().getValue().getContent() instanceof IInternationalString) {
-            IInternationalString internationalString = (IInternationalString)getValueHolder().getValue().getContent();
-            for (ISupportedLanguage l : ipsProject.getProperties().getSupportedLanguages()) {
-                Locale locale = l.getLocale();
-                if (internationalString.get(locale) == null) {
-                    internationalString.add(new LocalizedString(locale, "")); //$NON-NLS-1$
-                }
-            }
-        }
-        tableViewer.setInput(getValueHolder().getValue().getContent());
+
+                    @Override
+                    public void setValue(ILocalizedString element, ILocalizedString value) {
+                        getInternationalString().add(value);
+                    }
+                });
+
+        localizedStringEditingSupport.setTraversalStrategy(new MultilingualTraversalStrategy(
+                localizedStringEditingSupport, valueHolderProvider.getSingleValueHolder().getIpsProject(), 1,
+                getInternationalString()));
+        valueColumn.setEditingSupport(localizedStringEditingSupport);
+        tableViewer.setInput(getInternationalString());
     }
 
     /**
@@ -217,6 +154,12 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
      * string.
      */
     static class InternationalValueContentProvider implements IStructuredContentProvider {
+        private final IIpsProject ipsProject;
+
+        InternationalValueContentProvider(IIpsProject ipsProject) {
+            this.ipsProject = ipsProject;
+        }
+
         @Override
         public void dispose() {
             // Nothing to do
@@ -229,8 +172,15 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
 
         @Override
         public Object[] getElements(Object input) {
-            if (input instanceof InternationalString) {
-                return ((InternationalString)input).values().toArray();
+            if (input instanceof IInternationalString) {
+                ArrayList<ILocalizedString> localizedStringInput = new ArrayList<ILocalizedString>();
+                IInternationalString inputString = (IInternationalString)input;
+                for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
+                    ILocalizedString localizedString = inputString.get(language.getLocale());
+                    localizedStringInput
+                            .add(localizedString == null ? new LocalizedString(language.getLocale(), "") : localizedString); //$NON-NLS-1$
+                }
+                return localizedStringInput.toArray();
             }
             return new LocalizedString[0];
         }
@@ -280,5 +230,43 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
             }
             return null;
         }
+
     }
+
+    private static class LocalizedStringEditingSupport extends
+            FormattedCellEditingSupport<ILocalizedString, ILocalizedString> {
+
+        public LocalizedStringEditingSupport(TableViewer tableViewer,
+                IElementModifier<ILocalizedString, ILocalizedString> elementModifier) {
+            super(tableViewer, elementModifier);
+        }
+
+        @Override
+        public TableViewer getViewer() {
+            return (TableViewer)super.getViewer();
+        }
+
+        @Override
+        public String getFormattedValue(ILocalizedString element) {
+            return element.getValue();
+        }
+
+        @Override
+        protected IpsCellEditor getCellEditorInternal(ILocalizedString element) {
+            Text control = new UIToolkit(null).createText(getViewer().getTable());
+            LocaleTextCellEditor cellEditor = new LocaleTextCellEditor(element.getLocale(), control);
+            TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, getViewer(), 1);
+            strat.setRowCreating(true);
+            cellEditor.setTraversalStrategy(strat);
+
+            return cellEditor;
+        }
+
+        @Override
+        protected boolean canEdit(Object element) {
+            return true;
+        }
+
+    }
+
 }

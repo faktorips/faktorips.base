@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
 
@@ -32,7 +33,7 @@ public class ErrorCellLabelProvider extends CellLabelProvider {
 
     @Override
     public void update(ViewerCell cell) {
-        MessageList list = tableModel.validate(cell.getElement());
+        MessageList list = tableModel.validate((SingleValueViewItem)cell.getElement());
         Image image = IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
                 false);
         cell.setImage(image);
@@ -40,7 +41,7 @@ public class ErrorCellLabelProvider extends CellLabelProvider {
 
     @Override
     public String getToolTipText(Object element) {
-        MessageList list = tableModel.validate(element);
+        MessageList list = tableModel.validate((SingleValueViewItem)element);
         if (list.isEmpty()) {
             return super.getToolTipText(element);
         } else {

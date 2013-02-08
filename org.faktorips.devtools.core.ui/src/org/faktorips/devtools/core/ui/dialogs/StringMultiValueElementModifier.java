@@ -15,11 +15,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 
@@ -28,24 +24,19 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueVi
  * 
  * @author Stefan Widmaier
  */
-public class MultiValueElementModifier implements IElementModifier {
+public class StringMultiValueElementModifier implements IElementModifier<SingleValueViewItem, String> {
 
     /**
      * Assumes the given element is a {@link SingleValueHolder}. Returns its string value.
      * {@inheritDoc}
      */
     @Override
-    public String getValue(Object element) {
-        SingleValueHolder item = ((SingleValueViewItem)element).getSingleValueHolder();
+    public String getValue(SingleValueViewItem element) {
+        SingleValueHolder item = element.getSingleValueHolder();
         if (item == null || item.getValue() == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        } else if (item.getValueType() == ValueType.STRING) {
-            return (String)item.getValue().getContent();
         }
-        ILocalizedString locString = ((IValue<IInternationalString>)item.getValue()).getContent().get(
-                IpsPlugin.getDefault().getUsedLanguagePackLocale());
-        return locString == null ? IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() : locString
-                .getValue();
+        return (String)item.getValue().getContent();
     }
 
     /**
@@ -53,12 +44,9 @@ public class MultiValueElementModifier implements IElementModifier {
      * {@link String}. Sets the given string as new value of the given element. {@inheritDoc}
      */
     @Override
-    public void setValue(Object element, Object value) {
-        // TODO FIPS-1469
-        SingleValueHolder singleValueHolder = ((SingleValueViewItem)element).getSingleValueHolder();
-        if (value instanceof String) {
-            singleValueHolder.setValue(ValueFactory.createStringValue((String)value));
-        }
+    public void setValue(SingleValueViewItem element, String value) {
+        SingleValueHolder singleValueHolder = element.getSingleValueHolder();
+        singleValueHolder.setValue(ValueFactory.createStringValue(value));
     }
 
 }

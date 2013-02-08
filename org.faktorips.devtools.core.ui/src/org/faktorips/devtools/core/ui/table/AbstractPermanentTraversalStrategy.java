@@ -18,7 +18,7 @@ package org.faktorips.devtools.core.ui.table;
  * {@link TraversalStrategy} that can be added to different {@link IpsCellEditor}s during its
  * lifetime (the {@link TableTraversalStrategy} in contrast is instantiated for every
  * {@link IpsCellEditor} separately). The {@link AbstractPermanentTraversalStrategy} is designed to
- * be used with an {@link CellTrackingEditingSupport} object. The {@link CellTrackingEditingSupport}
+ * be used with an {@link FormattedCellEditingSupport} object. The {@link FormattedCellEditingSupport}
  * should hold an instance of the {@link AbstractPermanentTraversalStrategy} and register it with
  * each {@link IpsCellEditor} after it is created.
  * 

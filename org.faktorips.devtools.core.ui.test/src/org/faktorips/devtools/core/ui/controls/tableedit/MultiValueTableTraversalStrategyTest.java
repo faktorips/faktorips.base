@@ -36,15 +36,15 @@ public class MultiValueTableTraversalStrategyTest {
      * models list should be based on identity not equality.
      */
     private static final SingleValueHolder B2 = new SingleValueHolder(null, new String("B"));
-    private EditTableTraversalStrategy strat;
+    private MultiValueTableTraversalStrategy strat;
     private List<SingleValueHolder> list;
 
     @Before
     public void setUp() {
         list = new ArrayList<SingleValueHolder>();
         MultiValueTableModel model = mock(MultiValueTableModel.class);
-        doReturn(list).when(model).getElements();
-        strat = new EditTableTraversalStrategy(null, 0, model);
+        doReturn(list).when(model).getItemList();
+        strat = new MultiValueTableTraversalStrategy(null, 0, model);
     }
 
     @Test

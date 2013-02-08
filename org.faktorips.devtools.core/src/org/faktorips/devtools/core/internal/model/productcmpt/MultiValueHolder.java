@@ -276,6 +276,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
                 List<SingleValueHolder> defaultValue) {
             return new MultiValueHolder(parent, defaultValue);
         }
-
     }
+
 }

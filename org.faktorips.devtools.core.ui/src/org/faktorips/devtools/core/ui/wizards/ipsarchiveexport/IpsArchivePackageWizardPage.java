@@ -62,8 +62,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
@@ -429,8 +429,10 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
             settings.put(STORE_DESTINATION_NAMES, directoryNames);
         }
         // options
-        settings.put(OPTION_INCLUDE_JAVA_SOURCES, isInclJavaSources());
-        settings.put(OPTION_INCLUDE_JAVA_BINARIES, isInclJavaBinaries());
+        if (settings != null) {
+            settings.put(OPTION_INCLUDE_JAVA_SOURCES, isInclJavaSources());
+            settings.put(OPTION_INCLUDE_JAVA_BINARIES, isInclJavaBinaries());
+        }
     }
 
     @Override

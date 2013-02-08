@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -22,17 +24,23 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.ILocalizedString;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.TextAndSecondControlComposite;
 
+/**
+ * {@link EditField} for editing multi lingual strings. The text edited by the text control will
+ * always return an {@link ILocalizedString} in the locale given to this class.
+ */
 public class MultilingualEditField extends DefaultEditField<ILocalizedString> {
-
     private TextAndSecondControlComposite control;
+    private final Locale localeOfEditField;
 
     protected boolean immediatelyNotifyListener = false;
 
-    public MultilingualEditField(TextAndSecondControlComposite control) {
+    public MultilingualEditField(TextAndSecondControlComposite control, Locale localeOfEditField) {
         super();
         this.control = control;
+        this.localeOfEditField = localeOfEditField;
     }
 
     @Override
@@ -53,10 +61,7 @@ public class MultilingualEditField extends DefaultEditField<ILocalizedString> {
     public ILocalizedString parseContent() {
         String text = StringValueEditField.prepareObjectForGet(control.getTextControl().getText(),
                 supportsNullStringRepresentation());
-        if (text == null) {
-            return null;
-        }
-        return new LocalizedString(IpsPlugin.getMultiLanguageSupport().getLocalizationLocale(), text);
+        return new LocalizedString(localeOfEditField, text);
     }
 
     @Override
@@ -70,7 +75,7 @@ public class MultilingualEditField extends DefaultEditField<ILocalizedString> {
                 return;
             }
         }
-        setText(newValue.getValue());
+        setText(StringValueEditField.prepareObjectForSet(newValue.getValue(), supportsNullStringRepresentation()));
     }
 
     @Override
@@ -100,8 +105,7 @@ public class MultilingualEditField extends DefaultEditField<ILocalizedString> {
 
     @Override
     protected void addListenerToControl() {
-        ModifyListener ml = new ModifyListener() {
-
+        final ModifyListener ml = new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
                 boolean immediatelyNotify = immediatelyNotifyListener | control.isImmediatelyNotifyListener();
@@ -111,35 +115,16 @@ public class MultilingualEditField extends DefaultEditField<ILocalizedString> {
         };
 
         control.getTextControl().addModifyListener(ml);
-        control.getTextControl().addDisposeListener(new MyDisposeListener(ml));
+        control.getTextControl().addDisposeListener(new DisposeListener() {
+            /**
+             * Dispose listener to remove modify listener from control when control is disposed.
+             * 
+             * @author Thorsten Guenther
+             */
+            @Override
+            public void widgetDisposed(DisposeEvent arg0) {
+                control.getTextControl().removeModifyListener(ml);
+            }
+        });
     }
-
-    /**
-     * Dispose listener to remove modify listener from control when control is disposed.
-     * 
-     * @author Thorsten Guenther
-     */
-    private class MyDisposeListener implements DisposeListener {
-
-        /**
-         * Listener which has to be removed on dispose.
-         */
-        private ModifyListener ml;
-
-        /**
-         * Create a new Listener.
-         * 
-         * @param ml The modify listener to remove on dispose
-         */
-        MyDisposeListener(ModifyListener ml) {
-            this.ml = ml;
-        }
-
-        @Override
-        public void widgetDisposed(DisposeEvent e) {
-            control.getTextControl().removeModifyListener(ml);
-        }
-
-    }
-
 }

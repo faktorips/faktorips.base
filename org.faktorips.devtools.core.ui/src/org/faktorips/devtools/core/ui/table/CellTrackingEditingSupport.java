@@ -32,7 +32,7 @@ import org.eclipse.jface.viewers.ICellEditorListener;
  * 
  * @author Stefan Widmaier
  */
-public abstract class CellTrackingEditingSupport extends EditingSupport {
+public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
 
     private IpsCellEditor currentCellEditor;
     private Object currentViewItem;
@@ -50,7 +50,8 @@ public abstract class CellTrackingEditingSupport extends EditingSupport {
 
     @Override
     protected CellEditor getCellEditor(Object element) {
-        IpsCellEditor cellEditor = getCellEditorInternal(element);
+        // FIXME
+        IpsCellEditor cellEditor = getCellEditorInternal((T)element);
         currentCellEditor = cellEditor;
         currentViewItem = element;
         if (currentCellEditor != null) {
@@ -68,7 +69,7 @@ public abstract class CellTrackingEditingSupport extends EditingSupport {
      * @param element the element to edit
      * @return the newly created {@link IpsCellEditor}
      */
-    protected abstract IpsCellEditor getCellEditorInternal(Object element);
+    protected abstract IpsCellEditor getCellEditorInternal(T element);
 
     /**
      * Sets the {@link AbstractPermanentTraversalStrategy} instance to be used by this

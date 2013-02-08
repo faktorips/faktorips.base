@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.controls.Messages;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 
 /**
- * The {@link EditTableControlUIBuilder} is a factory for UI controls that holds references to the
+ * The {@link MultiValueTableControlUIBuilder} is a factory for UI controls that holds references to the
  * created controls. It creates editable table with "Add", "Remove", "Move Up" and "Move Down"
  * buttons at the side.
  * 
@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
  * 
  * @author Stefan Widmaier
  */
-public class EditTableControlUIBuilder {
+public class MultiValueTableControlUIBuilder {
 
     private Button addButton;
     private Button removeButton;
