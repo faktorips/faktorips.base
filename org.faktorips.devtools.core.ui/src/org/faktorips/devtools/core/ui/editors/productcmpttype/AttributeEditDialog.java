@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
@@ -89,6 +90,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private ValueSetType currentValueSetType;
 
     private ExtensionPropertyControlFactory extFactory;
+    private ProductCmptTypeAttributePmo attributePmo;
 
     public AttributeEditDialog(IProductCmptTypeAttribute productCmptTypeAttribute, Shell parentShell) {
         super(productCmptTypeAttribute, parentShell, Messages.AttributeEditDialog_title, true);
@@ -105,6 +107,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         currentValueSetType = productCmptTypeAttribute.getValueSet().getValueSetType();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
+        attributePmo = new ProductCmptTypeAttributePmo(attribute);
     }
 
     @Override
@@ -116,6 +119,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         generalItem.setControl(createGeneralPage(folder));
 
         TabItem defaultAndValuesItem = new TabItem(folder, SWT.NONE);
+
         defaultAndValuesItem.setText(Messages.AttributeEditDialog_defaultAndValuesGroup);
         try {
             defaultAndValuesItem.setControl(createDefaultAndValuesPage(folder));
@@ -216,6 +220,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 valueSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         updateValueSetTypes();
 
+        getBindingContext().bindEnabled(valueSetEditControl, attributePmo,
+                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
+
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData) {
             /*
@@ -272,6 +279,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout(true);
         getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
+        getBindingContext().bindEnabled(defaultValueField.getControl(), attributePmo,
+                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
     }
 
     @Override
@@ -303,10 +312,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
-            boolean enabled = newDatatype != null;
             if (defaultValueField != null && valueSetEditControl != null) {
-                defaultValueField.getControl().setEnabled(enabled);
-                valueSetEditControl.setDataChangeable(enabled);
                 if (newDatatype == null || newDatatype.equals(currentDatatype)) {
                     return;
                 }
@@ -356,4 +362,44 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
         refactoringOperation.runDirectExecution();
     }
+
+    /**
+     * Presentation model object for the {@link IProductCmptTypeAttribute}. Provides some properties
+     * that are not directly accessible in the model but may be derived from the model. It is used
+     * for example for binding the enable state of a control to multiple properties of the
+     * attribute.
+     * 
+     * @author frank
+     * @since 3.9
+     */
+    public class ProductCmptTypeAttributePmo extends IpsObjectPartPmo {
+
+        public static final String PROPERTY_ENABLED_VALUE = "enabledDefaultAndValueset"; //$NON-NLS-1$
+
+        public ProductCmptTypeAttributePmo(IProductCmptTypeAttribute attribute) {
+            super(attribute);
+        }
+
+        @Override
+        public IProductCmptTypeAttribute getIpsObjectPartContainer() {
+            return (IProductCmptTypeAttribute)super.getIpsObjectPartContainer();
+        }
+
+        /**
+         * Returns the enabled state for the default and valueset controls. Returns
+         * <code>true</code> if datatype is correct and the multilingual is not set. Otherwise
+         * returns <code>false</code>.
+         */
+        public boolean isEnabledDefaultAndValueset() {
+            boolean enabled = true;
+            try {
+                ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(ipsProject);
+                enabled = newDatatype != null && !this.getIpsObjectPartContainer().isMultilingual();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+            return enabled;
+        }
+    }
+
 }
