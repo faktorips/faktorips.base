@@ -5,6 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
+		<repositoryDir>repository</repositoryDir>
 		<qualifiedVersion>${unqualifiedVersion}.${buildQualifier}</qualifiedVersion>
 		<deploy.repositoryZipName>${project.artifactId}-${qualifiedVersion}</deploy.repositoryZipName>
 		<deploy.repositoryZip>${project.build.directory}/${deploy.repositoryZipName}.zip</deploy.repositoryZip>
@@ -13,22 +14,22 @@
 		<deploy.server>faktorzehn.org</deploy.server>
 		<deploy.dir>/var/www/update.faktorzehn.org/</deploy.dir>
 		<!-- currently only one word groupId supported (e.g. not org.faktorips) -->
-		<deploy.groupId>faktorips</deploy.groupId>
-		<deploy.artifactId>v${parsedVersion.majorVersion}_${parsedVersion.minorVersion}</deploy.artifactId>
-		<deploy.artifactVersion>${qualifiedVersion}</deploy.artifactVersion>
-		<deploy.skript.unzipAndBuildComposites>${project.basedir}/unzipAndBuildComposites.sh</deploy.skript.unzipAndBuildComposites>
-		<deploy.basedir>${deploy.dir}/${deploy.groupId}/${deploy.artifactId}</deploy.basedir>
-		<deploy.deployedRepositoryZip>${deploy.basedir}/${deploy.artifactVersion}/${deploy.artifactId}-${deploy.artifactVersion}.zip</deploy.deployedRepositoryZip>
+		<deploy.module>faktorips</deploy.module>
+		<deploy.moduleVersion>v${parsedVersion.majorVersion}_${parsedVersion.minorVersion}</deploy.moduleVersion>
+		<deploy.skript.buildComposites>${project.basedir}/buildComposites.sh</deploy.skript.buildComposites>
+		<deploy.basedir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}</deploy.basedir>
+		<deploy.deployedRepositoryZip>${deploy.basedir}/${qualifiedVersion}/${deploy.moduleVersion}-${qualifiedVersion}.zip</deploy.deployedRepositoryZip>
 		<deploy.license>Faktor-IPS_Lizenzvertrag.pdf</deploy.license>
-		<deploy.downloadDir>${deploy.dir}/${deploy.groupId}/${deploy.artifactId}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
+		<deploy.downloadDir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
+		<deploy.repositoryDir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}/${qualifiedVersion}</deploy.repositoryDir>
 	</properties>
 
 
 	<parent>
 		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.aggregator</artifactId>
+		<artifactId>org.faktorips.aggregator.sites</artifactId>
 		<version>3.9.0-SNAPSHOT</version>
-		<relativePath>../org.faktorips.aggregator/pom.xml</relativePath>
+		<relativePath>../org.faktorips.aggregator/sites/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.faktorips.p2repository</artifactId>
@@ -132,34 +133,25 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- Deploy Repository -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-deploy-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>deploy-repository</id>
-								<goals>
-									<goal>deploy-file</goal>
-								</goals>
-								<phase>deploy</phase>
-								<configuration>
-									<file>${deploy.repositoryZip}</file>
-									<repositoryId>ssh-repository</repositoryId>
-									<url>scp://${deploy.server}/${deploy.dir}</url>
-									<groupId>${deploy.groupId}</groupId>
-									<artifactId>${deploy.artifactId}</artifactId>
-									<version>${deploy.artifactVersion}</version>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- Upload Downloads -->
+					<!-- Upload Repository and Downloads -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>wagon-maven-plugin</artifactId>
 						<version>1.0-beta-4</version>
 						<executions>
+							<execution>
+								<id>upload-repository</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<configuration>
+									<fromDir>${project.build.directory}/${repositoryDir}</fromDir>
+									<includes>**</includes>
+									<url>scp://${deploy.server}</url>
+									<toDir>${deploy.repositoryDir}</toDir>
+								</configuration>
+							</execution>
 							<execution>
 								<id>upload-downloads</id>
 								<phase>deploy</phase>
@@ -191,80 +183,12 @@
 									<executable>ssh</executable>
 									<commandlineArgs>${deploy.user}@${deploy.server} bash -s --
 										${deploy.basedir} ${deploy.deployedRepositoryZip} &lt;
-										${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+										${deploy.skript.buildComposites}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
 					</plugin>
 				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>buildProduct</id>
-			<build>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-director-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<executions>
-						<execution>
-							<!-- (optional) install the product for all configured os/ws/arch environments 
-								using p2 director -->
-							<id>materialize-products</id>
-							<goals>
-								<goal>materialize-products</goal>
-							</goals>
-						</execution>
-						<execution>
-							<!-- (optional) create product zips (one per os/ws/arch) -->
-							<id>archive-products</id>
-							<goals>
-								<goal>archive-products</goal>
-							</goals>
-						</execution>
-					</executions>
-					<!-- (optional) customize the root folder name of the product zip -->
-					<configuration>
-						<products>
-							<product>
-								<id>org.faktorips.devtools.core.FaktorIPS</id>
-								<rootFolder>faktorips</rootFolder>
-							</product>
-						</products>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>target-platform-configuration</artifactId>
-					<version>${tycho-version}</version>
-					<configuration>
-						<resolver>p2</resolver>
-						<environments>
-							<environment>
-								<os>win32</os>
-								<ws>win32</ws>
-								<arch>x86</arch>
-							</environment>
-							<environment>
-								<os>win32</os>
-								<ws>win32</ws>
-								<arch>x86_64</arch>
-							</environment>
-							<environment>
-								<os>linux</os>
-								<ws>gtk</ws>
-								<arch>x86</arch>
-							</environment>
-							<environment>
-								<os>linux</os>
-								<ws>gtk</ws>
-								<arch>x86_64</arch>
-							</environment>
-						</environments>
-					</configuration>
-				</plugin>
-			</plugins>
 			</build>
 		</profile>
 	</profiles>
