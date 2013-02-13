@@ -26,6 +26,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -34,6 +35,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -45,7 +47,6 @@ import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
-import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
@@ -67,7 +68,8 @@ public class TypeSelectionComposite extends Composite {
     private final PresentationModelObject pmo;
     private final String property;
     private BindingContext bindingContext;
-    private FieldPropertyMapping listViewerMapping;
+    private TypeSelectionFilter filter;
+    private Text searchText;
 
     /**
      * Constructs a new type selection composite.
@@ -111,9 +113,21 @@ public class TypeSelectionComposite extends Composite {
 
     private void createControls() {
         title = toolkit.createLabel(this, StringUtils.EMPTY);
+        title.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
+
+        toolkit.createGridComposite(this, 0, false, true);
+        Composite searchComposite = toolkit.createLabelEditColumnComposite(this);
+        searchText = toolkit.createText(searchComposite);
+        toolkit.createLabel(searchComposite, Messages.TypeSelectionComposite_msgLabel_Filter);
+        searchText.setMessage(Messages.TypeSelectionComposite_msg_Filter);
+
         toolkit.createLabel(this, Messages.TypeSelectionComposite_label_description);
 
         listViewer = new TableViewer(this);
+
+        filter = new TypeSelectionFilter();
+        listViewer.addFilter(filter);
+        listViewer.setComparator(new ViewerComparator());
         listViewer.setContentProvider(new ArrayContentProvider());
         listViewer.setLabelProvider(new ProductCmptWizardTypeLabelProvider());
         GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -139,7 +153,8 @@ public class TypeSelectionComposite extends Composite {
     }
 
     private void bindContent() {
-        listViewerMapping = bindingContext.bindContent(listViewerField, pmo, property);
+        bindingContext.bindContent(searchText, new FilterPMO(), FilterPMO.TEXT_FOR_FILTER);
+        bindingContext.bindContent(listViewerField, pmo, property);
 
         pmo.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -254,4 +269,16 @@ public class TypeSelectionComposite extends Composite {
 
     }
 
+    public class FilterPMO extends PresentationModelObject {
+        private static final String TEXT_FOR_FILTER = "textForFilter"; //$NON-NLS-1$
+
+        public void setTextForFilter(String searchText) {
+            filter.setSearchText(searchText);
+            listViewer.refresh();
+        }
+
+        public String getTextForFilter() {
+            return filter.getSearchText();
+        }
+    }
 }

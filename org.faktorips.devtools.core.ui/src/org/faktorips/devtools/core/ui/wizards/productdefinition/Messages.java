@@ -32,6 +32,8 @@ public class Messages extends NLS {
     public static String FolderAndPackagePage_label_rootFolder;
     public static String FolderAndPackagePage_page_title;
     public static String FolderAndPackagePage_title;
+    public static String TypeSelectionComposite_msg_Filter;
+    public static String TypeSelectionComposite_msgLabel_Filter;
     public static String TypeSelectionComposite_label_description;
     public static String TypeSelectionComposite_label_noDescriptionAvailable;
     public static String NewProductDefinitionValidator_msg_invalidPackageRoot;
