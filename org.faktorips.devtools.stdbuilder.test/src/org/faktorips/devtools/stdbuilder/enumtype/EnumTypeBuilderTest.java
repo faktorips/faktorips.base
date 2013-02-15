@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.junit.Before;
@@ -183,10 +184,10 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         IEnumLiteralNameAttribute literalAttribute = enumType.newEnumLiteralNameAttribute();
         literalAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
         IEnumValue enumValue = enumType.newEnumValue();
-        enumValue.setEnumAttributeValue(0, "id");
-        enumValue.setEnumAttributeValue(1, "name");
-        enumValue.setEnumAttributeValue(2, "false");
-        enumValue.setEnumAttributeValue(3, "NAME");
+        enumValue.setEnumAttributeValue(0, ValueFactory.createStringValue("id"));
+        enumValue.setEnumAttributeValue(1, ValueFactory.createStringValue("name"));
+        enumValue.setEnumAttributeValue(2, ValueFactory.createStringValue("false"));
+        enumValue.setEnumAttributeValue(3, ValueFactory.createStringValue("NAME"));
 
         IEnumLiteralNameAttributeValue literalNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
         generatedJavaElements = builder.getGeneratedJavaElements(literalNameAttributeValue);

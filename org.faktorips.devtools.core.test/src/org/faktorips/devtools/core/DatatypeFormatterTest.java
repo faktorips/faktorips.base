@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.junit.Test;
 
 public class DatatypeFormatterTest extends AbstractIpsPluginTest {
@@ -58,24 +59,24 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
 
         IEnumValue enumValue = enum1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("A");
-        values.get(1).setValue("a");
-        values.get(2).setValue("aname");
-        values.get(3).setValue("adesc");
+        values.get(0).setValue(ValueFactory.createStringValue("A"));
+        values.get(1).setValue(ValueFactory.createStringValue("a"));
+        values.get(2).setValue(ValueFactory.createStringValue("aname"));
+        values.get(3).setValue(ValueFactory.createStringValue("adesc"));
 
         IEnumValue enumValue2 = enum1.newEnumValue();
         values = enumValue2.getEnumAttributeValues();
-        values.get(0).setValue("B");
-        values.get(1).setValue("b");
-        values.get(2).setValue("bname");
-        values.get(3).setValue("bdesc");
+        values.get(0).setValue(ValueFactory.createStringValue("B"));
+        values.get(1).setValue(ValueFactory.createStringValue("b"));
+        values.get(2).setValue(ValueFactory.createStringValue("bname"));
+        values.get(3).setValue(ValueFactory.createStringValue("bdesc"));
 
         IEnumValue enumValue3 = enum1.newEnumValue();
         values = enumValue3.getEnumAttributeValues();
-        values.get(0).setValue("C");
-        values.get(1).setValue("c");
-        values.get(2).setValue("cname");
-        values.get(3).setValue("cdesc");
+        values.get(0).setValue(ValueFactory.createStringValue("C"));
+        values.get(1).setValue(ValueFactory.createStringValue("c"));
+        values.get(2).setValue(ValueFactory.createStringValue("cname"));
+        values.get(3).setValue(ValueFactory.createStringValue("cdesc"));
 
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);

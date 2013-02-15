@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -498,16 +499,9 @@ public final class MultiLanguageSupport {
     /**
      * Returns the locale of the {@link ISupportedLanguage} that is set as the default language for
      * the given {@link IIpsProject}.
-     * <p>
-     * Returns <tt>null</tt> if no default language is set.
      */
     private Locale getDefaultLocale(IIpsProject ipsProject) {
-        Locale defaultLocale = null;
-        ISupportedLanguage defaultLanguage = ipsProject.getProperties().getDefaultLanguage();
-        if (defaultLanguage != null) {
-            defaultLocale = defaultLanguage.getLocale();
-        }
-        return defaultLocale;
+        return ipsProject.getProperties().getDefaultLanguage().getLocale();
     }
 
     /**
@@ -524,4 +518,7 @@ public final class MultiLanguageSupport {
         return localizationLocale;
     }
 
+    public String getLocalizedContent(IValue<?> value) {
+        return value.getLocalizedContent(getLocalizationLocale());
+    }
 }

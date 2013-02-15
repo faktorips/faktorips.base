@@ -78,18 +78,17 @@ public class ValueFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateValueIAttributeValueT() {
-        IValue<?> createValue = ValueFactory.createValue(null, "Versicherung");
-        assertEquals("Versicherung", createValue.getContentAsString());
-        attribute.setMultilingual(false);
-        createValue = ValueFactory.createValue(attribute, "Versicherung");
-        assertEquals("Versicherung", createValue.getContentAsString());
+    public void testCreateValueMultilingual() {
+        IValue<?> value = ValueFactory.createValue(true, null);
+        assertNotNull(value);
+        assertEquals(ValueType.INTERNATIONAL_STRING, ValueType.getValueType(value));
+        assertNotNull(value.getContent());
 
-        attribute.setMultilingual(true);
-        createValue = ValueFactory.createValue(attribute, "");
-        assertNotNull(createValue);
-        assertNotNull(createValue.getContent());
+        value = ValueFactory.createValue(false, "foo");
+        assertNotNull(value);
+        assertEquals(ValueType.STRING, ValueType.getValueType(value));
+        assertNotNull(value.getContent());
+        assertEquals("foo", value.getContentAsString());
 
     }
-
 }

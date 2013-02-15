@@ -82,7 +82,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
 
     private void addEnumAttributeValue(List<String> valueData, IEnumValue rowData, IEnumAttribute enumAttribute) {
         IEnumAttributeValue enumAttributeValue = rowData.getEnumAttributeValue(enumAttribute);
-        String value = enumAttributeValue.getValue();
+        String value = enumAttributeValue.getValue().getDefaultLocalizedContent(enumAttribute.getIpsProject());
         try {
             ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
             valueData.add(getContext().getDatatypeFormatter().formatValue(datatype, value));

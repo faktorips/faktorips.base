@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -541,14 +542,14 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         IEnumType enumType = newDefaultEnumType(ipsProject, "Gender");
 
         IEnumValue male = enumType.newEnumValue();
-        male.getEnumAttributeValues().get(0).setValue("MALE");
-        male.getEnumAttributeValues().get(1).setValue("1");
-        male.getEnumAttributeValues().get(2).setValue("male");
+        male.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("MALE"));
+        male.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("1"));
+        male.getEnumAttributeValues().get(2).setValue(ValueFactory.createStringValue("male"));
 
         IEnumValue female = enumType.newEnumValue();
-        female.getEnumAttributeValues().get(0).setValue("FEMALE");
-        female.getEnumAttributeValues().get(1).setValue("2");
-        female.getEnumAttributeValues().get(2).setValue("female");
+        female.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("FEMALE"));
+        female.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("2"));
+        female.getEnumAttributeValues().get(2).setValue(ValueFactory.createStringValue("female"));
 
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "A");
         type.setConfigurableByProductCmptType(false);

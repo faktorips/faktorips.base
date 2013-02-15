@@ -316,4 +316,19 @@ public class MessageListTest {
                 list.getFirstMessage(Message.INFO).getInvalidObjectProperties()[0]);
     }
 
+    @Test
+    public void testWrapUpMeesageList() {
+        MessageList list = new MessageList();
+        list.newError("code", "text", new ObjectProperty("1", "foo"), "foo");
+        list.newError("code", "text", new ObjectProperty("2", "foo"), "foo");
+        list.newError("code", "text", new ObjectProperty("3", "foo"), "foo");
+        list.newError("code1", "text", new ObjectProperty("4", "foo"), "foo");
+        list.newError("code", "text1", new ObjectProperty("5", "foo"), "foo");
+        list.newError("code", "text1", new ObjectProperty("6", "foo"), "foo");
+
+        list.wrapUpMessages("code");
+        assertEquals(2, list.size());
+        assertEquals(3, list.getMessageByCode("code").getInvalidObjectProperties().length);
+        assertEquals(2, list.getMessage(1).getInvalidObjectProperties().length);
+    }
 }

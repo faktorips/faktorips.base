@@ -13,14 +13,9 @@
 
 package org.faktorips.devtools.core.model.value;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.CDATASection;
@@ -73,57 +68,19 @@ public final class ValueFactory {
     }
 
     /**
-     * Finds the {@link IProductCmptTypeAttribute} and returns the new created IValue<T>.
+     * Return the new {@link IValue}. If isMultilingual is <code>true</code>, then {@link IValue} is
+     * {@link InternationalStringValue}. If <code>false</code>, then {@link IValue} is
+     * {@link StringValue}.
      * 
-     * @param attributeValue the {@link IAttributeValue}
+     * @param isMultilingual <code>true</code> or <code>false</code>
+     * @param value the value to set only in {@link StringValue}
      */
-    public static IValue<?> createValue(IAttributeValue attributeValue) {
-        try {
-            IProductCmptTypeAttribute prodCmptTypeAttribute = null;
-            if (attributeValue != null && attributeValue.getIpsProject() != null) {
-                prodCmptTypeAttribute = attributeValue.findAttribute(attributeValue.getIpsProject());
-            }
-            return createValue(prodCmptTypeAttribute, null);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    /**
-     * Creates depending on the attribute multilingual Setting a new
-     * {@link InternationalStringValue} if <code>true</code> or an {@link StringValue} if
-     * <code>false</code>
-     * 
-     * @param attribute the {@link IProductCmptTypeAttribute}
-     * @param value the value for the StringValue
-     */
-    public static IValue<?> createValue(IProductCmptTypeAttribute attribute, String value) {
-        if (attribute == null) {
-            return createStringValue(value);
+    public static IValue<?> createValue(boolean isMultilingual, String value) {
+        if (isMultilingual) {
+            return new InternationalStringValue();
         } else {
-            if (attribute.isMultilingual()) {
-                return new InternationalStringValue();
-            } else {
-                return createStringValue(value);
-            }
+            return new StringValue(value);
         }
-    }
-
-    /**
-     * Creates the IValue with the default Value defined in the attribute or if the attribute is
-     * multilingual defined a new {@link InternationalString}
-     * 
-     * @param attribute the {@link IProductCmptTypeAttribute}
-     */
-    public static IValue<?> createDefaultValue(IProductCmptTypeAttribute attribute) {
-        String defaultValue = null;
-        if (attribute != null) {
-            defaultValue = attribute.getDefaultValue();
-            if (attribute.isMultilingual()) {
-                return new InternationalStringValue();
-            }
-        }
-        return createStringValue(defaultValue);
     }
 
     /**

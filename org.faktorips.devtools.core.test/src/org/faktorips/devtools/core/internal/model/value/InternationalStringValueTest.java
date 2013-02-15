@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.value;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
@@ -37,6 +38,8 @@ import org.w3c.dom.Element;
 
 public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
+    private static final String ENGLISCH_BAR = "bar";
+    private static final String GERMAN_FOO = "foo";
     LocalizedString expectedDe;
     LocalizedString expectedEn;
     InternationalStringValue internationalStringValue;
@@ -46,8 +49,8 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        expectedDe = new LocalizedString(Locale.GERMAN, "bläblä");
-        expectedEn = new LocalizedString(Locale.ENGLISH, "blabla");
+        expectedDe = new LocalizedString(Locale.GERMAN, GERMAN_FOO);
+        expectedEn = new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR);
         internationalStringValue = new InternationalStringValue();
     }
 
@@ -61,8 +64,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         assertNotNull(new InternationalStringValue().getContentAsString());
         internationalStringValue.getContent().add(expectedDe);
         internationalStringValue.getContent().add(expectedEn);
-        assertEquals("de=bläblä|en=blabla", internationalStringValue.getContentAsString());
-
+        assertEquals("de=foo|en=bar", internationalStringValue.getContentAsString());
     }
 
     @Test
@@ -87,8 +89,8 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         InternationalString copy = new InternationalString();
         copy.initFromXml(xml);
         assertEquals(2, copy.values().size());
-        assertEquals("bläblä", copy.get(Locale.GERMAN).getValue());
-        assertEquals("blabla", copy.get(Locale.ENGLISH).getValue());
+        assertEquals(GERMAN_FOO, copy.get(Locale.GERMAN).getValue());
+        assertEquals(ENGLISCH_BAR, copy.get(Locale.ENGLISH).getValue());
 
     }
 
@@ -121,8 +123,8 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
         InternationalStringValue internationalStringValue3 = new InternationalStringValue();
 
-        LocalizedString expectedDe2 = new LocalizedString(Locale.GERMAN, "blabla");
-        LocalizedString expectedEn2 = new LocalizedString(Locale.ENGLISH, "bläblä");
+        LocalizedString expectedDe2 = new LocalizedString(Locale.GERMAN, ENGLISCH_BAR);
+        LocalizedString expectedEn2 = new LocalizedString(Locale.ENGLISH, GERMAN_FOO);
 
         internationalStringValue3.getContent().add(expectedEn2);
         internationalStringValue3.getContent().add(expectedDe2);
@@ -150,7 +152,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         list = new MessageList();
         // german an empty english
         internationalStringValue = new InternationalStringValue();
-        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "blabla"));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, ENGLISCH_BAR));
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
         internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
@@ -161,7 +163,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         // german null
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, null));
-        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, "blabla"));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR));
         internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
@@ -169,7 +171,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
         list = new MessageList();
         internationalStringValue = new InternationalStringValue();
-        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, "blabla"));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR));
         internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
@@ -180,5 +182,25 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
         internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
+    }
+
+    @Test
+    public void testGetLocalizedContent() {
+        internationalStringValue.getContent().add(expectedDe);
+        internationalStringValue.getContent().add(expectedEn);
+
+        assertEquals(GERMAN_FOO, internationalStringValue.getLocalizedContent(Locale.GERMAN));
+        assertEquals(ENGLISCH_BAR, internationalStringValue.getLocalizedContent(Locale.ENGLISH));
+        assertNull(internationalStringValue.getLocalizedContent(Locale.US));
+    }
+
+    @Test
+    public void testGetLocalizedContentDefault() throws CoreException {
+        IIpsProject ipsProject = newIpsProject();
+
+        internationalStringValue.getContent().add(expectedDe);
+        internationalStringValue.getContent().add(expectedEn);
+
+        assertEquals(GERMAN_FOO, internationalStringValue.getDefaultLocalizedContent(ipsProject));
     }
 }

@@ -38,8 +38,7 @@ public class TableUtil {
      * @param amount number of pixel to increase the height by
      */
     public static void increaseHeightOfTableRows(Table table, final int numOfColumns, final int amount) {
-        // add paint lister to increase the height of the table row,
-        // because in case we would like
+        // add paint lister to increase the height of the table row.
         Listener paintListener = new PaintListener(amount, numOfColumns);
         table.addListener(SWT.MeasureItem, paintListener);
     }

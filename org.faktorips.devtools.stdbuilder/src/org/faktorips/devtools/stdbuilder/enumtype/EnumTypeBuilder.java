@@ -520,7 +520,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (literalNameAttributeValue.getValue() == null) {
             return ""; //$NON-NLS-1$
         }
-        return literalNameAttributeValue.getValue();
+        return literalNameAttributeValue.getValue().getLocalizedContent(getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
@@ -542,7 +542,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Create enumeration definition source fragment
         appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
         JavaCodeFragment enumDefinitionFragment = new JavaCodeFragment();
-        enumDefinitionFragment.append(literalEnumAttributeValue.getValue());
+        enumDefinitionFragment.append(literalEnumAttributeValue.getValue().getLocalizedContent(
+                getLanguageUsedInGeneratedSourceCode()));
         enumDefinitionFragment.append(" ("); //$NON-NLS-1$
         appendEnumValueParameters(enumAttributeValues, enumDefinitionFragment);
         enumDefinitionFragment.append(')');
@@ -584,7 +585,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                datatypeHelper.getJavaClassName(), literalEnumAttributeValue.getValue(), initExpression);
+                datatypeHelper.getJavaClassName(),
+                literalEnumAttributeValue.getValue().getLocalizedContent(getLanguageUsedInGeneratedSourceCode()),
+                initExpression);
         constantBuilder.appendln(' ');
     }
 
@@ -603,7 +606,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
             DatatypeHelper datatypeHelper = ipsProject.findDatatypeHelper(datatype.getQualifiedName());
             if (datatypeHelper != null) {
-                javaCodeFragment.append(datatypeHelper.newInstance(currentEnumAttributeValue.getValue()));
+                javaCodeFragment.append(datatypeHelper.newInstance(currentEnumAttributeValue.getValue()
+                        .getLocalizedContent(getLanguageUsedInGeneratedSourceCode())));
             }
             // TODO pk handle missing datatypeHelper. Write error to the buildStatus
             if (i < numberEnumAttributeValues - 1) {
@@ -925,7 +929,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                             body.append("if ("); //$NON-NLS-1$
                             body.append(parameterName);
                             body.append(" == "); //$NON-NLS-1$
-                            body.append(datatypeHelper.newInstance(attributeValue.getValue()));
+                            body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
+                                    getLanguageUsedInGeneratedSourceCode())));
                             body.append(")"); //$NON-NLS-1$
                             body.appendOpenBracket();
                             body.append("return "); //$NON-NLS-1$
@@ -937,7 +942,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                             body.append("if ("); //$NON-NLS-1$
                             body.append(parameterName);
                             body.append(".equals("); //$NON-NLS-1$
-                            body.append(datatypeHelper.newInstance(attributeValue.getValue()));
+                            body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
+                                    getLanguageUsedInGeneratedSourceCode())));
                             body.append("))"); //$NON-NLS-1$
                             body.appendOpenBracket();
                             body.append("return "); //$NON-NLS-1$
@@ -1244,7 +1250,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)ipsObjectPartContainer;
             IIpsObject parentIpsObject = literalNameValue.getEnumValue().getEnumValueContainer();
             IType javaType = getGeneratedJavaTypes(parentIpsObject).get(0);
-            IField javaEnumLiteral = javaType.getField(literalNameValue.getValue());
+            IField javaEnumLiteral = javaType.getField(literalNameValue.getValue().getLocalizedContent(
+                    getLanguageUsedInGeneratedSourceCode()));
             javaElements.add(javaEnumLiteral);
         }
     }

@@ -43,11 +43,11 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        if (getValue() == null) {
+        if (isNullValue()) {
             return;
         }
 
-        char[] characters = getValue().toCharArray();
+        char[] characters = getValue().getContentAsString().toCharArray();
         for (int i = 0; i < characters.length; i++) {
             boolean validCharacter = i == 0 ? Character.isJavaIdentifierStart(characters[i]) : Character
                     .isJavaIdentifierPart(characters[i]);
@@ -69,7 +69,7 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
 
     @Override
     public String getName() {
-        return getValue();
+        return getStringValue();
     }
 
 }

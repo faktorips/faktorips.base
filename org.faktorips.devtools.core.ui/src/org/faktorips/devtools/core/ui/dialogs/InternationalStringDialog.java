@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.table.InternationalStringTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.LocalizedStringCellEditor;
-import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
 /**
@@ -53,12 +52,6 @@ import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
  * @author Bouillon
  */
 public class InternationalStringDialog extends IpsPartEditDialog2 {
-    /**
-     * Two columns: First column is current locale, second column is the value of the attribute in
-     * that locale.
-     */
-    private static final int NUMBER_OF_COLUMNS = 2;
-
     private TableViewer tableViewer;
 
     private final IIpsObjectPart ipsObjectPart;
@@ -120,7 +113,6 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         Table table = tableViewer.getTable();
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
-        TableUtil.increaseHeightOfTableRows(table, NUMBER_OF_COLUMNS, 5);
 
         final TableViewerColumn languageColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
         languageColumn.getColumn().setText(Messages.InternationalValueDialog_languageColumnTitle);

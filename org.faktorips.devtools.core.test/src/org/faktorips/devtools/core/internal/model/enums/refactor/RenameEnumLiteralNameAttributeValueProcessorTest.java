@@ -24,7 +24,7 @@ public class RenameEnumLiteralNameAttributeValueProcessorTest extends AbstractIp
     @Test
     public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
         performRenameRefactoring(enumLiteralNameAttributeValue, "bar");
-        assertEquals("bar", enumLiteralNameAttributeValue.getValue());
+        assertEquals("bar", enumLiteralNameAttributeValue.getStringValue());
     }
 
 }

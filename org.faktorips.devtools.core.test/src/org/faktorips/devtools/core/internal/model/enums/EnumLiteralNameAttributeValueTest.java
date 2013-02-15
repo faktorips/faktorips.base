@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -40,7 +41,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
 
     @Test
     public void testGetName() {
-        literalNameAttributeValue.setValue("FOOBAR");
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue("FOOBAR"));
         assertEquals("FOOBAR", literalNameAttributeValue.getName());
     }
 
@@ -51,7 +52,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
 
     @Test
     public void testValidateNumberNotAtBeginning() throws CoreException {
-        literalNameAttributeValue.setValue("foo12bar");
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue("foo12bar"));
         assertTrue(literalNameAttributeValue.isValid(ipsProject));
     }
 
@@ -61,7 +62,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
     }
 
     private void expectInvalidLiteralNameValidationMessage(String value) throws CoreException {
-        literalNameAttributeValue.setValue(value);
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue(value));
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         Message message = messages.getFirstMessage(Message.ERROR);
@@ -73,13 +74,13 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
 
     @Test
     public void testValidateNumberInName() throws CoreException {
-        literalNameAttributeValue.setValue("a42b");
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue("a42b"));
         assertTrue(literalNameAttributeValue.isValid(ipsProject));
     }
 
     @Test
     public void testValidateLeadingNumber() throws CoreException {
-        literalNameAttributeValue.setValue("42ab");
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue("42ab"));
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         Message message = messages.getFirstMessage(Message.ERROR);
@@ -91,7 +92,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
 
     @Test
     public void testValidateNull() throws CoreException {
-        literalNameAttributeValue.setValue(null);
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue(null));
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         assertNull(messages

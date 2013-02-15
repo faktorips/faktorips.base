@@ -71,6 +71,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
         InternationalStringDialogHandler handler = new MultilingualValueHandler(table.getShell(),
                 singleValueHolder.getParent(), singleValueHolder);
         InternationalStringControl control = new InternationalStringControl(table, toolkit, handler);
+        control.setHeightHint(table.getItemHeight());
         InternationalStringCellEditor cellEditor = new InternationalStringCellEditor(IpsPlugin
                 .getMultiLanguageSupport().getLocalizationLocale(), control);
 

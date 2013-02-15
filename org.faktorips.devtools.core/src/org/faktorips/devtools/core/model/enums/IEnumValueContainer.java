@@ -14,11 +14,14 @@
 package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 
 /**
  * <tt>EnumValueContainer</tt> is the super type for <tt>EnumType</tt> and <tt>EnumContent</tt>.
@@ -160,4 +163,34 @@ public interface IEnumValueContainer extends IIpsObject {
      */
     public boolean isCapableOfContainingValues() throws CoreException;
 
+    /**
+     * Fix the {@link ValueType} in {@link IEnumAttributeValue enum attribute values} for the
+     * {@link IEnumAttribute}
+     * 
+     * @param enumAttribute the attribute you want to fix
+     */
+    void fixEnumAttributeValues(IEnumAttribute enumAttribute);
+
+    /**
+     * Fix the {@link ValueType} in {@link IEnumAttributeValue enum attribute values} for all
+     * {@link IEnumAttribute enum attributes}.
+     */
+    void fixAllEnumAttributeValues();
+
+    /**
+     * Checks if there is an mismatch of the {@link ValueType} in {@link IEnumAttributeValue} of all
+     * {@link IEnumAttribute enum attributes}
+     * 
+     * @return Map with the name of {@link IEnumAttribute} and {@link ValueTypeMismatch}
+     */
+    Map<String, ValueTypeMismatch> checkAllEnumAttributeValueTypeMismatch();
+
+    /**
+     * Checks if there is an mismatch of the {@link ValueType} in {@link IEnumAttributeValue} of the
+     * {@link IEnumAttribute}
+     * 
+     * @param enumAttribute the attribute you want to check
+     * @return {@link ValueTypeMismatch}
+     */
+    ValueTypeMismatch checkValueTypeMismatch(IEnumAttribute enumAttribute);
 }

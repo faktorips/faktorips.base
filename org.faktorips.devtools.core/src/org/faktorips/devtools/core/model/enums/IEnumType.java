@@ -53,63 +53,63 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /** The XML tag for this IPS object. */
-    public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
+    public static final String XML_TAG = "EnumType"; //$NON-NLS-1$
 
     /** Name of the <tt>superEnumType</tt> property. */
-    public final static String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
+    public static final String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
 
     /** Name of the <tt>abstract</tt> property. */
-    public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /** Name of the <tt>containingValues</tt> property. */
-    public final static String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
+    public static final String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
     /** Name of the <tt>enumContentPackageFragment</tt> property. */
-    public final static String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
+    public static final String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the super type of this <tt>IEnumType</tt> does not
      * exist.
      */
-    public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumTypeSupertypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the super type of this <tt>IEnumType</tt> is not
      * abstract.
      */
-    public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
             + "EnumTypeSupertypeIsNotAbstract"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that not all attributes defined in the the super type
      * hierarchy have been inherited.
      */
-    public final static String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumTypeNotInheritedAttributesInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <tt>IEnumType</tt> has no
      * <tt>IEnumLiteralNameAttribute</tt>.
      */
-    public final static String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoLiteralNameAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <tt>IEnumType</tt> has multiple
      * <tt>IEnumLiteralNameAttribute</tt>s.
      */
-    public final static String MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES = MSGCODE_PREFIX
             + "EnumTypeMultipleLiteralNameAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists a cycle in the hierarchy of this
      * enumeration type.
      */
-    public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy"; //$NON-NLS-1$
+    public static final String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists an inconsistency in the hierarchy of
@@ -117,14 +117,14 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * that is missing its super type or that the super type is not abstract which is an additional
      * constraint for enumeration types.
      */
-    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy"; //$NON-NLS-1$
+    public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <tt>IEnumType</tt> does not contain any
      * <tt>IEnumAttribute</tt> being marked to be used as (default) identifier while not being
      * abstract.
      */
-    public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsIdInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /**
@@ -132,27 +132,27 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>IEnumAttribute</tt> being marked to be used as name in the Faktor-IPS UI while not being
      * abstract.
      */
-    public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name specification of the <tt>IEnumContent</tt>
      * is empty while this <tt>IEnumType</tt> delegates it's enumeration values.
      */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
             + "EnumTypeEnumContentNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the <tt>IEnumType</tt> stores <tt>IEnumValue</tt>s
      * even tough it delegates the values or is abstract.
      */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
+    public static final String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified <tt>IEnumContent</tt> is already used
      * by another <tt>IEnumType</tt>.
      */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED = MSGCODE_PREFIX
             + "EnumTypeEnumContentAlreadyUsed"; //$NON-NLS-1$
 
     /** Returns the qualified name a referencing <tt>IEnumContent</tt> needs to have. */
@@ -627,5 +627,4 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>IEnumLiteralNameAttribute</tt>.
      */
     public boolean containsEnumLiteralNameAttribute();
-
 }

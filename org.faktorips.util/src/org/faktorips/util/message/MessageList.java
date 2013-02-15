@@ -14,9 +14,12 @@
 package org.faktorips.util.message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SystemUtils;
 
 /**
@@ -387,4 +390,44 @@ public class MessageList implements Iterable<Message> {
         return messages.iterator();
     }
 
+    /**
+     * Finds all the messages with the messageCodes at the messageList and merge the
+     * ObjectProperties from the same messageTexts together. After this, the messageList has only
+     * unique messageTexts inside.
+     * 
+     * @param messageCode the messageCode to find
+     */
+    public void wrapUpMessages(String messageCode) {
+        Map<String, Message> messageTextMap = new HashMap<String, Message>();
+        for (Iterator<Message> iterator = messages.iterator(); iterator.hasNext();) {
+            Message message = iterator.next();
+            if (message.getCode().equals(messageCode)) {
+                Message msgByText = getMessageByText(messageTextMap, message);
+                ObjectProperty[] newInvalidObjects = concatInvalidObject(msgByText.getInvalidObjectProperties(),
+                        message.getInvalidObjectProperties());
+                Message newMessage = new Message(msgByText.getCode(), msgByText.getText(), msgByText.getSeverity(),
+                        newInvalidObjects);
+                messageTextMap.put(newMessage.getText(), newMessage);
+            }
+        }
+        messages = new ArrayList<Message>(messageTextMap.values());
+    }
+
+    private Message getMessageByText(Map<String, Message> messageTextMap, Message message) {
+        Message msgByText = messageTextMap.get(message.getText());
+        if (msgByText == null) {
+            msgByText = message;
+        }
+        return msgByText;
+    }
+
+    private ObjectProperty[] concatInvalidObject(ObjectProperty[] invalidObjectProperties,
+            ObjectProperty[] newObjectProperties) {
+        if (invalidObjectProperties == newObjectProperties) {
+            return invalidObjectProperties;
+        } else {
+            ObjectProperty[] newOne = (ObjectProperty[])ArrayUtils.addAll(invalidObjectProperties, newObjectProperties);
+            return newOne;
+        }
+    }
 }

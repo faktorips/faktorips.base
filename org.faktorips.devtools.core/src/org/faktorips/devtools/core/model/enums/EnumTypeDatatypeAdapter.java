@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -115,7 +116,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
             IEnumAttribute displayNameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
             IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
-            return enumAttributeValue.getValue();
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue());
 
         } catch (CoreException e) {
             throw new RuntimeException(e);

@@ -32,24 +32,6 @@ public class Messages extends NLS {
     public static String EnumContentGeneralInfoSection_title;
     public static String EnumContentGeneralInfoSection_linkEnumType;
 
-    public static String FixEnumContentWizard_title;
-    public static String FixEnumContentWizard_labelNewEnumType;
-    public static String FixEnumContentWizard_msgChooseEnumType;
-    public static String FixEnumContentWizard_chooseEnumTypePageTitle;
-    public static String FixEnumContentWizard_chosenEnumTypeAbstract;
-    public static String FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel;
-    public static String FixEnumContentWizard_chosenEnumTypeEmpty;
-    public static String FixEnumContentWizard_chosenEnumTypeDoesNotExist;
-    public static String FixEnumContentWizard_msgAssignEnumAttributes;
-    public static String FixEnumContentWizard_assignEnumAttributesPageTitle;
-    public static String FixEnumContentWizard_assignEnumAttributesCreateNewColumn;
-    public static String FixEnumContentWizard_assignEnumAttributesDuplicateColumnAssigned;
-    public static String FixEnumContentWizard_assignEnumAttributesAttributeNotAssigned;
-    public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle;
-    public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular;
-    public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessagePlural;
-    public static String FixEnumContentWizard_assignEnumAttributesGroup;
-
     public static String EnumContentPage_labelOpenFixEnumTypeDialog;
     public static String EnumContentPage_tooltipOpenFixEnumTypeDialog;
 

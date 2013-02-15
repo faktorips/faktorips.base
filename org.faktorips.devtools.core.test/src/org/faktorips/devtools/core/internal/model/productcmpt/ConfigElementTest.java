@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -215,9 +216,9 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("AN");
-        values.get(1).setValue("a");
-        values.get(2).setValue("an");
+        values.get(0).setValue(ValueFactory.createStringValue("AN"));
+        values.get(1).setValue(ValueFactory.createStringValue("a"));
+        values.get(2).setValue(ValueFactory.createStringValue("an"));
 
         IConfigElement ce = generation.newConfigElement();
         ce.setValue("a");

@@ -18,6 +18,7 @@ import java.util.Observer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
@@ -57,7 +58,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
      * @param parent Attribute
      */
     public SingleValueHolder(IAttributeValue parent) {
-        this(parent, ValueFactory.createValue(parent));
+        this(parent, createValueInternal(parent));
     }
 
     /**
@@ -86,6 +87,26 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             }
         };
         setValueInternal(value);
+    }
+
+    private static IValue<?> createValueInternal(IAttributeValue parent) {
+        IProductCmptTypeAttribute attribute = findAttribute(parent);
+        if (attribute != null) {
+            return ValueFactory.createValue(attribute.isMultilingual(), null);
+        } else {
+            return ValueFactory.createStringValue(null);
+        }
+    }
+
+    private static IProductCmptTypeAttribute findAttribute(IAttributeValue parent) {
+        try {
+            if (parent != null && parent.getIpsProject() != null) {
+                return parent.findAttribute(parent.getIpsProject());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return null;
     }
 
     private void setValueInternal(IValue<?> value) {

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 
@@ -104,13 +106,13 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         name.setDatatype(Datatype.STRING.getQualifiedName());
 
         IEnumValue value1 = paymentMode.newEnumValue();
-        value1.setEnumAttributeValue(0, "MONTHLY");
-        value1.setEnumAttributeValue(1, "P1");
-        value1.setEnumAttributeValue(2, "monthly");
+        value1.setEnumAttributeValue(0, ValueFactory.createStringValue("MONTHLY"));
+        value1.setEnumAttributeValue(1, ValueFactory.createStringValue("P1"));
+        value1.setEnumAttributeValue(2, ValueFactory.createStringValue("monthly"));
         IEnumValue value2 = paymentMode.newEnumValue();
-        value2.setEnumAttributeValue(0, "ANNUALLY");
-        value2.setEnumAttributeValue(1, "P2");
-        value2.setEnumAttributeValue(2, "annually");
+        value2.setEnumAttributeValue(0, ValueFactory.createStringValue("ANNUALLY"));
+        value2.setEnumAttributeValue(1, ValueFactory.createStringValue("P2"));
+        value2.setEnumAttributeValue(2, ValueFactory.createStringValue("annually"));
     }
 
     private void createGenderEnum() throws CoreException {
@@ -142,14 +144,14 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         IEnumAttributeValue tempAttributeValueRef;
 
         tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_MALE_ID);
+        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_MALE_ID));
         tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_MALE_NAME);
+        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_MALE_NAME));
 
         tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_ID);
+        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_FEMALE_ID));
         tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_NAME);
+        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_FEMALE_NAME));
     }
 
     protected void assertOneValidationMessage(MessageList validationMessageList) {

@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSup
 import org.faktorips.devtools.core.ui.controls.tableedit.ListTableModelContentProvider;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.table.TableUtil;
 
 public class MultiValueDialog extends IpsPartEditDialog2 {
 
@@ -94,7 +93,6 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
 
         FormattedCellEditingSupport<SingleValueViewItem, ?> formattedCellEditingSupport;
         if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-            TableUtil.increaseHeightOfTableRows(viewer.getTableViewer().getTable(), 2, 12);
             formattedCellEditingSupport = new LocalizedStringEditingSupportForSingleValueViewItems(getToolkit(),
                     viewer.getTableViewer(), new InternationalStringMultiValueElementModifier());
         } else {

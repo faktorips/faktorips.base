@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.value;
 
+import java.util.Locale;
 import java.util.Observer;
 import java.util.Set;
 
@@ -25,7 +26,6 @@ import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -40,7 +40,7 @@ import org.w3c.dom.Node;
  * @author frank
  * @since 3.9
  */
-public class InternationalStringValue implements IValue<IInternationalString> {
+public class InternationalStringValue extends AbstractValue<IInternationalString> {
 
     public static final String CONTENT_STRING_SEPERATOR = "|"; //$NON-NLS-1$
     private final InternationalString content;
@@ -149,6 +149,16 @@ public class InternationalStringValue implements IValue<IInternationalString> {
             if (languagesCount > newList.size()) {
                 list.add(newList);
             }
+        }
+    }
+
+    @Override
+    public String getLocalizedContent(Locale locale) {
+        ILocalizedString iLocalizedString = getContent().get(locale);
+        if (iLocalizedString != null) {
+            return iLocalizedString.getValue();
+        } else {
+            return null;
         }
     }
 

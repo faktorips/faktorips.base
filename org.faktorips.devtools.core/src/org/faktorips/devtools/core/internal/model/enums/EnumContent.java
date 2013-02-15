@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
@@ -331,15 +332,15 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
     @Override
     public boolean isFixToModelRequired() throws CoreException {
-        MessageList validationList = new MessageList();
-        validateThis(validationList, getIpsProject());
+        MessageList validationList = validate(getIpsProject());
         return validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
                 || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT) != null
                 || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING) != null
                 || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE) != null
                 || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID) != null
                 || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null;
+                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null
+                || validationList.getMessageByCode(IEnumAttributeValue.MSGCODE_INVALID_VALUE_TYPE) != null;
     }
 
 }

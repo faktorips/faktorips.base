@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -219,39 +220,39 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         // create values inside the enumeration type
         IEnumValue enumValueRow1 = enumType.newEnumValue();
         List<IEnumAttributeValue> enumAttributeValues = enumValueRow1.getEnumAttributeValues();
-        enumAttributeValues.get(0).setValue("SIMPLE_TEXT");
-        enumAttributeValues.get(1).setValue("true");
-        enumAttributeValues.get(2).setValue("12.3");
-        enumAttributeValues.get(3).setValue("" + Double.MAX_VALUE);
-        enumAttributeValues.get(4).setValue("2001-04-26");
-        enumAttributeValues.get(5).setValue("" + Integer.MAX_VALUE);
-        enumAttributeValues.get(6).setValue("" + Long.MAX_VALUE);
-        enumAttributeValues.get(7).setValue("10.23EUR");
-        enumAttributeValues.get(8).setValue("SimpleText");
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("SIMPLE_TEXT"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("true"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("12.3"));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("" + Double.MAX_VALUE));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue("2001-04-26"));
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue("" + Integer.MAX_VALUE));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("" + Long.MAX_VALUE));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("10.23EUR"));
+        enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("SimpleText"));
 
         IEnumValue enumValueRow2 = enumType.newEnumValue();
         enumAttributeValues = enumValueRow2.getEnumAttributeValues();
-        enumAttributeValues.get(0).setValue("_VALID_JAVA_IDENTIFIER");
-        enumAttributeValues.get(1).setValue("false");
-        enumAttributeValues.get(2).setValue("12.3");
-        enumAttributeValues.get(3).setValue("" + Double.MIN_VALUE);
-        enumAttributeValues.get(4).setValue("2001-04-26");
-        enumAttributeValues.get(5).setValue("" + Integer.MIN_VALUE);
-        enumAttributeValues.get(6).setValue("" + Long.MIN_VALUE);
-        enumAttributeValues.get(7).setValue("1 EUR");
-        enumAttributeValues.get(8).setValue("_ValidJavaIdentifier");
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("_VALID_JAVA_IDENTIFIER"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("false"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("12.3"));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("" + Double.MIN_VALUE));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue("2001-04-26"));
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue("" + Integer.MIN_VALUE));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("" + Long.MIN_VALUE));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("1 EUR"));
+        enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("_ValidJavaIdentifier"));
 
         IEnumValue enumValueRow3 = enumType.newEnumValue();
         enumAttributeValues = enumValueRow3.getEnumAttributeValues();
-        enumAttributeValues.get(0).setValue("_UNIQUE_KEY");
-        enumAttributeValues.get(1).setValue(null);
-        enumAttributeValues.get(2).setValue(null);
-        enumAttributeValues.get(3).setValue(null);
-        enumAttributeValues.get(4).setValue(null);
-        enumAttributeValues.get(5).setValue(null);
-        enumAttributeValues.get(6).setValue(null);
-        enumAttributeValues.get(7).setValue(null);
-        enumAttributeValues.get(8).setValue("_UniqueKey");
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("_UNIQUE_KEY"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("_UniqueKey"));
 
         // enumType.getIpsSrcFile().save(true, null);
 
@@ -280,15 +281,16 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
         IEnumValue row1 = enumType.newEnumValue();
 
-        row1.getEnumAttributeValues().get(0).setValue("INVALID_BECAUSE_NOT_A_VALID_JAVA_IDENTIFIER_ $$% ");
-        row1.getEnumAttributeValues().get(1).setValue("INVALID"); // BOOLEAN
-        row1.getEnumAttributeValues().get(2).setValue("INVALID"); // DECIMAL
-        row1.getEnumAttributeValues().get(3).setValue("INVALID"); // DOUBLE
-        row1.getEnumAttributeValues().get(4).setValue("INVALID"); // GREGORIAN_CALENDAR_DATE
-        row1.getEnumAttributeValues().get(5).setValue("INVALID"); // INTEGER
-        row1.getEnumAttributeValues().get(6).setValue("INVALID"); // LONG
-        row1.getEnumAttributeValues().get(7).setValue("INVALID"); // MONEY
-        row1.getEnumAttributeValues().get(8).setValue("INVALID"); // STRING
+        row1.getEnumAttributeValues().get(0)
+                .setValue(ValueFactory.createStringValue("INVALID_BECAUSE_NOT_A_VALID_JAVA_IDENTIFIER_ $$% "));
+        row1.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("INVALID")); // BOOLEAN
+        row1.getEnumAttributeValues().get(2).setValue(ValueFactory.createStringValue("INVALID")); // DECIMAL
+        row1.getEnumAttributeValues().get(3).setValue(ValueFactory.createStringValue("INVALID")); // DOUBLE
+        row1.getEnumAttributeValues().get(4).setValue(ValueFactory.createStringValue("INVALID")); // GREGORIAN_CALENDAR_DATE
+        row1.getEnumAttributeValues().get(5).setValue(ValueFactory.createStringValue("INVALID")); // INTEGER
+        row1.getEnumAttributeValues().get(6).setValue(ValueFactory.createStringValue("INVALID")); // LONG
+        row1.getEnumAttributeValues().get(7).setValue(ValueFactory.createStringValue("INVALID")); // MONEY
+        row1.getEnumAttributeValues().get(8).setValue(ValueFactory.createStringValue("INVALID")); // STRING
 
         // enumType.getIpsSrcFile().save(true, null);
 

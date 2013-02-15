@@ -13,44 +13,40 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellEditorListener;
-import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -58,25 +54,25 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IIpsRefactoring;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
+import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
-import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
-import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.editors.enums.EnumEditingSupport.Condition;
+import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TableUtil;
-import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -127,14 +123,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** The JFace table viewer linking the UI table with the model data. */
     private TableViewer enumValuesTableViewer;
 
-    /** The current cell editors that are being used in the table viewer. */
-    private CellEditor[] cellEditors;
-
-    /**
-     * The names of the columns for the table. This information is stored to make renaming possible.
-     */
-    private List<String> columnNames;
-
     /** Action to add new <tt>IEnumValue</tt>s. */
     private IAction newEnumValueAction;
 
@@ -171,13 +159,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private boolean enumTypeEditing;
 
     /**
-     * A map that is used to store all values of the current default literal name provider column.
-     * This is necessary so that we are able to determine whether a value has changed after it was
-     * edited.
-     */
-    private final Map<IEnumValue, String> defaultProviderValues;
-
-    /**
      * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
      * <tt>IEnumValueContainer</tt>.
      * 
@@ -198,7 +179,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
         this.enumValueContainer = enumValueContainer;
         ipsProject = enumValueContainer.getIpsProject();
-        columnNames = new ArrayList<String>(4);
 
         if (enumValueContainer instanceof IEnumType) {
             enumTypeEditing = true;
@@ -206,9 +186,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         } else {
             enumContent = (IEnumContent)enumValueContainer;
         }
-
-        defaultProviderValues = new LinkedHashMap<IEnumValue, String>(enumValueContainer.getEnumValuesCount());
-        initDefaultProviderValues();
 
         loadDialogSettings();
         initControls();
@@ -222,34 +199,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE);
     }
 
-    private void initDefaultProviderValues() {
-        if (!(enumTypeEditing)) {
-            return;
-        }
-        if (!(enumType.hasEnumLiteralNameAttribute())) {
-            return;
-        }
-
-        IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
-        IEnumAttribute defaultProviderAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
-                .getDefaultValueProviderAttribute());
-        if (defaultProviderAttribute == null) {
-            return;
-        }
-
-        for (IEnumValue enumValue : enumType.getEnumValues()) {
-            IEnumAttributeValue defaultProviderValue = enumValue.getEnumAttributeValue(defaultProviderAttribute);
-            if (defaultProviderValue != null) {
-                defaultProviderValues.put(enumValue, defaultProviderValue.getValue());
-            }
-        }
-    }
-
     private void loadDialogSettings() {
         IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings();
         if (enumTypeEditing) {
             String synchronizeSetting = settings.get(SETTINGS_KEY_LOCK_AND_SYNC);
-            lockAndSynchronizeLiteralNames = synchronizeSetting == null ? true : settings
+            lockAndSynchronizeLiteralNames = synchronizeSetting == null ? false : settings
                     .getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
         } else {
             lockAndSynchronizeLiteralNames = false;
@@ -258,39 +212,32 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        try {
-            createTable(client, toolkit);
-            createTableViewer();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        createTableValidationHoverService();
-    }
-
-    /** Creates the UI table for editing <tt>IEnumValue</tt>s. */
-    private void createTable(Composite parent, UIToolkit toolkit) throws CoreException {
-        enumValuesTable = toolkit.createTable(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
+        enumValuesTable = toolkit.createTable(client, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
                 | SWT.FULL_SELECTION);
+        enumValuesTableViewer = new TableViewer(enumValuesTable);
+
+        createTableColumns();
+
+        enumValuesTableViewer.refresh();
+
+        enumValuesTableViewer.setContentProvider(new EnumValuesContentProvider(enumValueContainer));
+
+        enumValuesTableViewer.setInput(enumValueContainer);
+
+        // Set the RowDeletor listener to automatically delete empty rows at the end of the table.
+        enumValuesTableViewer.addSelectionChangedListener(new RowDeletor(enumValuesTableViewer));
         enumValuesTable.setHeaderVisible(true);
         enumValuesTable.setLinesVisible(true);
 
         // Fill all space.
         GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        tableGridData.widthHint = parent.getClientArea().width;
-        tableGridData.heightHint = parent.getClientArea().height;
-        // Display at least 2,5 table rows
         tableGridData.minimumHeight = 85;
         enumValuesTable.setLayoutData(tableGridData);
 
-        createTableColumns();
         TableUtil.increaseHeightOfTableRows(enumValuesTable, enumValuesTable.getColumnCount(), 5);
 
         // Key listener for deleting rows with the DEL key.
-        enumValuesTable.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                // Nothing to do when key pressed.
-            }
+        enumValuesTable.addKeyListener(new KeyAdapter() {
 
             @Override
             public void keyReleased(KeyEvent e) {
@@ -299,10 +246,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 }
             }
         });
+        createTableValidationHoverService();
     }
 
     /** Creates the table columns. */
-    private void createTableColumns() throws CoreException {
+    private void createTableColumns() {
         if (enumTypeEditing) {
             createTableColumnsForEnumType();
         } else {
@@ -314,11 +262,18 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * Creates the table columns based on the <tt>IEnumAttribute</tt>s of the <tt>IEnumType</tt> to
      * edit.
      */
-    private void createTableColumnsForEnumType() throws CoreException {
+    private void createTableColumnsForEnumType() {
+        EnumValueTraversalStrategy previousTraversalStrategy = null;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
             String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
-            addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
-                    currentEnumAttribute.findIsUnique(ipsProject));
+            try {
+                previousTraversalStrategy = addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
+                        currentEnumAttribute.findIsUnique(ipsProject),
+                        currentEnumAttribute.isEnumLiteralNameAttribute(), currentEnumAttribute.isMultilingual(),
+                        previousTraversalStrategy);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
     }
 
@@ -326,20 +281,29 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * Creates the table columns based upon the <tt>IEnumAttributeReference</tt>s (and upon the
      * <tt>IEnumAttribute</tt>s of the referenced <tt>IEnumType</tt> if possible).
      */
-    private void createTableColumnsForEnumContent() throws CoreException {
-        IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
-        List<IEnumAttributeReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
-        for (int i = 0; i < enumContent.getEnumAttributeReferencesCount(); i++) {
-            IEnumAttributeReference enumAttributeReference = enumAttributeReferences.get(i);
-            if (enumContent.isFixToModelRequired()) {
-                addTableColumn(enumAttributeReference.getName(), null, false);
-            } else {
-                IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(false)
-                        .get(i);
-                String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
-                addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
-                        currentEnumAttribute.findIsUnique(ipsProject));
+    private void createTableColumnsForEnumContent() {
+        try {
+            IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
+            List<IEnumAttributeReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
+            EnumValueTraversalStrategy previousTraversalStrategy = null;
+            for (int i = 0; i < enumContent.getEnumAttributeReferencesCount(); i++) {
+                IEnumAttributeReference enumAttributeReference = enumAttributeReferences.get(i);
+                if (enumContent.isFixToModelRequired()) {
+                    previousTraversalStrategy = addTableColumn(enumAttributeReference.getName(), null, false, false,
+                            false, previousTraversalStrategy);
+                } else {
+                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(
+                            false).get(i);
+                    String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
+                    previousTraversalStrategy = addTableColumn(columnName,
+                            currentEnumAttribute.findDatatype(ipsProject),
+                            currentEnumAttribute.findIsUnique(ipsProject),
+                            currentEnumAttribute.isEnumLiteralNameAttribute(), currentEnumAttribute.isMultilingual(),
+                            previousTraversalStrategy);
+                }
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -349,16 +313,82 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * @param datatype the datatype to set the correct column style. If data type is null, the
      *            default style configured by the {@link DefaultControlFactory} is used.
      * */
-    private void addTableColumn(String columnName, ValueDatatype datatype, boolean identifierColumnn) {
+    private EnumValueTraversalStrategy addTableColumn(String columnName,
+            ValueDatatype datatype,
+            boolean identifierColumnn,
+            final boolean literalNameColumn,
+            boolean isMultilingual,
+            EnumValueTraversalStrategy previousTraversalStrategy) {
         int alignment = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype).getDefaultAlignment();
-        TableColumn newColumn = new TableColumn(enumValuesTable, alignment);
-        newColumn.setText(columnName);
-        newColumn.setWidth(200);
+        TableViewerColumn newColumn = new TableViewerColumn(enumValuesTableViewer, alignment);
+        newColumn.setLabelProvider(new EnumValuesLabelProvider());
+        newColumn.getColumn().setText(columnName);
+        newColumn.getColumn().setWidth(200);
+
+        final int columnIndex = getColumnIndexByName(columnName);
+
+        FormattedCellEditingSupport<IEnumValue, ?> editingSupport;
+        if (isMultilingual) {
+            editingSupport = createInternationalStringEditingSupport(newColumn, columnIndex);
+        } else {
+            editingSupport = createStringEditingSupport(datatype, literalNameColumn, newColumn, columnIndex);
+        }
+        EnumValueTraversalStrategy traversalStrategy = new EnumValueTraversalStrategy(enumValueContainer,
+                editingSupport, columnIndex);
+        traversalStrategy.setPredecessor(previousTraversalStrategy);
+        editingSupport.setTraversalStrategy(traversalStrategy);
 
         if (identifierColumnn) {
-            newColumn.setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true)); //$NON-NLS-1$
+            newColumn.getColumn().setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true)); //$NON-NLS-1$
         }
-        columnNames.add(columnName);
+
+        return traversalStrategy;
+    }
+
+    private FormattedCellEditingSupport<IEnumValue, ?> createInternationalStringEditingSupport(TableViewerColumn newColumn,
+            int columnIndex) {
+        EnumInternationalStringCellModifier cellModifier = new EnumInternationalStringCellModifier(columnIndex,
+                IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
+        EnumInternationalStringEditingSupport editingSupport = new EnumInternationalStringEditingSupport(
+                enumValuesTableViewer, getToolkit(), cellModifier);
+        newColumn.setEditingSupport(editingSupport);
+        return editingSupport;
+    }
+
+    private FormattedCellEditingSupport<IEnumValue, ?> createStringEditingSupport(ValueDatatype datatype,
+            final boolean literalNameColumn,
+            TableViewerColumn newColumn,
+            final int columnIndex) {
+        Condition canEditCondition = new Condition() {
+
+            @Override
+            public boolean isEditable() {
+                return !literalNameColumn || !lockAndSynchronizeLiteralNames;
+            }
+
+        };
+
+        EnumStringCellModifier elementModifier = new EnumStringCellModifier(getShell(), columnIndex);
+        EnumEditingSupport editingSupport = new EnumEditingSupport(getToolkit(), enumValuesTableViewer, ipsProject,
+                datatype, elementModifier, canEditCondition);
+        newColumn.setEditingSupport(editingSupport);
+        return editingSupport;
+    }
+
+    /**
+     * Returns the current index of the column identified by the given name. Returns <tt>null</tt>
+     * if no column with the given name exists.
+     */
+    private int getColumnIndexByName(String columnName) {
+        int[] columnOrder = enumValuesTable.getColumnOrder();
+        int columnIndex = -1;
+        for (int i = 0; i < enumValuesTable.getColumnCount(); i++) {
+            if (enumValuesTable.getColumn(columnOrder[i]).getText().equals(columnName)) {
+                columnIndex = i;
+                break;
+            }
+        }
+        return columnIndex;
     }
 
     /** Creates the tool bar / context menu actions. */
@@ -417,59 +447,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
         IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings();
         settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
-
-        updateSkippedColumns();
-    }
-
-    /**
-     * Updates the skipped columns lists of the cell editors. If the 'Lock and Synchronize Literal
-     * Names' option is active the column corresponding to the first
-     * <tt>IEnumLiteralNameAttribute</tt> will be skipped by all cell editors.
-     * <p>
-     * If the option is not active this operation assures that no columns at all are skipped by the
-     * cell editors.
-     * <p>
-     * <strong>Important:</strong> May only be called if an <tt>IEnumType</tt> is being edited and
-     * the cell editors are currently in sync with the <tt>IEnumType</tt>.
-     */
-    private void updateSkippedColumns() {
-        if (!(lockAndSynchronizeLiteralNames)) {
-            /*
-             * Make sure that there are no columns skipped if the 'Lock and Sync Literal Names'
-             * option is not active
-             */
-            for (CellEditor cellEditor : cellEditors) {
-                clearSkippedColumnIndex((IpsCellEditor)cellEditor);
-            }
-            return;
-        }
-
-        // Do nothing if there isn't a literal name attribute
-        if (!(enumType.hasEnumLiteralNameAttribute())) {
-            return;
-        }
-
-        // Skip the literal name column in all cell editors
-        int skippedColumnIndex = enumType.getIndexOfEnumLiteralNameAttribute();
-        for (CellEditor cellEditor : cellEditors) {
-            addSkippedColumnIndex((IpsCellEditor)cellEditor, skippedColumnIndex);
-        }
-    }
-
-    private void addSkippedColumnIndex(IpsCellEditor cellEditor, int skippedColumnIndex) {
-        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
-                .getTraversalStrategy();
-        if (tableTraverseStrat != null) {
-            tableTraverseStrat.addSkippedColumnIndex(skippedColumnIndex);
-        }
-    }
-
-    private void clearSkippedColumnIndex(IpsCellEditor cellEditor) {
-        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
-                .getTraversalStrategy();
-        if (tableTraverseStrat != null) {
-            tableTraverseStrat.clearSkippedColumns();
-        }
     }
 
     /**
@@ -480,14 +457,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * <li>The table viewer will be refreshed.
      * <li>The default provider values will be re-initialized.
      */
-    public void reinit() throws CoreException {
-        columnNames.clear();
+    public void reinit() {
         for (TableColumn currentColumn : enumValuesTable.getColumns()) {
             currentColumn.dispose();
         }
         createTableColumns();
         updateTableViewer();
-        initDefaultProviderValues();
     }
 
     /** Updates the enabled states of the table and the tool bar actions. */
@@ -532,182 +507,13 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         enumValuesTable.setMenu(menu);
     }
 
-    /** Creates the table viewer for the table. */
-    private void createTableViewer() {
-        enumValuesTableViewer = new TableViewer(enumValuesTable);
-        enumValuesTableViewer.setUseHashlookup(true);
-
-        updateTableViewer();
-
-        enumValuesTableViewer.setContentProvider(new EnumValuesContentProvider());
-        enumValuesTableViewer.setLabelProvider(new EnumValuesLabelProvider());
-        enumValuesTableViewer.setInput(enumValueContainer);
-        enumValuesTableViewer.setCellModifier(new EnumCellModifier());
-
-        // Set the RowDeletor listener to automatically delete empty rows at the end of the table.
-        enumValuesTableViewer.addSelectionChangedListener(new RowDeletor());
-    }
-
     /**
      * Updates the cell editors for the <tt>enumValuesTableViewer</tt> by creating them anew and
      * overwrites the column properties with actual data. Also refreshes the viewer with actual
      * model data.
      */
     private void updateTableViewer() {
-        enumValuesTableViewer.setColumnProperties(columnNames.toArray(new String[columnNames.size()]));
-        try {
-            createCellEditors();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        enumValuesTableViewer.setCellEditors(cellEditors);
-        if (enumTypeEditing) {
-            updateSkippedColumns();
-        }
         enumValuesTableViewer.refresh();
-    }
-
-    /** Updates the cell editors by recreating them. */
-    private void createCellEditors() throws CoreException {
-        if (enumTypeEditing) {
-            createCellEditorsForEnumType();
-        } else {
-            createCellEditorsForEnumContent();
-        }
-    }
-
-    /** Creates the cell editors for editing an <tt>IEnumType</tt>. */
-    private void createCellEditorsForEnumType() throws CoreException {
-        CellEditor[] cellEditors = new CellEditor[columnNames.size()];
-
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
-
-        for (int i = 0; i < cellEditors.length; i++) {
-            ValueDatatype datatype = enumAttributes.get(i).findDatatype(enumValueContainer.getIpsProject());
-            cellEditors[i] = createCellEditor(datatype, i);
-            if (enumAttributes.get(i).isLiteralNameDefaultValueProvider()) {
-                addFocusListenerToDefaultProviderCellEditor(cellEditors[i]);
-            }
-        }
-
-        this.cellEditors = cellEditors;
-    }
-
-    /** Creates the cell editors for editing an <tt>IEnumContent</tt>. */
-    private void createCellEditorsForEnumContent() throws CoreException {
-        CellEditor[] cellEditors = new CellEditor[columnNames.size()];
-
-        List<IEnumAttribute> enumAttributes = null;
-        if (!(enumContent.isFixToModelRequired())) {
-            enumAttributes = enumContent.findEnumType(enumValueContainer.getIpsProject())
-                    .getEnumAttributesIncludeSupertypeCopies(false);
-        }
-
-        for (int i = 0; i < cellEditors.length; i++) {
-            ValueDatatype datatype = (enumAttributes == null) ? Datatype.STRING : enumAttributes.get(i).findDatatype(
-                    enumValueContainer.getIpsProject());
-            cellEditors[i] = createCellEditor(datatype, i);
-        }
-
-        this.cellEditors = cellEditors;
-    }
-
-    /**
-     * Creates a cell editor fitting for the given <tt>ValueDatatype</tt> that will be used for the
-     * given column index.
-     */
-    private CellEditor createCellEditor(ValueDatatype datatype, int columnIndex) {
-        ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
-                .getValueDatatypeControlFactory(datatype);
-        // creates a row-creating CellEditor
-        IpsCellEditor cellEditor = valueDatatypeControlFactory.createTableCellEditor(getToolkit(), datatype, null,
-                enumValuesTableViewer, columnIndex, enumValueContainer.getIpsProject());
-        return cellEditor;
-    }
-
-    /**
-     * Attaches a <tt>FocusListener</tt> to the control of the given cell editor responsible for
-     * filling the field with the default value for the literal name obtained from the default value
-     * provider attribute.
-     */
-    private void addFocusListenerToDefaultProviderCellEditor(final CellEditor defaultProviderCellEditor) {
-        defaultProviderCellEditor.addListener(new ICellEditorListener() {
-
-            @Override
-            public void applyEditorValue() {
-                if (!(lockAndSynchronizeLiteralNames)) {
-                    return;
-                }
-
-                if (!IpsUIPlugin.isEditable(enumValueContainer.getIpsSrcFile())) {
-                    return;
-                }
-
-                /*
-                 * Return if the default provider control is not a text control and therefore not
-                 * valid.
-                 */
-                if (!(defaultProviderCellEditor.getControl() instanceof Text)) {
-                    return;
-                }
-
-                /*
-                 * Return if the selection is invalid because we can't obtain the EnumValue in that
-                 * case.
-                 */
-                if (enumValueContainer.getEnumValuesCount() - 1 < enumValuesTable.getSelectionIndex()
-                        || enumValuesTable.getSelectionIndex() == -1) {
-                    return;
-                }
-
-                // Return if the EnumType does not have an EnumLiteralNameAttribute.
-                if (!(enumType.hasEnumLiteralNameAttribute())) {
-                    return;
-                }
-
-                IEnumValue enumValue = enumValueContainer.getEnumValues().get(enumValuesTable.getSelectionIndex());
-                String newValue = ((Text)defaultProviderCellEditor.getControl()).getText();
-                if (newValue == null) {
-                    return;
-                }
-
-                // Return if the new value is empty
-                if (newValue.length() == 0) {
-                    return;
-                }
-
-                // Handle null representation
-                if (newValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-                    newValue = null;
-                }
-
-                // Set the new value for the enum literal name
-                String literalNameValue = newValue != null ? ipsProject.getJavaNamingConvention().getEnumLiteral(
-                        newValue) : null;
-                enumValue.getEnumLiteralNameAttributeValue().setValue(literalNameValue);
-                IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
-                IEnumAttribute providerAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
-                        .getDefaultValueProviderAttribute());
-                try {
-                    enumValue.setEnumAttributeValue(providerAttribute, newValue);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-                defaultProviderValues.put(enumValue, newValue);
-                enumValuesTableViewer.refresh();
-            }
-
-            @Override
-            public void cancelEditor() {
-                // Nothing to do on this event.
-            }
-
-            @Override
-            public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-                // Nothing to do on this event.
-            }
-
-        });
     }
 
     /** Creates the hover service for validation messages for the <tt>enumValuesTableViewer</tt>. */
@@ -726,22 +532,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Returns the current index of the column identified by the given name. Returns <tt>null</tt>
-     * if no column with the given name exists.
-     */
-    private int getColumnIndexByName(String columnName) {
-        int[] columnOrder = enumValuesTable.getColumnOrder();
-        int columnIndex = -1;
-        for (int i = 0; i < enumValuesTable.getColumnCount(); i++) {
-            if (enumValuesTable.getColumn(columnOrder[i]).getText().equals(columnName)) {
-                columnIndex = i;
-                break;
-            }
-        }
-        return columnIndex;
-    }
-
-    /**
      * Initiates in-place fixing of the <tt>enumValuesTable</tt> if the <tt>IEnumValueContainer</tt>
      * to be edited is an <tt>IEnumType</tt>.
      * <p>
@@ -754,7 +544,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         try {
             enumType = enumValueContainer.findEnumType(ipsProject);
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
 
         /*
@@ -769,6 +559,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             } else {
                 return;
             }
+        }
+
+        if (enumTypeEditing && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
+            contentsChangedUpdateLiteralNameColumn(event);
+            enumValuesTableViewer.refresh();
         }
 
         switch (event.getEventType()) {
@@ -795,8 +590,92 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         }
     }
 
+    private void contentsChangedUpdateLiteralNameColumn(ContentChangeEvent event) {
+        IIpsObjectPart part = event.getPart();
+        if (part instanceof IEnumAttributeValue) {
+            IEnumAttributeValue changedAttributeValue = (IEnumAttributeValue)part;
+            IEnumAttribute changedEnumAttribute;
+            changedEnumAttribute = changedAttributeValue.findEnumAttribute(ipsProject);
+            if (changedEnumAttribute != null) {
+                IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+                IEnumAttribute providerAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
+                        .getDefaultValueProviderAttribute());
+                if (providerAttribute != null && providerAttribute.equals(changedEnumAttribute)) {
+                    IEnumAttributeValue literalNameValue = changedAttributeValue.getEnumValue().getEnumAttributeValue(
+                            literalNameAttribute);
+                    updateLiteralName(changedAttributeValue, literalNameValue);
+                }
+            }
+        }
+    }
+
+    private void updateLiteralName(IEnumAttributeValue changedAttributeValue,
+            IEnumAttributeValue literalNameAttributeValue) {
+        String content = literalNameAttributeValue.getValue().getContentAsString();
+        if (!StringUtils.isEmpty(content) && !lockAndSynchronizeLiteralNames) {
+            return;
+        }
+        String newValue = changedAttributeValue.getValue().getDefaultLocalizedContent(ipsProject);
+        String literalValue = null;
+        if (newValue != null) {
+            literalValue = ipsProject.getJavaNamingConvention().getEnumLiteral(newValue);
+        }
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue(literalValue));
+    }
+
+    private static class EnumValueTraversalStrategy extends LinkedColumnsTraversalStrategy<IEnumValue> {
+
+        private final int columnIndex;
+        private final IEnumValueContainer enumValueContainer;
+
+        private EnumValueTraversalStrategy(IEnumValueContainer enumValueContainer,
+                FormattedCellEditingSupport<IEnumValue, ?> editingSupport, int columnIndex) {
+            super(editingSupport);
+            this.enumValueContainer = enumValueContainer;
+            this.columnIndex = columnIndex;
+        }
+
+        @Override
+        protected int getColumnIndex() {
+            return columnIndex;
+        }
+
+        @Override
+        protected IEnumValue getPreviousVisibleViewItem(IEnumValue currentViewItem) {
+            List<IEnumValue> enumValues = enumValueContainer.getEnumValues();
+            int index = enumValues.indexOf(currentViewItem);
+            index--;
+            if (index < 0) {
+                index = 0;
+            }
+            return enumValues.get(index);
+        }
+
+        @Override
+        protected IEnumValue getNextVisibleViewItem(IEnumValue currentViewItem) {
+            List<IEnumValue> enumValues = enumValueContainer.getEnumValues();
+            int index = enumValues.indexOf(currentViewItem);
+            index++;
+            if (index >= enumValues.size()) {
+                try {
+                    fireApplyEditorValue();
+                    return enumValueContainer.newEnumValue();
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+            return enumValues.get(index);
+        }
+    }
+
     /** The content provider for the table viewer. */
-    private class EnumValuesContentProvider implements IStructuredContentProvider {
+    private static class EnumValuesContentProvider implements IStructuredContentProvider {
+
+        private final IEnumValueContainer enumValueContainer;
+
+        public EnumValuesContentProvider(IEnumValueContainer enumValueContainer) {
+            this.enumValueContainer = enumValueContainer;
+        }
 
         @Override
         public Object[] getElements(Object inputElement) {
@@ -816,29 +695,36 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /** The label provider for the table viewer. */
-    private class EnumValuesLabelProvider implements ITableLabelProvider {
+    private static class EnumValuesLabelProvider extends CellLabelProvider implements ITableLabelProvider {
+
+        @Override
+        public void update(ViewerCell cell) {
+            Object element = cell.getElement();
+            int columnIndex = cell.getColumnIndex();
+            cell.setImage(getColumnImage(element, columnIndex));
+            cell.setText(getColumnText(element, columnIndex));
+        }
 
         @Override
         public Image getColumnImage(Object element, int columnIndex) {
-            if (hasErrorsAt((IEnumValue)element, columnIndex)) {
-                return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
-            }
-            return null;
+            int severity = getSeverity((IEnumValue)element, columnIndex);
+            ImageDescriptor overlay = IpsProblemOverlayIcon.getOverlay(severity);
+            return IpsUIPlugin.getImageHandling().getImage(overlay, false);
         }
 
         /**
          * Returns <tt>true</tt> if the validation of the given <tt>IEnumValue</tt> detects an error
          * at the given column index, <tt>false</tt> otherwise.
          */
-        private boolean hasErrorsAt(IEnumValue enumValue, int columnIndex) {
+        private int getSeverity(IEnumValue enumValue, int columnIndex) {
             // Don't validate if the indicated column does not exist.
             if (enumValue.getEnumAttributeValues().size() <= columnIndex) {
-                return false;
+                return Message.NONE;
             }
             try {
                 MessageList messageList = enumValue.validate(enumValue.getIpsProject());
-                return !(messageList.getMessagesFor(enumValue.getEnumAttributeValues().get(columnIndex), null)
-                        .isEmpty());
+                return messageList.getMessagesFor(enumValue.getEnumAttributeValues().get(columnIndex), null)
+                        .getSeverity();
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
@@ -847,9 +733,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         @Override
         public String getColumnText(Object element, int columnIndex) {
             // There needs to be at least one column to be able to obtain label information.
-            if (columnNames.size() == 0) {
-                return null;
-            }
 
             // For each requested column there must already be an EnumAttributeValue.
             List<IEnumAttributeValue> enumAttributeValues = ((IEnumValue)element).getEnumAttributeValues();
@@ -862,131 +745,36 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
              * can be found and so the data type of the value is known. Return the value directly if
              * the EnumAttribute cannot be found.
              */
-            String columnValue = enumAttributeValues.get(columnIndex).getValue();
+            IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
+            IIpsProject ipsProject = enumAttributeValue.getIpsProject();
+            String columnValue = IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue());
             try {
-                IEnumAttribute enumAttribute = enumAttributeValues.get(columnIndex).findEnumAttribute(ipsProject);
+                IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
                 if (enumAttribute == null) {
                     return columnValue;
                 }
 
-                String datatype = enumAttributeValues.get(columnIndex).findEnumAttribute(ipsProject).getDatatype();
-                ValueDatatype valueDatatype = enumAttributeValues.get(columnIndex).getIpsProject()
-                        .findValueDatatype(datatype);
+                String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
+                ValueDatatype valueDatatype = ipsProject.findValueDatatype(datatype);
                 return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(valueDatatype, columnValue);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        @Override
-        public void addListener(ILabelProviderListener listener) {
-            // Nothing to do.
-        }
-
-        @Override
-        public void dispose() {
-            // Nothing to do.
-        }
-
-        @Override
-        public boolean isLabelProperty(Object element, String property) {
-            return false;
-        }
-
-        @Override
-        public void removeListener(ILabelProviderListener listener) {
-            // Nothing to do.
-        }
-
-    }
-
-    /** The cell modifier for the table viewer. */
-    private class EnumCellModifier implements ICellModifier {
-
-        @Override
-        public boolean canModify(Object element, String property) {
-            return true;
-        }
-
-        @Override
-        public Object getValue(Object element, String property) {
-            if (element instanceof IEnumValue) {
-                IEnumValue enumValue = (IEnumValue)element;
-                int columnIndex = getColumnIndexByName(property);
-                if (columnIndex != -1) {
-                    return enumValue.getEnumAttributeValues().get(columnIndex).getValue();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public void modify(Object element, String property, Object value) {
-            IEnumValue enumValue;
-            if (element instanceof IEnumValue) {
-                enumValue = (IEnumValue)element;
-            } else if (element instanceof Item) {
-                enumValue = (IEnumValue)((Item)element).getData();
-            } else {
-                return;
-            }
-
-            int columnIndex = getColumnIndexByName(property);
-            if (columnIndex != -1) {
-                IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
-
-                // Do not modify if the value hasn't changed!
-                String oldValue = enumAttributeValue.getValue();
-                if (oldValue != null) {
-                    if (oldValue.equals(value)) {
-                        return;
-                    }
-                }
-
-                /*
-                 * Do not modify if it is the literal name column and the lock and sync option is
-                 * active!
-                 */
-                if (enumAttributeValue.isEnumLiteralNameAttributeValue()) {
-                    if (lockAndSynchronizeLiteralNames) {
-                        return;
-                    }
-                    /*
-                     * If it is the literal name column we actually have to apply the corresponding
-                     * Faktor-IPS refactoring now since generated Java code may depend on the value!
-                     * However, we only do this directly if the user has chosen to immediately apply
-                     * refactorings when applicable in the IPS preferences. Otherwise the user has
-                     * to explicitly start the refactoring via the context menu.
-                     */
-                    if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
-                        applyRenameLiteralNameRefactoring((String)value,
-                                (IEnumLiteralNameAttributeValue)enumAttributeValue);
-                    } else {
-                        enumAttributeValue.setValue((String)value);
-                    }
-                } else {
-                    enumAttributeValue.setValue((String)value);
-                }
-
-                enumValuesTableViewer.refresh(true);
-            }
-        }
-
-        private void applyRenameLiteralNameRefactoring(String newName,
-                IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue) {
-
-            IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
-                    enumLiteralNameAttributeValue, newName, null, false);
-            IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
-            refactorOp.runDirectExecution();
-        }
     }
 
     /**
      * Listener that reacts to <tt>SelectionChangedEvent</tt>s by deleting all empty rows at the
      * bottom of the table.
      */
-    private class RowDeletor implements ISelectionChangedListener {
+    private static class RowDeletor implements ISelectionChangedListener {
+
+        private final TableViewer enumValuesTableViewer;
+
+        public RowDeletor(TableViewer enumValuesTableViewer) {
+            this.enumValuesTableViewer = enumValuesTableViewer;
+        }
 
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
@@ -1000,10 +788,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
          * Only tries to delete rows if the table has more than one row.
          */
         private void removeRedundantRows() {
-            if (enumValuesTable.getItemCount() <= 1) {
+            if (enumValuesTableViewer.getTable().getItemCount() <= 1) {
                 return;
             }
-            for (int i = enumValuesTable.getItemCount() - 1; i > enumValuesTable.getSelectionIndex(); i--) {
+            for (int i = enumValuesTableViewer.getTable().getItemCount() - 1; i > enumValuesTableViewer.getTable()
+                    .getSelectionIndex(); i--) {
                 IEnumValue currentEnumValue = (IEnumValue)enumValuesTableViewer.getElementAt(i);
                 if (isRowEmpty(currentEnumValue)) {
                     enumValuesTableViewer.remove(currentEnumValue);
@@ -1024,11 +813,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         private boolean isRowEmpty(IEnumValue enumValue) {
             for (IEnumAttributeValue attrValue : enumValue.getEnumAttributeValues()) {
                 if (attrValue.getValue() != null) {
-                    /*
-                     * TODO pk 10-07-2009: this is not really correct. We actually need an
-                     * empty-string-representation-value
-                     */
-                    if (!(attrValue.getValue().trim().length() == 0)) {
+                    final String contentAsString = attrValue.getValue().getContentAsString();
+                    if (!StringUtils.isEmpty(contentAsString)) {
                         return false;
                     }
                 }

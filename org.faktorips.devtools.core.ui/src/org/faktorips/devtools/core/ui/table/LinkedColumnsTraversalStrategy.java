@@ -173,9 +173,11 @@ public abstract class LinkedColumnsTraversalStrategy<T> extends AbstractPermanen
         }
     }
 
-    protected abstract int getColumnIndex();
+    protected boolean canEdit(T currentViewItem) {
+        return getEditingSupport().canEdit(currentViewItem);
+    }
 
-    protected abstract boolean canEdit(T currentViewItem);
+    protected abstract int getColumnIndex();
 
     protected abstract T getPreviousVisibleViewItem(T currentViewItem);
 

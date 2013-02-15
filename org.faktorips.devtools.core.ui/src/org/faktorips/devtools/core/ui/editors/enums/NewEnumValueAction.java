@@ -57,11 +57,6 @@ public class NewEnumValueAction extends Action {
 
     @Override
     public void run() {
-        // Do nothing if there are no columns yet.
-        if (tableViewer.getColumnProperties().length <= 0) {
-            return;
-        }
-
         IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
         IEnumValue newEnumValue;
         try {

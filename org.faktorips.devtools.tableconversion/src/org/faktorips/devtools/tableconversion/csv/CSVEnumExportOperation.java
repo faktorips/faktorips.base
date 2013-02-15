@@ -191,7 +191,9 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             String[] fieldsToExport = new String[numberOfAttributes];
             for (int j = 0; j < numberOfAttributes; j++) {
                 IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
-                Object obj = format.getExternalValue(attributeValue.getValue(), datatypes[j], messageList);
+                Object obj = format.getExternalValue(
+                        attributeValue.getValue().getDefaultLocalizedContent(attributeValue.getIpsProject()),
+                        datatypes[j], messageList);
 
                 String csvField;
                 try {

@@ -47,6 +47,8 @@ public class Messages extends NLS {
     public static String EnumAttribute_DuplicateLiteralName;
     public static String EnumAttribute_NoSuchAttributeInSupertypeHierarchy;
     public static String EnumAttribute_InheritedButNoSupertype;
+    public static String EnumAttribute_InheritedMultiLingualMismatch;
+    public static String EnumAttribute_MultilingualCannotBeIdentifier;
     public static String EnumAttribute_LiteralNameNotOfDatatypeString;
     public static String EnumAttribute_LiteralNameButNotUniqueIdentifier;
     public static String EnumAttribute_DuplicateUsedAsNameInFaktorIpsUi;
@@ -74,4 +76,6 @@ public class Messages extends NLS {
     public static String EnumContent_ReferencedEnumAttributeNamesInvalid;
     public static String EnumContent_ReferencedEnumAttributesOrderingInvalid;
 
+    public static String EnumAttributeValue_MultiLingual;
+    public static String EnumAttributeValue_NotMultiLingual;
 }

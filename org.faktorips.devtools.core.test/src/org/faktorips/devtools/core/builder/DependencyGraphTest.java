@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         idAttr.setUnique(true);
         idAttr.setUsedAsNameInFaktorIpsUi(true);
         IEnumValue firstValue = enum1.newEnumValue();
-        firstValue.setEnumAttributeValue(idAttr, "P1");
+        firstValue.setEnumAttributeValue(idAttr, ValueFactory.createStringValue("P1"));
 
         IAttribute aAttr1 = a.newAttribute();
         aAttr1.setDatatype(enum1.getQualifiedName());

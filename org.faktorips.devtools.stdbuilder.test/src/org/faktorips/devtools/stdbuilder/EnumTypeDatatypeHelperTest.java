@@ -23,6 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.junit.Test;
 
 public class EnumTypeDatatypeHelperTest extends AbstractStdBuilderTest {
@@ -42,11 +43,11 @@ public class EnumTypeDatatypeHelperTest extends AbstractStdBuilderTest {
         id.setName("id");
 
         IEnumValue value1 = paymentMode.newEnumValue();
-        value1.setEnumAttributeValue(0, "MONTHLY");
-        value1.setEnumAttributeValue(1, "monthly");
+        value1.setEnumAttributeValue(0, ValueFactory.createStringValue("MONTHLY"));
+        value1.setEnumAttributeValue(1, ValueFactory.createStringValue("monthly"));
         IEnumValue value2 = paymentMode.newEnumValue();
-        value2.setEnumAttributeValue(0, "ANNUALLY");
-        value2.setEnumAttributeValue(1, "annually");
+        value2.setEnumAttributeValue(0, ValueFactory.createStringValue("ANNUALLY"));
+        value2.setEnumAttributeValue(1, ValueFactory.createStringValue("annually"));
         Datatype datatype = ipsProject.findDatatype("PaymentMode");
         DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(datatype);
         assertTrue(datatypeHelper instanceof EnumTypeDatatypeHelper);

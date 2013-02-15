@@ -15,6 +15,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -26,12 +27,18 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.InternationalString;
+import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -134,9 +141,9 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                     objects[2] = nullRepresentationString;
                     String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-                    enumAttributeValue.setValue(nullRepresentationString);
+                    setValueAttribute(enumAttributeValue, nullRepresentationString);
                 } else {
-                    enumAttributeValue.setValue(readCell(cell, datatypes[j]));
+                    setValueAttribute(enumAttributeValue, readCell(cell, datatypes[j]));
                 }
             }
 
@@ -147,4 +154,17 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         }
     }
 
+    private void setValueAttribute(IEnumAttributeValue enumAttribute, String value) {
+        if (enumAttribute.getValueType().equals(ValueType.STRING)) {
+            enumAttribute.setValue(ValueFactory.createStringValue(value));
+        } else if (enumAttribute.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
+            IValue<?> InternationalStringValue = enumAttribute.getValue();
+            InternationalString content = (InternationalString)InternationalStringValue.getContent();
+            content.add(new LocalizedString(getDefaultLanguage(enumAttribute.getIpsProject()), value));
+        }
+    }
+
+    private Locale getDefaultLanguage(IIpsProject ipsProject) {
+        return ipsProject.getProperties().getDefaultLanguage().getLocale();
+    }
 }

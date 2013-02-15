@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.junit.Test;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
@@ -56,7 +57,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, contentsChangeCounter.getCounts());
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
         assertEquals(3, newEnumValue.getEnumAttributeValuesCount());
-        assertNull(newEnumValue.getEnumAttributeValues().get(2).getValue());
+        assertNotNull(newEnumValue.getEnumAttributeValues().get(2).getValue());
 
         genderEnumContent.setEnumType("foo");
         assertNull(genderEnumContent.newEnumValue());
@@ -175,8 +176,8 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         newUnique.setDatatype(Datatype.STRING.getQualifiedName());
         newUnique.setName("newUnique");
         newUnique.setUnique(true);
-        testValue1.setEnumAttributeValue(newUnique, "newUniqueValue");
-        testValue2.setEnumAttributeValue(newUnique, "newUniqueValue");
+        testValue1.setEnumAttributeValue(newUnique, ValueFactory.createStringValue("newUniqueValue"));
+        testValue2.setEnumAttributeValue(newUnique, ValueFactory.createStringValue("newUniqueValue"));
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).size());
 
@@ -187,10 +188,10 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
         // Test working for EnumValue addition.
         testValue2 = paymentMode.newEnumValue();
-        testValue2.setEnumAttributeValue(0, "MONTHLY");
-        testValue2.setEnumAttributeValue(1, "P1");
-        testValue2.setEnumAttributeValue(2, "monthly");
-        testValue2.setEnumAttributeValue(3, "newUniqueValue");
+        testValue2.setEnumAttributeValue(0, ValueFactory.createStringValue("MONTHLY"));
+        testValue2.setEnumAttributeValue(1, ValueFactory.createStringValue("P1"));
+        testValue2.setEnumAttributeValue(2, ValueFactory.createStringValue("monthly"));
+        testValue2.setEnumAttributeValue(3, ValueFactory.createStringValue("newUniqueValue"));
         getIpsModel().clearValidationCache();
         assertEquals(8, paymentMode.validate(ipsProject).size());
 
@@ -201,14 +202,14 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         newUnique.setUnique(true);
         getIpsModel().clearValidationCache();
         assertEquals(8, paymentMode.validate(ipsProject).size());
-        testValue2.setEnumAttributeValue(0, "ANNUALLY");
-        testValue2.setEnumAttributeValue(1, "P2");
-        testValue2.setEnumAttributeValue(2, "annually");
-        testValue2.setEnumAttributeValue(3, "otherUniqueValue");
+        testValue2.setEnumAttributeValue(0, ValueFactory.createStringValue("ANNUALLY"));
+        testValue2.setEnumAttributeValue(1, ValueFactory.createStringValue("P2"));
+        testValue2.setEnumAttributeValue(2, ValueFactory.createStringValue("annually"));
+        testValue2.setEnumAttributeValue(3, ValueFactory.createStringValue("otherUniqueValue"));
 
         // Test working for EnumAttribute movement.
         paymentMode.moveEnumAttribute(newUnique, true);
-        testValue2.setEnumAttributeValue(3, "monthly");
+        testValue2.setEnumAttributeValue(3, ValueFactory.createStringValue("monthly"));
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).size());
 
@@ -254,7 +255,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         for (int i = 1; i <= 7500; i++) {
             IEnumValue enumValue = hugeEnumType.newEnumValue();
             for (int j = 0; j < 18; j++) {
-                enumValue.setEnumAttributeValue(j, "value" + j);
+                enumValue.setEnumAttributeValue(j, ValueFactory.createStringValue("value" + j));
             }
             System.out.println("Enum value # " + i + " created.");
         }
@@ -284,9 +285,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertNull(paymentMode.findEnumValue("P3", ipsProject));
 
         IEnumValue newEnumValue = paymentMode.newEnumValue();
-        newEnumValue.setEnumAttributeValue(0, "NEW");
-        newEnumValue.setEnumAttributeValue(1, "P4");
-        newEnumValue.setEnumAttributeValue(2, "new");
+        newEnumValue.setEnumAttributeValue(0, ValueFactory.createStringValue("NEW"));
+        newEnumValue.setEnumAttributeValue(1, ValueFactory.createStringValue("P4"));
+        newEnumValue.setEnumAttributeValue(2, ValueFactory.createStringValue("new"));
         assertNotNull(paymentMode.findEnumValue("P4", ipsProject));
     }
 
@@ -294,8 +295,8 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     public void testFindEnumValueIdentifierUsedTwice() throws CoreException {
         IEnumValue enumValue1 = paymentMode.getEnumValues().get(0);
         IEnumValue enumValue2 = paymentMode.getEnumValues().get(1);
-        enumValue1.getEnumAttributeValues().get(1).setValue("Identifier");
-        enumValue2.getEnumAttributeValues().get(1).setValue("Identifier");
+        enumValue1.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("Identifier"));
+        enumValue2.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("Identifier"));
 
         assertEquals(enumValue2, paymentMode.findEnumValue("Identifier", ipsProject));
 
@@ -309,7 +310,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
         assertEquals(enumValue, paymentMode.findEnumValue("P1", ipsProject));
 
-        enumValue.getEnumAttributeValues().get(1).setValue("ChangedIdentifier");
+        enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("ChangedIdentifier"));
         assertEquals(enumValue, paymentMode.findEnumValue("ChangedIdentifier", ipsProject));
     }
 

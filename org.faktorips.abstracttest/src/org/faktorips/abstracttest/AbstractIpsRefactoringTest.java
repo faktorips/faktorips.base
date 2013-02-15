@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.junit.Before;
 
 /**
@@ -300,9 +301,9 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         literalAttribute.setDefaultValueProviderAttribute("name");
 
         IEnumValue enumValue = valuedEnumType.newEnumValue();
-        enumValue.setEnumAttributeValue(0, "0");
-        enumValue.setEnumAttributeValue(1, "foo");
-        enumValue.setEnumAttributeValue(2, "FOO");
+        enumValue.setEnumAttributeValue(0, ValueFactory.createStringValue("0"));
+        enumValue.setEnumAttributeValue(1, ValueFactory.createStringValue("foo"));
+        enumValue.setEnumAttributeValue(2, ValueFactory.createStringValue("FOO"));
 
         enumLiteralNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
     }

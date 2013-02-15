@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,24 +72,24 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
         IEnumValue enumValue = enum1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("A");
-        values.get(1).setValue("a");
-        values.get(2).setValue("aname");
-        values.get(3).setValue("adesc");
+        values.get(0).setValue(ValueFactory.createStringValue("A"));
+        values.get(1).setValue(ValueFactory.createStringValue("a"));
+        values.get(2).setValue(ValueFactory.createStringValue("aname"));
+        values.get(3).setValue(ValueFactory.createStringValue("adesc"));
 
         IEnumValue enumValue2 = enum1.newEnumValue();
         values = enumValue2.getEnumAttributeValues();
-        values.get(0).setValue("B");
-        values.get(1).setValue("b");
-        values.get(2).setValue("bname");
-        values.get(3).setValue("bdesc");
+        values.get(0).setValue(ValueFactory.createStringValue("B"));
+        values.get(1).setValue(ValueFactory.createStringValue("b"));
+        values.get(2).setValue(ValueFactory.createStringValue("bname"));
+        values.get(3).setValue(ValueFactory.createStringValue("bdesc"));
 
         IEnumValue enumValue3 = enum1.newEnumValue();
         values = enumValue3.getEnumAttributeValues();
-        values.get(0).setValue("C");
-        values.get(1).setValue("c");
-        values.get(2).setValue("cname");
-        values.get(3).setValue("cdesc");
+        values.get(0).setValue(ValueFactory.createStringValue("C"));
+        values.get(1).setValue(ValueFactory.createStringValue("c"));
+        values.get(2).setValue(ValueFactory.createStringValue("cname"));
+        values.get(3).setValue(ValueFactory.createStringValue("cdesc"));
 
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);
@@ -123,21 +124,21 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         IEnumContent enumContent = newEnumContent(enum1, "enum1Content");
         IEnumValue value1 = enumContent.newEnumValue();
         List<IEnumAttributeValue> values = value1.getEnumAttributeValues();
-        values.get(0).setValue("AContent");
-        values.get(1).setValue("ANameContent");
-        values.get(2).setValue("ADescContent");
+        values.get(0).setValue(ValueFactory.createStringValue("AContent"));
+        values.get(1).setValue(ValueFactory.createStringValue("ANameContent"));
+        values.get(2).setValue(ValueFactory.createStringValue("ADescContent"));
 
         IEnumValue value2 = enumContent.newEnumValue();
         values = value2.getEnumAttributeValues();
-        values.get(0).setValue("BContent");
-        values.get(1).setValue("BNameContent");
-        values.get(2).setValue("BDescContent");
+        values.get(0).setValue(ValueFactory.createStringValue("BContent"));
+        values.get(1).setValue(ValueFactory.createStringValue("BNameContent"));
+        values.get(2).setValue(ValueFactory.createStringValue("BDescContent"));
 
         IEnumValue value3 = enumContent.newEnumValue();
         values = value3.getEnumAttributeValues();
-        values.get(0).setValue("CContent");
-        values.get(1).setValue("CNameContent");
-        values.get(2).setValue("CDescContent");
+        values.get(0).setValue(ValueFactory.createStringValue("CContent"));
+        values.get(1).setValue(ValueFactory.createStringValue("CNameContent"));
+        values.get(2).setValue(ValueFactory.createStringValue("CDescContent"));
 
         Combo combo = new Combo(shell, SWT.None);
         EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, enumContent));

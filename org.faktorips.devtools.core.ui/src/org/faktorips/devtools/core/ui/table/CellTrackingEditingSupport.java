@@ -109,6 +109,9 @@ public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
         currentViewItem = null;
     }
 
+    @Override
+    protected abstract boolean canEdit(Object element);
+
     private class CellEditorListener implements ICellEditorListener {
 
         @Override

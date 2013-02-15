@@ -47,4 +47,5 @@ public enum ValueType {
         }
         throw new IllegalArgumentException("IValue-type not supported: " + value); //$NON-NLS-1$
     }
+
 }

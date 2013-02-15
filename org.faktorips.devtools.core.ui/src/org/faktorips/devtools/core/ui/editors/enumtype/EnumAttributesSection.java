@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -220,11 +219,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected void editPartConfirmed() {
-            try {
-                enumValuesSection.reinit();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            enumValuesSection.reinit();
         }
 
         @Override

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.value;
 
+import java.util.Locale;
 import java.util.Observer;
 
 import org.faktorips.datatype.ValueDatatype;
@@ -71,4 +72,22 @@ public interface IValue<T> {
      * @param observer the observer to delete
      */
     void deleteObserver(Observer observer);
+
+    /**
+     * Returns the content in the Locale that comes with the parameter. For non international values
+     * the result will be always the same value.
+     * 
+     * @param locale the Locale
+     */
+    String getLocalizedContent(Locale locale);
+
+    /**
+     * Returns the content in the default project language. For non international values the result
+     * will be always the same value.
+     * 
+     * @param ipsProject the IPSProject
+     * @see #getLocalizedContent(Locale)
+     */
+    String getDefaultLocalizedContent(IIpsProject ipsProject);
+
 }

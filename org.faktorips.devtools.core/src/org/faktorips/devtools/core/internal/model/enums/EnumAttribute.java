@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -47,25 +48,25 @@ import org.w3c.dom.Element;
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
     /** The data type of this <tt>IEnumAttribute</tt>. */
-    protected String datatype;
+    private String datatype;
 
     /** Flag indicating whether this <tt>IEnumAttribute</tt> is inherited from the super type. */
-    protected boolean inherited;
+    private boolean inherited;
 
     /** Flag indicating whether this <tt>IEnumAttribute</tt> is unique. */
-    protected boolean unique;
+    private boolean unique;
 
     /**
      * Flag indicating whether this <tt>IEnumAttribute</tt> is the identifying attribute of this
      * enumeration type.
      */
-    protected boolean identifier;
+    private boolean identifier;
 
     /** Flag indicating whether this <tt>IEnumAttribute</tt> is used as display name. */
-    protected boolean usedAsNameInFaktorIpsUi;
+    private boolean usedAsNameInFaktorIpsUi;
 
     /** Flag indicating whether this <tt>IEnumAttribute</tt> is multilingual or not. */
-    protected boolean multilingual;
+    private boolean multilingual;
 
     /**
      * Creates a new <tt>IEnumAttribute</tt>.
@@ -141,9 +142,36 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             validateDatatype(list, ipsProject);
             validateDuplicateIndicator(list, new IdentifierIndicationProvider());
             validateDuplicateIndicator(list, new DisplayNameIndicationProvider());
+            validateAllowedAsIdentifier(list);
         } else {
             validateInherited(list, ipsProject);
+            validateSupertypeMismatchLingual(list, ipsProject);
         }
+    }
+
+    private void validateAllowedAsIdentifier(MessageList list) {
+        if (isIdentifier() && isMultilingual()) {
+            list.add(new Message(MSGCODE_MULTILINGUAL_ATTRIBUTES_CANNOT_BE_IDENTIFIERS, NLS.bind(
+                    Messages.EnumAttribute_MultilingualCannotBeIdentifier, getName()), Message.ERROR, this,
+                    PROPERTY_MULTILINGUAL, PROPERTY_IDENTIFIER));
+        }
+    }
+
+    private void validateSupertypeMismatchLingual(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (checkSupertypeMissmatchLingual(ipsProject)) {
+            list.add(new Message(MSGCODE_ENUM_ATTRIBUTE_INHERITED_LINGUAL_MISMATCH,
+                    Messages.EnumAttribute_InheritedMultiLingualMismatch, Message.ERROR, this, PROPERTY_MULTILINGUAL));
+        }
+    }
+
+    private boolean checkSupertypeMissmatchLingual(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
+        IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
+        if (superEnumAttribute == null) {
+            return false;
+        }
+        return multilingual != superEnumAttribute.isMultilingual();
     }
 
     /** Validates the <tt>name</tt> property. */
@@ -343,7 +371,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     @Override
     public boolean isMultilingualSupported() {
-        return Datatype.STRING.getQualifiedName().equals(getDatatype());
+        try {
+            return Datatype.STRING.equals(findDatatype(getIpsProject()));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -434,20 +466,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return superEnumAttribute.isUnique();
         }
         return isUnique();
-    }
-
-    @Override
-    public boolean findIsMultilingual(IIpsProject ipsProject) throws CoreException {
-        ArgumentCheck.notNull(ipsProject);
-
-        if (inherited) {
-            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
-            if (superEnumAttribute == null) {
-                return false;
-            }
-            return superEnumAttribute.isMultilingual();
-        }
-        return isMultilingual();
     }
 
     @Override

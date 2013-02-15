@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
@@ -185,9 +186,9 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         literalAttribute.setDefaultValueProviderAttribute(literalNameDefaultValueProviderAttribute);
 
         IEnumValue enumValue = enumType.newEnumValue();
-        enumValue.setEnumAttributeValue(0, idAttributeValue);
-        enumValue.setEnumAttributeValue(1, nameAttributeValue);
-        enumValue.setEnumAttributeValue(2, literalNameAttributeValue);
+        enumValue.setEnumAttributeValue(0, ValueFactory.createStringValue(idAttributeValue));
+        enumValue.setEnumAttributeValue(1, ValueFactory.createStringValue(nameAttributeValue));
+        enumValue.setEnumAttributeValue(2, ValueFactory.createStringValue(literalNameAttributeValue));
 
         return enumType;
     }

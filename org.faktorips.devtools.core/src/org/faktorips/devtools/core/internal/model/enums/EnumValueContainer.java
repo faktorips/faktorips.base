@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
@@ -111,7 +113,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     if (value == null) {
                         break;
                     }
-                    valueIds.add(value.getValue());
+                    valueIds.add(value.getValue().getDefaultLocalizedContent(ipsProject));
                 }
             }
             return valueIds;
@@ -163,7 +165,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             if (enumAttributeValue == null) {
                 continue;
             }
-            String identifier = enumAttributeValue.getValue();
+            String identifier = enumAttributeValue.getValue().getDefaultLocalizedContent(getIpsProject());
             if (identifier != null && identifier.length() > 0) {
                 enumValuesByIdentifier.put(identifier, enumValue);
             }
@@ -186,7 +188,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             if (enumAttributeValue == null) {
                 continue;
             }
-            String newIdentifier = enumAttributeValue.getValue();
+            String newIdentifier = enumAttributeValue.getValue().getDefaultLocalizedContent(getIpsProject());
             if (newIdentifier != null && newIdentifier.equals(identifierAttributeValue)) {
                 enumValue = currentEnumValue;
                 /*
@@ -224,7 +226,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     @Override
                     public boolean execute() throws CoreException {
                         // Create new enumeration value.
-                        newEnumValue = (IEnumValue)newPart(EnumValue.class);
+                        newEnumValue = newPart(EnumValue.class);
 
                         /*
                          * Add as many enumeration attribute values as there are enumeration
@@ -474,8 +476,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
                 IEnumAttributeValue currentUniqueAttributeValue = uniqueEnumAttributeValues.get(i);
                 int currentReferencedAttributeIndex = enumType.getIndexOfEnumAttribute(uniqueEnumAttributes.get(i));
-                addCacheEntry(currentReferencedAttributeIndex, currentUniqueAttributeValue.getValue(),
-                        currentUniqueAttributeValue);
+                addCacheEntry(currentReferencedAttributeIndex, currentUniqueAttributeValue.getValue()
+                        .getDefaultLocalizedContent(getIpsProject()), currentUniqueAttributeValue);
             }
         }
     }
@@ -606,6 +608,74 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             }
         }
         return removed;
+    }
+
+    @Override
+    public void fixEnumAttributeValues(final IEnumAttribute enumAttribute) {
+        fixEnumAttributeValuesInternal(enumAttribute);
+        objectHasChanged();
+    }
+
+    private void fixEnumAttributeValuesInternal(final IEnumAttribute enumAttribute) {
+        for (IEnumValue enumValue : enumValues) {
+            fixEnumAttributeValue(enumAttribute, enumValue);
+        }
+    }
+
+    private void fixEnumAttributeValue(final IEnumAttribute enumAttribute, IEnumValue enumValue) {
+        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(enumAttribute);
+        if (enumAttributeValue != null) {
+            enumAttributeValue.fixValueType(enumAttribute.isMultilingual());
+        }
+    }
+
+    @Override
+    public void fixAllEnumAttributeValues() {
+        IEnumType enumType;
+        try {
+            enumType = findEnumType(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (enumType != null) {
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);
+            for (IEnumAttribute enumAttribute : enumAttributes) {
+                fixEnumAttributeValuesInternal(enumAttribute);
+            }
+        }
+        objectHasChanged();
+    }
+
+    @Override
+    public Map<String, ValueTypeMismatch> checkAllEnumAttributeValueTypeMismatch() {
+        Map<String, ValueTypeMismatch> map = new HashMap<String, ValueTypeMismatch>();
+        try {
+            IEnumType enumType = findEnumType(getIpsProject());
+            if (enumType != null) {
+                List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);
+                for (IEnumAttribute enumAttribute : enumAttributes) {
+                    map.put(enumAttribute.getName(), checkValueTypeMismatch(enumAttribute));
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return map;
+    }
+
+    @Override
+    public ValueTypeMismatch checkValueTypeMismatch(IEnumAttribute enumAttribute) {
+        ValueTypeMismatch typeMismatch = ValueTypeMismatch.NO_MISMATCH;
+        for (IEnumValue enumValue : enumValues) {
+            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(enumAttribute);
+            if (enumAttributeValue != null) {
+                typeMismatch = enumAttributeValue.checkValueTypeMismatch(enumAttribute);
+                if (!ValueTypeMismatch.NO_MISMATCH.equals(typeMismatch)) {
+                    break;
+                }
+            }
+        }
+        return typeMismatch;
     }
 
 }

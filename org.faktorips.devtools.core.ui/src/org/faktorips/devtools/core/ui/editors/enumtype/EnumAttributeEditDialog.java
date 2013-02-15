@@ -16,10 +16,14 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -27,7 +31,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.enums.EnumAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -36,6 +39,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -90,6 +94,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** The canvas. */
     private Composite workArea;
+
+    private Label mismatchLabel;
+    private Label mismatchLabelImage;
 
     /**
      * Flag indicating whether the given <tt>IEnumAttribute</tt> is a
@@ -147,6 +154,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private Control createGeneralPage(TabFolder tabFolder) {
         Composite control = createTabItemComposite(tabFolder, 1, false);
         workArea = getToolkit().createLabelEditColumnComposite(control);
+
+        getToolkit().createVerticalSpacer(control, 50);
+        Composite messageLabelComposite = getToolkit().createGridComposite(control, 2, false, false);
+        mismatchLabelImage = getToolkit().createLabel(messageLabelComposite, StringUtils.EMPTY);
+        mismatchLabel = getToolkit().createLabel(messageLabelComposite, StringUtils.EMPTY);
 
         // Create extension properties on position top.
         extFactory.createControls(workArea, getToolkit(), enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
@@ -215,6 +227,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Inherited
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
         inheritedCheckbox = getToolkit().createCheckbox(workArea);
+
     }
 
     /**
@@ -287,8 +300,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             getBindingContext().bindContent(displayNameCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
             getBindingContext().bindContent(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE);
-            getBindingContext().bindContent(multilingualCheckbox, enumAttribute, IEnumAttribute.PROPERTY_MULTILINGUAL);
         }
+        getBindingContext().bindContent(multilingualCheckbox, enumAttribute, IEnumAttribute.PROPERTY_MULTILINGUAL);
         getBindingContext().bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
 
         bindEnabledStates();
@@ -300,7 +313,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             Datatype datatype = enumAttribute.findDatatype(ipsProject);
             String datatypeName = (datatype == null) ? "" : datatype.getName(); //$NON-NLS-1$
             datatypeControl.setText(datatypeName);
-            multilingualCheckbox.setChecked(enumAttribute.findIsMultilingual(ipsProject));
             uniqueCheckbox.setChecked(enumAttribute.findIsUnique(ipsProject));
             identifierCheckbox.setChecked(enumAttribute.findIsIdentifier(ipsProject));
             displayNameCheckbox.setChecked(enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
@@ -315,11 +327,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(multilingualCheckbox, enumAttribute,
-                EnumAttribute.PROPERTY_MULTILINGUAL_SUPPORTED, true);
+                IEnumAttribute.PROPERTY_MULTILINGUAL_SUPPORTED, true);
     }
 
     @Override
-    protected void contentsChangedInternal(ContentChangeEvent event) {
+    protected void contentsChangedInternal(final ContentChangeEvent event) {
         IEnumAttribute changedPart = (IEnumAttribute)event.getPart();
         if (changedPart == null) {
             return;
@@ -331,6 +343,33 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 inheritedChanged();
             }
         }
+        if (!literalNameAttribute) {
+            checkValueTypeMismatch(changedPart);
+        }
+    }
+
+    private void checkValueTypeMismatch(IEnumAttribute enumAttribute) {
+        resetMismatchText();
+        IEnumType enumType = enumAttribute.getEnumType();
+        String defaultlanguage = enumType.getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale()
+                .getLanguage();
+        ValueTypeMismatch typeMismatch = enumType.checkValueTypeMismatch(enumAttribute);
+        if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
+            setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
+        } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
+            setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
+        }
+    }
+
+    private void setMismatchText(String text) {
+        mismatchLabelImage.setImage(JFaceResources.getImage(DLG_IMG_MESSAGE_INFO));
+        mismatchLabel.setText(text);
+        mismatchLabel.getParent().pack();
+    }
+
+    private void resetMismatchText() {
+        mismatchLabelImage.setImage(null);
+        mismatchLabel.setText(StringUtils.EMPTY);
     }
 
     private void inheritedChanged() {
@@ -348,6 +387,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 applyRenameRefactoring(newName);
             }
         }
+        if (!literalNameAttribute) {
+            IEnumType enumType = enumAttribute.getEnumType();
+            enumType.fixEnumAttributeValues(enumAttribute);
+        }
         super.okPressed();
     }
 
@@ -360,5 +403,4 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
         refactoringOperation.runDirectExecution();
     }
-
 }

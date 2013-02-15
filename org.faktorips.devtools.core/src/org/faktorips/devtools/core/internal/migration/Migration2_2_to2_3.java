@@ -59,6 +59,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -347,7 +349,7 @@ public class Migration2_2_to2_3 {
                 List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
                 for (int i = 0; i < enumAttributeValues.size(); i++) {
                     IEnumAttributeValue currentEnumAttributeValue = enumAttributeValues.get(i);
-                    String value = ""; //$NON-NLS-1$
+                    IValue<?> value;
                     if (i == enumAttributeValues.size() - 1) {
                         /*
                          * The last enumeration attribute value is the literal name attribute value.
@@ -363,8 +365,8 @@ public class Migration2_2_to2_3 {
                             }
                         }
                     } else {
-                        value = currentRow.getValue(i);
-                        currentEnumAttributeValue.setValue(value);
+                        String stringValue = currentRow.getValue(i);
+                        currentEnumAttributeValue.setValue(ValueFactory.createStringValue(stringValue));
                     }
                 }
             }

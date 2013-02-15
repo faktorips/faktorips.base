@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
@@ -85,11 +86,12 @@ public class ResetLiteralNamesAction extends Action {
         for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
             List<IEnumAttributeValue> attributeValues = currentEnumValue.getEnumAttributeValues();
             String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            String defaultProviderValue = indexDefaultProvider == -1 ? nullPresentation : attributeValues.get(
-                    indexDefaultProvider).getValue();
+            IEnumAttributeValue defaultProviderAttributeValue = attributeValues.get(indexDefaultProvider);
+            String defaultProviderValue = indexDefaultProvider == -1 ? nullPresentation : defaultProviderAttributeValue
+                    .getValue().getDefaultLocalizedContent(defaultProviderAttributeValue.getIpsProject());
             String literalNameValue = defaultProviderValue.equals(nullPresentation) ? null : enumType.getIpsProject()
                     .getJavaNamingConvention().getEnumLiteral(defaultProviderValue);
-            attributeValues.get(indexLiteralName).setValue(literalNameValue);
+            attributeValues.get(indexLiteralName).setValue(ValueFactory.createStringValue(literalNameValue));
         }
 
         enumValuesTableViewer.refresh();

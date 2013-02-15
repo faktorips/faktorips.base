@@ -158,7 +158,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         String[] fieldsToExport = new String[numberOfFields];
         for (int j = 0; j < numberOfFields; j++) {
             IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
-            String obj = attributeValue.getValue();
+            String obj = attributeValue.getValue().getDefaultLocalizedContent(attributeValue.getIpsProject());
             fieldsToExport[j] = obj;
         }
         return fieldsToExport;

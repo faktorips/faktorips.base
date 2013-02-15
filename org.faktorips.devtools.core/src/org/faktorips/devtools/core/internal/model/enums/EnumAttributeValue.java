@@ -14,27 +14,34 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /**
  * Implementation of <tt>IEnumAttributeValue</tt>, see the corresponding interface for more details.
@@ -47,8 +54,12 @@ import org.w3c.dom.Text;
  */
 public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttributeValue {
 
+    private static final String IS_NULL = "isNull"; //$NON-NLS-1$
+
     /** The actual value that is being stored by this object. */
-    private String value;
+    private IValue<?> value;
+
+    private final Observer valueObserver;
 
     /**
      * Creates a new <tt>IEnumAttributeValue</tt>.
@@ -60,7 +71,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public EnumAttributeValue(IEnumValue parent, String id) throws CoreException {
         super(parent, id);
-        value = null;
+        valueObserver = new Observer() {
+
+            @Override
+            public void update(Observable arg0, Object newValue) {
+                valueChanged(null, newValue);
+            }
+        };
+        setValueInternal(ValueFactory.createStringValue(null));
     }
 
     @Override
@@ -71,45 +89,30 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        if (value == null) {
-            element.setAttribute("isNull", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-            Text textNode = XmlUtil.getTextNode(element);
-            if (textNode != null) {
-                textNode.setTextContent(""); //$NON-NLS-1$
-            }
-            return;
-        }
-        element.setAttribute("isNull", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-        if (XmlUtil.getTextNode(element) == null) {
-            XmlUtil.addNewTextChild(element.getOwnerDocument(), element, value);
-        } else {
-            XmlUtil.getTextNode(element).setTextContent(value);
+        element.setAttribute(IS_NULL, Boolean.toString(isNullValue()));
+        if (getValue() != null) {
+            element.appendChild(getValue().toXml(element.getOwnerDocument()));
         }
     }
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        Boolean isNull = Boolean.valueOf(element.getAttribute("isNull")); //$NON-NLS-1$
-        if (isNull.booleanValue()) {
-            value = null;
-            return;
-        }
-        Text textNode = XmlUtil.getTextNode(element);
-        if (textNode != null) {
-            value = textNode.getTextContent();
-        } else {
-            value = ""; //$NON-NLS-1$
-        }
+        setValueInternal(ValueFactory.createValue(element));
     }
 
     @Override
-    public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         IEnumValue enumValue = getEnumValue();
         IEnumValueContainer valueContainer = enumValue.getEnumValueContainer();
-        IEnumType enumType = valueContainer.findEnumType(ipsProject);
+        IEnumType enumType;
+        try {
+            enumType = valueContainer.findEnumType(ipsProject);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         if (enumType == null) {
             return null;
         }
@@ -128,7 +131,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         // Check number of EnumAttributeValues matching number of EnumAttributes.
         int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
         int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(true);
-        if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount())
+        if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount()) || attributeValueIndex == -1
                 || enumAttributesCount < attributeValueIndex + 1) {
             return null;
         }
@@ -142,36 +145,60 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         return this instanceof IEnumLiteralNameAttributeValue;
     }
 
-    @Override
-    public String getValue() {
-        return value;
+    private void setValueInternal(IValue<?> value) {
+        if (this.value != null) {
+            this.value.deleteObserver(valueObserver);
+        }
+        this.value = value;
+        if (this.value != null) {
+            this.value.addObserver(valueObserver);
+        }
     }
 
     @Override
-    public void setValue(String value) {
-        String oldValue = this.value;
-        this.value = value;
+    public String getStringValue() {
+        if (getValue() != null) {
+            return getValue().getContentAsString();
+        }
+        return null;
+    }
+
+    @Override
+    public ValueType getValueType() {
+        return ValueType.getValueType(getValue());
+    }
+
+    @Override
+    public IValue<?> getValue() {
+        return this.value;
+    }
+
+    @Override
+    public void setValue(IValue<?> newValue) {
+        IValue<?> oldValue = getValue();
+        setValueInternal(newValue);
 
         /*
          * Update unique identifier validation cache if this EnumAttributeValue refers to a unique
          * EnumAttribute.
          */
+        if (oldValue != null && newValue != null) {
+            updateUniqueIdentifierContainer(oldValue, newValue);
+        }
+        valueChanged(oldValue, newValue);
+    }
+
+    private void updateUniqueIdentifierContainer(IValue<?> oldValue, IValue<?> newValue) {
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
-            try {
-                IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
-                IEnumType enumType = referencedEnumAttribute.getEnumType();
-                int index = enumType.getIndexOfEnumAttribute(referencedEnumAttribute);
-                if (enumValueContainerImpl.containsCacheUniqueIdentifier(index)) {
-                    enumValueContainerImpl.removeCacheEntry(index, oldValue, this);
-                    enumValueContainerImpl.addCacheEntry(index, value, this);
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
+            IEnumType enumType = referencedEnumAttribute.getEnumType();
+            int index = enumType.getIndexOfEnumAttribute(referencedEnumAttribute);
+            if (enumValueContainerImpl.containsCacheUniqueIdentifier(index)) {
+                enumValueContainerImpl.removeCacheEntry(index, oldValue.getContentAsString(), this);
+                enumValueContainerImpl.addCacheEntry(index, newValue.getContentAsString(), this);
             }
         }
-
-        valueChanged(oldValue, value);
     }
 
     @Override
@@ -188,32 +215,68 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 return;
             }
         }
-        if (enumValueContainer instanceof IEnumContent) {
-            IEnumContent enumContent = (IEnumContent)enumValueContainer;
-            if (enumContent.isFixToModelRequired()) {
-                return;
-            }
-        }
 
-        // Value parsable?
-        ValueDatatype valueDatatype = enumAttribute.findDatatype(ipsProject);
-        if (valueDatatype != null) {
-            if (!(valueDatatype.isParsable(value))) {
-                String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, value, valueDatatype.getName());
-                Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text, Message.ERROR,
-                        this, PROPERTY_VALUE);
-                list.add(validationMessage);
-            }
-        }
+        validateMultilingual(list, enumAttribute);
 
-        // Unique identifier and literal name validations.
-        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        boolean cacheInitialized = enumValueContainerImpl.initUniqueIdentifierCache(ipsProject);
-        if (cacheInitialized) {
-            if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
-                validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
+        // DataType Value parsable?
+        if (getValue() != null) {
+            getValue().validate(enumAttribute.findDatatype(ipsProject), getParent().getIpsProject(), list,
+                    new ObjectProperty(this, PROPERTY_VALUE));
+
+            // Unique identifier and literal name validations.
+            EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
+            boolean cacheInitialized = enumValueContainerImpl.initUniqueIdentifierCache(ipsProject);
+            if (cacheInitialized) {
+                if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
+                    validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
+                }
             }
         }
+    }
+
+    private void validateMultilingual(MessageList list, IEnumAttribute enumAttribute) {
+        String defaultProjectLanguage = getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale()
+                .getLanguage();
+        ValueTypeMismatch typeMismatch = checkValueTypeMismatch(enumAttribute);
+        if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
+            list.add(new Message(MSGCODE_INVALID_VALUE_TYPE, NLS.bind(Messages.EnumAttributeValue_MultiLingual,
+                    enumAttribute.getName(), defaultProjectLanguage), Message.ERROR, new ObjectProperty(this,
+                    PROPERTY_VALUE)));
+        } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
+            list.add(new Message(MSGCODE_INVALID_VALUE_TYPE, NLS.bind(Messages.EnumAttributeValue_NotMultiLingual,
+                    enumAttribute.getName(), defaultProjectLanguage), Message.ERROR, new ObjectProperty(this,
+                    PROPERTY_VALUE)));
+        }
+    }
+
+    @Override
+    public ValueTypeMismatch checkValueTypeMismatch(IEnumAttribute enumAttribute) {
+        return ValueTypeMismatch.getMismatch(getValue(), enumAttribute.isMultilingual());
+    }
+
+    @Override
+    public void fixValueType(boolean multilingual) {
+        ValueTypeMismatch typeMismatch = ValueTypeMismatch.getMismatch(getValue(), multilingual);
+        if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
+            convertStringToInternationalString();
+        } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
+            convertInternationalStringToString();
+        }
+    }
+
+    private void convertStringToInternationalString() {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        if (getStringValue() != null) {
+            internationalStringValue.getContent().add(
+                    new LocalizedString(getIpsProject().getProperties().getDefaultLanguage().getLocale(),
+                            getStringValue()));
+        }
+        setValueInternal(internationalStringValue);
+    }
+
+    private void convertInternationalStringToString() {
+        String content = getValue().getDefaultLocalizedContent(getIpsProject());
+        setValueInternal(new StringValue(content));
     }
 
     /**
@@ -225,7 +288,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         Message validationMessage;
 
         // A unique identifier EnumAttributeValue must not be empty.
-        String uniqueIdentifierValue = getValue();
+        String uniqueIdentifierValue = getValue().getContentAsString();
         boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true
                 : uniqueIdentifierValue.length() == 0
                         || uniqueIdentifierValue.equals(IpsPlugin.getDefault().getIpsPreferences()
@@ -242,7 +305,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         IEnumType enumType = enumAttribute.getEnumType();
         List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl.getCacheListForUniqueIdentifier(
-                enumType.getIndexOfEnumAttribute(enumAttribute), getValue());
+                enumType.getIndexOfEnumAttribute(enumAttribute), getValue().getContentAsString());
         if (cachedAttributeValues != null) {
             if (cachedAttributeValues.size() > 1) {
                 text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, value);
@@ -267,4 +330,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         return (IEnumValue)getParent();
     }
 
+    @Override
+    public boolean isNullValue() {
+        boolean isNull = true;
+        if (getValue() != null) {
+            isNull = getValue().getContent() == null;
+        }
+        return isNull;
+    }
 }

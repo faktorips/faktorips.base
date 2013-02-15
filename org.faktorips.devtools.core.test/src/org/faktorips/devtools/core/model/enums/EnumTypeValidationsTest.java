@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,15 +79,15 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
 
         IEnumValue value1 = paymentMode.newEnumValue();
         IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
-        value1id.setValue("monthly");
+        value1id.setValue(ValueFactory.createStringValue("monthly"));
         IEnumAttributeValue value1Text = value1.getEnumAttributeValues().get(1);
-        value1Text.setValue("Monthly Payment");
+        value1Text.setValue(ValueFactory.createStringValue("Monthly Payment"));
 
         IEnumValue value2 = paymentMode.newEnumValue();
         IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
-        value2id.setValue("annually");
+        value2id.setValue(ValueFactory.createStringValue("annually"));
         IEnumAttributeValue value2Text = value2.getEnumAttributeValues().get(1);
-        value2Text.setValue("Annual Payment");
+        value2Text.setValue(ValueFactory.createStringValue("Annual Payment"));
     }
 
     @Test

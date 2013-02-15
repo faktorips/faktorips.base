@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.IValue;
 
 /**
  * An <tt>IEnumValue</tt> represents a complete set of <tt>IEnumAttributeValue</tt>s for an
@@ -34,16 +35,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
 
     /** The XML tag for this IPS object part. */
-    public final static String XML_TAG = "EnumValue"; //$NON-NLS-1$
+    public static final String XML_TAG = "EnumValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "ENUMVALUE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ENUMVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there are not as many <tt>IEnumAttributeValue</tt>s
      * as <tt>IEnumAttribute</tt>s in the <tt>IEnumType</tt>.
      */
-    public final static String MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
             + "EnumValueNumberAttributeValuesDoesNotCorrespondToNumberAttributes"; //$NON-NLS-1$
 
     /** Returns a list containing all <tt>IEnumAttributeValue</tt>s. */
@@ -115,8 +116,8 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * <p>
      * This version of <tt>setEnumAttributeValue</tt> offers best performance.
      * 
-     * @see #setEnumAttributeValue(String, String)
-     * @see #setEnumAttributeValue(int, String)
+     * @see #setEnumAttributeValue(String, IValue)
+     * @see #setEnumAttributeValue(int, IValue)
      * 
      * @param enumAttribute The <tt>IEnumAttribute</tt> for that the value shall be set.
      * @param value The new value. May also be <tt>null</tt>.
@@ -125,7 +126,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      *             that refers to the given <tt>IEnumAttribute</tt>.
      * @throws NullPointerException If <tt>enumAttribute</tt> is <tt>null</tt>.
      */
-    public void setEnumAttributeValue(IEnumAttribute enumAttribute, String value) throws CoreException;
+    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws CoreException;
 
     /**
      * Sets the value of the <tt>IEnumAttributeValue</tt> that refers to the <tt>IEnumAttribute</tt>
@@ -135,8 +136,8 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      *            set.
      * @param value The new value. May also be <tt>null</tt>.
      * 
-     * @see #setEnumAttributeValue(IEnumAttribute, String)
-     * @see #setEnumAttributeValue(int, String)
+     * @see #setEnumAttributeValue(IEnumAttribute, IValue)
+     * @see #setEnumAttributeValue(int, IValue)
      * 
      * @throws CoreException If an error occurs while searching for the <tt>IEnumAttribute</tt>
      *             identified by the given name or while searching for the
@@ -145,7 +146,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @throws NoSuchElementException If there is no <tt>IEnumAttribute</tt> with the given name in
      *             the parent <tt>IEnumType</tt>.
      */
-    public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException;
+    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws CoreException;
 
     /**
      * Sets the value of the <tt>IEnumAttributeValue</tt> identified by the given index.
@@ -153,8 +154,8 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * <strong>Attention:</strong> Use this operation only if you must because the ordering of the
      * <tt>IEnumAttributeValue</tt>s changes often.
      * 
-     * @see #setEnumAttributeValue(IEnumAttribute, String)
-     * @see #setEnumAttributeValue(String, String)
+     * @see #setEnumAttributeValue(IEnumAttribute, IValue)
+     * @see #setEnumAttributeValue(String, IValue)
      * 
      * @param enumAttributeValueIndex The index of the <tt>IEnumAttributeValue</tt> which value
      *            shall be set.
@@ -162,7 +163,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * 
      * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
-    public void setEnumAttributeValue(int enumAttributeValueIndex, String value);
+    public void setEnumAttributeValue(int enumAttributeValueIndex, IValue<?> value);
 
     /**
      * Returns a list containing all <tt>IEnumAttributeValue</tt>s that refer to the given unique

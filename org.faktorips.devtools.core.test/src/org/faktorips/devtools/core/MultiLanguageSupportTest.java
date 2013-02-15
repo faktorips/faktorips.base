@@ -213,7 +213,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDefaultCaptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals(TestContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(testContainer));
+        assertEquals("Caption for " + Locale.ENGLISH.getLanguage(), support.getDefaultCaption(testContainer));
+
     }
 
     @Test
@@ -247,7 +248,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDefaultPluralCaptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals(TestContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(testContainer));
+        assertEquals("Plural Caption for " + Locale.ENGLISH.getLanguage(),
+                support.getDefaultPluralCaption(testContainer));
     }
 
     @Test
@@ -398,7 +400,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDefaultLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultLabel(testContainer));
+        assertEquals(US_LABEL, support.getDefaultLabel(testContainer));
     }
 
     @Test
@@ -439,7 +441,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultPluralLabel(testContainer));
+        assertEquals(US_PLURAL_LABEL, support.getDefaultPluralLabel(testContainer));
     }
 
     @Test
@@ -476,7 +478,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         removeDefaultLanguage();
         support.setDefaultLabel(testContainer, "foo");
         assertEquals(GERMAN_LABEL, germanLabel.getValue());
-        assertEquals(US_LABEL, usLabel.getValue());
+        assertEquals("foo", usLabel.getValue());
     }
 
     @Test
@@ -608,7 +610,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDefaultDescriptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals("", support.getDefaultDescription(testContainer));
+        assertEquals(US_DESCRIPTION, support.getDefaultDescription(testContainer));
     }
 
     @Test
@@ -649,7 +651,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         removeDefaultLanguage();
         support.setDefaultDescription(testContainer, "foo");
         assertEquals(GERMAN_DESCRIPTION, germanDescription.getText());
-        assertEquals(US_DESCRIPTION, usDescription.getText());
+        assertEquals("foo", usDescription.getText());
     }
 
     @Test

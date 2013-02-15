@@ -56,6 +56,9 @@ public class Messages extends NLS {
     public static String EnumAttributeEditDialog_labelIsInherited;
     public static String EnumAttributeEditDialog_labelDefaultValueProviderAttribute;
 
+    public static String EnumAttributeEditDialog_mismatchMultilingual;
+    public static String EnumAttributeEditDialog_mismatchNoMultilingual;
+
     public static String InheritAttributesDialog_title;
     public static String InheritAttributesDialog_labelNoAttributes;
     public static String InheritAttributesDialog_labelSelectAttribute;

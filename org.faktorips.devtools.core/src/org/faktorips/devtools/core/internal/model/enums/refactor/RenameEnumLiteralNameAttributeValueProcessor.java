@@ -21,8 +21,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -33,7 +34,7 @@ import org.faktorips.util.message.MessageList;
 public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProcessor {
 
     public RenameEnumLiteralNameAttributeValueProcessor(IEnumLiteralNameAttributeValue literalNameAttributeValue) {
-        super(literalNameAttributeValue, literalNameAttributeValue.getValue());
+        super(literalNameAttributeValue, literalNameAttributeValue.getStringValue());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
         addAffectedSrcFiles(modificationSet);
-        getEnumLiteralNameAttributeValue().setValue(getNewName());
+        getEnumLiteralNameAttributeValue().setValue(ValueFactory.createStringValue(getNewName()));
         return modificationSet;
     }
 

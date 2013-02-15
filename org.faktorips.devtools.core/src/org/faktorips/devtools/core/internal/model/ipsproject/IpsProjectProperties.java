@@ -84,7 +84,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_DERIVED_UNION_IS_IMPLEMENTED = "derivedUnionIsImplemented"; //$NON-NLS-1$
 
-    private final static String ATTRIBUTE_PERSISTENT_PROJECT = "persistentProject"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_PERSISTENT_PROJECT = "persistentProject"; //$NON-NLS-1$
 
     private final static String SETTING_RULES_WITHOUT_REFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
 
@@ -93,12 +93,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private final static String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
 
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
-
-    public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
-        IpsProjectProperties data = new IpsProjectProperties();
-        data.initFromXml(ipsProject, element);
-        return data;
-    }
 
     public final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
 
@@ -155,7 +149,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
     /** The set of natural languages supported by the IPS project. */
-    private Set<ISupportedLanguage> supportedLanguages = new LinkedHashSet<ISupportedLanguage>(2);
+    private LinkedHashSet<ISupportedLanguage> supportedLanguages = new LinkedHashSet<ISupportedLanguage>(2);
 
     private IProductCmptNamingStrategy defaultCmptNamingStrategy;
 
@@ -176,6 +170,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element el = props.toXml(doc);
         initFromXml(ipsProject, el);
         createdFromParsableFileContents = props.createdFromParsableFileContents;
+    }
+
+    public static final IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
+        IpsProjectProperties data = new IpsProjectProperties();
+        data.initFromXml(ipsProject, element);
+        return data;
     }
 
     @Override
@@ -1342,7 +1342,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 return supportedLanguage;
             }
         }
-        return null;
+        if (!supportedLanguages.isEmpty()) {
+            return supportedLanguages.iterator().next();
+        }
+        return new SupportedLanguage(IpsPlugin.getMultiLanguageSupport().getLocalizationLocale(), true);
     }
 
     @Override
@@ -1362,9 +1365,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void clearDefaultLanguage() {
         ISupportedLanguage currentDefaultLanguage = getDefaultLanguage();
-        if (currentDefaultLanguage != null) {
-            ((SupportedLanguage)currentDefaultLanguage).setDefaultLanguage(false);
-        }
+        ((SupportedLanguage)currentDefaultLanguage).setDefaultLanguage(false);
     }
 
     @Override

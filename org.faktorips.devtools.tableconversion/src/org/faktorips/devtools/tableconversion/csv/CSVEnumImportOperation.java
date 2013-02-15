@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Locale;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -29,10 +30,16 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.InternationalString;
+import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -166,7 +173,13 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
 
                     }
-                    column.setValue(ipsValue);
+                    if (column.getValueType().equals(ValueType.STRING)) {
+                        column.setValue(ValueFactory.createStringValue(ipsValue));
+                    } else if (column.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
+                        IValue<?> value = column.getValue();
+                        InternationalString content = (InternationalString)value.getContent();
+                        content.add(new LocalizedString(getDefaultLanguage(column.getIpsProject()), ipsValue));
+                    }
                 }
                 ++rowNumber;
             }
@@ -197,4 +210,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
         return fieldSeparator.charAt(0);
     }
 
+    private Locale getDefaultLanguage(IIpsProject ipsProject) {
+        return ipsProject.getProperties().getDefaultLanguage().getLocale();
+    }
 }

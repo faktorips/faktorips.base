@@ -29,12 +29,12 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
     private Text text;
 
     private Control secondControl;
+    private Composite innerComposite;
 
     protected boolean immediatelyNotifyListener = false;
 
     public TextAndSecondControlComposite(Composite parent, UIToolkit toolkit, boolean smallMargins,
             int buttonHeightHint, int style) {
-
         super(parent, SWT.NONE);
         setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout(2, false);
@@ -44,7 +44,7 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
         if (toolkit.getFormToolkit() == null) {
             text = toolkit.createTextAppendStyle(this, SWT.SINGLE | style);
         } else {
-            Composite c = toolkit.getFormToolkit().createComposite(this);
+            innerComposite = toolkit.getFormToolkit().createComposite(this);
             GridLayout layout2 = new GridLayout(2, false);
             if (smallMargins) {
                 layout2.marginHeight = 2;
@@ -53,10 +53,10 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
                 layout2.marginHeight = 3;
                 layout2.marginWidth = 1;
             }
-            c.setLayout(layout2);
-            c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
-            toolkit.getFormToolkit().paintBordersFor(c);
-            text = toolkit.createText(c, style);
+            innerComposite.setLayout(layout2);
+            innerComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+            toolkit.getFormToolkit().paintBordersFor(innerComposite);
+            text = toolkit.createText(innerComposite, style);
             // toolkit.getFormToolkit().adapt(this); // has to be done after the text control is
             // created!
         }
@@ -83,6 +83,20 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
         }
         secondControl.setLayoutData(d);
         addListeners();
+    }
+
+    /**
+     * Removes the margin from the inner composite. Can be used to reduce the size
+     * of the second control.
+     */
+    protected void removeMargins() {
+        if (innerComposite != null) {
+            GridLayout layout2 = new GridLayout(2, false);
+            layout2.marginHeight = 0;
+            layout2.marginWidth = 0;
+            innerComposite.setLayout(layout2);
+            innerComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
+        }
     }
 
     protected abstract void addListeners();

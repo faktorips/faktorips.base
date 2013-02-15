@@ -75,8 +75,12 @@ public enum ProductCmptPropertyType {
                     property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
             IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
 
-            final IValue<?> defaultValue = ValueFactory.createDefaultValue(attribute);
-
+            final IValue<?> defaultValue;
+            if (attribute != null) {
+                defaultValue = ValueFactory.createValue(attribute.isMultilingual(), attribute.getDefaultValue());
+            } else {
+                defaultValue = ValueFactory.createStringValue(null);
+            }
             AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
             IValueHolder<?> valueHolder;
             valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);

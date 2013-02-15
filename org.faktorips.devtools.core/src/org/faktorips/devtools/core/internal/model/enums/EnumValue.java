@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -87,11 +89,29 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     @Override
     public IEnumLiteralNameAttributeValue newEnumLiteralNameAttributeValue() {
-        return (IEnumLiteralNameAttributeValue)createNewEnumAttributeValue(EnumLiteralNameAttributeValue.class);
+        return createNewEnumAttributeValue(EnumLiteralNameAttributeValue.class);
     }
 
-    private IEnumAttributeValue createNewEnumAttributeValue(Class<? extends IEnumAttributeValue> attributeValueClass) {
-        return (IEnumAttributeValue)newPart(attributeValueClass);
+    private <T extends IEnumAttributeValue> T createNewEnumAttributeValue(Class<T> attributeValueClass) {
+        T attributeValue = newPart(attributeValueClass);
+        fixEnumAttributeValueAfterConstructing(attributeValue);
+        return attributeValue;
+    }
+
+    private void fixEnumAttributeValueAfterConstructing(IEnumAttributeValue enumAttributeValue) {
+        try {
+            IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+            if (enumType != null) {
+                List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+                int index = getEnumAttributeValuesCount() - 1;
+                if (enumAttributes.size() > index) {
+                    IEnumAttribute enumAttribute = enumAttributes.get(index);
+                    enumAttributeValue.fixValueType(enumAttribute.isMultilingual());
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -177,13 +197,13 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    public void setEnumAttributeValue(IEnumAttribute enumAttribute, String value) throws CoreException {
+    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         getEnumAttributeValue(enumAttribute).setValue(value);
     }
 
     @Override
-    public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException {
+    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws CoreException {
         ArgumentCheck.notNull(enumAttributeName);
         IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
         IEnumAttribute enumAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(enumAttributeName);
@@ -194,7 +214,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    public void setEnumAttributeValue(int enumAttributeIndex, String value) {
+    public void setEnumAttributeValue(int enumAttributeIndex, IValue<?> value) {
         if (!(enumAttributeIndex > -1 && enumAttributeIndex < enumAttributeValues.size())) {
             throw new IndexOutOfBoundsException();
         }
@@ -238,7 +258,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                         IEnumAttribute currentReferencedEnumAttribute = uniqueEnumAttributes.get(i);
                         enumValueContainerImpl.removeCacheEntry(
                                 referencedEnumType.getIndexOfEnumAttribute(currentReferencedEnumAttribute),
-                                currentEnumAttributeValue.getValue(), currentEnumAttributeValue);
+                                currentEnumAttributeValue.getValue().getContentAsString(), currentEnumAttributeValue);
                     }
                 }
             } catch (CoreException e) {

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,9 +72,9 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
 
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("an");
-        values.get(2).setValue("AN");
+        values.get(0).setValue(ValueFactory.createStringValue("a"));
+        values.get(1).setValue(ValueFactory.createStringValue("an"));
+        values.get(2).setValue(ValueFactory.createStringValue("AN"));
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
 
         String expected = "expectedJavaClassName";
@@ -149,11 +150,11 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id.setName("name");
 
         IEnumValue red = color.newEnumValue();
-        red.getEnumAttributeValues().get(0).setValue("red");
-        red.getEnumAttributeValues().get(1).setValue("RED");
+        red.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("red"));
+        red.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("RED"));
         IEnumValue blue = color.newEnumValue();
-        blue.getEnumAttributeValues().get(0).setValue("blue");
-        blue.getEnumAttributeValues().get(1).setValue("BLUE");
+        blue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("blue"));
+        blue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("BLUE"));
 
         String[] colorIds = new EnumTypeDatatypeAdapter(color, null).getAllValueIds(false);
         /*
@@ -208,8 +209,8 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         IEnumContent content = newEnumContent(enumType, "EnumContent");
         IEnumValue enumValue = content.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("an");
+        values.get(0).setValue(ValueFactory.createStringValue("a"));
+        values.get(1).setValue(ValueFactory.createStringValue("an"));
         adapter = new EnumTypeDatatypeAdapter(enumType, content);
 
         assertEquals("an", adapter.getValueName("a"));
@@ -262,9 +263,9 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
 
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("an");
-        values.get(2).setValue("AN");
+        values.get(0).setValue(ValueFactory.createStringValue("a"));
+        values.get(1).setValue(ValueFactory.createStringValue("an"));
+        values.get(2).setValue(ValueFactory.createStringValue("AN"));
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
 
         assertEquals(adapter, adapter);
@@ -288,9 +289,9 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
 
         IEnumValue enumValue2 = enumType2.newEnumValue();
         List<IEnumAttributeValue> values2 = enumValue2.getEnumAttributeValues();
-        values2.get(0).setValue("a");
-        values2.get(1).setValue("an");
-        values2.get(2).setValue("AN");
+        values2.get(0).setValue(ValueFactory.createStringValue("a"));
+        values2.get(1).setValue(ValueFactory.createStringValue("an"));
+        values2.get(2).setValue(ValueFactory.createStringValue("AN"));
         EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType2, null);
         assertFalse(adapter.equals(adapter2));
     }
@@ -315,15 +316,15 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         IEnumContent content1 = newEnumContent(enumType, "EnumContent1");
         IEnumValue enumValue = content1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("an");
+        values.get(0).setValue(ValueFactory.createStringValue("a"));
+        values.get(1).setValue(ValueFactory.createStringValue("an"));
         EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, content1);
 
         IEnumContent content2 = newEnumContent(enumType, "EnumContent2");
         IEnumValue enumValue2 = content2.newEnumValue();
         List<IEnumAttributeValue> values2 = enumValue2.getEnumAttributeValues();
-        values2.get(0).setValue("a");
-        values2.get(1).setValue("an");
+        values2.get(0).setValue(ValueFactory.createStringValue("a"));
+        values2.get(1).setValue(ValueFactory.createStringValue("an"));
         EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, content2);
 
         assertFalse(adapter1.equals(adapter2));
@@ -349,15 +350,15 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         IEnumContent content1 = newEnumContent(enumType, "EnumContent1");
         IEnumValue enumValue = content1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue("a");
-        values.get(1).setValue("an");
+        values.get(0).setValue(ValueFactory.createStringValue("a"));
+        values.get(1).setValue(ValueFactory.createStringValue("an"));
         EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, content1);
 
         IEnumContent content2 = newEnumContent(enumType, "EnumContent2");
         IEnumValue enumValue2 = content2.newEnumValue();
         List<IEnumAttributeValue> values2 = enumValue2.getEnumAttributeValues();
-        values2.get(0).setValue("a");
-        values2.get(1).setValue("an");
+        values2.get(0).setValue(ValueFactory.createStringValue("a"));
+        values2.get(1).setValue(ValueFactory.createStringValue("an"));
         EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, content2);
 
         assertEquals(adapter1.hashCode(), adapter1.hashCode());

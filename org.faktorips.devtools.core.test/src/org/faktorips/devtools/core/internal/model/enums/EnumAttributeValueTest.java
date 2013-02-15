@@ -21,17 +21,24 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.LocalizedString;
+import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,19 +90,13 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testGetSetValue() {
-        maleIdAttributeValue.setValue("otherValue");
-        assertEquals("otherValue", maleIdAttributeValue.getValue());
-    }
-
-    @Test
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = maleIdAttributeValue.toXml(createXmlDocument(IEnumAttributeValue.XML_TAG));
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, xmlElement.getTextContent());
 
         IEnumAttributeValue loadedAttributeValue = genderEnumValueMale.newEnumAttributeValue();
         loadedAttributeValue.initFromXml(xmlElement);
-        assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedAttributeValue.getValue());
+        assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedAttributeValue.getStringValue());
     }
 
     @Test
@@ -113,24 +114,24 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> enumAttrList = enumValue.getEnumAttributeValues();
-        enumAttrList.get(0).setValue(null);
-        enumAttrList.get(1).setValue(null);
+        enumAttrList.get(0).setValue(ValueFactory.createStringValue(null));
+        enumAttrList.get(1).setValue(ValueFactory.createStringValue(null));
 
         Element enumTypeEl = enumType.toXml(createXmlDocument(IEnumContent.XML_TAG));
         IEnumType enumType2 = newEnumType(ipsProject, "AnEnum2");
         enumType2.initFromXml(enumTypeEl);
-        assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
-        assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
+        assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(0).getStringValue());
+        assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(1).getStringValue());
 
         List<IEnumAttributeValue> enumAttrList1 = enumValue.getEnumAttributeValues();
-        enumAttrList1.get(0).setValue("foo");
-        enumAttrList1.get(1).setValue("bar");
+        enumAttrList1.get(0).setValue(ValueFactory.createStringValue("foo"));
+        enumAttrList1.get(1).setValue(ValueFactory.createStringValue("bar"));
 
         Element enumTypeEl3 = enumType.toXml(createXmlDocument(IEnumContent.XML_TAG));
         IEnumType enumType3 = newEnumType(ipsProject, "AnEnum3");
         enumType3.initFromXml(enumTypeEl3);
-        assertEquals("foo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
-        assertEquals("bar", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
+        assertEquals("foo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getStringValue());
+        assertEquals("bar", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getStringValue());
     }
 
     @Test
@@ -154,9 +155,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
         IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
 
-        stringNewAttributeValue.setValue("String");
-        integerNewAttributeValue.setValue("4");
-        booleanNewAttributeValue.setValue("false");
+        stringNewAttributeValue.setValue(ValueFactory.createStringValue("String"));
+        integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
+        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
 
         assertTrue(stringNewAttributeValue.isValid(ipsProject));
         assertTrue(integerNewAttributeValue.isValid(ipsProject));
@@ -166,21 +167,21 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         // Test value parsable with data type Integer.
         ipsModel.clearValidationCache();
-        integerNewAttributeValue.setValue("fooBar");
+        integerNewAttributeValue.setValue(ValueFactory.createStringValue("fooBar"));
         MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE));
-        integerNewAttributeValue.setValue("4");
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
 
         // Test value parsable with data type Boolean.
         ipsModel.clearValidationCache();
-        booleanNewAttributeValue.setValue("fooBar");
+        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("fooBar"));
         validationMessageList = booleanNewAttributeValue.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE));
-        booleanNewAttributeValue.setValue("false");
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
     }
 
     @Test
@@ -188,14 +189,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         IIpsModel ipsModel = getIpsModel();
         IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
 
-        uniqueIdentifierEnumAttributeValue.setValue("");
+        uniqueIdentifierEnumAttributeValue.setValue(ValueFactory.createStringValue(""));
         MessageList validationMessageList = genderEnumValueFemale.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
 
         ipsModel.clearValidationCache();
-        uniqueIdentifierEnumAttributeValue.setValue(null);
+        uniqueIdentifierEnumAttributeValue.setValue(ValueFactory.createStringValue(null));
         validationMessageList = genderEnumValueFemale.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
@@ -209,8 +210,8 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue uniqueIdentifierEnumAttributeValueFemale = genderEnumValueFemale.getEnumAttributeValues()
                 .get(0);
 
-        uniqueIdentifierEnumAttributeValueMale.setValue("foo");
-        uniqueIdentifierEnumAttributeValueFemale.setValue("foo");
+        uniqueIdentifierEnumAttributeValueMale.setValue(ValueFactory.createStringValue("foo"));
+        uniqueIdentifierEnumAttributeValueFemale.setValue(ValueFactory.createStringValue("foo"));
 
         MessageList validationMessageList = uniqueIdentifierEnumAttributeValueMale.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -226,6 +227,82 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testGetEnumValue() {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
+    }
+
+    @Test
+    public void testGetSetValue() {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+        maleNameAttributeValue.setValue(internationalStringValue);
+        assertEquals(internationalStringValue, maleNameAttributeValue.getValue());
+
+        StringValue stringValue = new StringValue("foo");
+        maleNameAttributeValue.setValue(stringValue);
+        assertEquals(stringValue, maleNameAttributeValue.getValue());
+    }
+
+    @Test
+    public void testGetValueType() {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+        maleNameAttributeValue.setValue(internationalStringValue);
+        assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
+
+        maleNameAttributeValue.setValue(new StringValue("foo"));
+        assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
+    }
+
+    @Test
+    public void testGetSringValue() {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+        maleNameAttributeValue.setValue(internationalStringValue);
+        assertEquals("de=foo", maleNameAttributeValue.getStringValue());
+
+        maleNameAttributeValue.setValue(new StringValue("foo"));
+        assertEquals("foo", maleNameAttributeValue.getStringValue());
+    }
+
+    @Test
+    public void testIsNull() {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        maleNameAttributeValue.setValue(internationalStringValue);
+        assertFalse(maleNameAttributeValue.isNullValue());
+
+        maleNameAttributeValue.setValue(new StringValue(null));
+        assertTrue(maleNameAttributeValue.isNullValue());
+    }
+
+    @Test
+    public void testValidateMultilingual() throws CoreException {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+        maleNameAttributeValue.setValue(internationalStringValue);
+        assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
+        maleNameAttributeValue.validate(ipsProject);
+        assertFalse(maleNameAttributeValue.findEnumAttribute(ipsProject).isMultilingual());
+
+        maleNameAttributeValue.setValue(new StringValue("foo"));
+        maleNameAttributeValue.findEnumAttribute(ipsProject).setMultilingual(true);
+        assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
+        maleNameAttributeValue.validate(ipsProject);
+        assertTrue(maleNameAttributeValue.findEnumAttribute(ipsProject).isMultilingual());
+
+    }
+
+    @Test
+    public void testFixValueType() {
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+        maleNameAttributeValue.setValue(internationalStringValue);
+        assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
+        maleNameAttributeValue.fixValueType(false);
+        assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
+
+        maleNameAttributeValue.setValue(new StringValue("foo"));
+        assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
+        maleNameAttributeValue.fixValueType(true);
+        assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
     }
 
 }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.table;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
@@ -59,6 +60,11 @@ public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
     protected void doSetValue(Object value) {
         if (value instanceof ILocalizedString) {
             getTextControl().setText(((ILocalizedString)value).getValue());
+        } else if (value == null) {
+            getTextControl().setText(StringUtils.EMPTY);
+        } else {
+            throw new IllegalArgumentException(
+                    "The value of type " + value.getClass() + " is not not supported by AbstractLocalizedStringCellEditor"); //$NON-NLS-1$//$NON-NLS-2$
         }
     }
 

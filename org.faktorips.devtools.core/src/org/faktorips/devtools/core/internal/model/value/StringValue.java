@@ -13,13 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.value;
 
-import java.util.Observable;
+import java.util.Observer;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -33,7 +32,7 @@ import org.w3c.dom.Text;
  * @author frank
  * @since 3.9
  */
-public class StringValue extends Observable implements IValue<String> {
+public class StringValue extends AbstractValue<String> {
 
     private final String content;
 
@@ -121,6 +120,16 @@ public class StringValue extends Observable implements IValue<String> {
         for (Message message : newMsgList) {
             list.add(new Message(message.getCode(), message.getText(), message.getSeverity(), objectProperties));
         }
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        // no implementation
+    }
+
+    @Override
+    public void deleteObserver(Observer observer) {
+        // no implementation
     }
 
 }

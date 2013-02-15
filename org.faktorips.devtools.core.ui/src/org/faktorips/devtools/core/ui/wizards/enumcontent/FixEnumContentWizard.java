@@ -16,12 +16,18 @@ package org.faktorips.devtools.core.ui.wizards.enumcontent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -29,11 +35,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
@@ -41,11 +52,12 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
-import org.faktorips.devtools.core.ui.editors.enumcontent.Messages;
 
 /**
  * This wizard is available trough the <tt>EnumContentEditor</tt> if the <tt>IEnumContent</tt> to
@@ -85,6 +97,8 @@ public class FixEnumContentWizard extends Wizard {
     /** The wizard page to assign <tt>IEnumAttribute</tt>s to <tt>IEnumAttributeValue</tt>s. */
     private AssignEnumAttributesPage assignEnumAttributesPage;
 
+    private FixValueTypePage convertEnumTypePage;
+
     /**
      * Creates a new <tt>FixEnumContentWizard</tt>.
      * 
@@ -100,16 +114,15 @@ public class FixEnumContentWizard extends Wizard {
     }
 
     @Override
-    public boolean needsPreviousAndNextButtons() {
-        return true;
-    }
-
-    @Override
     public void addPages() {
         chooseEnumTypePage = new ChooseEnumTypePage();
         assignEnumAttributesPage = new AssignEnumAttributesPage();
+        convertEnumTypePage = new FixValueTypePage(enumContent);
         addPage(chooseEnumTypePage);
         addPage(assignEnumAttributesPage);
+        if (convertEnumTypePage.isPageNecessary()) {
+            addPage(convertEnumTypePage);
+        }
     }
 
     @Override
@@ -139,6 +152,7 @@ public class FixEnumContentWizard extends Wizard {
                         }
                         enumContent.setEnumType(newEnumType.getQualifiedName());
                         enumContent.clearUniqueIdentifierCache();
+                        enumContent.fixAllEnumAttributeValues();
                     }
                 };
                 enumContent.getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
@@ -760,6 +774,103 @@ public class FixEnumContentWizard extends Wizard {
                 if (combos.length > 0) {
                     combos[0].setFocus();
                 }
+            }
+        }
+
+    }
+
+    /**
+     * Shows the mismatches in {@link ValueType} of {@link IEnumAttributeValue}
+     * 
+     * @author frank
+     * @since 3.9
+     */
+    private static class FixValueTypePage extends WizardPage {
+
+        private TableViewer fTableViewer;
+        private final IEnumContent enumContent;
+
+        private FixValueTypePage(IEnumContent enumContent) {
+            super(Messages.FixEnumContentWizard_assignEnumAttributeMismatchPageTitle);
+            this.enumContent = enumContent;
+            setTitle(Messages.FixEnumContentWizard_assignEnumAttributeMismatchPageTitle);
+            setPageComplete(true);
+        }
+
+        @Override
+        public void createControl(Composite parent) {
+            Composite workArea = new Composite(parent, SWT.NONE);
+
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 1;
+            layout.marginWidth = 0;
+            layout.marginHeight = 0;
+            workArea.setLayout(layout);
+            setControl(workArea);
+
+            fTableViewer = new TableViewer(workArea);
+            fTableViewer.setLabelProvider(new ValueTypeErrorsLabelProvider());
+            fTableViewer.setContentProvider(new ValueTypeErrorsContentProvider());
+
+            Table tableControl = fTableViewer.getTable();
+            tableControl.setFont(JFaceResources.getDialogFont());
+            GridData gd = new GridData(GridData.FILL_BOTH);
+            tableControl.setLayoutData(gd);
+            fTableViewer.setInput(getValueTypeMismatch());
+        }
+
+        private List<String> getValueTypeMismatch() {
+            Map<String, ValueTypeMismatch> mismatchMap = enumContent.checkAllEnumAttributeValueTypeMismatch();
+            String defaultlanguage = enumContent.getIpsProject().getReadOnlyProperties().getDefaultLanguage()
+                    .getLocale().getLanguage();
+            List<String> list = new ArrayList<String>();
+            for (String column : mismatchMap.keySet()) {
+                ValueTypeMismatch valueTypeMismatch = mismatchMap.get(column);
+                if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(valueTypeMismatch)) {
+                    list.add(NLS.bind(Messages.FixEnumContentWizard_messageNoMultilingual, column, defaultlanguage));
+                } else if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(valueTypeMismatch)) {
+                    list.add(NLS.bind(Messages.FixEnumContentWizard_messageMultilingual, column, defaultlanguage));
+                }
+            }
+            return list;
+        }
+
+        public boolean isPageNecessary() {
+            return getValueTypeMismatch().size() > 0;
+        }
+
+        private class ValueTypeErrorsLabelProvider extends LabelProvider {
+
+            @Override
+            public Image getImage(Object element) {
+                return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+            }
+
+            @Override
+            public String getText(Object element) {
+                if (element instanceof String) {
+                    return (String)element;
+                }
+                return super.getText(element);
+            }
+        }
+
+        private static class ValueTypeErrorsContentProvider implements IStructuredContentProvider {
+
+            @Override
+            public Object[] getElements(Object inputElement) {
+                List<?> messageList = (List<?>)inputElement;
+                return messageList.toArray();
+            }
+
+            @Override
+            public void dispose() {
+                // empty default implementation
+            }
+
+            @Override
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // empty default implementation
             }
         }
 

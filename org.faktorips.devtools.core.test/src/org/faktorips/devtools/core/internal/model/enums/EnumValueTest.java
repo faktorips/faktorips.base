@@ -22,9 +22,11 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
 
@@ -32,7 +34,22 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testNewEnumAttributeValue() throws CoreException {
-        assertNotNull(genderEnumValueMale.newEnumAttributeValue());
+        IEnumAttributeValue newEnumAttributeValue = genderEnumValueMale.newEnumAttributeValue();
+
+        assertNotNull(newEnumAttributeValue);
+    }
+
+    @Test
+    public void testNewEnumAttributeValue_fixedValue() throws CoreException {
+        IEnumAttributeValue enumAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(
+                genderEnumValueMale.getEnumAttributeValuesCount() - 1);
+        IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
+        enumAttributeValue.delete();
+        enumAttribute.setMultilingual(true);
+        final IEnumAttributeValue newEnumAttributeValue = genderEnumValueMale.newEnumAttributeValue();
+
+        assertNotNull(newEnumAttributeValue);
+        assertTrue(newEnumAttributeValue.getValue().getContent() instanceof IInternationalString);
     }
 
     @Test
@@ -85,43 +102,44 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testSetEnumAttributeValueAttributeGiven() throws CoreException {
         try {
-            genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, "");
+            genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, ValueFactory.createStringValue(""));
             fail();
         } catch (NullPointerException e) {
         }
 
-        genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName, "foo");
-        assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getValue());
+        genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName, ValueFactory.createStringValue("foo"));
+        assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getStringValue());
     }
 
     @Test
     public void testSetEnumAttributeValueAttributeNameGiven() throws CoreException {
         try {
-            genderEnumValueMale.setEnumAttributeValue((String)null, "");
+            genderEnumValueMale.setEnumAttributeValue((String)null, ValueFactory.createStringValue(""));
             fail();
         } catch (NullPointerException e) {
         }
 
-        genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName.getName(), "foo");
-        assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getValue());
+        genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName.getName(),
+                ValueFactory.createStringValue("foo"));
+        assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getStringValue());
     }
 
     @Test
     public void testSetEnumAttributeValueAttributeValueIndexGiven() {
         try {
-            genderEnumValueMale.setEnumAttributeValue(-1, "");
+            genderEnumValueMale.setEnumAttributeValue(-1, ValueFactory.createStringValue(""));
             fail();
         } catch (IndexOutOfBoundsException e) {
         }
 
         try {
-            genderEnumValueMale.setEnumAttributeValue(20, "");
+            genderEnumValueMale.setEnumAttributeValue(20, ValueFactory.createStringValue(""));
             fail();
         } catch (IndexOutOfBoundsException e) {
         }
 
-        genderEnumValueMale.setEnumAttributeValue(1, "foo");
-        assertEquals("foo", genderEnumValueMale.getEnumAttributeValues().get(1).getValue());
+        genderEnumValueMale.setEnumAttributeValue(1, ValueFactory.createStringValue("foo"));
+        assertEquals("foo", genderEnumValueMale.getEnumAttributeValues().get(1).getStringValue());
     }
 
     @Test
@@ -138,14 +156,14 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     public void testGetLiteralNameAttributeValue() {
         assertNull(genderEnumValueMale.getLiteralNameAttributeValue());
         IEnumValue value = paymentMode.getEnumValues().get(0);
-        assertEquals("MONTHLY", value.getLiteralNameAttributeValue().getValue());
+        assertEquals("MONTHLY", value.getLiteralNameAttributeValue().getStringValue());
     }
 
     @Test
     public void testGetEnumLiteralNameAttributeValue() {
         assertNull(genderEnumValueMale.getEnumLiteralNameAttributeValue());
         IEnumValue value = paymentMode.getEnumValues().get(0);
-        assertEquals("MONTHLY", value.getEnumLiteralNameAttributeValue().getValue());
+        assertEquals("MONTHLY", value.getEnumLiteralNameAttributeValue().getStringValue());
     }
 
 }

@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.IValue;
 
 /**
  * Migration from version 3.0.0.ms2 to version 3.0.0.ms3. The XML structure of
@@ -59,7 +60,7 @@ public class Migration_3_0_0_ms2 extends DefaultMigration {
                 for (IEnumValue enumValue : enumType.getEnumValues()) {
                     IEnumAttributeValue literalNameAttributeValue = enumValue.getEnumAttributeValues()
                             .get(literalIndex);
-                    String literal = literalNameAttributeValue.getValue();
+                    IValue<?> literal = literalNameAttributeValue.getValue();
                     literalNameAttributeValue.delete();
                     IEnumLiteralNameAttributeValue newLiteralNameAttributeValue = enumValue
                             .newEnumLiteralNameAttributeValue();
