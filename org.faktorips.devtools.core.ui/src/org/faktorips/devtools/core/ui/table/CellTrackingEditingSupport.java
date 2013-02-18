@@ -29,15 +29,18 @@ import org.eclipse.jface.viewers.ICellEditorListener;
  * can by set using {@link #setTraversalStrategy(AbstractPermanentTraversalStrategy)}. The
  * {@link AbstractPermanentTraversalStrategy} instance will then be added as traversal- and
  * key-listener to every {@link CellEditor} created by this {@link EditingSupport}.
+ * <p>
+ * The generic Type T defines the type of the object displayed by the columns, provided by the
+ * content provider
  * 
  * @author Stefan Widmaier
  */
 public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
 
     private IpsCellEditor currentCellEditor;
-    private Object currentViewItem;
+    private T currentViewItem;
 
-    private AbstractPermanentTraversalStrategy traversalStrategy;
+    private AbstractPermanentTraversalStrategy<T> traversalStrategy;
 
     /**
      * Creates a {@link AbstractPermanentTraversalStrategy} for the given viewer. A
@@ -50,10 +53,13 @@ public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
 
     @Override
     protected CellEditor getCellEditor(Object element) {
-        // FIXME
-        IpsCellEditor cellEditor = getCellEditorInternal((T)element);
+        @SuppressWarnings("unchecked")
+        // the object is passed from superclass, we try to get as much type safety as possible but
+        // we cannot check this cast
+        T castedElement = (T)element;
+        currentViewItem = castedElement;
+        IpsCellEditor cellEditor = getCellEditorInternal(castedElement);
         currentCellEditor = cellEditor;
-        currentViewItem = element;
         if (currentCellEditor != null) {
             currentCellEditor.addListener(new CellEditorListener());
             if (traversalStrategy != null) {
@@ -77,11 +83,11 @@ public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
      * 
      * @param traversalStrategy The new {@link TraversalStrategy} to be used.
      */
-    public void setTraversalStrategy(AbstractPermanentTraversalStrategy traversalStrategy) {
+    public void setTraversalStrategy(AbstractPermanentTraversalStrategy<T> traversalStrategy) {
         this.traversalStrategy = traversalStrategy;
     }
 
-    protected AbstractPermanentTraversalStrategy getTraversalStrategy() {
+    protected AbstractPermanentTraversalStrategy<T> getTraversalStrategy() {
         return traversalStrategy;
     }
 
@@ -94,7 +100,7 @@ public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
         return currentCellEditor;
     }
 
-    protected Object getCurrentViewItem() {
+    protected T getCurrentViewItem() {
         return currentViewItem;
     }
 

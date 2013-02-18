@@ -21,6 +21,7 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
@@ -41,11 +42,11 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.MultilingualEditField;
+import org.faktorips.devtools.core.ui.controller.fields.LocalizedStringEditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controls.ISingleValueHolderProvider;
+import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
+import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
 import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
-import org.faktorips.devtools.core.ui.controls.MultilingualValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -92,8 +93,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     .createWrapperFor(getPropertyValue());
             getBindingContext().bindContent(editField, wrapper,
                     ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
-            getBindingContext().bindProblemMarker(editField, getPropertyValue().getValueHolder(),
-                    MultiValueHolder.PROPERTY_VALUE);
         } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
             SingleValueHolder singleValueHolder = (SingleValueHolder)getPropertyValue().getValueHolder();
             if (singleValueHolder.getValueType() == ValueType.STRING) {
@@ -107,14 +106,10 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
                 MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
                         IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
-                MultilingualValueAttributeControl control = new MultilingualValueAttributeControl(this, getToolkit(),
-                        new ISingleValueHolderProvider() {
-                            @Override
-                            public SingleValueHolder getSingleValueHolder() {
-                                return (SingleValueHolder)getPropertyValue().getValueHolder();
-                            }
-                        });
-                editField = new MultilingualEditField(control, IpsPlugin.getMultiLanguageSupport()
+                InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
+                        getPropertyValue());
+                InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
+                editField = new LocalizedStringEditField(control.getTextControl(), IpsPlugin.getMultiLanguageSupport()
                         .getLocalizationLocale());
                 getBindingContext().bindContent(editField, valueHolderPMO,
                         MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
@@ -145,7 +140,33 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         controlDecoration.setMarginWidth(1);
     }
 
+    private static class MyMultilingualValueAttributeHandler extends InternationalStringDialogHandler {
+
+        private final IAttributeValue attributeValue;
+
+        private MyMultilingualValueAttributeHandler(Shell shell, IAttributeValue part) {
+            super(shell, part);
+            this.attributeValue = part;
+        }
+
+        @Override
+        protected IInternationalString getInternationalString() {
+            IValueHolder<?> valueHolder = attributeValue.getValueHolder();
+            if (valueHolder instanceof SingleValueHolder) {
+                SingleValueHolder singleValueHolder = (SingleValueHolder)valueHolder;
+                IValue<?> value = singleValueHolder.getValue();
+                Object content = value.getContent();
+                if (content instanceof IInternationalString) {
+                    IInternationalString internationalString = (IInternationalString)content;
+                    return internationalString;
+                }
+            }
+            throw new IllegalArgumentException("The object provided to the InternationalStringDialog is not supported."); //$NON-NLS-1$
+        }
+    }
+
     public static class ValueHolderPmo extends IpsObjectPartPmo {
+
         public static final String PROPERTY_STRING_VALUE = "stringValue"; //$NON-NLS-1$
 
         public ValueHolderPmo(IAttributeValue attributeValue) {
@@ -172,6 +193,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     public static class MultilingualValueHolderPmo extends IpsObjectPartPmo {
+
         public static final String PROPERTY_LOCALIZED_STRING_VALUE = "localizedStringValue"; //$NON-NLS-1$
 
         private final Locale locale;
@@ -179,6 +201,11 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         public MultilingualValueHolderPmo(IAttributeValue attributeValue, Locale locale) {
             super(attributeValue);
             this.locale = locale;
+        }
+
+        @Override
+        public IAttributeValue getIpsObjectPartContainer() {
+            return (IAttributeValue)super.getIpsObjectPartContainer();
         }
 
         public SingleValueHolder getSingleValueHolder() {
@@ -191,11 +218,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     .get(locale);
         }
 
-        @Override
-        public IAttributeValue getIpsObjectPartContainer() {
-            return (IAttributeValue)super.getIpsObjectPartContainer();
-        }
-
         public void setLocalizedStringValue(ILocalizedString newValue) {
             IValue<?> value = getSingleValueHolder().getValue();
             if (value != null) {
@@ -204,5 +226,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             }
             notifyListeners();
         }
+
     }
 }

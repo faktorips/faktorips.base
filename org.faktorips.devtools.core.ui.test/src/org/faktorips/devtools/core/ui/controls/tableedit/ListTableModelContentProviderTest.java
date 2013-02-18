@@ -25,15 +25,15 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.junit.Test;
 
-public class MultiValueTableModelContentProviderTest {
+public class ListTableModelContentProviderTest {
 
     @Test
     public void testGetElements() {
-        MultiValueTableModelContentProvider multiValueContentProvider = new MultiValueTableModelContentProvider();
+        ListTableModelContentProvider multiValueContentProvider = new ListTableModelContentProvider();
         List<SingleValueViewItem> list = new ArrayList<SingleValueViewItem>();
         MultiValueTableModel model = mock(MultiValueTableModel.class);
 
-        when(model.getItemList()).thenReturn(list);
+        when(model.getElements()).thenReturn(list);
         Object[] elements = multiValueContentProvider.getElements(model);
         assertEquals(0, elements.length);
 

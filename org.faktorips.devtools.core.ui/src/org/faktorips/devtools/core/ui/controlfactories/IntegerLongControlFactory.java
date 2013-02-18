@@ -119,7 +119,7 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
 
         Text textControl = createControl(toolkit, parent, dataType, valueSet, ipsProject);
         IntegerNumberFormat format = IntegerNumberFormat.newInstance(dataType);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
+        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, format);
         return tableCellEditor;
     }
 

@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.product.Messages;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
-import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 
 /**
  * The ProductSearchConditionsTableViewerCreator delivers a {@link TableViewer} for the conditions
@@ -61,13 +60,13 @@ public class ProductSearchConditionsTableViewerCreator {
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170,
                 new ArgumentLabelProvider(), argumentEditingSupport, tableViewer);
 
-        LinkedColumnsTraversalStrategy conditionTraversalStrategy = new ConditionsTableTraversalStrategy(
+        ConditionsTableTraversalStrategy conditionTraversalStrategy = new ConditionsTableTraversalStrategy(
                 conditionTypeEditingSupport);
-        LinkedColumnsTraversalStrategy elementTraversalStrategy = new ConditionsTableTraversalStrategy(
+        ConditionsTableTraversalStrategy elementTraversalStrategy = new ConditionsTableTraversalStrategy(
                 elementEditingSupport);
-        LinkedColumnsTraversalStrategy operatorTraversalStrategy = new ConditionsTableTraversalStrategy(
+        ConditionsTableTraversalStrategy operatorTraversalStrategy = new ConditionsTableTraversalStrategy(
                 operatorEditingSupport);
-        LinkedColumnsTraversalStrategy argumentTraversalStrategy = new ConditionsTableTraversalStrategy(
+        ConditionsTableTraversalStrategy argumentTraversalStrategy = new ConditionsTableTraversalStrategy(
                 argumentEditingSupport);
 
         conditionTraversalStrategy.setFollower(elementTraversalStrategy);

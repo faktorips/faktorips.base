@@ -92,7 +92,7 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
             String oldText = getText();
             String newText = format.format(getValue());
             if (!oldText.equals(newText)) {
-                text.setText(newText);
+                getTextControl().setText(newText);
             }
         }
     }

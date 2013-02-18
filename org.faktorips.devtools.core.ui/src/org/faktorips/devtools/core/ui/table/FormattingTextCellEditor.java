@@ -19,21 +19,28 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * IpsCellEditor that adheres to a configurable {@link AbstractInputFormat}.
+ * <p>
+ * The generic Type T is the type that is stored in the model. In most cases we simply store String
+ * objects in the model, in these cases use String for the type T. The type is provided to the
+ * {@link AbstractInputFormat}.
+ * 
+ * 
  * 
  * @author Stefan Widmaier
  */
-public class FormattingTextCellEditor extends TextCellEditor {
+public class FormattingTextCellEditor<T> extends TextCellEditor {
 
-    private AbstractInputFormat format;
+    private AbstractInputFormat<T> format;
 
     /**
      * Creates a {@link FormattingTextCellEditor} with the given {@link Text}-Control and the given
      * format. Both arguments must not be <code>null</code>.
      * 
      * @param text the {@link Text} control to be used by this {@link FormattingTextCellEditor}
-     * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextCellEditor}
+     * @param format the {@link AbstractInputFormat} to be used by this
+     *            {@link FormattingTextCellEditor}
      */
-    public FormattingTextCellEditor(Text text, AbstractInputFormat format) {
+    public FormattingTextCellEditor(Text text, AbstractInputFormat<T> format) {
         super(text);
         ArgumentCheck.notNull(text);
         this.format = format;
@@ -53,7 +60,10 @@ public class FormattingTextCellEditor extends TextCellEditor {
      */
     @Override
     protected void doSetValue(Object value) {
-        setText(format.format(value));
+        @SuppressWarnings("unchecked")
+        // the object value is provided by the framework and we cannot really check it
+        T castedValue = (T)value;
+        setText(format.format(castedValue));
     }
 
 }

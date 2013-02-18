@@ -53,7 +53,7 @@ final class OperatorEditingSupport extends EnhancedCellTrackingEditingSupport {
         UIToolkit toolkit = new UIToolkit(null);
         Combo combo = toolkit.createCombo(((TableViewer)getViewer()).getTable());
 
-        combo.setItems(operatorTypesLabels.toArray(new String[0]));
+        combo.setItems(operatorTypesLabels.toArray(new String[operatorTypesLabels.size()]));
 
         return new ComboCellEditor(combo);
     }

@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -72,33 +73,12 @@ import org.faktorips.util.message.MessageList;
  */
 public class ContentPage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "Contents"; //$NON-NLS-1$
+    private static final String PAGE_ID = "Contents"; //$NON-NLS-1$
     private static final String TABLE_SETTINGS_PREFIX = "TableColumnWidths_"; //$NON-NLS-1$
     private static final String COLUMN_PREFIX = "col_"; //$NON-NLS-1$
     private static final int DEFAULT_COLUMN_WIDTH = 125;
 
     private TableViewer tableViewer;
-
-    private class TableImportExportActionInEditor extends TableImportExportAction {
-
-        protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
-            super(shell, tableContents);
-            if (isImport) {
-                initImportAction();
-            } else {
-                initExportAction();
-            }
-        }
-
-        @Override
-        public void run(IStructuredSelection selection) {
-            if (super.runInternal(selection)) {
-                tableViewer.setInput(getTableContents());
-                tableViewer.refresh(true);
-                tableViewer.getTable().redraw();
-            }
-        }
-    }
 
     public ContentPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.ContentPage_title);
@@ -409,7 +389,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 }
             }
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -456,6 +436,56 @@ public class ContentPage extends IpsObjectEditorPage {
 
     private ITableContentsGeneration getActiveGeneration() {
         return (ITableContentsGeneration)getTableEditor().getTableContents().getFirstGeneration();
+    }
+
+    /**
+     * Redraws the table.
+     */
+    void redrawTable() {
+        tableViewer.getTable().redraw();
+    }
+
+    private boolean wasUniqueKeyErrorStateChanged() {
+        return ((TableContentsGeneration)getActiveGeneration()).wasUniqueKeyErrorStateChange();
+    }
+
+    public void refreshTable(final IRow row) {
+        tableViewer.refresh(row);
+        if (wasUniqueKeyErrorStateChanged()) {
+            // either the unique key error is solved or there is a new unique key error
+            // refresh the rest of the table because an unique key error concerns to more than one
+            // row
+            refreshTable();
+        }
+    }
+
+    public void refreshTable() {
+        tableViewer.refresh();
+    }
+
+    IRow getRow(int rowIndex) {
+        return ((TableContentsGeneration)getActiveGeneration()).getRow(rowIndex);
+    }
+
+    private class TableImportExportActionInEditor extends TableImportExportAction {
+
+        protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
+            super(shell, tableContents);
+            if (isImport) {
+                initImportAction();
+            } else {
+                initExportAction();
+            }
+        }
+
+        @Override
+        public void run(IStructuredSelection selection) {
+            if (super.runInternal(selection)) {
+                tableViewer.setInput(getTableContents());
+                tableViewer.refresh(true);
+                tableViewer.getTable().redraw();
+            }
+        }
     }
 
     private class Validator implements IInputValidator {
@@ -508,34 +538,5 @@ public class ContentPage extends IpsObjectEditorPage {
 
             return null;
         }
-    }
-
-    /**
-     * Redraws the table.
-     */
-    void redrawTable() {
-        tableViewer.getTable().redraw();
-    }
-
-    private boolean wasUniqueKeyErrorStateChanged() {
-        return ((TableContentsGeneration)getActiveGeneration()).wasUniqueKeyErrorStateChange();
-    }
-
-    public void refreshTable(final IRow row) {
-        tableViewer.refresh(row);
-        if (wasUniqueKeyErrorStateChanged()) {
-            // either the unique key error is solved or there is a new unique key error
-            // refresh the rest of the table because an unique key error concerns to more than one
-            // row
-            refreshTable();
-        }
-    }
-
-    public void refreshTable() {
-        tableViewer.refresh();
-    }
-
-    IRow getRow(int rowIndex) {
-        return ((TableContentsGeneration)getActiveGeneration()).getRow(rowIndex);
     }
 }

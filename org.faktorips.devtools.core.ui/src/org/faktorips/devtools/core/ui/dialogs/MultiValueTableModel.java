@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.ui.controls.tableedit.IEditTableModel;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -29,7 +31,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Stefan Widmaier
  */
-public class MultiValueTableModel {
+public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem> {
     /**
      * The {@link IAttributeValue attribute value} holding multiple values.
      */
@@ -55,7 +57,8 @@ public class MultiValueTableModel {
      * @return a newly created list of {@link SingleValueViewItem single value view items},
      *         encapsulating the {@link SingleValueHolder single value holder objects}.
      */
-    public List<SingleValueViewItem> getItemList() {
+    @Override
+    public List<SingleValueViewItem> getElements() {
         List<SingleValueViewItem> list = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
         int index = 0;
         for (SingleValueHolder holder : getMultiValueHolder(attributeValue).getValue()) {
@@ -107,8 +110,9 @@ public class MultiValueTableModel {
      * @param index1 index of the first element.
      * @param index2 index of the second element.
      */
-    public void swapValues(int index1, int index2) {
-        List<SingleValueViewItem> list = getItemList();
+    @Override
+    public void swapElements(int index1, int index2) {
+        List<SingleValueViewItem> list = getElements();
         SingleValueViewItem element1 = list.get(index1);
         list.set(index1, list.get(index2));
         list.set(index2, element1);
@@ -121,9 +125,10 @@ public class MultiValueTableModel {
      * @return the newly created value wrapped in a {@link SingleValueViewItem single value view
      *         item}.
      */
-    public SingleValueViewItem addValue() {
+    @Override
+    public SingleValueViewItem addElement() {
         SingleValueHolder holder = new SingleValueHolder(attributeValue);
-        List<SingleValueViewItem> list = getItemList();
+        List<SingleValueViewItem> list = getElements();
         SingleValueViewItem item = new SingleValueViewItem(holder, list.size());
         list.add(item);
         applyValueList(list);
@@ -135,8 +140,9 @@ public class MultiValueTableModel {
      * 
      * @param index the index of the value, which should be removed from this attribute.
      */
-    public void removeValue(int index) {
-        List<SingleValueViewItem> list = getItemList();
+    @Override
+    public void removeElement(int index) {
+        List<SingleValueViewItem> list = getElements();
         list.remove(index);
         applyValueList(list);
     }
@@ -154,6 +160,7 @@ public class MultiValueTableModel {
      * @param valueToValidate the {@link SingleValueViewItem} to validate.
      * @return the {@link MessageList} containing the error and warning messages.
      */
+    @Override
     public MessageList validate(SingleValueViewItem valueToValidate) {
         SingleValueHolder holder = valueToValidate.getSingleValueHolder();
         if (getValueHolderList().contains(holder)) {
@@ -206,8 +213,9 @@ public class MultiValueTableModel {
                 return false;
             }
             SingleValueViewItem otherItem = (SingleValueViewItem)other;
-            return ((holder == null && otherItem.holder == null) || holder.equals(otherItem.holder))
+            return ((holder == null && otherItem.holder == null) || (holder != null && holder.equals(otherItem.holder)))
                     && index == otherItem.index;
         }
     }
+
 }

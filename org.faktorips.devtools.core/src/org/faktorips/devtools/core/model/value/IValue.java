@@ -53,10 +53,10 @@ public interface IValue<T> {
      * 
      * @param datatype the attributes datatype
      * @param ipsproject the actual IpsProject
-     * @param objectProperty ObjectProperty for Binding
      * @param list Append new Messages to the MessageList
+     * @param objectProperty ObjectProperty for Binding
      */
-    void validate(ValueDatatype datatype, IIpsProject ipsproject, ObjectProperty objectProperty, MessageList list);
+    void validate(ValueDatatype datatype, IIpsProject ipsproject, MessageList list, ObjectProperty... objectProperty);
 
     /**
      * Add an observer for the value.

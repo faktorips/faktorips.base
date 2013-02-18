@@ -234,7 +234,9 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         MessageList messageList = attrValue.validate(ipsProject).getMessages(Message.ERROR);
         assertEquals(2, messageList.getNoOfMessages(Message.ERROR));
         assertEquals(valueHolder, messageList.getMessage(0).getInvalidObjectProperties()[0].getObject());
-        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
+        assertEquals(multiValueHolder.getParent(),
+                messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
+        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[1].getObject());
     }
 
 }

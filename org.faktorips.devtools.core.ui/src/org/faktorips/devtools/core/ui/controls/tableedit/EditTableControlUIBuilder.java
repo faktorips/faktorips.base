@@ -27,9 +27,12 @@ import org.faktorips.devtools.core.ui.controls.Messages;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 
 /**
- * The {@link MultiValueTableControlUIBuilder} is a factory for UI controls that holds references to the
- * created controls. It creates editable table with "Add", "Remove", "Move Up" and "Move Down"
+ * The {@link EditTableControlUIBuilder} is a factory for UI controls that holds references to the
+ * created controls. It creates modifiable tables with "Add", "Remove", "Move Up" and "Move Down"
  * buttons at the side.
+ * <p>
+ * The table have two columns but only one column (the second) is used to show the object. The first
+ * column is used to show any validation status icons like warnings and errors.
  * 
  * This class replaces the {@link EditTableControl}.
  * 
@@ -39,7 +42,7 @@ import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
  * 
  * @author Stefan Widmaier
  */
-public class MultiValueTableControlUIBuilder {
+public class EditTableControlUIBuilder {
 
     private Button addButton;
     private Button removeButton;

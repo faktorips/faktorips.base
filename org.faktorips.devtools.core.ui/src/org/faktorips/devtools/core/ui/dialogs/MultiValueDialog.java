@@ -30,12 +30,11 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controls.tableedit.DatatypeCellLabelProvider;
 import org.faktorips.devtools.core.ui.controls.tableedit.DatatypeEditingSupport;
+import org.faktorips.devtools.core.ui.controls.tableedit.EditTableControlViewer;
+import org.faktorips.devtools.core.ui.controls.tableedit.EditTableTraversalStrategy;
 import org.faktorips.devtools.core.ui.controls.tableedit.ErrorCellLabelProvider;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
-import org.faktorips.devtools.core.ui.controls.tableedit.LocalizedStringEditingSupportForSingleValueViewItems;
-import org.faktorips.devtools.core.ui.controls.tableedit.MultiValueTableControlViewer;
-import org.faktorips.devtools.core.ui.controls.tableedit.MultiValueTableModelContentProvider;
-import org.faktorips.devtools.core.ui.controls.tableedit.MultiValueTableTraversalStrategy;
+import org.faktorips.devtools.core.ui.controls.tableedit.ListTableModelContentProvider;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.table.TableUtil;
@@ -71,10 +70,10 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
         return parent;
     }
 
-    private TableViewerColumn setupTableColumns(MultiValueTableControlViewer viewer) {
+    private TableViewerColumn setupTableColumns(EditTableControlViewer viewer) {
         TableViewerColumn errorColumn = new TableViewerColumn(viewer.getTableViewer(), SWT.LEFT);
         errorColumn.getColumn().setResizable(false);
-        errorColumn.setLabelProvider(new ErrorCellLabelProvider(tableModel));
+        errorColumn.setLabelProvider(new ErrorCellLabelProvider<SingleValueViewItem>(tableModel));
         ColumnViewerToolTipSupport.enableFor(viewer.getTableViewer(), ToolTip.NO_RECREATE);
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
@@ -87,13 +86,13 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
 
     private void createMultiValueTable(Composite parent) {
         String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
-        MultiValueTableControlViewer viewer = new MultiValueTableControlViewer(parent);
+        EditTableControlViewer viewer = new EditTableControlViewer(parent);
         viewer.setTableDescription(description);
 
         TableViewerColumn valueColumn = setupTableColumns(viewer);
         IValueHolder<?> valueHolder = attributeValue.getValueHolder();
 
-        FormattedCellEditingSupport<?, ?> formattedCellEditingSupport;
+        FormattedCellEditingSupport<SingleValueViewItem, ?> formattedCellEditingSupport;
         if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
             TableUtil.increaseHeightOfTableRows(viewer.getTableViewer().getTable(), 2, 12);
             formattedCellEditingSupport = new LocalizedStringEditingSupportForSingleValueViewItems(getToolkit(),
@@ -103,12 +102,12 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
                     viewer.getTableViewer(), attributeValue.getIpsProject(), datatype,
                     new StringMultiValueElementModifier());
         }
-        formattedCellEditingSupport.setTraversalStrategy(new MultiValueTableTraversalStrategy(
+        formattedCellEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy<SingleValueViewItem>(
                 formattedCellEditingSupport, 1, tableModel));
         valueColumn.setEditingSupport(formattedCellEditingSupport);
         valueColumn.setLabelProvider(new DatatypeCellLabelProvider(formattedCellEditingSupport));
 
-        viewer.setContentProvider(new MultiValueTableModelContentProvider());
+        viewer.setContentProvider(new ListTableModelContentProvider());
         viewer.setTabelModel(tableModel);
         viewer.getTableViewer().getTable().setHeaderVisible(false);
     }

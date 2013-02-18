@@ -104,8 +104,10 @@ public class SingleValueHolderTest {
         Message messageByCode = messageList
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND);
         assertNotNull(messageByCode);
-        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
 
     }
 
@@ -127,8 +129,10 @@ public class SingleValueHolderTest {
         Message messageByCode = messageList
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID);
         assertNotNull(messageByCode);
-        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
     }
 
     @Test
@@ -149,8 +153,10 @@ public class SingleValueHolderTest {
         Message messageByCode = messageList
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE);
         assertNotNull(messageByCode);
-        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
     }
 
     @Test
@@ -179,8 +185,10 @@ public class SingleValueHolderTest {
         assertEquals(1, messageList.size());
         Message messageByCode = messageList.getMessageByCode(AttributeValue.MSGCODE_INVALID_VALUE_TYPE);
         assertNotNull(messageByCode);
-        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
 
         when(attribute.isMultilingual()).thenReturn(false);
 
@@ -189,8 +197,10 @@ public class SingleValueHolderTest {
         assertEquals(1, messageList.size());
         messageByCode = messageList.getMessageByCode(AttributeValue.MSGCODE_INVALID_VALUE_TYPE);
         assertNotNull(messageByCode);
-        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(singleValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
     }
 
     @Test

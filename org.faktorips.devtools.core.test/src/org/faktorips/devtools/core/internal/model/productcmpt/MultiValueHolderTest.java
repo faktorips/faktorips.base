@@ -88,8 +88,10 @@ public class MultiValueHolderTest {
         assertNotNull(messageList.getMessageByCode("abc"));
         Message messageByCode = messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE);
         assertNotNull(messageByCode);
-        assertEquals(multiValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(multiValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(multiValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
     }
 
     @Test
@@ -131,8 +133,10 @@ public class MultiValueHolderTest {
         assertNotNull(messageList.getMessageByCode("abc2"));
         Message messageByCode = messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE);
         assertNotNull(messageByCode);
-        assertEquals(multiValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(multiValueHolder.getParent(), messageByCode.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER, messageByCode.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(multiValueHolder, messageByCode.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[1].getProperty());
     }
 
     @Test
@@ -153,7 +157,9 @@ public class MultiValueHolderTest {
         MessageList messageList = multiValueHolder.validate(ipsProject).getMessages(Message.ERROR);
         assertEquals(2, messageList.getNoOfMessages(Message.ERROR));
         assertEquals(valueHolder, messageList.getMessage(0).getInvalidObjectProperties()[0].getObject());
-        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
+        assertEquals(multiValueHolder.getParent(),
+                messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
+        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[1].getObject());
     }
 
 }

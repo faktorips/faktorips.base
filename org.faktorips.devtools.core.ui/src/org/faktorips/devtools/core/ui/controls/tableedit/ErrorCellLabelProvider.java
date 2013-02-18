@@ -13,27 +13,37 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
+import javax.swing.text.TabableView;
+
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
-import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
 
-public class ErrorCellLabelProvider extends CellLabelProvider {
+/**
+ * This cell label provider that providing icons depending on the validation messages retrieved by a
+ * table model. The generic type <code>T</code> indicates the type of the objects provided by the
+ * {@link IEditTableModel}. However it cannot be really checked whether the content provider of the
+ * {@link TabableView} really provides this kind of object or not.
+ * 
+ * @author dirmeier
+ */
+public class ErrorCellLabelProvider<T> extends CellLabelProvider {
 
-    private final MultiValueTableModel tableModel;
+    private final IEditTableModel<T> tableModel;
 
-    public ErrorCellLabelProvider(MultiValueTableModel tableModel) {
+    public ErrorCellLabelProvider(IEditTableModel<T> tableModel) {
         this.tableModel = tableModel;
     }
 
     @Override
     public void update(ViewerCell cell) {
-        MessageList list = tableModel.validate((SingleValueViewItem)cell.getElement());
+        @SuppressWarnings("unchecked")
+        // cell is provided by the framework and we cannot really check the type
+        MessageList list = tableModel.validate((T)cell.getElement());
         Image image = IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
                 false);
         cell.setImage(image);
@@ -41,7 +51,10 @@ public class ErrorCellLabelProvider extends CellLabelProvider {
 
     @Override
     public String getToolTipText(Object element) {
-        MessageList list = tableModel.validate((SingleValueViewItem)element);
+        @SuppressWarnings("unchecked")
+        // element is provided by the framework and we cannot really check the type
+        T castedElement = (T)element;
+        MessageList list = tableModel.validate(castedElement);
         if (list.isEmpty()) {
             return super.getToolTipText(element);
         } else {

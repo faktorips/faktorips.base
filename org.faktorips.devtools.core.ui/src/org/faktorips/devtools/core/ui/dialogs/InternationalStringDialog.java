@@ -34,16 +34,16 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.ISingleValueHolderProvider;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.table.InternationalStringTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
-import org.faktorips.devtools.core.ui.table.LocaleTextCellEditor;
-import org.faktorips.devtools.core.ui.table.MultilingualTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.LocalizedStringCellEditor;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
@@ -52,7 +52,7 @@ import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
  * 
  * @author Bouillon
  */
-public class MultilingualValueDialog extends IpsPartEditDialog2 {
+public class InternationalStringDialog extends IpsPartEditDialog2 {
     /**
      * Two columns: First column is current locale, second column is the value of the attribute in
      * that locale.
@@ -61,13 +61,24 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
 
     private TableViewer tableViewer;
 
-    private final ISingleValueHolderProvider valueHolderProvider;
+    private final IIpsObjectPart ipsObjectPart;
 
-    public MultilingualValueDialog(Shell parentShell, ISingleValueHolderProvider valueHolderProvider) {
-        super(valueHolderProvider.getSingleValueHolder().getParent(), parentShell,
-                Messages.InternationalValueDialog_titleText);
-        this.valueHolderProvider = valueHolderProvider;
+    private final IInternationalString internationalString;
+
+    public InternationalStringDialog(Shell parentShell, IIpsObjectPart ipsObjectPart,
+            IInternationalString internationalString) {
+        super(ipsObjectPart, parentShell, Messages.InternationalValueDialog_titleText);
+        this.ipsObjectPart = ipsObjectPart;
+        this.internationalString = internationalString;
         setShellStyle(getShellStyle() | SWT.RESIZE);
+    }
+
+    private IInternationalString getInternationalString() {
+        return internationalString;
+    }
+
+    private IIpsProject getIpsProject() {
+        return ipsObjectPart.getIpsProject();
     }
 
     @Override
@@ -95,10 +106,6 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
         return parent;
     }
 
-    private IInternationalString getInternationalString() {
-        return (IInternationalString)valueHolderProvider.getSingleValueHolder().getValue().getContent();
-    }
-
     /**
      * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column
      * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
@@ -124,8 +131,7 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
         layout.setColumnData(valueColumn.getColumn(), new ColumnPixelData(350, true, true));
 
         tableViewer.setUseHashlookup(true);
-        tableViewer.setContentProvider(new InternationalValueContentProvider(valueHolderProvider.getSingleValueHolder()
-                .getIpsProject()));
+        tableViewer.setContentProvider(new InternationalValueContentProvider(getIpsProject()));
         tableViewer.setLabelProvider(new InternationalValueLabelProvider());
 
         LocalizedStringEditingSupport localizedStringEditingSupport = new LocalizedStringEditingSupport(tableViewer,
@@ -142,9 +148,8 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
                     }
                 });
 
-        localizedStringEditingSupport.setTraversalStrategy(new MultilingualTraversalStrategy(
-                localizedStringEditingSupport, valueHolderProvider.getSingleValueHolder().getIpsProject(), 1,
-                getInternationalString()));
+        localizedStringEditingSupport.setTraversalStrategy(new InternationalStringTraversalStrategy(
+                localizedStringEditingSupport, getIpsProject(), 1, getInternationalString()));
         valueColumn.setEditingSupport(localizedStringEditingSupport);
         tableViewer.setInput(getInternationalString());
     }
@@ -254,11 +259,10 @@ public class MultilingualValueDialog extends IpsPartEditDialog2 {
         @Override
         protected IpsCellEditor getCellEditorInternal(ILocalizedString element) {
             Text control = new UIToolkit(null).createText(getViewer().getTable());
-            LocaleTextCellEditor cellEditor = new LocaleTextCellEditor(element.getLocale(), control);
+            LocalizedStringCellEditor cellEditor = new LocalizedStringCellEditor(element.getLocale(), control);
             TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, getViewer(), 1);
             strat.setRowCreating(true);
             cellEditor.setTraversalStrategy(strat);
-
             return cellEditor;
         }
 

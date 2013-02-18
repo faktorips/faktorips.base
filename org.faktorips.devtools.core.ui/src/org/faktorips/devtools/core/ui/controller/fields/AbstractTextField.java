@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
@@ -30,7 +32,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractTextField<T> extends DefaultEditField<T> {
 
-    protected Text text;
+    private Text text;
     private boolean immediatelyNotifyListener = false;
 
     public AbstractTextField() {
@@ -90,10 +92,18 @@ public abstract class AbstractTextField<T> extends DefaultEditField<T> {
 
     @Override
     protected void addListenerToControl() {
-        text.addModifyListener(new ModifyListener() {
+        final ModifyListener modifyListener = new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(AbstractTextField.this), immediatelyNotifyListener);
+            }
+        };
+        text.addModifyListener(modifyListener);
+        text.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                text.removeModifyListener(modifyListener);
             }
         });
     }

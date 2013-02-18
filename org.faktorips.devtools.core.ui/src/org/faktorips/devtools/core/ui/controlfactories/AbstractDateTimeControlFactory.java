@@ -123,7 +123,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IIpsProject ipsProject) {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, getFormat());
+        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, getFormat());
         return tableCellEditor;
     }
 

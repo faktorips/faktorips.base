@@ -80,7 +80,8 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
             UIToolkit toolkit = new UIToolkit(null);
             Combo combo = toolkit.createCombo(((TableViewer)getViewer()).getTable());
 
-            combo.setItems(model.getAllowedAttributeValues().toArray(new String[0]));
+            combo.setItems(model.getAllowedAttributeValues().toArray(
+                    new String[model.getAllowedAttributeValues().size()]));
 
             return new ComboCellEditor(combo);
         }

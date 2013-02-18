@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.TraverseEvent;
+import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
 
 /**
  * This class is designed for tables/trees with multiple editable columns (and non-editable
@@ -26,11 +27,10 @@ import org.eclipse.swt.events.TraverseEvent;
  * {@link TraversalStrategy} will ensure that all editable cells can be reached when traversing -
  * the user can jump from one editable column to another even if there is a locked column in
  * between.
- * <p/>
+ * <p>
  * Again this class (as {@link AbstractPermanentTraversalStrategy}) is designed to be used with a
  * {@link FormattedCellEditingSupport} that holds one instance of this class during its lifetime.
- * 
- * <p/>
+ * <p>
  * This {@link TraversalStrategy} supports two kinds of traversal in the ColumnViewer:
  * <ul>
  * <li>Column-Traversal(Tab,Shift+Tab) will jump to the next cell in the same line, or the first
@@ -39,15 +39,18 @@ import org.eclipse.swt.events.TraverseEvent;
  * It will skip rows that are not editable for the given column even if there are editable cells in
  * the row (e.g. other columns that would be reached with Column-Traversal). Et vice versa.</li>
  * </ul>
+ * <p>
+ * The generic Type T defines the type of the object displayed by the columns, provided by the
+ * content provider
  * 
  * @author Stefan Widmaier
  */
-public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTraversalStrategy {
+public abstract class LinkedColumnsTraversalStrategy<T> extends AbstractPermanentTraversalStrategy<T> {
 
-    private LinkedColumnsTraversalStrategy follower = null;
-    private LinkedColumnsTraversalStrategy predecessor = null;
+    private LinkedColumnsTraversalStrategy<T> follower = null;
+    private LinkedColumnsTraversalStrategy<T> predecessor = null;
 
-    public LinkedColumnsTraversalStrategy(CellTrackingEditingSupport editingSupport) {
+    public LinkedColumnsTraversalStrategy(CellTrackingEditingSupport<T> editingSupport) {
         super(editingSupport);
     }
 
@@ -95,7 +98,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         editPreviousColumnFor(getCurrentViewItem());
     }
 
-    private void editNextColumnFor(Object currentViewItem) {
+    private void editNextColumnFor(T currentViewItem) {
         if (hasNextColumnTraversalStrategy()) {
             getNextColumnTraversalStrategy().editCellOrColumnFollowerFor(currentViewItem);
         } else {
@@ -103,7 +106,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
-    private void editPreviousColumnFor(Object currentViewItem) {
+    private void editPreviousColumnFor(T currentViewItem) {
         if (hasPreviousColumnTraversalStrategy()) {
             getPreviousColumnTraversalStrategy().editCellOrColumnPredecessorFor(currentViewItem);
         } else {
@@ -112,7 +115,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
-    private void editCellOrColumnFollowerFor(Object currentViewItem) {
+    private void editCellOrColumnFollowerFor(T currentViewItem) {
         if (currentViewItem == null) {
             return;
         }
@@ -123,7 +126,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
-    private void editCellOrColumnPredecessorFor(Object currentViewItem) {
+    private void editCellOrColumnPredecessorFor(T currentViewItem) {
         if (currentViewItem == null) {
             return;
         }
@@ -135,20 +138,20 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
     }
 
     private void editNextRow() {
-        Object nextItem = getNextVisibleViewItem(getCurrentViewItem());
+        T nextItem = getNextVisibleViewItem(getCurrentViewItem());
         if (nextItem != null) {
             editCellOrRowFollowerFor(nextItem);
         }
     }
 
     private void editPreviousRow() {
-        Object previousItem = getPreviousVisibleViewItem(getCurrentViewItem());
+        T previousItem = getPreviousVisibleViewItem(getCurrentViewItem());
         if (previousItem != null) {
             editCellOrRowPredecessorFor(previousItem);
         }
     }
 
-    private void editCellOrRowFollowerFor(Object currentViewItem) {
+    private void editCellOrRowFollowerFor(T currentViewItem) {
         if (currentViewItem == null) {
             return;
         }
@@ -159,7 +162,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
-    private void editCellOrRowPredecessorFor(Object currentViewItem) {
+    private void editCellOrRowPredecessorFor(T currentViewItem) {
         if (currentViewItem == null) {
             return;
         }
@@ -172,21 +175,21 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
 
     protected abstract int getColumnIndex();
 
-    protected abstract boolean canEdit(Object currentViewItem);
+    protected abstract boolean canEdit(T currentViewItem);
 
-    protected abstract Object getPreviousVisibleViewItem(Object currentViewItem);
+    protected abstract T getPreviousVisibleViewItem(T currentViewItem);
 
-    protected abstract Object getNextVisibleViewItem(Object currentViewItem);
+    protected abstract T getNextVisibleViewItem(T currentViewItem);
 
-    private LinkedColumnsTraversalStrategy getNextColumnTraversalStrategy() {
+    private LinkedColumnsTraversalStrategy<T> getNextColumnTraversalStrategy() {
         return follower;
     }
 
-    private LinkedColumnsTraversalStrategy getPreviousColumnTraversalStrategy() {
+    private LinkedColumnsTraversalStrategy<T> getPreviousColumnTraversalStrategy() {
         return predecessor;
     }
 
-    private LinkedColumnsTraversalStrategy getFirstColumnTraversalStrategy() {
+    private LinkedColumnsTraversalStrategy<T> getFirstColumnTraversalStrategy() {
         if (hasPreviousColumnTraversalStrategy()) {
             return getPreviousColumnTraversalStrategy().getFirstColumnTraversalStrategy();
         } else {
@@ -194,7 +197,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
-    private LinkedColumnsTraversalStrategy getLastColumnTraversalStrategy() {
+    private LinkedColumnsTraversalStrategy<T> getLastColumnTraversalStrategy() {
         if (hasNextColumnTraversalStrategy()) {
             return getNextColumnTraversalStrategy().getLastColumnTraversalStrategy();
         } else {
@@ -210,7 +213,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         return getPreviousColumnTraversalStrategy() != null;
     }
 
-    protected LinkedColumnsTraversalStrategy getFollower() {
+    protected LinkedColumnsTraversalStrategy<T> getFollower() {
         return follower;
     }
 
@@ -220,14 +223,14 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
      * 
      * @param foll the new following {@link LinkedColumnsTraversalStrategy}
      */
-    public void setFollower(LinkedColumnsTraversalStrategy foll) {
+    public void setFollower(LinkedColumnsTraversalStrategy<T> foll) {
         follower = foll;
         if (foll != null && foll.getPredecessor() != this) {
             foll.setPredecessor(this);
         }
     }
 
-    protected LinkedColumnsTraversalStrategy getPredecessor() {
+    protected LinkedColumnsTraversalStrategy<T> getPredecessor() {
         return predecessor;
     }
 
@@ -237,7 +240,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
      * 
      * @param pred the new previous {@link LinkedColumnsTraversalStrategy}
      */
-    public void setPredecessor(LinkedColumnsTraversalStrategy pred) {
+    public void setPredecessor(LinkedColumnsTraversalStrategy<T> pred) {
         predecessor = pred;
         if (pred != null && pred.getFollower() != this) {
             pred.setFollower(this);

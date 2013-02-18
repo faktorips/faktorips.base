@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
 /**
- * Label provider for the table viewer of a {@link MultiValueTableControlViewer}. Uses a
+ * Label provider for the table viewer of a {@link EditTableControlViewer}. Uses a
  * {@link DatatypeEditingSupport} to format each value depending on datatype and current locale.
  * 
  * @author Stefan Widmaier

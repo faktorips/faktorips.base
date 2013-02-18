@@ -51,7 +51,7 @@ class ConditionTypeEditingSupport extends EnhancedCellTrackingEditingSupport {
             conditionTypeNames.add(conditionType.getName());
         }
 
-        combo.setItems(conditionTypeNames.toArray(new String[0]));
+        combo.setItems(conditionTypeNames.toArray(new String[conditionTypeNames.size()]));
 
         return new ComboCellEditor(combo);
     }

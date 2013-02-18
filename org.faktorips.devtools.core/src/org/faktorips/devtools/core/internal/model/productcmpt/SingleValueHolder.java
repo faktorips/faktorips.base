@@ -132,19 +132,22 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList list = new MessageList();
         IProductCmptTypeAttribute attribute = getParent().findAttribute(getParent().getIpsProject());
+        ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
+                new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
+                new ObjectProperty(this, PROPERTY_VALUE) };
         if (attribute == null || getValue() == null) {
             return list;
         }
-        getValue().validate(attribute.findDatatype(getParent().getIpsProject()), getParent().getIpsProject(),
-                new ObjectProperty(this, PROPERTY_VALUE), list);
+        getValue().validate(attribute.findDatatype(getParent().getIpsProject()), getParent().getIpsProject(), list,
+                invalidObjectProperties);
         if (!list.isEmpty()) {
             return list;
         }
 
         if (getValueType().equals(ValueType.STRING)) {
             if (attribute.isMultilingual()) {
-                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, NLS.bind(
-                        Messages.AttributeValue_MultiLingual, attribute.getName()), Message.ERROR, this, PROPERTY_VALUE));
+                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, Messages.AttributeValue_MultiLingual,
+                        Message.ERROR, invalidObjectProperties));
             }
             if (!attribute.getValueSet().containsValue(((StringValue)getValue()).getContentAsString(), ipsProject)) {
                 String text;
@@ -154,13 +157,13 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
                 } else {
                     text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, getValue());
                 }
-                list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR, this, PROPERTY_VALUE));
+                list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR,
+                        invalidObjectProperties));
             }
         } else if (getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
             if (!attribute.isMultilingual()) {
-                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, NLS.bind(
-                        Messages.AttributeValue_NotMultiLingual, attribute.getName()), Message.ERROR, this,
-                        PROPERTY_VALUE));
+                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE,
+                        Messages.AttributeValue_NotMultiLingual, Message.ERROR, invalidObjectProperties));
             }
         }
         return list;

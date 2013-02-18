@@ -11,31 +11,31 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.table;
+
+import java.util.Locale;
 
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
 
 /**
- * Edit field for text controls, the value type is {@link String}
+ * A cell editor using the {@link InternationalStringControl} to enter values in different
+ * languages.
  */
-public class TextField extends AbstractTextField<String> {
+public class InternationalStringCellEditor extends AbstractLocalizedStringCellEditor {
 
-    public TextField() {
-        super();
-    }
-
-    public TextField(Text control) {
-        super(control);
+    public InternationalStringCellEditor(Locale locale, InternationalStringControl control) {
+        super(locale, control);
     }
 
     @Override
-    public String parseContent() {
-        return StringValueEditField.prepareObjectForGet(getText(), supportsNullStringRepresentation());
+    public InternationalStringControl getControl() {
+        return (InternationalStringControl)super.getControl();
     }
 
     @Override
-    public void setValue(String newValue) {
-        setText(StringValueEditField.prepareObjectForSet(newValue, supportsNullStringRepresentation()));
+    protected Text getTextControl() {
+        return getControl().getTextControl();
     }
 
 }

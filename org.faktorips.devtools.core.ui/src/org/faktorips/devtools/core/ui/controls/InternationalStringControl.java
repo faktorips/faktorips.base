@@ -15,30 +15,36 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.dialogs.MultilingualValueDialog;
+import org.faktorips.devtools.core.ui.dialogs.InternationalStringDialog;
 
 /**
  * {@link TextButtonControl} for international value attributes. The text control can be edited to
- * change the current language. The button opens the {@link MultilingualValueDialog} to allow users
+ * change the current language. The button opens the {@link InternationalStringDialog} to allow users
  * to change the attribute's list of internationalized values.
  */
-public class MultilingualValueAttributeControl extends TextButtonControl {
+public class InternationalStringControl extends TextButtonControl {
 
-    private MultilingualValueAttributeHandler handler;
+    private final InternationalStringDialogHandler handler;
 
-    public MultilingualValueAttributeControl(Composite parent, UIToolkit toolkit,
-            ISingleValueHolderProvider valueHolderProvider) {
+    public InternationalStringControl(Composite parent, UIToolkit toolkit,
+            InternationalStringDialogHandler handler) {
         super(parent, toolkit, IpsPlugin.getMultiLanguageSupport().getLocalizationLocale().getLanguage());
-        handler = new MultilingualValueAttributeHandler(parent.getShell(), valueHolderProvider);
+        this.handler = handler;
         getTextControl().setEditable(true);
     }
 
     @Override
+    public Button getButtonControl() {
+        return getSecondControl();
+    }
+
+    @Override
     protected void buttonClicked() {
-        handler.editValues();
+        handler.run();
     }
 
     /**

@@ -23,13 +23,14 @@ import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 
-public class MultilingualTraversalStrategy extends LinkedColumnsTraversalStrategy {
+public class InternationalStringTraversalStrategy extends LinkedColumnsTraversalStrategy<ILocalizedString> {
+
     private final List<Locale> supportedLocales;
     private final int columnIndex;
     private final IInternationalString internationalString;
 
-    public MultilingualTraversalStrategy(CellTrackingEditingSupport<?> editingSupport, IIpsProject ipsProject,
-            int columnIndex, IInternationalString internationalString) {
+    public InternationalStringTraversalStrategy(CellTrackingEditingSupport<ILocalizedString> editingSupport,
+            IIpsProject ipsProject, int columnIndex, IInternationalString internationalString) {
         super(editingSupport);
         supportedLocales = new ArrayList<Locale>();
         this.columnIndex = columnIndex;
@@ -45,16 +46,13 @@ public class MultilingualTraversalStrategy extends LinkedColumnsTraversalStrateg
     }
 
     @Override
-    protected boolean canEdit(Object currentViewItem) {
+    protected boolean canEdit(ILocalizedString currentViewItem) {
         return true;
     }
 
     @Override
-    protected Object getPreviousVisibleViewItem(Object currentViewItem) {
-        if (!(currentViewItem instanceof ILocalizedString)) {
-            return null;
-        }
-        Locale currentLocale = ((ILocalizedString)currentViewItem).getLocale();
+    protected ILocalizedString getPreviousVisibleViewItem(ILocalizedString currentViewItem) {
+        Locale currentLocale = currentViewItem.getLocale();
         for (int i = 0, n = supportedLocales.size(); i < n; i++) {
             if (supportedLocales.get(i).equals(currentLocale) && (i > 0)) {
                 ILocalizedString result = internationalString.get(supportedLocales.get(i - 1));
@@ -68,11 +66,8 @@ public class MultilingualTraversalStrategy extends LinkedColumnsTraversalStrateg
     }
 
     @Override
-    protected Object getNextVisibleViewItem(Object currentViewItem) {
-        if (!(currentViewItem instanceof ILocalizedString)) {
-            return null;
-        }
-        Locale currentLocale = ((ILocalizedString)currentViewItem).getLocale();
+    protected ILocalizedString getNextVisibleViewItem(ILocalizedString currentViewItem) {
+        Locale currentLocale = currentViewItem.getLocale();
         for (int i = 0, n = supportedLocales.size(); i < n; i++) {
             if (supportedLocales.get(i).equals(currentLocale) && (i < n - 1)) {
                 ILocalizedString result = internationalString.get(supportedLocales.get(i + 1));

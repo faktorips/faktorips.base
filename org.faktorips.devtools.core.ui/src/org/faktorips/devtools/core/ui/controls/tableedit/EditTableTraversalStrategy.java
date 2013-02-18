@@ -15,17 +15,16 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 
-public class MultiValueTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
+public class EditTableTraversalStrategy<T> extends LinkedColumnsTraversalStrategy<T> {
 
     private final int columnIndex;
-    private final MultiValueTableModel listTableModel;
+    private final IEditTableModel<T> listTableModel;
 
-    public MultiValueTableTraversalStrategy(CellTrackingEditingSupport<?> editingSupport, int columnIndex,
-            MultiValueTableModel listTableModel) {
+    public EditTableTraversalStrategy(CellTrackingEditingSupport<T> editingSupport, int columnIndex,
+            IEditTableModel<T> listTableModel) {
         super(editingSupport);
         this.columnIndex = columnIndex;
         this.listTableModel = listTableModel;
@@ -37,18 +36,18 @@ public class MultiValueTableTraversalStrategy extends LinkedColumnsTraversalStra
     }
 
     @Override
-    protected boolean canEdit(Object currentViewItem) {
+    protected boolean canEdit(T currentViewItem) {
         return true;
     }
 
     /**
      * Returns the previous item if there is one. Returns <code>null</code> otherwise. If the
      * requested view item does not exist in the model the first element is returned or
-     * <code>null</code> if the model contains no values. {@inheritDoc}
+     * <code>null</code> if the model contains no values.
      */
     @Override
-    protected Object getPreviousVisibleViewItem(Object currentViewItem) {
-        List<?> list = listTableModel.getItemList();
+    protected T getPreviousVisibleViewItem(T currentViewItem) {
+        List<T> list = listTableModel.getElements();
         int currentIndex = list.indexOf(currentViewItem);
         if (currentIndex < 0) {
             return list.isEmpty() ? null : list.get(0);
@@ -65,8 +64,8 @@ public class MultiValueTableTraversalStrategy extends LinkedColumnsTraversalStra
      * the model contains no values. {@inheritDoc}
      */
     @Override
-    protected Object getNextVisibleViewItem(Object currentViewItem) {
-        List<?> list = listTableModel.getItemList();
+    protected T getNextVisibleViewItem(T currentViewItem) {
+        List<T> list = listTableModel.getElements();
         int currentIndex = list.indexOf(currentViewItem);
         if (currentIndex < 0) {
             return list.isEmpty() ? null : list.get(0);

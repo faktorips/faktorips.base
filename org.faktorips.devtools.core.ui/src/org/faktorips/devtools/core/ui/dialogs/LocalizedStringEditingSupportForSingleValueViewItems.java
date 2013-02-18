@@ -1,0 +1,142 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.dialogs;
+
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ILocalizedString;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
+import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
+import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
+import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.devtools.core.ui.table.InternationalStringCellEditor;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+
+/**
+ * {@link FormattedCellEditingSupport} that creates its cell editors configured for multiple
+ * languages. This class is used in the event that a multi-value attribute is also available in
+ * multiple languages. In this case, this table provides the means to generate the cell editor to
+ * enter the available languages for one value. So, by binding this editing support to the table
+ * used in the {@link MultiValueDialog}, internationalization can be achieved for every value.
+ */
+public class LocalizedStringEditingSupportForSingleValueViewItems extends
+        FormattedCellEditingSupport<SingleValueViewItem, ILocalizedString> {
+    /**
+     * The {@link UIToolkit} for the dialog using this support.
+     */
+    private final UIToolkit toolkit;
+
+    /**
+     * {@link TableViewer} for the multi value attribute.
+     */
+    private final TableViewer multiValueTableViewer;
+
+    public LocalizedStringEditingSupportForSingleValueViewItems(UIToolkit toolkit, TableViewer tableViewer,
+            IElementModifier<SingleValueViewItem, ILocalizedString> elementModifier) {
+        super(tableViewer, elementModifier);
+        this.toolkit = toolkit;
+        this.multiValueTableViewer = tableViewer;
+    }
+
+    @Override
+    protected IpsCellEditor getCellEditorInternal(SingleValueViewItem element) {
+        final SingleValueHolder singleValueHolder = element.getSingleValueHolder();
+
+        Table table = multiValueTableViewer.getTable();
+        InternationalStringDialogHandler handler = new MultilingualValueHandler(table.getShell(),
+                singleValueHolder.getParent(), singleValueHolder);
+        InternationalStringControl control = new InternationalStringControl(table, toolkit, handler);
+        InternationalStringCellEditor cellEditor = new InternationalStringCellEditor(IpsPlugin
+                .getMultiLanguageSupport().getLocalizationLocale(), control);
+
+        bindTableRefresh(singleValueHolder);
+
+        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, multiValueTableViewer, 1);
+        strat.setRowCreating(true);
+        cellEditor.setTraversalStrategy(strat);
+
+        return cellEditor;
+    }
+
+    /**
+     * The Refresh of the table is needed because it may change without using the cell editor when
+     * calling the multilingual dialog and changing the current language.
+     */
+    private void bindTableRefresh(final SingleValueHolder singleValueHolder) {
+        final IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        final ContentsChangeListener contentChangeListener = new ContentsChangeListener() {
+
+            @Override
+            public void contentsChanged(ContentChangeEvent event) {
+                if (event.isAffected(singleValueHolder.getParent())) {
+                    multiValueTableViewer.refresh();
+                }
+            }
+        };
+        ipsModel.addChangeListener(contentChangeListener);
+        multiValueTableViewer.getTable().addDisposeListener(new DisposeListener() {
+            @Override
+            public void widgetDisposed(DisposeEvent arg0) {
+                ipsModel.removeChangeListener(contentChangeListener);
+            }
+        });
+    }
+
+    @Override
+    protected boolean canEdit(Object element) {
+        return true;
+    }
+
+    @Override
+    public String getFormattedValue(SingleValueViewItem element) {
+        ILocalizedString string = getValue(element);
+        return string == null ? null : string.getValue();
+    }
+
+    private static class MultilingualValueHandler extends InternationalStringDialogHandler {
+
+        private final SingleValueHolder singleValueHolder;
+
+        private MultilingualValueHandler(Shell shell, IIpsObjectPart part, SingleValueHolder singleValueHolder) {
+            super(shell, part);
+            this.singleValueHolder = singleValueHolder;
+        }
+
+        @Override
+        protected IInternationalString getInternationalString() {
+            IValue<?> value = singleValueHolder.getValue();
+            if (value.getContent() instanceof IInternationalString) {
+                IInternationalString internationalString = (IInternationalString)value.getContent();
+                return internationalString;
+            } else {
+                throw new IllegalArgumentException(
+                        "The value provided to the InternationalStringDialog is not supported: The type was " + (value.getContent() == null ? "<null>" : value.getContent().getClass())); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+    }
+}

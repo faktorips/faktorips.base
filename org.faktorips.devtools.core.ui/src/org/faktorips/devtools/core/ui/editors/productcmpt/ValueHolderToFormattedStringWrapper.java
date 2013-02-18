@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -62,7 +63,12 @@ public class ValueHolderToFormattedStringWrapper {
         IProductCmptTypeAttribute pctAttribute;
         try {
             pctAttribute = attrValue.findAttribute(attrValue.getIpsProject());
-            ValueDatatype datatype = pctAttribute.findDatatype(attrValue.getIpsProject());
+            ValueDatatype datatype;
+            if (pctAttribute == null) {
+                datatype = Datatype.STRING;
+            } else {
+                datatype = pctAttribute.findDatatype(attrValue.getIpsProject());
+            }
             return new ValueHolderToFormattedStringWrapper(attrValue, datatype);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

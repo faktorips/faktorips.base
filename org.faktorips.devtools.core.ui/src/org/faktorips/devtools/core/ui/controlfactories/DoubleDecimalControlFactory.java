@@ -113,7 +113,7 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
         DecimalNumberFormat format = DecimalNumberFormat.newInstance(dataType);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
+        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, format);
         return tableCellEditor;
     }
 

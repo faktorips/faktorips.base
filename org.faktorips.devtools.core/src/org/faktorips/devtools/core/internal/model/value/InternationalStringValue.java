@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.message.Message;
@@ -131,21 +130,25 @@ public class InternationalStringValue implements IValue<IInternationalString> {
      * all saved languages null or empty, then no warning message will be return.
      */
     @Override
-    public void validate(ValueDatatype datatype, IIpsProject ipsproject, ObjectProperty objectProperty, MessageList list) {
-        MessageList newList = new MessageList();
-        Set<ISupportedLanguage> supportedLanguages = ipsproject.getReadOnlyProperties().getSupportedLanguages();
-        int languagesCount = supportedLanguages.size();
-        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-            ILocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
-            if (iLocalizedString == null || StringUtils.isEmpty(iLocalizedString.getValue())) {
-                newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
-                        Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale().getDisplayLanguage()
-                                .toLowerCase()), Message.WARNING, objectProperty.getObject(),
-                        IValueHolder.PROPERTY_VALUE));
+    public void validate(ValueDatatype datatype,
+            IIpsProject ipsproject,
+            MessageList list,
+            ObjectProperty... objectProperty) {
+        if (getContent() != null) {
+            MessageList newList = new MessageList();
+            Set<ISupportedLanguage> supportedLanguages = ipsproject.getReadOnlyProperties().getSupportedLanguages();
+            int languagesCount = supportedLanguages.size();
+            for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+                ILocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
+                if (iLocalizedString == null || StringUtils.isEmpty(iLocalizedString.getValue())) {
+                    newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
+                            Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
+                                    .getDisplayLanguage().toLowerCase()), Message.WARNING, objectProperty));
+                }
             }
-        }
-        if (languagesCount > newList.size()) {
-            list.add(newList);
+            if (languagesCount > newList.size()) {
+                list.add(newList);
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
@@ -110,9 +111,16 @@ public class StringValue extends Observable implements IValue<String> {
     }
 
     @Override
-    public void validate(ValueDatatype datatype, IIpsProject ipsproject, ObjectProperty objectProperty, MessageList list) {
-        ValidationUtils.checkValue(datatype, getContentAsString(), objectProperty.getObject(),
-                objectProperty.getProperty(), list);
+    public void validate(ValueDatatype datatype,
+            IIpsProject ipsproject,
+            MessageList list,
+            ObjectProperty... objectProperties) {
+        MessageList newMsgList = new MessageList();
+        ValidationUtils.checkValue(datatype, getContent(), objectProperties[0].getObject(),
+                objectProperties[0].getProperty(), newMsgList);
+        for (Message message : newMsgList) {
+            list.add(new Message(message.getCode(), message.getText(), message.getSeverity(), objectProperties));
+        }
     }
 
 }

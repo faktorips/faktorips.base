@@ -56,16 +56,16 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
     @Test
     public void applyValueList() {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
-        model.addValue();
+        model.addElement();
         assertEquals(4, getAttributeValueList().size());
-        assertEquals(4, model.getItemList().size());
-        model.addValue();
+        assertEquals(4, model.getElements().size());
+        model.addElement();
         assertEquals(5, getAttributeValueList().size());
-        assertEquals(5, model.getItemList().size());
+        assertEquals(5, model.getElements().size());
 
         assertEquals(5, getAttributeValueList().size());
-        assertEquals(5, model.getItemList().size());
-        assertSame(getAttributeValueList().get(4), model.getItemList().get(4).getSingleValueHolder());
+        assertEquals(5, model.getElements().size());
+        assertSame(getAttributeValueList().get(4), model.getElements().get(4).getSingleValueHolder());
     }
 
     protected List<SingleValueHolder> getAttributeValueList() {
@@ -75,7 +75,6 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
     @Test
     public void swapElements() {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
-<<<<<<< HEAD
         model.swapElements(1, 2);
         assertEquals(3, model.getElements().size());
         assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue().getContentAsString());
@@ -84,56 +83,28 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         assertEquals(3, model.getElements().size());
         assertEquals("B", model.getElements().get(1).getSingleValueHolder().getValue().getContentAsString());
         assertEquals("C", model.getElements().get(2).getSingleValueHolder().getValue().getContentAsString());
-=======
-        model.swapValues(1, 2);
-        assertEquals(3, model.getItemList().size());
-        assertEquals("C", model.getItemList().get(1).getSingleValueHolder().getValue().getStringValue());
-        assertEquals("B", model.getItemList().get(2).getSingleValueHolder().getValue().getStringValue());
-        model.swapValues(1, 2);
-        assertEquals(3, model.getItemList().size());
-        assertEquals("B", model.getItemList().get(1).getSingleValueHolder().getValue().getStringValue());
-        assertEquals("C", model.getItemList().get(2).getSingleValueHolder().getValue().getStringValue());
->>>>>>> FIPS-1468 Mehrsprachige Werte im Produkteditor bearbeiten :: CodeReview,
     }
 
     @Test
     public void addElement() {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
-<<<<<<< HEAD
         model.addElement();
         assertEquals(4, model.getElements().size());
         assertNull(model.getElements().get(3).getSingleValueHolder().getValue().getContentAsString());
         model.addElement();
         assertEquals(5, model.getElements().size());
         assertNull(model.getElements().get(4).getSingleValueHolder().getValue().getContentAsString());
-=======
-        model.addValue();
-        assertEquals(4, model.getItemList().size());
-        assertNull(model.getItemList().get(3).getSingleValueHolder().getValue().getStringValue());
-        model.addValue();
-        assertEquals(5, model.getItemList().size());
-        assertNull(model.getItemList().get(4).getSingleValueHolder().getValue().getStringValue());
->>>>>>> FIPS-1468 Mehrsprachige Werte im Produkteditor bearbeiten :: CodeReview,
     }
 
     @Test
     public void removeElement() {
         MultiValueTableModel model = new MultiValueTableModel(attributeValue);
-<<<<<<< HEAD
         model.removeElement(1);
         assertEquals(2, model.getElements().size());
         assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue().getContentAsString());
         model.removeElement(0);
         assertEquals(1, model.getElements().size());
         assertEquals("C", model.getElements().get(0).getSingleValueHolder().getValue().getContentAsString());
-=======
-        model.removeValue(1);
-        assertEquals(2, model.getItemList().size());
-        assertEquals("C", model.getItemList().get(1).getSingleValueHolder().getValue().getStringValue());
-        model.removeValue(0);
-        assertEquals(1, model.getItemList().size());
-        assertEquals("C", model.getItemList().get(0).getSingleValueHolder().getValue().getStringValue());
->>>>>>> FIPS-1468 Mehrsprachige Werte im Produkteditor bearbeiten :: CodeReview,
     }
 
     @Test

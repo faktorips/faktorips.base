@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -160,8 +161,13 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
             messageList.add(valueHolder.validate(ipsProject));
         }
         if (messageList.containsErrorMsg()) {
-            messageList.add(Message.newError(MSGCODE_CONTAINS_INVALID_VALUE,
-                    Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, this, PROPERTY_VALUE));
+            ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
+                    new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
+                    new ObjectProperty(this, PROPERTY_VALUE) };
+            messageList
+                    .add(new Message(MSGCODE_CONTAINS_INVALID_VALUE,
+                            Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, Message.ERROR,
+                            invalidObjectProperties));
         }
         return messageList;
     }

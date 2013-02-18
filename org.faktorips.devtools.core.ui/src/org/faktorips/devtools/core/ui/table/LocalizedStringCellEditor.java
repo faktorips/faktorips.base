@@ -13,56 +13,32 @@
 
 package org.faktorips.devtools.core.ui.table;
 
+import java.util.Locale;
+
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
-import org.faktorips.devtools.core.model.ILocalizedString;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
 /**
- * A cell editor using for {@link ILocalizedString localized strings} to enter a value in the
- * specified language.
+ * A cell editor using the {@link Text} control to enter values in a given language. In contrast to
+ * {@link InternationalStringCellEditor} this cell editor can only modify a text for one locale. The
+ * {@link InternationalStringCellEditor} has additionally a button to edit the values in other
+ * languages.
+ * 
+ * @see InternationalStringCellEditor
  */
-public class LocalizedStringCellEditor extends IpsCellEditor {
-    private final Text textControl;
-    private final TextField textField;
+public class LocalizedStringCellEditor extends AbstractLocalizedStringCellEditor {
 
-    public LocalizedStringCellEditor(Text textControl) {
-        super(textControl);
-        this.textControl = textControl;
-        textField = new TextField(textControl);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Object doGetValue() {
-        return textField.getText();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doSetFocus() {
-        textControl.selectAll();
-        textControl.setFocus();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doSetValue(Object value) {
-        if (value instanceof LocalizedString) {
-            textField.setText(((LocalizedString)value).getValue());
-        } else if (value instanceof String) {
-            textField.setText((String)value);
-        }
+    public LocalizedStringCellEditor(Locale locale, Text control) {
+        super(locale, control);
     }
 
     @Override
-    public boolean isMappedValue() {
-        return false;
+    public Text getControl() {
+        return (Text)super.getControl();
     }
+
+    @Override
+    protected Text getTextControl() {
+        return getControl();
+    }
+
 }

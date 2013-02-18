@@ -22,20 +22,21 @@ import org.faktorips.devtools.core.ui.table.TraversalStrategy;
  * 
  * @author dicker
  */
-final class ConditionsTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
+final class ConditionsTableTraversalStrategy extends
+        LinkedColumnsTraversalStrategy<ProductSearchConditionPresentationModel> {
 
-    ConditionsTableTraversalStrategy(CellTrackingEditingSupport editingSupport) {
+    ConditionsTableTraversalStrategy(CellTrackingEditingSupport<ProductSearchConditionPresentationModel> editingSupport) {
         super(editingSupport);
         editingSupport.setTraversalStrategy(this);
     }
 
     @Override
-    protected Object getPreviousVisibleViewItem(Object currentViewItem) {
+    protected ProductSearchConditionPresentationModel getPreviousVisibleViewItem(ProductSearchConditionPresentationModel currentViewItem) {
         return null;
     }
 
     @Override
-    protected Object getNextVisibleViewItem(Object currentViewItem) {
+    protected ProductSearchConditionPresentationModel getNextVisibleViewItem(ProductSearchConditionPresentationModel currentViewItem) {
         return null;
     }
 
@@ -45,7 +46,7 @@ final class ConditionsTableTraversalStrategy extends LinkedColumnsTraversalStrat
     }
 
     @Override
-    protected boolean canEdit(Object currentViewItem) {
+    protected boolean canEdit(ProductSearchConditionPresentationModel currentViewItem) {
         return getEnhancedCellTrackingEditingSupport().canEdit(currentViewItem);
     }
 
