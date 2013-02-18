@@ -312,7 +312,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
-            if (defaultValueField != null && valueSetEditControl != null) {
+            if (defaultValueField != null) {
                 if (newDatatype == null || newDatatype.equals(currentDatatype)) {
                     return;
                 }
@@ -331,6 +331,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void updateValueSetTypes() throws CoreException {
+        if (valueSetEditControl == null) {
+            return;
+        }
         currentValueSetType = valueSetEditControl.getValueSetType();
         valueSetEditControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(ipsProject));
         if (currentValueSetType != null) {

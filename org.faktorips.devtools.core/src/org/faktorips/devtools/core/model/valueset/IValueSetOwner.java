@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IValueSetOwner extends IIpsElement {
 
+    public final static String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
+
     /**
      * Returns the set of allowed values.
      */

@@ -95,6 +95,8 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeMultilingualDiffers"; //$NON-NLS-1$
 
+    public static final String MSGCODE_INVALID_VALUE_SET = IAttribute.MSGCODE_PREFIX + "InvalidValueSet"; //$NON-NLS-1$
+
     /**
      * Returns the product component type the attribute belongs to.
      */

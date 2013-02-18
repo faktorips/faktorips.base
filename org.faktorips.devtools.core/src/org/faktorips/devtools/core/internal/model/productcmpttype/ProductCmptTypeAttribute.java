@@ -13,10 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -135,7 +137,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
-        return ipsProject.getValueSetTypes(findDatatype(ipsProject));
+        if (isMultilingual()) {
+            ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
+            types.add(ValueSetType.UNRESTRICTED);
+            return types;
+        } else {
+            return ipsProject.getValueSetTypes(findDatatype(ipsProject));
+        }
     }
 
     @Override
@@ -300,6 +308,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
+        if (!getAllowedValueSetTypes(getIpsProject()).contains(getValueSet().getValueSetType())) {
+            result.add(Message.newError(MSGCODE_INVALID_VALUE_SET, NLS.bind(
+                    Messages.ProductCmptTypeAttribute_msg_invalidValueSet, getValueSet().getValueSetType()
+                            .getName(), getPropertyName()), this, PROPERTY_VALUE_SET));
+        }
         if (isOverwrite()) {
             IProductCmptTypeAttribute superAttr = (IProductCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {

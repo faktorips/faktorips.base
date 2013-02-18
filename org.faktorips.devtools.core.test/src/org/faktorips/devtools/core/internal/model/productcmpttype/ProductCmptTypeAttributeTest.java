@@ -17,7 +17,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -30,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -193,6 +198,16 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
+    public void testValidate_invalidValueSet() throws Exception {
+        productAttribute.setName("name");
+        productAttribute.setDatatype("String");
+        productAttribute.setChangingOverTime(false);
+        productAttribute.setValueSetType(ValueSetType.RANGE);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
+    }
+
     @Test
     public void testSetVisible() {
         assertTrue(productAttribute.isVisible());
@@ -215,6 +230,15 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertFalse(productAttribute.isMultilingual());
         productAttribute.setMultilingual(false);
         assertFalse(productAttribute.isMultilingual());
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes() throws Exception {
+        productAttribute.setMultilingual(true);
+
+        List<ValueSetType> allowedValueSetTypes = productAttribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedValueSetTypes, hasItem(ValueSetType.UNRESTRICTED));
     }
 
 }
