@@ -46,4 +46,6 @@ public class Messages extends NLS {
     public static String ProductCmptValidations_typeDoesNotExist;
     public static String ProductCmptValidations_typeIsAbstract;
 
+    public static String DeltaType_multilingualMismatch;
+
 }

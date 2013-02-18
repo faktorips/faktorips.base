@@ -43,4 +43,8 @@ public class Messages extends NLS {
 
     public static String ValueSetMismatchEntry_desc;
 
+    public static String MultilingualMismatchEntry_convertToStringValue;
+
+    public static String MultilingualMismatchEntry_convertToInternatlStringValue;
+
 }

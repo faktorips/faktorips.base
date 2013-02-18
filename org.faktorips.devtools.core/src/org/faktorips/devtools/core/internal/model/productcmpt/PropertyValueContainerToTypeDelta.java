@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MultilingualMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -45,6 +46,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -169,6 +171,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 }
                 if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                     checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
                 }
             }
         }
@@ -187,6 +190,12 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     /* private */void checkForValueMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
         if (attribute.isMultiValueAttribute() != (value.getValueHolder() instanceof MultiValueHolder)) {
             addEntry(new ValueHolderMismatchEntry(value, attribute));
+        }
+    }
+
+    private void checkForMultilingualMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
+        if (attribute.isMultilingual() != (value.getValueHolder().getValueType().equals(ValueType.INTERNATIONAL_STRING))) {
+            addEntry(new MultilingualMismatchEntry(value, attribute));
         }
     }
 
@@ -246,8 +255,8 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     class HierarchyVisitor extends TypeHierarchyVisitor<IProductCmptType> {
 
-        List<ITableStructureUsage> tableStructureUsages = new ArrayList<ITableStructureUsage>();
-        List<IProductCmptTypeAttribute> attributes = new ArrayList<IProductCmptTypeAttribute>();
+        private List<ITableStructureUsage> tableStructureUsages = new ArrayList<ITableStructureUsage>();
+        private List<IProductCmptTypeAttribute> attributes = new ArrayList<IProductCmptTypeAttribute>();
 
         public HierarchyVisitor(IIpsProject ipsProject) {
             super(ipsProject);
