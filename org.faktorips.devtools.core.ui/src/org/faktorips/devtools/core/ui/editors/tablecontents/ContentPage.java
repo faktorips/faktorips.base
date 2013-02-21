@@ -49,15 +49,17 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -80,8 +82,34 @@ public class ContentPage extends IpsObjectEditorPage {
 
     private TableViewer tableViewer;
 
-    public ContentPage(IpsObjectEditor editor) {
+    /**
+     * The <tt>ITableContents</tt> the <tt>TableContentsEditor</tt> this page belongs to is
+     * currently editing.
+     */
+    private ITableContents tableContents;
+
+    private final BindingContext bindingContext = new BindingContext();
+
+    /** The extension property control factory that may extend the controls. */
+    private ExtensionPropertyControlFactory extFactory;
+
+    public ContentPage(TableContentsEditor editor) {
         super(editor, PAGE_ID, Messages.ContentPage_title);
+        tableContents = editor.getTableContents();
+        extFactory = new ExtensionPropertyControlFactory(tableContents.getClass());
+
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        bindingContext.dispose();
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        bindingContext.updateUI();
     }
 
     @Override
@@ -91,6 +119,9 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
 
+        if (extFactory.needsToCreateControlsFor(tableContents, IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+            createExtensionProperty(formBody, toolkit);
+        }
         Table table = createTable(formBody);
         initTableViewer(table, toolkit);
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
@@ -149,6 +180,12 @@ public class ContentPage extends IpsObjectEditorPage {
                 deactivateCellEditors();
             }
         });
+    }
+
+    private void createExtensionProperty(Composite formBody, UIToolkit toolkit) {
+        Composite composite = toolkit.createLabelEditColumnComposite(formBody);
+        extFactory.createControls(composite, toolkit, tableContents);
+        extFactory.bind(bindingContext);
     }
 
     /**

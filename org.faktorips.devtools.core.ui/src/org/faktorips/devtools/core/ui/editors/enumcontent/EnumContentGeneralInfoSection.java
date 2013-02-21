@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -50,6 +51,9 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     /** The wizard page of the <tt>EnumContentEditor</tt>. */
     private EnumContentEditorPage enumContentEditorPage;
 
+    /** The extension property control factory that may extend the controls. */
+    private ExtensionPropertyControlFactory extFactory;
+
     /** The label showing the base <tt>IEnumType</tt>. */
     Label enumTypeLabel;
 
@@ -72,6 +76,8 @@ public class EnumContentGeneralInfoSection extends IpsSection {
 
         this.enumContentEditorPage = enumContentEditorPage;
         this.enumContent = enumContent;
+
+        extFactory = new ExtensionPropertyControlFactory(enumContent.getClass());
         initControls();
         setText(Messages.EnumContentGeneralInfoSection_title);
     }
@@ -107,6 +113,13 @@ public class EnumContentGeneralInfoSection extends IpsSection {
 
         enumTypeLabel = toolkit.createLabel(composite, enumContent.getEnumType());
         getBindingContext().bindContent(enumTypeLabel, enumContent, IEnumContent.PROPERTY_ENUM_TYPE);
+
+        createExtensionProperty(toolkit, composite);
+    }
+
+    private void createExtensionProperty(UIToolkit toolkit, Composite composite) {
+        extFactory.createControls(composite, toolkit, enumContent);
+        extFactory.bind(getBindingContext());
     }
 
     @Override
