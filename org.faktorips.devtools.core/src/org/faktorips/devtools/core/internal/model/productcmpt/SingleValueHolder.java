@@ -146,8 +146,9 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
 
         if (getValueType().equals(ValueType.STRING)) {
             if (attribute.isMultilingual()) {
-                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, Messages.AttributeValue_MultiLingual,
-                        Message.ERROR, invalidObjectProperties));
+                String text = NLS.bind(Messages.AttributeValue_MultiLingual, getParent().getAttribute());
+                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, text, Message.ERROR,
+                        invalidObjectProperties));
             }
             if (!attribute.getValueSet().containsValue(((StringValue)getValue()).getContentAsString(), ipsProject)) {
                 String text;
@@ -162,8 +163,9 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             }
         } else if (getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
             if (!attribute.isMultilingual()) {
-                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE,
-                        Messages.AttributeValue_NotMultiLingual, Message.ERROR, invalidObjectProperties));
+                String text = NLS.bind(Messages.AttributeValue_NotMultiLingual, getParent().getAttribute());
+                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, text, Message.ERROR,
+                        invalidObjectProperties));
             }
         }
         return list;
