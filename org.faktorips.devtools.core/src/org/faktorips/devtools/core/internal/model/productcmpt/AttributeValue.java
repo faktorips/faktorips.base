@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -101,7 +102,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
      * 
      * @deprecated Since 3.7 we support multi valued attributes. You should use
      *             {@link #setValueHolder(IValueHolder)} instead, for example:
-     *             {@code attributeValue.setValueHolder(AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue, "myValue"));}
+     *             <code>attributeValue.setValueHolder(AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue, myValue));</code>
+     *             while <code>myValue</code> is a new value of type {@link IValue}
      */
     @Override
     @Deprecated

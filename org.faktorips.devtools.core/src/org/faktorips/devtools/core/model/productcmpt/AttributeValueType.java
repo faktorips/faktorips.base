@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.w3c.dom.Element;
 
 /**
@@ -122,12 +123,13 @@ public enum AttributeValueType {
      *            {@link IValueHolder}. The new value holder is not set in the specified attribute
      *            value.
      * @param defaultValue The default value set in the new value holder. The type of the default
-     *            holder have to match with the type of the value holder.
+     *            holder is always a IValue<?>. In case of multiple values, the default value will
+     *            be set as the only one value in the list of multiple values.
      * 
      * @return Returns the new value holder with the specified default value and the attribute set
      *         as parent.
      */
-    public <T> IValueHolder<T> newHolderInstance(IAttributeValue attributeValue, T defaultValue) {
+    public <T> IValueHolder<T> newHolderInstance(IAttributeValue attributeValue, IValue<?> defaultValue) {
         try {
             Class<? extends IAttributeValueHolderFactory<T>> valueHolderFactory = getValueHolderFactory();
             IAttributeValueHolderFactory<T> factory = valueHolderFactory.newInstance();

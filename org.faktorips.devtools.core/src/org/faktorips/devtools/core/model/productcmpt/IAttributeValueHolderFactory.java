@@ -13,10 +13,11 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.faktorips.devtools.core.model.value.IValue;
 
 /**
- * A factory create an {@link IValueHolder} for {@link IAttributeValue attribute values}. To
- * use this factory with {@link IAttributeValue} you have to register your holder type in the enum
+ * A factory create an {@link IValueHolder} for {@link IAttributeValue attribute values}. To use
+ * this factory with {@link IAttributeValue} you have to register your holder type in the enum
  * {@link AttributeValueType} and provide a zero argument default constructor in your factory.
  * 
  * @author dirmeier
@@ -38,10 +39,12 @@ public interface IAttributeValueHolderFactory<T> {
      * implementation must not perform a change event when setting the default value!
      * 
      * @param parent The attribute value used as parent object
-     * @param defaultValue The value set as default value.
+     * @param defaultValue The {@link IValue} set as default value. If the new {@link IValueHolder}
+     *            contains of multiple values, the default value is the only one value in the list
+     *            of multiple values.
      * 
      * @return the newly created value holder.
      */
-    public IValueHolder<T> createValueHolder(IAttributeValue parent, T defaultValue);
+    public IValueHolder<T> createValueHolder(IAttributeValue parent, IValue<?> defaultValue);
 
 }

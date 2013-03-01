@@ -13,14 +13,11 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import java.util.ArrayList;
-
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
 import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConfig;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -82,16 +79,8 @@ public enum ProductCmptPropertyType {
 
             AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
             IValueHolder<?> valueHolder;
-            if (attributeValueType == AttributeValueType.MULTI_VALUE) {
-                ArrayList<SingleValueHolder> defaultList = new ArrayList<SingleValueHolder>();
-                if (defaultValue.getContent() != null) {
-                    SingleValueHolder defaultHolder = new SingleValueHolder(attributeValue, defaultValue);
-                    defaultList.add(defaultHolder);
-                }
-                valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultList);
-            } else {
-                valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
-            }
+            valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
+            valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
             attributeValue.setValueHolderInternal(valueHolder);
             return attributeValue;
         }

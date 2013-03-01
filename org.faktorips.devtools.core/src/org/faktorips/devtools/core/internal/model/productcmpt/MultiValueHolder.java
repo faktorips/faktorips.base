@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValueHolderFactory;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -278,9 +279,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         }
 
         @Override
-        public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent,
-                List<SingleValueHolder> defaultValue) {
-            return new MultiValueHolder(parent, defaultValue);
+        public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent, IValue<?> defaultValue) {
+            SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
+            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+            values.add(singleValueHolder);
+            return new MultiValueHolder(parent, values);
         }
     }
 
