@@ -136,18 +136,18 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
     @Test
     public void testNewPart() {
         // test rownumber init within newPart()
-        IRow row0 = (IRow)generation.newPart(IRow.class);
+        IRow row0 = generation.newPart(IRow.class);
         String id0 = row0.getId();
         assertNotNull(id0);
         assertEquals(0, row0.getRowNumber());
 
-        IRow row1 = (IRow)generation.newPart(IRow.class);
+        IRow row1 = generation.newPart(IRow.class);
         String id1 = row1.getId();
         assertNotNull(id1);
         assertFalse(id0.equals(id1));
         assertEquals(1, row1.getRowNumber());
 
-        assertTrue(generation.newPart(IRow.class) instanceof IRow);
+        assertTrue(generation.newPart(IRow.class) != null);
     }
 
     @Test

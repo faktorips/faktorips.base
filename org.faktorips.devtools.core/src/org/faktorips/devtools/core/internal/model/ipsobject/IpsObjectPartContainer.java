@@ -701,14 +701,19 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @param partType The published interface of the IPS object part that should be created.
      */
-    public final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    @SuppressWarnings("unchecked")
+    // not type safe because newPartThis is not type safe
+    public final <T extends IIpsObjectPart> T newPart(Class<T> partType) {
         if (partType == Label.class) {
-            return newLabel();
+            T newLabel = (T)newLabel();
+            return newLabel;
 
         } else if (partType == Description.class) {
-            return newDescription();
+            T newDescription = (T)newDescription();
+            return newDescription;
         }
-        return newPartThis(partType);
+        T newPartThis = (T)newPartThis(partType);
+        return newPartThis;
     }
 
     /**
@@ -716,6 +721,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * published interface class.
      * <p>
      * Should return <tt>null</tt> if the type is unknown.
+     * <p>
+     * This class is not type safe because it was to late to implement generics correctly. However
+     * the implementer needs to ensure that the returned object could safely casted to
+     * <code>partType</code>.
      * 
      * @param partType The published interface of the IPS object part that should be created.
      */
@@ -774,7 +783,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         Set<ICustomValidation<IpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
                 .getCustomValidations(thisClass);
         for (ICustomValidation<IpsObjectPartContainer> validation : customValidations) {
-            result.add(validation.validate(this, ipsProject)); // add can handle null!
+            result.add(validation.validate(this, ipsProject));
         }
     }
 

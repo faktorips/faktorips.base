@@ -302,10 +302,10 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewPart() {
-        assertTrue(table.newPart(IColumn.class) instanceof IColumn);
-        assertTrue(table.newPart(IColumnRange.class) instanceof IColumnRange);
-        assertTrue(table.newPart(IUniqueKey.class) instanceof IUniqueKey);
-        assertTrue(table.newPart(IForeignKey.class) instanceof IForeignKey);
+        assertNotNull(table.newPart(IColumn.class));
+        assertNotNull(table.newPart(IColumnRange.class));
+        assertNotNull(table.newPart(IUniqueKey.class));
+        assertNotNull(table.newPart(IForeignKey.class));
     }
 
     @Test

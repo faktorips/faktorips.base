@@ -236,7 +236,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
                     @Override
                     public boolean execute() throws CoreException {
-                        newEnumAttribute = (IEnumAttribute)newPart(attributeClass);
+                        newEnumAttribute = newPart(attributeClass);
 
                         // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
                         for (IEnumValue currentEnumValue : getEnumValues()) {

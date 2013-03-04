@@ -55,7 +55,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentTy
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -733,10 +732,10 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testNewPart() {
-        assertTrue(policyCmptType.newPart(PolicyCmptTypeAttribute.class) instanceof IPolicyCmptTypeAttribute);
-        assertTrue(policyCmptType.newPart(PolicyCmptTypeMethod.class) instanceof IPolicyCmptTypeMethod);
-        assertTrue(policyCmptType.newPart(PolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
-        assertTrue(policyCmptType.newPart(ValidationRule.class) instanceof IValidationRule);
+        assertNotNull(policyCmptType.newPart(PolicyCmptTypeAttribute.class));
+        assertNotNull(policyCmptType.newPart(PolicyCmptTypeMethod.class));
+        assertNotNull(policyCmptType.newPart(PolicyCmptTypeAssociation.class));
+        assertNotNull(policyCmptType.newPart(ValidationRule.class));
     }
 
     @Test
