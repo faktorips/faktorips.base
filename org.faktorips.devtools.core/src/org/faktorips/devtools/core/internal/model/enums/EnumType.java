@@ -286,16 +286,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean initUniqueIdentifierCacheImpl(IIpsProject ipsProject) throws CoreException {
-        List<IEnumAttribute> uniqueEnumAttributes = findUniqueEnumAttributes(true, ipsProject);
-        for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            addUniqueIdentifierToCache(getIndexOfEnumAttribute(currentUniqueAttribute));
-        }
-        initCacheEntries(uniqueEnumAttributes, this);
-        return true;
-    }
-
-    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
@@ -348,10 +338,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     moveEnumAttributeValues(indexToMove, getEnumValues(), up);
                 }
 
-                // Update unique identifier validation cache.
-                if (isUniqueIdentifierCacheInitialized()) {
-                    handleMoveEnumAttribute(indexToMove, up);
-                }
                 if (newIndex[0] != indexToMove) {
                     return true;
                 }
@@ -708,13 +694,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
         if (!(enumAttributes.contains(enumAttribute))) {
             return false;
-        }
-
-        // Update unique identifier validation cache if necessary.
-        if (isUniqueIdentifierCacheInitialized()) {
-            int index = getIndexOfEnumAttribute(enumAttribute);
-            removeUniqueIdentifierFromCache(index);
-            handleEnumAttributeDeletion(index);
         }
 
         getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {

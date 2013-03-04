@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -99,18 +98,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     private void fixEnumAttributeValueAfterConstructing(IEnumAttributeValue enumAttributeValue) {
-        try {
-            IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
-            if (enumType != null) {
-                List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
-                int index = getEnumAttributeValuesCount() - 1;
-                if (enumAttributes.size() > index) {
-                    IEnumAttribute enumAttribute = enumAttributes.get(index);
-                    enumAttributeValue.fixValueType(enumAttribute.isMultilingual());
-                }
+        IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+        if (enumType != null) {
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+            int index = getEnumAttributeValuesCount() - 1;
+            if (enumAttributes.size() > index) {
+                IEnumAttribute enumAttribute = enumAttributes.get(index);
+                enumAttributeValue.fixValueType(enumAttribute.isMultilingual());
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -238,35 +233,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue) {
         ArgumentCheck.notNull(enumAttributeValue);
         return enumAttributeValues.indexOf(enumAttributeValue);
-    }
-
-    @Override
-    public void delete() {
-        // Remove unique identifier entries of this EnumValue from the validation cache.
-        IIpsProject ipsProject = getIpsProject();
-        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValueContainer();
-        if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
-            try {
-                IEnumType referencedEnumType = getEnumValueContainer().findEnumType(ipsProject);
-                if (referencedEnumType != null) {
-                    List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(
-                            getEnumValueContainer() instanceof IEnumType, ipsProject);
-                    List<IEnumAttributeValue> uniqueEnumAttributeValues = findUniqueEnumAttributeValues(
-                            uniqueEnumAttributes, ipsProject);
-                    for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
-                        IEnumAttributeValue currentEnumAttributeValue = uniqueEnumAttributeValues.get(i);
-                        IEnumAttribute currentReferencedEnumAttribute = uniqueEnumAttributes.get(i);
-                        enumValueContainerImpl.removeCacheEntry(
-                                referencedEnumType.getIndexOfEnumAttribute(currentReferencedEnumAttribute),
-                                currentEnumAttributeValue.getValue().getContentAsString(), currentEnumAttributeValue);
-                    }
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        super.delete();
     }
 
     @Override

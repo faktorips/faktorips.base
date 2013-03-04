@@ -140,11 +140,7 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
-        try {
-            enumType = enumContent.findEnumType(enumContent.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        enumType = enumContent.findEnumType(enumContent.getIpsProject());
 
         /*
          * Return if the content changed was not the EnumContent to be edited or the referenced

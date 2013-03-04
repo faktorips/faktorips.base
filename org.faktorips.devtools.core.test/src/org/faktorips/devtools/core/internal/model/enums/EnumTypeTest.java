@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DependencyDetail;
@@ -277,7 +278,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumType() throws CoreException {
+    public void testFindEnumType() {
         try {
             genderEnumType.findEnumType(null);
             fail();
@@ -632,6 +633,43 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED,
                 validationMessageList.getFirstMessage(Message.ERROR).getCode());
         assertEquals(1, validationMessageList.size());
+    }
+
+    /**
+     * <strong>Performance Test:</strong><br>
+     * The container is filled with 2000 enum values containing 10 enum attributes
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The time to validate the identifier violations should be less than 2 second. In fact it
+     * should be very faster but two seconds is the maximum for slow test machines!
+     */
+    @Test
+    public void testValidate_performance() throws Exception {
+        EnumType enumType = newEnumType(ipsProject, "PerformanceTestEnum");
+        enumType.setContainingValues(true);
+        for (int column = 0; column < 10; column++) {
+            IEnumAttribute enumAttribute = enumType.newEnumAttribute();
+            enumAttribute.setUnique(true);
+            if ((column % 2) == 0) {
+                enumAttribute.setMultilingual(true);
+            }
+        }
+        for (int i = 0; i < 2000; i++) {
+            IEnumValue enumValue = enumType.newEnumValue();
+            fillAttributeValues(enumValue, i);
+        }
+
+        long time = System.currentTimeMillis();
+        enumType.validate(ipsProject);
+        long duration = System.currentTimeMillis() - time;
+        assertTrue(duration < 2000);
+    }
+
+    private void fillAttributeValues(IEnumValue enumValue, int i) {
+        List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
+        for (int j = 0; j < 10; j++) {
+            enumAttributeValues.get(j).setValue(new StringValue("abc" + i + j));
+        }
     }
 
     @Test

@@ -541,11 +541,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
-        try {
-            enumType = enumValueContainer.findEnumType(ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        enumType = enumValueContainer.findEnumType(ipsProject);
 
         /*
          * Return if the content changed was not the EnumValueContainer to be edited or the

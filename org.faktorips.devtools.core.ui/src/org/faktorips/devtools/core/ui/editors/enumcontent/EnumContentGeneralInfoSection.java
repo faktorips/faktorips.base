@@ -97,13 +97,9 @@ public class EnumContentGeneralInfoSection extends IpsSection {
                         return;
                     }
                     IEnumType enumType;
-                    try {
-                        enumType = enumContent.findEnumType(enumContent.getIpsProject());
-                        if (enumType != null) {
-                            IpsUIPlugin.getDefault().openEditor(enumType);
-                        }
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
+                    enumType = enumContent.findEnumType(enumContent.getIpsProject());
+                    if (enumType != null) {
+                        IpsUIPlugin.getDefault().openEditor(enumType);
                     }
                 }
             });

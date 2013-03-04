@@ -76,8 +76,6 @@ public class Migration_3_0_0_ms2 extends DefaultMigration {
                         }
                     }
                 }
-
-                enumType.clearUniqueIdentifierCache();
             }
         }
     }

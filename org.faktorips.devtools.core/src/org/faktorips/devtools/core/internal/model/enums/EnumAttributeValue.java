@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.internal.model.value.ValueUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
@@ -107,12 +108,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         IEnumValue enumValue = getEnumValue();
         IEnumValueContainer valueContainer = enumValue.getEnumValueContainer();
-        IEnumType enumType;
-        try {
-            enumType = valueContainer.findEnumType(ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IEnumType enumType = valueContainer.findEnumType(ipsProject);
         if (enumType == null) {
             return null;
         }
@@ -177,28 +173,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     public void setValue(IValue<?> newValue) {
         IValue<?> oldValue = getValue();
         setValueInternal(newValue);
-
-        /*
-         * Update unique identifier validation cache if this EnumAttributeValue refers to a unique
-         * EnumAttribute.
-         */
-        if (oldValue != null && newValue != null) {
-            updateUniqueIdentifierContainer(oldValue, newValue);
-        }
         valueChanged(oldValue, newValue);
-    }
-
-    private void updateUniqueIdentifierContainer(IValue<?> oldValue, IValue<?> newValue) {
-        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
-            IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
-            IEnumType enumType = referencedEnumAttribute.getEnumType();
-            int index = enumType.getIndexOfEnumAttribute(referencedEnumAttribute);
-            if (enumValueContainerImpl.containsCacheUniqueIdentifier(index)) {
-                enumValueContainerImpl.removeCacheEntry(index, oldValue.getContentAsString(), this);
-                enumValueContainerImpl.addCacheEntry(index, newValue.getContentAsString(), this);
-            }
-        }
     }
 
     @Override
@@ -224,12 +199,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                     new ObjectProperty(this, PROPERTY_VALUE));
 
             // Unique identifier and literal name validations.
-            EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-            boolean cacheInitialized = enumValueContainerImpl.initUniqueIdentifierCache(ipsProject);
-            if (cacheInitialized) {
-                if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
-                    validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
-                }
+            if (isUniqueIdentifierEnumAttributeValue(enumAttribute)) {
+                validateUniqueIdentifierEnumAttributeValue(list);
             }
         }
     }
@@ -283,16 +254,15 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to a unique identifier
      * <tt>IEnumAttribute</tt>.
      */
-    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute) {
+    private void validateUniqueIdentifierEnumAttributeValue(MessageList list) {
         String text;
         Message validationMessage;
 
         // A unique identifier EnumAttributeValue must not be empty.
-        String uniqueIdentifierValue = getValue().getContentAsString();
-        boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true
-                : uniqueIdentifierValue.length() == 0
-                        || uniqueIdentifierValue.equals(IpsPlugin.getDefault().getIpsPreferences()
-                                .getNullPresentation());
+        IValue<?> uniqueIdentifierValue = getValue();
+        ValueUtil valueUtil = ValueUtil.createUtil(uniqueIdentifierValue);
+        boolean uniqueIdentifierValueMissing = valueUtil.isPartlyEmpty(getIpsProject())
+                || uniqueIdentifierValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         if (uniqueIdentifierValueMissing) {
             text = Messages.EnumAttributeValue_UniqueIdentifierValueEmpty;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
@@ -303,16 +273,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // A unique identifier EnumAttributeValue must be truly unique.
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        IEnumType enumType = enumAttribute.getEnumType();
-        List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl.getCacheListForUniqueIdentifier(
-                enumType.getIndexOfEnumAttribute(enumAttribute), getValue().getContentAsString());
-        if (cachedAttributeValues != null) {
-            if (cachedAttributeValues.size() > 1) {
-                text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, value);
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
-                        Message.ERROR, this, PROPERTY_VALUE);
-                list.add(validationMessage);
-            }
+        List<String> uniqueIdentifierViolations = enumValueContainerImpl.getUniqueIdentifierViolations(this);
+        for (String invalidString : uniqueIdentifierViolations) {
+            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, invalidString);
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
+                    Message.ERROR, this, PROPERTY_VALUE);
+            list.add(validationMessage);
         }
     }
 
@@ -320,9 +286,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Returns whether this <tt>IEnumAttributeValue</tt> refers to a unique identifier
      * <tt>IEnumAttribute</tt>.
      */
-    private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute, IEnumType enumType) {
-        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        return enumValueContainerImpl.containsCacheUniqueIdentifier(enumType.getIndexOfEnumAttribute(enumAttribute));
+    private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute) {
+        try {
+            return enumAttribute.findIsUnique(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

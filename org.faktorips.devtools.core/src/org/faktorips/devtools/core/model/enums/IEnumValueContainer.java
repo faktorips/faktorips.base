@@ -92,11 +92,9 @@ public interface IEnumValueContainer extends IIpsObject {
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
      *            necessarily the project this <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the
-     *             referenced <tt>IEnumType</tt>.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException;
+    public IEnumType findEnumType(IIpsProject ipsProject);
 
     /** Returns how many <tt>IEnumValue</tt>s this <tt>IEnumValueContainer</tt> currently contains. */
     public int getEnumValuesCount();
@@ -132,11 +130,6 @@ public interface IEnumValueContainer extends IIpsObject {
      * Deletes all <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>.
      */
     public void clear();
-
-    /**
-     * Clears the unique identifier cache.
-     */
-    public void clearUniqueIdentifierCache();
 
     /**
      * Deletes the given <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>. This operation

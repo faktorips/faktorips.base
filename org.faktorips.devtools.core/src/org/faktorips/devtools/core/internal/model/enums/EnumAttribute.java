@@ -425,32 +425,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     public void setUnique(boolean uniqueIdentifier) {
         boolean oldIsUniqueIdentifier = unique;
         unique = uniqueIdentifier;
-
-        // Update unique identifier validation cache.
-        if (oldIsUniqueIdentifier != uniqueIdentifier) {
-            EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumType();
-            if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
-                IEnumType enumType = getEnumType();
-                int index = enumType.getIndexOfEnumAttribute(this);
-                if (uniqueIdentifier) {
-                    enumValueContainerImpl.addUniqueIdentifierToCache(index);
-                    /*
-                     * Add all the unique identifier values of the column to the unique identifier
-                     * validation cache.
-                     */
-                    List<IEnumAttribute> newUniqueAttributeList = new ArrayList<IEnumAttribute>(1);
-                    newUniqueAttributeList.add(this);
-                    try {
-                        enumValueContainerImpl.initCacheEntries(newUniqueAttributeList, enumType);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    enumValueContainerImpl.removeUniqueIdentifierFromCache(index);
-                }
-            }
-        }
-
         valueChanged(oldIsUniqueIdentifier, uniqueIdentifier);
     }
 

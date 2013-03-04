@@ -151,7 +151,6 @@ public class FixEnumContentWizard extends Wizard {
                             moveAttributeValues();
                         }
                         enumContent.setEnumType(newEnumType.getQualifiedName());
-                        enumContent.clearUniqueIdentifierCache();
                         enumContent.fixAllEnumAttributeValues();
                     }
                 };
@@ -501,15 +500,11 @@ public class FixEnumContentWizard extends Wizard {
                 }
             });
 
-            try {
-                IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
-                if (enumType != null) {
-                    if (!(enumType.isAbstract()) && !(enumType.isContainingValues())) {
-                        enumTypeRefControl.setText(enumType.getQualifiedName());
-                    }
+            IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
+            if (enumType != null) {
+                if (!(enumType.isAbstract()) && !(enumType.isContainingValues())) {
+                    enumTypeRefControl.setText(enumType.getQualifiedName());
                 }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
             }
 
             setMessage(Messages.FixEnumContentWizard_msgChooseEnumType);

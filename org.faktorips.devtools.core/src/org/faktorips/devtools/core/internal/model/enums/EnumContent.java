@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -79,12 +80,16 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException {
+    public IEnumType findEnumType(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
-        IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumType);
-        if (ipsSrcFile != null && ipsSrcFile.exists()) {
-            return (IEnumType)ipsSrcFile.getIpsObject();
+        try {
+            IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumType);
+            if (ipsSrcFile != null && ipsSrcFile.exists()) {
+                return (IEnumType)ipsSrcFile.getIpsObject();
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
         return null;
     }
@@ -104,7 +109,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * Refreshes the <tt>IEnumAttributeReference</tt>s that belong to this <tt>IEnumContent</tt> by
      * looking up recent information in the base <tt>IEnumType</tt>.
      */
-    private void refreshEnumAttributeReferences() throws CoreException {
+    private void refreshEnumAttributeReferences() {
         IEnumType newEnumType = findEnumType(getIpsProject());
         if (newEnumType != null) {
             enumAttributeReferences.clear();
@@ -114,27 +119,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
                 reference.setName(currentEnumAttribute.getName());
             }
         }
-    }
-
-    @Override
-    public boolean initUniqueIdentifierCacheImpl(IIpsProject ipsProject) throws CoreException {
-        IEnumType referencedEnumType = findEnumType(ipsProject);
-
-        /*
-         * If we can't find the base EnumType we can't initialize the validation cache. This is no
-         * problem however, because unique identifiers are not validated as long as the base
-         * EnumType cannot be found.
-         */
-        if (referencedEnumType == null) {
-            return false;
-        }
-
-        List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(false, ipsProject);
-        for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            addUniqueIdentifierToCache(referencedEnumType.getIndexOfEnumAttribute(currentUniqueAttribute));
-        }
-        initCacheEntries(uniqueEnumAttributes, referencedEnumType);
-        return true;
     }
 
     @Override
