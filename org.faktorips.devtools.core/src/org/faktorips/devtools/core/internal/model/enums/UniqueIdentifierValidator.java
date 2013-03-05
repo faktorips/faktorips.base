@@ -54,14 +54,13 @@ class UniqueIdentifierValidator {
             @Override
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.isAffected(container)) {
-                    if ((event.getEventType() & ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) != 0) {
-                        columnAttributeValues.clear();
-                    }
                     IIpsObjectPart part = event.getPart();
                     if (part instanceof IEnumAttributeValue) {
                         IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
                         int index = getEnumAttributeIndex(enumAttributeValue);
                         columnAttributeValues.remove(index);
+                    } else {
+                        columnAttributeValues.clear();
                     }
                 }
             }
@@ -80,6 +79,7 @@ class UniqueIdentifierValidator {
                 violatingString.add(localizedString.getValue());
             }
         }
+        columnAttributeValues = columnAttributeValuesCopy;
         return violatingString;
     }
 

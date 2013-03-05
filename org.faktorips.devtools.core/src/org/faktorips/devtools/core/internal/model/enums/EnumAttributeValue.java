@@ -19,7 +19,6 @@ import java.util.Observer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
@@ -261,8 +260,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         // A unique identifier EnumAttributeValue must not be empty.
         IValue<?> uniqueIdentifierValue = getValue();
         ValueUtil valueUtil = ValueUtil.createUtil(uniqueIdentifierValue);
-        boolean uniqueIdentifierValueMissing = valueUtil.isPartlyEmpty(getIpsProject())
-                || uniqueIdentifierValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        boolean uniqueIdentifierValueMissing = valueUtil.isPartlyEmpty(getIpsProject());
         if (uniqueIdentifierValueMissing) {
             text = Messages.EnumAttributeValue_UniqueIdentifierValueEmpty;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,

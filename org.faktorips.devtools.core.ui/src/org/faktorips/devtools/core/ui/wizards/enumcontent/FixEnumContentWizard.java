@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -819,12 +820,14 @@ public class FixEnumContentWizard extends Wizard {
             String defaultlanguage = enumContent.getIpsProject().getReadOnlyProperties().getDefaultLanguage()
                     .getLocale().getLanguage();
             List<String> list = new ArrayList<String>();
-            for (String column : mismatchMap.keySet()) {
-                ValueTypeMismatch valueTypeMismatch = mismatchMap.get(column);
+            for (Entry<String, ValueTypeMismatch> columnEntry : mismatchMap.entrySet()) {
+                ValueTypeMismatch valueTypeMismatch = columnEntry.getValue();
                 if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(valueTypeMismatch)) {
-                    list.add(NLS.bind(Messages.FixEnumContentWizard_messageNoMultilingual, column, defaultlanguage));
+                    list.add(NLS.bind(Messages.FixEnumContentWizard_messageNoMultilingual, columnEntry.getKey(),
+                            defaultlanguage));
                 } else if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(valueTypeMismatch)) {
-                    list.add(NLS.bind(Messages.FixEnumContentWizard_messageMultilingual, column, defaultlanguage));
+                    list.add(NLS.bind(Messages.FixEnumContentWizard_messageMultilingual, columnEntry.getKey(),
+                            defaultlanguage));
                 }
             }
             return list;

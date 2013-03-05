@@ -640,8 +640,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
      * The container is filled with 2000 enum values containing 10 enum attributes
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * The time to validate the identifier violations should be less than 2 second. In fact it
-     * should be very faster but two seconds is the maximum for slow test machines!
+     * The time to validate the identifier violations should be less than 3 second. In fact it
+     * should be very much faster but three seconds is the maximum for slow test machines!
      */
     @Test
     public void testValidate_performance() throws Exception {
@@ -659,10 +659,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
             fillAttributeValues(enumValue, i);
         }
 
-        long time = System.currentTimeMillis();
+        long time = System.nanoTime();
         enumType.validate(ipsProject);
-        long duration = System.currentTimeMillis() - time;
-        assertTrue(duration < 2000);
+        double duration = (System.nanoTime() - time) / 1000000000.0;
+        assertTrue("Needed " + duration + " seconds. (should be less than 3)", duration < 3);
     }
 
     private void fillAttributeValues(IEnumValue enumValue, int i) {

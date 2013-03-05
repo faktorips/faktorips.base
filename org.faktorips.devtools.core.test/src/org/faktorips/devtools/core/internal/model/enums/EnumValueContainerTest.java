@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
@@ -227,7 +228,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumContent.getEnumValuesCount());
     }
 
-    public void _testUniqueIdentifierValidationPerformance() throws CoreException {
+    @Test
+    @Ignore("Only performance messure, no real test")
+    public void testUniqueIdentifierValidationPerformance() throws CoreException {
         IEnumType hugeEnumType = newEnumType(ipsProject, "HugeEnumType");
         hugeEnumType.setContainingValues(true);
         IEnumLiteralNameAttribute literalNameAttribute = hugeEnumType.newEnumLiteralNameAttribute();
@@ -265,7 +268,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         long millisBefore = System.currentTimeMillis();
         hugeEnumType.validate(ipsProject);
         long millisDifference = System.currentTimeMillis() - millisBefore;
-        System.out.println("First validation took " + millisDifference / 1000 + " seconds.");
+        System.out.println("First validation took " + millisDifference / 1000f + " seconds.");
 
         // Perform second validation.
         getIpsModel().clearValidationCache();
@@ -273,7 +276,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         millisBefore = System.currentTimeMillis();
         hugeEnumType.validate(ipsProject);
         millisDifference = System.currentTimeMillis() - millisBefore;
-        System.out.println("Second validation took " + millisDifference / 1000 + " seconds.");
+        System.out.println("Second validation took " + millisDifference / 1000f + " seconds.");
     }
 
     @Test

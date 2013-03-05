@@ -34,7 +34,7 @@ public class InternationalStringControl extends TextButtonControl {
      * the button. It is not clear, why exactly this happens, but the size difference is the same on
      * Linux and Windows and also independent of the used font size.
      */
-    private final int SIZE_OF_TEXTFIELD_PADDING = 7;
+    private static final int SIZE_OF_TEXTFIELD_PADDING = 7;
 
     private final InternationalStringDialogHandler handler;
 
