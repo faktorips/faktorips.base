@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.values.LocalizedString;
 
 /**
  * A Wrapper for an {@link IAttributeValue}. Provides a {@link #getFormattedValue()} method. In case
@@ -84,7 +84,7 @@ public class ValueHolderToFormattedStringWrapper {
             for (SingleValueHolder holder : multiHolder.getValue()) {
                 String stringValue;
                 if (holder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-                    ILocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IpsPlugin
+                    LocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IpsPlugin
                             .getMultiLanguageSupport().getLocalizationLocaleOrDefault(holder.getIpsProject()));
                     stringValue = locString.getValue();
                 } else {

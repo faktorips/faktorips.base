@@ -22,10 +22,10 @@ import java.util.Set;
 import org.faktorips.devtools.core.internal.model.value.ValueUtil;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.values.LocalizedString;
 
 /**
  * This is an validation utility for {@link IEnumAttributeValue} unique identifiers.
@@ -71,10 +71,10 @@ class UniqueIdentifierValidator {
         HashMap<Integer, AttributeValues> columnAttributeValuesCopy = new HashMap<Integer, AttributeValues>(
                 columnAttributeValues);
         List<String> violatingString = new ArrayList<String>();
-        Set<ILocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
+        Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
         int index = getEnumAttributeIndex(enumAttributeValue);
         AttributeValues attributeValues = getAttributeValues(columnAttributeValuesCopy, index);
-        for (ILocalizedString localizedString : localizedIdentifyerList) {
+        for (LocalizedString localizedString : localizedIdentifyerList) {
             if (attributeValues.isDuplicated(localizedString)) {
                 violatingString.add(localizedString.getValue());
             }
@@ -96,8 +96,8 @@ class UniqueIdentifierValidator {
         AttributeValues attributeValues = new AttributeValues();
         for (IEnumValue value : container.getEnumValues()) {
             IEnumAttributeValue enumAttributeValue = value.getEnumAttributeValues().get(columnIndex);
-            Set<ILocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
-            for (ILocalizedString localizedString : localizedIdentifyerList) {
+            Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
+            for (LocalizedString localizedString : localizedIdentifyerList) {
                 attributeValues.addIdentifier(localizedString);
             }
         }
@@ -108,17 +108,17 @@ class UniqueIdentifierValidator {
         return enumAttributeValue.getEnumValue().getIndexOfEnumAttributeValue(enumAttributeValue);
     }
 
-    private Set<ILocalizedString> getLocalizedIdentifiers(IEnumAttributeValue enumAttributeValue) {
+    private Set<LocalizedString> getLocalizedIdentifiers(IEnumAttributeValue enumAttributeValue) {
         ValueUtil otherValueUtil = ValueUtil.createUtil(enumAttributeValue.getValue());
-        Set<ILocalizedString> result = otherValueUtil.getLocalizedIdentifiers();
+        Set<LocalizedString> result = otherValueUtil.getLocalizedIdentifiers();
         return result;
     }
 
     private static class AttributeValues {
 
-        private Map<ILocalizedString, Integer> identifierCounts = new HashMap<ILocalizedString, Integer>();
+        private Map<LocalizedString, Integer> identifierCounts = new HashMap<LocalizedString, Integer>();
 
-        public void addIdentifier(ILocalizedString identifier) {
+        public void addIdentifier(LocalizedString identifier) {
             Integer count = identifierCounts.get(identifier);
             if (count == null) {
                 identifierCounts.put(identifier, 1);
@@ -127,7 +127,7 @@ class UniqueIdentifierValidator {
             }
         }
 
-        public boolean isDuplicated(ILocalizedString identifier) {
+        public boolean isDuplicated(LocalizedString identifier) {
             final Integer count = identifierCounts.get(identifier);
             return count != null && count > 1;
         }

@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueVi
 import org.faktorips.devtools.core.ui.table.InternationalStringCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.values.LocalizedString;
 
 /**
  * {@link FormattedCellEditingSupport} that creates its cell editors configured for multiple
@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
  * used in the {@link MultiValueDialog}, internationalization can be achieved for every value.
  */
 public class LocalizedStringEditingSupportForSingleValueViewItems extends
-        FormattedCellEditingSupport<SingleValueViewItem, ILocalizedString> {
+        FormattedCellEditingSupport<SingleValueViewItem, LocalizedString> {
     /**
      * The {@link UIToolkit} for the dialog using this support.
      */
@@ -57,7 +57,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
     private final TableViewer multiValueTableViewer;
 
     public LocalizedStringEditingSupportForSingleValueViewItems(UIToolkit toolkit, TableViewer tableViewer,
-            IElementModifier<SingleValueViewItem, ILocalizedString> elementModifier) {
+            IElementModifier<SingleValueViewItem, LocalizedString> elementModifier) {
         super(tableViewer, elementModifier);
         this.toolkit = toolkit;
         this.multiValueTableViewer = tableViewer;
@@ -114,7 +114,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
 
     @Override
     public String getFormattedValue(SingleValueViewItem element) {
-        ILocalizedString string = getValue(element);
+        LocalizedString string = getValue(element);
         return string == null ? null : string.getValue();
     }
 

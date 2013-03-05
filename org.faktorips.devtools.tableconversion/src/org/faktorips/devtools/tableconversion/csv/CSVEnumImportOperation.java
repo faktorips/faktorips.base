@@ -31,7 +31,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.LocalizedString;
 
 /**
  * Operation to import IPS enum types or contents from a CSV file.

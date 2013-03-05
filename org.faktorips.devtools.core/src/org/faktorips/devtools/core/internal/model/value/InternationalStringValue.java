@@ -23,13 +23,13 @@ import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -78,7 +78,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     @Override
     public String getContentAsString() {
         StringBuffer stringBuffer = new StringBuffer();
-        for (ILocalizedString localizedString : getContent().values()) {
+        for (LocalizedString localizedString : getContent().values()) {
             if (!StringUtils.isEmpty(stringBuffer.toString())) {
                 stringBuffer.append(CONTENT_STRING_SEPERATOR);
             }
@@ -139,7 +139,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
             Set<ISupportedLanguage> supportedLanguages = ipsproject.getReadOnlyProperties().getSupportedLanguages();
             int languagesCount = supportedLanguages.size();
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-                ILocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
+                LocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
                 if (StringUtils.isEmpty(iLocalizedString.getValue())) {
                     newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
@@ -154,7 +154,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
 
     @Override
     public String getLocalizedContent(Locale locale) {
-        ILocalizedString localizedString = getContent().get(locale);
+        LocalizedString localizedString = getContent().get(locale);
         return localizedString.getValue();
     }
 

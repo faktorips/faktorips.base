@@ -31,7 +31,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatype {
 
-    private Datatype basicType;
+    private final Datatype basicType;
 
     /**
      * Constructs a new List type based on the given underlying basic type.
@@ -39,7 +39,11 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     public ListOfTypeDatatype(Datatype basicType) {
         super();
         ArgumentCheck.notNull(basicType);
-        this.basicType = basicType;
+        if (basicType.isPrimitive() && basicType instanceof ValueDatatype) {
+            this.basicType = ((ValueDatatype)basicType).getWrapperType();
+        } else {
+            this.basicType = basicType;
+        }
     }
 
     /**
@@ -89,9 +93,20 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     public String getJavaClassName() {
         StringBuffer buffer = new StringBuffer(List.class.getName());
         buffer.append('<');
-        buffer.append(basicType.getName());
+        appendBasicJavaName(buffer);
         buffer.append('>');
         return buffer.toString();
+    }
+
+    /**
+     * 
+     */
+    private void appendBasicJavaName(StringBuffer buffer) {
+        try {
+            buffer.append(basicType.getJavaClassName());
+        } catch (RuntimeException e) {
+            buffer.append(basicType.getName());
+        }
     }
 
     public ValueDatatype getWrapperType() {

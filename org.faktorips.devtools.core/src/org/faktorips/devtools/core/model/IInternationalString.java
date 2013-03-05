@@ -16,11 +16,13 @@ package org.faktorips.devtools.core.model;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.faktorips.values.LocalizedString;
+
 /**
  * A {@link IInternationalString} could be used for string properties that could be translated in
  * different languages. The {@link IInternationalString} consists of a set of
- * {@link ILocalizedString}. Setting a {@link ILocalizedString} means to set the string for a
- * specific language.
+ * {@link LocalizedString}. Setting a {@link LocalizedString} means to set the string for a specific
+ * language.
  * <p>
  * The {@link IInternationalString} has {@link XmlSupport} to save and load it.
  * 
@@ -29,32 +31,32 @@ import java.util.Locale;
 public interface IInternationalString extends XmlSupport {
 
     /**
-     * Getting the {@link ILocalizedString} for the specified locale. Returns a new
-     * {@link ILocalizedString} with an empty String value if there is no existing one for the
+     * Getting the {@link LocalizedString} for the specified locale. Returns a new
+     * {@link LocalizedString} with an empty String value if there is no existing one for the
      * specified locale.
      * 
      * @param locale the locale of the text you want to get
-     * @return return the text for the specified locale or an empty {@link ILocalizedString} if no
+     * @return return the text for the specified locale or an empty {@link LocalizedString} if no
      *         such text exists
      */
-    ILocalizedString get(Locale locale);
+    LocalizedString get(Locale locale);
 
     /**
-     * Adding the specified {@link ILocalizedString}. It is not allowed to add null. If you add an
-     * {@link ILocalizedString} with a null value it is automatically converted to an empty
-     * {@link ILocalizedString}
+     * Adding the specified {@link LocalizedString}. It is not allowed to add null. If you add an
+     * {@link LocalizedString} with a null value it is automatically converted to an empty
+     * {@link LocalizedString}
      * 
-     * @param localizedString the {@link ILocalizedString} specifying the locale and text you want
-     *            to set
+     * @param localizedString the {@link LocalizedString} specifying the locale and text you want to
+     *            set
      */
-    void add(ILocalizedString localizedString);
+    void add(LocalizedString localizedString);
 
     /**
-     * Getting all {@link ILocalizedString} stored in this {@link IInternationalString}
+     * Getting all {@link LocalizedString} stored in this {@link IInternationalString}
      * 
-     * @return a collection of {@link ILocalizedString} that is stored in this
+     * @return a collection of {@link LocalizedString} that is stored in this
      *         {@link IInternationalString}
      */
-    Collection<ILocalizedString> values();
+    Collection<LocalizedString> values();
 
 }

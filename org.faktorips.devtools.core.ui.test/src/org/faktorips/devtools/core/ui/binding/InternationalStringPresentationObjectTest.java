@@ -25,8 +25,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Locale;
 
 import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 
 public class InternationalStringPresentationObjectTest {

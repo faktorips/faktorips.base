@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +45,12 @@ import org.apache.commons.lang.StringUtils;
  * @author widmaier
  */
 public class ImportHandler {
+
+    private static final String GENERIC_START = "<";
+
+    private static final String GENERIC_SEPERATOR = ", ";
+
+    private static final String GENERIC_END = ">";
 
     private final static String JAVA_LANG_PACKAGE = "java.lang"; //$NON-NLS-1$
 
@@ -76,12 +85,31 @@ public class ImportHandler {
      * @see #requiresQualifiedClassName(ImportStatement)
      */
     public String addImportAndReturnClassName(String importStatement) {
-        ImportStatement statement = add(importStatement);
-        if (requiresQualifiedClassName(statement)) {
-            return statement.getQualifiedName();
+        TypeDeclaration statements = addImportStatements(importStatement);
+        return statements.getClassName(this);
+    }
+
+    private TypeDeclaration addImportStatements(String importStatement) {
+        int genericStart = importStatement.indexOf(GENERIC_START);
+        int genericEnd = importStatement.lastIndexOf(GENERIC_END);
+        if (genericStart == -1 || genericEnd == -1) {
+            return new TypeDeclaration(add(importStatement));
         } else {
-            return statement.getUnqualifiedName();
+            String typePart = importStatement.substring(0, genericStart);
+            String genericPart = importStatement.substring(genericStart + 1, genericEnd);
+            String[] generics = genericPart.split(GENERIC_SEPERATOR);
+            List<TypeDeclaration> genericTypeDeclarations = getTypeWithGenericDeclarations(generics);
+            return new TypeWithGenericsDeclaration(add(typePart), genericTypeDeclarations);
         }
+    }
+
+    private List<TypeDeclaration> getTypeWithGenericDeclarations(String[] generics) {
+        List<TypeDeclaration> genericTypeDeclarations = new ArrayList<TypeDeclaration>();
+        for (String genericImportDeclaration : generics) {
+            TypeDeclaration typeDeclaration = addImportStatements(genericImportDeclaration);
+            genericTypeDeclarations.add(typeDeclaration);
+        }
+        return genericTypeDeclarations;
     }
 
     /**
@@ -92,7 +120,7 @@ public class ImportHandler {
      * @return The import statement created and stored in this handler
      */
     public ImportStatement add(String qualifiedName) {
-        ImportStatement importStatement = new ImportStatement(qualifiedName);
+        ImportStatement importStatement = new ImportStatement(qualifiedName.trim());
         String packageName = importStatement.getPackage();
         if (isImplicitPackage(packageName)) {
             registerImportStatementIfPossible(implicitlyImportedClassNamesMap, importStatement);
@@ -100,6 +128,23 @@ public class ImportHandler {
             registerImportStatementIfPossible(classNameToImportStatementMap, importStatement);
         }
         return importStatement;
+    }
+
+    /**
+     * Add a new import statements.
+     * 
+     * @param qualifiedNames The qualified names of the class you want to add to the import handler
+     * 
+     * @return The import statement created and stored in this handler
+     */
+    public ImportStatement[] add(String... qualifiedNames) {
+        ImportStatement[] importStatements = new ImportStatement[qualifiedNames.length];
+        int i = 0;
+        for (String qualifiedName : qualifiedNames) {
+            ImportStatement importStatement = add(qualifiedName);
+            importStatements[i] = importStatement;
+        }
+        return importStatements;
     }
 
     private void registerImportStatementIfPossible(Map<String, ImportStatement> registeredImportsMap,
@@ -180,6 +225,52 @@ public class ImportHandler {
      */
     public String getOwnPackage() {
         return ownPackage;
+    }
+
+    private static class TypeDeclaration {
+
+        private final ImportStatement importStatement;
+
+        public TypeDeclaration(ImportStatement importStatement) {
+            this.importStatement = importStatement;
+        }
+
+        public String getClassName(ImportHandler importHandler) {
+            if (importHandler.requiresQualifiedClassName(importStatement)) {
+                return importStatement.getQualifiedName();
+            } else {
+                return importStatement.getUnqualifiedName();
+            }
+        }
+
+    }
+
+    private static class TypeWithGenericsDeclaration extends TypeDeclaration {
+
+        private final List<TypeDeclaration> genericDeclarations;
+
+        public TypeWithGenericsDeclaration(ImportStatement importStatement,
+                List<TypeDeclaration> genericTypeDeclarations) {
+            super(importStatement);
+            this.genericDeclarations = genericTypeDeclarations;
+        }
+
+        @Override
+        public String getClassName(ImportHandler importHandler) {
+            StringBuffer resultBuffer = new StringBuffer();
+            resultBuffer.append(super.getClassName(importHandler));
+            resultBuffer.append(GENERIC_START);
+            for (Iterator<TypeDeclaration> iterator = genericDeclarations.iterator(); iterator.hasNext();) {
+                TypeDeclaration typeDeclaration = iterator.next();
+                resultBuffer.append(typeDeclaration.getClassName(importHandler));
+                if (iterator.hasNext()) {
+                    resultBuffer.append(GENERIC_SEPERATOR);
+                }
+            }
+            resultBuffer.append(GENERIC_END);
+            return resultBuffer.toString();
+        }
+
     }
 
 }

@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestListOfValueDatatypeHelperTest {
+public class ListOfValueDatatypeHelperTest {
 
     @Mock
     private ValueDatatype elementDatatype;
@@ -58,6 +58,8 @@ public class TestListOfValueDatatypeHelperTest {
         when(elementDatatype.isPrimitive()).thenReturn(true);
         when(elementDatatype.getWrapperType()).thenReturn(wrapperDatatype);
         when(wrapperDatatype.getJavaClassName()).thenReturn("Integer");
+        // need to recreate the helper because the datatype isPrimitive has changed
+        listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(elementDatatype);
 
         assertEquals("new ArrayList<Integer>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
                 .getSourcecode());

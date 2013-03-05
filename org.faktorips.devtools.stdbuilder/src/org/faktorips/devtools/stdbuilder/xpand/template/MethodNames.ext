@@ -144,6 +144,9 @@ getProductComponentGeneration(String idParam, String effectiveFromParam):
 getValueFromElement(String paramConfigElement, String paramValue) :
 	"getValueFromElement(" + paramConfigElement + ", " + paramValue + ")";
 	
+getInternationalStringFromElement(String paramConfigElement, String paramValue) :
+	"getInternationalStringFromElement(" + paramConfigElement + ", " + paramValue + ")";
+
 getEnumValueSetFromElement(String paramConfigElement, String paramValueSet) :
 	"getEnumValueSetFromElement(" + paramConfigElement + ", " + paramValueSet + ")";
 	
@@ -153,15 +156,31 @@ getRangeFromElement(String paramConfigElement, String paramValueSet) :
 addValueToElement(String valueParam, String elementParam, String tagNameParam) :
 	"addValueToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
 
+addInternationalStringToElement(String valueParam, String elementParam, String tagNameParam) :
+	"addInternationalStringToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
+	
 // ---------------------------------
 // Methods in MultiValueXmlHelper
 // ---------------------------------
 
 getValuesFromXML(String paramConfigElement) :
 	"getValuesFromXML(" + paramConfigElement + ")";
-	
+
+getInternationalStringsFromXML(String paramConfigElement) :
+	"getInternationalStringsFromXML(" + paramConfigElement + ")";
+
 addValuesToElement(String attributeElementParam, String nameParam) :
 	"addValuesToElement(" + attributeElementParam + ", " + nameParam + ")";
+
+addInternationalStringsToElement(String attributeElementParam, String nameParam) :
+	"addInternationalStringsToElement(" + attributeElementParam + ", " + nameParam + ")";
+	
+// ------------------------------------------
+// Methods in InternationalStringXmlHandler
+// ------------------------------------------
+
+fromXml(String paramConfigElement, String paramValue) :
+	"fromXml(" + paramConfigElement + ", " + paramValue + ")";
 	
 // ---------------------------------
 // Methods in ValueSet

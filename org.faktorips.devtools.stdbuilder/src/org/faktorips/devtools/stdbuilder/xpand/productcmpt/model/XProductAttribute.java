@@ -16,7 +16,10 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.InternationalStringDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -57,22 +60,23 @@ public class XProductAttribute extends XAttribute {
     @Override
     public DatatypeHelper getDatatypeHelper() {
         if (isMultiValue()) {
-            return new ListOfValueDatatypeHelper((ValueDatatype)super.getDatatypeHelper().getDatatype());
+            if (isMultilingual()) {
+                return new ListOfValueDatatypeHelper(new InternationalStringDatatype());
+            } else {
+                return new ListOfValueDatatypeHelper((ValueDatatype)super.getDatatypeHelper().getDatatype());
+            }
         } else {
-            return super.getDatatypeHelper();
+            if (isMultilingual()) {
+                return new InternationalStringDatatypeHelper();
+            } else {
+                return super.getDatatypeHelper();
+            }
         }
     }
 
     @Override
     public String getJavaClassName() {
-        if (isMultiValue()) {
-            JavaCodeFragment declarationJavaTypeFragment = ((ListOfValueDatatypeHelper)getDatatypeHelper())
-                    .getDeclarationJavaTypeFragment();
-            addImport(declarationJavaTypeFragment.getImportDeclaration());
-            return declarationJavaTypeFragment.getSourcecode();
-        } else {
-            return super.getJavaClassName();
-        }
+        return super.getJavaClassName();
     }
 
     @Override
@@ -96,10 +100,10 @@ public class XProductAttribute extends XAttribute {
      */
     @Override
     public String getReferenceOrSafeCopyIfNecessary(String memberVarName) {
-        if (!isMultiValue()) {
-            return memberVarName;
-        } else {
+        if (isMultiValue()) {
             return super.getReferenceOrSafeCopyIfNecessary(memberVarName);
+        } else {
+            return memberVarName;
         }
     }
 
@@ -135,6 +139,21 @@ public class XProductAttribute extends XAttribute {
 
     public boolean isMultiValue() {
         return getAttribute().isMultiValueAttribute();
+    }
+
+    /**
+     * Returns <code>true</code> if the value extracted from MXL could be handled directly into the
+     * generated field.
+     * <p>
+     * For the datatype {@link Datatype#STRING} there is no need of conversion of every single
+     * element in the XML.
+     */
+    public boolean isMultiValueDirectXmlHandling() {
+        return getAttribute().getDatatype().equals(Datatype.STRING.getQualifiedName());
+    }
+
+    public boolean isMultilingual() {
+        return getAttribute().isMultilingual();
     }
 
     public XSingleValueOfMultiValueAttribute getSingleValueOfMultiValueAttribute() {

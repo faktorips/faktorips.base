@@ -11,11 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.values;
 
+import java.io.Serializable;
 import java.util.Locale;
-
-import org.faktorips.devtools.core.model.ILocalizedString;
 
 /**
  * A localized string represents a string in a specified language. This object is immutable. Two
@@ -23,7 +22,9 @@ import org.faktorips.devtools.core.model.ILocalizedString;
  * 
  * @author dirmeier
  */
-public class LocalizedString implements ILocalizedString {
+public class LocalizedString implements Serializable {
+
+    private static final long serialVersionUID = -1854355695939887678L;
 
     private final Locale locale;
 
@@ -34,12 +35,10 @@ public class LocalizedString implements ILocalizedString {
         this.value = value;
     }
 
-    @Override
     public Locale getLocale() {
         return locale;
     }
 
-    @Override
     public String getValue() {
         return value;
     }

@@ -17,18 +17,17 @@ import java.util.Locale;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.values.LocalizedString;
 
 /**
  * This delta entry describes a mismatch of the value between an attribute and its attribute value.
@@ -118,7 +117,7 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
         if (valueHolder.getValue() != null) {
             InternationalString oldValue = (InternationalString)valueHolder.getValue().getContent();
             if (oldValue != null) {
-                ILocalizedString iLocalizedString = oldValue.get(defaultLanguageLocale);
+                LocalizedString iLocalizedString = oldValue.get(defaultLanguageLocale);
                 newValue = iLocalizedString.getValue();
             }
         }

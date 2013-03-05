@@ -2,6 +2,7 @@ import java::lang;
 import java::util;
 import java::beans;
 import org::w3c::dom;
+import org::faktorips::values;
 import org::faktorips::valueset;
 import org::faktorips::runtime;
 import org::faktorips::runtime::internal;
@@ -145,6 +146,15 @@ Range(AbstractGeneratorModelNode this):
 
 IntegerRange(AbstractGeneratorModelNode this):
 	addImport(IntegerRange.name);
+
+Locale(AbstractGeneratorModelNode this):
+	addImport(Locale.name);
+	
+LocalizedString(AbstractGeneratorModelNode this):
+	addImport(LocalizedString.name);
+	
+InternationalString(AbstractGeneratorModelNode this):
+	addImport(InternationalString.name);
 
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :

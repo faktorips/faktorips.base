@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -48,6 +47,7 @@ import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
 import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
 import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.values.LocalizedString;
 
 /**
  * Provides controls that allow the user to edit the an {@link IAttributeValue}.
@@ -213,13 +213,13 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             return (SingleValueHolder)getIpsObjectPartContainer().getValueHolder();
         }
 
-        public ILocalizedString getLocalizedStringValue() {
+        public LocalizedString getLocalizedStringValue() {
             IValue<?> value = getSingleValueHolder().getValue();
             return value == null || value.getContent() == null ? null : ((IInternationalString)value.getContent())
                     .get(locale);
         }
 
-        public void setLocalizedStringValue(ILocalizedString newValue) {
+        public void setLocalizedStringValue(LocalizedString newValue) {
             IValue<?> value = getSingleValueHolder().getValue();
             if (value != null) {
                 IInternationalString currentString = (IInternationalString)value.getContent();

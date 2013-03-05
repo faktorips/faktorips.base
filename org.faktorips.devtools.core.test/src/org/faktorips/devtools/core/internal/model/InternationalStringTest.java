@@ -31,7 +31,7 @@ import java.util.Observer;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
-import org.faktorips.devtools.core.model.ILocalizedString;
+import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.w3c.dom.Document;
@@ -74,9 +74,9 @@ public class InternationalStringTest extends XmlAbstractTestCase {
 
         internationalString.add(localizedString);
 
-        Collection<ILocalizedString> values = internationalString.values();
+        Collection<LocalizedString> values = internationalString.values();
         assertThat(values,
-                JUnitMatchers.<ILocalizedString> hasItem(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY)));
+                JUnitMatchers.<LocalizedString> hasItem(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY)));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         internationalString.add(localizedStringFr);
 
         assertEquals(3, internationalString.values().size());
-        Iterator<ILocalizedString> iterator = internationalString.values().iterator();
+        Iterator<LocalizedString> iterator = internationalString.values().iterator();
         assertEquals(localizedStringEn, iterator.next());
         assertEquals(localizedStringDe, iterator.next());
         assertEquals(localizedStringFr, iterator.next());
@@ -114,10 +114,10 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         assertEquals(expectedDe, internationalString.get(Locale.GERMAN));
         assertEquals(expectedEn, internationalString.get(Locale.ENGLISH));
 
-        Collection<ILocalizedString> values = internationalString.values();
+        Collection<LocalizedString> values = internationalString.values();
         assertEquals(2, values.size());
 
-        Iterator<ILocalizedString> iterator = values.iterator();
+        Iterator<LocalizedString> iterator = values.iterator();
         assertEquals(expectedEn, iterator.next());
         assertEquals(expectedDe, iterator.next());
     }
@@ -140,10 +140,10 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         assertEquals(expectedDe, copy.get(Locale.GERMAN));
         assertEquals(expectedEn, copy.get(Locale.ENGLISH));
 
-        Collection<ILocalizedString> values = copy.values();
+        Collection<LocalizedString> values = copy.values();
         assertEquals(2, values.size());
 
-        Iterator<ILocalizedString> iterator = values.iterator();
+        Iterator<LocalizedString> iterator = values.iterator();
         assertEquals(expectedEn, iterator.next());
         assertEquals(expectedDe, iterator.next());
     }

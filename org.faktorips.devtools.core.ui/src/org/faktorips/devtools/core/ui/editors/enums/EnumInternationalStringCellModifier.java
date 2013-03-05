@@ -17,17 +17,17 @@ import java.util.Locale;
 
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
+import org.faktorips.values.LocalizedString;
 
 /**
  * The cell modifier for string values in {@link IEnumValue enum values}
  */
-public class EnumInternationalStringCellModifier implements IElementModifier<IEnumValue, ILocalizedString> {
+public class EnumInternationalStringCellModifier implements IElementModifier<IEnumValue, LocalizedString> {
 
     private final int columnIndex;
 
@@ -43,9 +43,9 @@ public class EnumInternationalStringCellModifier implements IElementModifier<IEn
     }
 
     @Override
-    public ILocalizedString getValue(IEnumValue element) {
+    public LocalizedString getValue(IEnumValue element) {
         IInternationalString content = getInternationalString(element);
-        ILocalizedString result = content.get(getLocale());
+        LocalizedString result = content.get(getLocale());
         return result;
     }
 
@@ -56,7 +56,7 @@ public class EnumInternationalStringCellModifier implements IElementModifier<IEn
     }
 
     @Override
-    public void setValue(IEnumValue element, ILocalizedString value) {
+    public void setValue(IEnumValue element, LocalizedString value) {
         IInternationalString internationalString = getInternationalString(element);
         if (internationalString == null) {
             IEnumAttributeValue enumAttributeValue = element.getEnumAttributeValues().get(columnIndex);

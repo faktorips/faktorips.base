@@ -17,15 +17,14 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.values.LocalizedString;
 
 /**
  * {@link EditField} for editing multilingual strings. The text edited by the text control will
- * always return an {@link ILocalizedString} in the locale given to this class.
+ * always return a {@link LocalizedString} in the locale given to this class.
  */
-public class LocalizedStringEditField extends AbstractTextField<ILocalizedString> {
+public class LocalizedStringEditField extends AbstractTextField<LocalizedString> {
 
     private Locale localeOfEditField;
 
@@ -34,14 +33,14 @@ public class LocalizedStringEditField extends AbstractTextField<ILocalizedString
     }
 
     @Override
-    public ILocalizedString parseContent() {
+    public LocalizedString parseContent() {
         String text = StringValueEditField.prepareObjectForGet(getTextControl().getText(),
                 supportsNullStringRepresentation());
         return new LocalizedString(localeOfEditField, text);
     }
 
     @Override
-    public void setValue(ILocalizedString newValue) {
+    public void setValue(LocalizedString newValue) {
         if (newValue == null) {
             setText(StringUtils.EMPTY);
             return;

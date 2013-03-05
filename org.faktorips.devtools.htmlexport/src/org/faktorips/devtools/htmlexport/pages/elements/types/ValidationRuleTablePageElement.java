@@ -20,7 +20,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.faktorips.values.LocalizedString;
 
 /**
  * Represents a table with the {@link ValidationRule}s of an {@link IPolicyCmptType} as rows and the
@@ -71,7 +71,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         IInternationalString messageText = rule.getMessageText();
         String emptyRule = ""; //$NON-NLS-1$
 
-        ILocalizedString localizedString = messageText.get(getContext().getDocumentationLocale());
+        LocalizedString localizedString = messageText.get(getContext().getDocumentationLocale());
         String value = localizedString.getValue();
         return value == null ? emptyRule : value;
     }

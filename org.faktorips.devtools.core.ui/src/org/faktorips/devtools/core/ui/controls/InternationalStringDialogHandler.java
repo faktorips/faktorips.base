@@ -15,15 +15,15 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.dialogs.InternationalStringDialog;
+import org.faktorips.values.LocalizedString;
 
 /**
  * This handler is used to open a {@link InternationalStringDialog} to edit some
- * {@link ILocalizedString}. The {@link IIpsObjectPart} is used to bind the dialog to this part and
+ * {@link LocalizedString}. The {@link IIpsObjectPart} is used to bind the dialog to this part and
  * look or update for any changes.
  * <p>
  * This class is an abstract class and you need to implement the {@link #getInternationalString()}

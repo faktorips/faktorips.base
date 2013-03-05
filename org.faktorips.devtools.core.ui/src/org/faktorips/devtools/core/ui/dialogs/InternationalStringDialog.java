@@ -31,9 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
@@ -45,6 +43,7 @@ import org.faktorips.devtools.core.ui.table.InternationalStringTraversalStrategy
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.LocalizedStringCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.values.LocalizedString;
 
 /**
  * A dialog to edit different locales of an attribute.
@@ -127,15 +126,15 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         tableViewer.setLabelProvider(new InternationalValueLabelProvider());
 
         LocalizedStringEditingSupport localizedStringEditingSupport = new LocalizedStringEditingSupport(tableViewer,
-                new IElementModifier<ILocalizedString, ILocalizedString>() {
+                new IElementModifier<LocalizedString, LocalizedString>() {
 
                     @Override
-                    public ILocalizedString getValue(ILocalizedString element) {
+                    public LocalizedString getValue(LocalizedString element) {
                         return element;
                     }
 
                     @Override
-                    public void setValue(ILocalizedString element, ILocalizedString value) {
+                    public void setValue(LocalizedString element, LocalizedString value) {
                         getInternationalString().add(value);
                     }
                 });
@@ -170,10 +169,10 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         @Override
         public Object[] getElements(Object input) {
             if (input instanceof IInternationalString) {
-                ArrayList<ILocalizedString> localizedStringInput = new ArrayList<ILocalizedString>();
+                ArrayList<LocalizedString> localizedStringInput = new ArrayList<LocalizedString>();
                 IInternationalString inputString = (IInternationalString)input;
                 for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
-                    ILocalizedString localizedString = inputString.get(language.getLocale());
+                    LocalizedString localizedString = inputString.get(language.getLocale());
                     localizedStringInput.add(localizedString);
                 }
                 return localizedStringInput.toArray();
@@ -230,10 +229,10 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
     }
 
     private static class LocalizedStringEditingSupport extends
-            FormattedCellEditingSupport<ILocalizedString, ILocalizedString> {
+            FormattedCellEditingSupport<LocalizedString, LocalizedString> {
 
         public LocalizedStringEditingSupport(TableViewer tableViewer,
-                IElementModifier<ILocalizedString, ILocalizedString> elementModifier) {
+                IElementModifier<LocalizedString, LocalizedString> elementModifier) {
             super(tableViewer, elementModifier);
         }
 
@@ -243,12 +242,12 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         }
 
         @Override
-        public String getFormattedValue(ILocalizedString element) {
+        public String getFormattedValue(LocalizedString element) {
             return element.getValue();
         }
 
         @Override
-        protected IpsCellEditor getCellEditorInternal(ILocalizedString element) {
+        protected IpsCellEditor getCellEditorInternal(LocalizedString element) {
             Text control = new UIToolkit(null).createText(getViewer().getTable());
             LocalizedStringCellEditor cellEditor = new LocalizedStringCellEditor(control);
             TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, getViewer(), 1);

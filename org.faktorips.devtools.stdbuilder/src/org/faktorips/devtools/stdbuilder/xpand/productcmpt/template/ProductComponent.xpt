@@ -135,7 +135,6 @@
 	        «ENDIF-»
 	        «IF nonOverwrittenAttributePresent-»
 		        Element attributeElement = null;
-		        List<String> stringList = null;
 	        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
 	        «ENDIF-»
 	    }

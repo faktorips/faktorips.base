@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
+import org.faktorips.values.InternationalString;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,6 +50,18 @@ public class ValueToXmlHelper {
     }
 
     /**
+     * Adds the {@link InternationalString} to the given xml element. Takes care of proper null
+     * handling.
+     * 
+     * @param value the {@link InternationalString} to be added.
+     * @param el the xml element.
+     * @param tagName the tag name for the element that stored the value.
+     */
+    public final static void addInternationalStringToElement(InternationalString value, Element el, String tagName) {
+        addInternationalStringAndReturnElement(value, el, tagName);
+    }
+
+    /**
      * Adds the value to the given xml element. The value is inserted inside a CDATA section.
      * 
      * @param value the string representation of the value
@@ -76,6 +89,27 @@ public class ValueToXmlHelper {
             boolean useCDataSection) {
         Document ownerDocument = el.getOwnerDocument();
         Element valueEl = createValueElement(value, tagName, ownerDocument, useCDataSection);
+        el.appendChild(valueEl);
+        return valueEl;
+    }
+
+    /**
+     * Adds the {@link InternationalString} to the given xml element as does
+     * {@link #addInternationalStringToElement(InternationalString, Element, String)}. The created
+     * element then is returned.
+     * 
+     * @param value the {@link InternationalString} to be added.
+     * @param el the XML element to add the value to.
+     * @param tagName the tag name for the element that stored the value.
+     * @return the created element with the given tag name, that contains the given value.
+     */
+    private final static Element addInternationalStringAndReturnElement(InternationalString value,
+            Element el,
+            String tagName) {
+        Document ownerDocument = el.getOwnerDocument();
+        Element valueEl = ownerDocument.createElement(tagName);
+        Element internationalStringEl = InternationalStringXmlReaderWriter.toXml(ownerDocument, value);
+        valueEl.appendChild(internationalStringEl);
         el.appendChild(valueEl);
         return valueEl;
     }
@@ -132,6 +166,18 @@ public class ValueToXmlHelper {
     }
 
     /**
+     * Returns the {@link InternationalString} stored in the child element of the given element with
+     * the indicated name. Returns an empty InternationalString if the value is null or no such
+     * child element exists.
+     * 
+     * @param el The xml element that is the parent of the element storing the international string.
+     * @param tagName The name of the child
+     */
+    public final static InternationalString getInternationalStringFromElement(Element el, String tagName) {
+        return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el, tagName));
+    }
+
+    /**
      * Returns the string representation of the value stored in given value element. Returns
      * <code>null</code> if the value is null, the attribute isNull is <code>true</code> or no such
      * child element exists.
@@ -159,6 +205,16 @@ public class ValueToXmlHelper {
             result = cdata.getData();
         }
         return result;
+    }
+
+    /**
+     * Returns the {@link InternationalString} stored in the given element. Returns an empty
+     * InternationalString if the value is null.
+     * 
+     * @param el The xml element storing the international string.
+     */
+    public final static InternationalString getInternationalStringFromElement(Element el) {
+        return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el));
     }
 
     public final static Range getRangeFromElement(Element el, String tagName) {

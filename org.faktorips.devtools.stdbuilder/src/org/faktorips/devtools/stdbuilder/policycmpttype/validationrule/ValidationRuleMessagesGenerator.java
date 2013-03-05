@@ -27,12 +27,12 @@ import java.util.regex.Matcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
+import org.faktorips.values.LocalizedString;
 
 public class ValidationRuleMessagesGenerator {
 
@@ -192,7 +192,7 @@ public class ValidationRuleMessagesGenerator {
      */
     String getMessageText(IValidationRule validationRule) {
         IValidationRuleMessageText internationalString = validationRule.getMessageText();
-        ILocalizedString localizedString = internationalString.get(locale);
+        LocalizedString localizedString = internationalString.get(locale);
         String messageText = localizedString.getValue();
         StringBuilder result = new StringBuilder();
 

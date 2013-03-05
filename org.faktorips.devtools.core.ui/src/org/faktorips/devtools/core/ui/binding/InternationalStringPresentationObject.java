@@ -15,9 +15,8 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
+import org.faktorips.values.LocalizedString;
 
 /**
  * Use this presentation model object to handle {@link IInternationalString} in UI. For example you
@@ -56,7 +55,7 @@ public class InternationalStringPresentationObject extends PresentationModelObje
      */
     public void setLocale(Locale locale) {
         this.locale = locale;
-        ILocalizedString localizedString = internationalString.get(locale);
+        LocalizedString localizedString = internationalString.get(locale);
         text = localizedString.getValue();
         notifyListeners();
     }

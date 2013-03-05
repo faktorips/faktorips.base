@@ -23,7 +23,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
@@ -37,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

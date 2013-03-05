@@ -28,7 +28,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.type.TypePart;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -46,6 +45,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -268,7 +268,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     private void validateNoLineSeperators(MessageList list) {
-        for (ILocalizedString localizedString : msgText.values()) {
+        for (LocalizedString localizedString : msgText.values()) {
             String message = localizedString.getValue();
             if (StringUtils.isNotEmpty(SystemUtils.LINE_SEPARATOR) && message.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
                 String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed, localizedString.getLocale()

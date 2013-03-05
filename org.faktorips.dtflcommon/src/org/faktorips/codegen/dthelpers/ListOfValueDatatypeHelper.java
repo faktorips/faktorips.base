@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
 
 /**
@@ -32,14 +34,23 @@ import org.faktorips.datatype.ValueDatatype;
 public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
     public ListOfValueDatatypeHelper(ValueDatatype elementDatatype) {
-        super(elementDatatype);
+        super(new ListOfTypeDatatype(elementDatatype));
+    }
+
+    @Override
+    public ListOfTypeDatatype getDatatype() {
+        return (ListOfTypeDatatype)super.getDatatype();
     }
 
     /**
      * Returns the {@link ValueDatatype} of the elements in the list.
      */
-    public ValueDatatype getElementDatatype() {
-        return (ValueDatatype)getDatatype();
+    public Datatype getBasicDatatype() {
+        return getDatatype().getBasicDatatype();
+    }
+
+    public String getBasicJavaClassName() {
+        return getBasicDatatype().getJavaClassName();
     }
 
     /**
@@ -52,17 +63,9 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.append("new "); //$NON-NLS-1$
         builder.appendClassName(ArrayList.class);
-        builder.appendGenerics(getElementJavaClassName());
+        builder.appendGenerics(getBasicJavaClassName());
         builder.appendParameters(new String[] { expression });
         return builder.getFragment();
-    }
-
-    public String getElementJavaClassName() {
-        if (getElementDatatype().isPrimitive()) {
-            return getElementDatatype().getWrapperType().getJavaClassName();
-        } else {
-            return getElementDatatype().getJavaClassName();
-        }
     }
 
     /**
@@ -87,7 +90,8 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
     public JavaCodeFragment getDeclarationJavaTypeFragment() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.appendClassName(List.class);
-        builder.appendGenerics(getElementJavaClassName());
+        builder.appendGenerics(getBasicJavaClassName());
         return builder.getFragment();
     }
+
 }

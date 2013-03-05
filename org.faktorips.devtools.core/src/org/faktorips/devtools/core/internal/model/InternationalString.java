@@ -23,12 +23,11 @@ import java.util.Observer;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.XmlSupport;
+import org.faktorips.runtime.internal.InternationalStringXmlReaderWriter;
+import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A {@link InternationalString} could be used for string properties that could be translated in
@@ -52,7 +51,7 @@ public class InternationalString extends Observable implements IInternationalStr
 
     public static final String XML_ATTR_TEXT = "text"; //$NON-NLS-1$
 
-    private final Map<Locale, ILocalizedString> localizedStringMap = new LinkedHashMap<Locale, ILocalizedString>();
+    private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<Locale, LocalizedString>();
 
     /**
      * The default constructor. Consider to register a {@link Observer} to get notified for changes
@@ -72,8 +71,8 @@ public class InternationalString extends Observable implements IInternationalStr
     }
 
     @Override
-    public ILocalizedString get(Locale locale) {
-        ILocalizedString localizedString = localizedStringMap.get(locale);
+    public LocalizedString get(Locale locale) {
+        LocalizedString localizedString = localizedStringMap.get(locale);
         if (localizedString == null) {
             return emptyLocalizedString(locale);
         } else {
@@ -82,13 +81,13 @@ public class InternationalString extends Observable implements IInternationalStr
     }
 
     @Override
-    public void add(ILocalizedString localizedString) {
+    public void add(LocalizedString localizedString) {
         Assert.isNotNull(localizedString);
-        ILocalizedString localizedStringToSet = localizedString;
+        LocalizedString localizedStringToSet = localizedString;
         if (localizedString.getValue() == null) {
             localizedStringToSet = emptyLocalizedString(localizedString.getLocale());
         }
-        ILocalizedString oldText = localizedStringMap.put(localizedStringToSet.getLocale(), localizedStringToSet);
+        LocalizedString oldText = localizedStringMap.put(localizedStringToSet.getLocale(), localizedStringToSet);
         if (!localizedStringToSet.equals(oldText)) {
             setChanged();
         }
@@ -101,31 +100,17 @@ public class InternationalString extends Observable implements IInternationalStr
      * {@inheritDoc}
      */
     @Override
-    public Collection<ILocalizedString> values() {
+    public Collection<LocalizedString> values() {
         return localizedStringMap.values();
     }
 
     @Override
     public void initFromXml(Element element) {
-        if (!element.getNodeName().equals(XML_TAG)) {
-            return;
-        }
+        Collection<LocalizedString> localizedStrings = InternationalStringXmlReaderWriter.fromXml(element);
+
         localizedStringMap.clear();
-        element.getChildNodes();
-        NodeList nl = element.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node item = nl.item(i);
-            if (item.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            Element partEl = (Element)item;
-            if (partEl.getNodeName().equals(XML_ELEMENT_LOCALIZED_STRING)) {
-                String localeString = partEl.getAttribute(XML_ATTR_LOCALE);
-                Locale locale = new Locale(localeString);
-                String value = partEl.getAttribute(XML_ATTR_TEXT);
-                LocalizedString localizedString = new LocalizedString(locale, value);
-                localizedStringMap.put(localizedString.getLocale(), localizedString);
-            }
+        for (LocalizedString localizedString : localizedStrings) {
+            localizedStringMap.put(localizedString.getLocale(), localizedString);
         }
     }
 
@@ -136,17 +121,7 @@ public class InternationalString extends Observable implements IInternationalStr
      */
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_TAG);
-        for (ILocalizedString localizedString : localizedStringMap.values()) {
-            if (localizedString.getValue() != null) {
-                Element partElement = doc.createElement(XML_ELEMENT_LOCALIZED_STRING);
-                Locale locale = localizedString.getLocale();
-                partElement.setAttribute(XML_ATTR_LOCALE, locale.toString());
-                partElement.setAttribute(XML_ATTR_TEXT, localizedString.getValue());
-                element.appendChild(partElement);
-            }
-        }
-        return element;
+        return InternationalStringXmlReaderWriter.toXml(doc, localizedStringMap.values());
     }
 
     @Override
@@ -179,15 +154,15 @@ public class InternationalString extends Observable implements IInternationalStr
         return true;
     }
 
-    private boolean equalLocalizedMapValues(Collection<ILocalizedString> otherLocalizedStringMapValues) {
-        Collection<ILocalizedString> values = values();
+    private boolean equalLocalizedMapValues(Collection<LocalizedString> otherLocalizedStringMapValues) {
+        Collection<LocalizedString> values = values();
         if (otherLocalizedStringMapValues == null) {
             return false;
         }
         if (values.size() != otherLocalizedStringMapValues.size()) {
             return false;
         }
-        for (ILocalizedString localizedString : values) {
+        for (LocalizedString localizedString : values) {
             if (!(otherLocalizedStringMapValues.contains(localizedString))) {
                 return false;
             }
@@ -200,7 +175,7 @@ public class InternationalString extends Observable implements IInternationalStr
         StringBuilder builder = new StringBuilder();
         builder.append("InternationalString ["); //$NON-NLS-1$
         if (localizedStringMap != null) {
-            for (ILocalizedString localizedString : values()) {
+            for (LocalizedString localizedString : values()) {
                 builder.append(localizedString.toString());
                 builder.append(" "); //$NON-NLS-1$
             }

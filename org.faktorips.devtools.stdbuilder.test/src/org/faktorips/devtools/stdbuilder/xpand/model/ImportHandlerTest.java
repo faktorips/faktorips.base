@@ -34,12 +34,78 @@ public class ImportHandlerTest {
     }
 
     @Test
-    public void testAddImportAndReturnClassName() {
+    public void testAddImportAndReturnClassName_easyCase() {
         String className = importHandler.addImportAndReturnClassName("some.package.SomeClass");
-        assertEquals("SomeClass", className);
 
+        assertEquals("SomeClass", className);
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("some.package.SomeClass")));
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_samePackageTwice() {
+        importHandler.addImportAndReturnClassName("some.package.SomeClass");
         String otherClassName = importHandler.addImportAndReturnClassName("some.other.package.SomeClass");
+
         assertEquals("some.other.package.SomeClass", otherClassName);
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_withGenerics() {
+        String className = importHandler.addImportAndReturnClassName("some.package.SomeClass<org.any.Gen>");
+
+        assertEquals("SomeClass<Gen>", className);
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("some.package.SomeClass")));
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("org.any.Gen")));
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_withGenericsAndDuplTypePackage() {
+        importHandler.addImportAndReturnClassName("some.any.SomeClass");
+        String className = importHandler.addImportAndReturnClassName("some.package.SomeClass<org.any.Gen>");
+
+        assertEquals("some.package.SomeClass<Gen>", className);
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("org.any.Gen")));
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_withGenericsAndDuplGenPackage() {
+        importHandler.addImportAndReturnClassName("any.other.Gen");
+        String className = importHandler.addImportAndReturnClassName("some.package.SomeClass<org.any.Gen>");
+
+        assertEquals("SomeClass<org.any.Gen>", className);
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("some.package.SomeClass")));
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_withGenericsAndDuplPackage() {
+        importHandler.addImportAndReturnClassName("any.other.SomeClass");
+        importHandler.addImportAndReturnClassName("any.other.Gen");
+        String className = importHandler.addImportAndReturnClassName("some.package.SomeClass<org.any.Gen>");
+
+        assertEquals("some.package.SomeClass<org.any.Gen>", className);
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_withMultipleGenerics() {
+        String className = importHandler
+                .addImportAndReturnClassName("some.package.SomeClass<org.any.Gen, org.anyother.Gen2>");
+
+        assertEquals("SomeClass<Gen, Gen2>", className);
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("some.package.SomeClass")));
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("org.any.Gen")));
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("org.anyother.Gen2")));
+    }
+
+    @Test
+    public void testAddImportAndReturnClassName_withNestedGenerics() {
+        String className = importHandler
+                .addImportAndReturnClassName("some.package.SomeClass<org.any.Gen<a.b.Nested>, org.anyother.Gen2>");
+
+        assertEquals("SomeClass<Gen<Nested>, Gen2>", className);
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("some.package.SomeClass")));
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("org.any.Gen")));
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("a.b.Nested")));
+        assertThat(importHandler.getImports(), hasItem(new ImportStatement("org.anyother.Gen2")));
     }
 
     @Test

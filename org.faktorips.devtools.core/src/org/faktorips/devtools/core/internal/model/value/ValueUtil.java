@@ -17,12 +17,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.values.LocalizedString;
 
 /**
  * This class bundles a set of utility methods for {@link IValue} objects. At the moment only
@@ -57,7 +56,7 @@ public abstract class ValueUtil {
      * The list of String is not intended to be displayed.
      * 
      */
-    public abstract Set<ILocalizedString> getLocalizedIdentifiers();
+    public abstract Set<LocalizedString> getLocalizedIdentifiers();
 
     /**
      * Check whether this value is empty or at least partly empty.
@@ -76,9 +75,9 @@ public abstract class ValueUtil {
         }
 
         @Override
-        public Set<ILocalizedString> getLocalizedIdentifiers() {
-            HashSet<ILocalizedString> result = new HashSet<ILocalizedString>();
-            for (ILocalizedString localizedString : value.getContent().values()) {
+        public Set<LocalizedString> getLocalizedIdentifiers() {
+            HashSet<LocalizedString> result = new HashSet<LocalizedString>();
+            for (LocalizedString localizedString : value.getContent().values()) {
                 result.add(localizedString);
             }
             return result;
@@ -88,7 +87,7 @@ public abstract class ValueUtil {
         public boolean isPartlyEmpty(IIpsProject ipsProject) {
             Set<ISupportedLanguage> supportedLanguages = ipsProject.getReadOnlyProperties().getSupportedLanguages();
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-                ILocalizedString localizedString = value.getContent().get(supportedLanguage.getLocale());
+                LocalizedString localizedString = value.getContent().get(supportedLanguage.getLocale());
                 if (StringUtils.isEmpty(localizedString.getValue())) {
                     return true;
                 }
@@ -107,8 +106,8 @@ public abstract class ValueUtil {
         }
 
         @Override
-        public Set<ILocalizedString> getLocalizedIdentifiers() {
-            HashSet<ILocalizedString> result = new HashSet<ILocalizedString>();
+        public Set<LocalizedString> getLocalizedIdentifiers() {
+            HashSet<LocalizedString> result = new HashSet<LocalizedString>();
             result.add(new LocalizedString(null, value.getContent()));
             return result;
         }

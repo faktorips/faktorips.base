@@ -16,25 +16,25 @@ package org.faktorips.devtools.core.ui.dialogs;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.values.LocalizedString;
 
 /**
  * Allows to access and modify {@link SingleValueHolder} instances for international strings.
  */
 public class InternationalStringMultiValueElementModifier implements
-        IElementModifier<SingleValueViewItem, ILocalizedString> {
+        IElementModifier<SingleValueViewItem, LocalizedString> {
 
     /**
      * Assumes the given element is a {@link SingleValueHolder}. Returns its string value.
      * {@inheritDoc}
      */
     @Override
-    public ILocalizedString getValue(SingleValueViewItem element) {
+    public LocalizedString getValue(SingleValueViewItem element) {
         IInternationalString internationalString = getInternationalString(element);
         if (internationalString != null) {
-            ILocalizedString locString = internationalString.get(IpsPlugin.getMultiLanguageSupport()
+            LocalizedString locString = internationalString.get(IpsPlugin.getMultiLanguageSupport()
                     .getLocalizationLocaleOrDefault(element.getSingleValueHolder().getIpsProject()));
             return locString;
         }
@@ -58,11 +58,11 @@ public class InternationalStringMultiValueElementModifier implements
 
     /**
      * Assumes the given element is a {@link SingleValueHolder} and the given value is a
-     * {@link ILocalizedString}. Sets the given string as new value of the given element.
+     * {@link LocalizedString}. Sets the given string as new value of the given element.
      * {@inheritDoc}
      */
     @Override
-    public void setValue(SingleValueViewItem element, ILocalizedString value) {
+    public void setValue(SingleValueViewItem element, LocalizedString value) {
         if (value == null) {
             return;
         }

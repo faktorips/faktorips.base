@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Locale;
 
+import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 
 public class LocalizedStringTest {

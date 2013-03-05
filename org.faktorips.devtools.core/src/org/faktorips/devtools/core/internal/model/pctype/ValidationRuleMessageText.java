@@ -19,12 +19,12 @@ import java.util.regex.Matcher;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.LocalizedString;
 
 public class ValidationRuleMessageText extends InternationalString implements IValidationRuleMessageText {
 
@@ -42,7 +42,7 @@ public class ValidationRuleMessageText extends InternationalString implements IV
     @Override
     public LinkedHashSet<String> getReplacementParameters() {
         LinkedHashSet<String> result = new LinkedHashSet<String>();
-        for (ILocalizedString localizedString : values()) {
+        for (LocalizedString localizedString : values()) {
             String text = localizedString.getValue();
             result.addAll(extractParameters(text));
         }
@@ -50,10 +50,10 @@ public class ValidationRuleMessageText extends InternationalString implements IV
     }
 
     public void validateReplacementParameters(IIpsProject ipsProject, MessageList list) {
-        ILocalizedString defaultLocaleString = get(ipsProject.getProperties().getDefaultLanguage().getLocale());
+        LocalizedString defaultLocaleString = get(ipsProject.getProperties().getDefaultLanguage().getLocale());
         LinkedHashSet<String> defaultLocalParameters = extractParameters(defaultLocaleString.getValue());
 
-        for (ILocalizedString localizedString : values()) {
+        for (LocalizedString localizedString : values()) {
             if (localizedString.equals(defaultLocaleString)) {
                 continue;
             }

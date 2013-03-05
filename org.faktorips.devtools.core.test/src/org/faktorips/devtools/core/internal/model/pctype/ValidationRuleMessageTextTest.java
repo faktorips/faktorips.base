@@ -23,13 +23,13 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 
 public class ValidationRuleMessageTextTest {
