@@ -82,9 +82,7 @@ public enum ProductCmptPropertyType {
                 defaultValue = ValueFactory.createStringValue(null);
             }
             AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
-            IValueHolder<?> valueHolder;
-            valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
-            valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
+            IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
             attributeValue.setValueHolderInternal(valueHolder);
             return attributeValue;
         }

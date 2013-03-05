@@ -280,9 +280,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
         @Override
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent, IValue<?> defaultValue) {
-            SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
             ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
-            values.add(singleValueHolder);
+            if (defaultValue.getContent() != null) {
+                SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
+                values.add(singleValueHolder);
+            }
             return new MultiValueHolder(parent, values);
         }
     }
