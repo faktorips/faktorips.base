@@ -28,11 +28,10 @@ import org.faktorips.devtools.core.ui.controller.EditField;
  */
 public class LocalizedStringEditField extends AbstractTextField<ILocalizedString> {
 
-    private final Locale localeOfEditField;
+    private Locale localeOfEditField;
 
-    public LocalizedStringEditField(Text control, Locale localeOfEditField) {
+    public LocalizedStringEditField(Text control) {
         super(control);
-        this.localeOfEditField = localeOfEditField;
     }
 
     @Override
@@ -53,6 +52,7 @@ public class LocalizedStringEditField extends AbstractTextField<ILocalizedString
                 return;
             }
         }
+        localeOfEditField = newValue.getLocale();
         setText(StringValueEditField.prepareObjectForSet(newValue.getValue(), supportsNullStringRepresentation()));
     }
 

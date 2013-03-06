@@ -35,7 +35,7 @@ public class InternationalStringMultiValueElementModifier implements
         IInternationalString internationalString = getInternationalString(element);
         if (internationalString != null) {
             ILocalizedString locString = internationalString.get(IpsPlugin.getMultiLanguageSupport()
-                    .getLocalizationLocale());
+                    .getLocalizationLocaleOrDefault(element.getSingleValueHolder().getIpsProject()));
             return locString;
         }
         return null;

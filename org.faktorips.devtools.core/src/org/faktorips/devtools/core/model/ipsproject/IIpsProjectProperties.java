@@ -459,8 +459,8 @@ public interface IIpsProjectProperties {
     public boolean isSupportedLanguage(Locale locale);
 
     /**
-     * Returns the {@link ISupportedLanguage} that is currently set as default language or null if
-     * there is no default language set at this moment.
+     * Returns the {@link ISupportedLanguage} that is currently set as default language or the first
+     * language if no supported language is explicitly set as default.
      */
     public ISupportedLanguage getDefaultLanguage();
 

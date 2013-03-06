@@ -501,7 +501,7 @@ public final class MultiLanguageSupport {
      * the given {@link IIpsProject}.
      */
     private Locale getDefaultLocale(IIpsProject ipsProject) {
-        return ipsProject.getProperties().getDefaultLanguage().getLocale();
+        return ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
     }
 
     /**
@@ -516,6 +516,22 @@ public final class MultiLanguageSupport {
      */
     public Locale getLocalizationLocale() {
         return localizationLocale;
+    }
+
+    /**
+     * Returns the locale that Faktor-IPS uses to internationalize things like descriptions and
+     * labels if this locale is supported by the given {@link IIpsProject}. If the locale is not
+     * supported the default locale of the project will be returned.
+     * 
+     * @see #getLocalizationLocale()
+     */
+    public Locale getLocalizationLocaleOrDefault(IIpsProject ipsProject) {
+        IIpsProjectProperties readOnlyProperties = ipsProject.getReadOnlyProperties();
+        ISupportedLanguage supportedLanguage = readOnlyProperties.getSupportedLanguage(localizationLocale);
+        if (supportedLanguage == null) {
+            supportedLanguage = readOnlyProperties.getDefaultLanguage();
+        }
+        return supportedLanguage.getLocale();
     }
 
     public String getLocalizedContent(IValue<?> value) {

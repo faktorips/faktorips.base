@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.dialogs.InternationalStringDialog;
 
@@ -46,6 +47,10 @@ public abstract class InternationalStringDialogHandler {
     public InternationalStringDialogHandler(Shell shell, IIpsObjectPart part) {
         this.shell = shell;
         this.part = part;
+    }
+
+    public IIpsProject getIpsProject() {
+        return part.getIpsProject();
     }
 
     /**

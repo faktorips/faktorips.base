@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 import java.util.Locale;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
@@ -52,12 +51,9 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
     }
 
     private Locale getDefaultLanguage() {
-        ISupportedLanguage supportedLanguage = getPropertyValue().getIpsProject().getProperties().getDefaultLanguage();
-        if (supportedLanguage != null) {
-            return supportedLanguage.getLocale();
-        } else {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizationLocale();
-        }
+        ISupportedLanguage supportedLanguage = getPropertyValue().getIpsProject().getReadOnlyProperties()
+                .getDefaultLanguage();
+        return supportedLanguage.getLocale();
     }
 
     @Override

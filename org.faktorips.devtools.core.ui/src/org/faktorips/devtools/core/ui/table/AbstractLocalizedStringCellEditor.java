@@ -33,11 +33,10 @@ import org.faktorips.devtools.core.model.ILocalizedString;
  */
 public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
 
-    private final Locale locale;
+    private Locale locale;
 
-    public AbstractLocalizedStringCellEditor(Locale locale, Control control) {
+    public AbstractLocalizedStringCellEditor(Control control) {
         super(control);
-        this.locale = locale;
     }
 
     /**
@@ -59,7 +58,9 @@ public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
     @Override
     protected void doSetValue(Object value) {
         if (value instanceof ILocalizedString) {
-            getTextControl().setText(((ILocalizedString)value).getValue());
+            final ILocalizedString localizedString = (ILocalizedString)value;
+            locale = localizedString.getLocale();
+            getTextControl().setText(localizedString.getValue());
         } else if (value == null) {
             getTextControl().setText(StringUtils.EMPTY);
         } else {

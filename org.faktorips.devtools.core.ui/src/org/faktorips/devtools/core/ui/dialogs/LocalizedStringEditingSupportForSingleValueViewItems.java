@@ -72,8 +72,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
                 singleValueHolder.getParent(), singleValueHolder);
         InternationalStringControl control = new InternationalStringControl(table, toolkit, handler);
         control.setHeightHint(table.getItemHeight());
-        InternationalStringCellEditor cellEditor = new InternationalStringCellEditor(IpsPlugin
-                .getMultiLanguageSupport().getLocalizationLocale(), control);
+        InternationalStringCellEditor cellEditor = new InternationalStringCellEditor(control);
 
         bindTableRefresh(singleValueHolder);
 

@@ -39,7 +39,8 @@ public class InternationalStringControl extends TextButtonControl {
     private final InternationalStringDialogHandler handler;
 
     public InternationalStringControl(Composite parent, UIToolkit toolkit, InternationalStringDialogHandler handler) {
-        super(parent, toolkit, IpsPlugin.getMultiLanguageSupport().getLocalizationLocale().getLanguage());
+        super(parent, toolkit, IpsPlugin.getMultiLanguageSupport()
+                .getLocalizationLocaleOrDefault(handler.getIpsProject()).getLanguage());
         this.handler = handler;
         getTextControl().setEditable(true);
     }

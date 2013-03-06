@@ -348,7 +348,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private FormattedCellEditingSupport<IEnumValue, ?> createInternationalStringEditingSupport(TableViewerColumn newColumn,
             int columnIndex) {
         EnumInternationalStringCellModifier cellModifier = new EnumInternationalStringCellModifier(columnIndex,
-                IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
+                IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(ipsProject));
         EnumInternationalStringEditingSupport editingSupport = new EnumInternationalStringEditingSupport(
                 enumValuesTableViewer, getToolkit(), cellModifier);
         newColumn.setEditingSupport(editingSupport);

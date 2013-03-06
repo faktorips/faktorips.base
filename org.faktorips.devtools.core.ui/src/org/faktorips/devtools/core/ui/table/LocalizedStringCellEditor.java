@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.table;
 
-import java.util.Locale;
-
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -27,8 +25,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class LocalizedStringCellEditor extends AbstractLocalizedStringCellEditor {
 
-    public LocalizedStringCellEditor(Locale locale, Text control) {
-        super(locale, control);
+    public LocalizedStringCellEditor(Text control) {
+        super(control);
     }
 
     @Override

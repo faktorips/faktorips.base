@@ -51,7 +51,7 @@ public class EnumInternationalStringEditingSupport extends FormattedCellEditingS
                 element);
         InternationalStringControl control = new InternationalStringControl(getViewer().getTable(), toolkit, handler);
         control.setHeightHint(getViewer().getTable().getItemHeight());
-        return new InternationalStringCellEditor(elementModifier.getLocale(), control);
+        return new InternationalStringCellEditor(control);
     }
 
     @Override

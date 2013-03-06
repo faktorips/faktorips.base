@@ -89,6 +89,7 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
         doReturn(ipsObject).when(attributeValue).getIpsObject();
         doReturn(ipsSrcFile).when(ipsObject).getIpsSrcFile();
         doReturn(properties).when(ipsProject).getProperties();
+        doReturn(properties).when(ipsProject).getReadOnlyProperties();
         doReturn(supportedLanguage).when(properties).getDefaultLanguage();
         doReturn(Locale.GERMAN).when(supportedLanguage).getLocale();
 

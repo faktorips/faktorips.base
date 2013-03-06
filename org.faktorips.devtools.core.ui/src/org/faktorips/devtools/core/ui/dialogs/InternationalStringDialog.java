@@ -251,7 +251,7 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         @Override
         protected IpsCellEditor getCellEditorInternal(ILocalizedString element) {
             Text control = new UIToolkit(null).createText(getViewer().getTable());
-            LocalizedStringCellEditor cellEditor = new LocalizedStringCellEditor(element.getLocale(), control);
+            LocalizedStringCellEditor cellEditor = new LocalizedStringCellEditor(control);
             TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, getViewer(), 1);
             strat.setRowCreating(true);
             cellEditor.setTraversalStrategy(strat);

@@ -104,13 +104,14 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                         .getIpsProject());
                 getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
             } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+                final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(
+                        getPropertyValue().getIpsProject());
                 MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
-                        IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
+                        localizationLocale);
                 InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
                         getPropertyValue());
                 InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
-                editField = new LocalizedStringEditField(control.getTextControl(), IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizationLocale());
+                editField = new LocalizedStringEditField(control.getTextControl());
                 getBindingContext().bindContent(editField, valueHolderPMO,
                         MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
             }
