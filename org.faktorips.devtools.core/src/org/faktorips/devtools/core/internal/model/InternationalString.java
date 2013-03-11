@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
@@ -72,17 +73,26 @@ public class InternationalString extends Observable implements IInternationalStr
 
     @Override
     public ILocalizedString get(Locale locale) {
-        return localizedStringMap.get(locale);
+        ILocalizedString localizedString = localizedStringMap.get(locale);
+        if (localizedString == null) {
+            return emptyLocalizedString(locale);
+        } else {
+            return localizedString;
+        }
     }
 
     @Override
     public void add(ILocalizedString localizedString) {
         Assert.isNotNull(localizedString);
-        ILocalizedString oldText = localizedStringMap.put(localizedString.getLocale(), localizedString);
-        if (!localizedString.equals(oldText)) {
+        ILocalizedString localizedStringToSet = localizedString;
+        if (localizedString.getValue() == null) {
+            localizedStringToSet = emptyLocalizedString(localizedString.getLocale());
+        }
+        ILocalizedString oldText = localizedStringMap.put(localizedStringToSet.getLocale(), localizedStringToSet);
+        if (!localizedStringToSet.equals(oldText)) {
             setChanged();
         }
-        notifyObservers(localizedString);
+        notifyObservers(localizedStringToSet);
     }
 
     /**
@@ -197,6 +207,10 @@ public class InternationalString extends Observable implements IInternationalStr
         }
         builder.append("]"); //$NON-NLS-1$
         return builder.toString();
+    }
+
+    private LocalizedString emptyLocalizedString(Locale locale) {
+        return new LocalizedString(locale, StringUtils.EMPTY);
     }
 
 }

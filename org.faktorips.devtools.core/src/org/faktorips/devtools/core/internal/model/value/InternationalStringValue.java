@@ -140,7 +140,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
             int languagesCount = supportedLanguages.size();
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
                 ILocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
-                if (iLocalizedString == null || StringUtils.isEmpty(iLocalizedString.getValue())) {
+                if (StringUtils.isEmpty(iLocalizedString.getValue())) {
                     newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
                                     .getDisplayLanguage().toLowerCase()), Message.WARNING, objectProperty));
@@ -154,12 +154,8 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
 
     @Override
     public String getLocalizedContent(Locale locale) {
-        ILocalizedString iLocalizedString = getContent().get(locale);
-        if (iLocalizedString != null) {
-            return iLocalizedString.getValue();
-        } else {
-            return null;
-        }
+        ILocalizedString localizedString = getContent().get(locale);
+        return localizedString.getValue();
     }
 
     @Override

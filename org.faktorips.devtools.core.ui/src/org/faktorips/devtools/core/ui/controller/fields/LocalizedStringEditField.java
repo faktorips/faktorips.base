@@ -17,7 +17,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -44,16 +43,16 @@ public class LocalizedStringEditField extends AbstractTextField<ILocalizedString
     @Override
     public void setValue(ILocalizedString newValue) {
         if (newValue == null) {
-            if (supportsNullStringRepresentation()) {
-                setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-                return;
-            } else {
-                setText(StringUtils.EMPTY);
-                return;
-            }
+            setText(StringUtils.EMPTY);
+            return;
         }
         localeOfEditField = newValue.getLocale();
         setText(StringValueEditField.prepareObjectForSet(newValue.getValue(), supportsNullStringRepresentation()));
+    }
+
+    @Override
+    public boolean supportsNullStringRepresentation() {
+        return false;
     }
 
     @Override

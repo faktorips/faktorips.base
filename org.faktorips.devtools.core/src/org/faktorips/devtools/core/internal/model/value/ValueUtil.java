@@ -89,7 +89,7 @@ public abstract class ValueUtil {
             Set<ISupportedLanguage> supportedLanguages = ipsProject.getReadOnlyProperties().getSupportedLanguages();
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
                 ILocalizedString localizedString = value.getContent().get(supportedLanguage.getLocale());
-                if (localizedString == null || StringUtils.isEmpty(localizedString.getValue())) {
+                if (StringUtils.isEmpty(localizedString.getValue())) {
                     return true;
                 }
             }

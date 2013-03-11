@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.binding;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -23,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
 
+import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class InternationalStringPresentationObjectTest {
 
     @Test
     public void shouldNotifyListener() throws Exception {
-        IInternationalString internationalString = mock(IInternationalString.class);
+        IInternationalString internationalString = spy(new InternationalString());
 
         InternationalStringPresentationObject presentationObject = new InternationalStringPresentationObject(
                 internationalString);

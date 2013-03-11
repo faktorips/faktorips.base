@@ -51,9 +51,6 @@ public class ValidationRuleMessageText extends InternationalString implements IV
 
     public void validateReplacementParameters(IIpsProject ipsProject, MessageList list) {
         ILocalizedString defaultLocaleString = get(ipsProject.getProperties().getDefaultLanguage().getLocale());
-        if (defaultLocaleString == null) {
-            return;
-        }
         LinkedHashSet<String> defaultLocalParameters = extractParameters(defaultLocaleString.getValue());
 
         for (ILocalizedString localizedString : values()) {

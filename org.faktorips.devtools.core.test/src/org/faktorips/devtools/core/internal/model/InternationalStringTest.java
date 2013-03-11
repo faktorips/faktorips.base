@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -28,9 +29,11 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Observer;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,6 +45,7 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         InternationalString internationalString = new InternationalString(observer);
 
         LocalizedString localizedString = mock(LocalizedString.class);
+        when(localizedString.getValue()).thenReturn("aba");
         internationalString.add(localizedString);
         verify(observer).update(internationalString, localizedString);
         verifyNoMoreInteractions(observer);
@@ -50,8 +54,7 @@ public class InternationalStringTest extends XmlAbstractTestCase {
 
         reset(observer);
 
-        LocalizedString localizedStringEn = mock(LocalizedString.class);
-        when(localizedStringEn.getLocale()).thenReturn(Locale.ENGLISH);
+        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, "englishValue");
         internationalString.add(localizedStringEn);
         verify(observer).update(internationalString, localizedStringEn);
         verifyNoMoreInteractions(observer);
@@ -64,17 +67,27 @@ public class InternationalStringTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testAdd_nullValue() throws Exception {
+        Observer observer = mock(Observer.class);
+        InternationalString internationalString = new InternationalString(observer);
+        LocalizedString localizedString = new LocalizedString(Locale.GERMAN, null);
+
+        internationalString.add(localizedString);
+
+        Collection<ILocalizedString> values = internationalString.values();
+        assertThat(values,
+                JUnitMatchers.<ILocalizedString> hasItem(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY)));
+    }
+
+    @Test
     public void testValues() throws Exception {
         InternationalString internationalString = new InternationalString();
 
-        LocalizedString localizedStringEn = mock(LocalizedString.class);
-        when(localizedStringEn.getLocale()).thenReturn(Locale.ENGLISH);
+        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY);
 
-        LocalizedString localizedStringDe = mock(LocalizedString.class);
-        when(localizedStringDe.getLocale()).thenReturn(Locale.GERMAN);
+        LocalizedString localizedStringDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
 
-        LocalizedString localizedStringFr = mock(LocalizedString.class);
-        when(localizedStringFr.getLocale()).thenReturn(Locale.FRENCH);
+        LocalizedString localizedStringFr = new LocalizedString(Locale.FRENCH, StringUtils.EMPTY);
 
         internationalString.add(localizedStringEn);
         internationalString.add(localizedStringDe);
@@ -133,17 +146,6 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         Iterator<ILocalizedString> iterator = values.iterator();
         assertEquals(expectedEn, iterator.next());
         assertEquals(expectedDe, iterator.next());
-
-        // localizedString Value null
-        internationalString = new InternationalString();
-        expectedEn = new LocalizedString(Locale.ENGLISH, null);
-        internationalString.add(expectedEn);
-        internationalString.add(expectedDe);
-        xml = internationalString.toXml(getTestDocument());
-        copy = new InternationalString();
-        copy.initFromXml(xml);
-        assertEquals(1, copy.values().size());
-
     }
 
     @Test

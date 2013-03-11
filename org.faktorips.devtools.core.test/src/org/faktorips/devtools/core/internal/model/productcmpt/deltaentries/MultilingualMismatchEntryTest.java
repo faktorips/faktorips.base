@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
@@ -35,13 +35,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -54,9 +51,6 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
 
     private static final String TEST_VALUE = "abc123";
     private static final String TEST_VALUE2 = "xyz123";
-
-    @Captor
-    private ArgumentCaptor<IValueHolder<?>> valueHolderCaptor;
 
     @Mock
     private IProductCmptTypeAttribute attribute;
@@ -121,7 +115,7 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
 
         assertTrue(holder.getValue() instanceof InternationalStringValue);
         InternationalStringValue value = (InternationalStringValue)holder.getValue();
-        assertNull(value.getContent().get(Locale.GERMAN));
+        assertEquals(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY), value.getContent().get(Locale.GERMAN));
     }
 
     @Test
@@ -148,7 +142,7 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
 
         assertTrue(holder.getValue() instanceof StringValue);
         StringValue value = (StringValue)holder.getValue();
-        assertNull(value.getContent());
+        assertEquals(StringUtils.EMPTY, value.getContent());
     }
 
     @Test

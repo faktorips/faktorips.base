@@ -15,7 +15,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -73,16 +72,6 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         String emptyRule = ""; //$NON-NLS-1$
 
         ILocalizedString localizedString = messageText.get(getContext().getDocumentationLocale());
-        if (localizedString == null) {
-            // TODO workaround beseitigen, da hier zufall, welche sprache es wird (evtl. doch
-            // plattformlocale
-            Collection<ILocalizedString> values = messageText.values();
-            if (values.isEmpty()) {
-                return emptyRule;
-            }
-
-            localizedString = values.iterator().next();
-        }
         String value = localizedString.getValue();
         return value == null ? emptyRule : value;
     }

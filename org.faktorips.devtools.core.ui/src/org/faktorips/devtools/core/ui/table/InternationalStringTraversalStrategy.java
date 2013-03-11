@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -56,9 +55,6 @@ public class InternationalStringTraversalStrategy extends LinkedColumnsTraversal
         for (int i = 0, n = supportedLocales.size(); i < n; i++) {
             if (supportedLocales.get(i).equals(currentLocale) && (i > 0)) {
                 ILocalizedString result = internationalString.get(supportedLocales.get(i - 1));
-                if (result == null) {
-                    result = new LocalizedString(supportedLocales.get(i - 1), ""); //$NON-NLS-1$
-                }
                 return result;
             }
         }
@@ -71,9 +67,6 @@ public class InternationalStringTraversalStrategy extends LinkedColumnsTraversal
         for (int i = 0, n = supportedLocales.size(); i < n; i++) {
             if (supportedLocales.get(i).equals(currentLocale) && (i < n - 1)) {
                 ILocalizedString result = internationalString.get(supportedLocales.get(i + 1));
-                if (result == null) {
-                    result = new LocalizedString(supportedLocales.get(i + 1), ""); //$NON-NLS-1$
-                }
                 return result;
             }
         }

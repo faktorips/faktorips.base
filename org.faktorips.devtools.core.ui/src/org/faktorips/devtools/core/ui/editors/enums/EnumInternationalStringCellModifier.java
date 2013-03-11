@@ -45,9 +45,6 @@ public class EnumInternationalStringCellModifier implements IElementModifier<IEn
     @Override
     public ILocalizedString getValue(IEnumValue element) {
         IInternationalString content = getInternationalString(element);
-        if (content == null) {
-            return null;
-        }
         ILocalizedString result = content.get(getLocale());
         return result;
     }

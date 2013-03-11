@@ -193,13 +193,7 @@ public class ValidationRuleMessagesGenerator {
     String getMessageText(IValidationRule validationRule) {
         IValidationRuleMessageText internationalString = validationRule.getMessageText();
         ILocalizedString localizedString = internationalString.get(locale);
-        if (localizedString == null) {
-            return null;
-        }
         String messageText = localizedString.getValue();
-        if (messageText == null) {
-            return "";
-        }
         StringBuilder result = new StringBuilder();
 
         Matcher matcher = IValidationRuleMessageText.REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);

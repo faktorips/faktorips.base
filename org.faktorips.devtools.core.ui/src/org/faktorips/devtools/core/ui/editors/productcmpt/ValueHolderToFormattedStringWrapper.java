@@ -86,7 +86,7 @@ public class ValueHolderToFormattedStringWrapper {
                 if (holder.getValueType() == ValueType.INTERNATIONAL_STRING) {
                     ILocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IpsPlugin
                             .getMultiLanguageSupport().getLocalizationLocaleOrDefault(holder.getIpsProject()));
-                    stringValue = locString == null ? null : locString.getValue();
+                    stringValue = locString.getValue();
                 } else {
                     stringValue = holder.getStringValue();
                 }

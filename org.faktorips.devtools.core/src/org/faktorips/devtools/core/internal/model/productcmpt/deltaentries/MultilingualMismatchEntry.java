@@ -119,9 +119,7 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
             InternationalString oldValue = (InternationalString)valueHolder.getValue().getContent();
             if (oldValue != null) {
                 ILocalizedString iLocalizedString = oldValue.get(defaultLanguageLocale);
-                if (iLocalizedString != null) {
-                    newValue = iLocalizedString.getValue();
-                }
+                newValue = iLocalizedString.getValue();
             }
         }
         valueHolder.setValue(new StringValue(newValue));

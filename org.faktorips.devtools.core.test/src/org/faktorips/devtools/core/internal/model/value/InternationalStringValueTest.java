@@ -16,11 +16,11 @@ package org.faktorips.devtools.core.internal.model.value;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.InternationalString;
@@ -191,7 +191,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
         assertEquals(GERMAN_FOO, internationalStringValue.getLocalizedContent(Locale.GERMAN));
         assertEquals(ENGLISCH_BAR, internationalStringValue.getLocalizedContent(Locale.ENGLISH));
-        assertNull(internationalStringValue.getLocalizedContent(Locale.US));
+        assertEquals(StringUtils.EMPTY, internationalStringValue.getLocalizedContent(Locale.US));
     }
 
     @Test

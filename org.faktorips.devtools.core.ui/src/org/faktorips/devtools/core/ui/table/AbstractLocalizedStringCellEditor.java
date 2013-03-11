@@ -60,9 +60,8 @@ public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
         if (value instanceof ILocalizedString) {
             final ILocalizedString localizedString = (ILocalizedString)value;
             locale = localizedString.getLocale();
-            getTextControl().setText(localizedString.getValue());
-        } else if (value == null) {
-            getTextControl().setText(StringUtils.EMPTY);
+            String textValue = localizedString.getValue();
+            getTextControl().setText(textValue == null ? StringUtils.EMPTY : textValue);
         } else {
             throw new IllegalArgumentException(
                     "The value of type " + value.getClass() + " is not not supported by AbstractLocalizedStringCellEditor"); //$NON-NLS-1$//$NON-NLS-2$
