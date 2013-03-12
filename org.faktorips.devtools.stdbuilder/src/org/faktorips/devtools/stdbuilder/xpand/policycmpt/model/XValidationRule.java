@@ -22,9 +22,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesGenerator;
+import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.MethodParameter;
@@ -75,6 +77,13 @@ public class XValidationRule extends AbstractGeneratorModelNode {
 
     public LinkedHashSet<String> getReplacementParameters() {
         return convertToJavaParameters(getValidationRule().getMessageText().getReplacementParameters());
+    }
+
+    public String getDefaultLocale() {
+        ISupportedLanguage defaultLanguage = getIpsProject().getReadOnlyProperties().getDefaultLanguage();
+        JavaCodeFragment localeCodeFragment = LocaleGeneratorUtil.getLocaleCodeFragment(defaultLanguage.getLocale());
+        addImport(localeCodeFragment.getImportDeclaration());
+        return localeCodeFragment.getSourcecode();
     }
 
     public boolean isValidateAttributes() {

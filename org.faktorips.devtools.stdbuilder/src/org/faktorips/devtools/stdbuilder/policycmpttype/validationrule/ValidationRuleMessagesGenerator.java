@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -177,7 +178,7 @@ public class ValidationRuleMessagesGenerator {
     void addValidationRuleMessage(IValidationRule validationRule, Set<String> ruleNames) {
         String messageText = getMessageText(validationRule);
         if (messageText == null) {
-            return;
+            messageText = StringUtils.EMPTY;
         }
         getValidationMessages().put(getMessageKey(validationRule), messageText);
         ruleNames.add(validationRule.getName());

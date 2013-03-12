@@ -30,6 +30,21 @@ import java.util.ResourceBundle;
  * "org.faktorips.internal.messages". For further information see the
  * {@link java.util.ResourceBundle ResourceBundle} documentation.
  * <p>
+ * In order to have a fallback if a message was requested in a not existing locale
+ * {@link ResourceBundle} provides a strategy to find a message anyway: If the message was not found
+ * the fallback strategy will try to find a resource for the system default language. If this also
+ * does not succeed a resource bundle without language specification would be taken. This leads to a
+ * bad behavior: Imagine you provide English as your default language and hence having your English
+ * translation in a property file without locale suffix. Additionally you provide a German
+ * translation with suffix _de. Now you start your runtime with system default language German but
+ * you try to get a message in English. You would always get the German one because the strategy
+ * does not find a resource for _en but finds one for _de (your system default). The file without
+ * suffix would never be read. To avoid this problem we recommend to add a language suffix to every
+ * resource. Additionally to get a fallback to your default language you have to provide the default
+ * language to the {@link MessagesHelper}. When calling {@link #getMessage(String, Locale)}) the we
+ * first check for the primary language, second then the {@link ResourceBundle} will check for
+ * system default language and third we would provide the message in specified default language.
+ * <p>
  * If a localized String contains sections that have to be replaced with replacements before the
  * String is presented to a user, you can use the method with replacement objects as a parameter.
  * The mechanism used here is the one of {@link java.text.MessageFormat}.
@@ -51,29 +66,41 @@ public class MessagesHelper {
     /** The classloader used to access the property files. */
     private ClassLoader loader;
 
+    private final Locale defaultLocale;
+
     /**
      * Creates a new StringsSet with the indicated qualified name. The property files are loaded
      * with the indicated classloader.
      * 
-     * @throws IllegalArgumentException if the qualifiedName is null.
+     * @param qualifiedName The qualified name of your resource without suffix nor extension for
+     *            ".properties" example org.sample.messages
+     * @param loader The {@link ClassLoader} to load the {@link ResourceBundle}
+     * @param defaultLocale If no message was found the system default locale is used as fallback.
+     *            If there is also no resource bundle in system's default language we try to find a
+     *            message in defaultLocale
      */
-    public MessagesHelper(String qualifiedName, ClassLoader loader) {
+    public MessagesHelper(String qualifiedName, ClassLoader loader, Locale defaultLocale) {
         this.name = qualifiedName;
         this.loader = loader;
+        this.defaultLocale = defaultLocale;
     }
 
     /**
-     * Getting the message for the given key in the specified locale
+     * Getting the message for the given key in the specified locale.
      * 
      * @param key the key of the message
      * @param locale the locale of the message you want to get
      * @return the translated message located in the property file
      */
     public String getMessage(String key, Locale locale) {
+        return getMessageInternal(key, locale);
+    }
+
+    private String getMessageInternal(String key, Locale locale) {
         try {
             return ResourceBundle.getBundle(name, locale, loader).getString(key);
         } catch (MissingResourceException e) {
-            return "";
+            return ResourceBundle.getBundle(name, defaultLocale, loader).getString(key);
         }
     }
 

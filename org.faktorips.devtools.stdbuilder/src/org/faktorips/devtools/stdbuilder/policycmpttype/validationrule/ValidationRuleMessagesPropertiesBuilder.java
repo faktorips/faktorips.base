@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -136,18 +135,14 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         IFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
         String resourceBundleBaseName = getResourceBundleBaseName(entry)
-                + getMessagesFileSuffix(supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage());
+                + getMessagesFileSuffix(supportedLanguage.getLocale());
         IPath path = QNameUtil.toPath(resourceBundleBaseName).addFileExtension(MESSAGES_EXTENSION);
         IFile messagesFile = derivedFolder.getFile(path);
         return messagesFile;
     }
 
-    private String getMessagesFileSuffix(Locale locale, boolean isDefaultLocale) {
-        if (!isDefaultLocale) {
-            return "_" + locale.toString();
-        } else {
-            return StringUtils.EMPTY;
-        }
+    private String getMessagesFileSuffix(Locale locale) {
+        return "_" + locale.toString();
     }
 
     protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsSrcFile ipsSrcFile,

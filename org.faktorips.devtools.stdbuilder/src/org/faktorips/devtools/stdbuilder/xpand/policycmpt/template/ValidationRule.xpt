@@ -114,8 +114,8 @@
 	             };
 	    «ENDIF-»
         «MessagesHelper()» messageHelper = new «MessagesHelper()»("«validateMessageBundleName»",
-                getClass().getClassLoader());
-        String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale()«FOREACH replacementParameters AS param», «param»«ENDFOREACH»);
+                getClass().getClassLoader(), «defaultLocale»);
+        String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale() «FOREACH replacementParameters AS param», «param»«ENDFOREACH»);
         return new «Message()»(«constantNameMessageCode», msgText, «severityConstant», invalidObjectProperties «IF containsReplacementParameters», replacementParameters«ENDIF»);
     }
 «ENDDEFINE»
