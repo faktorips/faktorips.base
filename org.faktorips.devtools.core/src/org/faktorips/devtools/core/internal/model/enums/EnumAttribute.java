@@ -157,14 +157,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    private void validateSupertypeMismatchLingual(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateSupertypeMismatchLingual(MessageList list, IIpsProject ipsProject) {
         if (checkSupertypeMissmatchLingual(ipsProject)) {
             list.add(new Message(MSGCODE_ENUM_ATTRIBUTE_INHERITED_LINGUAL_MISMATCH,
                     Messages.EnumAttribute_InheritedMultiLingualMismatch, Message.ERROR, this, PROPERTY_MULTILINGUAL));
         }
     }
 
-    private boolean checkSupertypeMissmatchLingual(IIpsProject ipsProject) throws CoreException {
+    private boolean checkSupertypeMissmatchLingual(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
@@ -393,7 +393,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
         if (!(inherited)) {
             return null;
@@ -467,7 +467,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException {
+    public boolean findIsIdentifier(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {

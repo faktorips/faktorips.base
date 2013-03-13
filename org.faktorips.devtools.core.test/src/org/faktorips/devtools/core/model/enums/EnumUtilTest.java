@@ -51,7 +51,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumAttributeIsIdentifier() throws CoreException {
+    public void testFindEnumAttributeIsIdentifier() {
         assertFalse(inheritedAttribute.findIsIdentifier(ipsProject));
         inheritedAttribute.setIdentifier(true);
         inheritedAttribute.setInherited(true);

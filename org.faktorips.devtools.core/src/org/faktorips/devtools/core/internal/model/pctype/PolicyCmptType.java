@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Method;
@@ -79,7 +78,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     private boolean forceExtensionCompilationUnitGeneration = false;
 
     private IpsObjectPartCollection<IValidationRule> rules;
-    private IIpsObjectPart persistenceTypeInfo;
+
+    private IPersistentTypeInfo persistenceTypeInfo;
 
     private IpsObjectPartCollection<IPolicyCmptTypeMethod> methods;
     private IpsObjectPartCollection<IPolicyCmptTypeAssociation> associations;
@@ -441,7 +441,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public IPersistentTypeInfo getPersistenceTypeInfo() {
-        return (IPersistentTypeInfo)persistenceTypeInfo;
+        return persistenceTypeInfo;
     }
 
     @Override
@@ -480,7 +480,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
         if (IPersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
-            persistenceTypeInfo = part;
+            persistenceTypeInfo = (IPersistentTypeInfo)part;
             return true;
         }
         return super.addPartThis(part);
@@ -519,7 +519,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                     "Cannot initialize persistence information because the IPS Project is not persistent.")); //$NON-NLS-1$
         }
 
-        IPersistentTypeInfo persistenceTypeInfo = getPersistenceTypeInfo();
         ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
 
         IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
@@ -654,7 +653,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             for (IPolicyCmptTypeAssociation each : relations) {
                 if (each.getAssociationType().isCompositionDetailToMaster()) {
                     root = false;
-                    return false; // stop the visit, we have the result
+                    // stop the visit, we have the result
+                    return false;
                 }
             }
             return true;

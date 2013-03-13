@@ -20,15 +20,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
@@ -49,14 +48,14 @@ public class ValidationRuleMessagesGenerator {
 
     private final IFile messagesPropertiesFile;
 
-    private final Locale locale;
+    private final ISupportedLanguage supportedLanguage;
 
     private final ValidationRuleMessagesPropertiesBuilder builder;
 
-    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile, Locale locale,
+    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             ValidationRuleMessagesPropertiesBuilder builder) {
         this.messagesPropertiesFile = messagesPropertiesFile;
-        this.locale = locale;
+        this.supportedLanguage = supportedLanguage;
         this.builder = builder;
         try {
             if (messagesPropertiesFile.exists()) {
@@ -177,8 +176,8 @@ public class ValidationRuleMessagesGenerator {
 
     void addValidationRuleMessage(IValidationRule validationRule, Set<String> ruleNames) {
         String messageText = getMessageText(validationRule);
-        if (messageText == null) {
-            messageText = StringUtils.EMPTY;
+        if (messageText.isEmpty() && !supportedLanguage.isDefaultLanguage()) {
+            return;
         }
         getValidationMessages().put(getMessageKey(validationRule), messageText);
         ruleNames.add(validationRule.getName());
@@ -193,7 +192,7 @@ public class ValidationRuleMessagesGenerator {
      */
     String getMessageText(IValidationRule validationRule) {
         IValidationRuleMessageText internationalString = validationRule.getMessageText();
-        LocalizedString localizedString = internationalString.get(locale);
+        LocalizedString localizedString = internationalString.get(supportedLanguage.getLocale());
         String messageText = localizedString.getValue();
         StringBuilder result = new StringBuilder();
 

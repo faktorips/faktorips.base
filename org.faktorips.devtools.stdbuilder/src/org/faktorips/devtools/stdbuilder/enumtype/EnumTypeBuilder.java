@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
@@ -51,9 +53,12 @@ import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.values.InternationalString;
 
 /**
  * Builder that generates the java source for <code>EnumType</code>s.
@@ -64,9 +69,12 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
+    private static final String VARNAME_MESSAGE_HELPER = "messageHelper";
+
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
-    private final static String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
-    private ExtendedExprCompiler expressionCompiler;
+    private static final String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
+
+    private ExtendedExprCompiler expressionCompilerLazy;
 
     /**
      * Creates a new <code>EnumTypeBuilder</code> that will belong to the given IPS artefact builder
@@ -205,11 +213,38 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Generate the attributes and the constructor
         if (useEnumGeneration() || useClassGeneration()) {
             generateCodeForEnumAttributes(mainSection.getMemberVarBuilder());
+            generateMessageHelperVar(mainSection.getMemberVarBuilder());
             generateCodeForConstructor(mainSection.getConstructorBuilder());
         }
 
         // Generate the methods
         generateCodeForMethods(mainSection.getMethodBuilder());
+    }
+
+    private void generateMessageHelperVar(JavaCodeFragmentBuilder memberVarBuilder) {
+        if (isNeedMessageHelper()) {
+            memberVarBuilder.javaDoc("", ANNOTATION_GENERATED);
+            JavaCodeFragment expression = new JavaCodeFragment();
+            JavaCodeFragment defaultLocaleExpr = LocaleGeneratorUtil.getLocaleCodeFragment(getIpsProject()
+                    .getReadOnlyProperties().getDefaultLanguage().getLocale());
+            expression.append("new ").appendClassName(MessagesHelper.class)
+                    .append("(getClass().getName(), getClass().getClassLoader(),").append(defaultLocaleExpr)
+                    .append(")");
+            memberVarBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, MessagesHelper.class, "messageHelper",
+                    expression);
+        }
+    }
+
+    private boolean isNeedMessageHelper() {
+        if (getEnumType().isContainingValues()) {
+            List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributes(false);
+            for (IEnumAttribute enumAttribute : enumAttributes) {
+                if (enumAttribute.isMultilingual()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void generateMethodGetEnumValueId(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
@@ -253,7 +288,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder); //$NON-NLS-1$
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
                 "serialVersionUID", new JavaCodeFragment("1L")); //$NON-NLS-1$ //$NON-NLS-2$
-        constantBuilder.appendln(' ');
+        constantBuilder.appendln();
     }
 
     private void generateCodeForEnumValues(TypeSection mainSection, boolean javaAtLeast5) throws CoreException {
@@ -328,7 +363,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (enumTypeAdapter.getEnumType().isContainingValues()) {
-            // TODO pk is this the right ips project that is provided to the finder method??
             IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
                     enumTypeAdapter.getEnumValueContainer().getIpsProject());
             if (enumValue == null) {
@@ -356,14 +390,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      *            containing repository access
      */
     public void setExtendedExprCompiler(ExtendedExprCompiler expressionCompiler) {
-        this.expressionCompiler = expressionCompiler;
+        this.expressionCompilerLazy = expressionCompiler;
     }
 
     private ExtendedExprCompiler getExpressionCompiler() {
-        if (expressionCompiler == null) {
-            expressionCompiler = getIpsProject().newExpressionCompiler();
+        if (expressionCompilerLazy == null) {
+            expressionCompilerLazy = getIpsProject().newExpressionCompiler();
         }
-        return expressionCompiler;
+        return expressionCompilerLazy;
     }
 
     /**
@@ -381,7 +415,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragment repositoryExp) throws CoreException {
 
         IEnumAttribute attribute = enumType.findIdentiferAttribute(getIpsProject());
-        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(attribute.findDatatype(getIpsProject()));
+        DatatypeHelper datatypeHelper = getDatatypeHelper(attribute, true);
         JavaCodeFragment fragment = new JavaCodeFragment();
 
         if (!isJava5EnumsAvailable()) {
@@ -501,7 +535,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return "isValueBy" + StringUtils.capitalize(uniqueEnumAttribute.getName()); //$NON-NLS-1$
     }
 
-    public String getMethodNameGetIdentifierAttribute(IEnumType enumType, IIpsProject ipsProject) throws CoreException {
+    public String getMethodNameGetIdentifierAttribute(IEnumType enumType, IIpsProject ipsProject) {
         IEnumAttribute idAttribute = enumType.findIdentiferAttribute(ipsProject);
         return getMethodNameGetter(idAttribute);
     }
@@ -541,21 +575,18 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Create enumeration definition source fragment
         appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
-        JavaCodeFragment enumDefinitionFragment = new JavaCodeFragment();
-        enumDefinitionFragment.append(literalEnumAttributeValue.getValue().getLocalizedContent(
+        enumDefinitionBuilder.append(literalEnumAttributeValue.getValue().getLocalizedContent(
                 getLanguageUsedInGeneratedSourceCode()));
-        enumDefinitionFragment.append(" ("); //$NON-NLS-1$
-        appendEnumValueParameters(enumAttributeValues, enumDefinitionFragment);
-        enumDefinitionFragment.append(')');
+        enumDefinitionBuilder.append(" ("); //$NON-NLS-1$
+        appendEnumValueParameters(enumAttributeValues, enumDefinitionBuilder.getFragment());
+        enumDefinitionBuilder.append(')');
         if (!(lastEnumDefinition)) {
-            enumDefinitionFragment.append(", "); //$NON-NLS-1$
-            enumDefinitionFragment.appendln(' ');
-            enumDefinitionFragment.appendln(' ');
+            enumDefinitionBuilder.append(","); //$NON-NLS-1$
+            enumDefinitionBuilder.appendln();
         } else {
-            enumDefinitionFragment.append(';');
+            enumDefinitionBuilder.append(';');
         }
 
-        enumDefinitionBuilder.append(enumDefinitionFragment);
         enumDefinitionBuilder.appendln();
     }
 
@@ -588,17 +619,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 datatypeHelper.getJavaClassName(),
                 literalEnumAttributeValue.getValue().getLocalizedContent(getLanguageUsedInGeneratedSourceCode()),
                 initExpression);
-        constantBuilder.appendln(' ');
+        constantBuilder.appendln();
     }
 
     /** Appends the parameter values to an enumeration value creation code fragment. */
     private void appendEnumValueParameters(List<IEnumAttributeValue> enumAttributeValues,
             JavaCodeFragment javaCodeFragment) throws CoreException {
-
-        int numberEnumAttributeValues = enumAttributeValues.size();
-        for (int i = 0; i < numberEnumAttributeValues; i++) {
-            IEnumAttributeValue currentEnumAttributeValue = enumAttributeValues.get(i);
+        boolean first = true;
+        for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValues) {
             IEnumAttribute referencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute(getIpsProject());
+            if (!isGenerateFieldFor(referencedEnumAttribute)) {
+                continue;
+            }
+            if (!first) {
+                javaCodeFragment.append(", "); //$NON-NLS-1$
+            } else {
+                first = false;
+            }
             IIpsProject ipsProject = getIpsProject();
             Datatype datatype = referencedEnumAttribute.findDatatype(ipsProject);
             if (datatype == null) {
@@ -608,10 +645,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             if (datatypeHelper != null) {
                 javaCodeFragment.append(datatypeHelper.newInstance(currentEnumAttributeValue.getValue()
                         .getLocalizedContent(getLanguageUsedInGeneratedSourceCode())));
-            }
-            // TODO pk handle missing datatypeHelper. Write error to the buildStatus
-            if (i < numberEnumAttributeValues - 1) {
-                javaCodeFragment.append(", "); //$NON-NLS-1$
             }
         }
     }
@@ -624,7 +657,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String attributeName = currentEnumAttribute.getName();
             String codeName = getMemberVarName(attributeName);
 
-            if (currentEnumAttribute.isValid(getIpsProject())) {
+            if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
                 /*
                  * If the generation artifact is a class and the attribute is inherited do not
                  * generate source code for this attribute because it is also inherited in the
@@ -632,9 +665,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                  */
                 if (!(useClassGeneration() && currentEnumAttribute.isInherited())
                         || (useClassGeneration() && !(enumType.isContainingValues()))) {
-                    IIpsProject ipsProject = getIpsProject();
-                    DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
-                            .findDatatype(ipsProject));
+                    DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, true);
                     if (datatypeHelper != null) {
                         /*
                          * happens if the attribute is inherited from the supertype, but the
@@ -643,11 +674,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
                         attributeBuilder.javaDoc(description, ANNOTATION_GENERATED);
                         attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
-                        attributeBuilder.appendln(' ');
+                        attributeBuilder.appendln();
                     }
                 }
             }
         }
+    }
+
+    private boolean isGenerateFieldFor(IEnumAttribute enumAttribute) {
+        return !getEnumType().isContainingValues() || !enumAttribute.isMultilingual();
     }
 
     /** The first character will be made lower case. */
@@ -682,12 +717,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         IEnumType enumType = getEnumType();
         if (!enumType.isValid(getIpsProject())) {
-            return; // can't get datatypes for inherited attributes, if supertype is missing
+            return;
         }
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         List<IEnumAttribute> validEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute.isValid(getIpsProject())) {
+            if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
                 validEnumAttributes.add(currentEnumAttribute);
             }
         }
@@ -700,7 +735,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             IEnumAttribute currentEnumAttribute = validEnumAttributes.get(i);
             String attributeName = currentEnumAttribute.getName();
             argumentNames[i] = javaNamingConvention.getMemberVarName(attributeName);
-            argumentClasses[i] = currentEnumAttribute.findDatatype(getIpsProject()).getJavaClassName();
+            argumentClasses[i] = getDatatypeHelper(currentEnumAttribute, true).getJavaClassName();
         }
 
         // Build method body
@@ -726,59 +761,80 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
             throws CoreException {
-
         IEnumType enumType = getEnumType();
         if (!enumType.isValid(getIpsProject()) || enumType.isContainingValues() || enumType.isAbstract()) {
             return;
         }
+        List<IEnumAttribute> enumAttributesIncludeSupertypeCopies = enumType
+                .getEnumAttributesIncludeSupertypeCopies(false);
+        Class<?>[] argClasses = new Class[enumAttributesIncludeSupertypeCopies.size() + 1];
+        String[] argNames = new String[argClasses.length];
+        fillArguments(enumAttributesIncludeSupertypeCopies, argClasses, argNames);
 
-        String enumValuesListName = "propertyValues"; //$NON-NLS-1$
         JavaCodeFragment body = new JavaCodeFragment();
         int i = 0;
-        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(false)) {
-            if (currentEnumAttribute.isValid(getIpsProject())) {
-                String currentName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
-                body.append("this."); //$NON-NLS-1$
-                body.append(currentName);
-                body.append(" = "); //$NON-NLS-1$
+        for (IEnumAttribute currentEnumAttribute : enumAttributesIncludeSupertypeCopies) {
+            appendFieldDeclaration(currentEnumAttribute, argNames[i++], body);
+        }
+        appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
+        constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType), argNames, argClasses);
+        constructorBuilder.append(body);
+        constructorBuilder.methodEnd();
 
-                Datatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
-                DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
-                String expression = enumValuesListName + ".get(" + i + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                expression = isJava5EnumsAvailable() ? expression : "(String)" + expression; //$NON-NLS-1$
-                if (helper instanceof EnumTypeDatatypeHelper) {
-                    EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
-                    if (!enumHelper.getEnumType().isContainingValues()) {
-                        body.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
-                                enumHelper.getEnumType(), expression, new JavaCodeFragment("productRepository"))); //$NON-NLS-1$
-                        body.append(';');
-                        body.appendln();
-                        i++;
-                        continue;
-                    }
-                }
+    }
+
+    private void fillArguments(List<IEnumAttribute> enumAttributesIncludeSupertypeCopies,
+            Class<?>[] argClasses,
+            String[] argNames) {
+        for (int i = 0; i < argClasses.length - 1; i++) {
+            final IEnumAttribute currentEnumAttribute = enumAttributesIncludeSupertypeCopies.get(i);
+            argNames[i] = currentEnumAttribute.getName() + "String";
+            if (currentEnumAttribute.isMultilingual()) {
+                argClasses[i] = InternationalString.class;
+            } else {
+                argClasses[i] = String.class;
+            }
+        }
+        argNames[argNames.length - 1] = "productRepository";
+        argClasses[argClasses.length - 1] = IRuntimeRepository.class;
+    }
+
+    private void appendFieldDeclaration(IEnumAttribute currentEnumAttribute, String expression, JavaCodeFragment body)
+            throws CoreException {
+        if (currentEnumAttribute.isValid(getIpsProject())) {
+            String fieldName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
+            body.append("this."); //$NON-NLS-1$
+            body.append(fieldName);
+            body.append(" = "); //$NON-NLS-1$
+
+            DatatypeHelper helper = getDatatypeHelper(currentEnumAttribute, true);
+            if (isExpressionForEnumDatatype(helper)) {
+                appendExpressionForEnumDatatype(body, (EnumTypeDatatypeHelper)helper, expression);
+            } else {
                 body.append(helper.newInstanceFromExpression(expression));
                 body.append(';');
                 body.appendln();
             }
-            i++;
         }
-        if (!isJava5EnumsAvailable()) {
-            body.appendln("// This method is only called to avoid the compiler warning for an " //$NON-NLS-1$
-                    + "unused method. see the java doc of this method for further explanation."); //$NON-NLS-1$
-            body.append(getMethodNameGetEnumValueId());
-            body.appendln("();"); //$NON-NLS-1$
+    }
+
+    private boolean isExpressionForEnumDatatype(DatatypeHelper helper) {
+        if (helper instanceof EnumTypeDatatypeHelper) {
+            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
+            if (!enumHelper.getEnumType().isContainingValues()) {
+                return true;
+            }
         }
-        String[] argClasses = isJava5EnumsAvailable() ? new String[] { List.class.getName() + "<String>", //$NON-NLS-1$
-                IRuntimeRepository.class.getName() } : new String[] { List.class.getName(),
-                IRuntimeRepository.class.getName() };
+        return false;
+    }
 
-        appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
-        constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType), new String[] {
-                enumValuesListName, "productRepository" }, argClasses); //$NON-NLS-1$
-        constructorBuilder.append(body);
-        constructorBuilder.methodEnd();
-
+    private void appendExpressionForEnumDatatype(JavaCodeFragment body,
+            EnumTypeDatatypeHelper enumHelper,
+            String expression) throws CoreException {
+        body.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(),
+                expression, new JavaCodeFragment("productRepository"))); //$NON-NLS-1$
+        body.append(';');
+        body.appendln();
     }
 
     private String getMethodNameGetEnumValueId() {
@@ -788,7 +844,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Creates the attribute initialization code for the constructor. */
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
-            if (currentEnumAttribute.isValid(getIpsProject())) {
+            if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
                 String currentName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
                 constructorMethodBody.append("this."); //$NON-NLS-1$
                 constructorMethodBody.append(currentName);
@@ -815,52 +871,89 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
-        IIpsProject ipsProject = getIpsProject();
 
         // Create getters for each attribute.
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute.isValid(getIpsProject())) {
-                DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
-                        .findDatatype(ipsProject));
-                if (datatypeHelper == null) {
-                    // Can happen, if attribute is inherited, but supertype can't be found.
-                    continue;
+            generateGetterMethodFor(currentEnumAttribute, enumType, methodBuilder);
+        }
+    }
+
+    private void generateGetterMethodFor(IEnumAttribute currentEnumAttribute,
+            IEnumType enumType,
+            JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        if (currentEnumAttribute.isValid(getIpsProject())) {
+            DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
+            if (datatypeHelper == null) {
+                return;
+            }
+            String attributeName = currentEnumAttribute.getName();
+            String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
+            String methodName = getMethodNameGetter(currentEnumAttribute);
+
+            // If an interface is to be generated then only generate the method signatures.
+            String[] argNames = new String[0];
+            String[] argClasses = new String[0];
+            String javaDocKey = "GETTER";
+            if (currentEnumAttribute.isMultilingual()) {
+                argNames = new String[] { "locale" };
+                argClasses = new String[] { Locale.class.getName() };
+                javaDocKey = "GETTER_MULTILINGUAL";
+            }
+            if (useInterfaceGeneration()) {
+                if (!(currentEnumAttribute.isInherited())) {
+                    appendLocalizedJavaDoc(javaDocKey, attributeName, description, currentEnumAttribute, methodBuilder);
+                    methodBuilder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, argNames,
+                            argClasses);
+                    methodBuilder.appendln(';');
                 }
-                String attributeName = currentEnumAttribute.getName();
-                String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
-                String methodName = getMethodNameGetter(currentEnumAttribute);
+            } else {
+                if (isGenerateGetterBody(currentEnumAttribute, enumType)) {
+                    appendLocalizedJavaDoc(javaDocKey, attributeName, description, currentEnumAttribute, methodBuilder);
 
-                // If an interface is to be generated then only generate the method signatures.
-                if (useInterfaceGeneration()) {
-                    if (!(currentEnumAttribute.isInherited())) {
-                        appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute, //$NON-NLS-1$
-                                methodBuilder);
-                        methodBuilder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
-                                null);
-                        methodBuilder.appendln(';');
-                    }
+                    // Build method body
+                    JavaCodeFragment methodBody = new JavaCodeFragment();
+                    methodBody.append("return "); //$NON-NLS-1$
+                    appendGetterReturnStatement(currentEnumAttribute, attributeName, argNames, methodBody);
 
-                } else {
-                    if (useEnumGeneration() || !(useClassGeneration() && currentEnumAttribute.isInherited())
-                            || (useClassGeneration() && !(enumType.isContainingValues()))) {
-                        appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute, //$NON-NLS-1$
-                                methodBuilder);
-
-                        // Build method body
-                        JavaCodeFragment methodBody = new JavaCodeFragment();
-                        methodBody.append("return "); //$NON-NLS-1$
-                        methodBody.append(getMemberVarName(attributeName));
-                        methodBody.append(';');
-
-                        methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
-                                null);
-                        methodBuilder.append(methodBody);
-                        methodBuilder.methodEnd();
-                    }
+                    methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, argNames,
+                            argClasses);
+                    methodBuilder.append(methodBody);
+                    methodBuilder.methodEnd();
                 }
+            }
 
+        }
+    }
+
+    private boolean isGenerateGetterBody(IEnumAttribute currentEnumAttribute, IEnumType enumType) {
+        if (useEnumGeneration()) {
+            return true;
+        }
+        if ((useClassGeneration() && !(enumType.isContainingValues()))) {
+            return true;
+        }
+        if (!(useClassGeneration() && currentEnumAttribute.isInherited())) {
+            return true;
+        }
+        return false;
+    }
+
+    private void appendGetterReturnStatement(IEnumAttribute currentEnumAttribute,
+            String attributeName,
+            String[] argNames,
+            JavaCodeFragment methodBody) {
+        if (!isGenerateFieldFor(currentEnumAttribute)) {
+            IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
+            String idGetterName = getMethodNameGetter(identifierAttribute);
+            methodBody.append(VARNAME_MESSAGE_HELPER).append(".getMessage(\"").append(attributeName).append("_\" + ")
+                    .append(idGetterName).append("(), ").append(argNames[0]).append(")");
+        } else {
+            methodBody.append(getMemberVarName(attributeName));
+            if (currentEnumAttribute.isMultilingual()) {
+                methodBody.append(".get(").append(argNames[0]).append(")");
             }
         }
+        methodBody.append(';');
     }
 
     /**
@@ -905,10 +998,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     JavaCodeFragment body = new JavaCodeFragment();
                     String parameterName = currentEnumAttribute.getName();
 
-                    ValueDatatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
-                    DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
-
-                    boolean primitiveType = datatype.isPrimitive();
+                    DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
+                    boolean primitiveType = datatypeHelper.getDatatype().isPrimitive();
                     if (!(primitiveType)) {
                         body.append("if("); //$NON-NLS-1$
                         body.append(parameterName);
@@ -996,7 +1087,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     methodBody.append(" != null;"); //$NON-NLS-1$
 
                     String[] parameterNames = new String[] { currentEnumAttribute.getName() };
-                    String[] parameterClasses = new String[] { currentEnumAttribute.findDatatype(getIpsProject())
+                    String[] parameterClasses = new String[] { getDatatypeHelper(currentEnumAttribute, false)
                             .getJavaClassName() };
 
                     appendLocalizedJavaDoc("METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), enumType, //$NON-NLS-1$
@@ -1212,7 +1303,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(";"); //$NON-NLS-1$
         } else {
             methodBody.append(" + '(' + "); //$NON-NLS-1$
-            methodBody.append(getJavaNamingConvention().getMemberVarName(displayName.getName()));
+            if (displayName.isMultilingual()) {
+                JavaCodeFragment defaultLocale = LocaleGeneratorUtil
+                        .getLocaleCodeFragment(getLanguageUsedInGeneratedSourceCode());
+                methodBody.append(getMethodNameGetter(displayName)).append("(").append(defaultLocale).append(")");
+            } else {
+                methodBody.append(getJavaNamingConvention().getMemberVarName(displayName.getName()));
+            }
             methodBody.append(" + ')';"); //$NON-NLS-1$
         }
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1345,7 +1442,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     public String getMethodNameGetter(IEnumAttribute enumAttribute) {
-        Datatype datatype = getDatatypeHelper(enumAttribute).getDatatype();
+        Datatype datatype = getDatatypeHelper(enumAttribute, false).getDatatype();
         return getJavaNamingConvention().getGetterMethodName(enumAttribute.getName(), datatype);
     }
 
@@ -1353,9 +1450,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return getJavaNamingConvention().getMemberVarName(enumAttribute.getName());
     }
 
-    private DatatypeHelper getDatatypeHelper(IEnumAttribute enumAttribute) {
+    private DatatypeHelper getDatatypeHelper(IEnumAttribute enumAttribute, boolean mapMultilingual) {
         try {
-            return getIpsProject().getDatatypeHelper(enumAttribute.findDatatype(getIpsProject()));
+            if (mapMultilingual && enumAttribute.isMultilingual()) {
+                return new InternationalStringDatatypeHelper();
+            } else {
+                return getIpsProject().getDatatypeHelper(enumAttribute.findDatatype(getIpsProject()));
+            }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

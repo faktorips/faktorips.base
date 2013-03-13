@@ -55,9 +55,6 @@ public class XProductCmptClassTest {
     @Mock
     private IProductCmptType superSuperType;
 
-    @Mock
-    private XProductCmptGenerationClass xProductCmptGenerationClass;
-
     private XProductCmptClass xProductCmptClass;
 
     @Before

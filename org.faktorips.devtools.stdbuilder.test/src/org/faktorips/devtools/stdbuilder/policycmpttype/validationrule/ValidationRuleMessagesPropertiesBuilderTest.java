@@ -223,7 +223,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         IFile file = mock(IFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "."
+        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "_en" + "."
                 + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
         when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
                 ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
@@ -239,7 +239,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
 
-        ISupportedLanguage supportedLanguage = new SupportedLanguage(null, true);
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.ENGLISH, true);
         IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         assertEquals(file, propertyFile);
     }

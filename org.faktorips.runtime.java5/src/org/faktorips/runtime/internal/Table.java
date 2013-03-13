@@ -72,7 +72,7 @@ public abstract class Table<T> implements ITable {
     protected abstract void initKeyMaps();
 
     /**
-     * Initializes this object with the data stored in the xml element.
+     * Initializes this object with the data stored in the XML element.
      */
     public void initFromXml(InputStream is, IRuntimeRepository productRepository) throws Exception {
         rows = new ArrayList<T>(200);

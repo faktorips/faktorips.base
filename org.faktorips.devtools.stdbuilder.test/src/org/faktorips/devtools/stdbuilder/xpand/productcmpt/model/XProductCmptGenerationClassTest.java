@@ -53,9 +53,6 @@ public class XProductCmptGenerationClassTest {
     @Mock
     private IIpsProject ipsProject;
 
-    @Mock
-    private XProductCmptClass xProductCmptClass;
-
     private XProductCmptGenerationClass xProductCmptGenerationClass;
 
     @Before

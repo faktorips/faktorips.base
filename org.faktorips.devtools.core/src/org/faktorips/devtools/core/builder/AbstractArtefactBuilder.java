@@ -243,4 +243,15 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
         EclipseIOUtil.writeToFile(file, inputStream, force, keepHistory, new NullProgressMonitor());
     }
 
+    /**
+     * Returns the artefact destination. The destination can either be the output folder for
+     * mergable artefacts or the one for derived artefacts.
+     */
+    protected IFolder getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreException {
+        if (buildsDerivedArtefacts()) {
+            return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true);
+        }
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false);
+    }
+
 }

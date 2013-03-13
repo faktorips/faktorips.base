@@ -143,7 +143,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
                 if (StringUtils.isEmpty(iLocalizedString.getValue())) {
                     newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
-                                    .getDisplayLanguage().toLowerCase()), Message.WARNING, objectProperty));
+                                    .getDisplayLanguage()), Message.WARNING, objectProperty));
                 }
             }
             if (languagesCount > newList.size()) {

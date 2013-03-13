@@ -16,10 +16,12 @@ package org.faktorips.runtime.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -36,10 +38,13 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.faktorips.values.InternationalString;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * An abstract repository that handles the common stuff between the
@@ -87,66 +92,133 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             String ipsObjectId,
             String kindId,
             String versionId) {
-        Class<?> implClass = getClass(implementationClassName, getClassLoader());
         ProductComponent productCmpt;
         try {
-            Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { runtimeRepoClass, String.class,
-                    String.class, String.class });
+            Constructor<?> constructor = getProductComponentConstructor(implementationClassName);
             productCmpt = (ProductComponent)constructor
                     .newInstance(new Object[] { this, ipsObjectId, kindId, versionId });
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Can't create product component instance for class name \""
+                    + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Can't create product component instance for class name \""
+                    + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
+        } catch (InvocationTargetException e) {
             throw new RuntimeException("Can't create product component instance for class name \""
                     + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
         }
         return productCmpt;
     }
 
-    @Override
-    protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz) {
-        InputStream is = getXmlAsStream(tocEntry);
+    private Constructor<?> getProductComponentConstructor(String implementationClassName) {
+        try {
+            Class<?> implClass = getClass(implementationClassName, getClassLoader());
+            Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
+            Constructor<?> constructor = implClass.getConstructor(new Class[] { runtimeRepoClass, String.class,
+                    String.class, String.class });
+            return constructor;
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Can't create product component instance for class name \""
+                    + implementationClassName);
+        }
+    }
 
+    @Override
+    protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
+        EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
+        List<List<Object>> enumValueList = saxhandler.getEnumValueList();
+        int parameterSize = enumValueList.get(0).size() + 1;
+        T enumValue = null;
+        ArrayList<T> enumValues = new ArrayList<T>();
+        Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
+        Constructor<T> constructor = getCorrectConstructor(parameterSize, runtimeRepoClass, enumClass);
+        if (constructor == null) {
+            throw new RuntimeException("No valid constructor found to create enumerations instances for the toc entry "
+                    + tocEntry);
+        }
+        for (List<Object> enumValueAsStrings : enumValueList) {
+            constructor.setAccessible(true);
+            Object[] enumAttributeValues = enumValueAsStrings.toArray();
+            Object[] parameters = new Object[enumAttributeValues.length + 1];
+            System.arraycopy(enumAttributeValues, 0, parameters, 0, enumAttributeValues.length);
+            parameters[enumAttributeValues.length] = this;
+            enumValue = createEnumValue(constructor, parameters, tocEntry);
+            enumValues.add(enumValue);
+        }
+        return enumValues;
+    }
+
+    private EnumSaxHandler parseEnumValues(EnumContentTocEntry tocEntry) {
+        InputStream is = getXmlAsStream(tocEntry);
         EnumSaxHandler saxhandler = new EnumSaxHandler();
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), saxhandler);
-        } catch (Exception e) {
+        } catch (SAXException e) {
             throw new RuntimeException("Can't parse the enumeration content of the resource "
-                    + tocEntry.getXmlResourceName());
+                    + tocEntry.getXmlResourceName(), e);
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("Can't parse the enumeration content of the resource "
+                    + tocEntry.getXmlResourceName(), e);
+        } catch (IOException e) {
+            throw new RuntimeException("Can't parse the enumeration content of the resource "
+                    + tocEntry.getXmlResourceName(), e);
         }
-        T enumValue = null;
-        ArrayList<T> enumValues = new ArrayList<T>();
-        Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
-        try {
-            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-            Constructor<T> constructor = null;
-            for (Constructor<?> currentConstructor : constructors) {
-                if ((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0) {
-                    Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
-                    if (parameterTypes.length == 2 && parameterTypes[0] == List.class
-                            && parameterTypes[1] == runtimeRepoClass) {
+        return saxhandler;
+    }
+
+    private <T> Constructor<T> getCorrectConstructor(int parameterSize, Class<?> runtimeRepoClass, Class<T> enumClass) {
+        Constructor<?>[] constructors = enumClass.getDeclaredConstructors();
+        Constructor<T> constructor = null;
+        for (Constructor<?> currentConstructor : constructors) {
+            if (isProtected(currentConstructor)) {
+                Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
+                if (parameterTypes.length == parameterSize) {
+                    boolean correct = true;
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        Class<?> parameterClass = parameterTypes[i];
+                        if (i == parameterTypes.length - 1) {
+                            if (parameterClass != runtimeRepoClass) {
+                                correct = false;
+                                break;
+                            }
+                        } else if (parameterClass != String.class && parameterClass != InternationalString.class) {
+                            correct = false;
+                            break;
+                        }
+                    }
+                    if (correct) {
                         @SuppressWarnings("unchecked")
-                        // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
+                        // neccessary as Class.getDeclaredConstructors() is of type
+                        // Constructor<?>[]
                         // while returning Contructor<T>[]
                         // The Javaoc Class.getDeclaredConstructors() for more information
                         Constructor<T> castedConstructor = (Constructor<T>)currentConstructor;
                         constructor = castedConstructor;
+                        break;
                     }
                 }
             }
-            if (constructor == null) {
-                throw new RuntimeException(
-                        "No valid constructor found to create enumerations instances for the toc entry " + tocEntry);
-            }
-            for (List<String> enumValueAsStrings : saxhandler.getEnumValueList()) {
-                constructor.setAccessible(true);
-                enumValue = constructor.newInstance(new Object[] { enumValueAsStrings, this });
-                enumValues.add(enumValue);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create enumeration instance for toc entry " + tocEntry, e);
         }
-        return enumValues;
+        return constructor;
+    }
+
+    private boolean isProtected(Constructor<?> currentConstructor) {
+        return (currentConstructor.getModifiers() & Modifier.PROTECTED) > 0;
+    }
+
+    private <T> T createEnumValue(Constructor<T> constructor, Object[] parameters, TocEntry tocEntry) {
+        T enumValue;
+        try {
+            enumValue = constructor.newInstance(parameters);
+        } catch (InstantiationException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (IllegalAccessException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InvocationTargetException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        }
+        return enumValue;
     }
 
     @Override
@@ -173,21 +245,29 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             ProductComponent productCmpt) {
         ProductComponentGeneration productCmptGen;
         try {
-            Constructor<?> constructor = getConstructor(tocEntry);
+            Constructor<?> constructor = getProdGenerationConstructor(tocEntry);
             productCmptGen = (ProductComponentGeneration)constructor.newInstance(new Object[] { productCmpt });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
+        } catch (IllegalAccessException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InstantiationException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InvocationTargetException e) {
+            throw createCannotInstantiateException(e, tocEntry);
         }
         return productCmptGen;
     }
 
-    private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {
+    private RuntimeException createCannotInstantiateException(Exception e, TocEntry tocEntry) {
+        return new RuntimeException("Can't create instance for toc entry " + tocEntry, e);
+    }
+
+    private Constructor<?> getProdGenerationConstructor(GenerationTocEntry tocEntry) {
         Class<?> implClass = getClass(getProductComponentGenerationImplClass(tocEntry), cl);
         try {
             String productCmptClassName = tocEntry.getParent().getImplementationClassName();
             Class<?> productCmptClass = getClass(productCmptClassName, cl);
             return implClass.getConstructor(new Class[] { productCmptClass });
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException("Can't get constructor for class " + implClass.getName() + " , toc entry "
                     + tocEntry, e);
         }
@@ -218,10 +298,14 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         Table<?> table;
         try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[0]);
+            Constructor<?> constructor = getTableConstructor(implClass, tocEntry);
             table = (Table<?>)constructor.newInstance(new Object[0]);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create table instance for toc entry " + tocEntry, e);
+        } catch (IllegalAccessException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InstantiationException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InvocationTargetException e) {
+            throw createCannotInstantiateException(e, tocEntry);
         }
 
         InputStream is = getXmlAsStream(tocEntry);
@@ -240,15 +324,28 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         return table;
     }
 
+    private Constructor<?> getTableConstructor(Class<?> implClass, TableContentTocEntry tocEntry) {
+        Constructor<?> constructor;
+        try {
+            constructor = implClass.getConstructor(new Class[0]);
+        } catch (NoSuchMethodException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        }
+        return constructor;
+    }
+
     @Override
     protected IpsTestCaseBase createTestCase(TestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
-        Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         IpsTestCaseBase test;
         try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { String.class });
+            Constructor<?> constructor = getTestCaseConstructor(tocEntry);
             test = (IpsTestCaseBase)constructor.newInstance(new Object[] { tocEntry.getIpsObjectQualifiedName() });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create test case instance for toc entry " + tocEntry, e);
+        } catch (IllegalAccessException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InstantiationException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        } catch (InvocationTargetException e) {
+            throw createCannotInstantiateException(e, tocEntry);
         }
         /*
          * sets the runtime repository which will be used to instantiate the test case, this could
@@ -264,6 +361,16 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         }
         test.setFullPath(tocEntry.getIpsObjectId());
         return test;
+    }
+
+    private Constructor<?> getTestCaseConstructor(TestCaseTocEntry tocEntry) {
+        try {
+            Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
+            Constructor<?> constructor = implClass.getConstructor(new Class[] { String.class });
+            return constructor;
+        } catch (NoSuchMethodException e) {
+            throw createCannotInstantiateException(e, tocEntry);
+        }
     }
 
     @Override

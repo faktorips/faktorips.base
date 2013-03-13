@@ -42,9 +42,6 @@ public class XTypeTest {
     private GeneratorModelContext context;
 
     @Mock
-    private ModelService modelService;
-
-    @Mock
     private IType type;
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)

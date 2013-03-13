@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
@@ -320,6 +321,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.put(BuilderKindIds.ENUM_TYPE, enumTypeBuilder);
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this, enumTypeBuilder));
         builders.put(BuilderKindIds.ENUM_CONTENT, new EnumContentBuilder(this));
+        builders.put(BuilderKindIds.ENUM_PROPERTY, new EnumPropertyBuilder(this));
 
         // product component builders
         ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(this);

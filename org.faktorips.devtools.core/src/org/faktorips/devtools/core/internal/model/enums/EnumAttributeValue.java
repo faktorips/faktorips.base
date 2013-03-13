@@ -14,9 +14,11 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -79,6 +81,26 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             }
         };
         setValueInternal(ValueFactory.createStringValue(null));
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        IEnumAttribute foundEnumAttribute = findEnumAttribute(getIpsProject());
+        if (foundEnumAttribute != null) {
+            return foundEnumAttribute.getLabelValue(locale);
+        } else {
+            return super.getCaption(locale);
+        }
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        IEnumAttribute foundEnumAttribute = findEnumAttribute(getIpsProject());
+        if (foundEnumAttribute != null) {
+            return StringUtils.capitalize(foundEnumAttribute.getName());
+        } else {
+            return super.getLastResortCaption();
+        }
     }
 
     @Override

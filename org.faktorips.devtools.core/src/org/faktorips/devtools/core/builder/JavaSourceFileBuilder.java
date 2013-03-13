@@ -849,17 +849,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the artefact destination. The destination can eiter be the output folder for merable
-     * artefacts or the one for derived artefacts.
-     */
-    protected IFolder getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (buildsDerivedArtefacts()) {
-            return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true);
-        }
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false);
-    }
-
-    /**
      * Returns the IFile for the provided IIpsSrcFile.
      */
     /**

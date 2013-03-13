@@ -324,9 +324,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>true</tt> and returns it. If none is found <tt>null</tt> will be returned.
      * 
      * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
-     * @throws CoreException If an exception occurs during the look up.
      */
-    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject);
 
     /**
      * Looks up the enumeration attribute for which the <tt>isUsedAsNameInFaktorIpsUi</tt> is
@@ -403,12 +402,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      *            part of.
      * @param name The name of the <tt>IEnumAttribute</tt> to obtain.
      * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the super
-     *             enumeration types.
      * @throws NullPointerException If <tt>ipsProject</tt> or <tt>name</tt> is <tt>null</tt>.
      */
-    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
-            throws CoreException;
+    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name);
 
     /**
      * Creates a new <tt>IEnumAttribute</tt> and returns a reference to it.

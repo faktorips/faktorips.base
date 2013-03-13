@@ -55,9 +55,11 @@ public enum BuilderKindIds implements IBuilderKindId {
 
     ENUM_CONTENT,
 
-    TOC_FILE(),
+    ENUM_PROPERTY,
 
-    VALIDATION_RULE_MESSAGES;
+    VALIDATION_RULE_MESSAGES,
+
+    TOC_FILE();
 
     @Override
     public String getId() {

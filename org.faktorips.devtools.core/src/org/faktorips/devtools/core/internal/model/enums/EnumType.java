@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
@@ -145,15 +146,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (superEnumTypeCandidate == null) {
             return false;
         }
-        IEnumType superEnumType = findSuperEnumType(ipsProject);
-        if (superEnumType == null) {
+        IEnumType foundSuperEnumType = findSuperEnumType(ipsProject);
+        if (foundSuperEnumType == null) {
             return false;
         }
-        if (superEnumTypeCandidate.equals(superEnumType)) {
+        if (superEnumTypeCandidate.equals(foundSuperEnumType)) {
             return true;
         }
         IsSubEnumTypeOfVisitor visitor = new IsSubEnumTypeOfVisitor(ipsProject, superEnumTypeCandidate);
-        visitor.start(superEnumType);
+        visitor.start(foundSuperEnumType);
         return visitor.isSubtype();
     }
 
@@ -232,21 +233,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return getIpsModel().executeModificationsWithSingleEvent(
                 new SingleEventModification<IEnumAttribute>(getIpsSrcFile()) {
 
-                    IEnumAttribute newEnumAttribute;
+                    private IEnumAttribute newEnumAttribute;
 
                     @Override
                     public boolean execute() throws CoreException {
-                        newEnumAttribute = newPart(attributeClass);
-
-                        // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
-                        for (IEnumValue currentEnumValue : getEnumValues()) {
-                            if (attributeClass.equals(EnumLiteralNameAttribute.class)) {
-                                currentEnumValue.newEnumLiteralNameAttributeValue();
-                            } else {
-                                currentEnumValue.newEnumAttributeValue();
-                            }
-                        }
-                        return true;
+                        newEnumAttribute = createNewEnumAttributeSingleEvent(attributeClass);
+                        return newEnumAttribute != null;
                     }
 
                     @Override
@@ -254,6 +246,21 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                         return newEnumAttribute;
                     }
                 });
+    }
+
+    private IEnumAttribute createNewEnumAttributeSingleEvent(final Class<? extends IEnumAttribute> attributeClass)
+            throws CoreException {
+        IEnumAttribute newEnumAttribute = newPart(attributeClass);
+
+        // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
+        for (IEnumValue currentEnumValue : getEnumValues()) {
+            if (attributeClass.equals(EnumLiteralNameAttribute.class)) {
+                currentEnumValue.newEnumLiteralNameAttributeValue();
+            } else {
+                currentEnumValue.newEnumAttributeValue();
+            }
+        }
+        return newEnumAttribute;
     }
 
     @Override
@@ -324,24 +331,18 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         return getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Integer>(getIpsSrcFile()) {
-            int[] newIndex = {};
+            private int[] newIndex = {};
 
             @Override
             public boolean execute() throws CoreException {
                 int indexToMove = getIndexOfEnumAttribute(enumAttribute);
-
                 // Move the EnumAttribute.
                 newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
-
                 // Move the EnumAttributeValues of the EnumValues of this EnumType.
                 if (newIndex[0] != indexToMove) {
                     moveEnumAttributeValues(indexToMove, getEnumValues(), up);
                 }
-
-                if (newIndex[0] != indexToMove) {
-                    return true;
-                }
-                return false;
+                return newIndex[0] != indexToMove;
             }
 
             @Override
@@ -412,8 +413,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, final String name)
-            throws CoreException {
+    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, final String name) {
 
         ArgumentCheck.notNull(new Object[] { ipsProject, name });
 
@@ -429,7 +429,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 return true;
             }
         };
-        visitor.start(this);
+        try {
+            visitor.start(this);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
 
         return result.isEmpty() ? null : result.get(0);
     }
@@ -553,9 +557,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
      * <tt>IEnumAttribute</tt>.
      */
-    private void validateIdentifierAttribute(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
-
+    private void validateIdentifierAttribute(MessageList validationMessageList, IIpsProject ipsProject) {
         ArgumentCheck.notNull(new Object[] { ipsProject });
 
         // Pass validation if the EnumType is abstract.
@@ -652,7 +654,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException {
-        // TODO AW: Better way to search for subclasses?
         Set<IEnumType> collectedEnumTypes = new HashSet<IEnumType>(25);
         IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
@@ -668,7 +669,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (currentEnumAttribute.findIsIdentifier(ipsProject)) {
                 return currentEnumAttribute;

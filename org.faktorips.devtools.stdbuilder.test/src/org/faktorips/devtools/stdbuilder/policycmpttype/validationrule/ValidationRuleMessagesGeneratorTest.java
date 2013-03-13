@@ -36,6 +36,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -53,7 +54,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         InputStream inputStream = mock(InputStream.class);
         when(propertyFile.getContents()).thenReturn(inputStream);
 
-        new ValidationRuleMessagesGenerator(propertyFile, Locale.GERMAN, builder);
+        new ValidationRuleMessagesGenerator(propertyFile, new SupportedLanguage(Locale.GERMAN), builder);
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
@@ -61,7 +62,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
         when(propertyFile.exists()).thenReturn(true);
 
-        new ValidationRuleMessagesGenerator(propertyFile, Locale.GERMAN, builder);
+        new ValidationRuleMessagesGenerator(propertyFile, new SupportedLanguage(Locale.GERMAN), builder);
 
         verify(propertyFile).getContents();
         verify(inputStream).close();
@@ -73,7 +74,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         IFile propertyFile = mock(IFile.class);
         InputStream inputStream = mock(InputStream.class);
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
-                Locale.GERMAN, builder);
+                new SupportedLanguage(Locale.GERMAN), builder);
         MessagesProperties validationMessages = messagesGenerator.getValidationMessages();
 
         verify(propertyFile).exists();
@@ -127,7 +128,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         IFile propertyFile = mock(IFile.class);
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
-                Locale.GERMAN, builder);
+                new SupportedLanguage(Locale.GERMAN), builder);
 
         messagesGenerator.saveIfModified("");
 
@@ -159,7 +160,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         IFile propertyFile = mock(IFile.class);
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
-                Locale.GERMAN, builder);
+                new SupportedLanguage(Locale.GERMAN), builder);
 
         messagesGenerator.saveIfModified("");
 
@@ -197,7 +198,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
     public void testDeleteMessagesForDeletedRules() throws Exception {
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(IFile.class), Locale.GERMAN, builder);
+                mock(IFile.class), new SupportedLanguage(Locale.GERMAN), builder);
 
         IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
         when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text1"));
@@ -248,7 +249,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
     public void testDeleteAllMessagesFor() throws Exception {
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(IFile.class), Locale.GERMAN, builder);
+                mock(IFile.class), new SupportedLanguage(Locale.GERMAN), builder);
 
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
         when(pcType.getQualifiedName()).thenReturn("abc");
@@ -291,7 +292,47 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
                 "text3",
                 validationRuleMessagesGenerator.getValidationMessages().getMessage(
                         ValidationRuleMessagesGenerator.getMessageKey(otherRule)));
+    }
 
+    @Test
+    public void testAddValidationRuleMessage_emptyMessage() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
+        ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
+                mock(IFile.class), new SupportedLanguage(Locale.GERMAN), builder);
+        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
+        when(pcType.getQualifiedName()).thenReturn("abc");
+        IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
+        when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, ""));
+        IValidationRule validationRule1 = mockValidationRule(pcType);
+        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getMessageText()).thenReturn(msgTxt1);
+        Set<String> ruleNames = validationRuleMessagesGenerator.getRuleNames("abc");
+
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1, ruleNames);
+
+        assertFalse(validationRuleMessagesGenerator.getValidationMessages().isModified());
+        assertEquals(0, validationRuleMessagesGenerator.getValidationMessages().size());
+    }
+
+    @Test
+    public void testAddValidationRuleMessage_emptyMessageDefaultLang() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
+        ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
+                mock(IFile.class), new SupportedLanguage(Locale.GERMAN, true), builder);
+        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
+        when(pcType.getQualifiedName()).thenReturn("abc");
+        IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
+        when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, ""));
+        IValidationRule validationRule1 = mockValidationRule(pcType);
+        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getMessageText()).thenReturn(msgTxt1);
+        Set<String> ruleNames = validationRuleMessagesGenerator.getRuleNames("abc");
+
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1, ruleNames);
+
+        assertTrue(validationRuleMessagesGenerator.getValidationMessages().isModified());
+        assertEquals(1, validationRuleMessagesGenerator.getValidationMessages().size());
+        assertEquals("", validationRuleMessagesGenerator.getValidationMessages().getMessage("abc-rule1"));
     }
 
     @Test
@@ -299,7 +340,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         Locale locale = Locale.GERMAN;
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(IFile.class), locale, builder);
+                mock(IFile.class), new SupportedLanguage(locale), builder);
 
         IValidationRule validationRule = mockValidationRule(null);
 

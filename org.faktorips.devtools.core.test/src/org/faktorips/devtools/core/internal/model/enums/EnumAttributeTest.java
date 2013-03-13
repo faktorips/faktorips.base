@@ -395,7 +395,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindIsIdentifier() throws CoreException {
+    public void testFindIsIdentifier() {
         try {
             inheritedEnumAttributeId.findIsIdentifier(null);
             fail();

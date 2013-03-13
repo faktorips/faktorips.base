@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -75,7 +76,8 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
 
     @Override
     protected String buildTitle() {
-        return NLS.bind(Messages.InternationalValueDialog_descriptionText, super.buildTitle());
+        return NLS.bind(Messages.InternationalValueDialog_descriptionText, IpsPlugin.getMultiLanguageSupport()
+                .getLocalizedCaption(ipsObjectPart));
     }
 
     @Override

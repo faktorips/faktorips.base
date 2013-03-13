@@ -15,7 +15,10 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.faktorips.values.InternationalString;
+import org.faktorips.values.LocalizedString;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -27,57 +30,69 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class EnumSaxHandler extends DefaultHandler {
 
-    private final static String ENUM_VALUE_NAME = "EnumValue";
-    private final static String ENUM_ATTRIBUTE_VALUE_NAME = "EnumAttributeValue";
+    private static final String ENUM_VALUE_NAME = "EnumValue";
 
-    private List<List<String>> enumValues = new ArrayList<List<String>>();
+    private static final String ENUM_ATTRIBUTE_VALUE_NAME = "EnumAttributeValue";
 
-    private List<String> enumAttributeValues;
+    private List<List<Object>> enumValues = new ArrayList<List<Object>>();
 
-    private boolean nextAttributeValue = false;
+    private List<Object> enumValue;
 
-    private StringBuilder enumValue = new StringBuilder();
+    private StringBuilder stringBuilder;
+
+    private List<LocalizedString> localizedStrings;
+
+    private InternationalString internationalString;
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ENUM_VALUE_NAME.equals(qName)) {
-            enumAttributeValues = new ArrayList<String>();
-            return;
-        }
-        if (ENUM_ATTRIBUTE_VALUE_NAME.equals(qName)) {
-            nextAttributeValue = true;
-            enumValue.setLength(0);
-            return;
+            enumValue = new ArrayList<Object>();
+        } else if (ENUM_ATTRIBUTE_VALUE_NAME.equals(qName)) {
+            stringBuilder = new StringBuilder();
+        } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
+            localizedStrings = new ArrayList<LocalizedString>();
+        } else if (InternationalStringXmlReaderWriter.XML_ELEMENT_LOCALIZED_STRING.equals(qName)) {
+            Locale locale = new Locale(attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_LOCALE));
+            String text = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_TEXT);
+            localizedStrings.add(new LocalizedString(locale, text));
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (ENUM_VALUE_NAME.equals(qName)) {
-            enumValues.add(enumAttributeValues);
-            enumAttributeValues = null;
-            return;
-        }
         if (ENUM_ATTRIBUTE_VALUE_NAME.equals(qName)) {
-            nextAttributeValue = false;
-            enumAttributeValues.add(enumValue.toString());
-            return;
+            if (enumValue == null) {
+                throw new SAXException("The xml content for this enumeration is not valid. Encountered a tag \""
+                        + ENUM_ATTRIBUTE_VALUE_NAME + "\" that is not embedded in a tag \"" + ENUM_ATTRIBUTE_VALUE_NAME
+                        + "\"");
+            } else {
+                if (internationalString != null) {
+                    enumValue.add(internationalString);
+                    internationalString = null;
+                } else {
+                    enumValue.add(stringBuilder.toString());
+                    stringBuilder = null;
+                }
+            }
+        } else if (ENUM_VALUE_NAME.equals(qName)) {
+            enumValues.add(enumValue);
+            enumValue = null;
+        } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
+            internationalString = new InternationalString(localizedStrings);
         }
     }
 
     @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
-        if (nextAttributeValue) {
-            if (enumAttributeValues == null) {
-                throw new SAXException("The xml content for this enumeration is not valid. Encountered a tag \""
-                        + ENUM_ATTRIBUTE_VALUE_NAME + "\" that is not embedded in a tag \"" + ENUM_ATTRIBUTE_VALUE_NAME
-                        + "\"");
-            }
-            enumValue.append(new String(buf).substring(offset, offset + len));
+        if (stringBuilder != null) {
+            char[] dest = new char[len];
+            System.arraycopy(buf, offset, dest, 0, len);
+            stringBuilder.append(dest);
         }
     }
 
-    public List<List<String>> getEnumValueList() {
+    public List<List<Object>> getEnumValueList() {
         return enumValues;
     }
 

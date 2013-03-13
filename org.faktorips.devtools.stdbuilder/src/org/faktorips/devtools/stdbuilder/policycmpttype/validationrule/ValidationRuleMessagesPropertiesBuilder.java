@@ -156,7 +156,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         IFile propertyFile = getPropertyFile(root, supportedLanguage);
         ValidationRuleMessagesGenerator messagesGenerator = messageGeneratorMap.get(propertyFile);
         if (messagesGenerator == null) {
-            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile, supportedLanguage.getLocale(), this);
+            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile, supportedLanguage, this);
             messageGeneratorMap.put(propertyFile, messagesGenerator);
         }
         return messagesGenerator;

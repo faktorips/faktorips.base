@@ -19,10 +19,12 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.faktorips.values.InternationalString;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -60,9 +62,9 @@ public class EnumSaxHandlerTest {
     public void testCorrectContent() throws Exception {
         is = createInputStream(null);
         saxParser.parse(is, handler);
-        List<List<String>> enumValueList = handler.getEnumValueList();
+        List<List<Object>> enumValueList = handler.getEnumValueList();
         assertEquals(3, enumValueList.size());
-        List<String> enumAttributeValues = enumValueList.get(0);
+        List<Object> enumAttributeValues = enumValueList.get(0);
         assertEquals("a", enumAttributeValues.get(0));
         assertEquals("an", enumAttributeValues.get(1));
         enumAttributeValues = enumValueList.get(1);
@@ -94,12 +96,36 @@ public class EnumSaxHandlerTest {
     public void testCRContent() throws Exception {
         is = createInputStream("WithCRContent.xml");
         saxParser.parse(is, handler);
-        List<List<String>> enumValueList = handler.getEnumValueList();
+        List<List<Object>> enumValueList = handler.getEnumValueList();
         assertEquals(1, enumValueList.size());
-        List<String> values = enumValueList.get(0);
+        List<Object> values = enumValueList.get(0);
         assertEquals(1, values.size());
-        String value = values.get(0);
+        Object value = values.get(0);
         assertEquals("a\rb\rc", value);
     }
 
+    /**
+     * Tests if the handler works correctly if the characters() method will be called multiple times
+     * for a tag content. This happens for example if the value within a tag contains carriage
+     * return characters.
+     * 
+     */
+    @Test
+    public void testInternationalContent() throws Exception {
+        is = createInputStream("International.xml");
+        saxParser.parse(is, handler);
+
+        List<List<Object>> enumValueList = handler.getEnumValueList();
+        assertEquals(2, enumValueList.size());
+        List<Object> values = enumValueList.get(0);
+        assertEquals(2, values.size());
+        assertEquals("a", values.get(0));
+        assertEquals("deText", ((InternationalString)values.get(1)).get(Locale.GERMAN));
+        assertEquals("enText", ((InternationalString)values.get(1)).get(Locale.ENGLISH));
+        values = enumValueList.get(1);
+        assertEquals(2, values.size());
+        assertEquals("b", values.get(0));
+        assertEquals("deText2", ((InternationalString)values.get(1)).get(Locale.GERMAN));
+        assertEquals("enText2", ((InternationalString)values.get(1)).get(Locale.ENGLISH));
+    }
 }

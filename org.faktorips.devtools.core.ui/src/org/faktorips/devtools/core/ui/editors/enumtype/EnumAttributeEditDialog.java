@@ -332,19 +332,21 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected void contentsChangedInternal(final ContentChangeEvent event) {
-        IEnumAttribute changedPart = (IEnumAttribute)event.getPart();
-        if (changedPart == null) {
-            return;
-        }
-
-        if (changedPart.equals(enumAttribute)) {
-            if (inherited != enumAttribute.isInherited()) {
-                inherited = !(inherited);
-                inheritedChanged();
+        if (event.getPart() instanceof IEnumAttribute) {
+            IEnumAttribute changedPart = (IEnumAttribute)event.getPart();
+            if (changedPart == null) {
+                return;
             }
-        }
-        if (!literalNameAttribute) {
-            checkValueTypeMismatch(changedPart);
+
+            if (changedPart.equals(enumAttribute)) {
+                if (inherited != enumAttribute.isInherited()) {
+                    inherited = !(inherited);
+                    inheritedChanged();
+                }
+            }
+            if (!literalNameAttribute) {
+                checkValueTypeMismatch(changedPart);
+            }
         }
     }
 

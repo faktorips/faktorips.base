@@ -417,11 +417,9 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
      *            necessarily the project this <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the super
-     *             <tt>IEnumAttribute</tt>.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException;
+    public boolean findIsIdentifier(IIpsProject ipsProject);
 
     /**
      * Returns <tt>true</tt> if this <tt>IEnumAttribute</tt> is used by the first
