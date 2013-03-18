@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
@@ -47,8 +48,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathContainer {
 
-    public final static String TYPE_ID = "ClasspathContainer"; //$NON-NLS-1$
-
+    private static final String MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH = "Invalid-ClasspathContainer-Path"; //$NON-NLS-1$
     private IClasspathContainer jdtClasspathContainer = null;
     private List<IIpsObjectPathEntry> resolvedEntries = new ArrayList<IIpsObjectPathEntry>(0);
 
@@ -68,7 +68,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         if (cpContainer != null) {
             return cpContainer.getDescription();
         }
-        return "InvalidContainer: " + getContainerType().getId() + '[' + getOptionalPath() + ']'; //$NON-NLS-1$
+        return "Unresolved: " + getContainerType().getId() + '[' + getOptionalPath() + ']'; //$NON-NLS-1$
     }
 
     @Override
@@ -87,7 +87,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
                 return new ArrayList<IIpsObjectPathEntry>(0);
             }
         }
-        IpsObjectPath ipsObjectPath = getIpsObjectPath();
+        IpsObjectPath ipsObjectPath = (IpsObjectPath)getIpsObjectPath();
         resolvedEntries = new ArrayList<IIpsObjectPathEntry>();
         IClasspathEntry[] entries = jdtClasspathContainer.getClasspathEntries();
         for (int i = 0; i < entries.length; i++) {
@@ -133,6 +133,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         IIpsProject ipsProject = ipsObjectPath.getIpsProject();
         IResource member = ipsProject.getProject().findMember(path);
         if (!(member instanceof IFile)) {
+            // FIXME It does NOT have to be a file, it also could be a folder!
             throw new RuntimeException("Archive must be a file!"); //$NON-NLS-1$
         }
         IpsArchiveEntry archiveEntry = new IpsArchiveEntry(ipsObjectPath);
@@ -179,9 +180,9 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
             return null;
         }
         MessageList result = new MessageList();
-        Message msg = Message.newError("Invalid-ClasspathContainer-Path", //$NON-NLS-1$
-                "Invalid IPS Object Path: The container path '" + getOptionalPath() //$NON-NLS-1$
-                        + "' does not identify a JDT Classpath Container!"); //$NON-NLS-1$
+        Message msg = new Message(MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH, NLS.bind(
+                Messages.IpsContainer4JdtClasspathContainer_err_invalidClasspathContainer, getOptionalPath()),
+                Message.ERROR, this);
         result.add(msg);
         return result;
     }

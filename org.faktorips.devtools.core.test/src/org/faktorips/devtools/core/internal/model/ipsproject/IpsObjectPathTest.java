@@ -41,11 +41,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * 
@@ -233,94 +231,6 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(2, projects.length);
         assertEquals(refProject1, projects[0]);
         assertEquals(refProject2, projects[1]);
-    }
-
-    @Test
-    public void testCreateFromXml() {
-        Element docElement = getTestDocument().getDocumentElement();
-
-        // test case 1
-        IIpsObjectPath path = IpsObjectPath.createFromXml(ipsProject,
-                XmlUtil.getElement(docElement, IpsObjectPath.XML_TAG_NAME, 0));
-
-        assertTrue(path.isOutputDefinedPerSrcFolder());
-        assertEquals("", path.getBasePackageNameForMergableJavaClasses());
-        assertNull(path.getOutputFolderForMergableSources());
-        assertEquals("", path.getBasePackageNameForDerivedJavaClasses());
-        assertEquals(ipsProject.getProject().getFolder("derived"), path.getOutputFolderForDerivedSources());
-
-        IIpsObjectPathEntry[] entries = path.getEntries();
-        assertEquals(2, entries.length);
-        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()
-                .toString());
-        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
-                .toString());
-
-        // test case 2
-        path = IpsObjectPath.createFromXml(ipsProject, XmlUtil.getElement(docElement, IpsObjectPath.XML_TAG_NAME, 1));
-
-        assertFalse(path.isOutputDefinedPerSrcFolder());
-        assertEquals("org.sample.generated", path.getBasePackageNameForMergableJavaClasses());
-        assertEquals("generated", path.getOutputFolderForMergableSources().getName());
-        assertEquals("org.sample.extension", path.getBasePackageNameForDerivedJavaClasses());
-        assertEquals("extensions", path.getOutputFolderForDerivedSources().getName());
-
-        entries = path.getEntries();
-        assertEquals(2, entries.length);
-        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()
-                .toString());
-        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
-                .toString());
-    }
-
-    @Test
-    public void testToXml() {
-        IProject project = ipsProject.getProject();
-        IpsObjectPath path = new IpsObjectPath(ipsProject);
-
-        // test case 1: output folder and base package defined per entry
-        path.setOutputDefinedPerSrcFolder(true);
-
-        IIpsSrcFolderEntry entry0 = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
-        entry0.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
-        entry0.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
-        entry0.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder(
-                "modelclasses.extensions"));
-        entry0.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.model.extensions");
-        IIpsSrcFolderEntry entry1 = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("products"));
-        entry1.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("products"));
-        entry1.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.products");
-        entry1.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder("products")
-                .getFolder("extensions"));
-        entry1.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.products.extensions");
-        path.setEntries(new IIpsObjectPathEntry[] { entry0, entry1 });
-
-        Element element = path.toXml(newDocument());
-        path = new IpsObjectPath(ipsProject);
-        path = (IpsObjectPath)IpsObjectPath.createFromXml(ipsProject, element);
-        assertTrue(path.isOutputDefinedPerSrcFolder());
-        assertEquals("", path.getBasePackageNameForMergableJavaClasses());
-        assertNull(path.getOutputFolderForMergableSources());
-        assertEquals("", path.getBasePackageNameForDerivedJavaClasses());
-        assertNull(path.getOutputFolderForDerivedSources());
-        assertEquals(2, path.getEntries().length);
-
-        // test case 2: output folder and package defined via the path for all entries
-        path.setOutputDefinedPerSrcFolder(false);
-        path.setOutputFolderForMergableSources(project.getFolder("generated"));
-        path.setBasePackageNameForMergableJavaClasses("org.sample.generated");
-        path.setOutputFolderForDerivedSources(project.getFolder("extensions"));
-        path.setBasePackageNameForDerivedJavaClasses("org.sample.extensions");
-        path.setOutputFolderForDerivedSources(project.getFolder("derived"));
-        element = path.toXml(newDocument());
-        path = new IpsObjectPath(ipsProject);
-        path = (IpsObjectPath)IpsObjectPath.createFromXml(ipsProject, element);
-        assertFalse(path.isOutputDefinedPerSrcFolder());
-        assertEquals("org.sample.generated", path.getBasePackageNameForMergableJavaClasses());
-        assertEquals(project.getFolder("generated"), path.getOutputFolderForMergableSources());
-        assertEquals("org.sample.extensions", path.getBasePackageNameForDerivedJavaClasses());
-        assertEquals(2, path.getEntries().length);
-        assertEquals(project.getFolder("derived"), path.getOutputFolderForDerivedSources());
     }
 
     @Test

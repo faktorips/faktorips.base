@@ -238,15 +238,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
-    }
-
-    @Override
     public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
 
@@ -326,23 +317,23 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable == null) {
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING,
-                    Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR));
+                    Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR, this));
         }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived == null) {
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING,
-                    Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR));
+                    Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR, this));
         }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable != null
                 && !outputFolderMergable.exists()) {
             String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
                     outputFolderMergable.getFullPath());
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR));
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR, this));
         }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null
                 && !outputFolderDerived.exists()) {
             String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
                     outputFolderDerived.getFullPath());
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR));
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR, this));
         }
 
         return result;

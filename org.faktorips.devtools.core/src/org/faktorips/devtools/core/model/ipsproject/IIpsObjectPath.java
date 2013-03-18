@@ -32,19 +32,19 @@ public interface IIpsObjectPath {
     /**
      * Message code constant identifying the message of a validation rule.
      */
-    public final static String MSGCODE_SRC_FOLDER_ENTRY_MISSING = "SourceFolderEntryMissing"; //$NON-NLS-1$
+    public static final String MSGCODE_SRC_FOLDER_ENTRY_MISSING = "SourceFolderEntryMissing"; //$NON-NLS-1$
 
     /**
      * Message code constant that indicates that the output folder for mergable java sources is not
      * specified.
      */
-    public final static String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
 
     /**
      * Message code constant that indicates that the output folder for derived java sources is not
      * specified.
      */
-    public final static String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
 
     /**
      * Returns the IPS project this path belongs to.
@@ -226,5 +226,17 @@ public interface IIpsObjectPath {
      * resources with the same path the first find will be returned.
      */
     public InputStream getResourceAsStream(String path);
+
+    /**
+     * Returns true, if the {@link IIpsObjectPathEntry entries} of this path are defined in the
+     * manifest.mf and false if not.
+     */
+    public boolean isUsingManifest();
+
+    /**
+     * Sets, if the {@link IIpsObjectPathEntry entries} are defined in the manifest.mf or in the
+     * .ipsproject file.
+     */
+    public void setUsingManifest(boolean useManifest);
 
 }

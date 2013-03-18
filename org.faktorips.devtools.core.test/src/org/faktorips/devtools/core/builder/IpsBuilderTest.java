@@ -19,7 +19,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -45,12 +49,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchiveEntry;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
@@ -1000,4 +1006,117 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         verifyNoMoreInteractions(resource);
     }
 
+    @Test
+    public void testCreateMarkersForIpsProjectProperties() throws CoreException {
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        MessageList list = new MessageList();
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath.setUsingManifest(false);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        list.newError("1111", "1111", null, null);
+        list.newError("3333", "3333", ipsObjectPath, "3333");
+        list.newError("4444", "4444", ipsObjectPath.getEntries()[0], "4444");
+        list.newError("5555", "5555", ipsObjectPath.getEntries()[0], "5555");
+        list.newError("2222", "2222", null, null);
+
+        IFile propertiesFile = spy(ipsProject.getIpsProjectPropertiesFile());
+
+        IIpsProject spiedIpsProject = spy(ipsProject);
+        doReturn(propertiesFile).when(spiedIpsProject).getIpsProjectPropertiesFile();
+
+        ipsBuilder.createMarkersForIpsProjectProperties(list, spiedIpsProject);
+
+        verify(propertiesFile, times(5)).createMarker(IpsPlugin.PROBLEM_MARKER);
+    }
+
+    @Test
+    public void testCreateMarkersForIpsProjectPropertiesUsingManifest() throws CoreException {
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath.setUsingManifest(true);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        IFile propertiesFile = spy(ipsProject.getIpsProjectPropertiesFile());
+        IFile manifestFile = mock(IFile.class);
+        when(manifestFile.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ZERO)).thenReturn(new IMarker[0]);
+
+        IMarker marker2222 = mock(IMarker.class);
+        IMarker marker3333 = mock(IMarker.class);
+        IMarker marker4444 = mock(IMarker.class);
+
+        when(manifestFile.createMarker(IpsPlugin.PROBLEM_MARKER)).thenReturn(marker2222, marker3333, marker4444);
+        when(manifestFile.exists()).thenReturn(true);
+
+        IIpsProject spiedIpsProject = spy(ipsProject);
+        doReturn(propertiesFile).when(spiedIpsProject).getIpsProjectPropertiesFile();
+        doReturn(ipsObjectPath).when(spiedIpsProject).getIpsObjectPath();
+
+        IProject spiedProject = spy(ipsProject.getProject());
+        doReturn(spiedProject).when(spiedIpsProject).getProject();
+        doReturn(manifestFile).when(spiedProject).getFile(IpsBundleManifest.MANIFEST_NAME);
+
+        MessageList messages = new MessageList();
+
+        messages.newError("1111", "1111", null, null);
+        messages.newError("2222", "2222", ipsObjectPath, "2222");
+        messages.newError("3333", "3333", ipsObjectPath.getEntries()[0], "3333");
+        messages.newError("4444", "4444", ipsObjectPath.getEntries()[0], "4444");
+        messages.newError("5555", "5555", null, null);
+
+        ipsBuilder.createMarkersForIpsProjectProperties(messages, spiedIpsProject);
+
+        verify(propertiesFile, times(2)).createMarker(IpsPlugin.PROBLEM_MARKER);
+        verify(manifestFile, times(3)).createMarker(IpsPlugin.PROBLEM_MARKER);
+
+        verify(marker2222).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { "2222", new Integer(IMarker.SEVERITY_ERROR) });
+        verify(marker3333).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { "3333", new Integer(IMarker.SEVERITY_ERROR) });
+        verify(marker4444).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { "4444", new Integer(IMarker.SEVERITY_ERROR) });
+    }
+
+    @Test
+    public void testCreateMarkersForIpsProjectPropertiesUsingManifestWhichDoesNotExist() throws CoreException {
+        IpsBuilder ipsBuilder = new IpsBuilder();
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath.setUsingManifest(true);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        IFile propertiesFile = spy(ipsProject.getIpsProjectPropertiesFile());
+
+        IIpsProject spiedIpsProject = spy(ipsProject);
+        doReturn(propertiesFile).when(spiedIpsProject).getIpsProjectPropertiesFile();
+        doReturn(ipsObjectPath).when(spiedIpsProject).getIpsObjectPath();
+
+        IMarker marker1111 = mock(IMarker.class);
+        IMarker marker5555 = mock(IMarker.class);
+        IMarker markerNoManifestMf = mock(IMarker.class);
+
+        when(propertiesFile.createMarker(IpsPlugin.PROBLEM_MARKER)).thenReturn(marker1111, marker5555,
+                markerNoManifestMf);
+
+        MessageList messages = new MessageList();
+
+        messages.newError("1111", "1111", null, null);
+        messages.newError("5555", "5555", null, null);
+
+        ipsBuilder.createMarkersForIpsProjectProperties(messages, spiedIpsProject);
+
+        verify(propertiesFile, atLeast(3)).createMarker(IpsPlugin.PROBLEM_MARKER);
+
+        verify(marker1111).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { "1111", new Integer(IMarker.SEVERITY_ERROR) });
+        verify(marker5555).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { "5555", new Integer(IMarker.SEVERITY_ERROR) });
+        verify(markerNoManifestMf).setAttributes(
+                new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { NLS.bind(Messages.IpsBuilder_missingManifestMf, IpsBundleManifest.MANIFEST_NAME),
+                        new Integer(IMarker.SEVERITY_ERROR) });
+    }
 }

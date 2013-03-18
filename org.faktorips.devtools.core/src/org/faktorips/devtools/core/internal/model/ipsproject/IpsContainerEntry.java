@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -39,6 +40,9 @@ import org.w3c.dom.Element;
  */
 public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContainerEntry {
 
+    private static final String MSG_CODE_INVALID_CONTAINER_ENTRY = "IpsContainerEntry-InvalidContainerEntry"; //$NON-NLS-1$
+    private static final String XML_ATTRIBUTE_PATH = "path"; //$NON-NLS-1$
+    private static final String XML_ATTRIBUTE_CONTAINER = "container"; //$NON-NLS-1$
     private String containerTypeId;
     private String optionalPath;
 
@@ -64,9 +68,17 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return containerTypeId;
     }
 
+    public void setContainerTypeId(String containerTypeId) {
+        this.containerTypeId = containerTypeId;
+    }
+
     @Override
     public String getOptionalPath() {
         return optionalPath;
+    }
+
+    public void setOptionalPath(String optionalPath) {
+        this.optionalPath = optionalPath;
     }
 
     @Override
@@ -160,18 +172,24 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
 
     /**
      * {@inheritDoc}
+     * 
+     * For {@link IpsContainerEntry} there is no single {@link IIpsPackageFragmentRoot} hence this
+     * method always return <code>null</code>.
      */
     @Override
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return null; // container entry hasn't got a root!
+        return null;
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * For {@link IpsContainerEntry} there is no single {@link IIpsPackageFragmentRoot} hence this
+     * method always return <code>null</code>.
      */
     @Override
     public String getIpsPackageFragmentRootName() {
-        return null; // container entry hasn't got a root!
+        return null;
     }
 
     /**
@@ -194,8 +212,8 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public void initFromXml(Element element, IProject project) {
-        containerTypeId = element.getAttribute("container"); //$NON-NLS-1$
-        optionalPath = element.getAttribute("path"); //$NON-NLS-1$
+        containerTypeId = element.getAttribute(XML_ATTRIBUTE_CONTAINER);
+        optionalPath = element.getAttribute(XML_ATTRIBUTE_PATH);
     }
 
     /**
@@ -204,9 +222,9 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", TYPE_CONTAINER); //$NON-NLS-1$
-        element.setAttribute("container", containerTypeId); //$NON-NLS-1$
-        element.setAttribute("path", optionalPath); //$NON-NLS-1$
+        element.setAttribute(XML_ATTRIBUTE_TYPE, TYPE_CONTAINER);
+        element.setAttribute(XML_ATTRIBUTE_CONTAINER, containerTypeId);
+        element.setAttribute(XML_ATTRIBUTE_PATH, optionalPath);
         return element;
     }
 
@@ -218,8 +236,8 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
             MessageList result = new MessageList();
-            result.add(Message.newError("Invalid Container Entry", "No container of type " //$NON-NLS-1$ //$NON-NLS-2$
-                    + containerTypeId + "found.")); //$NON-NLS-1$
+            result.add(new Message(MSG_CODE_INVALID_CONTAINER_ENTRY, NLS.bind(Messages.IpsContainerEntry_err_invalidConainerEntry,
+                    containerTypeId), Message.ERROR, this));
             return result;
         }
         return container.validate();

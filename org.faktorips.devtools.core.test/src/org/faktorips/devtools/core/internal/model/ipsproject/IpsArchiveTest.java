@@ -418,7 +418,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
         // test files existence in the archive
         IpsArchive ipsArchive = new IpsArchive(project, path);
-        Set<QualifiedNameType> qNameTypes = ipsArchive.getQNameTypes();
+        ipsArchive.getQNameTypes();
         try {
             ipsArchive.getResourceAsStream("test.gif");
         } catch (CoreException e) {

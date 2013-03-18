@@ -35,16 +35,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
-    private IpsArchive archive;
+    private IIpsArchive archive;
 
-    public ArchiveIpsPackageFragmentRoot(IIpsProject ipsProject, IpsArchive archive) {
+    public ArchiveIpsPackageFragmentRoot(IIpsProject ipsProject, IIpsArchive archive) {
         super(ipsProject, archive.getArchivePath().lastSegment());
         this.archive = archive;
     }
 
     @Override
     public IIpsArchive getIpsArchive() throws CoreException {
-        return ((IpsArchiveEntry)getIpsObjectPathEntry()).getIpsArchive();
+        return archive;
     }
 
     @Override

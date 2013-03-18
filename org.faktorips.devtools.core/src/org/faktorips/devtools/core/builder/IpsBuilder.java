@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -35,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -43,6 +45,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -52,11 +55,15 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * The IPS builder generates Java sourcecode and XML files based on the IPS objects contained in the
@@ -106,7 +113,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
              * starts!
              */
             getIpsProject().getIpsModel().clearValidationCache();
-            if (!checkIpsProjectBeforeBuild(getProject(), getIpsProject())) {
+            if (!checkIpsProjectBeforeBuild(getIpsProject())) {
                 monitor.done();
                 return null;
             }
@@ -177,14 +184,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return project.getIpsArtefactBuilderSet();
     }
 
-    private boolean checkIpsProjectBeforeBuild(IProject project, IIpsProject ipsProject) throws CoreException {
-        project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
+    private boolean checkIpsProjectBeforeBuild(IIpsProject ipsProject) throws CoreException {
+        ipsProject.getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
         MessageList list = ipsProject.validate();
         IResource markedResource = ipsProject.getIpsProjectPropertiesFile();
         if (!markedResource.exists()) {
-            markedResource = project;
+            markedResource = ipsProject.getProject();
+            createMarkersFromMessageList(markedResource, list, IpsPlugin.PROBLEM_MARKER);
+        } else {
+            createMarkersForIpsProjectProperties(list, ipsProject);
         }
-        createMarkersFromMessageList(markedResource, list, IpsPlugin.PROBLEM_MARKER);
         if (!getIpsProject().canBeBuild()) {
             IMarker marker = markedResource.createMarker(IpsPlugin.PROBLEM_MARKER);
             String msg = Messages.IpsBuilder_msgInvalidProperties;
@@ -192,6 +201,75 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return false;
         }
         return true;
+    }
+
+    /**
+     * creates markers for the messages from the validation of the ipsproject differing between the
+     * .ipsproject and manifest.mf as marked resource.
+     */
+    void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) throws CoreException {
+        IResource projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+
+        IFile manifest = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+
+        if (ipsObjectPath.isUsingManifest()) {
+            if (manifest.exists()) {
+                createMarkersForIpsProjectPropertiesAndManifest(messages, projectPropertiesFile, manifest);
+            } else {
+                createMarkersWithMissingManifestMarker(messages, projectPropertiesFile);
+            }
+        } else {
+            createMarkersNotUsingManifest(messages, projectPropertiesFile, manifest);
+        }
+    }
+
+    private void createMarkersNotUsingManifest(MessageList messages, IResource projectPropertiesFile, IFile manifest)
+            throws CoreException {
+        createMarkersFromMessageList(projectPropertiesFile, messages, IpsPlugin.PROBLEM_MARKER);
+
+        if (manifest.exists()) {
+            manifest.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
+        }
+    }
+
+    private void createMarkersWithMissingManifestMarker(MessageList messages, IResource projectPropertiesFile)
+            throws CoreException {
+        createMarkersFromMessageList(projectPropertiesFile, messages, IpsPlugin.PROBLEM_MARKER);
+
+        IMarker marker = projectPropertiesFile.createMarker(IpsPlugin.PROBLEM_MARKER);
+        String msg = NLS.bind(Messages.IpsBuilder_missingManifestMf, IpsBundleManifest.MANIFEST_NAME);
+        updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+    }
+
+    private void createMarkersForIpsProjectPropertiesAndManifest(MessageList messages,
+            IResource projectPropertiesFile,
+            IFile manifest) throws CoreException {
+        MessageList messagesIpsObjectPath = new MessageList();
+        MessageList messagesProject = new MessageList();
+
+        for (Message message : messages) {
+            if (isRelateToIpsObjectPath(message)) {
+                messagesIpsObjectPath.add(message);
+            } else {
+                messagesProject.add(message);
+            }
+        }
+
+        createMarkersFromMessageList(projectPropertiesFile, messagesProject, IpsPlugin.PROBLEM_MARKER);
+        createMarkersFromMessageList(manifest, messagesIpsObjectPath, IpsPlugin.PROBLEM_MARKER);
+    }
+
+    private boolean isRelateToIpsObjectPath(Message message) {
+        ObjectProperty[] objectProperties = message.getInvalidObjectProperties();
+        for (ObjectProperty objectProperty : objectProperties) {
+            Object object = objectProperty.getObject();
+            if (object instanceof IIpsObjectPath || object instanceof IIpsObjectPathEntry
+                    || object instanceof IIpsObjectPathContainer) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isFullBuildRequired(int kind) throws CoreException {
@@ -206,9 +284,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (delta.findMember(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath()) != null) {
             return true;
         }
+        if (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null) {
+            return true;
+        }
         IIpsArchiveEntry[] entries = ipsProject.getIpsObjectPath().getArchiveEntries();
         for (IIpsArchiveEntry entrie : entries) {
-            if (entrie.isContained(delta)) {
+            if (entrie.isAffectedBy(delta)) {
                 return true;
             }
         }
@@ -492,7 +573,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     break;
                 }
                 if (!ipsProject.equals(getIpsProject())) {
-                    if (!checkIpsProjectBeforeBuild(ipsProject.getProject(), ipsProject)) {
+                    if (!checkIpsProjectBeforeBuild(ipsProject)) {
                         continue;
                     }
                 }

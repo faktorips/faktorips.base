@@ -44,6 +44,7 @@ public class Messages extends NLS {
     public static String AbstractParameterIdentifierResolver_indexAndQualifierCanNotBeCombined;
 
     public static String IpsBuilder_ipsSrcFileNotParsable;
+    public static String IpsBuilder_missingManifestMf;
     public static String IpsBuilder_msgExceptionWhileBuildingDependentProjects;
     public static String IpsBuilder_msgBuildResults;
     public static String IpsBuilder_msgInvalidProperties;

@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -42,6 +43,14 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     // if two threads create two different paths we don't have a problem as the two paths are equal.
     private transient IPath path = null;
 
+    public QualifiedNameType(String name, IpsObjectType type) {
+        ArgumentCheck.notNull(name, this);
+        ArgumentCheck.notNull(type, this);
+        qualifiedName = name;
+        this.type = type;
+        calculateHashCode();
+    }
+
     /**
      * Returns the qualified name type for he given path.
      * 
@@ -50,28 +59,35 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
      * 
      * @throws IllegalArgumentException if the path can't be parsed to a qualified name type
      */
-    public final static QualifiedNameType newQualifedNameType(String pathToFile) {
-        int index = pathToFile.lastIndexOf('.');
-        if (index == -1 || index == pathToFile.length() - 1) {
-            throw new IllegalArgumentException("Path " + pathToFile + " can't be parsed to a qualified name type."); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
-        if (type == null) {
+    public static final QualifiedNameType newQualifedNameType(String pathToFile) {
+        if (!representsQualifiedNameType(pathToFile)) {
             throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy an ips object type."); //$NON-NLS-1$ //$NON-NLS-2$
         }
+    
+        int index = pathToFile.lastIndexOf('.');
+    
+        IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
+    
         String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
-        if (qName.equals("")) { //$NON-NLS-1$
-            throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy a qualified name."); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+    
         return new QualifiedNameType(qName, type);
     }
 
-    public QualifiedNameType(String name, IpsObjectType type) {
-        ArgumentCheck.notNull(name, this);
-        ArgumentCheck.notNull(type, this);
-        qualifiedName = name;
-        this.type = type;
-        calculateHashCode();
+    public static final boolean representsQualifiedNameType(String pathToFile) {
+        int index = pathToFile.lastIndexOf('.');
+        if (index == -1 || index == pathToFile.length() - 1) {
+            return false;
+        }
+        IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
+        if (type == null) {
+            return false;
+        }
+        String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
+        if (qName.equals(StringUtils.EMPTY)) {
+            return false;
+        }
+    
+        return true;
     }
 
     /**

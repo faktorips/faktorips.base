@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.io.InputStream;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -32,19 +34,19 @@ public interface IIpsArchive {
      * Constant for the top-level folder in the archive file that contains the entries for the ips
      * objects.
      */
-    public final static String IPSOBJECTS_FOLDER = "ipsobjects"; //$NON-NLS-1$
+    public static final String IPSOBJECTS_FOLDER = "ipsobjects"; //$NON-NLS-1$
 
     /**
      * Constant for the jar entry name" that contains additional ipsobjects properties like the
      * mapping to Java base packages.
      */
-    public final static String JAVA_MAPPING_ENTRY_NAME = IPSOBJECTS_FOLDER + IPath.SEPARATOR + "ipsobjects.properties"; //$NON-NLS-1$
+    public static final String JAVA_MAPPING_ENTRY_NAME = IPSOBJECTS_FOLDER + IPath.SEPARATOR + "ipsobjects.properties"; //$NON-NLS-1$
 
-    public final static String QNT_PROPERTY_POSTFIX_SEPARATOR = "#"; //$NON-NLS-1$
+    public static final String QNT_PROPERTY_POSTFIX_SEPARATOR = "#"; //$NON-NLS-1$
 
-    public final static String PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE = "basePackageMergable"; //$NON-NLS-1$
+    public static final String PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE = "basePackageMergable"; //$NON-NLS-1$
 
-    public final static String PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED = "basePackageDerived"; //$NON-NLS-1$
+    public static final String PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED = "basePackageDerived"; //$NON-NLS-1$
 
     /**
      * Returns the path to the underlying file. Note that the file might exists outside the
@@ -142,5 +144,22 @@ public interface IIpsArchive {
      * @return true if the archive exists and is readable
      */
     public boolean isValid();
+
+    /**
+     * Returns true, if this archive is part of the provided delta or one of its children.
+     * 
+     * @see IIpsArchiveEntry#isAffectedBy(IResourceDelta)
+     */
+    public boolean isAffectedBy(IResourceDelta delta);
+
+    /**
+     * Returns an IResource only if the resource can be located in the workspace. If the path is
+     * relative it have to be located in the roots project project. The file does not have exists
+     * but have to be relative (to the project) or the first segment must match an existing project.
+     * 
+     * @return The found {@link IResource} if the path is workspace or project relative. Returns
+     *         null if the path is not valid.
+     */
+    public IResource getCorrespondingResource();
 
 }

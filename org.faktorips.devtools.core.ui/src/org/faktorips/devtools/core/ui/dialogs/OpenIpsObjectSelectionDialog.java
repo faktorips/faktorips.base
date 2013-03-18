@@ -46,13 +46,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchive;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -406,13 +407,13 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     public static class IpsObjectSelectionHistory extends SelectionHistory {
 
         /** In memento the path to the IpsSrcFile is stored with this tag */
-        private static final String TAG_PATH = "path"; //$NON-NLS-1$
+        static final String TAG_PATH = "path"; //$NON-NLS-1$
 
         /**
          * If the resource is an archive, the IpsSrcFile is stored in an Archive Store the qualified
          * name type of the IpsSrcFile within the archive with this tag
          */
-        private static final String TAG_NAMETYPE = "nameType"; //$NON-NLS-1$
+        static final String TAG_NAMETYPE = "nameType"; //$NON-NLS-1$
 
         @Override
         protected Object restoreItemFromMemento(IMemento memento) {
@@ -432,22 +433,30 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             }
             IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
             IIpsElement ipsElement = ipsModel.getIpsElement(resource);
-            if (ipsElement == null) {
-                String nameType = memento.getString(TAG_NAMETYPE);
-                if (nameType != null) {
-                    IProject project = resource.getProject();
-                    IIpsProject ipsProject = ipsModel.getIpsProject(project);
-                    IpsArchive ipsArchive = new IpsArchive(ipsProject, resource.getFullPath());
+            if (ipsElement instanceof IIpsSrcFile) {
+                return ipsElement;
+            } else {
+                return getIpsSrcFileFromArchive(memento, resource);
+            }
+        }
+
+        protected IIpsSrcFile getIpsSrcFileFromArchive(IMemento memento, IResource resource) {
+            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+            String nameType = memento.getString(TAG_NAMETYPE);
+            if (nameType != null) {
+                IProject project = resource.getProject();
+                IIpsProject ipsProject = ipsModel.getIpsProject(project);
+                String resourceName = resource.getName();
+                IIpsPackageFragmentRoot packageFragmentRoot = ipsProject.getIpsPackageFragmentRoot(resourceName);
+                if (packageFragmentRoot != null) {
                     try {
-                        return ipsArchive.getRoot().findIpsSrcFile(QualifiedNameType.newQualifedNameType(nameType));
-                    } catch (Exception e) {
-                        IpsPlugin.log(e);
+                        return packageFragmentRoot.findIpsSrcFile(QualifiedNameType.newQualifedNameType(nameType));
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
                     }
                 }
-                return null;
-            } else {
-                return ipsElement;
             }
+            return null;
         }
 
         @Override

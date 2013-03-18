@@ -27,7 +27,7 @@ public class IpsContainer4JdtClasspathContainerType implements IIpsObjectPathCon
     /**
      * The type's ID as specified in the plugin.xml.
      */
-    public final static String ID = "JDTClasspathContainer"; //$NON-NLS-1$
+    public static final String ID = "JDTClasspathContainer"; //$NON-NLS-1$
 
     @Override
     public String getId() {

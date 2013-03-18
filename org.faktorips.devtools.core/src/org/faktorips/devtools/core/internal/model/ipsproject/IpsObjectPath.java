@@ -21,13 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -47,9 +45,6 @@ import org.faktorips.devtools.core.util.ArrayElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Implementation of IIpsObjectPath.
@@ -58,48 +53,8 @@ import org.w3c.dom.NodeList;
  */
 public class IpsObjectPath implements IIpsObjectPath {
 
-    /**
-     * Returns a description of the xml format.
-     */
-    public final static String getXmlFormatDescription() {
-        return XML_TAG_NAME
-                + " : " //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "The IpsObjectPath defines where Faktor-IPS searches for model and product definition files/objects for this project." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "Basically it is the same concept as the Java classpath." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "<" + XML_TAG_NAME + " " //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR
-                + " outputDefinedPerSourceFolder            Boolean flag that indicates if there are separate output folders for each source folder" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " outputFolderMergableSources             The output folder for the generated artefacts that will not be deleted during a " + //$NON-NLS-1$
-                "clean build cycle but may be merged with the generated content during a build cycle" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " basePackageMergable                     The base package for generated and merable java files" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " outputFolderDerivedSources              The output folder for the generated artefacts that will be deleted during a clean build " + //$NON-NLS-1$
-                "cycle and newly generated during each build cycle" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " basePackageDerived                      The base package for generated derived java files" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "The IpsObjectPath is defined through one or more entries." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "Currently the following entry types are supported:" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + IpsSrcFolderEntry.getXmlFormatDescription() + SystemUtils.LINE_SEPARATOR
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + IpsProjectRefEntry.getXmlFormatDescription() + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + IpsArchiveEntry.getXmlFormatDescription();
-    }
-
-    /**
-     * Xml element name for ips object path.
-     */
-    public final static String XML_TAG_NAME = "IpsObjectPath"; //$NON-NLS-1$
-
     private IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[0];
+
     private boolean outputDefinedPerSourceFolder = false;
 
     /** output folder for the generated Java files */
@@ -123,6 +78,12 @@ public class IpsObjectPath implements IIpsObjectPath {
     /** map with QualifiedNameTypes as keys and cached IpsSrcFiles as values. */
     private Map<QualifiedNameType, CachedSrcFile> lookupCache = new HashMap<QualifiedNameType, CachedSrcFile>(1000);
 
+    /**
+     * if set to true, the {@link IIpsObjectPathEntry entries} are read from the manifest.mf and if
+     * false the entries are read from the .ipsproject file
+     */
+    private boolean useManifest = false;
+
     public IpsObjectPath(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject, this);
         this.ipsProject = ipsProject;
@@ -136,7 +97,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * Returns the index of the given entry.
      */
-    public int getIndex(IpsObjectPathEntry entry) {
+    public int getIndex(IIpsObjectPathEntry entry) {
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].equals(entry)) {
                 return i;
@@ -583,77 +544,19 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
-    /**
-     * Returns an xml representation of the object path.
-     * 
-     * @param doc The xml document used to create new elements.
-     */
-    public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_TAG_NAME);
-        element.setAttribute("outputDefinedPerSrcFolder", "" + outputDefinedPerSourceFolder); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute(
-                "outputFolderMergableSources", outputFolderMergableSources == null ? "" : outputFolderMergableSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute("basePackageMergable", basePackageMergable); //$NON-NLS-1$
-        element.setAttribute(
-                "outputFolderDerivedSources", outputFolderDerivedSources == null ? "" : outputFolderDerivedSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute("basePackageDerived", basePackageDerived); //$NON-NLS-1$
-        // entries
-        for (IIpsObjectPathEntry entrie : entries) {
-            Element entryElement = ((IpsObjectPathEntry)entrie).toXml(doc);
-            element.appendChild(entryElement);
-        }
-
-        return element;
-    }
-
-    /**
-     * Creates the object path from the data stored in the xml element.
-     */
-    public final static IIpsObjectPath createFromXml(IIpsProject ipsProject, Element element) {
-        IpsObjectPath path = new IpsObjectPath(ipsProject);
-        path.setBasePackageNameForMergableJavaClasses(element.getAttribute("basePackageMergable")); //$NON-NLS-1$
-        path.setBasePackageNameForDerivedJavaClasses(element.getAttribute("basePackageDerived")); //$NON-NLS-1$
-        String outputFolderMergedSourcesString = element.getAttribute("outputFolderMergableSources"); //$NON-NLS-1$
-        if (outputFolderMergedSourcesString.equals("")) { //$NON-NLS-1$
-            path.setOutputFolderForMergableSources(null);
-        } else {
-            path.setOutputFolderForMergableSources(ipsProject.getProject().getFolder(
-                    new Path(outputFolderMergedSourcesString)));
-        }
-        String outputFolderDerivedSourcesString = element.getAttribute("outputFolderDerivedSources"); //$NON-NLS-1$
-        if (outputFolderDerivedSourcesString.equals("")) { //$NON-NLS-1$
-            path.setOutputFolderForDerivedSources(null);
-        } else {
-            path.setOutputFolderForDerivedSources(ipsProject.getProject().getFolder(
-                    new Path(outputFolderDerivedSourcesString)));
-        }
-        path.setOutputDefinedPerSrcFolder(Boolean
-                .valueOf(element.getAttribute("outputDefinedPerSrcFolder")).booleanValue()); //$NON-NLS-1$
-
-        // init entries
-        NodeList nl = element.getElementsByTagName(IpsObjectPathEntry.XML_ELEMENT);
-        IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[nl.getLength()];
-        for (int i = 0; i < nl.getLength(); i++) {
-            Element entryElement = (Element)nl.item(i);
-            entries[i] = IpsObjectPathEntry.createFromXml(path, entryElement, ipsProject.getProject());
-        }
-        path.setEntries(entries);
-        return path;
-    }
-
     @Override
     public MessageList validate() throws CoreException {
         MessageList list = new MessageList();
         if (!isOutputDefinedPerSrcFolder()) {
             if (outputFolderMergableSources == null) {
                 list.add(new Message(MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED, NLS.bind(
-                        Messages.IpsObjectPath_msgOutputFolderMergableMissing, getIpsProject()), Message.ERROR));
+                        Messages.IpsObjectPath_msgOutputFolderMergableMissing, getIpsProject()), Message.ERROR, this));
             } else {
                 list.add(validateFolder(outputFolderMergableSources));
             }
             if (outputFolderDerivedSources == null) {
                 list.add(new Message(MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED, NLS.bind(
-                        Messages.IpsObjectPath_msgOutputFolderDerivedMissing, getIpsProject()), Message.ERROR));
+                        Messages.IpsObjectPath_msgOutputFolderDerivedMissing, getIpsProject()), Message.ERROR, this));
             } else {
                 list.add(validateFolder(outputFolderDerivedSources));
             }
@@ -661,7 +564,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         IIpsSrcFolderEntry[] srcEntries = getSourceFolderEntries();
         if (srcEntries.length == 0) {
             list.add(new Message(MSGCODE_SRC_FOLDER_ENTRY_MISSING, Messages.IpsObjectPath_srcfolderentrymissing,
-                    Message.ERROR));
+                    Message.ERROR, this));
         }
         IIpsObjectPathEntry[] objectPathEntries = getEntries();
         for (IIpsObjectPathEntry objectPathEntrie : objectPathEntries) {
@@ -750,10 +653,20 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
+    @Override
+    public boolean isUsingManifest() {
+        return useManifest;
+    }
+
+    @Override
+    public void setUsingManifest(boolean useManifest) {
+        this.useManifest = useManifest;
+    }
+
     private static class CachedSrcFile {
 
-        IIpsSrcFile file;
-        int entryIndex;
+        private IIpsSrcFile file;
+        private int entryIndex;
 
         public CachedSrcFile(IIpsSrcFile file, int entryIndex) {
             super();
@@ -762,5 +675,4 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
 
     }
-
 }

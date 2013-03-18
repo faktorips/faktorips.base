@@ -68,8 +68,8 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         super(path);
     }
 
-    public IpsProjectRefEntry(IpsObjectPath path, IIpsProject referencedIpsProject) {
-        super(path);
+    public IpsProjectRefEntry(IpsObjectPath ipsObjectPath, IIpsProject referencedIpsProject) {
+        super(ipsObjectPath);
         this.referencedIpsProject = referencedIpsProject;
     }
 

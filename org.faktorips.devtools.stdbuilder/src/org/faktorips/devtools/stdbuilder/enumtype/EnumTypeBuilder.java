@@ -413,16 +413,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String valueOrExpression,
             boolean isExpression,
             JavaCodeFragment repositoryExp) throws CoreException {
-
         IEnumAttribute attribute = enumType.findIdentiferAttribute(getIpsProject());
         DatatypeHelper datatypeHelper = getDatatypeHelper(attribute, true);
         JavaCodeFragment fragment = new JavaCodeFragment();
-
-        if (!isJava5EnumsAvailable()) {
-            fragment.append("("); //$NON-NLS-1$
-            fragment.appendClassName(getQualifiedClassName(enumType));
-            fragment.append(")"); //$NON-NLS-1$
-        }
         if (repositoryExp != null) {
             fragment.append(repositoryExp);
         }
@@ -509,17 +502,19 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         if (enumType.isContainingValues()) {
             IEnumAttribute enumAttribute = enumType.findIdentiferAttribute(getIpsProject());
-            DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(
-                    enumAttribute.findDatatype(getIpsProject()).getQualifiedName());
-            JavaCodeFragment fragment = new JavaCodeFragment();
-            fragment.appendClassName(getQualifiedClassName(enumType));
-            fragment.append('.');
-            fragment.append(getMethodNameGetValueBy(enumAttribute));
-            fragment.append("("); //$NON-NLS-1$
-            fragment.append(idAttrDatatypeHelper.newInstanceFromExpression(expressionValue,
-                    checkExpressionForNullAndEmptyString));
-            fragment.append(")"); //$NON-NLS-1$
-            return fragment;
+            if (enumAttribute != null) {
+                DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(
+                        enumAttribute.findDatatype(getIpsProject()).getQualifiedName());
+                JavaCodeFragment fragment = new JavaCodeFragment();
+                fragment.appendClassName(getQualifiedClassName(enumType));
+                fragment.append('.');
+                fragment.append(getMethodNameGetValueBy(enumAttribute));
+                fragment.append("("); //$NON-NLS-1$
+                fragment.append(idAttrDatatypeHelper.newInstanceFromExpression(expressionValue,
+                        checkExpressionForNullAndEmptyString));
+                fragment.append(")"); //$NON-NLS-1$
+                return fragment;
+            }
         }
         return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumType, expressionValue, true, repositoryExp);
     }
@@ -1452,7 +1447,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private DatatypeHelper getDatatypeHelper(IEnumAttribute enumAttribute, boolean mapMultilingual) {
         try {
-            if (mapMultilingual && enumAttribute.isMultilingual()) {
+            if (enumAttribute == null) {
+                return getIpsProject().getDatatypeHelper(Datatype.STRING);
+            } else if (mapMultilingual && enumAttribute.isMultilingual()) {
                 return new InternationalStringDatatypeHelper();
             } else {
                 return getIpsProject().getDatatypeHelper(enumAttribute.findDatatype(getIpsProject()));

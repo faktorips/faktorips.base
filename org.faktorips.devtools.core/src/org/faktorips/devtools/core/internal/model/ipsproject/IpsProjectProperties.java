@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,9 +26,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
@@ -36,6 +39,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -72,6 +76,8 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    public static final String TAG_NAME = "IpsProject"; //$NON-NLS-1$
+
     private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
 
     private static final String SETTING_TAG_NAME = "Setting"; //$NON-NLS-1$
@@ -86,15 +92,23 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String ATTRIBUTE_PERSISTENT_PROJECT = "persistentProject"; //$NON-NLS-1$
 
-    private final static String SETTING_RULES_WITHOUT_REFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
+    private static final String SETTING_RULES_WITHOUT_REFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
 
-    private final static String SETTING_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
+    private static final String SETTING_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
 
-    private final static String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
+    private static final String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
 
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
 
-    public final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
+    private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
+
+    private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
+
+    private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
+
+    private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
+
+    private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
 
     private boolean createdFromParsableFileContents = true;
 
@@ -102,18 +116,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean productDefinitionProject;
     private boolean persistentProject;
 
-    public static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
     /**
      * the version of this project, used for release
      */
     private String releaseVersion;
-    private final static String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
-
-    private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
-
-    private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
-    private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
-
     /**
      * The id of the release extension that is associatied with this project
      */
@@ -122,12 +128,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 
     private IProductCmptNamingStrategy productCmptNamingStrategy;
-    private String productCmptNamingStrategyId = null; // must keep id as well, to report validation
-    // errors, if strategy is not found!
+
+    /**
+     * The ID of the {@link IProductCmptNamingStrategy} to report validation errors when strategy
+     * was not found
+     */
+    private String productCmptNamingStrategyId = null;
 
     private String builderSetId = ""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
+
     private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
+
     private String[] predefinedDatatypesUsed = new String[0];
 
     // all datatypes defined in the project including(!) the value datatypes.
@@ -487,8 +499,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
 
         // object path
-        createDescriptionComment(IpsObjectPath.getXmlFormatDescription(), projectEl);
-        projectEl.appendChild(((IpsObjectPath)path).toXml(doc));
+        IpsObjectPathXmlPersister xmlIpsObjectPathPersistor = new IpsObjectPathXmlPersister();
+        createDescriptionComment(xmlIpsObjectPathPersistor.getXmlFormatDescription(), projectEl);
+        projectEl.appendChild(xmlIpsObjectPathPersistor.store(doc, ((IpsObjectPath)path)));
 
         // datatypes
         createDatatypeDescriptionComment(projectEl);
@@ -625,9 +638,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
         initProductCmptNamingStrategyFromXml(ipsProject,
                 XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
-        Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPath.XML_TAG_NAME);
+        Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPathXmlPersister.XML_TAG_NAME);
         if (pathEl != null) {
-            path = IpsObjectPath.createFromXml(ipsProject, pathEl);
+            if (isUsingManifest(pathEl)) {
+                createObjectPathFromManifest(ipsProject);
+            } else {
+                path = new IpsObjectPathXmlPersister().read(ipsProject, pathEl);
+            }
         } else {
             path = new IpsObjectPath(ipsProject);
         }
@@ -639,21 +656,42 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
         initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes")); //$NON-NLS-1$
         initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions")); //$NON-NLS-1$
-
         initRequiredFeatures(XmlUtil.getFirstElement(element, "RequiredIpsFeatures")); //$NON-NLS-1$
-
         initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element,
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
-
         initProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
-
         initAdditionalSettings(element);
-
         initPersistenceOptions(element);
-
         initSupportedLanguages(element);
-
         initDefaultCurrency(element);
+    }
+
+    private boolean isUsingManifest(Element pathEl) {
+        String usingManifest = pathEl.getAttribute(IpsObjectPathXmlPersister.ATTRIBUTE_NAME_USE_MANIFEST);
+
+        return Boolean.parseBoolean(usingManifest);
+    }
+
+    private void createObjectPathFromManifest(IIpsProject ipsProject) {
+        IFile file = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        if (file.exists()) {
+            createObjectPathFromExistingManifest(ipsProject, file);
+        } else {
+            path = new IpsObjectPath(ipsProject);
+            path.setUsingManifest(true);
+        }
+    }
+
+    private void createObjectPathFromExistingManifest(IIpsProject ipsProject, IFile file) {
+        try {
+            Manifest manifest = new Manifest(file.getContents());
+            IpsBundleManifest bundleManifest = new IpsBundleManifest(manifest);
+            path = new IpsObjectPathManifestReader(bundleManifest, ipsProject).readIpsObjectPath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private void initRequiredFeatures(Element el) {
@@ -1118,36 +1156,31 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "Some of the settings defined in the Faktor-IPS metamodel are optional." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "In this section you can enable or disable these additional settings." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<"+ADDITIONAL_SETTINGS_TAG_NAME+">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+                + "<" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <"+SETTING_TAG_NAME+" name=\""+SETTING_DERIVED_UNION_IS_IMPLEMENTED+"\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "		    of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <"+SETTING_TAG_NAME+" name=\""+SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE+"\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "        of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <"+SETTING_TAG_NAME+" name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" //$NON-NLS-1$
                 + "         by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <"+SETTING_TAG_NAME+" name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <"+SETTING_TAG_NAME+" name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
-                // FIPS-85 we need
-                // * to have to possibility to use the inverse association of the super type as
-                // inverse
-                // * association for a concrete type. When this property is false, these unsafe
-                // inverse
-                // * associations are allowed. Otherwise if this property is true you have to create
-                // a concrete
-                // * inverse association for every subset of a derived union with an inverse
-                // association.
+                // FIPS-85 we need to have to possibility to use the inverse association of the super type as
+                // inverse association for a concrete type. When this property is false, these unsafe inverse
+                // associations are allowed. Otherwise if this property is true you have to create a concrete
+                // inverse association for every subset of a derived union with an inverse association.
 
-                + "</"+ADDITIONAL_SETTINGS_TAG_NAME+">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+                + "</" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
         createDescriptionComment(s, parentEl);
-//        @formatter:on
+        // @formatter:on
     }
 
     private void createPersistenceOptionsDescriptionComment(Node parentEl) {
@@ -1442,5 +1475,4 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void setFormulaLanguageLocale(Locale locale) {
         formulaLanguageLocale = locale;
     }
-
 }

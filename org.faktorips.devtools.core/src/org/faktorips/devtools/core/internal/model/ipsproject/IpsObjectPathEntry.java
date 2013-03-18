@@ -19,12 +19,14 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
+import org.faktorips.devtools.core.internal.model.ipsproject.jarbundle.IpsJarBundleEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -38,13 +40,15 @@ import org.w3c.dom.Element;
 public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsObjectPathEntry {
 
     // name of xml elements representing path entries.
-    public final static String XML_ELEMENT = "Entry"; //$NON-NLS-1$
+    public static final String XML_ELEMENT = "Entry"; //$NON-NLS-1$
+
+    public static final String XML_ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
 
     private IpsObjectPath path;
 
-    public IpsObjectPathEntry(IpsObjectPath path) {
-        ArgumentCheck.notNull(path);
-        this.path = path;
+    public IpsObjectPathEntry(IpsObjectPath ipsObjectPath) {
+        ArgumentCheck.notNull(ipsObjectPath);
+        this.path = ipsObjectPath;
     }
 
     @Override
@@ -71,7 +75,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * Returns <code>true</code> if the entry contains a source file with the indicated qualified
      * name type, otherwise <code>false</code>.
      */
-    abstract public boolean exists(QualifiedNameType qnt) throws CoreException;
+    public abstract boolean exists(QualifiedNameType qnt) throws CoreException;
 
     @Override
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
@@ -89,7 +93,6 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
-
         if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return null;
@@ -152,11 +155,27 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     /**
      * Adds all objects of the given type found in the path entry to the result list.
+     * <p>
+     * The default implementation simply delegates the request to the
+     * {@link IIpsPackageFragmentRoot}. However you should overwrite this method if you either have
+     * no or multiple {@link IIpsPackageFragmentRoot roots} or you want to have a completely other
+     * search strategy.
+     * 
+     * @param type The result only contains {@link IIpsSrcFile source files} of this type
+     * @param packageFragment The package fragment in which all source files have to be. If this
+     *            parameter is <code>null</code> the result contains all {@link IIpsSrcFile source
+     *            files of this entry}
+     * @param result The result list containing all found files
+     * @param visitedEntries The already visited {@link IIpsObjectPathEntry}. If this entry consists
+     *            of multiple entries the implementation may need to add additional added entries.
+     *            This entry itself is already added to the set
      */
-    protected abstract void findIpsSrcFilesInternal(IpsObjectType type,
+    protected void findIpsSrcFilesInternal(IpsObjectType type,
             String packageFragment,
             List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException;
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+        ((AbstractIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
+    }
 
     /**
      * Returns the first ips source file with the indicated qualified name type found in the path
@@ -194,9 +213,9 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     /**
      * Returns the object path entry stored in the xml element.
      */
-    public final static IIpsObjectPathEntry createFromXml(IpsObjectPath path, Element element, IProject project) {
+    public static final IIpsObjectPathEntry createFromXml(IpsObjectPath path, Element element, IProject project) {
         IpsObjectPathEntry entry;
-        String type = element.getAttribute("type"); //$NON-NLS-1$
+        String type = element.getAttribute(XML_ATTRIBUTE_TYPE);
         if (type.equals(TYPE_SRC_FOLDER)) {
             entry = new IpsSrcFolderEntry(path);
             entry.initFromXml(element, project);
@@ -214,6 +233,11 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
         }
         if (type.equals(TYPE_CONTAINER)) {
             entry = new IpsContainerEntry(path);
+            entry.initFromXml(element, project);
+            return entry;
+        }
+        if (type.equals(TYPE_JARBUNDLE)) {
+            entry = new IpsJarBundleEntry(path);
             entry.initFromXml(element, project);
             return entry;
         }

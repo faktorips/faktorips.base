@@ -5,12 +5,14 @@
 		<Entry type="src" sourceFolder="ipssrc/modelclasses" outputFolder ="javasrc/modelclasses" basePackage="org.faktorips.sample.model"/>
 		<Entry type="src" sourceFolder="ipssrc/products" outputFolder ="javasrc/products" basePackage="org.faktorips.sample.products"/>
 	</IpsObjectPath>
-	<IpsObjectPath outputDefinedPerSrcFolder="false" 
+	<IpsObjectPath useManifest="false" outputDefinedPerSrcFolder="false" 
 				outputFolderMergableSources="generated" 
 				basePackageMergable="org.sample.generated" 
 				outputFolderDerivedSources="extensions" 
 				basePackageDerived="org.sample.extension">
 		<Entry type="src" sourceFolder="ipssrc/modelclasses"/>
 		<Entry type="src" sourceFolder="ipssrc/products"/>
+	</IpsObjectPath>
+	<IpsObjectPath useManifest="true">
 	</IpsObjectPath>
 </TestCases>

@@ -48,6 +48,6 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
      * Note: For changes of files outside the workspace which are referenced from the project in any
      * kind no IResourceDelta will be created.
      */
-    public boolean isContained(IResourceDelta delta);
+    public boolean isAffectedBy(IResourceDelta delta);
 
 }

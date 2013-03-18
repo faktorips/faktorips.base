@@ -22,6 +22,8 @@ import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 
 /**
  * Abstract ViewPart implementation for all classes that should be navigatable by show-in
@@ -45,26 +47,45 @@ public abstract class AbstractShowInSupportingViewPart extends ViewPart implemen
     public boolean show(ShowInContext context) {
         if (context.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection)context.getSelection();
-            Object firstElement = structuredSelection.getFirstElement();
-            // Some crazy implementations like SearchResults return arrays as elements. In this case
-            // we try to view the first element
-            if (firstElement instanceof Object[]) {
-                firstElement = ((Object[])firstElement)[0];
-            }
-            if (firstElement instanceof IAdaptable) {
-                IAdaptable adaptable = (IAdaptable)firstElement;
-                if (show(adaptable)) {
-                    return true;
-                    // If the view was not able to show the selection we keep on trying
-                }
-            }
+            return show(structuredSelection);
         }
         if (context.getInput() instanceof IFileEditorInput) {
-            IFile file = ((IFileEditorInput)context.getInput()).getFile();
-            if (file == null) {
-                return false;
-            }
-            show(file);
+            IFileEditorInput fileEditorInput = (IFileEditorInput)context.getInput();
+            return show(fileEditorInput);
+        }
+        if (context.getInput() instanceof IpsArchiveEditorInput) {
+            IpsArchiveEditorInput ipsArchiveEditorInput = (IpsArchiveEditorInput)context.getInput();
+            return show(ipsArchiveEditorInput);
+        }
+        return false;
+    }
+
+    private boolean show(IpsArchiveEditorInput ipsArchiveEditorInput) {
+        IIpsSrcFile srcFile = ipsArchiveEditorInput.getIpsSrcFile();
+        if (srcFile == null) {
+            return false;
+        }
+        return show(srcFile);
+    }
+
+    private boolean show(IFileEditorInput fileEditorInput) {
+        IFile file = fileEditorInput.getFile();
+        if (file == null) {
+            return false;
+        }
+        return show(file);
+    }
+
+    private boolean show(IStructuredSelection structuredSelection) {
+        Object firstElement = structuredSelection.getFirstElement();
+        // Some crazy implementations like SearchResults return arrays as elements. In this case
+        // we try to view the first element
+        if (firstElement instanceof Object[]) {
+            firstElement = ((Object[])firstElement)[0];
+        }
+        if (firstElement instanceof IAdaptable) {
+            IAdaptable adaptable = (IAdaptable)firstElement;
+            return show(adaptable);
         }
         return false;
     }

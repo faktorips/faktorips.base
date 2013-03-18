@@ -124,12 +124,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * The file extension for IPS projects.
      */
-    public final static String PROPERTY_FILE_EXTENSION = "ipsproject"; //$NON-NLS-1$
+    public static final String PROPERTY_FILE_EXTENSION = "ipsproject"; //$NON-NLS-1$
 
     /**
      * The file extension for IPS projects but with a dot added before.
      */
-    public final static String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
+    public static final String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
 
     private final IJavaNamingConvention javaNamingConvention = new JavaNamingConvention();
 
@@ -158,7 +158,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
             // we don't have a threading problem here, as projects are only handles!
             project = ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
         }
-
         return project;
     }
 
@@ -466,6 +465,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getProperties().getIpsObjectPath();
     }
 
+    /**
+     * Returns a <strong>reference</strong> to the ips object path, in contrast to the
+     * getIpsObjectPath() method that returns a copy.
+     */
+    public IpsObjectPath getIpsObjectPathInternal() {
+        return (IpsObjectPath)getPropertiesInternal().getIpsObjectPath();
+    }
+
     @Override
     public IFolder[] getOutputFolders() throws CoreException {
         return getIpsObjectPathInternal().getOutputFolders();
@@ -483,14 +490,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         return file.equals(ipsObject.getIpsSrcFile());
-    }
-
-    /**
-     * Returns a <strong>reference</strong> to the ips object path, in contrast to the
-     * getIpsObjectPath() method that returns a copy.
-     */
-    public IpsObjectPath getIpsObjectPathInternal() {
-        return (IpsObjectPath)getPropertiesInternal().getIpsObjectPath();
     }
 
     @Override
@@ -539,8 +538,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() {
         List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
-        for (IIpsObjectPathEntry entrie : entries) {
-            IIpsPackageFragmentRoot root = entrie.getIpsPackageFragmentRoot();
+        for (IIpsObjectPathEntry entry : entries) {
+            IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
             if (root != null) {
                 roots.add(root);
             }
@@ -828,7 +827,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        return (getIpsObjectPathInternal()).findIpsSrcFile(qNameType, visitedEntries);
+        return getIpsObjectPathInternal().findIpsSrcFile(qNameType, visitedEntries);
     }
 
     @Override
@@ -866,7 +865,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             List<IIpsSrcFile> result) throws CoreException {
 
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        (getIpsObjectPathInternal()).findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result, visitedEntries);
     }
 
     /**
@@ -957,7 +956,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        return (getIpsObjectPathInternal()).findIpsSrcFiles(type, visitedEntries);
+        return getIpsObjectPathInternal().findIpsSrcFiles(type, visitedEntries);
     }
 
     @Override

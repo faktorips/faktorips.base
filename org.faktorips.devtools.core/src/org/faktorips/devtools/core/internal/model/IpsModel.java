@@ -226,7 +226,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         customModelExtensions = new CustomModelExtensions(this);
         initIpsObjectTypes();
         // has to be done after the ips object types are initialized!
-        resourceDeltaVisitor = new ResourceDeltaVisitor();
+        resourceDeltaVisitor = new ResourceDeltaVisitor(this);
     }
 
     @Override
@@ -980,7 +980,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 && propertyFile.exists()
                 && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(data
                         .getLastPersistentModificationTimestamp())) {
-            clearIpsProjectPropertiesCache(ipsProject);
+            clearIpsProjectDataCaches(ipsProject);
             data = null;
         }
         if (data == null) {
@@ -994,11 +994,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getIpsProjectProperties(ipsProject);
     }
 
-    private void clearIpsProjectPropertiesCache(IpsProject ipsProject) {
+    private void clearIpsProjectDataCaches(IpsProject ipsProject) {
         projectDatatypesMap.remove(ipsProject.getName());
         projectDatatypeHelpersMap.remove(ipsProject.getName());
-        projectPropertiesMap.remove(ipsProject.getName());
+        clearIpsProjectPropertiesCache(ipsProject);
         projectToBuilderSetMap.remove(ipsProject);
+    }
+
+    protected void clearIpsProjectPropertiesCache(IIpsProject ipsProject) {
+        projectPropertiesMap.remove(ipsProject.getName());
     }
 
     /**
@@ -1468,76 +1472,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         notifyChangeListeners(event);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.ipsSrcFileHasChanged(), file=" //$NON-NLS-1$
-                    + event.getIpsSrcFile() + ", Thead: " + Thread.currentThread().getName());//$NON-NLS-1$
-        }
-    }
-
-    /**
-     * ResourceDeltaVisitor to generate IPS model change events.
-     */
-    private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-
-        private Set<String> fileExtensionsOfInterest = new HashSet<String>(20);
-
-        public ResourceDeltaVisitor() {
-            IpsObjectType[] types = getIpsObjectTypes();
-            for (IpsObjectType type : types) {
-                fileExtensionsOfInterest.add(type.getFileExtension());
-            }
-            fileExtensionsOfInterest.add(IpsProject.PROPERTY_FILE_EXTENSION);
-        }
-
-        @Override
-        public boolean visit(final IResourceDelta delta) {
-            IResource resource = delta.getResource();
-            try {
-                if (resource == null || resource.getType() != IResource.FILE) {
-                    return true;
-                }
-                if (!fileExtensionsOfInterest.contains(((IFile)resource).getFileExtension())) {
-                    return false;
-                }
-                IIpsProject ipsProject = getIpsProject(resource.getProject());
-                if (resource.equals(((IpsProject)ipsProject).getIpsProjectPropertiesFile())) {
-                    validationResultCache.clear();
-                    return false;
-                }
-                if (delta.getKind() == IResourceDelta.REMOVED) {
-                    IIpsElement ipsElement = getIpsElement(resource);
-                    if (ipsElement instanceof IIpsSrcFile) {
-                        removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
-                        return false;
-                    }
-                }
-
-                final IIpsElement element = findIpsElement(resource);
-                if (!(element instanceof IIpsSrcFile)) { // this includes element==null!
-                    return true;
-                }
-                IpsSrcFile srcFile = (IpsSrcFile)element;
-                IpsSrcFileContent content = getIpsSrcFileContent(srcFile);
-                boolean isInSync = content == null
-                        || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out
-                            .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
-                                    + resource.getModificationStamp() + ", Sync status=" + isInSync + ", " //$NON-NLS-1$ //$NON-NLS-2$
-                                    + srcFile + " Thread: " + Thread.currentThread().getName());//$NON-NLS-1$
-                }
-                if (!isInSync) {
-                    ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(srcFile));
-                }
-                return true;
-            } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating model objects after resource " //$NON-NLS-1$
-                        + resource + " changed.", e));//$NON-NLS-1$
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out
-                            .println("IpsModel.ResourceDeltaVisitor.visit(): Error updating model objects after resource changed, resource="//$NON-NLS-1$
-                                    + resource);
-                }
-            }
-            return true;
+                    + event.getIpsSrcFile() + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
     }
 
@@ -1781,7 +1716,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         private Set<String> fileExtensionsOfInterest;
 
         public IpsSrcFileChangeVisitor() {
-            fileExtensionsOfInterest = resourceDeltaVisitor.fileExtensionsOfInterest;
+            fileExtensionsOfInterest = resourceDeltaVisitor.getFileExtensionsOfInterest();
         }
 
         @Override

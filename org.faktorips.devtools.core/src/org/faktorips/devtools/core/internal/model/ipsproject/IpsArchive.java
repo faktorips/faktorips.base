@@ -64,7 +64,7 @@ import org.faktorips.util.StreamUtil;
  */
 public class IpsArchive implements IIpsArchive {
 
-    private final static int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length();
+    private static final int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length();
 
     private final IPath archivePath;
     private long modificationStamp;
@@ -95,12 +95,13 @@ public class IpsArchive implements IIpsArchive {
         return Path.fromOSString(extFile.getAbsolutePath());
     }
 
-    public boolean isContained(IResourceDelta delta) {
-        // see javadoc IIpsArchiveEntry#isContained(IResourceDelta)
+    @Override
+    public boolean isAffectedBy(IResourceDelta delta) {
         IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = wsRoot.getFileForLocation(getLocation());
         if (file == null) {
-            return false; // file is outside the workspace
+            // file is outside the workspace
+            return false;
         }
         if (delta.findMember(file.getProjectRelativePath()) != null) {
             return true;
@@ -149,8 +150,9 @@ public class IpsArchive implements IIpsArchive {
         if (name == null) {
             return false;
         }
-        if (name.equals("")) { //$NON-NLS-1$
-            return true; // default package is always contained.
+        if (StringUtils.EMPTY.equals(name)) {
+            // default package is always contained.
+            return true;
         }
         readArchiveContentIfNecessary();
         if (packs.containsKey(name)) {
@@ -159,7 +161,8 @@ public class IpsArchive implements IIpsArchive {
         String prefix = name + "."; //$NON-NLS-1$
         for (String pack : packs.keySet()) {
             if (pack.startsWith(prefix)) {
-                return true; // given pack name is an empty parent package
+                // given pack name is an empty parent package
+                return true;
             }
         }
         return false;
@@ -190,7 +193,8 @@ public class IpsArchive implements IIpsArchive {
         if (candidate.equals(parentPack)) {
             return false;
         }
-        if (parentPack.equals("")) { // default package //$NON-NLS-1$
+        if (StringUtils.EMPTY.equals(parentPack)) {
+            // default package
             return candidate.indexOf('.') == -1;
         } else {
             if (!candidate.startsWith(parentPack + '.')) {
@@ -271,7 +275,6 @@ public class IpsArchive implements IIpsArchive {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
         }
         packs = new HashMap<String, Set<QualifiedNameType>>(200);
-        SortedMap<QualifiedNameType, IpsObjectProperties> qntTemp = new TreeMap<QualifiedNameType, IpsObjectProperties>();
 
         File file = getFileFromPath();
 
@@ -282,6 +285,16 @@ public class IpsArchive implements IIpsArchive {
         } catch (IOException e) {
             throw new CoreException(new IpsStatus("Error reading ips archive " + getLocation(), e)); //$NON-NLS-1$
         }
+        indexContent(jar);
+        try {
+            jar.close();
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus("Error closing ips archive " + getLocation())); //$NON-NLS-1$
+        }
+    }
+
+    private void indexContent(JarFile jar) throws CoreException {
+        SortedMap<QualifiedNameType, IpsObjectProperties> qntTemp = new TreeMap<QualifiedNameType, IpsObjectProperties>();
         Properties ipsObjectProperties = readIpsObjectsProperties(jar);
         for (Enumeration<?> e = jar.entries(); e.hasMoreElements();) {
             JarEntry entry = (JarEntry)e.nextElement();
@@ -315,11 +328,6 @@ public class IpsArchive implements IIpsArchive {
             content.add(qNameType);
         }
         qNameTypes = new LinkedHashMap<QualifiedNameType, IpsObjectProperties>(qntTemp);
-        try {
-            jar.close();
-        } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error closing ips archive " + getLocation())); //$NON-NLS-1$
-        }
     }
 
     private File getFileFromPath() {
@@ -364,11 +372,17 @@ public class IpsArchive implements IIpsArchive {
 
     private QualifiedNameType getQualifiedNameType(JarEntry jarEntry) {
         try {
-            String path = jarEntry.getName().substring(IPSOBJECT_FOLDER_NAME_LENGTH + 1); // qName
-            // path begins after "ipsobject/"
-            return QualifiedNameType.newQualifedNameType(path);
-        } catch (Exception e) {
-            return null; // the entry does not contain an ips object
+            // qName path begins after "ipsobject/"
+            final String name = jarEntry.getName();
+            if (name.startsWith(IPSOBJECTS_FOLDER)) {
+                String path = name.substring(IPSOBJECT_FOLDER_NAME_LENGTH + 1);
+                return QualifiedNameType.newQualifedNameType(path);
+            } else {
+                return null;
+            }
+        } catch (IllegalArgumentException e) {
+            // the entry does not contain an ips object
+            return null;
         }
     }
 
@@ -400,9 +414,9 @@ public class IpsArchive implements IIpsArchive {
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qualifiedNameType) throws CoreException {
         readArchiveContentIfNecessary();
-        IpsObjectProperties props = qNameTypes.get(qnt);
+        IpsObjectProperties props = qNameTypes.get(qualifiedNameType);
         if (props == null) {
             return null;
         }
@@ -410,23 +424,16 @@ public class IpsArchive implements IIpsArchive {
     }
 
     @Override
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qualifiedNameType) throws CoreException {
         readArchiveContentIfNecessary();
-        IpsObjectProperties props = qNameTypes.get(qnt);
+        IpsObjectProperties props = qNameTypes.get(qualifiedNameType);
         if (props == null) {
             return null;
         }
         return props.extensionPackageDerived;
     }
 
-    /**
-     * Returns an IResource only if the resource can be located in the workspace. If the path is
-     * relative it have to be located in the roots project project. The file does not have exists
-     * but have to be relative (to the project) or the first segment must match an existing project.
-     * 
-     * @return The found {@link IResource} if the path is workspace or project relative. Returns
-     *         null if the path is not valid.
-     */
+    @Override
     public IResource getCorrespondingResource() {
         if (archivePath.isAbsolute()) {
             IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -453,18 +460,6 @@ public class IpsArchive implements IIpsArchive {
         return root;
     }
 
-    class IpsObjectProperties {
-
-        String basePackageMergable;
-        String extensionPackageDerived;
-
-        public IpsObjectProperties(String basePackageMergable, String extensionPackageDerived) {
-            this.basePackageMergable = basePackageMergable;
-            this.extensionPackageDerived = extensionPackageDerived;
-        }
-
-    }
-
     @Override
     public InputStream getResourceAsStream(String path) throws CoreException {
         if (path == null) {
@@ -489,10 +484,23 @@ public class IpsArchive implements IIpsArchive {
         } finally {
             try {
                 archive.close();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw new CoreException(new IpsStatus(
                         "Error closing stream reading " + path + " from archive " + this, e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
+
+    private static class IpsObjectProperties {
+
+        private String basePackageMergable;
+        private String extensionPackageDerived;
+
+        public IpsObjectProperties(String basePackageMergable, String extensionPackageDerived) {
+            this.basePackageMergable = basePackageMergable;
+            this.extensionPackageDerived = extensionPackageDerived;
+        }
+
+    }
+
 }

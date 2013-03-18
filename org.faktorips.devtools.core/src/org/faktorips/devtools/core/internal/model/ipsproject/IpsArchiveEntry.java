@@ -47,21 +47,21 @@ import org.w3c.dom.Element;
  */
 public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEntry {
 
+    private IIpsArchive archive;
+
+    public IpsArchiveEntry(IpsObjectPath ipsObjectPath) {
+        super(ipsObjectPath);
+    }
+
     /**
      * Returns a description of the xml format.
      */
-    public final static String getXmlFormatDescription() {
+    public static final String getXmlFormatDescription() {
         return "Archive:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "     type=\"archive\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    private IIpsArchive archive;
-
-    public IpsArchiveEntry(IpsObjectPath path) {
-        super(path);
     }
 
     @Override
@@ -113,18 +113,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     @Override
-    public void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
-    }
-
-    @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
-
         IIpsSrcFile file = getIpsSrcFile(qnt);
         if (file.exists()) {
             return file;
@@ -134,13 +124,13 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
 
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
+            String prefixParam,
             boolean ignoreCase,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
+        String prefix = prefixParam;
         if (ignoreCase) {
-            prefix = prefix.toLowerCase();
+            prefix = prefixParam.toLowerCase();
         }
 
         for (QualifiedNameType qnt : archive.getQNameTypes()) {
@@ -151,7 +141,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
             if (name.startsWith(prefix)) {
                 IIpsSrcFile file = getIpsSrcFile(qnt);
                 if (file.exists()) {
-                    result.add(getIpsSrcFile(qnt));
+                    result.add(file);
                 }
             }
         }
@@ -205,8 +195,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     @Override
-    public boolean isContained(IResourceDelta delta) {
-        return ((IpsArchive)archive).isContained(delta);
+    public boolean isAffectedBy(IResourceDelta delta) {
+        return archive.isAffectedBy(delta);
     }
 
     @Override
