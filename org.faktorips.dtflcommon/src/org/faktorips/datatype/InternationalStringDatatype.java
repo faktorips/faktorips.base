@@ -85,7 +85,7 @@ public class InternationalStringDatatype extends AbstractDatatype implements Val
         return false;
     }
 
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         return 0;
     }
 

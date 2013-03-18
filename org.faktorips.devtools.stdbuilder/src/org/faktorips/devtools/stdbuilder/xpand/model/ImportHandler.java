@@ -52,7 +52,7 @@ public class ImportHandler {
 
     private static final String GENERIC_END = ">";
 
-    private final static String JAVA_LANG_PACKAGE = "java.lang"; //$NON-NLS-1$
+    private static final String JAVA_LANG_PACKAGE = "java.lang"; //$NON-NLS-1$
 
     private Map<String, ImportStatement> classNameToImportStatementMap;
     private Map<String, ImportStatement> implicitlyImportedClassNamesMap;

@@ -104,7 +104,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     private void appendBasicJavaName(StringBuffer buffer) {
         try {
             buffer.append(basicType.getJavaClassName());
-        } catch (RuntimeException e) {
+        } catch (UnsupportedOperationException e) {
             buffer.append(basicType.getName());
         }
     }

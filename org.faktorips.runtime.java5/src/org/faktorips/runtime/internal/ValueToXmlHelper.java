@@ -27,15 +27,27 @@ import org.w3c.dom.Text;
  */
 public class ValueToXmlHelper {
 
-    private static final String XML_ELEMENT_DATA = "Data"; //$NON-NLS-1$
-    private static final String XML_ELEMENT_ENUM = "Enum"; //$NON-NLS-1$
-    private static final String XML_ELEMENT_STEP = "Step"; //$NON-NLS-1$
-    private static final String XML_ELEMENT_UPPER_BOUND = "UpperBound"; //$NON-NLS-1$
-    private static final String XML_ELEMENT_LOWER_BOUND = "LowerBound"; //$NON-NLS-1$
-    private static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
-    private static final String XML_ELEMENT_RANGE = "Range"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
+
     public static final String XML_TAGNAME_VALUE = "Value"; //$NON-NLS-1$
+
+    private static final String XML_ELEMENT_DATA = "Data"; //$NON-NLS-1$
+
+    private static final String XML_ELEMENT_ENUM = "Enum"; //$NON-NLS-1$
+
+    private static final String XML_ELEMENT_STEP = "Step"; //$NON-NLS-1$
+
+    private static final String XML_ELEMENT_UPPER_BOUND = "UpperBound"; //$NON-NLS-1$
+
+    private static final String XML_ELEMENT_LOWER_BOUND = "LowerBound"; //$NON-NLS-1$
+
+    private static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+
+    private static final String XML_ELEMENT_RANGE = "Range"; //$NON-NLS-1$
+
+    private ValueToXmlHelper() {
+        // Utility class not to be instantiated.
+    }
 
     /**
      * Adds the value to the given xml element. Takes care of proper null handling. By value we mean
@@ -45,7 +57,7 @@ public class ValueToXmlHelper {
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value
      */
-    public final static void addValueToElement(String value, Element el, String tagName) {
+    public static void addValueToElement(String value, Element el, String tagName) {
         addValueAndReturnElement(value, el, tagName, false);
     }
 
@@ -57,7 +69,7 @@ public class ValueToXmlHelper {
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value.
      */
-    public final static void addInternationalStringToElement(InternationalString value, Element el, String tagName) {
+    public static void addInternationalStringToElement(InternationalString value, Element el, String tagName) {
         addInternationalStringAndReturnElement(value, el, tagName);
     }
 
@@ -68,7 +80,7 @@ public class ValueToXmlHelper {
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value
      */
-    public final static void addCDataValueToElement(String value, Element el, String tagName) {
+    public static void addCDataValueToElement(String value, Element el, String tagName) {
         addValueAndReturnElement(value, el, tagName, true);
     }
 
@@ -83,10 +95,7 @@ public class ValueToXmlHelper {
      *            otherwise it is added as text directly.
      * @return the created element with the given tag name, that contains the given value.
      */
-    private final static Element addValueAndReturnElement(String value,
-            Element el,
-            String tagName,
-            boolean useCDataSection) {
+    private static Element addValueAndReturnElement(String value, Element el, String tagName, boolean useCDataSection) {
         Document ownerDocument = el.getOwnerDocument();
         Element valueEl = createValueElement(value, tagName, ownerDocument, useCDataSection);
         el.appendChild(valueEl);
@@ -103,9 +112,7 @@ public class ValueToXmlHelper {
      * @param tagName the tag name for the element that stored the value.
      * @return the created element with the given tag name, that contains the given value.
      */
-    private final static Element addInternationalStringAndReturnElement(InternationalString value,
-            Element el,
-            String tagName) {
+    private static Element addInternationalStringAndReturnElement(InternationalString value, Element el, String tagName) {
         Document ownerDocument = el.getOwnerDocument();
         Element valueEl = ownerDocument.createElement(tagName);
         Element internationalStringEl = InternationalStringXmlReaderWriter.toXml(ownerDocument, value);
@@ -139,7 +146,7 @@ public class ValueToXmlHelper {
      * @param tagName the tag name for the element that stored the value
      * @return the created element with the given tag name, that contains the given value.
      */
-    public final static Element addValueAndReturnElement(String value, Element el, String tagName) {
+    public static Element addValueAndReturnElement(String value, Element el, String tagName) {
         return addValueAndReturnElement(value, el, tagName, false);
     }
 
@@ -157,7 +164,7 @@ public class ValueToXmlHelper {
      * @param el The xml element that is the parent of the element storing the value.
      * @param tagName The name of the child
      */
-    public final static String getValueFromElement(Element el, String tagName) {
+    public static String getValueFromElement(Element el, String tagName) {
         Element valueEl = XmlUtil.getFirstElement(el, tagName);
         if (valueEl == null) {
             return null;
@@ -173,7 +180,7 @@ public class ValueToXmlHelper {
      * @param el The xml element that is the parent of the element storing the international string.
      * @param tagName The name of the child
      */
-    public final static InternationalString getInternationalStringFromElement(Element el, String tagName) {
+    public static InternationalString getInternationalStringFromElement(Element el, String tagName) {
         return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el, tagName));
     }
 
@@ -188,7 +195,7 @@ public class ValueToXmlHelper {
      * 
      * @param valueEl The xml value element containing the value.
      */
-    public final static String getValueFromElement(Element valueEl) {
+    public static String getValueFromElement(Element valueEl) {
         if (Boolean.parseBoolean(valueEl.getAttribute(XML_ATTRIBUTE_IS_NULL))) {
             return null;
         }
@@ -213,11 +220,11 @@ public class ValueToXmlHelper {
      * 
      * @param el The xml element storing the international string.
      */
-    public final static InternationalString getInternationalStringFromElement(Element el) {
+    public static InternationalString getInternationalStringFromElement(Element el) {
         return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el));
     }
 
-    public final static Range getRangeFromElement(Element el, String tagName) {
+    public static Range getRangeFromElement(Element el, String tagName) {
         Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
 
         if (valueSetEl == null) {
@@ -235,7 +242,7 @@ public class ValueToXmlHelper {
         return new Range(lowerBound, upperBound, step, containsNull);
     }
 
-    public final static EnumValues getEnumValueSetFromElement(Element el, String tagName) {
+    public static EnumValues getEnumValueSetFromElement(Element el, String tagName) {
         Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
         if (valueSetEl == null) {
             return null;
@@ -257,10 +264,6 @@ public class ValueToXmlHelper {
             }
         }
         return new EnumValues(values, containsNull);
-    }
-
-    private ValueToXmlHelper() {
-        // Utility class not to be instantiated.
     }
 
 }

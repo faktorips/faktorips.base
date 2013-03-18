@@ -109,15 +109,15 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (supertypeCandidate == null) {
             return false;
         }
-        IType supertype = findSupertype(ipsProject);
-        if (supertype == null) {
+        IType foundSupertype = findSupertype(ipsProject);
+        if (foundSupertype == null) {
             return false;
         }
-        if (supertypeCandidate.equals(supertype)) {
+        if (supertypeCandidate.equals(foundSupertype)) {
             return true;
         }
         IsSubtypeOfVisitor visitor = new IsSubtypeOfVisitor(ipsProject, supertypeCandidate);
-        visitor.start(supertype);
+        visitor.start(foundSupertype);
         return visitor.isSubtype();
     }
 
@@ -312,21 +312,22 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IMethod getMethod(String methodName, String[] datatypes) {
-        if (datatypes == null) {
-            datatypes = new String[0];
+    public IMethod getMethod(String methodName, final String[] datatypes) {
+        String[] myDatatypes = datatypes;
+        if (myDatatypes == null) {
+            myDatatypes = new String[0];
         }
         for (IMethod method : getMethodPartCollection()) {
             if (!method.getName().equals(methodName)) {
                 continue;
             }
             IParameter[] params = method.getParameters();
-            if (params.length != datatypes.length) {
+            if (params.length != myDatatypes.length) {
                 continue;
             }
             boolean paramsOk = true;
             for (int i = 0; i < params.length; i++) {
-                if (!params[i].getDatatype().equals(datatypes[i])) {
+                if (!params[i].getDatatype().equals(myDatatypes[i])) {
                     paramsOk = false;
                     break;
                 }
@@ -404,9 +405,9 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
-        IType supertype = findSupertype(ipsProject);
+        IType foundSupertype = findSupertype(ipsProject);
 
-        if (supertype == null) {
+        if (foundSupertype == null) {
             // no supertype, no candidates :-)
             return new ArrayList<IAttribute>();
         }
@@ -420,7 +421,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         // find all overwrite-candidates
-        List<IAttribute> candidates = getSupertypeHierarchy().getAllAttributes(supertype);
+        List<IAttribute> candidates = getSupertypeHierarchy().getAllAttributes(foundSupertype);
         List<IAttribute> result = new ArrayList<IAttribute>();
         for (IAttribute candidate : candidates) {
             if (!toExclude.containsKey(candidate.getName())) {
@@ -552,7 +553,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public String getJavaClassName() {
-        throw new RuntimeException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
+        throw new UnsupportedOperationException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
     }
 
     @Override
