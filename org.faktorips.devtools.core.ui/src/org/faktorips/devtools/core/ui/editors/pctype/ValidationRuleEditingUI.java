@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.InternationalStringPresentationObject;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -145,6 +146,7 @@ public class ValidationRuleEditingUI {
                 return super.getText(element);
             }
         });
+
         msgCodeField = new TextField(codeText);
         msgTextField = new TextField(msgText);
         msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
@@ -195,6 +197,7 @@ public class ValidationRuleEditingUI {
 
         nameText.setFocus();
         nameField = new TextField(nameText);
+
     }
 
     private void updateCharCount() {
@@ -213,7 +216,6 @@ public class ValidationRuleEditingUI {
      */
     protected void bindFields(IValidationRule rule, BindingContext bindingContext) {
         bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
-        bindingContext.bindContent(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         final InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
                 rule.getMessageText());
@@ -239,6 +241,8 @@ public class ValidationRuleEditingUI {
         CategoryPmo categoryPmo = new CategoryPmo(rule);
         categoryField.setInput(categoryPmo.getCategories());
         bindingContext.bindContent(categoryField, categoryPmo, CategoryPmo.PROPERTY_CATEGORY);
+        MsgCodePMO msgCodePmo = new MsgCodePMO(rule);
+        bindingContext.bindContent(msgCodeField, msgCodePmo, MsgCodePMO.MSG_CODE);
     }
 
     private Locale[] getSupportedLocales(IIpsProject ipsProject) {
@@ -310,4 +314,88 @@ public class ValidationRuleEditingUI {
 
     }
 
+    public static class MsgCodePMO extends IpsObjectPartPmo {
+
+        private static final String DELIMITER = "."; //$NON-NLS-1$
+
+        private static final String DELIMITER_REGEXT = "\\" + DELIMITER; //$NON-NLS-1$
+
+        private static final String MSG_CODE = "messageCode"; //$NON-NLS-1$
+
+        private IValidationRule validationRule;
+
+        public MsgCodePMO(IValidationRule validationRule) {
+            super(validationRule);
+            this.validationRule = validationRule;
+        }
+
+        public void setMessageCode(String messageCode) {
+            validationRule.setMessageCode(messageCode);
+        }
+
+        public String getMessageCode() {
+            return validationRule.getMessageCode();
+        }
+
+        @Override
+        protected void partHasChanged() {
+            checkMessageCode();
+        }
+
+        private void checkMessageCode() {
+            String codeText = validationRule.getMessageCode();
+            if (needToUpdateMsgCode(codeText)) {
+                updateMessageCode();
+            }
+        }
+
+        private boolean needToUpdateMsgCode(String codeText) {
+            if (codeText.isEmpty()) {
+                return true;
+            } else {
+                return isGeneratedMsgCode(codeText);
+            }
+        }
+
+        private boolean isGeneratedMsgCode(String codeText) {
+            String[] splittedMsgCode = splitCodeMsgByPointsInText(codeText);
+            if (splittedMsgCode.length == 3) {
+                if (isPolicyNameInMsgCode(splittedMsgCode)) {
+                    if (isSeverityOrNameInMsgCode(splittedMsgCode)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private String[] splitCodeMsgByPointsInText(String codeText) {
+            String[] splittedContent = codeText.split(DELIMITER_REGEXT);
+            return splittedContent;
+        }
+
+        private boolean isSeverityOrNameInMsgCode(String[] splittedMsgCode) {
+            return isSeverityInMsgCode(splittedMsgCode) || isRuleNameInMsgCode(splittedMsgCode);
+        }
+
+        private boolean isSeverityInMsgCode(String[] splittedMsgCode) {
+            return splittedMsgCode[0].equals(validationRule.getMessageSeverity().getName());
+        }
+
+        private boolean isRuleNameInMsgCode(String[] splittedMsgCode) {
+            return splittedMsgCode[2].equals(validationRule.getName());
+        }
+
+        private boolean isPolicyNameInMsgCode(String[] splittedMsgCode) {
+            String unqualifiedPolicyName = validationRule.getIpsObject().getQualifiedNameType().getUnqualifiedName();
+            return unqualifiedPolicyName.equals(splittedMsgCode[1]);
+        }
+
+        private void updateMessageCode() {
+            String generatedMsgCode = validationRule.getMessageSeverity().getName() + DELIMITER
+                    + validationRule.getIpsObject().getQualifiedNameType().getUnqualifiedName() + DELIMITER
+                    + validationRule.getName();
+            validationRule.setMessageCode(generatedMsgCode);
+        }
+    }
 }
