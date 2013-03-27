@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -26,37 +27,37 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
+public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment {
 
-    public ArchiveIpsPackageFragment(ArchiveIpsPackageFragmentRoot root, String name) {
+    public LibraryIpsPackageFragment(LibraryIpsPackageFragmentRoot root, String name) {
         super(root, name);
     }
 
     @Override
     public boolean exists() {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getRoot();
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getRoot();
         if (!root.exists()) {
             return false;
         }
         try {
-            IIpsArchive archive = root.getIpsArchive();
-            if (archive == null) {
+            IIpsStorage storage = root.getIpsStorage();
+            if (storage == null) {
                 return false;
             }
-            return archive.containsPackage(getName());
+            return storage.containsPackage(getName());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
@@ -73,8 +74,8 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        IIpsArchive archive = root.getIpsArchive();
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getParent();
+        IIpsStorage archive = root.getIpsStorage();
         if (archive == null) {
             return new IIpsSrcFile[0];
         }
@@ -82,7 +83,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
         IIpsSrcFile[] srcFiles = new IIpsSrcFile[set.size()];
         int i = 0;
         for (QualifiedNameType qnt : set) {
-            srcFiles[i++] = new ArchiveIpsSrcFile(this, qnt.getFileName());
+            srcFiles[i++] = new LibraryIpsSrcFile(this, qnt.getFileName());
         }
         return srcFiles;
     }
@@ -94,7 +95,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IIpsSrcFile getIpsSrcFile(String name) {
-        return new ArchiveIpsSrcFile(this, name);
+        return new LibraryIpsSrcFile(this, name);
     }
 
     @Override
@@ -152,41 +153,40 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
-        findIpsSourceFilesInternal(type, result, true);
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        findIpsSourceFiles(type, ipsSrcFiles);
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            result.add(ipsSrcFile.getIpsObject());
+        }
     }
 
     @Override
     public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
-        findIpsSourceFilesInternal(type, result, false);
+        findIpsSourceFilesInternal(type, result);
     }
 
-    @SuppressWarnings("unchecked")
-    private void findIpsSourceFilesInternal(IpsObjectType type, List result, boolean asIpsObject) throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        IIpsArchive archive = root.getIpsArchive();
-        if (archive == null) {
-            return;
-        }
-        Set<QualifiedNameType> set = archive.getQNameTypes(getName());
+    private void findIpsSourceFilesInternal(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
+        Set<QualifiedNameType> set = getQualifiedNames();
         for (QualifiedNameType qnt : set) {
             if (qnt.getIpsObjectType() == type) {
                 IIpsSrcFile ipsSrcFile = getIpsSrcFile(qnt.getFileName());
-                if (asIpsObject) {
-                    result.add(ipsSrcFile.getIpsObject());
-                } else {
-                    result.add(ipsSrcFile);
-                }
+                result.add(ipsSrcFile);
             }
         }
     }
 
-    public void findIpsObjects(List<IIpsObject> result) throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        IIpsArchive archive = root.getIpsArchive();
+    private Set<QualifiedNameType> getQualifiedNames() throws CoreException {
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getParent();
+        IIpsStorage archive = root.getIpsStorage();
         if (archive == null) {
-            return;
+            return Collections.emptySet();
         }
         Set<QualifiedNameType> set = archive.getQNameTypes(getName());
+        return set;
+    }
+
+    public void findIpsObjects(List<IIpsObject> result) throws CoreException {
+        Set<QualifiedNameType> set = getQualifiedNames();
         for (QualifiedNameType qnt : set) {
             result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
         }
@@ -209,14 +209,14 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
      * Get all children of type IIpsPackageFragment.
      */
     private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        String[] packNames = root.getIpsArchive().getNonEmptySubpackages(getName());
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getParent();
+        String[] packNames = root.getIpsStorage().getNonEmptySubpackages(getName());
 
         List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
 
         for (int i = 0; i < packNames.length; ++i) {
             String element = packNames[i];
-            list.add(new ArchiveIpsPackageFragment(root, element));
+            list.add(new LibraryIpsPackageFragment(root, element));
         }
 
         return list;
@@ -240,8 +240,8 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public boolean hasChildIpsPackageFragments() throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        String[] packNames = root.getIpsArchive().getNonEmptySubpackages(getName());
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getParent();
+        String[] packNames = root.getIpsStorage().getNonEmptySubpackages(getName());
 
         return packNames.length > 0;
     }

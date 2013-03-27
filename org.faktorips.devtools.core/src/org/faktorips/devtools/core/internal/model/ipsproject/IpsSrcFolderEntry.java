@@ -304,7 +304,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() {
         MessageList result = new MessageList();
         // the sourceFolder will never be null (see this#initFromXml)
         result.add(validateIfFolderExists(sourceFolder));

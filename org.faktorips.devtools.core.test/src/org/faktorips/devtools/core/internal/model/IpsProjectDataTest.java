@@ -18,17 +18,12 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
 import org.junit.Test;
 
 public class IpsProjectDataTest {
@@ -52,8 +47,8 @@ public class IpsProjectDataTest {
     @Test
     public void getIpsObjectPathContainer_should_returnCachedContainerIfInCache() {
         IIpsObjectPathContainerType containerType = newContainerType("JDT");
-        when(containerType.newContainer(ipsProject, "path")).thenReturn(
-                new MyContainer(containerType, ipsProject, "path"));
+        AbstractIpsObjectPathContainer abstractIpsObjectPathContainer = mock(AbstractIpsObjectPathContainer.class);
+        when(containerType.newContainer(ipsProject, "path")).thenReturn(abstractIpsObjectPathContainer);
 
         IIpsObjectPathContainer container = ipsProjectData.getIpsObjectPathContainer("JDT", "path1");
         assertSame(container, ipsProjectData.getIpsObjectPathContainer("JDT", "path1"));
@@ -71,21 +66,4 @@ public class IpsProjectDataTest {
         return containerType;
     }
 
-    class MyContainer extends AbstractIpsObjectPathContainer {
-
-        public MyContainer(IIpsObjectPathContainerType containerType, IIpsProject ipsProject, String optionalPath) {
-            super(containerType, ipsProject, optionalPath);
-        }
-
-        @Override
-        public List<IIpsObjectPathEntry> resolveEntries() throws CoreException {
-            return null;
-        }
-
-        @Override
-        public MessageList validate() throws CoreException {
-            return null;
-        }
-
-    }
 }

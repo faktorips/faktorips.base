@@ -11,96 +11,50 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject.jarbundle;
+package org.faktorips.devtools.core.internal.model.ipsproject.bundle;
 
-import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
- * The {@link IpsJarBundleContentIndex} reads the list of entries of a {@link JarFile} and caches
- * some information about the qualified names and folders.
+ * This {@link AbstractIpsBundleContentIndex} is a helper to explore {@link AbstractIpsBundle ips
+ * bundles}.
  * <p>
  * The content index is used to get information about the model folder of an {@link IIpsElement} or
  * any other resource stored in the IPS model folder. It is also used to get a list of all objects
- * stored in the bundle. It should handle everything located to the content index of an JAR packed
- * IPS bundle.
+ * stored in the bundle. It should handle everything located to the content index of the IPS bundle.
+ * <p>
+ * Subclasses must call {@link #registerPath(IPath, IPath)} to build up the content index.
+ * 
  * 
  * @author dicker
  */
-public class IpsJarBundleContentIndex {
+public abstract class AbstractIpsBundleContentIndex {
 
-    private final Map<IPath, IPath> modelPathsByQualifiedNameType = new HashMap<IPath, IPath>();
-
+    private final Map<IPath, IPath> fileToModelPath = new HashMap<IPath, IPath>();
     private final Set<QualifiedNameType> qualifiedNameTypes = new HashSet<QualifiedNameType>();
 
     /**
-     * Create an {@link IpsJarBundleContentIndex} reading from the specified {@link JarFile}. The
-     * JarFile should be ready to read and it will be closed after the object was constructed.
+     * registers the given relativePath of the modelPath and stores it.
      * <p>
-     * Every file located in any of the given model folders is registered in the index. The files
-     * are indexed relative to the model folder.
+     * If the given relativePath represents an {@link IIpsObject}, a {@link QualifiedNameType} is
+     * created and stored in the Set of {@link QualifiedNameType}
      * 
-     * @param jarFile The {@link JarFile} that should be read and indexed
-     * @param modelFolders The list of model folders, the paths are relativ to the root of the jar
-     *            file
      */
-    public IpsJarBundleContentIndex(JarFile jarFile, List<IPath> modelFolders) {
-        try {
-            Assert.isNotNull(jarFile, "jarFile must not be null"); //$NON-NLS-1$
-            Assert.isNotNull(modelFolders, "modelFolders must not be null"); //$NON-NLS-1$
+    protected void registerPath(IPath modelPath, IPath relativePath) {
+        fileToModelPath.put(relativePath, modelPath);
 
-            Enumeration<JarEntry> entries = jarFile.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry jarEntry = entries.nextElement();
-
-                registerJarEntry(jarEntry, modelFolders);
-            }
-        } finally {
-            try {
-                jarFile.close();
-            } catch (IOException e) {
-                throw new RuntimeException("Error while closing jar file " + jarFile.getName(), e); //$NON-NLS-1$
-            }
-        }
-    }
-
-    private final void registerJarEntry(JarEntry jarEntry, List<IPath> modelFolders) {
-        String pathToFile = jarEntry.getName();
-
-        IPath path = new Path(pathToFile);
-
-        registerPath(path, modelFolders);
-    }
-
-    private final void registerPath(IPath path, List<IPath> modelFolders) {
-        for (IPath modelPath : modelFolders) {
-            if (modelPath.isPrefixOf(path)) {
-
-                IPath relativePath = path.makeRelativeTo(modelPath);
-
-                modelPathsByQualifiedNameType.put(relativePath, modelPath);
-
-                QualifiedNameType qualifiedNameType = createQualifiedNameType(relativePath.toString());
-                if (qualifiedNameType != null) {
-                    qualifiedNameTypes.add(qualifiedNameType);
-                }
-                return;
-            }
+        QualifiedNameType qualifiedNameType = createQualifiedNameType(relativePath.toString());
+        if (qualifiedNameType != null) {
+            qualifiedNameTypes.add(qualifiedNameType);
         }
     }
 
@@ -124,7 +78,7 @@ public class IpsJarBundleContentIndex {
      * @return The path of the model folder in which the file is located
      */
     public IPath getModelPath(IPath path) {
-        return modelPathsByQualifiedNameType.get(path);
+        return fileToModelPath.get(path);
     }
 
     /**
@@ -174,4 +128,5 @@ public class IpsJarBundleContentIndex {
         }
         return packageNames;
     }
+
 }

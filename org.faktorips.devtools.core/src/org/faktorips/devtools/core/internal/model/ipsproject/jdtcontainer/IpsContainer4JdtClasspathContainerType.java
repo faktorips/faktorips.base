@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject;
+package org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
@@ -36,7 +36,7 @@ public class IpsContainer4JdtClasspathContainerType implements IIpsObjectPathCon
 
     @Override
     public IIpsObjectPathContainer newContainer(IIpsProject ipsProject, String optionalPath) {
-        return new IpsContainer4JdtClasspathContainer(this, ipsProject, optionalPath);
+        return new IpsContainer4JdtClasspathContainer(optionalPath, ipsProject);
     }
 
 }

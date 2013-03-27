@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.faktorips.util.ArgumentCheck;
 
 public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
@@ -239,7 +239,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     @Override
-    public IIpsArchive getIpsArchive() {
+    public IIpsStorage getIpsStorage() {
         return null;
     }
 

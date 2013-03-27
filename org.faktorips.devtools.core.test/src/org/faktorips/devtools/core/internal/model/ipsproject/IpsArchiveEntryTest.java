@@ -181,7 +181,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() {
         MessageList ml = entry.validate();
         assertEquals(0, ml.size());
 
@@ -191,11 +191,11 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(1, archiveEntries.length);
         assertEquals(entry.getArchiveLocation(), archiveEntries[0].getArchiveLocation());
 
-        entry.setArchivePath(project, project.getProject().getFile("NoneExistingFile").getLocation());
+        entry.initStorage(project.getProject().getFile("NoneExistingFile").getLocation());
         ml = entry.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 
-        entry.setArchivePath(null, null);
+        entry.initStorage(null);
         ml = entry.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 

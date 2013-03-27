@@ -109,7 +109,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.IpsElement;
-import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -566,7 +566,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (srcFile == null) {
             return null;
         }
-        if (srcFile instanceof ArchiveIpsSrcFile) {
+        if (srcFile instanceof LibraryIpsSrcFile) {
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(srcFile.getName());
             IpsArchiveEditorInput input = new IpsArchiveEditorInput(srcFile);

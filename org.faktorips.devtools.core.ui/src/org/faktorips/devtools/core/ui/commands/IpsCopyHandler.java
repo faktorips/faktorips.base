@@ -16,19 +16,17 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 
 /**
  * Copy of objects controlled by FaktorIps.
@@ -63,21 +61,17 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
             } else if (adaptable.getAdapter(IIpsElement.class) != null) {
                 IIpsElement selected = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
                 IIpsPackageFragmentRoot root = null;
-                IIpsArchive ipsArchive = null;
+                IIpsStorage ipsStorage = null;
                 if (selected instanceof IIpsObject) {
                     root = ((IIpsObject)selected).getIpsPackageFragment().getRoot();
                 } else if (selected instanceof IIpsPackageFragment) {
                     root = ((IIpsPackageFragment)selected).getRoot();
                 }
                 if (root != null) {
-                    try {
-                        ipsArchive = root.getIpsArchive();
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
+                    ipsStorage = root.getIpsStorage();
                 }
                 // copy links in an archive file
-                if (ipsArchive != null) {
+                if (ipsStorage != null) {
                     if (selected instanceof IIpsObject) {
                         copiedResourceLinks.add(getResourceLinkInArchive((IIpsObject)selected));
                         continue;

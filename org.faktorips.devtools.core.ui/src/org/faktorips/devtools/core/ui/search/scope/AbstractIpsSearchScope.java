@@ -23,11 +23,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -124,17 +122,17 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
             return;
         }
 
-        IIpsArchive archive = getIpsArchive(resource);
+        IIpsPackageFragmentRoot storage = getPackageFragmentRootFromIpsStorage(resource);
 
-        if (archive != null) {
-            addSrcFilesOfElement(srcFiles, archive.getRoot());
+        if (storage != null) {
+            addSrcFilesOfElement(srcFiles, storage);
         }
 
         // TODO aufpassen: Parent vom IpsPackageFragmentRoot muss nicht unbedingt das Projekt sein
         // ==> im projekt alle IPFR durchgehen!
     }
 
-    private IIpsArchive getIpsArchive(IResource resource) throws CoreException {
+    private IIpsPackageFragmentRoot getPackageFragmentRootFromIpsStorage(IResource resource) {
 
         IProject project = resource.getProject();
 
@@ -147,11 +145,11 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
         IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot ipsPackageFragmentRoot : ipsPackageFragmentRoots) {
             if (ipsPackageFragmentRoot.isBasedOnIpsArchive()) {
-                IPath archiveLocation = ipsPackageFragmentRoot.getIpsArchive().getLocation();
-                IPath resourceLocation = resource.getLocation();
+                String archiveLocation = ipsPackageFragmentRoot.getName();
+                String resourceLocation = resource.getName();
 
-                if (resourceLocation.isPrefixOf(archiveLocation)) {
-                    return ipsPackageFragmentRoot.getIpsArchive();
+                if (archiveLocation.equals(resourceLocation)) {
+                    return ipsPackageFragmentRoot;
                 }
             }
         }

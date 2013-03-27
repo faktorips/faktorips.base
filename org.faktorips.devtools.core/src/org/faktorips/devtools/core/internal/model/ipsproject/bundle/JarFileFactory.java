@@ -11,11 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject.jarbundle;
+package org.faktorips.devtools.core.internal.model.ipsproject.bundle;
 
 import java.io.IOException;
 import java.util.jar.JarFile;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -23,6 +25,10 @@ import org.eclipse.core.runtime.IPath;
  * {@link JarFileFactory} with a specified {@link IPath} you could create as many {@link JarFile jar
  * files} as you want by calling {@link #createJarFile()}. You have to verify for yourself that the
  * jar file is closed correctly after use.
+ * <p>
+ * The path in this {@link JarFileFactory} may either be absolute in the workspace or it is absolute
+ * in the file system. The factory first checks if there is a file with the specified path in the
+ * workspace. If not it will take the path as being absolute in the file system.
  * 
  * 
  * @author dirmeier
@@ -33,7 +39,7 @@ public class JarFileFactory {
 
     /**
      * Create the {@link JarFileFactory}, the jarPath is the absolute path to the jar file this
-     * factory will construct.
+     * factory will construct. It is either absolute in workspace or absolute in file system.
      * 
      * @param jarPath The absolute path to a jar file
      */
@@ -42,7 +48,7 @@ public class JarFileFactory {
     }
 
     /**
-     * Returns the path of the jar file this factory could construct
+     * Returns the path of the jar file this factory could construct.
      * 
      * @return The absolute jar file path
      */
@@ -60,7 +66,25 @@ public class JarFileFactory {
      * @see JarFile#JarFile(java.io.File)
      */
     public JarFile createJarFile() throws IOException {
-        return new JarFile(jarPath.toFile());
+        IPath absolutePath = getAbsolutePath(jarPath);
+        return new JarFile(absolutePath.toFile());
+    }
+
+    /* private */IPath getAbsolutePath(IPath bundlePath) {
+        if (isWorkspaceRelativePath(bundlePath)) {
+            return getWorkspaceRelativePath(bundlePath);
+        } else {
+            return bundlePath;
+        }
+    }
+
+    private boolean isWorkspaceRelativePath(IPath bundlePath) {
+        return ResourcesPlugin.getWorkspace().getRoot().exists(bundlePath);
+    }
+
+    private IPath getWorkspaceRelativePath(IPath bundlePath) {
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(bundlePath);
+        return file.getLocation();
     }
 
 }

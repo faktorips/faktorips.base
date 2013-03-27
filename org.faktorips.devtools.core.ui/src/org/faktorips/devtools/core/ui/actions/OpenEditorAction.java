@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -100,7 +100,7 @@ public class OpenEditorAction extends IpsAction {
                 IProductCmptGeneration generation = (IProductCmptGeneration)object;
                 IIpsSrcFile ipsSrcFile = generation.getIpsObject().getIpsSrcFile();
                 IEditorPart part = null;
-                if (!(ipsSrcFile instanceof ArchiveIpsSrcFile)) {
+                if (!(ipsSrcFile instanceof LibraryIpsSrcFile)) {
                     part = IpsUIPlugin.getDefault().openEditor(generation);
                 } else {
                     part = IpsUIPlugin.getDefault().openEditor(ipsSrcFile);

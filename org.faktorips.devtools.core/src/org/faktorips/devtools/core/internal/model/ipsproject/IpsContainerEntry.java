@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -36,11 +35,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
+ * The implementation of {@link IIpsContainerEntry}
+ * 
  * @author Jan Ortmann
  */
 public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContainerEntry {
 
-    private static final String MSG_CODE_INVALID_CONTAINER_ENTRY = "IpsContainerEntry-InvalidContainerEntry"; //$NON-NLS-1$
     private static final String XML_ATTRIBUTE_PATH = "path"; //$NON-NLS-1$
     private static final String XML_ATTRIBUTE_CONTAINER = "container"; //$NON-NLS-1$
     private String containerTypeId;
@@ -92,12 +92,12 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
 
     @Override
     public IIpsObjectPathContainer getIpsObjectPathContainer() {
-        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IIpsModel ipsModel = getIpsObjectPath().getIpsProject().getIpsModel();
         return ipsModel.getIpsObjectPathContainer(getIpsProject(), containerTypeId, optionalPath);
     }
 
     @Override
-    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException {
+    public List<IIpsObjectPathEntry> resolveEntries() {
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
             return new ArrayList<IIpsObjectPathEntry>(0);
@@ -125,7 +125,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
-
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
             IIpsSrcFile file = ((IpsObjectPathEntry)entry).findIpsSrcFileInternal(nameType, visitedEntries);
@@ -144,12 +143,10 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
             String packageFragment,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
             ((IpsObjectPathEntry)entry).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
         }
-
     }
 
     /**
@@ -161,7 +158,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
             boolean ignoreCase,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
             ((IpsObjectPathEntry)entry).findIpsSrcFilesStartingWithInternal(type, prefix, ignoreCase, result,
@@ -232,12 +228,12 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() {
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
             MessageList result = new MessageList();
-            result.add(new Message(MSG_CODE_INVALID_CONTAINER_ENTRY, NLS.bind(Messages.IpsContainerEntry_err_invalidConainerEntry,
-                    containerTypeId), Message.ERROR, this));
+            result.add(new Message(MSG_CODE_INVALID_CONTAINER_ENTRY, NLS.bind(
+                    Messages.IpsContainerEntry_err_invalidConainerEntry, containerTypeId), Message.ERROR, this));
             return result;
         }
         return container.validate();
@@ -245,15 +241,11 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
 
     @Override
     public IIpsObjectPathEntry getResolvedEntry(String rootName) {
-        try {
-            List<IIpsObjectPathEntry> entries = resolveEntries();
-            for (IIpsObjectPathEntry entry : entries) {
-                if (entry.getIpsPackageFragmentRootName().equals(rootName)) {
-                    return entry;
-                }
+        List<IIpsObjectPathEntry> entries = resolveEntries();
+        for (IIpsObjectPathEntry entry : entries) {
+            if (entry.getIpsPackageFragmentRootName().equals(rootName)) {
+                return entry;
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         }
         return null;
     }

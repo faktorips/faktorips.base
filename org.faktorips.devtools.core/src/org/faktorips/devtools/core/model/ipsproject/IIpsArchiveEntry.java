@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.IPath;
  * 
  * @author Jan Ortmann
  */
-public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
+public interface IIpsArchiveEntry extends IIpsLibraryEntry {
 
-    public final static String FILE_EXTENSION = "ipsar"; //$NON-NLS-1$
+    public static final String FILE_EXTENSION = "ipsar"; //$NON-NLS-1$
 
     /**
      * Returns the IPS archive this entry refers to.
@@ -35,11 +35,6 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
      * might exists outside the workspace.
      */
     public IPath getArchiveLocation();
-
-    /**
-     * Sets the new archive path.
-     */
-    public void setArchivePath(IIpsProject ipsProject, IPath archiveFile);
 
     /**
      * Returns true if a representation of this entry is part of the provided delta or one of its

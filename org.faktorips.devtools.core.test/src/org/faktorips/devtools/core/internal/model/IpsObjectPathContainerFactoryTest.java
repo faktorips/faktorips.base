@@ -28,8 +28,8 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -40,24 +40,28 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
     private IpsObjectPathContainerFactory factory = new IpsObjectPathContainerFactory();
 
     @Test
-    public void shouldRegisterNewType() {
+    public void testRegisterContainerType() {
         IIpsObjectPathContainerType type = newType("JDT");
 
         factory.registerContainerType(type);
+
+        assertEquals(1, factory.getNumOfRegisteredTypes());
         assertEquals(type, factory.getContainerType("JDT"));
         assertTrue(factory.isRegistered(type));
     }
 
     @Test
-    public void shouldIgnoreRegisterOfSameType() {
+    public void tetRegisterContainerType_ignoreRegisterOfSameType() {
         IIpsObjectPathContainerType type = newType("JDT");
 
         factory.registerContainerType(type);
         factory.registerContainerType(type);
+
+        assertEquals(1, factory.getNumOfRegisteredTypes());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExWhenDifferentTypeWithSameIdIsRegistered() {
+    public void testRegisterContainerType_throwIllegalArgumentExWhenDifferentTypeWithSameIdIsRegistered() {
         IIpsObjectPathContainerType type1 = newType("MAVEN");
         IIpsObjectPathContainerType type2 = newType("MAVEN");
 
@@ -66,58 +70,67 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void shouldUnregisterARegisteredType() {
+    public void testUnregisterContainerType_unregisterARegisteredType() {
         IIpsObjectPathContainerType type = registerNewType("MAVEN");
 
         factory.unregisterContainerType(type);
+
         assertNull(factory.getContainerType("MAVEN"));
         assertFalse(factory.isRegistered(type));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentWhenTryingToUnregisterATypeNotBeenRegistered() {
+    public void testUnregisterContainerType_throwIllegalArgumentWhenTryingToUnregisterATypeNotBeenRegistered() {
         IIpsObjectPathContainerType type = newType("MAVEN");
+
         factory.unregisterContainerType(type);
     }
 
     @Test
-    public void shouldReturnRegisteredTypeById() {
+    public void testGetContainerTYpe_returnRegisteredTypeById() {
         IIpsObjectPathContainerType type1 = registerNewType("MAVEN");
         IIpsObjectPathContainerType type2 = registerNewType("JDT");
 
-        assertEquals(type1, factory.getContainerType("MAVEN"));
-        assertEquals(type2, factory.getContainerType("JDT"));
+        IIpsObjectPathContainerType containerType = factory.getContainerType("MAVEN");
+        IIpsObjectPathContainerType containerType2 = factory.getContainerType("JDT");
+
+        assertEquals(type1, containerType);
+        assertEquals(type2, containerType2);
     }
 
     @Test
-    public void shouldReturnNullIfNoTypeIsFoundForTheGivenId() {
+    public void testRegisterNewType_returnNullIfNoTypeIsFoundForTheGivenId() {
         assertNull(factory.getContainerType("JDT"));
 
         registerNewType("MAVEN");
+
         assertNull(factory.getContainerType("JDT"));
     }
 
     @Test
-    public void shouldReturnNewContainerIfTypeIsRegisteredForTheGivenID() {
+    public void testNewContainer_returnNewContainerIfTypeIsRegisteredForTheGivenID() {
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         IIpsObjectPathContainerType type = registerNewType("MAVEN");
         when(type.newContainer(any(IIpsProject.class), anyString())).thenReturn(container);
 
-        factory.newContainer(new IpsProject(), "MAVEN", "optionalPath");
+        IIpsObjectPathContainer newContainer = factory.newContainer(new IpsProject(), "MAVEN", "optionalPath");
+
+        assertEquals(container, newContainer);
     }
 
     @Test
-    public void shouldReturnNullIfNoTypeIsRegisteredForTheGivenID() {
+    public void testRegisterContainerType_returnNullIfNoTypeIsRegisteredForTheGivenID() {
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         IIpsObjectPathContainerType type = registerNewType("MAVEN");
         when(type.newContainer(any(IIpsProject.class), anyString())).thenReturn(container);
 
         factory.registerContainerType(type);
+
         assertNull(factory.newContainer(new IpsProject(), "SOMETHING", "optionalPath"));
     }
 
     @Test
-    public void shouldCreateNewFactoryBasedOnExtensions() {
+    public void testGetContainerType_createNewFactoryBasedOnExtensions() {
         factory = IpsObjectPathContainerFactory.newFactoryBasedOnExtensions();
 
         // this is a dependency to the fact, that the container for JDT containers is defined in
@@ -126,7 +139,7 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void shouldCreateNewFactoryBasedOnGivenTypes() {
+    public void testNewFactory_CreateNewFactoryBasedOnGivenTypes() {
         List<IIpsObjectPathContainerType> types = new ArrayList<IIpsObjectPathContainerType>();
         IIpsObjectPathContainerType type1 = newType("Type1");
         IIpsObjectPathContainerType type2 = newType("Type2");
@@ -134,13 +147,14 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
         types.add(type2);
 
         factory = IpsObjectPathContainerFactory.newFactory(types);
+
         assertEquals(2, factory.getNumOfRegisteredTypes());
         assertEquals(type1, factory.getContainerType("Type1"));
         assertEquals(type2, factory.getContainerType("Type2"));
     }
 
     @Test
-    public void shouldLogDuplicateTypeIdsDuringFactoryCreation() {
+    public void testNewFactory_LogDuplicateTypeIdsDuringFactoryCreation() {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(true);
         List<IIpsObjectPathContainerType> types = new ArrayList<IIpsObjectPathContainerType>();
         IIpsObjectPathContainerType type1 = newType("Type1");
@@ -151,6 +165,7 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
         types.add(type3);
 
         factory = IpsObjectPathContainerFactory.newFactory(types);
+
         assertEquals(2, factory.getNumOfRegisteredTypes());
         assertTrue(factory.isRegistered(type1));
         assertTrue(factory.isRegistered(type2));
@@ -158,13 +173,14 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void shouldLogTypeWithNullIdsDuringFactoryCreation() {
+    public void testNewFactory_LogTypeWithNullIdsDuringFactoryCreation() {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(true);
         List<IIpsObjectPathContainerType> types = new ArrayList<IIpsObjectPathContainerType>();
         IIpsObjectPathContainerType type = newType(null);
         types.add(type);
 
         factory = IpsObjectPathContainerFactory.newFactory(types);
+
         assertEquals(0, factory.getNumOfRegisteredTypes());
         assertFalse(factory.isRegistered(type));
     }

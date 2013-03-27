@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -108,13 +111,22 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public IIpsProjectRefEntry[] getProjectRefEntries() {
+        List<IIpsProjectRefEntry> projectRefEntries = collectProjectRefEntries(entries);
+        return projectRefEntries.toArray(new IIpsProjectRefEntry[projectRefEntries.size()]);
+    }
+
+    private List<IIpsProjectRefEntry> collectProjectRefEntries(IIpsObjectPathEntry[] objectPathEntries) {
         List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-                projectRefEntries.add((IIpsProjectRefEntry)entrie);
+        for (IIpsObjectPathEntry entry : objectPathEntries) {
+            if (entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
+                projectRefEntries.add((IIpsProjectRefEntry)entry);
+            } else if (entry.isContainer()) {
+                List<IIpsObjectPathEntry> resolveEntries = ((IIpsContainerEntry)entry).resolveEntries();
+                projectRefEntries.addAll(collectProjectRefEntries(resolveEntries
+                        .toArray(new IpsObjectPathEntry[resolveEntries.size()])));
             }
         }
-        return projectRefEntries.toArray(new IIpsProjectRefEntry[projectRefEntries.size()]);
+        return projectRefEntries;
     }
 
     @Override
@@ -173,13 +185,26 @@ public class IpsObjectPath implements IIpsObjectPath {
         System.arraycopy(newEntries, 0, entries, 0, newEntries.length);
     }
 
+    private void addEntry(IIpsObjectPathEntry newEntry) {
+        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
+        System.arraycopy(entries, 0, newEntries, 0, entries.length);
+        newEntries[newEntries.length - 1] = newEntry;
+        entries = newEntries;
+    }
+
+    private void removeEntry(int i) {
+        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length - 1];
+        System.arraycopy(entries, 0, newEntries, 0, i);
+        System.arraycopy(entries, i + 1, newEntries, i, entries.length - i - 1);
+        entries = newEntries;
+    }
+
     @Override
     public IIpsProject[] getReferencedIpsProjects() {
         List<IIpsProject> projects = new ArrayList<IIpsProject>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-                projects.add(((IIpsProjectRefEntry)entrie).getReferencedIpsProject());
-            }
+        IIpsProjectRefEntry[] projectRefEntries = getProjectRefEntries();
+        for (IIpsProjectRefEntry entrie : projectRefEntries) {
+            projects.add(entrie.getReferencedIpsProject());
         }
         return projects.toArray(new IIpsProject[projects.size()]);
     }
@@ -187,10 +212,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
         IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
-        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
-        System.arraycopy(entries, 0, newEntries, 0, entries.length);
-        newEntries[newEntries.length - 1] = newEntry;
-        entries = newEntries;
+        addEntry(newEntry);
         return newEntry;
     }
 
@@ -212,11 +234,12 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
 
         IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
-        newEntry.setArchivePath(ipsProject, correctArchivePath);
-        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
-        System.arraycopy(entries, 0, newEntries, 0, entries.length);
-        newEntries[newEntries.length - 1] = newEntry;
-        entries = newEntries;
+        try {
+            newEntry.initStorage(correctArchivePath);
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+        addEntry(newEntry);
         return newEntry;
     }
 
@@ -233,10 +256,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
         IIpsProjectRefEntry newEntry = new IpsProjectRefEntry(this, referencedIpsProject);
-        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
-        System.arraycopy(entries, 0, newEntries, 0, entries.length);
-        newEntries[newEntries.length - 1] = newEntry;
-        entries = newEntries;
+        addEntry(newEntry);
         return newEntry;
     }
 
@@ -260,10 +280,8 @@ public class IpsObjectPath implements IIpsObjectPath {
             if (entry instanceof IpsProjectRefEntry) {
                 IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
                 if (ref.getReferencedIpsProject().equals(ipsProject)) {
-                    IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length - 1];
-                    System.arraycopy(entries, 0, newEntries, 0, i);
-                    System.arraycopy(entries, i + 1, newEntries, i, entries.length - i - 1);
-                    entries = newEntries;
+                    removeEntry(i);
+                    return;
                 }
             }
         }
@@ -289,10 +307,8 @@ public class IpsObjectPath implements IIpsObjectPath {
             if (entry instanceof IpsArchiveEntry) {
                 IpsArchiveEntry archiveEntry = (IpsArchiveEntry)entry;
                 if (archiveEntry.getIpsArchive().equals(ipsArchive)) {
-                    IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length - 1];
-                    System.arraycopy(entries, 0, newEntries, 0, i);
-                    System.arraycopy(entries, i + 1, newEntries, i, entries.length - i - 1);
-                    entries = newEntries;
+                    removeEntry(i);
+                    return;
                 }
             }
         }
@@ -318,10 +334,8 @@ public class IpsObjectPath implements IIpsObjectPath {
             if (entry instanceof IpsSrcFolderEntry) {
                 IpsSrcFolderEntry srcFolderEntry = (IpsSrcFolderEntry)entry;
                 if (srcFolderEntry.getSourceFolder().equals(srcFolder)) {
-                    IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length - 1];
-                    System.arraycopy(entries, 0, newEntries, 0, i);
-                    System.arraycopy(entries, i + 1, newEntries, i, entries.length - i - 1);
-                    entries = newEntries;
+                    removeEntry(i);
+                    return;
                 }
             }
         }
@@ -661,6 +675,32 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public void setUsingManifest(boolean useManifest) {
         this.useManifest = useManifest;
+    }
+
+    @Override
+    public IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath) {
+        IIpsContainerEntry existingContainer = findExistingContainer(containerTypeId, optionalPath);
+        if (existingContainer != null) {
+            return existingContainer;
+        }
+        IpsContainerEntry ipsContainerEntry = new IpsContainerEntry(this);
+        ipsContainerEntry.setContainerTypeId(containerTypeId);
+        ipsContainerEntry.setOptionalPath(optionalPath);
+        addEntry(ipsContainerEntry);
+        return ipsContainerEntry;
+    }
+
+    /* private */IIpsContainerEntry findExistingContainer(String containerTypeId, String optionalPath) {
+        for (IIpsObjectPathEntry ipsObjectPathEntry : entries) {
+            if (ipsObjectPathEntry.isContainer()) {
+                IIpsContainerEntry containerEntry = (IIpsContainerEntry)ipsObjectPathEntry;
+                if (StringUtils.equals(containerEntry.getContainerTypeId(), containerTypeId)
+                        && StringUtils.equals(containerEntry.getOptionalPath(), optionalPath)) {
+                    return containerEntry;
+                }
+            }
+        }
+        return null;
     }
 
     private static class CachedSrcFile {

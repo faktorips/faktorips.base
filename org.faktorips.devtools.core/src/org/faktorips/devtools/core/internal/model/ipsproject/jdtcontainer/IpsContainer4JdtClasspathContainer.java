@@ -11,18 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject;
+package org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -30,31 +24,49 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsObjectPathContainer;
+import org.faktorips.devtools.core.internal.model.ipsproject.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
  * An ips object path container entry that is based on a JDT classpath container.
  * 
- * !!! Experimental !!!
- * 
  * @author Jan Ortmann
  */
 public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathContainer {
 
     private static final String MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH = "Invalid-ClasspathContainer-Path"; //$NON-NLS-1$
+
     private IClasspathContainer jdtClasspathContainer = null;
+
     private List<IIpsObjectPathEntry> resolvedEntries = new ArrayList<IIpsObjectPathEntry>(0);
 
-    public IpsContainer4JdtClasspathContainer(IIpsObjectPathContainerType containerType, IIpsProject ipsProject,
-            String optionalPath) {
-        super(containerType, ipsProject, optionalPath);
+    private JdtClasspathResolver jdtClasspathResolver;
+
+    private JdtClasspathEntryCreator entryCreator;
+
+    /**
+     * Creates an IPS container that references the JDT classpath container with the specified path.
+     * 
+     * @param jdtContainerPath The JDT classpath container path
+     * @param ipsProject The {@link IIpsProject} that holds this container
+     */
+    public IpsContainer4JdtClasspathContainer(String jdtContainerPath, IIpsProject ipsProject) {
+        super(IpsContainer4JdtClasspathContainerType.ID, jdtContainerPath, ipsProject);
+        jdtClasspathResolver = new JdtClasspathResolver();
+        entryCreator = new JdtClasspathEntryCreator(getIpsObjectPath());
+    }
+
+    void setContainerResolver(JdtClasspathResolver containerResolver) {
+        this.jdtClasspathResolver = containerResolver;
+    }
+
+    void setEntryCreator(JdtClasspathEntryCreator entryCreator) {
+        this.entryCreator = entryCreator;
     }
 
     @Override
@@ -68,77 +80,46 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         if (cpContainer != null) {
             return cpContainer.getDescription();
         }
-        return "Unresolved: " + getContainerType().getId() + '[' + getOptionalPath() + ']'; //$NON-NLS-1$
+        return "Unresolved: " + super.getContainerId() + '[' + getOptionalPath() + ']'; //$NON-NLS-1$
     }
 
     @Override
-    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException {
-        IJavaProject javaProject = getIpsProject().getJavaProject();
+    public List<IIpsObjectPathEntry> resolveEntries() {
+        IClasspathContainer currentContainer;
+        try {
+            currentContainer = getClasspathContainer();
+        } catch (JavaModelException e) {
+            throw new CoreRuntimeException(e);
+        }
         if (jdtClasspathContainer != null) {
-            IClasspathContainer actualContainer = JavaCore.getClasspathContainer(new Path(getOptionalPath()),
-                    javaProject);
-            if (jdtClasspathContainer == actualContainer) {
+            if (jdtClasspathContainer == currentContainer) {
                 return resolvedEntries;
             }
-            jdtClasspathContainer = actualContainer;
         } else {
-            jdtClasspathContainer = JavaCore.getClasspathContainer(new Path(getOptionalPath()), javaProject);
-            if (jdtClasspathContainer == null) {
+            if (currentContainer == null) {
                 return new ArrayList<IIpsObjectPathEntry>(0);
             }
         }
-        IpsObjectPath ipsObjectPath = (IpsObjectPath)getIpsObjectPath();
+        jdtClasspathContainer = currentContainer;
+        updateResolvedEntries();
+        return resolvedEntries;
+    }
+
+    private IClasspathContainer getClasspathContainer() throws JavaModelException {
+        IJavaProject javaProject = getIpsProject().getJavaProject();
+        return jdtClasspathResolver.getClasspathContainer(javaProject, getOptionalPath());
+    }
+
+    private void updateResolvedEntries() {
         resolvedEntries = new ArrayList<IIpsObjectPathEntry>();
         IClasspathEntry[] entries = jdtClasspathContainer.getClasspathEntries();
         for (int i = 0; i < entries.length; i++) {
-            IClasspathEntry jdtEntry = JavaCore.getResolvedClasspathEntry(entries[i]);
-            IIpsObjectPathEntry ipsEntry = createIpsEntry(jdtEntry, ipsObjectPath);
+            IClasspathEntry jdtEntry = jdtClasspathResolver.getResolvedClasspathEntry(entries[i]);
+            IIpsObjectPathEntry ipsEntry = entryCreator.createIpsEntry(jdtEntry);
             if (ipsEntry != null) {
                 resolvedEntries.add(ipsEntry);
             }
         }
-        return resolvedEntries;
-    }
-
-    private IIpsObjectPathEntry createIpsEntry(IClasspathEntry entry, IpsObjectPath ipsObjectPath) {
-        if (entry == null) {
-            return null;
-        }
-        if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-            return createIpsProjectRefEntry(entry, ipsObjectPath);
-        } else if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-            return createIpsArchiveEntry(entry, ipsObjectPath);
-        }
-        IpsPlugin
-                .log(new IpsStatus(
-                        "IpsContainerBasedOnJdtClasspathContainer: Unsupported kind of ClasspathEntry " + entry.getEntryKind())); //$NON-NLS-1$
-        return null;
-    }
-
-    private IIpsProjectRefEntry createIpsProjectRefEntry(IClasspathEntry entry, IpsObjectPath ipsObjectPath) {
-        IPath path = entry.getPath();
-        IProject project = (IProject)ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
-        if (ipsProject.exists()) {
-            return new IpsProjectRefEntry(ipsObjectPath, ipsProject);
-        }
-        return null;
-    }
-
-    private IIpsArchiveEntry createIpsArchiveEntry(IClasspathEntry entry, IpsObjectPath ipsObjectPath) {
-        IPath path = entry.getPath();
-        if (path.isAbsolute()) {
-            return null;
-        }
-        IIpsProject ipsProject = ipsObjectPath.getIpsProject();
-        IResource member = ipsProject.getProject().findMember(path);
-        if (!(member instanceof IFile)) {
-            // FIXME It does NOT have to be a file, it also could be a folder!
-            throw new RuntimeException("Archive must be a file!"); //$NON-NLS-1$
-        }
-        IpsArchiveEntry archiveEntry = new IpsArchiveEntry(ipsObjectPath);
-        archiveEntry.setArchivePath(ipsProject, path);
-        return archiveEntry;
     }
 
     /**
@@ -155,12 +136,11 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         if (javaProject == null) {
             return null;
         }
-        IPath classpathContainerPath = new Path(getOptionalPath());
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-                if (classpathContainerPath.equals(entries[i].getPath())) {
-                    return JavaCore.getClasspathContainer(classpathContainerPath, javaProject);
+                if (getOptionalPath().equals(entries[i].getPath())) {
+                    return getClasspathContainer();
                 }
             }
         }
@@ -168,7 +148,8 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() {
+        MessageList result = new MessageList();
         IClasspathContainer container;
         try {
             container = findClasspathContainer();
@@ -177,13 +158,26 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
             container = null;
         }
         if (container != null) {
-            return null;
+            return result;
         }
-        MessageList result = new MessageList();
         Message msg = new Message(MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH, NLS.bind(
                 Messages.IpsContainer4JdtClasspathContainer_err_invalidClasspathContainer, getOptionalPath()),
                 Message.ERROR, this);
         result.add(msg);
         return result;
     }
+
+    protected static class JdtClasspathResolver {
+
+        protected IClasspathContainer getClasspathContainer(IJavaProject javaProject, IPath classpathContainerPath)
+                throws JavaModelException {
+            return JavaCore.getClasspathContainer(classpathContainerPath, javaProject);
+        }
+
+        public IClasspathEntry getResolvedClasspathEntry(IClasspathEntry classpathEntry) {
+            return JavaCore.getResolvedClasspathEntry(classpathEntry);
+        }
+
+    }
+
 }

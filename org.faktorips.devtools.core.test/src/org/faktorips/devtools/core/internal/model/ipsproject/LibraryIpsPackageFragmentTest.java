@@ -44,12 +44,12 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
+public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IFile archiveFile;
-    private ArchiveIpsPackageFragmentRoot root;
-    private ArchiveIpsPackageFragment pack;
+    private LibraryIpsPackageFragmentRoot root;
+    private LibraryIpsPackageFragment pack;
     private IPolicyCmptType policy;
     private IPolicyCmptType coverage;
 
@@ -70,8 +70,8 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = project.getIpsObjectPath();
         path.newArchiveEntry(archiveFile.getFullPath());
         project.setIpsObjectPath(path);
-        root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
-        pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("mycompany.motor");
+        root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
+        pack = (LibraryIpsPackageFragment)root.getIpsPackageFragment("mycompany.motor");
     }
 
     @Test
@@ -152,8 +152,8 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         IIpsProject project = createTestArchive();
 
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
-        ArchiveIpsPackageFragment pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products");
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
+        LibraryIpsPackageFragment pack = (LibraryIpsPackageFragment)root.getIpsPackageFragment("products");
 
         IIpsPackageFragment[] children = pack.getSortedChildIpsPackageFragments();
 
@@ -163,7 +163,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         // assertEquals("products.kranken", children[2].getName());
         // assertEquals("products.unfall", children[3].getName());
 
-        pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products.kranken.leistungsarten");
+        pack = (LibraryIpsPackageFragment)root.getIpsPackageFragment("products.kranken.leistungsarten");
         children = pack.getSortedChildIpsPackageFragments();
         assertEquals(2, children.length);
         // assertEquals("products.kranken.leistungsarten.fix", children[0].getName());

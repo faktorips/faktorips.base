@@ -431,4 +431,10 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         inStream.read(fileContent);
         assertEquals("test", new String(fileContent));
     }
+
+    @Test
+    public void testIsValid()
+     throws Exception {
+    
+    }
 }

@@ -15,16 +15,17 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathContainer;
 
 /**
- * A container entry is an entry that wraps severall other, none-container entries. The entries are
+ * A container entry is an entry that wraps several other, none-container entries. The entries are
  * determined dynamically by the {@link IIpsObjectPathContainer} the entry refers to.
  * 
  * @since 3.3
  */
 public interface IIpsContainerEntry extends IIpsObjectPathEntry {
+
+    public static final String MSG_CODE_INVALID_CONTAINER_ENTRY = "IpsContainerEntry-InvalidContainerEntry"; //$NON-NLS-1$
 
     /**
      * Returns a human readable name for the container entry.
@@ -58,7 +59,7 @@ public interface IIpsContainerEntry extends IIpsObjectPathEntry {
      * Returns the list of entries that are provided by the container this entry refers to. The
      * returned list does does not contain any container entries.
      */
-    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException;
+    public List<IIpsObjectPathEntry> resolveEntries();
 
     /**
      * Returns the resolved entry that defines the given IPS package fragment root. Returns

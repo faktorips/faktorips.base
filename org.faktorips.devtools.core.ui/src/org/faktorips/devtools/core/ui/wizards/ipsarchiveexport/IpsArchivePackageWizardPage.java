@@ -157,23 +157,19 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                     // store elements for product definition view
                     elementsInTree.put(element, element);
                     // store to be mapped objects
-                    try {
-                        IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                        List<Object> rootResult = new ArrayList<Object>(roots.length);
-                        for (IIpsPackageFragmentRoot root : roots) {
-                            if (root.getIpsArchive() != null) {
-                                continue;
-                            }
-                            rootResult.add(root);
-                            // store elements for product definition view
-                            elementsInTree.put(root, root);
-                            // store to be mapped objects
-                            elementsInTree.put(root.getEnclosingResource(), root);
+                    IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
+                    List<Object> rootResult = new ArrayList<Object>(roots.length);
+                    for (IIpsPackageFragmentRoot root : roots) {
+                        if (root.getIpsStorage() != null) {
+                            continue;
                         }
-                        return rootResult.toArray();
-                    } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
+                        rootResult.add(root);
+                        // store elements for product definition view
+                        elementsInTree.put(root, root);
+                        // store to be mapped objects
+                        elementsInTree.put(root.getEnclosingResource(), root);
                     }
+                    return rootResult.toArray();
                 }
                 return EMPTY_ARRAY;
             }

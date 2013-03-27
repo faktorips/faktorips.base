@@ -41,8 +41,8 @@ import org.eclipse.ui.actions.MoveFilesAndFoldersOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -296,8 +296,8 @@ public class MoveOperation implements IRunnableWithProgress {
             }
         }
         return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile)
-                & !(target instanceof IIpsSrcFile) & !(target instanceof ArchiveIpsPackageFragment)
-                & !(target instanceof ArchiveIpsPackageFragmentRoot);
+                & !(target instanceof IIpsSrcFile) & !(target instanceof LibraryIpsPackageFragment)
+                & !(target instanceof LibraryIpsPackageFragmentRoot);
     }
 
     /**

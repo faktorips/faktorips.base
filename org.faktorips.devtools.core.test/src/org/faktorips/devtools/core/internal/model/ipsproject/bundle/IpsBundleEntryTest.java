@@ -1,0 +1,210 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.internal.model.ipsproject.bundle;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsFolderBundle;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundle;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.JarFileFactory;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry.IpsStrorageFactory;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class IpsBundleEntryTest {
+
+    @Mock
+    private IpsObjectPath ipsObjectPath;
+
+    @Mock
+    private IpsJarBundle ipsJarBundle;
+
+    @Mock
+    private IpsFolderBundle ipsFolderBundle;
+
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
+    private IpsStrorageFactory ipsStorageFactory;
+
+    @Mock
+    private IPath bundlePath;
+
+    private IpsBundleEntry ipsBundleEntry;
+
+    @Before
+    public void createIpsJarBundleEntry() throws Exception {
+        ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
+    }
+
+    @Test
+    public void testValidate_valid() throws Exception {
+        initStorage();
+        when(ipsJarBundle.isValid()).thenReturn(true);
+
+        MessageList messages = ipsBundleEntry.validate();
+
+        assertNull(messages.getMessageByCode(IpsBundleEntry.MSGCODE_MISSING_BUNDLE));
+    }
+
+    @Test
+    public void testValidate_invalid() throws Exception {
+        initStorage();
+        when(ipsJarBundle.isValid()).thenReturn(false);
+
+        MessageList messages = ipsBundleEntry.validate();
+
+        assertNotNull(messages.getMessageByCode(IpsBundleEntry.MSGCODE_MISSING_BUNDLE));
+    }
+
+    @Test
+    public void testValidate_noInit() throws Exception {
+        MessageList messages = ipsBundleEntry.validate();
+
+        assertNotNull(messages.getMessageByCode(IpsBundleEntry.MSGCODE_MISSING_BUNDLE));
+    }
+
+    @Test
+    public void testGetRessourceAsStream() throws Exception {
+        initStorage();
+        ipsBundleEntry.getRessourceAsStream("testAnyPath");
+
+        verify(ipsJarBundle).getResourceAsStream("testAnyPath");
+    }
+
+    @Test
+    public void testGetIpsPackageFragmentRootName() throws Exception {
+        initStorage();
+        when(ipsJarBundle.getLocation()).thenReturn(new Path("any/where/test.jar"));
+
+        String rootName = ipsBundleEntry.getIpsPackageFragmentRootName();
+
+        assertEquals("test.jar", rootName);
+    }
+
+    @Test
+    public void testExists_existing() throws Exception {
+        initStorage();
+        QualifiedNameType qnt = mock(QualifiedNameType.class);
+        when(ipsJarBundle.contains(qnt)).thenReturn(true);
+
+        boolean exists = ipsBundleEntry.exists(qnt);
+
+        assertTrue(exists);
+    }
+
+    @Test
+    public void testExists_notExisting() throws Exception {
+        initStorage();
+        QualifiedNameType qnt = mock(QualifiedNameType.class);
+
+        boolean exists = ipsBundleEntry.exists(qnt);
+
+        assertFalse(exists);
+    }
+
+    @Test
+    public void testInitStorage_folder() throws Exception {
+        mockInitDependencies(true);
+
+        ipsBundleEntry.initStorage(bundlePath);
+
+        assertThat(ipsBundleEntry.getIpsStorage(), instanceOf(IpsFolderBundle.class));
+    }
+
+    @Test
+    public void testInitStorage_folderInitException() throws Exception {
+        mockInitDependencies(true);
+        doThrow(new IOException()).when(ipsFolderBundle).initBundle();
+
+        try {
+            ipsBundleEntry.initStorage(bundlePath);
+            fail("IOException expected");
+        } catch (IOException e) {
+            assertNull(ipsBundleEntry.getIpsStorage());
+        }
+    }
+
+    @Test
+    public void testInitStorage_jar() throws Exception {
+        mockInitDependencies(false);
+
+        ipsBundleEntry.initStorage(bundlePath);
+
+        assertThat(ipsBundleEntry.getIpsStorage(), instanceOf(IpsJarBundle.class));
+    }
+
+    @Test
+    public void testInitStorage_jarInitException() throws Exception {
+        mockInitDependencies(false);
+        doThrow(new IOException()).when(ipsJarBundle).initBundle();
+
+        try {
+            ipsBundleEntry.initStorage(bundlePath);
+            fail("IOException expected");
+        } catch (IOException e) {
+            assertNull(ipsBundleEntry.getIpsStorage());
+        }
+    }
+
+    private void initStorage() throws IOException {
+        mockIpsStorageFactory();
+        ipsBundleEntry.initStorage(bundlePath);
+    }
+
+    private void mockIpsStorageFactory() {
+        when(ipsObjectPath.getIpsProject()).thenReturn(ipsProject);
+        File file = mock(File.class);
+        when(bundlePath.toFile()).thenReturn(file);
+        ipsBundleEntry.setIpsStorageFactory(ipsStorageFactory);
+        when(ipsStorageFactory.createFolderBundle(ipsProject, bundlePath)).thenReturn(ipsFolderBundle);
+        when(ipsStorageFactory.createJarBundle(eq(ipsProject), any(JarFileFactory.class))).thenReturn(ipsJarBundle);
+    }
+
+    private void mockInitDependencies(boolean directory) {
+        mockIpsStorageFactory();
+        File file = mock(File.class);
+        when(bundlePath.toFile()).thenReturn(file);
+        when(file.isDirectory()).thenReturn(directory);
+    }
+
+}

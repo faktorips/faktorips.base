@@ -37,7 +37,7 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
+public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IIpsPackageFragmentRoot root;

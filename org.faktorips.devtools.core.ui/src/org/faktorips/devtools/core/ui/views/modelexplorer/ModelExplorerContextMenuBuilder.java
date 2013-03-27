@@ -344,11 +344,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     private boolean isRootArchive(Object object) {
         IIpsPackageFragmentRoot root = getPackageFragmentRoot(object);
         if (root != null) {
-            try {
-                return root.getIpsArchive() != null;
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+                return root.getIpsStorage() != null;
         }
         return false;
     }
@@ -467,13 +463,9 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
         if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
             if (selected instanceof IIpsPackageFragmentRoot) {
-                try {
-                    // don't enable menu for ips archives
-                    if (((IIpsPackageFragmentRoot)selected).getIpsArchive() != null) {
-                        return;
-                    }
-                } catch (CoreException e) {
-                    // ignore exception while creating the menu
+                // don't enable menu for ips archives
+                if (((IIpsPackageFragmentRoot)selected).getIpsStorage() != null) {
+                    return;
                 }
             }
             manager.add(new CreateIpsArchiveAction(treeViewer));
@@ -512,5 +504,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         properties.setEnabled(propertiesAction.isEnabledFor(selected));
         manager.add(properties);
     }
+
 
 }

@@ -16,14 +16,12 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
@@ -46,11 +44,10 @@ import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.AbstractIpsStorage;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StreamUtil;
 
 /**
@@ -62,14 +59,12 @@ import org.faktorips.util.StreamUtil;
  * 
  * @author Jan Ortmann
  */
-public class IpsArchive implements IIpsArchive {
+public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
     private static final int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length();
 
     private final IPath archivePath;
     private long modificationStamp;
-    private ArchiveIpsPackageFragmentRoot root;
-
     /** package name as key, content as value. content stored as a set of qNameTypes */
     private HashMap<String, Set<QualifiedNameType>> packs = null;
 
@@ -77,9 +72,8 @@ public class IpsArchive implements IIpsArchive {
     private LinkedHashMap<QualifiedNameType, IpsObjectProperties> qNameTypes = null;
 
     public IpsArchive(IIpsProject ipsProject, IPath path) {
-        ArgumentCheck.notNull(ipsProject, "The parameter ipsproject cannot be null."); //$NON-NLS-1$
+        super(ipsProject);
         archivePath = path;
-        root = new ArchiveIpsPackageFragmentRoot(ipsProject, this);
     }
 
     @Override
@@ -130,7 +124,12 @@ public class IpsArchive implements IIpsArchive {
         if (!exists()) {
             return false;
         }
-        return true;
+        try {
+            readArchiveContentIfNecessary();
+        } catch (CoreException e) {
+            return false;
+        }
+        return packs != null && qNameTypes != null;
     }
 
     @Override
@@ -143,65 +142,6 @@ public class IpsArchive implements IIpsArchive {
         }
         Arrays.sort(packNames);
         return packNames;
-    }
-
-    @Override
-    public boolean containsPackage(String name) throws CoreException {
-        if (name == null) {
-            return false;
-        }
-        if (StringUtils.EMPTY.equals(name)) {
-            // default package is always contained.
-            return true;
-        }
-        readArchiveContentIfNecessary();
-        if (packs.containsKey(name)) {
-            return true;
-        }
-        String prefix = name + "."; //$NON-NLS-1$
-        for (String pack : packs.keySet()) {
-            if (pack.startsWith(prefix)) {
-                // given pack name is an empty parent package
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public String[] getNonEmptySubpackages(String parentPack) throws CoreException {
-        if (parentPack == null) {
-            return new String[0];
-        }
-        readArchiveContentIfNecessary();
-        Set<String> result = new HashSet<String>();
-        for (String nonEmptyPack : packs.keySet()) {
-            for (String pack : getParentPackagesIncludingSelf(nonEmptyPack)) {
-                if (isChildPackageOf(pack, parentPack)) {
-                    result.add(pack);
-                }
-            }
-        }
-
-        String[] packNames = result.toArray(new String[result.size()]);
-        Arrays.sort(packNames);
-
-        return packNames;
-    }
-
-    private boolean isChildPackageOf(String candidate, String parentPack) {
-        if (candidate.equals(parentPack)) {
-            return false;
-        }
-        if (StringUtils.EMPTY.equals(parentPack)) {
-            // default package
-            return candidate.indexOf('.') == -1;
-        } else {
-            if (!candidate.startsWith(parentPack + '.')) {
-                return false;
-            }
-            return StringUtils.countMatches(parentPack, ".") == StringUtils.countMatches(candidate, ".") - 1; //$NON-NLS-1$ //$NON-NLS-2$
-        }
     }
 
     @Override
@@ -242,7 +182,7 @@ public class IpsArchive implements IIpsArchive {
 
     private void readArchiveContentIfNecessary() throws CoreException {
         synchronized (this) {
-            if (!isValid()) {
+            if (!exists()) {
                 packs = new HashMap<String, Set<QualifiedNameType>>();
                 qNameTypes = new LinkedHashMap<QualifiedNameType, IpsObjectProperties>();
                 return;
@@ -396,23 +336,6 @@ public class IpsArchive implements IIpsArchive {
         return "Archive " + archivePath; //$NON-NLS-1$
     }
 
-    private List<String> getParentPackagesIncludingSelf(String pack) {
-        ArrayList<String> result = new ArrayList<String>();
-        result.add(pack);
-        getParentPackages(pack, result);
-        return result;
-    }
-
-    private void getParentPackages(String pack, List<String> result) {
-        int index = pack.lastIndexOf('.');
-        if (index == -1) {
-            return;
-        }
-        String parentPack = pack.substring(0, index);
-        result.add(parentPack);
-        getParentPackages(parentPack, result);
-    }
-
     @Override
     public String getBasePackageNameForMergableArtefacts(QualifiedNameType qualifiedNameType) throws CoreException {
         readArchiveContentIfNecessary();
@@ -451,13 +374,8 @@ public class IpsArchive implements IIpsArchive {
             }
             return wsRoot.getFile(archivePath);
         }
-        IProject project = root.getIpsProject().getProject();
+        IProject project = getIpsProject().getProject();
         return project.getFile(archivePath);
-    }
-
-    @Override
-    public IIpsPackageFragmentRoot getRoot() {
-        return root;
     }
 
     @Override
@@ -491,6 +409,14 @@ public class IpsArchive implements IIpsArchive {
         }
     }
 
+    @Override
+    public String getName() {
+        if (archivePath == null) {
+            return StringUtils.EMPTY;
+        }
+        return archivePath.lastSegment();
+    }
+
     private static class IpsObjectProperties {
 
         private String basePackageMergable;
@@ -502,5 +428,4 @@ public class IpsArchive implements IIpsArchive {
         }
 
     }
-
 }

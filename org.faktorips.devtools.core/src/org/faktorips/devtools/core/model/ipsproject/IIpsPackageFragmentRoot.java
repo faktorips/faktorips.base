@@ -132,10 +132,10 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
 
     /**
-     * If this root is based on an archive, the method returns the archive, otherwise
+     * If this root is based on a storage, the method returns the storage, otherwise
      * <code>null</code> is returned.
      */
-    public IIpsArchive getIpsArchive() throws CoreException;
+    public IIpsStorage getIpsStorage();
 
     /**
      * Deletes this package fragment root by deleting all child package fragments.

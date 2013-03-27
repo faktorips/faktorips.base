@@ -238,7 +238,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() {
         MessageList result = new MessageList();
         IIpsProject project = getReferencedIpsProject();
         if (project == null) {

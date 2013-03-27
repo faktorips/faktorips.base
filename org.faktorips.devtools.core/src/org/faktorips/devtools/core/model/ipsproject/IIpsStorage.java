@@ -1,0 +1,143 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.model.ipsproject;
+
+import java.io.InputStream;
+import java.util.Set;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+
+/**
+ * 
+ * This {@link IIpsStorage} is an interface, which allows storing Faktor-IPS-Files outside of the
+ * source folders of an {@link IIpsProject}. This interface has several methods to access such a
+ * storage.
+ * 
+ * @author dicker
+ */
+public interface IIpsStorage {
+
+    /**
+     * Returns the absolute path in the local file system to this resource, or <code>null</code> if
+     * no path can't be determined.
+     */
+    public abstract IPath getLocation();
+
+    /**
+     * Returns the name of this storage. Represents the last segment of this storage path and does
+     * not have to be unique.
+     */
+    public abstract String getName();
+
+    /**
+     * Returns <code>true</code> if the archive exists, otherwise <code>false</code>.
+     */
+    public abstract boolean exists();
+
+    /**
+     * Returns the names (in ascending order) of the non-empty packages contained in the archive.
+     * <p>
+     * A package is not empty, if it contains at least one IPS object.
+     */
+    public abstract String[] getNonEmptyPackages() throws CoreException;
+
+    /**
+     * Returns <code>true</code> if the archive contains the package (empty or not), otherwise
+     * <code>false</code>.
+     */
+    public abstract boolean containsPackage(String name) throws CoreException;
+
+    /**
+     * Returns the names (in ascending order) of the non-empty direct sub packages for the given
+     * parent package as list.
+     */
+    public abstract String[] getNonEmptySubpackages(String pack) throws CoreException;
+
+    /**
+     * Returns the set of qualified name types for the IPS objects stored in the archive
+     */
+    public abstract Set<QualifiedNameType> getQNameTypes() throws CoreException;
+
+    /**
+     * Returns the set of qualified name types for the IPS objects stored in the given package.
+     * Returns an empty set if the archive does not contain an object for the given package or
+     * packName is <code>null</code>.
+     */
+    public abstract Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException;
+
+    /**
+     * Returns <code>true</code> if the archive contains the IPS object identified by the given
+     * qualified name type, otherwise <code>false</code>.
+     */
+    public abstract boolean contains(QualifiedNameType qnt) throws CoreException;
+
+    /**
+     * Returns the content for the qualified name type or <code>null</code> if the archive does not
+     * contain the given qualified name type. Returns <code>null</code> if qnt is <code>null</code>.
+     */
+    public abstract InputStream getContent(QualifiedNameType qnt) throws CoreException;
+
+    /**
+     * Returns the content of a file with the given path. Returns <code>null</code> if path is
+     * <code>null</code>. Throws a CoreException if no Entry with the given path is found within
+     * this {@link IIpsArchive}.
+     * 
+     * @throws CoreException if no Entry with the given path is found within this
+     *             {@link IIpsArchive}, or if problems are encountert opening, reading or writing
+     *             this archive.
+     */
+    public abstract InputStream getResourceAsStream(String path) throws CoreException;
+
+    /**
+     * Returns the name of the base package for the mergable artifacts (XML-Files, Java source
+     * files). All mergable artifacts are contained in this package or one of the child packages.
+     */
+    public abstract String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException;
+
+    /**
+     * Returns the name of the base package for the derived artifacts (XML-Files, Java source
+     * files). All derived artifacts are contained in this package or one of the child packages.
+     */
+    public abstract String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException;
+
+    /**
+     * Check weather this archive is valid or not. A archive is valid if the corresponding file
+     * exists and the file is a readable ips archive.
+     * 
+     * @return true if the archive exists and is readable
+     */
+    public abstract boolean isValid();
+
+    /**
+     * Returns true, if this archive is part of the provided delta or one of its children.
+     * 
+     * @see IIpsArchiveEntry#isAffectedBy(IResourceDelta)
+     */
+    public abstract boolean isAffectedBy(IResourceDelta delta);
+
+    /**
+     * Returns an IResource only if the resource can be located in the workspace. If the path is
+     * relative it have to be located in the roots project project. The file does not have exists
+     * but have to be relative (to the project) or the first segment must match an existing project.
+     * 
+     * @return The found {@link IResource} if the path is workspace or project relative. Returns
+     *         null if the path is not valid.
+     */
+    public abstract IResource getCorrespondingResource();
+
+}

@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -38,11 +38,6 @@ import org.faktorips.util.message.MessageList;
 public interface IIpsObjectPathContainer {
 
     /**
-     * Returns the type of this container. This method never returns <code>null</code>.
-     */
-    IIpsObjectPathContainerType getContainerType();
-
-    /**
      * Returns the IPS project this container belongs to.
      */
     public IIpsProject getIpsProject();
@@ -50,7 +45,15 @@ public interface IIpsObjectPathContainer {
     /**
      * Returns the container's optional path information. Never returns null.
      */
-    public String getOptionalPath();
+    public IPath getOptionalPath();
+
+    /**
+     * Returns the ID of the container provided by the {@link IIpsObjectPathContainerType}. The ID
+     * could be used to identify this container and it cannot change during life cycle.
+     * 
+     * @return The identifier of this container according to its {@link IIpsObjectPathContainerType}
+     */
+    public String getContainerId();
 
     /**
      * Returns a name for the given entry that can be presented to the user. E.g. for containers
@@ -65,10 +68,9 @@ public interface IIpsObjectPathContainer {
      * 
      * @return The resolved list of entries.
      * 
-     * @throws CoreException if an exceptions occurs while resolving the entries.
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException;
+    public List<IIpsObjectPathEntry> resolveEntries();
 
     /**
      * Validates if the given entry is valid.
@@ -77,5 +79,5 @@ public interface IIpsObjectPathContainer {
      * 
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public MessageList validate() throws CoreException;
+    public MessageList validate();
 }

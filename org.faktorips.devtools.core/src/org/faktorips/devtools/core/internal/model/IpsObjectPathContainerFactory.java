@@ -33,13 +33,15 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsObjectPathContainerFactory {
 
+    private Map<String, IIpsObjectPathContainerType> typesById = new HashMap<String, IIpsObjectPathContainerType>();
+
     /**
      * Creates a new factory with all container types defined as extensions for the extension point
      * {@link ExtensionPoints#IPS_OBJECT_PATH_CONTAINER_TYPE}.
      * 
      * @return The new factory.
      */
-    public final static IpsObjectPathContainerFactory newFactoryBasedOnExtensions() {
+    public static final IpsObjectPathContainerFactory newFactoryBasedOnExtensions() {
         List<IIpsObjectPathContainerType> types = new ExtensionPoints().createExecutableExtensions(
                 ExtensionPoints.IPS_OBJECT_PATH_CONTAINER_TYPE,
                 "containerType", "class", IIpsObjectPathContainerType.class); //$NON-NLS-1$ //$NON-NLS-2$
@@ -52,7 +54,7 @@ public class IpsObjectPathContainerFactory {
      * @param types A list of types.
      * @return The new factory.
      */
-    public final static IpsObjectPathContainerFactory newFactory(List<IIpsObjectPathContainerType> types) {
+    public static final IpsObjectPathContainerFactory newFactory(List<IIpsObjectPathContainerType> types) {
         IpsObjectPathContainerFactory newFactory = new IpsObjectPathContainerFactory();
         for (IIpsObjectPathContainerType type : types) {
             if (type.getId() == null) {
@@ -69,8 +71,6 @@ public class IpsObjectPathContainerFactory {
         }
         return newFactory;
     }
-
-    private Map<String, IIpsObjectPathContainerType> typesById = new HashMap<String, IIpsObjectPathContainerType>();
 
     /**
      * Creates a new container for the given container type id.
@@ -145,4 +145,5 @@ public class IpsObjectPathContainerFactory {
     public int getNumOfRegisteredTypes() {
         return typesById.size();
     }
+
 }

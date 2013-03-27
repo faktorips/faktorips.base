@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
-import org.faktorips.devtools.core.internal.model.ipsproject.jarbundle.IpsJarBundleEntry;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -37,7 +37,7 @@ import org.osgi.framework.BundleException;
  * {@link IpsObjectPathManifestReader} and give him an instance of this class.
  * <p>
  * An {@link IpsBundleManifest} could be used in normal {@link IIpsProject projects} as well as in
- * {@link IpsJarBundleEntry packed bundles}.
+ * {@link IpsBundleEntry packed bundles}.
  * <p>
  * Following there is an example of a simple MANIFEST.MF (only Faktor-IPS relevant part):
  * <p>

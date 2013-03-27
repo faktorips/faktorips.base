@@ -14,43 +14,34 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Ips object path entry for an archive.
  * 
  * @author Jan Ortmann
  */
-public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEntry {
+public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry {
 
     private IIpsArchive archive;
 
     public IpsArchiveEntry(IpsObjectPath ipsObjectPath) {
         super(ipsObjectPath);
+
     }
 
     /**
@@ -78,7 +69,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     @Override
-    public void setArchivePath(IIpsProject ipsProject, IPath newArchivePath) {
+    public void initStorage(IPath newArchivePath) {
         if (newArchivePath == null) {
             archive = null;
             return;
@@ -86,22 +77,13 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         if (archive != null && newArchivePath.equals(archive.getArchivePath())) {
             return;
         }
-        archive = new IpsArchive(ipsProject, newArchivePath);
-    }
-
-    @Override
-    public String getType() {
-        return IIpsObjectPathEntry.TYPE_ARCHIVE;
+        archive = new IpsArchive(getIpsProject(), newArchivePath);
+        setIpsPackageFragmentRoot(new LibraryIpsPackageFragmentRoot(getIpsProject(), archive));
     }
 
     @Override
     public String getIpsPackageFragmentRootName() {
         return getIpsArchive().getArchivePath().lastSegment();
-    }
-
-    @Override
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return archive.getRoot();
     }
 
     @Override
@@ -113,67 +95,19 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        IIpsSrcFile file = getIpsSrcFile(qnt);
-        if (file.exists()) {
-            return file;
-        }
-        return null;
+    protected IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) {
+        LibraryIpsPackageFragment pack = new LibraryIpsPackageFragment(getIpsPackageFragmentRoot(),
+                qNameType.getPackageName());
+        return new LibraryIpsSrcFile(pack, qNameType.getFileName());
     }
 
     @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefixParam,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        String prefix = prefixParam;
-        if (ignoreCase) {
-            prefix = prefixParam.toLowerCase();
-        }
-
-        for (QualifiedNameType qnt : archive.getQNameTypes()) {
-            String name = qnt.getUnqualifiedName();
-            if (ignoreCase) {
-                name = name.toLowerCase();
-            }
-            if (name.startsWith(prefix)) {
-                IIpsSrcFile file = getIpsSrcFile(qnt);
-                if (file.exists()) {
-                    result.add(file);
-                }
-            }
-        }
-    }
-
-    private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) {
-        ArchiveIpsPackageFragment pack = new ArchiveIpsPackageFragment(
-                (ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(), qNameType.getPackageName());
-        return new ArchiveIpsSrcFile(pack, qNameType.getFileName());
+    public String getType() {
+        return TYPE_ARCHIVE;
     }
 
     @Override
-    public void initFromXml(Element element, IProject project) {
-        String path = element.getAttribute("file"); //$NON-NLS-1$
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
-        if (StringUtils.isEmpty(path)) {
-            setArchivePath(ipsProject, null);
-        } else {
-            setArchivePath(ipsProject, new Path(path));
-        }
-    }
-
-    @Override
-    public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", TYPE_ARCHIVE); //$NON-NLS-1$
-        element.setAttribute("file", archive.getArchivePath().toString()); //$NON-NLS-1$
-        return element;
-    }
-
-    @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()) {
             String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null : archive
@@ -204,4 +138,18 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return archive.getResourceAsStream(path);
     }
 
+    @Override
+    protected IIpsStorage getIpsStorage() {
+        return archive;
+    }
+
+    @Override
+    protected String getXmlAttributePathName() {
+        return "file"; //$NON-NLS-1$
+    }
+
+    @Override
+    protected String getXmlPathRepresentation() {
+        return archive.getArchivePath().toString();
+    }
 }

@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.junit.Before;
 import org.junit.Test;

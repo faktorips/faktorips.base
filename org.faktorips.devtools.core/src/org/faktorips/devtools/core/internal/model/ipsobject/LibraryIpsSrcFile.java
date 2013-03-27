@@ -19,19 +19,19 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
+import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.w3c.dom.Document;
 
 /**
  * @author Jan Ortmann
  */
-public class ArchiveIpsSrcFile extends AbstractIpsSrcFile {
+public class LibraryIpsSrcFile extends AbstractIpsSrcFile {
 
-    public ArchiveIpsSrcFile(ArchiveIpsPackageFragment pack, String name) {
+    public LibraryIpsSrcFile(LibraryIpsPackageFragment pack, String name) {
         super(pack, name);
     }
 
@@ -88,24 +88,24 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public InputStream getContentFromEnclosingResource() throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getIpsPackageFragment().getRoot();
-        IIpsArchive archive = root.getIpsArchive();
-        if (archive == null) {
+        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getIpsPackageFragment().getRoot();
+        IIpsStorage storage = root.getIpsStorage();
+        if (storage == null) {
             return null;
         }
-        return archive.getContent(getQualifiedNameType());
+        return storage.getContent(getQualifiedNameType());
     }
 
     @Override
     public String getBasePackageNameForMergableArtefacts() throws CoreException {
-        IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
-        return archive.getBasePackageNameForMergableArtefacts(getQualifiedNameType());
+        IIpsStorage storage = getIpsPackageFragment().getRoot().getIpsStorage();
+        return storage.getBasePackageNameForMergableArtefacts(getQualifiedNameType());
     }
 
     @Override
     public String getBasePackageNameForDerivedArtefacts() throws CoreException {
-        IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
-        return archive.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());
+        IIpsStorage storage = getIpsPackageFragment().getRoot().getIpsStorage();
+        return storage.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());
     }
 
     @Override

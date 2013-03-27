@@ -55,9 +55,9 @@ public interface IIpsObjectPathEntry {
     public static final String MSGCODE_MISSING_ARCHVE = MSGCODE_PREFIX + "MissingArchive"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a related jar bundle is missing.
+     * Validation message code to indicate that a related bundle is missing.
      */
-    public static final String MSGCODE_MISSING_JARBUNDLE = MSGCODE_PREFIX + "MissingJarBundle"; //$NON-NLS-1$
+    public static final String MSGCODE_MISSING_BUNDLE = MSGCODE_PREFIX + "MissingBundle"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a related archive is invalid.
@@ -88,7 +88,7 @@ public interface IIpsObjectPathEntry {
      * Type constant indicating a jar bundle entry.
      * 
      */
-    public static final String TYPE_JARBUNDLE = "jarbundle"; //$NON-NLS-1$
+    public static final String TYPE_BUNDLE = "bundle"; //$NON-NLS-1$
 
     /**
      * Returns the object path this is an entry of.
@@ -137,7 +137,7 @@ public interface IIpsObjectPathEntry {
     /**
      * Validates the object path entry and returns the result as list of messages.
      */
-    public MessageList validate() throws CoreException;
+    public MessageList validate();
 
     /**
      * Returns the IPS object with the indicated type and qualified name.

@@ -14,10 +14,11 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
@@ -28,23 +29,17 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractIpsObjectPathContainer implements IIpsObjectPathContainer {
 
-    private IIpsObjectPathContainerType containerType;
-    private IIpsProject ipsProject;
-    private String optionalPath;
+    private final String containerId;
+    private final IIpsProject ipsProject;
+    private final IPath optionalPath;
 
-    public AbstractIpsObjectPathContainer(IIpsObjectPathContainerType containerType, IIpsProject ipsProject,
-            String optionalPath) {
-        ArgumentCheck.notNull(containerType);
+    public AbstractIpsObjectPathContainer(String containerId, String optionalPath, IIpsProject ipsProject) {
+        ArgumentCheck.notNull(containerId);
         ArgumentCheck.notNull(ipsProject);
         ArgumentCheck.notNull(optionalPath);
-        this.containerType = containerType;
+        this.containerId = containerId;
         this.ipsProject = ipsProject;
-        this.optionalPath = optionalPath;
-    }
-
-    @Override
-    public IIpsObjectPathContainerType getContainerType() {
-        return containerType;
+        this.optionalPath = new Path(optionalPath);
     }
 
     @Override
@@ -53,21 +48,31 @@ public abstract class AbstractIpsObjectPathContainer implements IIpsObjectPathCo
     }
 
     @Override
-    public String getOptionalPath() {
+    public IPath getOptionalPath() {
         return optionalPath;
     }
 
     @Override
+    public String getContainerId() {
+        return containerId;
+    }
+
+    @Override
     public String getName() {
-        return containerType.getId();
+        return getContainerId();
     }
 
     /**
      * Returns the ips project's object path.
      */
-    public IIpsObjectPath getIpsObjectPath() {
+    public IpsObjectPath getIpsObjectPath() {
         try {
-            return getIpsProject().getIpsObjectPath();
+            IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
+            if (ipsObjectPath instanceof IpsObjectPath) {
+                return (IpsObjectPath)ipsObjectPath;
+            } else {
+                return null;
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

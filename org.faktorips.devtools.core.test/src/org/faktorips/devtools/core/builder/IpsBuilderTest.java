@@ -891,7 +891,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPath archivePath2 = archiveFile2.getLocation();
 
         IpsArchiveEntry archiveEntry = new IpsArchiveEntry((IpsObjectPath)project2.getIpsObjectPath());
-        archiveEntry.setArchivePath(project2, archivePath2);
+        archiveEntry.initStorage(archivePath2);
         IIpsObjectPathEntry[] entries = project2.getIpsObjectPath().getEntries();
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);

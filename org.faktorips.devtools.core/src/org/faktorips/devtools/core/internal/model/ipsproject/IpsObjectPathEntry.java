@@ -19,7 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
-import org.faktorips.devtools.core.internal.model.ipsproject.jarbundle.IpsJarBundleEntry;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -236,8 +236,8 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
             entry.initFromXml(element, project);
             return entry;
         }
-        if (type.equals(TYPE_JARBUNDLE)) {
-            entry = new IpsJarBundleEntry(path);
+        if (type.equals(TYPE_BUNDLE)) {
+            entry = new IpsBundleEntry(path);
             entry.initFromXml(element, project);
             return entry;
         }

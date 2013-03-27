@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject.jarbundle;
+package org.faktorips.devtools.core.internal.model.ipsproject.bundle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,6 +39,9 @@ import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundle;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundleContentIndex;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.JarFileFactory;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -76,7 +79,8 @@ public class IpsJarBundleTest {
     @Before
     public void createIpsJarBundle() throws Exception {
         when(jarFileFactory.createJarFile()).thenReturn(jarFile);
-        when(jarFileFactory.getJarPath()).thenReturn(new Path(JAR_NAME));
+        Path path = new Path(JAR_NAME);
+        when(jarFileFactory.getJarPath()).thenReturn(path);
         ipsJarBundle = new IpsJarBundle(ipsProject, jarFileFactory);
         ipsJarBundle.setBundleContentIndex(bundleContentIndex);
     }
@@ -87,9 +91,9 @@ public class IpsJarBundleTest {
         when(jarFile.getManifest()).thenReturn(manifest);
         when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
 
-        ipsJarBundle.initJarFile();
+        ipsJarBundle.initBundle();
 
-        assertNotNull(ipsJarBundle.getManifest());
+        assertNotNull(ipsJarBundle.getBundleManifest());
     }
 
     @Test
@@ -97,7 +101,7 @@ public class IpsJarBundleTest {
         Manifest manifest = mock(Manifest.class);
         when(jarFile.getManifest()).thenReturn(manifest);
         when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
-        ipsJarBundle.initJarFile();
+        ipsJarBundle.initBundle();
 
         assertTrue(ipsJarBundle.isValid());
     }
@@ -157,7 +161,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetArchivePath() throws Exception {
-        IPath location = ipsJarBundle.getArchivePath();
+        IPath location = ipsJarBundle.getLocation();
 
         assertEquals(new Path(JAR_NAME), location);
     }
@@ -266,15 +270,15 @@ public class IpsJarBundleTest {
     @Test
     public void testGetNonEmptySubpackages_defaultPackage() throws Exception {
         HashSet<String> packagePaths = new HashSet<String>();
-        packagePaths.add("org.test.one");
-        packagePaths.add("org.one");
+        packagePaths.add("org");
+        packagePaths.add("de");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
         List<String> result = Arrays.asList(ipsJarBundle.getNonEmptySubpackages(""));
 
         assertEquals(2, result.size());
-        assertThat(result, hasItem("org.test.one"));
-        assertThat(result, hasItem("org.one"));
+        assertThat(result, hasItem("org"));
+        assertThat(result, hasItem("de"));
     }
 
     @Test

@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject.jarbundle;
+package org.faktorips.devtools.core.internal.model.ipsproject.bundle;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsproject.jarbundle.messages"; //$NON-NLS-1$
-    public static String IpsJarBundleEntry_msg_invalid;
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsproject.bundle.messages"; //$NON-NLS-1$
+    public static String IpsBundleEntry_msg_invalid;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

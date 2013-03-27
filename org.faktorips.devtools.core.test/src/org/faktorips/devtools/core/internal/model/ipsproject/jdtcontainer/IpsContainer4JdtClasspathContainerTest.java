@@ -1,0 +1,205 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer.JdtClasspathResolver;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class IpsContainer4JdtClasspathContainerTest {
+
+    private static final String MY_NAME = "myName";
+
+    private String optionalPath = "myOptionalPath";
+
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
+    private IpsObjectPath ipsObjectPath;
+
+    @Mock
+    private IClasspathContainer jdtContainer;
+
+    @Mock
+    private IClasspathEntry entry;
+
+    @Mock
+    private IIpsObjectPathEntry objectPathEntry;
+
+    @Mock(answer = Answers.RETURNS_SMART_NULLS)
+    private IJavaProject javaProject;
+
+    private IpsContainer4JdtClasspathContainer ipsContainer4JdtClasspathContainer;
+
+    @Before
+    public void createIpsContainer4JdtClasspathContainer() throws Exception {
+        ipsContainer4JdtClasspathContainer = new IpsContainer4JdtClasspathContainer(optionalPath, ipsProject);
+    }
+
+    @Test
+    public void testName() throws Exception {
+        mockJdtClasspathResolver();
+        when(jdtContainer.getDescription()).thenReturn(MY_NAME);
+
+        String name = ipsContainer4JdtClasspathContainer.getName();
+
+        assertEquals(MY_NAME, name);
+    }
+
+    @Test
+    public void testName_noContainer() throws Exception {
+        String name = ipsContainer4JdtClasspathContainer.getName();
+
+        assertEquals("Unresolved: " + IpsContainer4JdtClasspathContainerType.ID + '[' + optionalPath + ']', name);
+    }
+
+    @Test
+    public void testResolveEntries_noContainer() throws Exception {
+        mockJdtClasspathResolver(null);
+
+        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        assertEquals(0, resolveEntries.size());
+    }
+
+    @Test
+    public void testResolveEntries_emptyContainer() throws Exception {
+        mockJdtClasspathResolver();
+        when(jdtContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[] {});
+
+        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        assertEquals(0, resolveEntries.size());
+    }
+
+    @Test
+    public void testResolveEntries_withEntry() throws Exception {
+        mockEntryCreator(objectPathEntry);
+
+        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        assertEquals(1, resolveEntries.size());
+        assertEquals(objectPathEntry, resolveEntries.get(0));
+    }
+
+    @Test
+    public void testResolveEntries_withEntryCached() throws Exception {
+        mockEntryCreator(objectPathEntry);
+        List<IIpsObjectPathEntry> expectedEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        assertSame(expectedEntries, sameEntries);
+    }
+
+    @Test
+    public void testResolveEntries_withNullEntry() throws Exception {
+        mockEntryCreator(null);
+
+        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        assertEquals(0, resolveEntries.size());
+    }
+
+    @Test
+    public void testResolveEntries_emptyContainerCached() throws Exception {
+        mockEntryCreator(null);
+        List<IIpsObjectPathEntry> expectedEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+
+        assertSame(expectedEntries, sameEntries);
+    }
+
+    private void mockEntryCreator(IIpsObjectPathEntry objectPathEntry) throws Exception {
+        mockJdtClasspathResolver();
+        JdtClasspathEntryCreator entryCreator = mock(JdtClasspathEntryCreator.class);
+        ipsContainer4JdtClasspathContainer.setEntryCreator(entryCreator);
+        when(jdtContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[] { entry });
+        when(entryCreator.createIpsEntry(entry)).thenReturn(objectPathEntry);
+    }
+
+    @Test
+    public void testFindClasspathContainer_notJavaProject() throws Exception {
+        IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
+
+        assertNull(classpathContainer);
+    }
+
+    @Test
+    public void testFindClasspathContainer_emptyClasspath() throws Exception {
+        mockProject();
+
+        IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
+
+        assertNull(classpathContainer);
+    }
+
+    @Test
+    public void testFindClasspathContainer_existingEntry() throws Exception {
+        mockJdtClasspathResolver();
+
+        IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
+
+        assertEquals(jdtContainer, classpathContainer);
+    }
+
+    private void mockJdtClasspathResolver() throws Exception {
+        mockJdtClasspathResolver(jdtContainer);
+    }
+
+    private void mockJdtClasspathResolver(IClasspathContainer container) throws Exception {
+        mockProjectAndClasspath();
+        IPath classpathContainerPath = new Path(optionalPath);
+        JdtClasspathResolver containerResolver = mock(JdtClasspathResolver.class);
+        ipsContainer4JdtClasspathContainer.setContainerResolver(containerResolver);
+        when(containerResolver.getClasspathContainer(javaProject, classpathContainerPath)).thenReturn(container);
+        when(containerResolver.getResolvedClasspathEntry(entry)).thenReturn(entry);
+    }
+
+    private void mockProjectAndClasspath() throws Exception {
+        mockProject();
+        when(entry.getEntryKind()).thenReturn(IClasspathEntry.CPE_CONTAINER);
+        when(entry.getPath()).thenReturn(new Path(optionalPath));
+        when(javaProject.getRawClasspath()).thenReturn(new IClasspathEntry[] { entry });
+    }
+
+    private void mockProject() throws Exception {
+        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
+    }
+
+}

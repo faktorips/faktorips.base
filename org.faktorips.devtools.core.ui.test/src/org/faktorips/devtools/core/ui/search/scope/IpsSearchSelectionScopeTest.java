@@ -52,7 +52,7 @@ public class IpsSearchSelectionScopeTest {
         IIpsArchive archive = mock(IIpsArchive.class);
 
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
-        when(archive.getRoot()).thenReturn(root);
+        // when(archive.getRoot()).thenReturn(root);
 
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
         when(packageFragment.getIpsSrcFiles()).thenReturn(new IIpsSrcFile[] { scrFile });
@@ -74,11 +74,11 @@ public class IpsSearchSelectionScopeTest {
         IPath otherLocation = mock(IPath.class);
         when(wrongArchive.getLocation()).thenReturn(otherLocation);
         when(emptyPackageFragmentRoot.isBasedOnIpsArchive()).thenReturn(true);
-        when(emptyPackageFragmentRoot.getIpsArchive()).thenReturn(wrongArchive);
+        when(emptyPackageFragmentRoot.getIpsStorage()).thenReturn(wrongArchive);
 
         IIpsPackageFragmentRoot archiveRepresentingPackageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
         when(archiveRepresentingPackageFragmentRoot.isBasedOnIpsArchive()).thenReturn(true);
-        when(archiveRepresentingPackageFragmentRoot.getIpsArchive()).thenReturn(archive);
+        when(archiveRepresentingPackageFragmentRoot.getIpsStorage()).thenReturn(archive);
 
         when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(
                 new IIpsPackageFragmentRoot[] { emptyPackageFragmentRoot, archiveRepresentingPackageFragmentRoot });

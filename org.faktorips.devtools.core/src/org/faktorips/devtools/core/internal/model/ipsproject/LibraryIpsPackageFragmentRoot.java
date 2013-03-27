@@ -25,40 +25,34 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
+public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
-    private IIpsArchive archive;
+    private IIpsStorage storage;
 
-    public ArchiveIpsPackageFragmentRoot(IIpsProject ipsProject, IIpsArchive archive) {
-        super(ipsProject, archive.getArchivePath().lastSegment());
-        this.archive = archive;
+    public LibraryIpsPackageFragmentRoot(IIpsProject ipsProject, IIpsStorage storage) {
+        super(ipsProject, storage.getName());
+        this.storage = storage;
     }
 
     @Override
-    public IIpsArchive getIpsArchive() throws CoreException {
-        return archive;
+    public IIpsStorage getIpsStorage() {
+        return storage;
     }
 
     @Override
     public boolean exists() {
-        IIpsArchive archive;
-        try {
-            archive = getIpsArchive();
-        } catch (CoreException e) {
+        if (getIpsStorage() == null) {
             return false;
         }
-        if (archive == null) {
-            return false;
-        }
-        return archive.exists();
+        return getIpsStorage().exists();
     }
 
     @Override
@@ -80,15 +74,14 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
-        IIpsArchive archive = getIpsArchive();
-        if (archive == null) {
+        if (getIpsStorage() == null) {
             return new ArrayList<IIpsPackageFragment>(0);
         }
 
-        String[] packNames = archive.getNonEmptyPackages();
+        String[] packNames = storage.getNonEmptyPackages();
         List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
         for (String packName : packNames) {
-            list.add(new ArchiveIpsPackageFragment(this, packName));
+            list.add(new LibraryIpsPackageFragment(this, packName));
         }
 
         return list;
@@ -96,7 +89,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     @Override
     protected IIpsPackageFragment newIpsPackageFragment(String name) {
-        return new ArchiveIpsPackageFragment(this, name);
+        return new LibraryIpsPackageFragment(this, name);
     }
 
     @Override
@@ -113,7 +106,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     @Override
     public IResource getCorrespondingResource() {
-        return archive.getCorrespondingResource();
+        return storage.getCorrespondingResource();
     }
 
     private CoreException newExceptionMethodNotAvailableForArchvies() {
@@ -125,11 +118,10 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         if (type == null) {
             return;
         }
-        IIpsArchive archive = getIpsArchive();
-        if (archive == null) {
+        if (storage == null) {
             return;
         }
-        Set<QualifiedNameType> qntSet = archive.getQNameTypes();
+        Set<QualifiedNameType> qntSet = storage.getQNameTypes();
         for (QualifiedNameType qnt : qntSet) {
             if (!type.equals(qnt.getIpsObjectType())) {
                 continue;

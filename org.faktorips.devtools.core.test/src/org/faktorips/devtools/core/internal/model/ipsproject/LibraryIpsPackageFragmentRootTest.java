@@ -43,12 +43,12 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
+public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IpsArchiveEntry entry;
     private IFile archiveFile;
-    private ArchiveIpsPackageFragmentRoot root;
+    private LibraryIpsPackageFragmentRoot root;
     private IPolicyCmptType type;
 
     @Override
@@ -70,7 +70,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getFullPath());
         project.setIpsObjectPath(path);
-        root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
+        root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsObjectPath path2 = project2.getIpsObjectPath();
         entry = (IpsArchiveEntry)path2.newArchiveEntry(archiveFile.getFullPath());
         project2.setIpsObjectPath(path2);
-        root = (ArchiveIpsPackageFragmentRoot)project2.getIpsPackageFragmentRoots()[1];
+        root = (LibraryIpsPackageFragmentRoot)project2.getIpsPackageFragmentRoots()[1];
 
         assertTrue(root.exists());
         archiveFile.delete(true, null);
@@ -105,7 +105,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(externalArchivePath);
         project.setIpsObjectPath(path);
-        root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[2];
+        root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[2];
 
         assertTrue(root.exists());
 
@@ -114,8 +114,8 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsObjectPathEntry() throws CoreException {
-        assertEquals(entry.getArchiveLocation(), root.getIpsArchive().getLocation());
+    public void testGetIpsObjectPathEntry() {
+        assertEquals(entry.getArchiveLocation(), root.getIpsStorage().getLocation());
     }
 
     @Test

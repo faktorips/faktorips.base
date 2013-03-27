@@ -239,4 +239,18 @@ public interface IIpsObjectPath {
      */
     public void setUsingManifest(boolean useManifest);
 
+    /**
+     * Factory method that creates a new container entry and adds it to the list of entries. If
+     * there is already a container with the same configuration the existing container will be
+     * returned.
+     * 
+     * @param containerTypeId The type id of the container as defined by a
+     *            {@link IIpsObjectPathContainerType}
+     * @param optionalPath The optional path or null if the container do not need an optional path
+     * 
+     * @return The created container or the existing one if there is already a container with the
+     *         same configuration
+     */
+    public IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath);
+
 }

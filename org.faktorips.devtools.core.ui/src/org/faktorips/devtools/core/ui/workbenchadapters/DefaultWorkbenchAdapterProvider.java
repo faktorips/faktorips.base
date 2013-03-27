@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -108,7 +108,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsPackageFragmentRoot.gif", true); //$NON-NLS-1$
         register(IpsPackageFragmentRoot.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsAr.gif", true); //$NON-NLS-1$
-        register(ArchiveIpsPackageFragmentRoot.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
+        register(LibraryIpsPackageFragmentRoot.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
         register(AbstractIpsPackageFragment.class, new IpsPackageFragmentWorkbenchAdapter());
     }
 
