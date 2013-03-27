@@ -44,17 +44,6 @@ import org.w3c.dom.Element;
  */
 public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjectRefEntry {
 
-    /**
-     * Returns a description of the xml format.
-     */
-    public final static String getXmlFormatDescription() {
-        return "Project Reference:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "     type=\"project\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
     /** the ips project referenced by this entry */
     private IIpsProject referencedIpsProject;
 
@@ -71,6 +60,17 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     public IpsProjectRefEntry(IpsObjectPath ipsObjectPath, IIpsProject referencedIpsProject) {
         super(ipsObjectPath);
         this.referencedIpsProject = referencedIpsProject;
+    }
+
+    /**
+     * Returns a description of the xml format.
+     */
+    public static final String getXmlFormatDescription() {
+        return "Project Reference:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "     type=\"project\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -173,19 +173,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     public static String createNWDIProjectName(String refProjectName, String currProjectName) {
         String separator = "~"; //$NON-NLS-1$
         Pattern pInstance = Pattern.compile(".*[0-9]+~.*"); //$NON-NLS-1$
-        Pattern p = null;
-        boolean hasInstanceNumber = false;
-        if (pInstance.matcher(currProjectName).find()) {
-            // with instance number NWDS 72
-            p = Pattern.compile("(.*)~([0-9]+)~(.*)"); //$NON-NLS-1$
-            hasInstanceNumber = true;
-        } else {
-            // without instance number since NWDS 73
-            p = Pattern.compile("(.[^~]*)~(.*)"); //$NON-NLS-1$
-            hasInstanceNumber = false;
-        }
-
+        boolean hasInstanceNumber = pInstance.matcher(currProjectName).find();
+        Pattern p = createNWDIProjectNamePattern(hasInstanceNumber);
         Matcher mCurr = p.matcher(currProjectName);
+
         if (!mCurr.find()) {
             // exit and don't fix project name, because current project doesn't match nwds project
             // name pattern
@@ -208,14 +199,30 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
         // get ref project name without nwds prefix
         Matcher mRef = p.matcher(refProjectName);
-        String refProjectNameRelative = refProjectName;
-        if (mRef.find() && mRef.groupCount() == (hasInstanceNumber ? 3 : 2)) {
-            refProjectNameRelative = mRef.group((hasInstanceNumber ? 3 : 2));
-        }
+        String refProjectNameRelative = getNWDIProjectRelativeName(hasInstanceNumber, mRef, refProjectName);
 
         // build the ref project name using the current nwds track prefix
         return currTrackName + separator + (currInstance != null ? currInstance + separator : "") //$NON-NLS-1$
                 + refProjectNameRelative;
+    }
+
+    private static String getNWDIProjectRelativeName(boolean hasInstanceNumber, Matcher mRef, String refProjectName) {
+        if (mRef.find() && mRef.groupCount() == (hasInstanceNumber ? 3 : 2)) {
+            return mRef.group((hasInstanceNumber ? 3 : 2));
+        }
+        return refProjectName;
+    }
+
+    private static Pattern createNWDIProjectNamePattern(boolean hasInstanceNumber) {
+        Pattern p = null;
+        if (hasInstanceNumber) {
+            // with instance number NWDS 72
+            p = Pattern.compile("(.*)~([0-9]+)~(.*)"); //$NON-NLS-1$
+        } else {
+            // without instance number since NWDS 73
+            p = Pattern.compile("(.[^~]*)~(.*)"); //$NON-NLS-1$
+        }
+        return p;
     }
 
     @Override
