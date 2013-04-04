@@ -122,4 +122,9 @@ public class IpsJarBundle extends AbstractIpsBundle {
             closeJarFile(jarFile);
         }
     }
+
+    @Override
+    public boolean isFolder() {
+        return false;
+    }
 }

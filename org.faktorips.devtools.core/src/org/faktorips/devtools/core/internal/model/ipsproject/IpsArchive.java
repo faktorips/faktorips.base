@@ -417,6 +417,11 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         return archivePath.lastSegment();
     }
 
+    @Override
+    public boolean isFolder() {
+        return false;
+    }
+
     private static class IpsObjectProperties {
 
         private String basePackageMergable;

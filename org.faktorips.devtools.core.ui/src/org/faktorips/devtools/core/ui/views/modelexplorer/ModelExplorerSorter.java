@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -67,8 +68,8 @@ public class ModelExplorerSorter extends ViewerSorter {
     }
 
     private static final int CAT_IPS_CONTAINERS = 0;
-    private static final int CAT_PROJECT = 0;
-    private static final int CAT_Folder = 2;
+    private static final int CAT_PROJECT = 2;
+    private static final int CAT_FOLDER = 4;
 
     private static final int CAT_POLICY_CMPT_TYPE = 11;
     private static final int CAT_PRODUCT_CMPT_TYPE = 12;
@@ -86,6 +87,10 @@ public class ModelExplorerSorter extends ViewerSorter {
 
     @Override
     public int category(Object element) {
+        if (element instanceof IIpsObjectPathContainer) {
+            // Containers are the number one
+            return CAT_IPS_CONTAINERS;
+        }
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)element;
             if (ipsElement instanceof IIpsObject) {
@@ -94,7 +99,7 @@ public class ModelExplorerSorter extends ViewerSorter {
                 return category(((IIpsSrcFile)ipsElement).getIpsObjectType());
             } else {
                 // Projects and Fragments above other values (IpsObjectParts doesn't matter)
-                return CAT_IPS_CONTAINERS;
+                return CAT_PROJECT;
             }
         } else {
             if (element instanceof IProject) {
@@ -102,7 +107,7 @@ public class ModelExplorerSorter extends ViewerSorter {
                 return CAT_PROJECT;
             } else if (element instanceof IFolder) {
                 // other Folders after IpsFragments(Root)
-                return CAT_Folder;
+                return CAT_FOLDER;
             } else {
                 // any other item above all
                 return Integer.MAX_VALUE;

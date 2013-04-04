@@ -23,6 +23,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -135,6 +137,16 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
             registerForRefresh(IpsPlugin.getDefault().getIpsModel());
             return false;
         }
+        if (isManifestFile(resource)) {
+            try {
+                if (getIpsProject(resource).getIpsObjectPath().isUsingManifest()) {
+                    registerForRefresh(IpsPlugin.getDefault().getIpsModel());
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+            return false;
+        }
         if (isAddedOrRemoved(delta)) {
             registerForRefresh(getParent(resource));
             return false;
@@ -181,6 +193,10 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
 
     private IIpsProject getIpsProject(IResource resource) {
         return IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
+    }
+
+    private boolean isManifestFile(IResource resource) {
+        return IpsBundleManifest.MANIFEST_NAME.equals(resource.getProjectRelativePath().toPortableString());
     }
 
     private boolean isIpsProjectPropertiesFile(IResource resource) {

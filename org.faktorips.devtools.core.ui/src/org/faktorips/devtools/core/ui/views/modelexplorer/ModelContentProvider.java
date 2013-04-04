@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -61,6 +62,9 @@ public class ModelContentProvider implements ITreeContentProvider {
     private ModelExplorerConfiguration configuration;
 
     private boolean excludeNoIpsProjects;
+
+    private IpsProjectChildrenProvider projectChildrenProvider = new IpsProjectChildrenProvider();
+    private IpsObjectPathContainerChildrenProvider ipsObjectPathContainerChildrenProvider = new IpsObjectPathContainerChildrenProvider();
 
     /**
      * Constructs a new <code>ModelContentProvider</code> using the given configuration and the
@@ -131,6 +135,13 @@ public class ModelContentProvider implements ITreeContentProvider {
                     }
                 }
             }
+        } else if (parentElement instanceof IIpsObjectPathContainer) {
+            try {
+                return ipsObjectPathContainerChildrenProvider.getChildren((IIpsObjectPathContainer)parentElement);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return EMPTY_ARRAY;
+            }
         }
 
         return EMPTY_ARRAY;
@@ -152,16 +163,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * </p>
      */
     private Object[] getProjectContent(IIpsProject project) throws CoreException {
-        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-        List<IIpsPackageFragmentRoot> existingRoots = new ArrayList<IIpsPackageFragmentRoot>();
-        for (IIpsPackageFragmentRoot root : roots) {
-            if (root.exists()) {
-                existingRoots.add(root);
-            }
-        }
-
-        Object[] result = concatenate(existingRoots.toArray(), project.getNonIpsResources());
-        return result;
+        return projectChildrenProvider.getChildren(project);
     }
 
     /*
@@ -405,8 +407,11 @@ public class ModelContentProvider implements ITreeContentProvider {
                 if (configuration.isAllowedResource(resource)) {
                     filtered.add(resource);
                 }
+            } else if (element instanceof IIpsObjectPathContainer) {
+                filtered.add(element);
+            } else if (element instanceof ReferencedIpsProjectViewItem) {
+                filtered.add(element);
             }
-
         }
 
         return filtered.toArray();

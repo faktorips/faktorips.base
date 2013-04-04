@@ -17,6 +17,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -24,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -36,6 +39,8 @@ import org.junit.Test;
 
 public class ModelLabelProviderTest extends AbstractIpsPluginTest {
 
+    private static final String REFERENCED_PROJECT = "ReferencedProject";
+    private static final String CONTAINER_NAME = "ContainerName";
     private ModelLabelProvider flatProvider = new ModelLabelProvider(true);
     private ModelLabelProvider hierarchyProvider = new ModelLabelProvider(false);
 
@@ -50,9 +55,12 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute attr2;
     private IPolicyCmptTypeAttribute attr3;
 
+    private IIpsObjectPathContainer container;
+
     private IFolder folder;
     private IFolder subFolder;
     private IFile file;
+    private ReferencedIpsProjectViewItem projectViewItem;
 
     @Override
     @Before
@@ -84,6 +92,14 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         subFolder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);
+
+        container = mock(IIpsObjectPathContainer.class);
+        when(container.getName()).thenReturn(CONTAINER_NAME);
+
+        IIpsProject project = mock(IIpsProject.class);
+        when(project.getName()).thenReturn(REFERENCED_PROJECT);
+        projectViewItem = new ReferencedIpsProjectViewItem(project);
+
     }
 
     @Test
@@ -186,6 +202,12 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(platformProject.getName() + " (" + Messages.ModelExplorer_nonIpsProjectLabel + ")", resName);
         resName = flatProvider.getText(platformProject);
         assertEquals(platformProject.getName() + " (" + Messages.ModelExplorer_nonIpsProjectLabel + ")", resName);
+
+        assertEquals(CONTAINER_NAME, flatProvider.getText(container));
+        assertEquals(CONTAINER_NAME, hierarchyProvider.getText(container));
+
+        assertEquals(REFERENCED_PROJECT, flatProvider.getText(projectViewItem));
+        assertEquals(REFERENCED_PROJECT, hierarchyProvider.getText(projectViewItem));
 
         // non ips projects in product definition explorer
         hierarchyProvider.setProductDefinitionLabelProvider(true);

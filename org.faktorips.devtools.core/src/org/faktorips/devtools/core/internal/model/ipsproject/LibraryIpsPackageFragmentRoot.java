@@ -142,7 +142,10 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     @Override
     public boolean isContainedInArchive() {
-        return true;
+        if (getIpsStorage() == null) {
+            return false;
+        }
+        return !getIpsStorage().isFolder();
     }
 
     @Override

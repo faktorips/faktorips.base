@@ -29,6 +29,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -43,6 +44,8 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
  * @author Stefan Widmaier
  */
 public class ModelLabelProvider implements ILabelProvider {
+
+    private static final String IPS_OBJECT_PATH_CONTAINER_GIF = "IpsObjectPathContainer.gif"; //$NON-NLS-1$
 
     private DefaultLabelProvider defaultLabelProvider;
 
@@ -81,6 +84,12 @@ public class ModelLabelProvider implements ILabelProvider {
         }
         if (element instanceof IIpsElement) {
             return defaultLabelProvider.getImage(element);
+        } else if (element instanceof ReferencedIpsProjectViewItem) {
+            return defaultLabelProvider.getImage(((ReferencedIpsProjectViewItem)element).getIpsProject());
+        } else if (element instanceof IIpsObjectPathContainer) {
+            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
+                    IPS_OBJECT_PATH_CONTAINER_GIF, true);
+            return (Image)resourceManager.get(descriptor);
         } else if (element instanceof IResource) {
             // check if the resource is an ips source file, in this case return the image of the ips
             // source,
@@ -148,6 +157,10 @@ public class ModelLabelProvider implements ILabelProvider {
                     : Messages.ModelExplorer_nonIpsProjectLabel;
             return ((IProject)element).getName() + NLS.bind(" ({0})", labelAddition); //$NON-NLS-1$
 
+        } else if (element instanceof IIpsObjectPathContainer) {
+            return ((IIpsObjectPathContainer)element).getName();
+        } else if (element instanceof ReferencedIpsProjectViewItem) {
+            return ((ReferencedIpsProjectViewItem)element).getName();
         } else {
             return ((IResource)element).getName();
         }

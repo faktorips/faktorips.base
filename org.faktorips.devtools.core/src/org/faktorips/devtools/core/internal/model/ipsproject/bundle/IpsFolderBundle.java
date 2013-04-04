@@ -87,6 +87,11 @@ public class IpsFolderBundle extends AbstractIpsBundle {
         }
     }
 
+    @Override
+    public boolean isFolder() {
+        return true;
+    }
+
     protected static class IOFactory {
 
         public FileInputStream createInputStream(File file) throws FileNotFoundException {
@@ -94,5 +99,4 @@ public class IpsFolderBundle extends AbstractIpsBundle {
         }
 
     }
-
 }

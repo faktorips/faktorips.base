@@ -15,18 +15,23 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -344,6 +349,39 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         assertTrue(visitor.getElementsToUpdate().contains(folder));
         assertFalse(visitor.getElementsToRefresh().contains(doc1));
         assertTrue(visitor.getElementsToUpdate().contains(doc1));
+    }
+
+    // Test for FIPS-70
+    @Test
+    public void testUpdateIfManifestIsChanged() throws CoreException {
+
+        ModelExplorerConfiguration config = new ModelExplorerConfiguration(ipsProject.getIpsModel().getIpsObjectTypes());
+        ModelContentProvider contentProvider = new ModelContentProvider(config, LayoutStyle.HIERACHICAL);
+        IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
+
+        IResourceDelta delta = mock(IResourceDelta.class);
+        IResource manifestResource = mock(IResource.class);
+
+        when(manifestResource.getProject()).thenReturn(ipsProject.getProject());
+        when(manifestResource.getFullPath()).thenReturn(new Path(ipsProject.getName() + "/META-INF/MANIFEST.MF"));
+        when(manifestResource.getProjectRelativePath()).thenReturn(new Path("META-INF/MANIFEST.MF"));
+
+        when(delta.getResource()).thenReturn(manifestResource);
+
+        visitor.visit(delta);
+
+        assertFalse(visitor.getElementsToRefresh().contains(ipsProject.getIpsModel()));
+        assertFalse(visitor.getElementsToUpdate().contains(ipsProject.getIpsModel()));
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath.setUsingManifest(true);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        visitor = new IpsViewRefreshVisitor(contentProvider);
+        visitor.visit(delta);
+
+        assertTrue(visitor.getElementsToRefresh().contains(ipsProject.getIpsModel()));
+        assertFalse(visitor.getElementsToUpdate().contains(ipsProject.getIpsModel()));
     }
 
     private IpsViewRefreshVisitor newVisitor(LayoutStyle style) throws CoreException, InterruptedException {

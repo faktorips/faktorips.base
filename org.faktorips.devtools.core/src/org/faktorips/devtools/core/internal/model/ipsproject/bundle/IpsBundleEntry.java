@@ -133,7 +133,7 @@ public class IpsBundleEntry extends IpsLibraryEntry {
     }
 
     @Override
-    protected IIpsStorage getIpsStorage() {
+    public IIpsStorage getIpsStorage() {
         return ipsBundle;
     }
 

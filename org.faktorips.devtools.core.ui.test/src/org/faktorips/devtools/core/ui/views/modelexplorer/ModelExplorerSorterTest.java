@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,7 +35,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ModelSorterTest extends AbstractIpsPluginTest {
+public class ModelExplorerSorterTest extends AbstractIpsPluginTest {
 
     private ModelExplorerSorter sorter;
 
@@ -62,6 +64,8 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation rel;
 
     private IPolicyCmptTypeAttribute attr2;
+
+    private IIpsObjectPathContainer pathContainer;
 
     @Override
     @Before
@@ -97,6 +101,8 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         file = folder.getFile("test.txt");
         file.create(null, true, null);
 
+        pathContainer = mock(IIpsObjectPathContainer.class);
+
         // create sort order file
         List<String> list = new ArrayList<String>();
         list.add("ZTestPackageFragment");
@@ -113,6 +119,10 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         assertTrue(sorter.compare(null, projectResource2, projectResource1) < 0);
         assertTrue(sorter.compare(null, projectResource1, proj2) < 0);
         assertTrue(sorter.compare(null, proj, proj2) < 0);
+
+        assertTrue(sorter.compare(null, pathContainer, file) < 0);
+        assertTrue(sorter.compare(null, pathContainer, root) < 0);
+        assertTrue(sorter.compare(null, pathContainer, proj) < 0);
 
         // in policyCmptTypes sort attributes above relations
         assertTrue(sorter.compare(null, attr1, rel) < 0);
