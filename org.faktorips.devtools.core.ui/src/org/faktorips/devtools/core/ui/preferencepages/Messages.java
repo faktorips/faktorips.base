@@ -111,4 +111,7 @@ public class Messages extends NLS {
     public static String SrcFolderComposite_tocpath_message;
     public static String SrcFolderComposite_tocpath_title;
     public static String SrcFolderComposite_treeViewer_label;
+    public static String UseManifest_checkbox_label;
+    public static String UseManifest_Question_Title;
+    public static String UseManifest_Question_Message;
 }

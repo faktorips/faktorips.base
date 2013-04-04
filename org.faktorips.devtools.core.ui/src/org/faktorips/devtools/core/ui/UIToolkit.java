@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
@@ -135,6 +136,13 @@ public class UIToolkit {
             // grayed group text only in dialogs
             setForegroundColor(c, changeable);
             // }
+        }
+        if (c instanceof Tree) {
+            ((Tree)c).setEnabled(changeable);
+        }
+
+        if (c instanceof Table) {
+            ((Table)c).setEnabled(changeable);
         }
         // note: this has to be the last if statement as other controls might derive from
         // composite

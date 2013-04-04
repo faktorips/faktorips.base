@@ -13,8 +13,12 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -34,6 +38,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 
 /**
  * Ips object path preference page container
@@ -67,6 +76,10 @@ public class IpsObjectPathContainer {
 
     private ResourceManager resourceManager;
 
+    protected BindingContext bindingContext;
+
+    private IpsObjectPathContainerPmo ipsObjectPathContainerPmo;
+
     public IpsObjectPathContainer(int pageToShow) {
         pageIndex = pageToShow;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
@@ -78,6 +91,8 @@ public class IpsObjectPathContainer {
     public void init(IIpsProject ipsProject) throws CoreException {
         currentIpsProject = ipsProject;
         ipsObjectPath = ipsProject.getIpsObjectPath();
+        bindingContext = new BindingContext();
+        ipsObjectPathContainerPmo = new IpsObjectPathContainerPmo(ipsObjectPath);
 
         reinitComposites();
     }
@@ -89,7 +104,24 @@ public class IpsObjectPathContainer {
      * @return IPS objectpath control
      * @throws CoreException if the control could not be created
      */
-    public Control createControl(Composite parent) throws CoreException {
+    public Control createControl(final Composite parent) throws CoreException {
+        final UIToolkit toolkit = new UIToolkit(null);
+        ipsObjectPathContainerPmo.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                if (pce.getOldValue() == Boolean.FALSE && pce.getNewValue() == Boolean.TRUE
+                        && pce.getPropertyName().equals(IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE)) {
+                    boolean openQuestion = MessageDialog.openQuestion(parent.getShell(),
+                            Messages.UseManifest_Question_Title, Messages.UseManifest_Question_Message);
+                    if (!openQuestion) {
+                        ipsObjectPathContainerPmo.setUsingManifest(false);
+                        ipsObjectPathContainerPmo.setDataChanged(false);
+                    }
+                }
+            }
+        });
+
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
 
@@ -99,9 +131,27 @@ public class IpsObjectPathContainer {
         layout.numColumns = 1;
         composite.setLayout(layout);
 
-        TabFolder folder = new TabFolder(composite, SWT.NONE);
+        CheckboxField useManifestCheck = new CheckboxField(toolkit.createCheckbox(composite,
+                Messages.UseManifest_checkbox_label));
+        GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        useManifestCheck.getCheckbox().setLayoutData(gd);
+        bindingContext.bindContent(useManifestCheck, ipsObjectPathContainerPmo,
+                IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE);
+
+        final TabFolder folder = new TabFolder(composite, SWT.NONE);
         folder.setLayoutData(new GridData(GridData.FILL_BOTH));
         folder.setFont(composite.getFont());
+
+        bindingContext.add(new ControlPropertyBinding(useManifestCheck.getControl(), ipsObjectPathContainerPmo,
+                IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE, Boolean.TYPE) {
+
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                toolkit.setDataChangeable(folder, !ipsObjectPathContainerPmo.isUsingManifest());
+            }
+
+        });
 
         srcFolderComposite = new SrcFolderComposite(folder);
         refProjectsComposite = new ReferencedProjectsComposite(folder);
@@ -110,6 +160,7 @@ public class IpsObjectPathContainer {
 
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_source,
                 (Image)resourceManager.get(packageFragmentRootImage), srcFolderComposite);
+
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, (Image)resourceManager.get(projectImage),
                 refProjectsComposite);
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(archiveImage),
@@ -132,6 +183,7 @@ public class IpsObjectPathContainer {
         });
 
         Dialog.applyDialogFont(composite);
+        bindingContext.updateUI();
         return composite;
     }
 
@@ -174,8 +226,9 @@ public class IpsObjectPathContainer {
      * @return true if data has changed, false otherwise
      */
     public boolean hasChangesInDialog() {
-        return (archiveComposite.isDataChanged() || orderComposite.isDataChanged()
-                || refProjectsComposite.isDataChanged() || srcFolderComposite.isDataChanged());
+        return (ipsObjectPathContainerPmo.isDataChanged() || archiveComposite.isDataChanged()
+                || orderComposite.isDataChanged() || refProjectsComposite.isDataChanged() || srcFolderComposite
+                    .isDataChanged());
     }
 
     /**
@@ -215,6 +268,40 @@ public class IpsObjectPathContainer {
 
     public void dispose() {
         resourceManager.dispose();
+        bindingContext.dispose();
     }
 
+    public static class IpsObjectPathContainerPmo extends PresentationModelObject {
+
+        public static final String PROPERTY_ENABLED_VALUE = "usingManifest"; //$NON-NLS-1$
+
+        private IIpsObjectPath ipsObjectPath;
+        private boolean dataChanged = false;
+
+        public IpsObjectPathContainerPmo(IIpsObjectPath ipsObjectPath) {
+            this.ipsObjectPath = ipsObjectPath;
+        }
+
+        public boolean isUsingManifest() {
+            return ipsObjectPath.isUsingManifest();
+        }
+
+        public void setUsingManifest(boolean enabled) {
+            boolean oldValue = isUsingManifest();
+            ipsObjectPath.setUsingManifest(enabled);
+            setDataChanged(true);
+            if (enabled && !oldValue) {
+                notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED_VALUE, Boolean.FALSE, Boolean.TRUE));
+            }
+            notifyListeners();
+        }
+
+        public boolean isDataChanged() {
+            return dataChanged;
+        }
+
+        public void setDataChanged(boolean dataChanged) {
+            this.dataChanged = dataChanged;
+        }
+    }
 }
