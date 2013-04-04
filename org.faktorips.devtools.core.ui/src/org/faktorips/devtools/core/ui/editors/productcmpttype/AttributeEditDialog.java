@@ -375,7 +375,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * @author frank
      * @since 3.9
      */
-    public class ProductCmptTypeAttributePmo extends IpsObjectPartPmo {
+    public static class ProductCmptTypeAttributePmo extends IpsObjectPartPmo {
 
         public static final String PROPERTY_ENABLED_VALUE = "enabledDefaultAndValueset"; //$NON-NLS-1$
 
@@ -396,7 +396,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         public boolean isEnabledDefaultAndValueset() {
             boolean enabled = true;
             try {
-                ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(ipsProject);
+                ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(
+                        getIpsObjectPartContainer().getIpsProject());
                 enabled = newDatatype != null && !this.getIpsObjectPartContainer().isMultilingual();
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);

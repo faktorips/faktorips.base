@@ -26,12 +26,16 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
  * Presentation Model Object which links a Boolean control (three check boxes: true, false, and
  * null) and a boolean value control (three radio buttons: true, false, and null) to their
  * properties. This Presentation Model Object can also be used to represent primitive boolean types,
- * in which case the null option is ommitted.
+ * in which case the null option is omitted.
+ * 
  */
 public class BooleanValueSetPMO extends IpsObjectPartPmo {
-    public static final String PROPERTY_TRUE = "true"; //$NON-NLS-1$
-    public static final String PROPERTY_FALSE = "false"; //$NON-NLS-1$
-    public static final String PROPERTY_NULL = "null"; //$NON-NLS-1$
+
+    public static final String PROPERTY_TRUE = "trueInValueSet"; //$NON-NLS-1$
+
+    public static final String PROPERTY_FALSE = "falseInValueSet"; //$NON-NLS-1$
+
+    public static final String PROPERTY_NULL = "nullInValueSet"; //$NON-NLS-1$
 
     /**
      * The corresponding {@link IIpsProject}
@@ -49,7 +53,7 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
         this.propertyValue = propertyValue;
     }
 
-    public boolean isTrue() {
+    public boolean isTrueInValueSet() {
         try {
             return propertyValue.getValueSet().containsValue(Boolean.TRUE.toString(), ipsProject);
         } catch (CoreException e) {
@@ -57,11 +61,11 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
         }
     }
 
-    public void setTrue(boolean b) {
+    public void setTrueInValueSet(boolean b) {
         modifyValue(Boolean.TRUE.toString(), b);
     }
 
-    public boolean isFalse() {
+    public boolean isFalseInValueSet() {
         try {
             return propertyValue.getValueSet().containsValue(Boolean.FALSE.toString(), ipsProject);
         } catch (CoreException e) {
@@ -69,11 +73,11 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
         }
     }
 
-    public void setFalse(boolean b) {
+    public void setFalseInValueSet(boolean b) {
         modifyValue(Boolean.FALSE.toString(), b);
     }
 
-    public boolean isNull() {
+    public boolean isNullInValueSet() {
         try {
             return propertyValue.getValueSet().containsValue(null, ipsProject);
         } catch (CoreException e) {
@@ -81,7 +85,7 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
         }
     }
 
-    public void setNull(boolean b) {
+    public void setNullInValueSet(boolean b) {
         modifyValue(null, b);
     }
 
@@ -113,16 +117,28 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
     @Override
     protected void partHasChanged() {
         String currentValue = propertyValue.getPropertyValue();
-        boolean needsToBeModified = (Boolean.TRUE.toString().equals(currentValue) && !isTrue())
-                || (Boolean.FALSE.toString().equals(currentValue) && !isFalse()) || (currentValue == null && !isNull());
+        boolean needsToBeModified = isTrueValueSetButNotAllowed(currentValue)
+                || isFalseValueSetButNotAllowed(currentValue) || isNullValueSetButNotAllowed(currentValue);
         if (needsToBeModified) {
-            if (isTrue()) {
+            if (isTrueInValueSet()) {
                 propertyValue.setValue(Boolean.TRUE.toString());
-            } else if (isFalse()) {
+            } else if (isFalseInValueSet()) {
                 propertyValue.setValue(Boolean.FALSE.toString());
-            } else if (isNull()) {
+            } else if (isNullInValueSet()) {
                 propertyValue.setValue(null);
             }
         }
+    }
+
+    private boolean isTrueValueSetButNotAllowed(String currentValue) {
+        return Boolean.TRUE.toString().equals(currentValue) && !isTrueInValueSet();
+    }
+
+    private boolean isFalseValueSetButNotAllowed(String currentValue) {
+        return Boolean.FALSE.toString().equals(currentValue) && !isFalseInValueSet();
+    }
+
+    private boolean isNullValueSetButNotAllowed(String currentValue) {
+        return currentValue == null && !isNullInValueSet();
     }
 }
