@@ -44,7 +44,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
 
     public IpsExtendableVersionManager() {
         super();
-        setRegisteredMigrations(IpsPlugin.getDefault().getRegisteredMigrationOperations());
+        registeredMigrations = IpsPlugin.getDefault().getRegisteredMigrationOperations(IpsPlugin.PLUGIN_ID);
     }
 
     @Override

@@ -72,57 +72,32 @@ import org.osgi.framework.Version;
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
-    public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
-    public final static String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
+    public static final String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
 
     /**
      * The extension point id of the extension point <tt>ipsMigrationOperation</tt>.
      */
-    public final static String EXTENSION_POINT_ID_MIGRATION_OPERATION = "org.faktorips.devtools.core.ipsMigrationOperation"; //$NON-NLS-1$
+    public static final String EXTENSION_POINT_ID_MIGRATION_OPERATION = "org.faktorips.devtools.core.ipsMigrationOperation"; //$NON-NLS-1$
 
     /**
      * The extension point id of the extension point property <tt>migrationOperation</tt> in the
      * extension point ipsMigrationOperation.
      */
-    public final static String CONFIG_ELEMENT_ID_MIGRATION_OPERATION = "migrationOperation"; //$NON-NLS-1$
+    public static final String CONFIG_ELEMENT_ID_MIGRATION_OPERATION = "migrationOperation"; //$NON-NLS-1$
 
-    public final static boolean TRACE_UI = Boolean.valueOf(
+    public static final boolean TRACE_UI = Boolean.valueOf(
             Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
 
     private static final String EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY = "teamOperationsFactory"; //$NON-NLS-1$
 
+    /** The shared instance. */
+    private static IpsPlugin plugin;
+
     private final MultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
 
     private final IIpsRefactoringFactory ipsRefactoringFactory = new IpsRefactoringFactory();
-
-    /**
-     * Returns the full extension id. This is the plugin's id plus the plug-in relative extension id
-     * separated by a dot.
-     * 
-     * @throws NullPointerException if pluginRelativeEnxtensionId is <code>null</code>.
-     */
-    public final static String getFullExtensionId(String pluginRelativeEnxtensionId) {
-        ArgumentCheck.notNull(pluginRelativeEnxtensionId);
-        return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
-    }
-
-    /**
-     * Provides access to operations related to multi-language support.
-     */
-    public final static MultiLanguageSupport getMultiLanguageSupport() {
-        return getDefault().multiLanguageSupport;
-    }
-
-    /**
-     * Provides a factory that allows to create IPS refactorings.
-     */
-    public final static IIpsRefactoringFactory getIpsRefactoringFactory() {
-        return getDefault().ipsRefactoringFactory;
-    }
-
-    /** The shared instance. */
-    private static IpsPlugin plugin;
 
     /** The document builder factory that provides the document builder for this plug-in. */
     private DocumentBuilderFactory docBuilderFactory;
@@ -157,10 +132,15 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private Set<ITeamOperationsFactory> teamOperationsFactories;
 
+    public IpsPlugin() {
+        super();
+        plugin = this;
+    }
+
     /**
      * Returns the number of the installed Faktor-IPS version.
      */
-    public final static String getInstalledFaktorIpsVersion() {
+    public static final String getInstalledFaktorIpsVersion() {
         return (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -171,15 +151,35 @@ public class IpsPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
-    public IpsPlugin() {
-        super();
-        plugin = this;
+    /**
+     * Returns the full extension id. This is the plugin's id plus the plug-in relative extension id
+     * separated by a dot.
+     * 
+     * @throws NullPointerException if pluginRelativeEnxtensionId is <code>null</code>.
+     */
+    public static final String getFullExtensionId(String pluginRelativeEnxtensionId) {
+        ArgumentCheck.notNull(pluginRelativeEnxtensionId);
+        return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
+    }
+
+    /**
+     * Provides access to operations related to multi-language support.
+     */
+    public static final MultiLanguageSupport getMultiLanguageSupport() {
+        return getDefault().multiLanguageSupport;
+    }
+
+    /**
+     * Provides a factory that allows to create IPS refactorings.
+     */
+    public static final IIpsRefactoringFactory getIpsRefactoringFactory() {
+        return getDefault().ipsRefactoringFactory;
     }
 
     /**
      * Logs the given core exception.
      */
-    public final static void log(CoreException e) {
+    public static final void log(CoreException e) {
         log(e.getStatus());
     }
 
@@ -197,7 +197,8 @@ public class IpsPlugin extends AbstractUIPlugin {
         saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
 
-        IpsObjectType.POLICY_CMPT_TYPE.getId(); // force loading of class before model is created!
+        // force loading of class before model is created!
+        IpsObjectType.POLICY_CMPT_TYPE.getId();
         // ensure that this class is loaded in time
         BFElementType.ACTION_BUSINESSFUNCTIONCALL.getClass();
         model = new IpsModel();
@@ -235,7 +236,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Logs the status.
      */
-    public final static void log(IStatus status) {
+    public static final void log(IStatus status) {
         if (plugin != null && !plugin.suppressLoggingDuringTestExecution) {
             plugin.getLog().log(status);
         }
@@ -244,14 +245,14 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Logs the exception.
      */
-    public final static void log(Throwable t) {
+    public static final void log(Throwable t) {
         log(new IpsStatus(t));
     }
 
     /**
      * Logs the status and shows the status in a standard error dialog.
      */
-    public final static void logAndShowErrorDialog(final IStatus status) {
+    public static final void logAndShowErrorDialog(final IStatus status) {
         plugin.getLog().log(status);
         Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
         display.asyncExec(new Runnable() {
@@ -266,21 +267,21 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Logs the status and shows the status in a standard error dialog.
      */
-    public final static void logAndShowErrorDialog(Exception e) {
+    public static final void logAndShowErrorDialog(Exception e) {
         logAndShowErrorDialog(new IpsStatus(e));
     }
 
     /**
      * Logs the status and shows the status in a standard error dialog.
      */
-    public final static void logAndShowErrorDialog(CoreException e) {
+    public static final void logAndShowErrorDialog(CoreException e) {
         logAndShowErrorDialog(e.getStatus());
     }
 
     /**
      * Does not log the status but show an error dialog with the status message
      */
-    public final static void showErrorDialog(final IStatus status) {
+    public static final void showErrorDialog(final IStatus status) {
         Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
         display.asyncExec(new Runnable() {
             @Override
@@ -680,14 +681,16 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Get all registered migration operations. MigrationOperations are registered for the core
-     * feature since Faktor-IPS 3.2.0. For previous versions we used the CoreVersionManager that
-     * needs to find a migration operation via classname convention for every version.
+     * Get all registered migration operations for a specified contributor name. The contributor
+     * name is the symbolic name of the bundle that provides the registered migration operations.
+     * 
+     * @param contributorName The name of the contributor which provides the requested migration
+     *            operations
      * 
      * @return A map containing all registered migration operations. The key of the map is the
-     *         target version of the oparation
+     *         target version of the operation
      */
-    public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations() {
+    public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName) {
         Map<Version, IIpsProjectMigrationOperationFactory> result = new HashMap<Version, IIpsProjectMigrationOperationFactory>();
         IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor(
                 EXTENSION_POINT_ID_MIGRATION_OPERATION);
@@ -695,9 +698,12 @@ public class IpsPlugin extends AbstractUIPlugin {
             if (configElement == null || !configElement.getName().equals(CONFIG_ELEMENT_ID_MIGRATION_OPERATION)) {
                 continue;
             }
+            if (!contributorName.equals(configElement.getContributor().getName())) {
+                continue;
+            }
             try {
                 IIpsProjectMigrationOperationFactory operation = (IIpsProjectMigrationOperationFactory)configElement
-                        .createExecutableExtension("class");//$NON-NLS-1$
+                        .createExecutableExtension("class"); //$NON-NLS-1$
                 String targetVersion = configElement.getAttribute("targetVersion"); //$NON-NLS-1$
                 result.put(Version.parseVersion(targetVersion), operation);
             } catch (CoreException e) {
