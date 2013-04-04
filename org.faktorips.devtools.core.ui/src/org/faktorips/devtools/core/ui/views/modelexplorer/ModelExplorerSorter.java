@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.Viewer;
@@ -26,8 +29,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -38,11 +39,26 @@ import org.faktorips.devtools.core.model.type.IMethod;
 /**
  * Sorter for the ModelExplorer-TreeViewer. Sorts folders displayed in the ModelExplorer by the
  * sorting number set in the folder properties. PackageFragments are placed above Files,
- * PolicyCmptTypes are placed above Tablestructures.
+ * PolicyCmptTypes are placed above table structures.
  * 
  * @author Stefan Widmaier
  */
 public class ModelExplorerSorter extends ViewerSorter {
+
+    private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new ConcurrentHashMap<IpsObjectType, ModelExplorerCategory>();
+
+    static {
+        TYPE_TO_CATEGORY.put(IpsObjectType.POLICY_CMPT_TYPE, ModelExplorerCategory.CAT_POLICY_CMPT_TYPE);
+        TYPE_TO_CATEGORY.put(IpsObjectType.PRODUCT_CMPT_TYPE, ModelExplorerCategory.CAT_PRODUCT_CMPT_TYPE);
+        TYPE_TO_CATEGORY.put(IpsObjectType.ENUM_TYPE, ModelExplorerCategory.CAT_ENUM_TYPE);
+        TYPE_TO_CATEGORY.put(IpsObjectType.BUSINESS_FUNCTION, ModelExplorerCategory.CAT_BUSINESS_FUNCTION);
+        TYPE_TO_CATEGORY.put(IpsObjectType.TABLE_STRUCTURE, ModelExplorerCategory.CAT_TABLE_STRUCTURE);
+        TYPE_TO_CATEGORY.put(IpsObjectType.TEST_CASE_TYPE, ModelExplorerCategory.CAT_TEST_CASE_TYPE);
+        TYPE_TO_CATEGORY.put(IpsObjectType.PRODUCT_CMPT, ModelExplorerCategory.CAT_PRODUCT_CMPT);
+        TYPE_TO_CATEGORY.put(IpsObjectType.ENUM_CONTENT, ModelExplorerCategory.CAT_ENUM_CONTENT);
+        TYPE_TO_CATEGORY.put(IpsObjectType.TABLE_CONTENTS, ModelExplorerCategory.CAT_TABLE_CONTENTS);
+        TYPE_TO_CATEGORY.put(IpsObjectType.TEST_CASE, ModelExplorerCategory.CAT_TEST_CASE);
+    }
 
     private IpsPackageNameComparator packageComparator;
 
@@ -67,29 +83,11 @@ public class ModelExplorerSorter extends ViewerSorter {
         return supportCategories;
     }
 
-    private static final int CAT_IPS_CONTAINERS = 0;
-    private static final int CAT_PROJECT = 2;
-    private static final int CAT_FOLDER = 4;
-
-    private static final int CAT_POLICY_CMPT_TYPE = 11;
-    private static final int CAT_PRODUCT_CMPT_TYPE = 12;
-    private static final int CAT_ENUM_TYPE = 13;
-    private static final int CAT_BUSINESS_FUNCTION = 14;
-    private static final int CAT_TABLE_STRUCTURE = 15;
-    private static final int CAT_TEST_CASE_TYPE = 16;
-
-    private static final int CAT_PRODUCT_CMPT = 21;
-    private static final int CAT_ENUM_CONTENT = 22;
-    private static final int CAT_TABLE_CONTENTS = 23;
-    private static final int CAT_TEST_CASE = 24;
-
-    private static final int CAT_OTHER_IPS_OBJECTS = 100;
-
     @Override
     public int category(Object element) {
         if (element instanceof IIpsObjectPathContainer) {
             // Containers are the number one
-            return CAT_IPS_CONTAINERS;
+            return ModelExplorerCategory.CAT_IPS_CONTAINERS.getOrder();
         }
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)element;
@@ -99,15 +97,15 @@ public class ModelExplorerSorter extends ViewerSorter {
                 return category(((IIpsSrcFile)ipsElement).getIpsObjectType());
             } else {
                 // Projects and Fragments above other values (IpsObjectParts doesn't matter)
-                return CAT_PROJECT;
+                return ModelExplorerCategory.CAT_PROJECT.getOrder();
             }
         } else {
             if (element instanceof IProject) {
                 // IProjects in same cathegory as IpsProject
-                return CAT_PROJECT;
+                return ModelExplorerCategory.CAT_PROJECT.getOrder();
             } else if (element instanceof IFolder) {
                 // other Folders after IpsFragments(Root)
-                return CAT_FOLDER;
+                return ModelExplorerCategory.CAT_FOLDER.getOrder();
             } else {
                 // any other item above all
                 return Integer.MAX_VALUE;
@@ -117,88 +115,37 @@ public class ModelExplorerSorter extends ViewerSorter {
 
     private int category(IpsObjectType ipsObjectType) {
         if (!isSupportCategories()) {
-            return CAT_OTHER_IPS_OBJECTS;
+            return ModelExplorerCategory.CAT_OTHER_IPS_OBJECTS.getOrder();
         }
-        if (ipsObjectType == IpsObjectType.POLICY_CMPT_TYPE) {
-            return CAT_POLICY_CMPT_TYPE;
-        } else if (ipsObjectType == IpsObjectType.PRODUCT_CMPT_TYPE) {
-            return CAT_PRODUCT_CMPT_TYPE;
-        } else if (ipsObjectType == IpsObjectType.ENUM_TYPE) {
-            return CAT_ENUM_TYPE;
-        } else if (ipsObjectType == IpsObjectType.BUSINESS_FUNCTION) {
-            return CAT_BUSINESS_FUNCTION;
-        } else if (ipsObjectType == IpsObjectType.TABLE_STRUCTURE) {
-            return CAT_TABLE_STRUCTURE;
-        } else if (ipsObjectType == IpsObjectType.TEST_CASE_TYPE) {
-            return CAT_TEST_CASE_TYPE;
-        } else if (ipsObjectType == IpsObjectType.PRODUCT_CMPT) {
-            return CAT_PRODUCT_CMPT;
-        } else if (ipsObjectType == IpsObjectType.ENUM_CONTENT) {
-            return CAT_ENUM_CONTENT;
-        } else if (ipsObjectType == IpsObjectType.TABLE_CONTENTS) {
-            return CAT_TABLE_CONTENTS;
-        } else if (ipsObjectType == IpsObjectType.TEST_CASE) {
-            return CAT_TEST_CASE;
+        return getCategoryForIpsObjectType(ipsObjectType);
+    }
+
+    private int getCategoryForIpsObjectType(IpsObjectType ipsObjectType) {
+        ModelExplorerCategory category = TYPE_TO_CATEGORY.get(ipsObjectType);
+        if (category != null) {
+            return category.getOrder();
         } else {
-            return CAT_OTHER_IPS_OBJECTS;
+            return ModelExplorerCategory.CAT_OTHER_IPS_OBJECTS.getOrder();
         }
     }
 
     @Override
-    public int compare(Viewer viewer, Object o1, Object o2) {
-        o1 = mapIpsSrcFileToIpsObject(o1);
-        o2 = mapIpsSrcFileToIpsObject(o2);
+    public int compare(Viewer viewer, Object o1param, Object o2param) {
+        Object o1 = mapIpsSrcFileToIpsObject(o1param);
+        Object o2 = mapIpsSrcFileToIpsObject(o2param);
 
-        if (o1 == null || o2 == null) {
+        if (isBothNull(o1, o2)) {
             return 0;
         }
-        //
-        // // place TableStructures below PolicyComponentTypes
-        // if (o1 instanceof IType && o2 instanceof ITableStructure) {
-        // return -1;
-        // }
-        // if (o1 instanceof ITableStructure && o2 instanceof IPolicyCmptType) {
-        // return 1;
-        // }
-        // // place TableContents below ProductCmpts
-        // if (o1 instanceof IProductCmpt && o2 instanceof ITableContents) {
-        // return -1;
-        // }
-        // if (o1 instanceof ITableContents && o2 instanceof IProductCmpt) {
-        // return 1;
-        // }
-        // // place pakages above files
-        // if (o1 instanceof IIpsPackageFragment && !(o2 instanceof IIpsPackageFragment)) {
-        // return -1;
-        // } else if (!(o1 instanceof IIpsPackageFragment) && o2 instanceof IIpsPackageFragment) {
-        // return 1;
-        // }
-        //
-        if (o1 instanceof IIpsPackageFragmentRoot && o2 instanceof IIpsPackageFragmentRoot) {
-            IIpsPackageFragmentRoot root1 = ((IIpsPackageFragmentRoot)o1);
-            IIpsPackageFragmentRoot root2 = ((IIpsPackageFragmentRoot)o2);
-            return root1.getIpsObjectPathEntry().getIndex() - root2.getIpsObjectPathEntry().getIndex();
+        if (isBothPackageFragmentRoot(o1, o2)) {
+            return comparePackageFragmentRoot(o1, o2);
         }
-        if (o1 instanceof IIpsPackageFragment && o2 instanceof IIpsPackageFragment) {
-            IIpsPackageFragment fragment = ((IIpsPackageFragment)o1);
-            IIpsPackageFragment fragment2 = ((IIpsPackageFragment)o2);
-            // place defaultpackage at top
-            if (fragment.isDefaultPackage()) {
-                return -1;
-            }
-            if (fragment2.isDefaultPackage()) {
-                return 1;
-            }
-            // sort IpsPackages by SortDefinition
-            return packageComparator.compare(fragment, fragment2);
+        if (isBothPackageFragment(o1, o2)) {
+            return comparePackageFragment(o1, o2);
         }
 
-        if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {
-            // sort newest generation first
-            IProductCmptGeneration g1 = (IProductCmptGeneration)o1;
-            IProductCmptGeneration g2 = (IProductCmptGeneration)o2;
-            return g1.getValidFrom().after(g2.getValidFrom()) ? -1 : g1.getValidFrom().before(g2.getValidFrom()) ? 1
-                    : 0;
+        if (isBothProdutCmptGeneration(o1, o2)) {
+            return compareProductGenerations(o1, o2);
         }
         int typeMemberOrder1 = getTypeMemberOrder(o1);
         int typeMemberOrder2 = getTypeMemberOrder(o2);
@@ -209,39 +156,60 @@ public class ModelExplorerSorter extends ViewerSorter {
                 return typeMemberOrder1 - typeMemberOrder2;
             }
         }
-        if (o1 instanceof IPolicyCmptTypeAssociation && o2 instanceof IPolicyCmptTypeAttribute) {
-            return 1;
-        }
-        if (o1 instanceof IPolicyCmptTypeAttribute && o2 instanceof IPolicyCmptTypeAssociation) {
-            return -1;
-        }
 
-        // ------- IResource sorting -------
-        // sort IpsProjects and IProjects lexicographically (ignoring case)
-        if ((o1 instanceof IIpsProject || o1 instanceof IProject)
-                && (o2 instanceof IIpsProject || o2 instanceof IProject)) {
+        if (isBothProject(o1, o2)) {
             return getProjectName(o1).compareToIgnoreCase(getProjectName(o2));
         }
-        //
-        // // Place model-data above other resources
-        // if (o1 instanceof IIpsElement && o2 instanceof IResource) {
-        // return -1;
-        // }
-        // if (o1 instanceof IResource && o2 instanceof IIpsElement) {
-        // return 1;
-        // }
-        // // Place folders above files
-        // if (o1 instanceof IFolder && o2 instanceof IFile) {
-        // return -1;
-        // }
-        // if (o1 instanceof IFile && o2 instanceof IFolder) {
-        // return 1;
-        // }
-        //
 
-        // otherwise let the superclass decide
         return super.compare(viewer, o1, o2);
 
+    }
+
+    private boolean isBothProject(Object o1, Object o2) {
+        return (o1 instanceof IIpsProject || o1 instanceof IProject)
+                && (o2 instanceof IIpsProject || o2 instanceof IProject);
+    }
+
+    private boolean isBothPackageFragmentRoot(Object o1, Object o2) {
+        return o1 instanceof IIpsPackageFragmentRoot && o2 instanceof IIpsPackageFragmentRoot;
+    }
+
+    private boolean isBothPackageFragment(Object o1, Object o2) {
+        return o1 instanceof IIpsPackageFragment && o2 instanceof IIpsPackageFragment;
+    }
+
+    private boolean isBothProdutCmptGeneration(Object o1, Object o2) {
+        return o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration;
+    }
+
+    private boolean isBothNull(Object o1, Object o2) {
+        return o1 == null || o2 == null;
+    }
+
+    private int compareProductGenerations(Object o1, Object o2) {
+        IProductCmptGeneration g1 = (IProductCmptGeneration)o1;
+        IProductCmptGeneration g2 = (IProductCmptGeneration)o2;
+        return g1.getValidFrom().after(g2.getValidFrom()) ? -1 : g1.getValidFrom().before(g2.getValidFrom()) ? 1 : 0;
+    }
+
+    private int comparePackageFragmentRoot(Object o1, Object o2) {
+        IIpsPackageFragmentRoot root1 = ((IIpsPackageFragmentRoot)o1);
+        IIpsPackageFragmentRoot root2 = ((IIpsPackageFragmentRoot)o2);
+        return root1.getIpsObjectPathEntry().getIndex() - root2.getIpsObjectPathEntry().getIndex();
+    }
+
+    private int comparePackageFragment(Object o1, Object o2) {
+        IIpsPackageFragment fragment = ((IIpsPackageFragment)o1);
+        IIpsPackageFragment fragment2 = ((IIpsPackageFragment)o2);
+        // place defaultpackage at top
+        if (fragment.isDefaultPackage()) {
+            return -1;
+        }
+        if (fragment2.isDefaultPackage()) {
+            return 1;
+        }
+        // sort IpsPackages by SortDefinition
+        return packageComparator.compare(fragment, fragment2);
     }
 
     private String getProjectName(Object o) {
