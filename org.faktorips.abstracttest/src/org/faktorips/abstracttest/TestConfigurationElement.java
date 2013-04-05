@@ -13,6 +13,8 @@
 
 package org.faktorips.abstracttest;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,8 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
  * @author Peter Erzberger
  */
 public class TestConfigurationElement implements IConfigurationElement {
+
+    public static final IContributor CONTRIBUTOR = mock(IContributor.class);
 
     private String name;
     private Map<String, String> attributes;
@@ -93,7 +97,7 @@ public class TestConfigurationElement implements IConfigurationElement {
 
     @Override
     public IContributor getContributor() throws InvalidRegistryObjectException {
-        throw new RuntimeException("Not implemented.");
+        return CONTRIBUTOR;
     }
 
     @Override
@@ -138,12 +142,14 @@ public class TestConfigurationElement implements IConfigurationElement {
 
     // @since Eclipse 3.6 (Helios)
     // do not add @Override until 3.6 is the default target platform
+    @SuppressWarnings("unused")
     public String getAttribute(String attrName, String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
     // @since Eclipse 3.6 (Helios)
     // do not add @Override until 3.6 is the default target platform
+    @SuppressWarnings("unused")
     public String getValue(String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }

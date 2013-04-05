@@ -181,6 +181,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     @After
     public void tearDown() throws Exception {
+        IpsPlugin.getDefault().setFeatureVersionManagers(null);
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {

@@ -132,16 +132,19 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private Set<ITeamOperationsFactory> teamOperationsFactories;
 
+    private final ExtensionFactory extensionFactory;
+
     public IpsPlugin() {
         super();
         plugin = this;
+        extensionFactory = new ExtensionFactory(getExtensionRegistry());
     }
 
     /**
      * Returns the number of the installed Faktor-IPS version.
      */
     public static final String getInstalledFaktorIpsVersion() {
-        return (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
+        return Platform.getBundle(PLUGIN_ID).getVersion().toString();
     }
 
     /**
@@ -467,7 +470,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Initializes the array of all available table formats.
      */
     private void initExternalTableFormats() {
-        IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+        IConfigurationElement[] elements = getExtensionRegistry().getConfigurationElementsFor(
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         List<ITableFormat> result = new ArrayList<ITableFormat>();
         for (IConfigurationElement element : elements) {
@@ -493,7 +496,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
         format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 
-        IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+        IConfigurationElement[] elements = getExtensionRegistry().getConfigurationElementsFor(
                 "org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
 
         for (IConfigurationElement element : elements) {
@@ -535,7 +538,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors() {
         if (loggingFrameworkConnectors == null) {
             ArrayList<IIpsLoggingFrameworkConnector> builders = new ArrayList<IIpsLoggingFrameworkConnector>();
-            IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
+            IExtensionPoint extensionPoint = getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
                     "loggingFrameworkConnector"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
             for (IExtension extension : extensions) {
@@ -568,7 +571,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public IFunctionResolverFactory[] getFlFunctionResolverFactories() {
         if (flFunctionResolvers == null) {
             ArrayList<IFunctionResolverFactory> flFunctionResolverFactoryList = new ArrayList<IFunctionResolverFactory>();
-            IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
+            IExtensionPoint extensionPoint = getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
                     "flFunctionResolverFactory"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
             for (IExtension extension : extensions) {
@@ -599,27 +602,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public IIpsFeatureVersionManager[] getIpsFeatureVersionManagers() {
         if (featureVersionManagers == null) {
-            IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
-                    "org.faktorips.devtools.core.faktorIpsFeatureVersionManager"); //$NON-NLS-1$
-            List<IIpsFeatureVersionManager> result = new ArrayList<IIpsFeatureVersionManager>();
-            for (IConfigurationElement element : elements) {
-                try {
-                    IIpsFeatureVersionManager manager = (IIpsFeatureVersionManager)element
-                            .createExecutableExtension("class"); //$NON-NLS-1$
-                    manager.setFeatureId(element.getAttribute("featureId")); //$NON-NLS-1$
-                    manager.setId(element.getAttribute("id")); //$NON-NLS-1$
-                    manager.setPredecessorId(element.getAttribute("basedOnFeatureManager")); //$NON-NLS-1$
-                    manager.setRequiredForAllProjects(Boolean.parseBoolean(element
-                            .getAttribute("requiredForAllProjects"))); //$NON-NLS-1$
-                    result.add(manager);
-                } catch (CoreException e) {
-                    log(e);
-                }
-            }
-            featureVersionManagers = result.toArray(new IIpsFeatureVersionManager[result.size()]);
-            if (featureVersionManagers.length == 0) {
-                featureVersionManagers = new IIpsFeatureVersionManager[] { EmptyIpsFeatureVersionManager.INSTANCE };
-            }
+            featureVersionManagers = extensionFactory.createIpsFeatureVersionManagers();
         }
         return featureVersionManagers;
     }
@@ -692,7 +675,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName) {
         Map<Version, IIpsProjectMigrationOperationFactory> result = new HashMap<Version, IIpsProjectMigrationOperationFactory>();
-        IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+        IConfigurationElement[] configurationElements = getExtensionRegistry().getConfigurationElementsFor(
                 EXTENSION_POINT_ID_MIGRATION_OPERATION);
         for (IConfigurationElement configElement : configurationElements) {
             if (configElement == null || !configElement.getName().equals(CONFIG_ELEMENT_ID_MIGRATION_OPERATION)) {

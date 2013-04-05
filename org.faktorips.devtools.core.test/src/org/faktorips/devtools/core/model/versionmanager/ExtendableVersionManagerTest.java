@@ -30,21 +30,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-public class AbstractExtendableVersionManagerTest {
+public class ExtendableVersionManagerTest {
 
     private static final String MY_FEATURE_ID = "myFeatureId";
-    private AbstractExtendableVersionManager extendableVersionManager;
+    private ExtendableVersionManager extendableVersionManager;
     private Version currentVersion;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation1;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation2;
 
     @Before
     public void setUp() throws Exception {
-        extendableVersionManager = new AbstractExtendableVersionManager(MY_FEATURE_ID, "myContributorId") {
+        extendableVersionManager = new ExtendableVersionManager() {
 
             @Override
-            public String getCurrentVersion() {
-                return "1.0.0.test";
+            protected Version getVersion() {
+                return new Version("1.0.0.test");
+            }
+
+            @Override
+            public String getFeatureId() {
+                return MY_FEATURE_ID;
             }
         };
         currentVersion = Version.parseVersion(extendableVersionManager.getCurrentVersion());

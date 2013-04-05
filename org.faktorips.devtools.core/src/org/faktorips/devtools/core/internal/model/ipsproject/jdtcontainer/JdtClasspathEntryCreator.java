@@ -109,7 +109,7 @@ public class JdtClasspathEntryCreator {
             try {
                 ipsJarBundleEntry.initStorage(path);
             } catch (IOException e) {
-                // this does seem to be no jar bundle
+                // this seem to be no jar bundle
                 return null;
             }
             MessageList msgList = ipsJarBundleEntry.validate();
