@@ -78,11 +78,10 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
     }
 
     private String createManifest() {
-        return "Fips-Base-Package: org.test.basepackage\n" + "Fips-Src-Output: src\n"
-                + "Fips-Resource-Output: resource\n"
-                + "Fips-Object-Dir: model;toc=\"fips-toc.xml\";messages=\"validation-messages.properties\",\n"
+        return "Fips-BasePackage: org.test.basepackage\n" + "Fips-SrcOutput: src\n" + "Fips-ResourceOutput: resource\n"
+                + "Fips-ObjectDir: model;toc=\"fips-toc.xml\";messages=\"validation-messages.properties\",\n"
                 + " test;toc=\"fips-toc-test.xml\";messages=\"validation-messages-test.properties\"\n\n"
-                + "Name: test\n" + "Fips-Src-Output: test\n" + "Fips-Resource-Output: testResource\n";
+                + "Name: test\n" + "Fips-SrcOutput: test\n" + "Fips-ResourceOutput: testResource\n";
     }
 
     @Test

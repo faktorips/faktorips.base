@@ -1,9 +1,0 @@
-Fips-Base-Package: testBasePackage
-Fips-Src-Output: src 
-Fips-Resource-Output: resource 
-Fips-Object-Dir: model;toc="fips-toc.xml";messages="validation-messages.properties",
- test;toc="fips-toc-test.xml";messages="validation-messages-test.properties"
-
-Name: test
-Fips-Src-Output: src2
-Fips-Resource-Output: resource2 

@@ -81,13 +81,13 @@ public class IpsBundleManifest {
 
     public static final String MANIFEST_NAME = JarFile.MANIFEST_NAME;
 
-    public static final String HEADER_BASE_PACKAGE = "Fips-Base-Package"; //$NON-NLS-1$
+    public static final String HEADER_BASE_PACKAGE = "Fips-BasePackage"; //$NON-NLS-1$
 
-    public static final String HEADER_SRC_OUT = "Fips-Sourcecode-Output"; //$NON-NLS-1$
+    public static final String HEADER_SRC_OUT = "Fips-SourcecodeOutput"; //$NON-NLS-1$
 
-    public static final String HEADER_RESOURCE_OUT = "Fips-Resource-Output"; //$NON-NLS-1$
+    public static final String HEADER_RESOURCE_OUT = "Fips-ResourceOutput"; //$NON-NLS-1$
 
-    public static final String HEADER_OBJECT_DIR = "Fips-Object-Dir"; //$NON-NLS-1$
+    public static final String HEADER_OBJECT_DIR = "Fips-ObjectDir"; //$NON-NLS-1$
 
     public static final String ATTRIBUTE_TOC = "toc"; //$NON-NLS-1$
 
