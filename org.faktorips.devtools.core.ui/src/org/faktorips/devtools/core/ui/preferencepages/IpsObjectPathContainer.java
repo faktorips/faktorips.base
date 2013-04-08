@@ -76,7 +76,7 @@ public class IpsObjectPathContainer {
 
     private ResourceManager resourceManager;
 
-    protected BindingContext bindingContext;
+    private BindingContext bindingContext;
 
     private IpsObjectPathContainerPmo ipsObjectPathContainerPmo;
 
@@ -110,13 +110,14 @@ public class IpsObjectPathContainer {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                if (pce.getOldValue() == Boolean.FALSE && pce.getNewValue() == Boolean.TRUE
-                        && pce.getPropertyName().equals(IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE)) {
-                    boolean openQuestion = MessageDialog.openQuestion(parent.getShell(),
-                            Messages.UseManifest_Question_Title, Messages.UseManifest_Question_Message);
-                    if (!openQuestion) {
-                        ipsObjectPathContainerPmo.setUsingManifest(false);
-                        ipsObjectPathContainerPmo.setDataChanged(false);
+                if (IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE.equals(pce.getPropertyName())) {
+                    if (Boolean.FALSE.equals(pce.getOldValue()) && Boolean.TRUE.equals(pce.getNewValue())) {
+                        boolean openQuestion = MessageDialog.openQuestion(parent.getShell(),
+                                Messages.UseManifest_Question_Title, Messages.UseManifest_Question_Message);
+                        if (!openQuestion) {
+                            ipsObjectPathContainerPmo.setUsingManifest(false);
+                            ipsObjectPathContainerPmo.setDataChanged(false);
+                        }
                     }
                 }
             }
@@ -226,9 +227,12 @@ public class IpsObjectPathContainer {
      * @return true if data has changed, false otherwise
      */
     public boolean hasChangesInDialog() {
-        return (ipsObjectPathContainerPmo.isDataChanged() || archiveComposite.isDataChanged()
-                || orderComposite.isDataChanged() || refProjectsComposite.isDataChanged() || srcFolderComposite
-                    .isDataChanged());
+        return (ipsObjectPathContainerPmo.isDataChanged() || hasChangesInTabs());
+    }
+
+    private boolean hasChangesInTabs() {
+        return (archiveComposite.isDataChanged() || orderComposite.isDataChanged()
+                || refProjectsComposite.isDataChanged() || srcFolderComposite.isDataChanged());
     }
 
     /**
