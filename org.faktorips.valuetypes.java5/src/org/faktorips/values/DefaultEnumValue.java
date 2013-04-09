@@ -15,7 +15,12 @@ package org.faktorips.values;
 
 /**
  * Default implementation of enum value.
+ * 
+ * @deprecated This interface is deprecated since version 3.9 and will be removed in version 3.10.
+ *             Please remove all dependencies to this interface. Therefore create a Faktor-IPS
+ *             Enumeration Type for each {@link EnumType} this interface is related.
  */
+@Deprecated
 public class DefaultEnumValue implements EnumValue {
 
     private final DefaultEnumType type;

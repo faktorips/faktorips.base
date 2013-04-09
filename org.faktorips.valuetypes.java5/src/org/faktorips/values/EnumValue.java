@@ -19,8 +19,13 @@ package org.faktorips.values;
  * <p>
  * Two EnumValues are considered equal if they belong to the same type and have the same id.
  * 
+ * @deprecated This interface is deprecated since version 3.9 and will be removed in version 3.10.
+ *             Please remove all dependencies to this interface. Therefore create a Faktor-IPS
+ *             Enumeration Type for each {@link EnumType} this interface is related.
+ * 
  * @author Jan Ortmann
  */
+@Deprecated
 public interface EnumValue extends Comparable<EnumValue> {
 
     /**

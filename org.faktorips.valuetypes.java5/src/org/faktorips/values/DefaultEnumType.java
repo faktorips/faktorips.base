@@ -16,7 +16,12 @@ package org.faktorips.values;
 /**
  * Default implementation of enum type. XXX Changing this to Java Enum would require many changes
  * throughout devtools.core, so we wait till we drop Java 1.4 compatibility.
+ * 
+ * @deprecated This class is deprecated since version 3.9 and will be removed in version 3.10.
+ *             Please remove all dependencies to this class. Therefore create a Faktor-IPS
+ *             Enumeration Type for each dependency.
  */
+@Deprecated
 public class DefaultEnumType implements EnumType {
 
     private final String name;

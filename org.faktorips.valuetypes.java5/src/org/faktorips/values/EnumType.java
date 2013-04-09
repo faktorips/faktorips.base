@@ -16,8 +16,13 @@ package org.faktorips.values;
 /**
  * An EnumType is a Datatype that represents an enumeration of values e.g. gender, payment mode.
  * 
+ * @deprecated This interface is deprecated since version 3.9 and will be removed in version 3.10.
+ *             Please remove all dependencies to this interface. Therefore create a Faktor-IPS
+ *             Enumeration Type for each dependency.
+ * 
  * @author Jan Ortmann
  */
+@Deprecated
 public interface EnumType {
 
     /**
