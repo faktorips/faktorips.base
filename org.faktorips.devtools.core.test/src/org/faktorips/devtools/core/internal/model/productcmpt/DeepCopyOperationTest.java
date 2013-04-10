@@ -23,8 +23,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,10 +37,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.abstracttest.TestConfigurationElement;
@@ -47,6 +53,8 @@ import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -64,16 +72,46 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for product component structure.
  * 
  * @author Thorsten Guenther
  */
+@RunWith(MockitoJUnitRunner.class)
 public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IProductCmpt product;
+
+    private IPolicyCmptType contract;
+    private IPolicyCmptType motorContract;
+    private IPolicyCmptType coverage;
+    private IPolicyCmptType collisionCoverage;
+    private IPolicyCmptType tplCoverage;
+    private IPolicyCmptType vehicle;
+    private IProductCmpt comfortMotorProduct;
+    private IProductCmpt standardVehicle;
+    private IProductCmpt comfortCollisionCoverageA;
+    private IProductCmpt comfortCollisionCoverageB;
+    private IProductCmpt standardTplCoverage;
+    private IPolicyCmptTypeAttribute salesNameAttribute;
+
+    @Mock
+    private IProductCmptReference structureMock;
+    @Mock
+    private IIpsPackageFragment sourcePackageFragment;
+    @Mock
+    private IIpsPackageFragment targetPackageFragment;
+    @Mock
+    private IFile sortOrderFile;
+    @Mock
+    private IFile targetSortOrderFile;
+    @Mock
+    private IProgressMonitor progressMonitor;
 
     @Override
     @Before
@@ -388,22 +426,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         createProducts();
     }
 
-    private IPolicyCmptType contract;
-    private IPolicyCmptType motorContract;
-
-    private IPolicyCmptType coverage;
-    private IPolicyCmptType collisionCoverage;
-    private IPolicyCmptType tplCoverage;
-
-    private IPolicyCmptType vehicle;
-
-    private IProductCmpt comfortMotorProduct;
-    private IProductCmpt standardVehicle;
-    private IProductCmpt comfortCollisionCoverageA;
-    private IProductCmpt comfortCollisionCoverageB;
-    private IProductCmpt standardTplCoverage;
-    private IPolicyCmptTypeAttribute salesNameAttribute;
-
     private void createModel() throws CoreException {
 
         // set up extension properties
@@ -545,4 +567,72 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assoc.setMinCardinality(minCardinality);
         assoc.setMaxCardinality(maxCardinality);
     }
+
+    @Test
+    public void testCopySortOrder_empty() throws Exception {
+        mockSourcePackage();
+        DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
+
+        deepCopyOperation.copySortOrder(null);
+
+        verify(sortOrderFile).exists();
+        verifyNoMoreInteractions(sortOrderFile);
+    }
+
+    @Test
+    public void testCopySortOrder_noChild() throws Exception {
+        mockSourcePackage();
+        mockTargetPackage();
+        DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
+        when(sortOrderFile.exists()).thenReturn(true);
+        InputStream inputStream = mock(InputStream.class);
+        when(sortOrderFile.getContents(true)).thenReturn(inputStream);
+
+        deepCopyOperation.copySortOrder(progressMonitor);
+
+        verify(sortOrderFile).exists();
+        verify(targetSortOrderFile).create(sortOrderFile.getContents(true), true, progressMonitor);
+    }
+
+    @Test
+    public void testCopySortOrder_targetNotExists() throws Exception {
+        mockSourcePackage(mock(IIpsPackageFragment.class));
+        mockTargetPackage();
+        DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
+        when(sortOrderFile.exists()).thenReturn(true);
+        InputStream inputStream = mock(InputStream.class);
+        when(sortOrderFile.getContents(true)).thenReturn(inputStream);
+
+        deepCopyOperation.copySortOrder(progressMonitor);
+
+        verify(sortOrderFile).exists();
+        verify(targetSortOrderFile).create(sortOrderFile.getContents(true), true, progressMonitor);
+    }
+
+    private DeepCopyOperation mockSortOrderDependencies() {
+        Set<IProductCmptStructureReference> copyElements = new HashSet<IProductCmptStructureReference>();
+        Set<IProductCmptStructureReference> linkElements = new HashSet<IProductCmptStructureReference>();
+        Map<IProductCmptStructureReference, IIpsSrcFile> handleMap = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
+        GregorianCalendar oldValidFrom = (GregorianCalendar)Calendar.getInstance();
+        GregorianCalendar newValidFrom = (GregorianCalendar)Calendar.getInstance();
+        DeepCopyOperation deepCopyOperation = new DeepCopyOperation(structureMock, copyElements, linkElements,
+                handleMap, oldValidFrom, newValidFrom);
+        deepCopyOperation.setSourceIpsPackageFragment(sourcePackageFragment);
+        deepCopyOperation.setTargetIpsPackageFragment(targetPackageFragment);
+        return deepCopyOperation;
+    }
+
+    private void mockSourcePackage(IIpsPackageFragment... childPackages) throws Exception {
+        when(sourcePackageFragment.getSortOrderFile()).thenReturn(sortOrderFile);
+        when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
+
+    }
+
+    private void mockTargetPackage(IIpsPackageFragment... childPackages) throws Exception {
+        when(targetPackageFragment.getSortOrderFile()).thenReturn(targetSortOrderFile);
+        when(targetPackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
+        IIpsPackageFragmentRoot parent = mock(IIpsPackageFragmentRoot.class);
+        when(targetPackageFragment.getRoot()).thenReturn(parent);
+    }
+
 }

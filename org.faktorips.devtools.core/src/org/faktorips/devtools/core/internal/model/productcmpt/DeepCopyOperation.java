@@ -209,25 +209,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         monitor.done();
     }
 
-    private void copySortOrder(IProgressMonitor monitor,
-            IIpsPackageFragment sourceParent,
-            IIpsPackageFragment targetParent) throws CoreException {
-        for (IIpsPackageFragment fragment : sourceParent.getChildIpsPackageFragments()) {
-            IIpsPackageFragment destination = ((IIpsPackageFragmentRoot)targetParent.getParent())
-                    .getIpsPackageFragment(targetParent.getName() + IIpsPackageFragment.SEPARATOR
-                            + fragment.getLastSegmentName());
-            if (destination.getCorrespondingResource().exists()) {
-                IFile sortOrder = fragment.getSortOrderFile();
-                if (sortOrder.exists() && !destination.getSortOrderFile().exists()) {
-                    IFile file = destination.getSortOrderFile();
-                    file.create(sortOrder.getContents(true), true, monitor);
-                }
-                copySortOrder(monitor, fragment, destination);
-            }
-        }
-    }
-
-    private void copySortOrder(IProgressMonitor monitor) {
+    void copySortOrder(IProgressMonitor monitor) {
         try {
             IFile sortOrder = sourceIpsPackageFragment.getSortOrderFile();
             if (sortOrder.exists() && !targetIpsPackageFragment.getSortOrderFile().exists()) {
@@ -237,6 +219,24 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             copySortOrder(monitor, sourceIpsPackageFragment, targetIpsPackageFragment);
         } catch (CoreException e) {
             throw new RuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
+        }
+    }
+
+    private void copySortOrder(IProgressMonitor monitor,
+            IIpsPackageFragment sourceParent,
+            IIpsPackageFragment targetParent) throws CoreException {
+        for (IIpsPackageFragment fragment : sourceParent.getChildIpsPackageFragments()) {
+            IIpsPackageFragment destination = targetParent.getRoot().getIpsPackageFragment(
+                    targetParent.getName() + IIpsPackageFragment.SEPARATOR + fragment.getLastSegmentName());
+            if (destination != null && destination.exists()) {
+                IFile sortOrder = fragment.getSortOrderFile();
+                if (sortOrder.exists() && destination.getSortOrderFile() != null
+                        && !destination.getSortOrderFile().exists()) {
+                    IFile file = destination.getSortOrderFile();
+                    file.create(sortOrder.getContents(true), true, monitor);
+                }
+                copySortOrder(monitor, fragment, destination);
+            }
         }
     }
 
