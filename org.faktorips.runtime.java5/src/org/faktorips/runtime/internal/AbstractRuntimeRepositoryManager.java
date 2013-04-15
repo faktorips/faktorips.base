@@ -32,7 +32,7 @@ import org.faktorips.runtime.IRuntimeRepositoryManager;
  */
 public abstract class AbstractRuntimeRepositoryManager implements IRuntimeRepositoryManager {
 
-    private volatile IRuntimeRepository actualRuntimeRepository;
+    private volatile IRuntimeRepository currentRuntimeRepository;
     private List<IRuntimeRepositoryManager> managers = new CopyOnWriteArrayList<IRuntimeRepositoryManager>();
     private volatile List<IRuntimeRepositoryManager> allManagers;
 
@@ -43,24 +43,41 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
         super();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated since 3.9.0: The method name was a false translation from German. The correct
+     *             method is called {@link #getCurrentRuntimeRepository()}
+     */
+    @Deprecated
     public synchronized IRuntimeRepository getActualRuntimeRepository() {
-        if (!isRepositoryUpToDate(actualRuntimeRepository) || !isReferencedRepositorysUpToDate()) {
-            actualRuntimeRepository = createNewRuntimeRepository();
+        return getCurrentRuntimeRepository();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public synchronized IRuntimeRepository getCurrentRuntimeRepository() {
+        if (!isRepositoryUpToDate(currentRuntimeRepository) || !isReferencedRepositorysUpToDate()) {
+            currentRuntimeRepository = createNewRuntimeRepository();
             for (IRuntimeRepositoryManager manager : managers) {
-                actualRuntimeRepository.addDirectlyReferencedRepository(manager.getActualRuntimeRepository());
+                IRuntimeRepository runtimeRepository = manager.getCurrentRuntimeRepository();
+                if (runtimeRepository != null) {
+                    currentRuntimeRepository.addDirectlyReferencedRepository(runtimeRepository);
+                }
             }
         }
-        return actualRuntimeRepository;
+        return currentRuntimeRepository;
     }
 
     /**
      * This method checks whether the {@link IRuntimeRepository} is up to date or not. If this
      * method returns false, a new repository have to be created
      * 
-     * @param actualRuntimeRepository The actual runtime repository that have to be checked
+     * @param currentRuntimeRepository The actual runtime repository that have to be checked
      * @return true if the repository is still up to date
      */
-    protected abstract boolean isRepositoryUpToDate(IRuntimeRepository actualRuntimeRepository);
+    protected abstract boolean isRepositoryUpToDate(IRuntimeRepository currentRuntimeRepository);
 
     /**
      * Creates a new repository. This method have to create thre repository but do NOT have to
@@ -77,14 +94,16 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
      */
     private boolean isReferencedRepositorysUpToDate() {
         List<IRuntimeRepository> directReferencedRepos = new ArrayList<IRuntimeRepository>(
-                actualRuntimeRepository.getDirectlyReferencedRepositories());
+                currentRuntimeRepository.getDirectlyReferencedRepositories());
         for (IRuntimeRepositoryManager manager : managers) {
-            IRuntimeRepository referencedRepository = manager.getActualRuntimeRepository();
-            // the repository of every manager have to be in the list of direct referenced
-            // repositories.
-            if (!directReferencedRepos.remove(referencedRepository)) {
-                // If any manager creates a new repository return false
-                return false;
+            IRuntimeRepository referencedRepository = manager.getCurrentRuntimeRepository();
+            if (referencedRepository != null) {
+                // the repository of every manager have to be in the list of direct referenced
+                // repositories.
+                if (!directReferencedRepos.remove(referencedRepository)) {
+                    // If any manager creates a new repository return false
+                    return false;
+                }
             }
         }
         // after iterating over all managers the list have to be empty. Otherwise a references

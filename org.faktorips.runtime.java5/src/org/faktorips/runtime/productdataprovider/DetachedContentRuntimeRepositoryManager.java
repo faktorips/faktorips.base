@@ -44,10 +44,22 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
         this.builder = builder;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated since 3.9.0: The method name was a false translation from German. The correct
+     *             method is called {@link #getCurrentRuntimeRepository()}
+     */
     @Override
+    @Deprecated
     public synchronized IDetachedContentRuntimeRepository getActualRuntimeRepository() {
-        if (super.getActualRuntimeRepository() instanceof DetachedContentRuntimeRepository) {
-            return (IDetachedContentRuntimeRepository)super.getActualRuntimeRepository();
+        return getCurrentRuntimeRepository();
+    }
+
+    @Override
+    public synchronized IDetachedContentRuntimeRepository getCurrentRuntimeRepository() {
+        if (super.getCurrentRuntimeRepository() instanceof DetachedContentRuntimeRepository) {
+            return (IDetachedContentRuntimeRepository)super.getCurrentRuntimeRepository();
         } else {
             throw new RuntimeException("Illegal repository class in detached content runtime repository.");
         }

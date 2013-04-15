@@ -18,6 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.Calendar;
@@ -74,7 +76,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         runtimeRepositoryManager = new Builder(directPdpFactory).build();
         IRuntimeRepositoryManager referencedManager = new Builder(pdpFactory).build();
         runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
-        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
         directPdp = directPdpFactory.testProductDataProvider;
         productDataProvider = pdpFactory.testProductDataProvider;
     }
@@ -122,7 +124,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
 
-        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
         productDataProvider = pdpFactory.testProductDataProvider;
 
         repository.getProductComponent("home.HomeBasic");
@@ -141,7 +143,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
 
-        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
 
         repository.getProductComponent("home.HomeBasic");
         // still cached because HomeBasic is in referenced repository
@@ -155,7 +157,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
     @Test
     public void testGetProductComponent_KindId_VersionId() {
-        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
         MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
         assertNotNull(motorProduct);
         assertEquals("2005-01", motorProduct.getVersionId());
@@ -208,7 +210,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
 
-        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
         productDataProvider = pdpFactory.testProductDataProvider;
 
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
@@ -392,6 +394,31 @@ public class DetachedContentRuntimeRepositoryManagerTest {
             }
             assertTrue("Missing test case: " + element, found);
         }
+    }
+
+    @Test
+    public void testGetCurrentRuntimeRepository_referencedIsNull() {
+        runtimeRepositoryManager = new Builder(directPdpFactory).build();
+        IRuntimeRepositoryManager referencedManager = mock(DetachedContentRuntimeRepositoryManager.class);
+        when(referencedManager.getCurrentRuntimeRepository()).thenReturn(null);
+        runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
+
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
+
+        assertTrue(repository.getDirectlyReferencedRepositories().isEmpty());
+    }
+
+    @Test
+    public void testGetCurrentRuntimeRepository_withReferencedRepository() {
+        runtimeRepositoryManager = new Builder(directPdpFactory).build();
+        IRuntimeRepositoryManager referencedManager = mock(DetachedContentRuntimeRepositoryManager.class);
+        DetachedContentRuntimeRepository referencedRepository = mock(DetachedContentRuntimeRepository.class);
+        when(referencedManager.getCurrentRuntimeRepository()).thenReturn(referencedRepository);
+        runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
+
+        repository = runtimeRepositoryManager.getCurrentRuntimeRepository();
+
+        assertEquals(referencedRepository, repository.getDirectlyReferencedRepositories().get(0));
     }
 
     private static class TestProductDataProvider extends ClassLoaderProductDataProvider {

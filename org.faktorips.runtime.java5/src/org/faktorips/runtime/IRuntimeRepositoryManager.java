@@ -34,12 +34,28 @@ public interface IRuntimeRepositoryManager {
      * Call a modification check on the product data provider. If there are any changes in the
      * product data, this method creates a new {@link IRuntimeRepository}. If there are no changes
      * this method simply returns the existing one.
+     * 
+     * @deprecated since 3.9.0: The method name was a false translation from German. The correct
+     *             method is called {@link #getCurrentRuntimeRepository()}
      */
+    @Deprecated
     public IRuntimeRepository getActualRuntimeRepository();
 
     /**
+     * Call a modification check on the product data provider. If there are any changes in the
+     * product data, this method creates a new {@link IRuntimeRepository}. If there are no changes
+     * this method simply returns the existing one. The current runtime repository can be
+     * <b>null</b>.
+     * <p>
+     * Every direct referenced manger will be asked for it current repository. If any direct
+     * referenced manager returns <code>null</code> as its current repository, this direct
+     * referenced repository will be ignored.
+     */
+    public IRuntimeRepository getCurrentRuntimeRepository();
+
+    /**
      * Use this method to add a referenced {@link IRuntimeRepositoryManager}. The
-     * {@link IRuntimeRepository} returned by {@link #getActualRuntimeRepository()} asks all
+     * {@link IRuntimeRepository} returned by {@link #getCurrentRuntimeRepository()} asks all
      * references managers for their repositories and adding the references.
      * 
      * @param manager The manager to connect with this manager
