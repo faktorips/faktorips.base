@@ -41,27 +41,6 @@ import org.w3c.dom.Element;
 
 public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmptLink {
 
-    /**
-     * @param target The product component that will be used as target for the new relation.
-     * @param ipsProject The ips project which ips object path is used.
-     * @return <code>true</code> if it is possible to create a valid relation with the given
-     *         parameters at this time, <code>false</code> otherwise.
-     * 
-     * @throws CoreException if an error occurs during supertype-evaluation
-     */
-    public static boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException {
-
-        if (target == null || association == null) {
-            return false;
-        }
-        IProductCmptType actualTargetType = target.findProductCmptType(ipsProject);
-        if (actualTargetType == null) {
-            return false;
-        }
-        return actualTargetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
-    }
-
     /** the name of the association this link is an instance of */
     private String association = ""; //$NON-NLS-1$
 
@@ -427,6 +406,27 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         DerivedUnionVisitor hierarchyVisitor = new DerivedUnionVisitor(association, ipsProject);
         hierarchyVisitor.start(findAssociation(ipsProject));
         return hierarchyVisitor.found;
+    }
+
+    /**
+     * @param target The product component that will be used as target for the new relation.
+     * @param ipsProject The ips project which ips object path is used.
+     * @return <code>true</code> if it is possible to create a valid relation with the given
+     *         parameters at this time, <code>false</code> otherwise.
+     * 
+     * @throws CoreException if an error occurs during supertype-evaluation
+     */
+    private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (target == null || association == null) {
+            return false;
+        }
+        IProductCmptType actualTargetType = target.findProductCmptType(ipsProject);
+        if (actualTargetType == null) {
+            return false;
+        }
+        return actualTargetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {

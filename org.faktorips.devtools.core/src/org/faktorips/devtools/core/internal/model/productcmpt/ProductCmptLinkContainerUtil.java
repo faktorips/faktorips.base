@@ -33,6 +33,10 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  */
 public class ProductCmptLinkContainerUtil {
 
+    private ProductCmptLinkContainerUtil() {
+        // hidden constructor for util class
+    }
+
     /**
      * Checks whether a new link as instance of the given {@link IProductCmptTypeAssociation product
      * component type association} and the given target will be valid for the link container.
@@ -53,44 +57,59 @@ public class ProductCmptLinkContainerUtil {
         if (association == null || target == null || !linkContainer.getProductCmpt().getIpsSrcFile().isMutable()) {
             return false;
         }
+        if (linkContainer.getLinksAsList(association.getName()).size() >= association.getMaxCardinality()) {
+            return false;
+        }
         if (!linkContainer.isContainerFor(association)) {
             return false;
         }
-        IProductCmptType type = linkContainer.getProductCmpt().findProductCmptType(ipsProject);
-        if (type == null) {
-            return false;
-        }
+
         // it is not valid to create more than one relation with the same type and target.
-        if (!isFirstRelationOfThisType(linkContainer, association, target, ipsProject)) {
+        if (isLinkExisting(linkContainer, association, target, ipsProject)) {
             return false;
         }
-        // is correct type
+        if (!isTypeCorrect(target, association, ipsProject)) {
+            return false;
+        }
+
+        return isProjectCorrect(linkContainer, target);
+    }
+
+    private static boolean isProjectCorrect(IProductCmptLinkContainer linkContainer, IProductCmpt target)
+            throws CoreException {
+
+        IIpsProject linkContainerProject = linkContainer.getIpsProject();
+        IIpsProject targetProject = target.getIpsProject();
+
+        if (linkContainerProject.equals(targetProject)) {
+            return true;
+        }
+
+        return linkContainerProject.isReferencing(targetProject);
+    }
+
+    private static boolean isTypeCorrect(IProductCmpt target,
+            IProductCmptTypeAssociation association,
+            IIpsProject ipsProject) throws CoreException {
+
         IProductCmptType targetType = target.findProductCmptType(ipsProject);
         if (targetType == null) {
             return false;
         }
-        if (!targetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject)) {
-            return false;
-        }
-
-        return linkContainer.getLinksAsList(association.getName()).size() < association.getMaxCardinality()
-                && ProductCmptLink.willBeValid(target, association, ipsProject);
+        return targetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
     }
 
-    private static boolean isFirstRelationOfThisType(IProductCmptLinkContainer linkContainer,
+    private static boolean isLinkExisting(IProductCmptLinkContainer linkContainer,
             IAssociation association,
             IProductCmpt target,
             IIpsProject ipsProject) throws CoreException {
 
-        // TODO Sometimes there were concurrent modification when adding multiple links in the
-        // product component editor at once (add existing --> multi select). This fixes the problem
-        // but does not fix the root of the problem.
         for (IProductCmptLink link : linkContainer.getLinksAsList()) {
             if (link.findAssociation(ipsProject).equals(association)
                     && link.getTarget().equals(target.getQualifiedName())) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
