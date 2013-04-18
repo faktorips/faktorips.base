@@ -237,33 +237,21 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
     private static class LinkViewerFilter extends ViewerFilter {
 
-        private final IProductCmptStructureReference linkTarget;
-        private final LinkCreatorUtil linkCreator;
+        private final LinkCandidateFilter filter;
 
         public LinkViewerFilter(IProductCmptStructureReference linkTarget) {
-            this.linkTarget = linkTarget;
-            linkCreator = new LinkCreatorUtil(true);
+            filter = new LinkCandidateFilter(linkTarget, IpsPlugin.getDefault().getIpsPreferences()
+                    .isWorkingModeBrowse());
         }
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-            try {
-                if (element instanceof IIpsSrcFile) {
-                    IIpsSrcFile srcFile = (IIpsSrcFile)element;
-                    if (!srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-                        return false;
-                    }
-                    List<IProductCmpt> productCmptList = new ArrayList<IProductCmpt>();
-                    productCmptList.add((IProductCmpt)srcFile.getIpsObject());
-                    return linkCreator.canCreateLinks(linkTarget, productCmptList);
-                } else {
-                    return false;
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+            if (element instanceof IIpsSrcFile) {
+                IIpsSrcFile srcFile = (IIpsSrcFile)element;
+                return filter.filter(srcFile);
+            } else {
                 return false;
             }
         }
     }
-
 }

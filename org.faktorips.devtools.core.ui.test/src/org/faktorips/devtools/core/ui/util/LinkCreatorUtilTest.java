@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
@@ -114,49 +113,6 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         treeViewer.setInput(structure);
 
         linkCreator = new MyLinkCreator(true);
-    }
-
-    @Test
-    public void testValidateCreateLink() throws CoreException {
-        IProductCmptReference target = structure.getRoot();
-        List<IProductCmpt> singleCmpt = getList(cmptB1);
-        List<IProductCmpt> multiCmpts = getList(cmptB1, cmptB2);
-
-        // check transfer
-        assertTrue(linkCreator.canCreateLinks(target, getList(cmptB1)));
-        assertTrue(linkCreator.canCreateLinks(target, getList(cmptB2)));
-        assertTrue(linkCreator.canCreateLinks(target, getList(cmptC1)));
-        assertFalse(linkCreator.canCreateLinks(target, getList(cmptA)));
-        assertTrue(linkCreator.canCreateLinks(target, getList(cmptB1, cmptB2)));
-        assertTrue(linkCreator.canCreateLinks(target, getList(cmptB1, cmptC1)));
-        assertFalse(linkCreator.canCreateLinks(target, getList(cmptB1, cmptA)));
-
-        assertTrue(linkCreator.canCreateLinks(target, getList(cmptSubB1)));
-
-        // check (reference) targets
-        assertTrue(linkCreator.canCreateLinks(structure.getRoot(), singleCmpt));
-        IProductCmptTypeAssociationReference[] references = structure
-                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
-        assertTrue(linkCreator.canCreateLinks(references[0], singleCmpt));
-        assertTrue(linkCreator.canCreateLinks(references[0], multiCmpts));
-        assertTrue(linkCreator.canCreateLinks(references[1], singleCmpt));
-        assertTrue(linkCreator.canCreateLinks(references[1], multiCmpts));
-        assertFalse(linkCreator.canCreateLinks(references[2], singleCmpt));
-        assertFalse(linkCreator.canCreateLinks(references[2], multiCmpts));
-
-        // TODO move link testing to new test
-        // check (link) targets
-        // IProductCmptLink link =
-        // ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
-        // link.setTarget(cmptB1.getQualifiedName());
-        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptB1)));
-        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptB1, cmptB2)));
-        // assertTrue(linkCreator.canCreateLinks(link, getList(cmptB2)));
-        // assertTrue(linkCreator.canCreateLinks(link, getList(cmptB2, cmptB3)));
-        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1)));
-        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1, cmptB1)));
-        // assertFalse(linkCreator.canCreateLinks(link, getList(cmptC1, cmptB2)));
-        // link.delete();
     }
 
     @Test

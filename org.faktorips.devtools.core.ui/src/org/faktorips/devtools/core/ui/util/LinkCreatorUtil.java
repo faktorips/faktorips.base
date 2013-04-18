@@ -54,20 +54,6 @@ public class LinkCreatorUtil {
         this.autoSave = autoSave;
     }
 
-    public boolean canCreateLinks(IProductCmptStructureReference target, List<IProductCmpt> draggedCmpts)
-            throws CoreException {
-        if (target instanceof IProductCmptReference) {
-            // product cmpt reference in product structure view
-            IProductCmptReference reference = (IProductCmptReference)target;
-            return processProductCmptReference(draggedCmpts, reference, false);
-        } else if (target instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)target;
-            return processAssociationReference(draggedCmpts, reference, false);
-        } else {
-            return false;
-        }
-    }
-
     public boolean createLinks(List<IProductCmpt> droppedCmpts, IProductCmptStructureReference target) {
         boolean haveToSave = autoSave;
         try {

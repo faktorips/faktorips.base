@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -23,6 +22,7 @@ import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.ui.editors.productcmpt.LinkCandidateFilter;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
@@ -63,18 +63,26 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
         if (draggedCmpts.isEmpty()) {
             return true;
         }
-        try {
-            if (target instanceof IProductCmptStructureReference) {
-                IProductCmptStructureReference structureReference = (IProductCmptStructureReference)target;
-                boolean result = linkCreator.canCreateLinks(structureReference, draggedCmpts);
-                return result;
-            } else {
-                return false;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (target instanceof IProductCmptStructureReference) {
+            IProductCmptStructureReference structureReference = (IProductCmptStructureReference)target;
+            boolean result = canCreateLinks(draggedCmpts, structureReference);
+            return result;
+        } else {
             return false;
         }
+    }
+
+    private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, IProductCmptStructureReference structureReference) {
+        LinkCandidateFilter filter = new LinkCandidateFilter(structureReference, IpsPlugin.getDefault()
+                .getIpsPreferences().isWorkingModeBrowse());
+
+        for (IProductCmpt productCmpt : draggedCmpts) {
+            if (!filter.filter(productCmpt.getIpsSrcFile())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

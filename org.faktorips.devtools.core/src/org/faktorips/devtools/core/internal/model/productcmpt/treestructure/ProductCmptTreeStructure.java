@@ -414,7 +414,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         } else if (parent instanceof ProductCmptStructureTblUsageReference) {
             return new IProductCmptReference[0];
         } else {
-            ProductCmptStructureReference children[] = ((ProductCmptReference)parent).getChildren();
+            ProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
             List<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
             for (ProductCmptStructureReference ref : children) {
                 for (ProductCmptStructureReference child : ref.getChildren()) {
