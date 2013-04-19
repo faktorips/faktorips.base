@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -74,14 +74,15 @@
 				<artifactId>wagon-ssh</artifactId>
 				<version>1.0</version>
 			</extension>
-			<!-- Include this build artifact to every child's classpath. This is used for example by the checkstyle or findbugs configuration -->
-		    <extension>
-		      <groupId>org.faktorips</groupId>
-		      <artifactId>org.faktorips.build.config</artifactId>
-		      <version>1.0.0-SNAPSHOT</version>
-		    </extension>
+			<!-- Include this build artifact to every child's classpath. This is used 
+				for example by the checkstyle or findbugs configuration -->
+			<extension>
+				<groupId>org.faktorips</groupId>
+				<artifactId>org.faktorips.build.config</artifactId>
+				<version>1.0.0</version>
+			</extension>
 		</extensions>
-  		<pluginManagement>
+		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -124,6 +125,11 @@
 					<version>${tycho-extras-version}</version>
 				</plugin>
 				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-versions-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.7</version>
@@ -163,6 +169,11 @@
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.6.1.201212231917</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-scm-plugin</artifactId>
+					<version>1.8.1</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -173,9 +184,9 @@
 					<useJDK>BREE</useJDK>
 					<showWarnings>true</showWarnings>
 					<compilerArgument>-enableJavadoc</compilerArgument>
-                    <compilerArguments>
+					<compilerArguments>
 						<properties>${project.basedir}/.settings/org.eclipse.jdt.core.prefs</properties>
-                    </compilerArguments>
+					</compilerArguments>
 				</configuration>
 			</plugin>
 			<!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
@@ -215,7 +226,8 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<!-- For Debug add these parameters: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -->
-					<argLine>${tycho.testArgLine} -Xms256m -Xmx512m -XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
+					<argLine>${tycho.testArgLine} -Xms256m -Xmx512m \
+					-XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
 					<useUIHarness>true</useUIHarness>
 					<includes>
 						<include>**/*Test.java</include>
@@ -266,40 +278,32 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+			<!-- Release and Deploy settings: Skip always expect for itself -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Parse version to properties (used in file-deploy) -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<!-- Release and Deploy settings: Skip normal deploy plugin -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-deploy-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</plugin>
-					<!-- Parse version to properties (used in file-deploy) -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>parse-version</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>parse-version</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>
