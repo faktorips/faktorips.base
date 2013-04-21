@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>1.2.3-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -31,6 +31,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<skip-checkstyle>false</skip-checkstyle>
 		<skip-findbugs>false</skip-findbugs>
+		<scm.pushChanges>true</scm.pushChanges>
 	</properties>
 
 	<repositories>
@@ -218,6 +219,16 @@
 				<configuration>
 					<format>'${version.kind}_'yyyyMMdd-HHmm</format>
 				</configuration>
+				<executions>
+					<execution>
+						<!-- need to run build-qualifier to get the unqualified version for tagging -->
+						<id>build-qualifier</id>
+						<goals>
+							<goal>build-qualifier</goal>
+						</goals>
+						<phase>validate</phase>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Tycho Test Settings -->
@@ -227,7 +238,7 @@
 				<configuration>
 					<!-- For Debug add these parameters: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -->
 					<argLine>${tycho.testArgLine} -Xms256m -Xmx512m \
-					-XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
+						-XX:MaxPermSize=256M -XX:+AggressiveOpts</argLine>
 					<useUIHarness>true</useUIHarness>
 					<includes>
 						<include>**/*Test.java</include>
@@ -302,8 +313,62 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>parse-version</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<configuration>
+					<newVersion>${project.version}</newVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<configuration>
+					<message>if this message appear there is probably an error in the
+						release build - this commit should never happens</message>
+					<connectionType>connection</connectionType>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>setNextVersion</id>
+			<activation>
+				<property>
+					<name>nextVersion</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-versions-plugin</artifactId>
+						<configuration>
+							<newVersion>${nextVersion}-SNAPSHOT</newVersion>
+						</configuration>
+						<executions>
+							<execution>
+								<id>setNextVersion</id>
+								<goals>
+									<goal>set-version</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

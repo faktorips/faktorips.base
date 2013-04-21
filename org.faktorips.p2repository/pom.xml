@@ -20,8 +20,8 @@
 		<deploy.basedir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}</deploy.basedir>
 		<deploy.deployedRepositoryZip>${deploy.basedir}/${qualifiedVersion}/${deploy.moduleVersion}-${qualifiedVersion}.zip</deploy.deployedRepositoryZip>
 		<deploy.license>Faktor-IPS_Lizenzvertrag.pdf</deploy.license>
-		<deploy.downloadDir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
-		<deploy.repositoryDir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}/${qualifiedVersion}</deploy.repositoryDir>
+		<deploy.downloadDir>${deploy.basedir}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
+		<deploy.repositoryDir>${deploy.basedir}/${qualifiedVersion}</deploy.repositoryDir>
 	</properties>
 
 
@@ -38,6 +38,9 @@
 	<profiles>
 		<profile>
 			<id>release</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -148,7 +151,7 @@
 								<configuration>
 									<fromDir>${project.build.directory}/${repositoryDir}</fromDir>
 									<includes>**</includes>
-									<url>scp://${deploy.server}</url>
+									<url>scp://${deploy.user}@${deploy.server}</url>
 									<toDir>${deploy.repositoryDir}</toDir>
 								</configuration>
 							</execution>
@@ -161,7 +164,7 @@
 								<configuration>
 									<fromDir>${project.build.directory}</fromDir>
 									<includes>*.zip</includes>
-									<url>scp://${deploy.server}</url>
+									<url>scp://${deploy.user}@${deploy.server}</url>
 									<toDir>${deploy.downloadDir}</toDir>
 								</configuration>
 							</execution>
@@ -180,8 +183,8 @@
 								</goals>
 								<phase>deploy</phase>
 								<configuration>
-									<executable>ssh</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.basedir} ${deploy.basedir}/${qualifiedVersion} &lt; {deploy.skript.buildComposites}</commandlineArgs>
+									<executable>${project.basedir}/callSSH.sh</executable>
+									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.basedir} ${deploy.repositoryDir} ${deploy.skript.buildComposites}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>

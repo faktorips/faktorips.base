@@ -4,6 +4,10 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	
+	<properties>
+		<git.user>${user.name}</git.user>
+	</properties>
+	
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.aggregator</artifactId>
 	<version>3.9.0-SNAPSHOT</version>
@@ -12,7 +16,7 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>1.2.0-SNAPSHOT</version>
+		<version>1.3.0-SNAPSHOT</version>
 	</parent>
 	
 	<!-- These are all modules that are included in the Faktor-IPS build -->
@@ -23,5 +27,48 @@
 		<module>tests</module>
 		<module>sites</module>
 	</modules>
+
+	<scm>
+		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+	</scm>
+	
+	<profiles>
+			<profile>
+			<id>tagScm</id>
+			<activation>
+				<!-- This profile should be active by default, also if there is a next 
+					version set -->
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>nextVersion</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-scm-plugin</artifactId>
+						<executions>
+							<execution>
+								<inherited>false</inherited>
+								<id>tag</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>tag</goal>
+								</goals>
+								<configuration>
+									<tag>v${unqualifiedVersion}_${version.kind}</tag>
+									<message>Release Version
+										${unqualifiedVersion}.${buildQualifier}</message>
+									<connectionType>connection</connectionType>
+									<pushChanges>${scm.pushChanges}</pushChanges>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
