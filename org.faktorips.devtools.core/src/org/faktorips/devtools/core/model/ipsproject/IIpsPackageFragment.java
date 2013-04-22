@@ -38,12 +38,12 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Constant that represents the name of the default package to make it explicit that the default
      * package name is an empty string.
      */
-    public final static String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
+    public static final String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
 
     /**
      * The char used as separator for sub packages.
      */
-    public final static char SEPARATOR = '.';
+    public static final char SEPARATOR = '.';
 
     /**
      * The name of the sort order file.
@@ -246,6 +246,20 @@ public interface IIpsPackageFragment extends IIpsElement {
      */
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException;
+
+    /**
+     * Returns an {@link IIpsPackageFragment} that is located in this package and is identified by
+     * the name of this package extended with the sub package name. The name of the new package is
+     * 'name.subPackageName'.
+     * <p>
+     * In contrast to {@link #createSubPackage(String, boolean, IProgressMonitor)} this method does
+     * not create the folders for the package if they do not exists
+     * 
+     * @param subPackageFragmentName The last segment of the name of the sub package fragment
+     * @return The {@link IIpsPackageFragment} that is located under this package and have the
+     *         specified name segment appended.
+     */
+    IIpsPackageFragment getSubPackage(String subPackageFragmentName);
 
     /**
      * @return The the last segment of the package name.

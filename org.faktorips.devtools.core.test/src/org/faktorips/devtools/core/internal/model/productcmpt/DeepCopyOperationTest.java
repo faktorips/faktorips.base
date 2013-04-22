@@ -580,6 +580,28 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCopySortOrder_defaultPackage() throws Exception {
+        when(targetPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
+        when(targetPackageFragment.isDefaultPackage()).thenReturn(true);
+        IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
+        when(subPackage.getLastSegmentName()).thenReturn("abc");
+        mockSourcePackage(subPackage);
+        mockTargetPackage(subPackage);
+        when(targetPackageFragment.getSubPackage("abc")).thenReturn(subPackage);
+
+        DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
+        when(sortOrderFile.exists()).thenReturn(true);
+        InputStream inputStream = mock(InputStream.class);
+        when(sortOrderFile.getContents(true)).thenReturn(inputStream);
+
+        deepCopyOperation.copySortOrder(progressMonitor);
+
+        verify(subPackage).exists();
+        verify(sortOrderFile).exists();
+        verify(targetSortOrderFile).create(sortOrderFile.getContents(true), true, progressMonitor);
+    }
+
+    @Test
     public void testCopySortOrder_noChild() throws Exception {
         mockSourcePackage();
         mockTargetPackage();

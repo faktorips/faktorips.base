@@ -70,7 +70,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IResource getCorrespondingResource() {
-        String path = name.replace('.', IPath.SEPARATOR);
+        String path = name.replace(SEPARATOR, IPath.SEPARATOR);
         IFolder folder = (IFolder)getParent().getCorrespondingResource();
         return folder.getFolder(new Path(path));
     }
@@ -159,8 +159,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             if (content[i].getType() == IResource.FOLDER) {
                 if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
                         .containsErrorMsg()) {
-                    String packageName = getName().equals(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE) ? content[i]
-                            .getName() : getName() + "." + content[i].getName(); //$NON-NLS-1$ 
+                    String packageName = getSubPackageName(content[i].getName());
                     list.add(new IpsPackageFragment(getParent(), packageName));
                 }
             }
@@ -331,6 +330,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
     }
 
+    /**
+     * @deprecated {@link IIpsPackageFragment#createIpsFileFromTemplate(String, IIpsObject, GregorianCalendar, GregorianCalendar, boolean, IProgressMonitor)}
+     */
     @Override
     @Deprecated
     public IIpsSrcFile createIpsFileFromTemplate(String name,
@@ -482,7 +484,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, IStatus.ERROR, NLS.bind(
                     "{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
-        return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
+        return getRoot().createPackageFragment(getSubPackageName(name), true, null);
     }
 
     @Override

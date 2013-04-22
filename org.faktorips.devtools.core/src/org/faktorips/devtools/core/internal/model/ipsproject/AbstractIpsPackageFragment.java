@@ -54,7 +54,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
 
     @Override
     public IIpsPackageFragment getParentIpsPackageFragment() {
-        int lastIndex = getName().lastIndexOf("."); //$NON-NLS-1$
+        int lastIndex = getName().lastIndexOf(SEPARATOR);
         if (lastIndex < 0) {
             if (isDefaultPackage()) {
                 return null;
@@ -69,12 +69,12 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
 
     @Override
     public IPath getRelativePath() {
-        return new Path(getName().replace('.', '/'));
+        return new Path(getName().replace(SEPARATOR, IPath.SEPARATOR));
     }
 
     @Override
     public boolean isDefaultPackage() {
-        return name.equals(""); //$NON-NLS-1$
+        return getName().equals(NAME_OF_THE_DEFAULT_PACKAGE);
     }
 
     @Override
@@ -88,17 +88,27 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
 
     @Override
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type) {
-        return new IpsSrcFile(this, filenameWithoutExtension + '.' + type.getFileExtension());
+        return new IpsSrcFile(this, filenameWithoutExtension + SEPARATOR + type.getFileExtension());
     }
 
     @Override
     public String getLastSegmentName() {
-        int index = name.lastIndexOf('.');
+        int index = getName().lastIndexOf(SEPARATOR);
         if (index == -1) {
-            return name;
+            return getName();
         } else {
-            return name.substring(index + 1);
+            return getName().substring(index + 1);
         }
+    }
+
+    protected String getSubPackageName(String subPackageName) {
+        return isDefaultPackage() ? subPackageName : getName() + SEPARATOR + subPackageName;
+    }
+
+    @Override
+    public IIpsPackageFragment getSubPackage(String subPackageFragmentName) {
+        String packageName = getSubPackageName(subPackageFragmentName);
+        return getRoot().getIpsPackageFragment(packageName);
     }
 
     /**

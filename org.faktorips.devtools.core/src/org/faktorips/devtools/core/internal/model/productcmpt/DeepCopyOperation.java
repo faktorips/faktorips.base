@@ -226,9 +226,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             IIpsPackageFragment sourceParent,
             IIpsPackageFragment targetParent) throws CoreException {
         for (IIpsPackageFragment fragment : sourceParent.getChildIpsPackageFragments()) {
-            IIpsPackageFragment destination = targetParent.getRoot().getIpsPackageFragment(
-                    targetParent.getName() + IIpsPackageFragment.SEPARATOR + fragment.getLastSegmentName());
-            if (destination != null && destination.exists()) {
+            IIpsPackageFragment destination = targetParent.getSubPackage(fragment.getLastSegmentName());
+            if (destination.exists()) {
                 IFile sortOrder = fragment.getSortOrderFile();
                 if (sortOrder.exists() && destination.getSortOrderFile() != null
                         && !destination.getSortOrderFile().exists()) {
