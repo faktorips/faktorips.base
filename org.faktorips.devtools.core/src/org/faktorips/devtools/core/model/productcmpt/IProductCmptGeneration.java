@@ -32,7 +32,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PRODUCTCMPTGEN-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "PRODUCTCMPTGEN-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the generation contains less relations of a specific
@@ -47,7 +47,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      *             instead.
      */
     @Deprecated
-    public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
+    public static final String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the generation contains more relations of a specific
@@ -63,7 +63,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      *             instead.
      */
     @Deprecated
-    public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
+    public static final String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that two or more relations of a specific type have the
@@ -73,20 +73,20 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      *             {@link IProductCmptLinkContainer#MSGCODE_DUPLICATE_RELATION_TARGET} instead.
      */
     @Deprecated
-    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
+    public static final String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template for the product this generation is for
      * could not be found.
      */
-    public final static String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
+    public static final String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component type for this generation
      * contains an attribute that has no corresponding configuration element configured in this
      * generation.
      */
-    public final static String MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT = MSGCODE_PREFIX
+    public static final String MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT = MSGCODE_PREFIX
             + "AttributeWithMissingConfigElement"; //$NON-NLS-1$
 
     /**
@@ -94,7 +94,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * component that doesn't have an effective date that is before or equal to the effective date
      * of the referencing product component generation.
      */
-    public final static String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
+    public static final String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
 
     /**
      * Returns the product component this generation belongs to.
@@ -258,6 +258,15 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * formula is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);
+
+    /**
+     * Returns <code>true</code> if there is at least one formula that has an entered expression.
+     * Returns <code>false</code> if there is no formula or if every formula has no entered
+     * expression.
+     * 
+     * @return <code>true</code> for at least one available formula
+     */
+    public boolean isContainingAvailableFormula();
 
     /**
      * Returns the number of validation rules defined (or configured respectively) in this

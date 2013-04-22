@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
@@ -63,7 +64,7 @@ import org.faktorips.util.LocalizedStringsSet;
 public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder {
 
     // property key for the constructor's Javadoc.
-    private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
+    private static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
 
     // the product component generation sourcecode is generated for.
     private IProductCmptGeneration generation;
@@ -133,15 +134,26 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
         buildConstructor(mainSection.getConstructorBuilder());
         IFormula[] formulas = generation.getFormulas();
-        for (int i = 0; i < formulas.length; i++) {
-            try {
-                if (!formulas[i].validate(getIpsProject()).containsErrorMsg()) {
-                    generateMethodForFormula(formulas[i], mainSection.getMethodBuilder());
-                }
-            } catch (Exception e) {
-                addToBuildStatus(new IpsStatus("Error generating code for " + formulas[i], e)); //$NON-NLS-1$
+        for (final IFormula formula : formulas) {
+            if (isGenerateFormula(formula)) {
+                generateMethodForFormula(formula, mainSection.getMethodBuilder());
             }
         }
+    }
+
+    private boolean isGenerateFormula(final IFormula formula) {
+        try {
+            if (!formula.isValid(getIpsProject())) {
+                return false;
+            }
+        } catch (CoreException e) {
+            StdBuilderPlugin.log(e);
+            return false;
+        }
+        if (formula.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -225,10 +237,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                 }
                 builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
                 ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
-                if (valuetype != null && valuetype.isPrimitive()) { // optimization: we search
-                                                                    // for
-                    // value types only as only
-                    // those can be primitives!
+                if (valuetype != null && valuetype.isPrimitive()) {
+                    // optimization: we search for value types only as only those can be primitives!
                     builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

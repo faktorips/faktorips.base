@@ -32,35 +32,35 @@ import org.faktorips.fl.ExprCompiler;
  */
 public interface IExpression extends IIpsObjectPart, IDescribedElement {
 
-    public final static String PROPERTY_FORMULA_SIGNATURE_NAME = "formulaSignature"; //$NON-NLS-1$
-    public final static String PROPERTY_EXPRESSION = "expression"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULA_SIGNATURE_NAME = "formulaSignature"; //$NON-NLS-1$
+    public static final String PROPERTY_EXPRESSION = "expression"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the formula signature's can't be found.
      */
-    public final static String MSGCODE_SIGNATURE_CANT_BE_FOUND = MSGCODE_PREFIX + "SignatureCantBeFound"; //$NON-NLS-1$
+    public static final String MSGCODE_SIGNATURE_CANT_BE_FOUND = MSGCODE_PREFIX + "SignatureCantBeFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the formula signature's data type can't be found and
      * so the formula's data type can't be checked against it.
      */
-    public final static String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the formula's data type is not compatible with the
      * one defined by the signature.
      */
-    public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype"; //$NON-NLS-1$
+    public static final String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the expression is empty (and it should not.
      */
-    public final static String MSGCODE_EXPRESSION_IS_EMPTY = MSGCODE_PREFIX + "ExpressionIsEmpty"; //$NON-NLS-1$
+    public static final String MSGCODE_EXPRESSION_IS_EMPTY = MSGCODE_PREFIX + "ExpressionIsEmpty"; //$NON-NLS-1$
 
     /**
      * For formulas this IIpsElement method returns the formula signature name.
@@ -110,6 +110,12 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * Sets the new formula expression.
      */
     void setExpression(String newExpression);
+
+    /**
+     * Returns <code>true</code> if this formulas expression is empty. Returns <code>false</code> if
+     * it is not empty.
+     */
+    boolean isEmpty();
 
     /**
      * Returns an expression compiler that can be used to compile the formula. or <code>null</code>

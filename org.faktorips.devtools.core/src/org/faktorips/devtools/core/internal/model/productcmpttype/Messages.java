@@ -52,6 +52,7 @@ public class Messages extends NLS {
     public static String ProductCmptTypeMethod_FormulaSignatureDatatypeMustBeAValueDatatype;
     public static String ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;
     public static String ProductCmptTypeMethod_msgNoOverloadableFormulaInSupertypeHierarchy;
+    public static String ProductCmptTypeMethod_msgOptionalNotAllowedBecauseNotOptionalInSupertypeHierarchy;
 
     public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
     public static String TableStructureUsage_msgInvalidRoleName;

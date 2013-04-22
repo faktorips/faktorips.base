@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime;
 
+import java.util.Arrays;
+
 /**
  * Exception that indicates that the execution of a formula has changed.
  * 
@@ -24,7 +26,13 @@ public class FormulaExecutionException extends RuntimeException {
 
     public FormulaExecutionException(String productCmptGeneration, String formula, String params, Throwable cause) {
         super("Formula execution failed. ProductCmptGeneration: " + productCmptGeneration + ",  formula: " + formula
-                + ", params: " + params, cause);
+                + ", " + params, cause);
+    }
+
+    public FormulaExecutionException(IProductComponentGeneration productCmptGeneration, String formula,
+            Object... parameters) {
+        super("Invalid formula: ProductCmptGeneration: " + productCmptGeneration + ",  formula: " + formula
+                + ", Parameters: " + Arrays.toString(parameters));
     }
 
 }

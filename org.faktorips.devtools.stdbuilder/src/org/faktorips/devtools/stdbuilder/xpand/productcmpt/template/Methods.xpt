@@ -14,10 +14,21 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
-    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()»
-    «IF genInterface()»;«ELSE-»
+    «getModifier(genInterface())» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()»
+    «IF !isGenerateMethodBody(genInterface())»;«ELSE-»
     {
-        return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
+    	«IF formulaCompiling.compileToXml -»
+	    	«IF formulaOptional-»
+	    		if («methodNameIsFormulaAvailable»()) {
+	    	«ENDIF-»
+	        	return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
+	    	«IF formulaOptional-»
+	    		}
+	    	«ENDIF-»
+        «ENDIF-»
+    	«IF formulaOptional-»
+        	throw new «FormulaExecutionException()»(this, "«name»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
+        «ENDIF-» 
     }
     «ENDIF-»
     «IF overloadsFormula && !genInterface()»
@@ -28,12 +39,25 @@
 		     * @generated
 		     */
 		    «overrideAnnotation(false)-»
-		    «overloaded.getModifier(false)» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
+		    «overloaded.getModifier(genInterface())» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
 		        // TODO a delegation to the method «methodName»(«FOREACH parameters AS param SEPARATOR ", "»«param.javaClassName»«ENDFOREACH») needs to be implemented here
 		        // And make sure to disable the regeneration of this method.
 		        throw new RuntimeException("Not implemented yet.");
 		    }
     	«ENDLET-»
+    «ENDIF-»
+    
+    «IF formulaOptional && !overloadsFormula»
+    	/**
+    	* @generated
+    	*/
+    	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    	«getModifier(false)» boolean «method(methodNameIsFormulaAvailable)» 
+	    «IF genInterface()»;«ELSE-»
+	    {
+	        return «isFormulaAvailable("\"" + formularName + "\"")»;
+	    }
+	    «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
 
@@ -48,7 +72,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
-    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» «IF abstract || genInterface()-»
+    «getModifier(genInterface())» «javaClassName» «method(methodName, methodParameters)» «IF abstract || genInterface()-»
     	;
     «ELSE-»
 	    {

@@ -302,7 +302,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(1, relations.length);
 
         IFormula[] formulas = generation.getFormulas();
-        assertEquals(1, formulas.length);
+        assertEquals(2, formulas.length);
 
         List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
         assertEquals(1, rules.size());
@@ -691,6 +691,44 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         List<IProductCmptLink> linksIncludingGenerations = generation1.getLinksIncludingProductCmpt();
         assertEquals(links, linksIncludingGenerations);
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_noFormula() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+
+        assertFalse(generation.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_anyEmptyFormula() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        generation.newFormula();
+
+        assertFalse(generation.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        IFormula newFormula = generation.newFormula();
+        newFormula.setExpression("anyExpression");
+
+        assertTrue(generation.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        generation.newFormula();
+        IFormula newFormula = generation.newFormula();
+        newFormula.setExpression("anyExpression");
+
+        assertTrue(generation.isContainingAvailableFormula());
     }
 
 }

@@ -14,8 +14,10 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,5 +101,15 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         assertEquals(false, gen.isValidationRuleActivated("RegelDrei"));
 
         assertEquals(false, gen.isValidationRuleActivated("nonExistentRule"));
+    }
+
+    @Test
+    public void testIsFormulaAvailable() {
+        Element genElement = getTestDocument().getDocumentElement();
+        gen.initFromXml(genElement);
+
+        assertTrue(gen.isFormulaAvailable("testFormula"));
+        assertFalse(gen.isFormulaAvailable("emptyFormula"));
+        assertFalse(gen.isFormulaAvailable("notExistingFormula"));
     }
 }

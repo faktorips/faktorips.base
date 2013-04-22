@@ -17,7 +17,12 @@
             </Range>
         </ValueSet>
     </ConfigElement>
-    <Formula id="2" formulaSignature="PremiumCalculation"/>
+    <Formula id="2" formulaSignature="PremiumCalculation">
+    	<Expression isNull="false">120EUR</Expression>
+    </Formula>
+    <Formula id="4345345" formulaSignature="emptyCalculation">
+    	<Expression isNull="false"></Expression>
+    </Formula>
     <Link id="3" association="coverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
     <ValidationRuleConfig id="4" active="true"/>
 </Generation>

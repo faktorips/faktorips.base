@@ -15,6 +15,7 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,10 @@ import org.w3c.dom.NodeList;
  * @author dirmeier
  */
 final class ProductComponentXmlUtil {
+
+    static final String XML_TAG_FORMULA = "Formula";
+    static final String XML_ATTR_FORMULA_SIGNATURE = "formulaSignature";
+    static final String XML_TAG_EXPRESSION = "Expression";
 
     private ProductComponentXmlUtil() {
         // do not instantiate
@@ -95,6 +100,33 @@ final class ProductComponentXmlUtil {
             }
         }
         return elementMap;
+    }
+
+    /**
+     * Returns a set containing the formulaSignatures of all available formulars (with a not empty
+     * expression) found in the indicated generation's xml element.
+     * 
+     * @param element An xml element containing a product component generation's data.
+     * @throws NullPointerException if genElement is <code>null</code>.
+     */
+    static final Map<String, String> getAvailableFormulars(Element element) {
+        Map<String, String> availableFormulas = new LinkedHashMap<String, String>();
+        NodeList nl = element.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node node = nl.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element aFormula = (Element)node;
+                if (XML_TAG_FORMULA.equals(node.getNodeName())) {
+                    String name = aFormula.getAttribute(XML_ATTR_FORMULA_SIGNATURE);
+                    NodeList nodeList = aFormula.getElementsByTagName(XML_TAG_EXPRESSION);
+                    Element expressionElement = (Element)nodeList.item(0);
+
+                    String content = expressionElement.getTextContent();
+                    availableFormulas.put(name, content.trim());
+                }
+            }
+        }
+        return availableFormulas;
     }
 
 }

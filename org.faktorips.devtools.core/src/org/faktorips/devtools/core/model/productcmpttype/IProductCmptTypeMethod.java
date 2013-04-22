@@ -26,31 +26,36 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  */
 public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
 
-    public final static String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
-    public final static String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
-    public final static String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
+    public static final String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULA_OPTIONAL = "formulaOptional"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULA_OPTIONAL_SUPPORTED = "formulaOptionalSupported"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of a formula signature definition is
      * void or a none value data type.
      */
-    public final static String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IMethod.MSGCODE_PREFIX
+    public static final String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IMethod.MSGCODE_PREFIX
             + "DatatypeMustBeAValueDatatypeForFormulaSignature"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a method is marked as formula signature but the
      * formula name is missing.
      */
-    public final static String MSGCODE_FORMULA_NAME_IS_EMPTY = IMethod.MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
+    public static final String MSGCODE_FORMULA_NAME_IS_EMPTY = IMethod.MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a method is marked as formula signature but the
      * formula name is missing.
      */
-    public final static String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IMethod.MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
+    public static final String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IMethod.MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
 
-    public final static String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IMethod.MSGCODE_PREFIX
+    public static final String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IMethod.MSGCODE_PREFIX
             + "NoFormulaWithSameNameInTypeHierarchy"; //$NON-NLS-1$
+
+    public static final String MSGCODE_FORMULA_OPTIONAL_NOT_ALLOWED = IMethod.MSGCODE_PREFIX
+            + "NotOptionalIfNotOptionalInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Returns the product component type this method belongs to.
@@ -58,7 +63,7 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
     public IProductCmptType getProductCmptType();
 
     /**
-     * Returns <code>true</code> if this is formula signature definition, <code>false</code> if it
+     * Returns <code>true</code> if this is a formula signature definition, <code>false</code> if it
      * is not.
      */
     public boolean isFormulaSignatureDefinition();
@@ -67,6 +72,36 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
      * Sets if this method defines a formula signature or not.
      */
     public void setFormulaSignatureDefinition(boolean newValue);
+
+    /**
+     * Returns <code>true</code> if this is an optional formula, <code>false</code> if it is not. If
+     * the formula is optional, the user does not need to enter a formula expression.
+     * <p>
+     * This method always returns false if {@link #isFormulaOptionalSupported()} returns false.
+     * 
+     * @return <code>true</code> if the formula is optional and optional formula is supported.
+     */
+    public boolean isFormulaOptional();
+
+    /**
+     * Sets if this method is an optional formula or not.
+     * 
+     * @param newValue <code>true</code> to set the formula to be optional, false to set mandatory.
+     * 
+     * @see #isFormulaOptional()
+     */
+    public void setFormulaOptional(boolean newValue);
+
+    /**
+     * Returns <code>true</code> if this {@link IProductCmptTypeMethod} is a formula signature and
+     * hence supports the optional flag. If this method returns <code>false</code> the method
+     * {@link #isFormulaOptional()} will always return <code>false</code>, too.
+     * 
+     * @return <code>true</code> if optional formula is supported.
+     * 
+     * @see #isFormulaOptional()
+     */
+    public boolean isFormulaOptionalSupported();
 
     /**
      * Returns the name of the formula signature. Note that this is not equal to the method name.

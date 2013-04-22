@@ -94,12 +94,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        if (!mustFileBeBuild(productCmpt)) {
-            return;
-        }
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
-            build((IProductCmptGeneration)generation);
+            if (mustFileBeBuild((IProductCmptGeneration)generation)) {
+                build((IProductCmptGeneration)generation);
+            }
         }
     }
 
@@ -124,23 +123,20 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
      * if no sourcefile is generated, because the product component doesn't contain a formula.
      */
     public IFile getGeneratedJavaFile(IProductCmptGeneration gen) throws CoreException {
-        if (!mustFileBeBuild(gen.getProductCmpt())) {
+        if (!mustFileBeBuild(gen)) {
             return null;
         }
         generationBuilder.setProductCmptGeneration(gen);
         return generationBuilder.getJavaFile(getVirtualIpsSrcFile(gen));
     }
 
-    private boolean mustFileBeBuild(IProductCmpt productCmpt) throws CoreException {
-        if (!productCmpt.containsFormula()) {
+    private boolean mustFileBeBuild(IProductCmptGeneration productCmptGeneration) throws CoreException {
+        if (!productCmptGeneration.isContainingAvailableFormula()) {
             return false;
         }
-        if (productCmpt.findProductCmptType(productCmpt.getIpsProject()) == null) {
-            // if the type can't be found, nothing can be generated.
+        if (productCmptGeneration.findProductCmptType(productCmptGeneration.getIpsProject()) == null) {
             return false;
         }
-        // TODO pk 25-09-2008 I think at this point it needs to be checked if file comes from an
-        // archive
         return true;
     }
 

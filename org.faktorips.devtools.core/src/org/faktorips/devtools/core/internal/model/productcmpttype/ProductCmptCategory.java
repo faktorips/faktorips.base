@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
 
-    final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
+    static final String XML_TAG_NAME = "Category"; //$NON-NLS-1$
 
     private boolean defaultForFormulaSignatureDefinitions;
 
@@ -103,7 +103,11 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public boolean isDefaultFor(IProductCmptProperty property) {
-        return isDefaultFor(property.getProductCmptPropertyType());
+        ProductCmptPropertyType productCmptPropertyType = property.getProductCmptPropertyType();
+        if (productCmptPropertyType == null) {
+            return false;
+        }
+        return isDefaultFor(productCmptPropertyType);
     }
 
     @Override

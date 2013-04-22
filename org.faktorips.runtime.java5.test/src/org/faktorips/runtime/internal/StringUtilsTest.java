@@ -13,26 +13,21 @@
 
 package org.faktorips.runtime.internal;
 
-/**
- * A collection of utility methods for Strings. We don't use a class library like apache-commons
- * here to minimize the dependencies for the generated code.
- * 
- * @author Jan Ortmann
- */
-public class StringUtils {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-    public static final String EMPTY = "";
+import org.junit.Test;
 
-    private StringUtils() {
-        // Utility class not to be instantiated.
-    }
+public class StringUtilsTest {
 
-    /**
-     * Returns <code>true</code> if s is either null or the empty string, otherwise
-     * <code>false</code>.
-     */
-    public static final boolean isEmpty(String s) {
-        return s == null || EMPTY.equals(s.trim());
+    @Test
+    public void testIsEmpty() {
+        assertTrue(StringUtils.isEmpty(null));
+        assertTrue(StringUtils.isEmpty(""));
+        assertTrue(StringUtils.isEmpty("           "));
+        assertTrue(StringUtils.isEmpty("      \n     "));
+        assertFalse(StringUtils.isEmpty("a"));
+        assertFalse(StringUtils.isEmpty(" a "));
     }
 
 }

@@ -55,6 +55,9 @@ getRepository() :
 // Methods in ProductComponentGeneration
 // ---------------------------------
 
+isFormulaAvailable(String paramName) :
+	"isFormulaAvailable(" + paramName + ")";
+
 doInitPropertiesFromXml(String paramMap) :
 	"doInitPropertiesFromXml(" + paramMap + ")";
 

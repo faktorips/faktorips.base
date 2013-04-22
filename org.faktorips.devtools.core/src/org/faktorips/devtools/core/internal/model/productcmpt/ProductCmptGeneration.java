@@ -345,6 +345,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
+    @Override
+    public boolean isContainingAvailableFormula() {
+        for (IFormula formula : getFormulas()) {
+            if (!formula.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns true if the generation contains a formula config element, otherwise false.
      */

@@ -83,7 +83,7 @@ public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropert
             Method getter = property.getReadMethod();
             return getter.invoke(object, new Object[0]);
         } catch (Exception e) {
-            throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
+            throw new RuntimeException("Error getting property value " + property.getName(), e); //$NON-NLS-1$
         }
     }
 

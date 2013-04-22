@@ -19,13 +19,17 @@ import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XMethod;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,4 +85,37 @@ public class XProductCmptGenerationClassTest {
         assertThat(superclasses, hasItems(xSuperType, xSuperSuperType));
     }
 
+    @Test
+    public void testOptionalFormulars() {
+
+        final IProductCmptTypeMethod superMandatoryMethod = mock(IProductCmptTypeMethod.class);
+        when(superMandatoryMethod.isFormulaOptional()).thenReturn(false);
+        when(superMandatoryMethod.isOverloadsFormula()).thenReturn(false);
+
+        final IProductCmptTypeMethod superOptionalMethod = mock(IProductCmptTypeMethod.class);
+        when(superOptionalMethod.isFormulaOptional()).thenReturn(true);
+        when(superOptionalMethod.isOverloadsFormula()).thenReturn(false);
+
+        final IProductCmptTypeMethod optionalOverloadedMethod = mock(IProductCmptTypeMethod.class);
+        when(optionalOverloadedMethod.isFormulaOptional()).thenReturn(true);
+        when(optionalOverloadedMethod.isOverloadsFormula()).thenReturn(true);
+
+        XProductCmptGenerationClass xSuperType = new XProductCmptGenerationClass(superType, modelContext, modelService) {
+
+            @Override
+            public Set<XMethod> getMethods() {
+                Set<XMethod> methods = new HashSet<XMethod>(Arrays.asList(new XMethod(superOptionalMethod,
+                        modelContext, modelService), new XMethod(superMandatoryMethod, modelContext, modelService),
+                        new XMethod(optionalOverloadedMethod, modelContext, modelService)));
+                return methods;
+            }
+
+        };
+
+        Set<XMethod> optionalFormulas = xSuperType.getOptionalFormulas();
+
+        assertEquals(1, optionalFormulas.size());
+        XMethod method = optionalFormulas.iterator().next();
+        assertEquals(superOptionalMethod, method.getMethod());
+    }
 }

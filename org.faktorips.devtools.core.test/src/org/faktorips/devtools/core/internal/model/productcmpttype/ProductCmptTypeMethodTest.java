@@ -55,6 +55,31 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testOptionalFormula() {
+        method.setFormulaSignatureDefinition(false);
+        method.setFormulaOptional(false);
+
+        assertFalse(method.isFormulaOptionalSupported());
+        assertFalse(method.isFormulaOptional());
+
+        method.setFormulaOptional(true);
+
+        assertFalse(method.isFormulaOptionalSupported());
+        assertFalse(method.isFormulaOptional());
+
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaOptional(false);
+
+        assertTrue(method.isFormulaOptionalSupported());
+        assertFalse(method.isFormulaOptional());
+
+        method.setFormulaOptional(true);
+
+        assertTrue(method.isFormulaOptionalSupported());
+        assertTrue(method.isFormulaOptional());
+    }
+
+    @Test
     public void testValidate_FormulaMustntBeAbstract() throws CoreException {
         method.setFormulaSignatureDefinition(true);
         method.setAbstract(true);
@@ -136,15 +161,18 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals(Modifier.PUBLIC, method.getModifier());
         assertTrue(method.isAbstract());
         assertTrue(method.isOverloadsFormula());
+        assertTrue(method.isFormulaOptional());
     }
 
     @Test
     public void testToXmlDocument() {
-        method = productCmptType.newProductCmptTypeMethod(); // => id=1, because it's the second method
+        method = productCmptType.newProductCmptTypeMethod(); // => id=1, because it's the second
+                                                             // method
         method.setName("getAge");
         method.setModifier(Modifier.PUBLIC);
         method.setDatatype("Decimal");
         method.setFormulaSignatureDefinition(true);
+        method.setFormulaOptional(true);
         method.setAbstract(true);
         method.setFormulaName("Premium");
         IParameter param0 = method.newParameter();
@@ -161,6 +189,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         IProductCmptTypeMethod copy = productCmptType.newProductCmptTypeMethod();
         copy.initFromXml(element);
         assertTrue(copy.isFormulaSignatureDefinition());
+        assertTrue(copy.isFormulaOptional());
         assertEquals("Premium", copy.getFormulaName());
         IParameter[] copyParams = copy.getParameters();
         assertEquals(method.getId(), copy.getId());
@@ -232,6 +261,49 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
         bMethod.setOverloadsFormula(true);
         assertTrue(bMethod.isOverloadsFormula());
+    }
+
+    @Test
+    public void testValidate_OverLoaded_Optional() throws CoreException {
+        IProductCmptType aType = newProductCmptType(ipsProject, "AType");
+        IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
+        aMethod.setName("calculate");
+        aMethod.setDatatype(Datatype.STRING.toString());
+        aMethod.setFormulaName("formula");
+        aMethod.setFormulaSignatureDefinition(true);
+        aMethod.setModifier(Modifier.PUBLIC);
+        aMethod.newParameter(Datatype.STRING.toString(), "param1");
+        aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        aMethod.setFormulaOptional(true);
+
+        IProductCmptType bType = newProductCmptType(ipsProject, "BType");
+        bType.setSupertype(aType.getQualifiedName());
+        IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
+        bMethod.setName("calculate");
+        bMethod.setDatatype(Datatype.STRING.toString());
+        bMethod.setFormulaName("formula");
+        bMethod.setFormulaSignatureDefinition(true);
+        bMethod.setModifier(Modifier.PUBLIC);
+        bMethod.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        bMethod.setOverloadsFormula(true);
+
+        bMethod.setFormulaOptional(true);
+        MessageList msgList = bMethod.validate(ipsProject);
+        assertTrue(msgList.isEmpty());
+
+        bMethod.setFormulaOptional(false);
+        msgList = bMethod.validate(ipsProject);
+        assertTrue(msgList.isEmpty());
+
+        aMethod.setFormulaOptional(false);
+        msgList = bMethod.validate(ipsProject);
+        assertTrue(msgList.isEmpty());
+
+        bMethod.setFormulaOptional(true);
+        msgList = bMethod.validate(ipsProject);
+        Message messageByCode = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_OPTIONAL_NOT_ALLOWED);
+        assertNotNull(messageByCode);
     }
 
     @Test

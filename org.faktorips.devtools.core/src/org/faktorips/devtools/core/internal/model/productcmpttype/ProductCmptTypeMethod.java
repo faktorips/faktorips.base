@@ -41,6 +41,8 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     private boolean overloadsFormula = false;
 
+    private boolean formulaOptional = false;
+
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
     }
@@ -117,14 +119,16 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                 .booleanValue();
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA)).booleanValue();
+        formulaOptional = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_OPTIONAL)).booleanValue();
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, String.valueOf(formulaSignatureDefinition));
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
+        element.setAttribute(PROPERTY_FORMULA_OPTIONAL, String.valueOf(formulaOptional));
     }
 
     @Override
@@ -168,6 +172,10 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT, text, Message.ERROR,
                     this, IMethod.PROPERTY_ABSTRACT));
         }
+        validateOverloadedFormulaSignature(result, ipsProject);
+    }
+
+    private void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (isFormulaSignatureDefinition() && isOverloadsFormula()) {
             FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
             finder.start(getProductCmptType().findSuperProductCmptType(ipsProject));
@@ -175,6 +183,12 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                 result.add(new Message(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY,
                         Messages.ProductCmptTypeMethod_msgNoOverloadableFormulaInSupertypeHierarchy, Message.ERROR,
                         this, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA));
+            }
+
+            if (isFormulaOptional() && !finder.getMethod().isFormulaOptional()) {
+                result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_OPTIONAL_NOT_ALLOWED,
+                        Messages.ProductCmptTypeMethod_msgOptionalNotAllowedBecauseNotOptionalInSupertypeHierarchy,
+                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_OPTIONAL));
             }
         }
     }
@@ -205,6 +219,23 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
+    @Override
+    public boolean isFormulaOptional() {
+        return formulaOptional && isFormulaOptionalSupported();
+    }
+
+    @Override
+    public void setFormulaOptional(boolean formulaOptional) {
+        boolean oldValue = this.formulaOptional;
+        this.formulaOptional = formulaOptional;
+        valueChanged(oldValue, formulaOptional);
+    }
+
+    @Override
+    public boolean isFormulaOptionalSupported() {
+        return isFormulaSignatureDefinition();
+    }
+
     /**
      * Searches for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. Stops searching when the first formula method is found that meets this
@@ -229,6 +260,10 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             }
             method = currentType.getFormulaSignature(formulaName);
             return method == null;
+        }
+
+        private IProductCmptTypeMethod getMethod() {
+            return method;
         }
 
     }

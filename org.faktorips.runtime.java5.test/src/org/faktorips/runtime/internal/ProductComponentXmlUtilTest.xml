@@ -26,8 +26,8 @@
 	<Link association="relation4" target="target4" minCardinality="0"
 		maxCardinality="n" />
 	<Description />
-	<Expression isNull="false">WENN(parameter_1 = 0; 0 ; 1)</Expression>
 	<Formula formulaSignature="testFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b2">
+		<Expression isNull="false">WENN(parameter_1 = 0; 0 ; 1)</Expression>
 		<compiledExpression>
 		<![CDATA[
 			public int computeTestFormula(int parameter_1, String parameter_2) {
@@ -35,6 +35,13 @@
 			}
 		]]>
 		</compiledExpression>
+	</Formula>
+	<Formula formulaSignature="emptyFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b3">
+		<Expression isNull="false"></Expression>
+	</Formula>
+	<Formula formulaSignature="whitespaceFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b3">
+		<Expression isNull="false">
+		</Expression>
 	</Formula>
 	<ValidationRuleConfig ruleName="Regel1" active="true"/>
 	<ValidationRuleConfig ruleName="RegelZwei" active="false"/>

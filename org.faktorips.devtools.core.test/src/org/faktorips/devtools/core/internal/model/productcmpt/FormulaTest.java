@@ -109,6 +109,21 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_NoExpression_FormulaOptional() throws CoreException {
+        formula.setExpression("");
+
+        formulaSignature.setFormulaOptional(false);
+
+        MessageList ml = formula.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IFormula.MSGCODE_EXPRESSION_IS_EMPTY));
+
+        formulaSignature.setFormulaOptional(true);
+
+        ml = formula.validate(ipsProject);
+        assertFalse(ml.toString(), ml.containsErrorMsg());
+    }
+
+    @Test
     public void testValidate_SyntaxErrorInFormula() throws CoreException {
         formula.setExpression("42EUR12");
         MessageList list = formula.validate(ipsProject);

@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Observer;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.InternationalString;
@@ -25,7 +26,6 @@ import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;

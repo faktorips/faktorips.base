@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public class XMethod extends AbstractGeneratorModelNode {
@@ -43,9 +45,23 @@ public class XMethod extends AbstractGeneratorModelNode {
         return getIpsObjectPartContainer();
     }
 
+    /**
+     * The returned modifier is the java modifier derived from the method. But if we currently
+     * generate an interface we do not want to have the modifier <i>abstract</i> included (removed
+     * by XOR '^').
+     * 
+     * @param generateInterface <code>true</code> if we currently generates an interface,
+     *            <code>false</code> if we generate an implementation
+     */
     public String getModifier(boolean generateInterface) {
-        return Modifier.toString(getMethod().getJavaModifier()
-                ^ (generateInterface && isAbstract() ? Modifier.ABSTRACT : 0));
+        int javaModifier = getMethod().getJavaModifier();
+        if (generateInterface) {
+            // Note: There is a ~ that means the compliment of abstract!
+            javaModifier &= ~Modifier.ABSTRACT;
+        } else if (!isGenerateMethodBody(generateInterface)) {
+            javaModifier |= Modifier.ABSTRACT;
+        }
+        return Modifier.toString(javaModifier);
     }
 
     public String getMethodName() {
@@ -137,6 +153,21 @@ public class XMethod extends AbstractGeneratorModelNode {
         return getDatatype().isVoid();
     }
 
+    public boolean isGenerateMethodBody(boolean genInterface) {
+        if (genInterface) {
+            return false;
+        }
+        if (isAbstract()) {
+            return false;
+        }
+        if (isFormulaSignature()) {
+            if (getFormulaCompiling() == FormulaCompiling.Subclass) {
+                return isFormulaOptional();
+            }
+        }
+        return true;
+    }
+
     public boolean isFormulaSignature() {
         if (getMethod() instanceof IProductCmptTypeMethod) {
             return ((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition();
@@ -171,4 +202,23 @@ public class XMethod extends AbstractGeneratorModelNode {
         }
     }
 
+    public boolean isFormulaOptional() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            return ((IProductCmptTypeMethod)getMethod()).isFormulaOptional();
+        } else {
+            return false;
+        }
+    }
+
+    public String getMethodNameIsFormulaAvailable() {
+        return "isFormula" + StringUtils.capitalize(getFormularName()) + "Available";
+    }
+
+    public String getFormularName() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            return ((IProductCmptTypeMethod)getMethod()).getFormulaName();
+        } else {
+            throw new RuntimeException("The method " + getName() + " is no formula signature.");
+        }
+    }
 }

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XMethod;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -87,5 +89,17 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     public String getMethodNameGetProductComponentGeneration() {
         return getJavaNamingConvention().getGetterMethodName(getImplClassName());
+    }
+
+    public Set<XMethod> getOptionalFormulas() {
+        Set<XMethod> optionalMethods = new HashSet<XMethod>();
+        Set<XMethod> methods = getMethods();
+        for (XMethod xMethod : methods) {
+            if (xMethod.isFormulaOptional() && !xMethod.isOverloadsFormula()) {
+                optionalMethods.add(xMethod);
+            }
+        }
+
+        return optionalMethods;
     }
 }

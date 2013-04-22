@@ -125,6 +125,9 @@ public class Messages extends NLS {
     public static String ProductCmptTypeMethodEditDialog_formulaCheckbox;
     public static String ProductCmptTypeMethodEditDialog_formulaGroup;
     public static String ProductCmptTypeMethodEditDialog_formulaNameLabel;
+
+    public static String ProductCmptTypeMethodEditDialog_formulaOptional;
+    public static String ProductCmptTypeMethodEditDialog_formulaOptionalHint;
     public static String ProductCmptTypeMethodEditDialog_labelOverloadsFormula;
     public static String ProductCmptTypeMethodEditDialog_categoryLabel;
     public static String StructurePage_structurePageTitle;

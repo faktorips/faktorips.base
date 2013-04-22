@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -55,6 +56,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     private IFormulaEvaluator formulaEvaluator;
 
     private Map<String, ValidationRuleConfiguration> nameToValidationRuleConfigMap = new HashMap<String, ValidationRuleConfiguration>();
+
+    private Map<String, String> availableFormulars = Collections.emptyMap();
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
@@ -182,6 +185,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * called for each formula found in the XML. see FIPS-995
      */
     protected void doInitFormulaFromXml(Element genElement) {
+        availableFormulars = ProductComponentXmlUtil.getAvailableFormulars(genElement);
+
         if (formulaEvaluator != null) {
             return;
         }
@@ -189,7 +194,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
                 Map<String, String> expressions = new LinkedHashMap<String, String>();
-                NodeList formulas = genElement.getElementsByTagName("Formula");
+                NodeList formulas = genElement.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA);
                 for (int i = 0; i < formulas.getLength(); i++) {
                     Element aFormula = (Element)formulas.item(i);
                     String name = aFormula.getAttribute("formulaSignature");
@@ -206,6 +211,11 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                 formulaEvaluator = factory.createFormulaEvaluator(this, expressions);
             }
         }
+    }
+
+    protected boolean isFormulaAvailable(String formularSignature) {
+        String expression = availableFormulars.get(formularSignature);
+        return !StringUtils.isEmpty(expression);
     }
 
     /**
@@ -376,14 +386,19 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     protected void writeFormulaToXml(Element element) {
-        if (formulaEvaluator == null) {
-            return;
-        }
-        for (Entry<String, String> expressionEntry : formulaEvaluator.getNameToExpressionMap().entrySet()) {
-            Element formula = element.getOwnerDocument().createElement("Formula");
-            formula.setAttribute("formulaSignature", expressionEntry.getKey());
-            ValueToXmlHelper.addCDataValueToElement(expressionEntry.getValue(), formula,
-                    AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+        for (Entry<String, String> expressionEntry : availableFormulars.entrySet()) {
+            Element formula = element.getOwnerDocument().createElement(ProductComponentXmlUtil.XML_TAG_FORMULA);
+            formula.setAttribute(ProductComponentXmlUtil.XML_ATTR_FORMULA_SIGNATURE, expressionEntry.getKey());
+            ValueToXmlHelper.addValueToElement(expressionEntry.getValue(), formula,
+                    ProductComponentXmlUtil.XML_TAG_EXPRESSION);
+
+            if (formulaEvaluator != null) {
+                String compiledExpression = formulaEvaluator.getNameToExpressionMap().get(expressionEntry.getKey());
+
+                ValueToXmlHelper.addCDataValueToElement(compiledExpression, formula,
+                        AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+            }
+
             element.appendChild(formula);
         }
     }

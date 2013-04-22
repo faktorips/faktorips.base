@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
@@ -473,6 +474,15 @@ public abstract class AbstractGeneratorModelNode {
 
     public IJavaNamingConvention getJavaNamingConvention() {
         return getIpsProject().getJavaNamingConvention();
+    }
+
+    /**
+     * Returns the kind of formula compiling.
+     * 
+     * @see FormulaCompiling
+     */
+    public FormulaCompiling getFormulaCompiling() {
+        return getContext().getFormulaCompiling();
     }
 
     /**

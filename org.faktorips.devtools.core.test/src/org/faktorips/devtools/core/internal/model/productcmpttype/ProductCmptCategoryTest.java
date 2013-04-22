@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.message.Message;
@@ -96,9 +97,14 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         assertTrue(defaultPolicyAttributes.isDefaultFor(policyType.newPolicyCmptTypeAttribute()));
         assertTrue(defaultProductAttributes.isDefaultFor(productType.newProductCmptTypeAttribute()));
-        assertTrue(defaultFormulas.isDefaultFor(productType.newFormulaSignature("")));
+
+        IProductCmptTypeMethod formulaSignature = productType.newFormulaSignature("");
+        assertTrue(defaultFormulas.isDefaultFor(formulaSignature));
         assertTrue(defaultTableStructures.isDefaultFor(productType.newTableStructureUsage()));
         assertTrue(defaultValidationRules.isDefaultFor(policyType.newRule()));
+
+        formulaSignature.setFormulaSignatureDefinition(false);
+        assertFalse(defaultFormulas.isDefaultFor(formulaSignature));
     }
 
     @Test

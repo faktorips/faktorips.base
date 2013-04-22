@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
@@ -266,6 +267,16 @@ public class GeneratorModelContext {
     public boolean isGenerateChangeSupport() {
         return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
                 .booleanValue();
+    }
+
+    public FormulaCompiling getFormulaCompiling() {
+        String kind = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_FORMULA_COMPILING);
+        try {
+            return FormulaCompiling.valueOf(kind);
+        } catch (Exception e) {
+            // if value is not set correctly we use Both as default value
+            return FormulaCompiling.Both;
+        }
     }
 
     /**

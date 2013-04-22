@@ -64,8 +64,8 @@ import org.w3c.dom.Element;
  */
 public abstract class Expression extends BaseIpsObjectPart implements IExpression {
 
-    public final static String TAG_NAME = "Formula"; //$NON-NLS-1$
-    public final static String TAG_NAME_FOR_EXPRESSION = "Expression"; //$NON-NLS-1$
+    public static final String TAG_NAME = "Formula"; //$NON-NLS-1$
+    public static final String TAG_NAME_FOR_EXPRESSION = "Expression"; //$NON-NLS-1$
 
     private String formulaSignature = ""; //$NON-NLS-1$
     private String expression = ""; //$NON-NLS-1$
@@ -148,6 +148,11 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     }
 
     @Override
+    public boolean isEmpty() {
+        return StringUtils.isEmpty(getExpression());
+    }
+
+    @Override
     public ExprCompiler newExprCompiler(IIpsProject ipsProject) {
         ExtendedExprCompiler compiler = ipsProject.newExpressionCompiler();
 
@@ -178,7 +183,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
      * 
      * @return all {@link ITableContentUsage}s available for this expression
      */
-    abstract protected ITableContentUsage[] getTableContentUsages();
+    protected abstract ITableContentUsage[] getTableContentUsages();
 
     @Override
     public EnumDatatype[] getEnumDatatypesAllowedInFormula() {
@@ -196,7 +201,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     private void collectEnumTypesFromAssociationNavigation(final Map<String, EnumDatatype> nameToTypeMap) {
         IIpsProject ipsProject = getIpsProject();
         IMethod method = findFormulaSignature(ipsProject);
-        String expression = getExpression();
+        String actualExpression = getExpression();
         IParameter[] params = method.getParameters();
         try {
             for (IParameter param : params) {
@@ -206,9 +211,9 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
                     String paramName = param.getName() + '.';
                     int index = -1;
                     do {
-                        index = expression.indexOf(paramName, index + 1);
+                        index = actualExpression.indexOf(paramName, index + 1);
                         if (index >= 0) {
-                            String associationNavigations = expression.substring(index + paramName.length());
+                            String associationNavigations = actualExpression.substring(index + paramName.length());
                             collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, policyCmptType,
                                     associationNavigations);
                         }
@@ -284,7 +289,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
                     EnumDatatypesCollector collector = new EnumDatatypesCollector(ipsProject, enumtypes);
                     collector.start(policyCmptType);
                 }
-            } catch (Exception e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -375,7 +380,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_NAME, formulaSignature);
-        ValueToXmlHelper.addValueToElement(expression, element, TAG_NAME_FOR_EXPRESSION);
+        ValueToXmlHelper.addValueToElement(expression == null ? StringUtils.EMPTY : expression.trim(), element,
+                TAG_NAME_FOR_EXPRESSION);
     }
 
     @Override
@@ -385,25 +391,19 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
-        if (StringUtils.isEmpty(expression)) {
-            String text = NLS.bind(Messages.Formula_msgExpressionMissing, formulaSignature);
-            list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
-            return;
-        }
-        ExprCompiler compiler = newExprCompiler(ipsProject);
-        CompilationResult result = compiler.compile(expression);
-        if (!result.successfull()) {
-            MessageList compilerMessageList = result.getMessages();
-            for (int i = 0; i < compilerMessageList.size(); i++) {
-                Message msg = compilerMessageList.getMessage(i);
-                list.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_EXPRESSION));
-            }
-            return;
-        }
-        IMethod method = findFormulaSignature(ipsProject);
+
+        IProductCmptTypeMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
             String text = Messages.Formula_msgFormulaSignatureMissing;
             list.add(new Message(MSGCODE_SIGNATURE_CANT_BE_FOUND, text, Message.ERROR, this, PROPERTY_EXPRESSION));
+            return;
+        }
+        if (StringUtils.isEmpty(expression)) {
+            if (method.isFormulaOptional()) {
+                return;
+            }
+            String text = NLS.bind(Messages.Formula_msgExpressionMissing, formulaSignature);
+            list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
         Datatype signatureDatatype = null;
@@ -412,9 +412,14 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
-        if (signatureDatatype == null) {
-            String text = Messages.ConfigElement_msgDatatypeMissing;
-            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE_FORMULA, text, Message.ERROR, this, PROPERTY_EXPRESSION));
+        validateDatatype(list, signatureDatatype);
+        if (list.containsErrorMsg()) {
+            return;
+        }
+        ExprCompiler compiler = newExprCompiler(ipsProject);
+        CompilationResult result = compiler.compile(expression);
+        validateCompilationResult(list, result);
+        if (list.containsErrorMsg()) {
             return;
         }
         if (signatureDatatype.equals(result.getDatatype())) {
@@ -425,6 +430,23 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         }
         String text = NLS.bind(Messages.Formula_msgWrongReturntype, signatureDatatype, result.getDatatype().getName());
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
+    }
+
+    private void validateDatatype(MessageList list, Datatype signatureDatatype) {
+        if (signatureDatatype == null) {
+            String text = Messages.ConfigElement_msgDatatypeMissing;
+            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE_FORMULA, text, Message.ERROR, this, PROPERTY_EXPRESSION));
+        }
+    }
+
+    private void validateCompilationResult(MessageList list, CompilationResult result) {
+        if (!result.successfull()) {
+            MessageList compilerMessageList = result.getMessages();
+            for (int i = 0; i < compilerMessageList.size(); i++) {
+                Message msg = compilerMessageList.getMessage(i);
+                list.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_EXPRESSION));
+            }
+        }
     }
 
     @Override

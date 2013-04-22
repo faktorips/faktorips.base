@@ -14,7 +14,9 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -76,4 +78,19 @@ public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {
         assertEquals("target2", rel2El.getAttribute("target"));
     }
 
+    @Test
+    public void testGetAvailableFormulars() {
+        Element genEl = getTestDocument().getDocumentElement();
+        Map<String, String> availableFormulas = ProductComponentXmlUtil.getAvailableFormulars(genEl);
+
+        assertEquals(3, availableFormulas.size());
+        assertTrue(availableFormulas.containsKey("testFormula"));
+        assertFalse(StringUtils.isEmpty(availableFormulas.get("testFormula")));
+
+        assertTrue(availableFormulas.containsKey("emptyFormula"));
+        assertTrue(StringUtils.isEmpty(availableFormulas.get("emptyFormula")));
+
+        assertTrue(availableFormulas.containsKey("whitespaceFormula"));
+        assertTrue(StringUtils.isEmpty(availableFormulas.get("whitespaceFormula")));
+    }
 }
