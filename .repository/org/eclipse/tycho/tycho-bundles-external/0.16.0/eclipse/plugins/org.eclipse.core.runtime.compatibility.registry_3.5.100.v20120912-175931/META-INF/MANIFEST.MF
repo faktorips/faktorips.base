@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-Localization: fragment
+Bundle-RequiredExecutionEnvironment: CDC-1.0/Foundation-1.0,J2SE-1.3
+Fragment-Host: org.eclipse.equinox.registry;bundle-version="[3.5.0,3.6
+ .0)"
+Bundle-SymbolicName: org.eclipse.core.runtime.compatibility.registry
+Eclipse-SourceReferences: scm:git:git://git.eclipse.org/gitroot/platfo
+ rm/eclipse.platform.runtime.git;path="bundles/org.eclipse.core.runtim
+ e.compatibility.registry";tag=v20120912-175931
+Bundle-Version: 3.5.100.v20120912-175931
+Bundle-ClassPath: runtime_registry_compatibility.jar
+Eclipse-PatchFragment: true
+Bundle-Vendor: %providerName
+Bundle-Name: %fragmentName
+Eclipse-BundleShape: dir
+Bundle-ManifestVersion: 2
+
+Name: fragment.properties
+SHA1-Digest: 4yjHkU5Z/6ej6ZFYT+PE9sMOJPY=
+
+Name: runtime_registry_compatibility.jar
+SHA1-Digest: l4RK2TXUn2cN7P9OUU2S9OGunJA=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: KyT9FF7C7t86NoBoa2kZT3ZJBfw=
+
+Name: .api_description
+SHA1-Digest: 0XAaVgVRuOXwteX044ykm6J/Dv8=
+
+Name: about.html
+SHA1-Digest: ejOZra0kypGLQQ2bJtGTX+LI8tU=
+
