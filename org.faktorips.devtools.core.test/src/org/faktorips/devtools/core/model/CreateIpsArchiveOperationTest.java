@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -115,8 +114,47 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertFalse(coreExceptionThrownOnGetResourceAsStream(archive));
     }
 
+    /**
+     * FIPS-1756
+     * <p>
+     * The same icon is used in two product component types
+     */
     @Test
-    @Ignore
+    public void testRun_withDoubledIconFile() throws CoreException {
+        IIpsProject project = newIpsProject();
+        newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
+        newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy2", "mycompany.motor.MotorProduct2");
+
+        // configure Icon
+        IIpsSrcFile productSrcFile = project.findIpsSrcFile(new QualifiedNameType("mycompany.motor.MotorProduct",
+                IpsObjectType.PRODUCT_CMPT_TYPE));
+        IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
+        prodType.setInstancesIcon("test.gif");
+        productSrcFile.save(true, new NullProgressMonitor());
+
+        IIpsSrcFile productSrcFile2 = project.findIpsSrcFile(new QualifiedNameType("mycompany.motor.MotorProduct2",
+                IpsObjectType.PRODUCT_CMPT_TYPE));
+        IProductCmptType prodType2 = (IProductCmptType)productSrcFile2.getIpsObject();
+        prodType2.setInstancesIcon("test.gif");
+        productSrcFile2.save(true, new NullProgressMonitor());
+
+        // create fake icon file
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFolder folder = (IFolder)root.getEnclosingResource();
+        IFile iconFile = folder.getFile("test.gif");
+        // fake content, this is not a valid gif-file
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+
+        IFile archiveFile = project.getProject().getFile("test123.ipsar");
+        File file = archiveFile.getLocation().toFile();
+        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
+        operation.run(new NullProgressMonitor());
+        createLinkIfNecessary(archiveFile, file);
+
+        assertTrue(archiveFile.exists());
+    }
+
+    @Test
     public void testRunWithErroneousIconFile() throws CoreException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
