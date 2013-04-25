@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -618,12 +619,14 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopySortOrder_targetNotExists() throws Exception {
-        mockSourcePackage(mock(IIpsPackageFragment.class));
+        final IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
+        mockSourcePackage(subPackage);
         mockTargetPackage();
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
         when(sortOrderFile.exists()).thenReturn(true);
         InputStream inputStream = mock(InputStream.class);
         when(sortOrderFile.getContents(true)).thenReturn(inputStream);
+        when(targetPackageFragment.getSubPackage(anyString())).thenReturn(subPackage);
 
         deepCopyOperation.copySortOrder(progressMonitor);
 
