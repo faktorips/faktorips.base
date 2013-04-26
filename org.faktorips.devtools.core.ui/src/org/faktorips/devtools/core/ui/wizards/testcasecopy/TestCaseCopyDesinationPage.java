@@ -88,7 +88,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
     private UIToolkit toolkit;
 
-    final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
+    private final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
 
     // indicates the initial state, no changes
     private boolean initialState = true;
@@ -151,7 +151,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         // set target default
         IIpsPackageFragmentRoot packRoot = targetIpsPackageFragment.getRoot();
         if (!packRoot.isBasedOnSourceFolder()) {
-            IIpsPackageFragmentRoot srcRoots[];
+            IIpsPackageFragmentRoot[] srcRoots;
             try {
                 srcRoots = sourceTestCase.getIpsProject().getSourceIpsPackageFragmentRoots();
                 if (srcRoots.length > 0) {
@@ -171,12 +171,6 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelDestinationPackage);
         targetInput = toolkit.createPdPackageFragmentRefControl(packRoot, group);
 
-        // set target default
-        if (targetIpsPackageFragment.getRoot() != packRoot) {
-            // no valid default because target isn't based on a ips src folder (maybe an archive),
-            // thus clear target package
-            targetIpsPackageFragment = null;
-        }
         targetInput.setIpsPackageFragment(targetIpsPackageFragment);
         new TextButtonField(targetInput).addChangeListener(this);
 
