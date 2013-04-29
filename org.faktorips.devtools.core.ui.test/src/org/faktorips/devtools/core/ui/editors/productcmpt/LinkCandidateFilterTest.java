@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -176,11 +177,11 @@ public class LinkCandidateFilterTest {
         createFilter();
 
         IIpsSrcFile srcFileNotLinked = createSourceFile(ipsProject, type);
-        when(srcFileNotLinked.getName()).thenReturn("de.not.linked.PC");
+        when(srcFileNotLinked.getQualifiedNameType().getName()).thenReturn("de.not.linked.PC");
 
         IIpsSrcFile srcFileAlreadyLinked = createSourceFile(ipsProject, type);
         String linkedName = "de.linked.PC";
-        when(srcFileAlreadyLinked.getName()).thenReturn(linkedName);
+        when(srcFileAlreadyLinked.getQualifiedNameType().getName()).thenReturn(linkedName);
 
         IProductCmptLink link = mock(IProductCmptLink.class);
         when(link.getTarget()).thenReturn(linkedName);
@@ -240,6 +241,8 @@ public class LinkCandidateFilterTest {
 
     private IIpsSrcFile createSourceFile(IIpsProject project, IProductCmptType productCmptType) throws CoreException {
         IpsSrcFile srcFile = mock(IpsSrcFile.class);
+        QualifiedNameType type = mock(QualifiedNameType.class);
+        when(srcFile.getQualifiedNameType()).thenReturn(type);
 
         when(srcFile.getIpsProject()).thenReturn(project);
 

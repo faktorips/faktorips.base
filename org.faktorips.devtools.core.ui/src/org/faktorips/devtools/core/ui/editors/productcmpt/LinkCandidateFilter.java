@@ -161,9 +161,10 @@ public class LinkCandidateFilter {
     }
 
     private boolean isAlreadyLinked(IIpsSrcFile srcFile) {
+        String qualifiedName = srcFile.getQualifiedNameType().getName();
         List<IProductCmptLink> linksAsList = generation.getLinksAsList();
         for (IProductCmptLink link : linksAsList) {
-            if (link.getTarget().equals(srcFile.getName())) {
+            if (link.getTarget().equals(qualifiedName)) {
                 return true;
             }
         }
