@@ -204,7 +204,7 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     public boolean isFormulaOptional() {
         if (getMethod() instanceof IProductCmptTypeMethod) {
-            return ((IProductCmptTypeMethod)getMethod()).isFormulaOptional();
+            return !((IProductCmptTypeMethod)getMethod()).isFormulaMandatory();
         } else {
             return false;
         }

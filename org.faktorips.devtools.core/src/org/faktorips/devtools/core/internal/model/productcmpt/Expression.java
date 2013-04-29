@@ -399,7 +399,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             return;
         }
         if (StringUtils.isEmpty(expression)) {
-            if (method.isFormulaOptional()) {
+            if (!method.isFormulaMandatory()) {
                 return;
             }
             String text = NLS.bind(Messages.Formula_msgExpressionMissing, formulaSignature);

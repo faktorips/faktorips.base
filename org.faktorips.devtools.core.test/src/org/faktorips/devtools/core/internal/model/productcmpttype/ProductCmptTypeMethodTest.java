@@ -55,28 +55,28 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOptionalFormula() {
+    public void testMandatoryFormula() {
         method.setFormulaSignatureDefinition(false);
-        method.setFormulaOptional(false);
+        method.setFormulaMandatory(true);
 
         assertFalse(method.isFormulaOptionalSupported());
-        assertFalse(method.isFormulaOptional());
+        assertTrue(method.isFormulaMandatory());
 
-        method.setFormulaOptional(true);
+        method.setFormulaMandatory(false);
 
         assertFalse(method.isFormulaOptionalSupported());
-        assertFalse(method.isFormulaOptional());
+        assertTrue(method.isFormulaMandatory());
 
         method.setFormulaSignatureDefinition(true);
-        method.setFormulaOptional(false);
+        method.setFormulaMandatory(true);
 
         assertTrue(method.isFormulaOptionalSupported());
-        assertFalse(method.isFormulaOptional());
+        assertTrue(method.isFormulaMandatory());
 
-        method.setFormulaOptional(true);
+        method.setFormulaMandatory(false);
 
         assertTrue(method.isFormulaOptionalSupported());
-        assertTrue(method.isFormulaOptional());
+        assertFalse(method.isFormulaMandatory());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals(Modifier.PUBLIC, method.getModifier());
         assertTrue(method.isAbstract());
         assertTrue(method.isOverloadsFormula());
-        assertTrue(method.isFormulaOptional());
+        assertFalse(method.isFormulaMandatory());
     }
 
     @Test
@@ -172,7 +172,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         method.setModifier(Modifier.PUBLIC);
         method.setDatatype("Decimal");
         method.setFormulaSignatureDefinition(true);
-        method.setFormulaOptional(true);
+        method.setFormulaMandatory(false);
         method.setAbstract(true);
         method.setFormulaName("Premium");
         IParameter param0 = method.newParameter();
@@ -189,7 +189,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         IProductCmptTypeMethod copy = productCmptType.newProductCmptTypeMethod();
         copy.initFromXml(element);
         assertTrue(copy.isFormulaSignatureDefinition());
-        assertTrue(copy.isFormulaOptional());
+        assertFalse(copy.isFormulaMandatory());
         assertEquals("Premium", copy.getFormulaName());
         IParameter[] copyParams = copy.getParameters();
         assertEquals(method.getId(), copy.getId());
@@ -264,7 +264,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_OverLoaded_Optional() throws CoreException {
+    public void testValidate_OverLoaded_Mandatory() throws CoreException {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
@@ -274,7 +274,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         aMethod.setModifier(Modifier.PUBLIC);
         aMethod.newParameter(Datatype.STRING.toString(), "param1");
         aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
-        aMethod.setFormulaOptional(true);
+        aMethod.setFormulaMandatory(false);
 
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         bType.setSupertype(aType.getQualifiedName());
@@ -288,21 +288,21 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
         bMethod.setOverloadsFormula(true);
 
-        bMethod.setFormulaOptional(true);
+        bMethod.setFormulaMandatory(false);
         MessageList msgList = bMethod.validate(ipsProject);
         assertTrue(msgList.isEmpty());
 
-        bMethod.setFormulaOptional(false);
+        bMethod.setFormulaMandatory(true);
         msgList = bMethod.validate(ipsProject);
         assertTrue(msgList.isEmpty());
 
-        aMethod.setFormulaOptional(false);
+        aMethod.setFormulaMandatory(true);
         msgList = bMethod.validate(ipsProject);
         assertTrue(msgList.isEmpty());
 
-        bMethod.setFormulaOptional(true);
+        bMethod.setFormulaMandatory(false);
         msgList = bMethod.validate(ipsProject);
-        Message messageByCode = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_OPTIONAL_NOT_ALLOWED);
+        Message messageByCode = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_MANDATORY);
         assertNotNull(messageByCode);
     }
 

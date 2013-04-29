@@ -86,18 +86,18 @@ public class XProductCmptGenerationClassTest {
     }
 
     @Test
-    public void testOptionalFormulars() {
+    public void testOptionalFormulas() {
 
         final IProductCmptTypeMethod superMandatoryMethod = mock(IProductCmptTypeMethod.class);
-        when(superMandatoryMethod.isFormulaOptional()).thenReturn(false);
+        when(superMandatoryMethod.isFormulaMandatory()).thenReturn(true);
         when(superMandatoryMethod.isOverloadsFormula()).thenReturn(false);
 
         final IProductCmptTypeMethod superOptionalMethod = mock(IProductCmptTypeMethod.class);
-        when(superOptionalMethod.isFormulaOptional()).thenReturn(true);
+        when(superOptionalMethod.isFormulaMandatory()).thenReturn(false);
         when(superOptionalMethod.isOverloadsFormula()).thenReturn(false);
 
         final IProductCmptTypeMethod optionalOverloadedMethod = mock(IProductCmptTypeMethod.class);
-        when(optionalOverloadedMethod.isFormulaOptional()).thenReturn(true);
+        when(optionalOverloadedMethod.isFormulaMandatory()).thenReturn(false);
         when(optionalOverloadedMethod.isOverloadsFormula()).thenReturn(true);
 
         XProductCmptGenerationClass xSuperType = new XProductCmptGenerationClass(superType, modelContext, modelService) {

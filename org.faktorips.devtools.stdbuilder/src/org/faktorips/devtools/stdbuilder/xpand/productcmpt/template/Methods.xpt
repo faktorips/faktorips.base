@@ -7,10 +7,15 @@
 
 «DEFINE formulaMethod FOR XMethod-»
     /**
-   	«IF description.length > 0-» 
      * «inheritDocOrTextIf(genInterface(), description)»
-     * 
-     «ENDIF-»
+    «IF formulaOptional && (!published || genInterface())-»
+    «IF description.length > 0-»
+     * <p>
+    «ENDIF-»
+     * «localizedJDoc("METHOD_GETFORMULAR")»
+     * @see #«methodNameIsFormulaAvailable» 
+     *
+    «ENDIF-»
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
@@ -49,6 +54,12 @@
     
     «IF formulaOptional && !overloadsFormula»
     	/**
+    	«IF published && !genInterface()-»
+        * «inheritDoc()»
+    	«ELSE-»
+     	* «localizedJDoc("METHOD_IS_FORMULAR_AVAILABLE")»
+    	«ENDIF-»
+    	* 
     	* @generated
     	*/
     	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»

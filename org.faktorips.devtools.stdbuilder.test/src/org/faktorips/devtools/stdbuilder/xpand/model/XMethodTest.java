@@ -78,6 +78,7 @@ public class XMethodTest {
 
     @Test
     public void testGetModifier_notAbstractFormulaGeneratingInSubclasses() throws Exception {
+        when(method.isFormulaMandatory()).thenReturn(true);
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
         when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
         when(method.getJavaModifier()).thenReturn(Modifier.PUBLIC);
@@ -136,6 +137,7 @@ public class XMethodTest {
 
     @Test
     public void testIsGenerateMethodBody_formulaSubclassGen() throws Exception {
+        when(method.isFormulaMandatory()).thenReturn(true);
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
         when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
 
@@ -147,7 +149,7 @@ public class XMethodTest {
     @Test
     public void testIsGenerateMethodBody_optionalFormulaSubclassGen() throws Exception {
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
-        when(method.isFormulaOptional()).thenReturn(true);
+        when(method.isFormulaMandatory()).thenReturn(false);
         when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
 
         boolean generateMethodBody = xMethod.isGenerateMethodBody(false);

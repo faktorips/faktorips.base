@@ -35,13 +35,15 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMethod {
 
+    private static final String XML_FORMULA_MANDATORY = "mandatory"; //$NON-NLS-1$
+
     private boolean formulaSignatureDefinition = true;
 
     private String formulaName = ""; //$NON-NLS-1$
 
     private boolean overloadsFormula = false;
 
-    private boolean formulaOptional = false;
+    private boolean formulaMandatory = true;
 
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
@@ -118,8 +120,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
                 .booleanValue();
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
-        overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA)).booleanValue();
-        formulaOptional = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_OPTIONAL)).booleanValue();
+        overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA));
+        String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
+        formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
     }
 
     @Override
@@ -128,7 +131,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, String.valueOf(formulaSignatureDefinition));
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
-        element.setAttribute(PROPERTY_FORMULA_OPTIONAL, String.valueOf(formulaOptional));
+        element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
     }
 
     @Override
@@ -185,10 +188,10 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                         this, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA));
             }
 
-            if (isFormulaOptional() && !finder.getMethod().isFormulaOptional()) {
-                result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_OPTIONAL_NOT_ALLOWED,
+            if (!isFormulaMandatory() && finder.getMethod().isFormulaMandatory()) {
+                result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_MANDATORY,
                         Messages.ProductCmptTypeMethod_msgOptionalNotAllowedBecauseNotOptionalInSupertypeHierarchy,
-                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_OPTIONAL));
+                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY));
             }
         }
     }
@@ -220,15 +223,15 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    public boolean isFormulaOptional() {
-        return formulaOptional && isFormulaOptionalSupported();
+    public boolean isFormulaMandatory() {
+        return formulaMandatory || !isFormulaOptionalSupported();
     }
 
     @Override
-    public void setFormulaOptional(boolean formulaOptional) {
-        boolean oldValue = this.formulaOptional;
-        this.formulaOptional = formulaOptional;
-        valueChanged(oldValue, formulaOptional);
+    public void setFormulaMandatory(boolean formulaMandatory) {
+        boolean oldValue = this.formulaMandatory;
+        this.formulaMandatory = formulaMandatory;
+        valueChanged(oldValue, formulaMandatory);
     }
 
     @Override

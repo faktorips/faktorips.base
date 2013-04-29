@@ -29,7 +29,7 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
     public static final String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
     public static final String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
-    public static final String PROPERTY_FORMULA_OPTIONAL = "formulaOptional"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULA_MANDATORY = "formulaMandatory"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULA_OPTIONAL_SUPPORTED = "formulaOptionalSupported"; //$NON-NLS-1$
 
     /**
@@ -54,7 +54,7 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
     public static final String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IMethod.MSGCODE_PREFIX
             + "NoFormulaWithSameNameInTypeHierarchy"; //$NON-NLS-1$
 
-    public static final String MSGCODE_FORMULA_OPTIONAL_NOT_ALLOWED = IMethod.MSGCODE_PREFIX
+    public static final String MSGCODE_FORMULA_MUSTBE_MANDATORY = IMethod.MSGCODE_PREFIX
             + "NotOptionalIfNotOptionalInTypeHierarchy"; //$NON-NLS-1$
 
     /**
@@ -74,32 +74,35 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
     public void setFormulaSignatureDefinition(boolean newValue);
 
     /**
-     * Returns <code>true</code> if this is an optional formula, <code>false</code> if it is not. If
-     * the formula is optional, the user does not need to enter a formula expression.
+     * Returns <code>true</code> if this is an mandatory formula, <code>false</code> if it is not.
+     * If the formula is mandatory, the user needs to enter a formula expression.
      * <p>
-     * This method always returns false if {@link #isFormulaOptionalSupported()} returns false.
+     * This method always returns true if {@link #isFormulaOptionalSupported()} returns false.
      * 
-     * @return <code>true</code> if the formula is optional and optional formula is supported.
+     * @return <code>true</code> if the formula is mandatory or if optional formula is not
+     *         supported.
      */
-    public boolean isFormulaOptional();
+    public boolean isFormulaMandatory();
 
     /**
-     * Sets if this method is an optional formula or not.
+     * Sets if this method is an mandatory formula or not.
      * 
-     * @param newValue <code>true</code> to set the formula to be optional, false to set mandatory.
+     * @param formulaMandatory <code>true</code> to set the formula to be mandatory, false to set
+     *            optional.
      * 
-     * @see #isFormulaOptional()
+     * @see #isFormulaMandatory()
      */
-    public void setFormulaOptional(boolean newValue);
+    public void setFormulaMandatory(boolean formulaMandatory);
 
     /**
      * Returns <code>true</code> if this {@link IProductCmptTypeMethod} is a formula signature and
-     * hence supports the optional flag. If this method returns <code>false</code> the method
-     * {@link #isFormulaOptional()} will always return <code>false</code>, too.
+     * hence supports optional formula, that means mandatory is allowed to be false. If this method
+     * returns <code>false</code> the method {@link #isFormulaMandatory()} will always return
+     * <code>true</code>.
      * 
      * @return <code>true</code> if optional formula is supported.
      * 
-     * @see #isFormulaOptional()
+     * @see #isFormulaMandatory()
      */
     public boolean isFormulaOptionalSupported();
 

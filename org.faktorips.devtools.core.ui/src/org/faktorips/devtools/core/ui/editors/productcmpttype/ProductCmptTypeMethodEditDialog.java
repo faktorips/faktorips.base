@@ -65,9 +65,9 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         getBindingContext().bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
         AbstractCheckbox checkboxOptional = toolkit.createCheckbox(group,
-                Messages.ProductCmptTypeMethodEditDialog_formulaOptional);
-        checkboxOptional.setToolTipText(Messages.ProductCmptTypeMethodEditDialog_formulaOptionalHint);
-        getBindingContext().bindContent(checkboxOptional, method, IProductCmptTypeMethod.PROPERTY_FORMULA_OPTIONAL);
+                Messages.ProductCmptTypeMethodEditDialog_formulaMandatory);
+        checkboxOptional.setToolTipText(Messages.ProductCmptTypeMethodEditDialog_formulaMandatoryHint);
+        getBindingContext().bindContent(checkboxOptional, method, IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY);
         getBindingContext().bindEnabled(checkboxOptional, method,
                 IProductCmptTypeMethod.PROPERTY_FORMULA_OPTIONAL_SUPPORTED);
 

@@ -112,12 +112,12 @@ public class FormulaTest extends AbstractIpsPluginTest {
     public void testValidate_NoExpression_FormulaOptional() throws CoreException {
         formula.setExpression("");
 
-        formulaSignature.setFormulaOptional(false);
+        formulaSignature.setFormulaMandatory(true);
 
         MessageList ml = formula.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IFormula.MSGCODE_EXPRESSION_IS_EMPTY));
 
-        formulaSignature.setFormulaOptional(true);
+        formulaSignature.setFormulaMandatory(false);
 
         ml = formula.validate(ipsProject);
         assertFalse(ml.toString(), ml.containsErrorMsg());
