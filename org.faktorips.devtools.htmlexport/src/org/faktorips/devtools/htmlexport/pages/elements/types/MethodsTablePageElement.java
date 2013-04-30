@@ -17,16 +17,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
 /**
- * Represents a table with the {@link IMethod}s of an {@link IType} as rows and the attributes of
- * the method as columns
+ * Represents a table with the {@link IMethod}s of an {@link IType} as rows and the attributes
+ * of the method as columns
  * 
  * @author dicker
  * 

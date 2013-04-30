@@ -22,12 +22,12 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
@@ -77,7 +77,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         }
         IFormulaTestCase testcase = (IFormulaTestCase)getParent();
         IFormula formula = testcase.getFormula();
-        IMethod method = formula.findFormulaSignature(ipsProject);
+        IBaseMethod method = formula.findFormulaSignature(ipsProject);
         if (method == null) {
             return null;
         }

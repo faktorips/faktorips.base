@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.values.Decimal;
 
 /**

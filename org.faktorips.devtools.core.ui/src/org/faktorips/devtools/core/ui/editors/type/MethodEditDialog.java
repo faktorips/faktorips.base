@@ -26,8 +26,9 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -74,7 +75,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
         modifierCombo = getToolkit().createCombo(propertyPane);
         modifierCombo.setFocus();
-        getBindingContext().bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.class);
+        getBindingContext().bindContent(modifierCombo, method, ITypePart.PROPERTY_MODIFIER, Modifier.class);
 
         getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
         abstractCheckbox = getToolkit().createCheckbox(propertyPane);

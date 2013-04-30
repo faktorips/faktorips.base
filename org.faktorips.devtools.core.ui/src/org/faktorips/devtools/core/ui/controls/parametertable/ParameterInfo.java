@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.controls.parametertable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.method.IParameter;
 
 public class ParameterInfo {
 

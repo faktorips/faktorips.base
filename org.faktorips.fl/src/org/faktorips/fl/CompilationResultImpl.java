@@ -28,26 +28,6 @@ import org.faktorips.util.message.MessageList;
  */
 public class CompilationResultImpl implements CompilationResult {
 
-    /**
-     * Creates a new result, that contains a message that the given identifier is undefined. This
-     * method is intended to be used by implementations of <code>IdentifierResolver</code>
-     */
-    public final static CompilationResult newResultUndefinedIdentifier(Locale locale, String identifier) {
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
-        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
-    }
-
-    /**
-     * Extracts the datatypes from an array of compilation results.
-     */
-    public final static Datatype[] getDatatypes(CompilationResult[] results) {
-        Datatype[] types = new Datatype[results.length];
-        for (int i = 0; i < types.length; i++) {
-            types[i] = results[i].getDatatype();
-        }
-        return types;
-    }
-
     private JavaCodeFragment codeFragment;
     private MessageList messages;
     private Datatype datatype;
@@ -98,6 +78,26 @@ public class CompilationResultImpl implements CompilationResult {
     public CompilationResultImpl() {
         codeFragment = new JavaCodeFragment();
         messages = new MessageList();
+    }
+
+    /**
+     * Creates a new result, that contains a message that the given identifier is undefined. This
+     * method is intended to be used by implementations of <code>IdentifierResolver</code>
+     */
+    public static final CompilationResult newResultUndefinedIdentifier(Locale locale, String identifier) {
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
+        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+    }
+
+    /**
+     * Extracts the datatypes from an array of compilation results.
+     */
+    public static final Datatype[] getDatatypes(CompilationResult[] results) {
+        Datatype[] types = new Datatype[results.length];
+        for (int i = 0; i < types.length; i++) {
+            types[i] = results[i].getDatatype();
+        }
+        return types;
     }
 
     /**

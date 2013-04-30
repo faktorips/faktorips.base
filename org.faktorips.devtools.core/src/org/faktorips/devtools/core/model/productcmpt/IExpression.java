@@ -20,8 +20,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.ExprCompiler;
 
@@ -86,7 +86,7 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * Returns the method signature this formula implements. Returns <code>null</code> if the method
      * signature is not found.
      */
-    IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject);
+    IBaseMethod findFormulaSignature(IIpsProject ipsProject);
 
     /**
      * Returns the product component type of the product component this formula belongs to.
@@ -148,4 +148,5 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
 
     List<IAttribute> findMatchingProductCmptTypeAttributes();
 
+    boolean isFormulaMandatory();
 }

@@ -53,12 +53,9 @@ public class Messages extends NLS {
     public static String Attribute_msg_Overwritten_modifier_different;
     public static String DuplicatePropertyNameValidator_msg;
 
-    public static String Method_duplicateParamName;
-    public static String Method_duplicateSignature;
-    public static String Method_incompatbileReturnType;
-    public static String Method_msg_NameEmpty;
-    public static String Method_msg_InvalidMethodname;
-    public static String Method_msg_abstractMethodError;
+    public static String TypeMethod_duplicateSignature;
+    public static String TypeMethod_incompatbileReturnType;
+    public static String TypeMethod_msg_abstractMethodError;
 
     public static String Type_msg_AbstractMissmatch;
     public static String Type_msg_cycleInTypeHierarchy;
@@ -69,8 +66,5 @@ public class Messages extends NLS {
     public static String Type_msg_TypeHierarchyInconsistent;
     public static String Type_msgOtherTypeWithSameQNameInDependentProject;
     public static String Type_msgOtherTypeWithSameQNameInSameProject;
-
-    public static String Parameter_msg_NameEmpty;
-    public static String Parameter_msg_InvalidParameterName;
 
 }

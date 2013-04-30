@@ -39,8 +39,8 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
-import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -127,7 +127,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         attributes = new IpsObjectPartCollection<IProductCmptTypeAttribute>(this, ProductCmptTypeAttribute.class,
                 IProductCmptTypeAttribute.class, ProductCmptTypeAttribute.TAG_NAME);
         methods = new IpsObjectPartCollection<IProductCmptTypeMethod>(this, ProductCmptTypeMethod.class,
-                IProductCmptTypeMethod.class, Method.XML_ELEMENT_NAME);
+                IProductCmptTypeMethod.class, BaseMethod.XML_ELEMENT_NAME);
         associations = new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
         categories = new IpsObjectPartCollection<IProductCmptCategory>(this, ProductCmptCategory.class,
@@ -476,9 +476,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public List<IProductCmptTypeMethod> getNonFormulaProductCmptTypeMethods() {
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
-        for (IMethod method : methods) {
-            if (!((IProductCmptTypeMethod)method).isFormulaSignatureDefinition()) {
-                result.add((IProductCmptTypeMethod)method);
+        for (IProductCmptTypeMethod method : methods) {
+            if (!method.isFormulaSignatureDefinition()) {
+                result.add(method);
             }
         }
         return result;
@@ -501,8 +501,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException {
         ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<IProductCmptTypeMethod>();
-        for (IMethod method2 : methods) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
+        for (IProductCmptTypeMethod method : methods) {
             if (method.isFormulaSignatureDefinition() && method.isOverloadsFormula()) {
                 IProductCmptTypeMethod overloadedMethod = method.findOverloadedFormulaMethod(ipsProject);
                 if (overloadedMethod != null) {
@@ -518,8 +517,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (StringUtils.isEmpty(formulaName)) {
             return null;
         }
-        for (IMethod method2 : methods) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
+        for (IProductCmptTypeMethod method : methods) {
             if (method.isFormulaSignatureDefinition() && formulaName.equalsIgnoreCase(method.getFormulaName())) {
                 return method;
             }
@@ -530,8 +528,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public List<IProductCmptTypeMethod> getFormulaSignatures() {
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
-        for (IMethod method2 : methods) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
+        for (IProductCmptTypeMethod method : methods) {
             if (method.isFormulaSignatureDefinition()) {
                 result.add(method);
             }
@@ -552,7 +549,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         List<IMethod> candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = findSignaturesOfOverloadedFormulas(ipsProject);
-        ArrayList<IMethod> result = new ArrayList<IMethod>(candidates.size());
+        List<IMethod> result = new ArrayList<IMethod>(candidates.size());
         for (IMethod candidate : candidates) {
             if (overloadedMethods.contains(candidate)) {
                 continue;

@@ -33,12 +33,14 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.type.Parameter;
+import org.faktorips.devtools.core.internal.model.method.Parameter;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -46,8 +48,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
@@ -62,7 +62,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ExpressionProposalProvider implements IContentProposalProvider {
 
-    private IMethod signature;
+    private IBaseMethod signature;
     private IExpression expression;
     private IIpsProject ipsProject;
     private MultiLanguageSupport multiLanguageSupport;
@@ -87,6 +87,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             String attributePrefix = identifier.substring(pos + 1);
             addMatchingAttributes(result, paramName, attributePrefix);
             addDefaultValuesToResult(result, paramName, attributePrefix);
+            addMatchingFunctions(result, identifier);
             addMatchingEnumValues(result, paramName, attributePrefix);
             if (ipsProject.getProperties().isAssociationsInFormulas()) {
                 addMatchingAssociations(result, paramName, attributePrefix);
@@ -407,7 +408,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         return ipsProject;
     }
 
-    public IMethod getSignature() {
+    public IBaseMethod getSignature() {
         return signature;
     }
 

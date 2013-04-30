@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.type;
+package org.faktorips.devtools.core.internal.model.method;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -19,8 +19,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IParameter;
-import org.faktorips.devtools.core.model.type.IParameterContainer;
+import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.model.method.IParameterContainer;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public class Parameter extends AtomicIpsObjectPart implements IParameter {
 
-    final static String TAG_NAME = "Parameter"; //$NON-NLS-1$
+    static final String TAG_NAME = "Parameter"; //$NON-NLS-1$
 
     private String datatype = ""; //$NON-NLS-1$
 

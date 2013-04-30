@@ -35,4 +35,8 @@ public class FormulaExecutionException extends RuntimeException {
                 + ", Parameters: " + Arrays.toString(parameters));
     }
 
+    public FormulaExecutionException(String formula, Object... parameters) {
+        super("Invalid formula: " + formula + ", Parameters: " + Arrays.toString(parameters));
+    }
+
 }

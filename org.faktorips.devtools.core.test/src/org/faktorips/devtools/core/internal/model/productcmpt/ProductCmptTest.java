@@ -681,7 +681,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "Method"));
+        productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "BaseMethod"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());

@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -24,10 +23,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.FlFunction;
-import org.faktorips.fl.FunctionSignature;
-import org.faktorips.fl.FunctionSignatureImpl;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
@@ -36,13 +31,11 @@ import org.faktorips.util.message.Message;
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
-public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
+public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdapter {
 
-    private final ITableAccessFunction fct;
-    private ExprCompiler compiler;
-    private final ITableContents tableContents;
-    private final String referencedName;
-    private final IIpsProject ipsProject;
+    private ITableAccessFunction fct;
+    private ITableContents tableContents;
+    private String referencedName;
 
     /**
      * @param tableContents can be null. This indicates that it is a table access function for a
@@ -52,7 +45,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     public TableAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
             String referencedName, IIpsProject ipsProject) {
 
-        this.ipsProject = ipsProject;
+        super(ipsProject);
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
         ArgumentCheck.notNull(referencedName);
@@ -64,7 +57,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     @Override
     public CompilationResult compile(CompilationResult[] argResults) {
         try {
-            IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
+            IIpsArtefactBuilderSet builderSet = getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
                 CompilationResultImpl result = new CompilationResultImpl(Message.newError(
                         "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
@@ -80,30 +73,15 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     @Override
-    public void setCompiler(ExprCompiler compiler) {
-        this.compiler = compiler;
-    }
-
-    @Override
-    public ExprCompiler getCompiler() {
-        return compiler;
-    }
-
-    @Override
     public String getDescription() {
         String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(fct);
         return localizedDescription;
     }
 
     @Override
-    public void setDescription(String description) {
-        throw new RuntimeException("The adpater does not support setDescription()!"); //$NON-NLS-1$
-    }
-
-    @Override
     public Datatype getType() {
         try {
-            return ipsProject.findValueDatatype(fct.getType());
+            return getIpsProject().findValueDatatype(fct.getType());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -116,7 +94,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
 
     @Override
     public Datatype[] getArgTypes() {
-        IIpsProject project = ipsProject;
+        IIpsProject project = getIpsProject();
         String[] argTypes = fct.getArgTypes();
         Datatype[] types = new Datatype[argTypes.length];
         for (int i = 0; i < argTypes.length; i++) {
@@ -127,32 +105,6 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
             }
         }
         return types;
-    }
-
-    @Override
-    public boolean isSame(FunctionSignature fctSignature) {
-        FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
-        return thisFct.isSame(fctSignature);
-    }
-
-    @Override
-    public boolean match(String name, Datatype[] argTypes) {
-        FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
-        return thisFct.match(name, argTypes);
-    }
-
-    @Override
-    public boolean matchUsingConversion(String name, Datatype[] argTypes, ConversionMatrix matrix) {
-        FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
-        return thisFct.matchUsingConversion(name, argTypes, matrix);
-    }
-
-    /**
-     * Returns false;
-     */
-    @Override
-    public boolean hasVarArgs() {
-        return false;
     }
 
     ITableAccessFunction getTableAccessFunction() {

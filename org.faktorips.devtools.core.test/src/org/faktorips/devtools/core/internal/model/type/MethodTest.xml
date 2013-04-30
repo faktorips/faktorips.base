@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Test data for MethodImplTest.java
+ Test data for TypeMethodTest.java
 -->
 <TestData>
 
 	<Method id="42" name="calcPremium" datatype="Money" modifier="public" abstract="true">
+        <Description id="2a" locale="en" >english</Description>
+        <Description id="2b" locale="de" >deutsch</Description>
+        <Label id="3a" locale="en" >english</Label>
+        <Label id="3b" locale="de" >deutsch</Label>
 		<Parameter name="p1" datatype="Money"/>
 		<Parameter name="p2" datatype="Decimal"/>
 	</Method>

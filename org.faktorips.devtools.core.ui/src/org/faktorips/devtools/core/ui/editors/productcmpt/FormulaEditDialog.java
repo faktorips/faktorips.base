@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.parametertable.ChangeParametersControl;
@@ -50,7 +50,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private IFormula formula;
 
     /** the formulas method signature */
-    private IMethod signature;
+    private IBaseMethod signature;
 
     private IIpsProject ipsProject;
 

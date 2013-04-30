@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-
 /**
  * Base-class to represent and edit cardinality values (which means int-values and the asterisk
  * (*)). The askerisk is mapped to Integer.MAX_VALUE on object conversions and vice versa.

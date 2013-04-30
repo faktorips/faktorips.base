@@ -13,77 +13,59 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * Implementation of the published interface.
+ * <p>
+ * This implementation extends the {@link TypePart} and also should extend {@link BaseMethod}.
+ * Because of the lack of multiple inheritance in Java there is a delegation to an instance of
+ * method.
+ * <p>
+ * Especially the methods to read and create the xml use the delegation to keep the xml of the
+ * {@link IType types} compatible to the previous releases.
  * 
  * @author Jan Ortmann
  */
 public abstract class Method extends TypePart implements IMethod {
 
-    public final static String XML_ELEMENT_NAME = "Method"; //$NON-NLS-1$
-
-    private String datatype = "void"; //$NON-NLS-1$
-
     private boolean abstractFlag = false;
 
-    private IpsObjectPartCollection<IParameter> parameters = new IpsObjectPartCollection<IParameter>(this,
-            Parameter.class, IParameter.class, Parameter.TAG_NAME);
+    private final BaseMethod method;
 
     public Method(IType parent, String id) {
         super(parent, id);
+        method = new BaseMethod(this, id);
     }
 
     @Override
     public void setName(String newName) {
-        String oldName = name;
-        name = newName;
-        valueChanged(oldName, name);
+        method.setName(newName);
     }
 
     @Override
-    public String getDatatype() {
-        return datatype;
-    }
-
-    @Override
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
-        return ipsProject.findDatatype(datatype);
-    }
-
-    @Override
-    public void setDatatype(String newDatatype) {
-        String oldDatatype = datatype;
-        datatype = newDatatype;
-        valueChanged(oldDatatype, newDatatype);
+    public String getName() {
+        return method.getName();
     }
 
     @Override
@@ -93,55 +75,29 @@ public abstract class Method extends TypePart implements IMethod {
 
     @Override
     public void setAbstract(boolean newValue) {
-        boolean oldValue = abstractFlag;
+        boolean oldValue = isAbstract();
         abstractFlag = newValue;
         valueChanged(oldValue, newValue);
     }
 
     @Override
+    public String getDatatype() {
+        return method.getDatatype();
+    }
+
+    @Override
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
+        return method.findDatatype(ipsProject);
+    }
+
+    @Override
+    public void setDatatype(String newDatatype) {
+        method.setDatatype(newDatatype);
+    }
+
+    @Override
     public int getJavaModifier() {
-        return getModifier().getJavaModifier() | (abstractFlag ? java.lang.reflect.Modifier.ABSTRACT : 0);
-    }
-
-    @Override
-    public IParameter newParameter() {
-        return parameters.newPart();
-    }
-
-    @Override
-    public IParameter newParameter(String datatype, String name) {
-        IParameter param = newParameter();
-        param.setDatatype(datatype);
-        param.setName(name);
-        return param;
-    }
-
-    @Override
-    public int getNumOfParameters() {
-        return parameters.size();
-    }
-
-    @Override
-    public IParameter[] getParameters() {
-        return parameters.toArray(new IParameter[parameters.size()]);
-    }
-
-    @Override
-    public String[] getParameterNames() {
-        String[] names = new String[parameters.size()];
-        for (int i = 0; i < names.length; i++) {
-            names[i] = (parameters.getPart(i)).getName();
-        }
-        return names;
-    }
-
-    @Override
-    public int[] moveParameters(int[] indexes, boolean up) {
-        return parameters.moveParts(indexes, up);
-    }
-
-    public IParameter getParameter(int i) {
-        return parameters.getPart(i);
+        return getModifier().getJavaModifier();
     }
 
     @Override
@@ -162,24 +118,15 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public boolean isSameSignature(IMethod other) {
-        if (!getName().equals(other.getName())) {
-            return false;
-        }
-        if (getNumOfParameters() != other.getNumOfParameters()) {
-            return false;
-        }
-        IParameter[] otherParams = other.getParameters();
-        for (int i = 0; i < parameters.size(); i++) {
-            if (!getParameter(i).getDatatype().equals(otherParams[i].getDatatype())) {
-                return false;
-            }
-        }
-        return true;
+    public boolean isSameSignature(IBaseMethod other) {
+        return method.isSameSignature(other);
     }
 
     @Override
     public boolean overrides(IMethod other) throws CoreException {
+        if (this.equals(other)) {
+            return false;
+        }
         if (!isSameSignature(other)) {
             return false;
         }
@@ -191,87 +138,56 @@ public abstract class Method extends TypePart implements IMethod {
 
     @Override
     public String getSignatureString() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(getName());
-        buffer.append('(');
-        IParameter[] params = getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(params[i].getDatatype());
-        }
-        buffer.append(')');
-        return buffer.toString();
+        return method.getSignatureString();
     }
 
     @Override
-    protected Element createElement(Document doc) {
-        return doc.createElement(XML_ELEMENT_NAME);
+    public void initFromXml(Element element) {
+        method.initFromXml(element);
+        super.initFromXml(element);
     }
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        name = element.getAttribute(PROPERTY_NAME);
-        datatype = element.getAttribute(PROPERTY_DATATYPE);
-        abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
+        initAbstractFromXml(element);
+    }
+
+    private void initAbstractFromXml(Element element) {
+        String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
+        if (abstractString != null) {
+            abstractFlag = Boolean.valueOf(abstractString).booleanValue();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * This implementation calls {@link IBaseMethod#toXml(Document)} in order to keep the xml of the
+     * {@link IType types} compatible to previous releases. The properties and parts, which are
+     * delegated to the {@link #method} are already within the returned element.
+     */
+    @Override
+    protected Element createElement(Document doc) {
+        return method.toXml(doc);
     }
 
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_NAME, name);
-        newElement.setAttribute(PROPERTY_DATATYPE, datatype);
-        newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_ABSTRACT, Boolean.toString(isAbstract()));
     }
 
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
-        if (StringUtils.isEmpty(name)) {
-            result.add(new Message("", Messages.Method_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
-        } else {
-            String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-            IStatus status = JavaConventions.validateMethodName(name, sourceLevel, complianceLevel);
-            if (!status.isOK()) {
-                result.add(new Message("", Messages.Method_msg_InvalidMethodname, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
-            }
-        }
-        ValidationUtils.checkDatatypeReference(datatype, true, this, PROPERTY_DATATYPE, "", result, ipsProject); //$NON-NLS-1$
+        result.add(method.validate(ipsProject));
         if (isAbstract() && !getType().isAbstract()) {
             result.add(new Message(
-                    "", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
+                    "", NLS.bind(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
-        validateMultipleParameterNames(result);
         if (validateDuplicateMethodInSameType(result)) {
             validateReturnTypeOfOverriddenMethod(result, ipsProject);
-        }
-    }
-
-    private void validateMultipleParameterNames(MessageList msgList) {
-        List<String> parameterNames = new ArrayList<String>();
-        Set<String> multipleNames = new HashSet<String>();
-        for (IParameter p : parameters) {
-            if (parameterNames.contains(p.getName())) {
-                multipleNames.add(p.getName());
-            }
-            parameterNames.add(p.getName());
-        }
-        if (multipleNames.isEmpty()) {
-            return;
-        }
-        for (String paramName : multipleNames) {
-            ArrayList<ObjectProperty> objProps = new ArrayList<ObjectProperty>();
-            for (int j = 0; j < parameterNames.size(); j++) {
-                if (parameterNames.get(j).equals(paramName)) {
-                    objProps.add(new ObjectProperty(getParameter(j), PROPERTY_PARAMETERS, j));
-                }
-            }
-            ObjectProperty[] objectProperties = objProps.toArray(new ObjectProperty[objProps.size()]);
-            String text = NLS.bind(Messages.Method_duplicateParamName, paramName);
-            msgList.add(new Message(MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR, objectProperties));
         }
     }
 
@@ -286,10 +202,10 @@ public abstract class Method extends TypePart implements IMethod {
         }
         Datatype overriddenReturnType = overridden.findDatatype(ipsProject);
         if (!returnType.equals(overriddenReturnType)) {
-            String text = NLS.bind(Messages.Method_incompatbileReturnType, overridden.getType().getUnqualifiedName(),
-                    overridden.getSignatureString());
-            Message msg = Message.newError(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE, text, this,
-                    IMethod.PROPERTY_DATATYPE);
+            String text = NLS.bind(Messages.TypeMethod_incompatbileReturnType, overridden.getType()
+                    .getUnqualifiedName(), overridden.getSignatureString());
+            Message msg = Message.newError(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE, text, this,
+                    IBaseMethod.PROPERTY_DATATYPE);
             list.add(msg);
         }
     }
@@ -297,13 +213,13 @@ public abstract class Method extends TypePart implements IMethod {
     private boolean validateDuplicateMethodInSameType(MessageList msgList) {
         List<IMethod> methods = getType().getMethods();
         String thisSignature = getSignatureString();
-        for (IMethod method : methods) {
-            if (method.equals(this)) {
+        for (IBaseMethod formulaMethod : methods) {
+            if (this.equals(formulaMethod)) {
                 continue;
             }
-            if (method.getSignatureString().equals(thisSignature)) {
-                msgList.add(new Message(MSGCODE_DUBLICATE_SIGNATURE, Messages.Method_duplicateSignature, Message.ERROR,
-                        this));
+            if (formulaMethod.getSignatureString().equals(thisSignature)) {
+                msgList.add(new Message(MSGCODE_DUBLICATE_SIGNATURE, Messages.TypeMethod_duplicateSignature,
+                        Message.ERROR, this));
                 return false;
             }
         }
@@ -315,20 +231,7 @@ public abstract class Method extends TypePart implements IMethod {
         StringBuffer buffer = new StringBuffer();
         buffer.append(getType().getQualifiedName());
         buffer.append(": "); //$NON-NLS-1$
-        buffer.append(datatype);
-        buffer.append(' ');
-        buffer.append(getName());
-        buffer.append('(');
-        IParameter[] params = getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(params[i].getDatatype());
-            buffer.append(' ');
-            buffer.append(params[i].getName());
-        }
-        buffer.append(')');
+        buffer.append(method.toString());
         return buffer.toString();
     }
 
@@ -336,11 +239,46 @@ public abstract class Method extends TypePart implements IMethod {
         IDependency dependency = new DatatypeDependency(getType().getQualifiedNameType(), getDatatype());
         dependencies.add(dependency);
         addDetails(details, dependency, this, PROPERTY_DATATYPE);
-        for (IParameter parameter : parameters) {
+        for (IParameter parameter : getParameters()) {
             dependency = new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype());
             dependencies.add(dependency);
             addDetails(details, dependency, parameter, IParameter.PROPERTY_DATATYPE);
         }
+    }
+
+    @Override
+    public IParameter[] getParameters() {
+        return method.getParameters();
+    }
+
+    @Override
+    public String[] getParameterNames() {
+        return method.getParameterNames();
+    }
+
+    @Override
+    public List<Datatype> getParameterDatatypes() {
+        return method.getParameterDatatypes();
+    }
+
+    @Override
+    public int getNumOfParameters() {
+        return method.getNumOfParameters();
+    }
+
+    @Override
+    public IParameter newParameter() {
+        return method.newParameter();
+    }
+
+    @Override
+    public IParameter newParameter(String datatype, String name) {
+        return method.newParameter(datatype, name);
+    }
+
+    @Override
+    public int[] moveParameters(int[] indices, boolean up) {
+        return method.moveParameters(indices, up);
     }
 
     class OverridingMethodFinder extends TypeHierarchyVisitor<IType> {
@@ -362,5 +300,4 @@ public abstract class Method extends TypePart implements IMethod {
         }
 
     }
-
 }

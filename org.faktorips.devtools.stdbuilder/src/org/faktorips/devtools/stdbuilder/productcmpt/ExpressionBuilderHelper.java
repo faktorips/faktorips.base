@@ -22,15 +22,15 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
 
 /**
  * A class that provides the
- * {@link ExpressionBuilderHelper#compileFormulaToJava(IExpression, IProductCmptTypeMethod, MultiStatus)}
+ * {@link ExpressionBuilderHelper#compileFormulaToJava(IExpression, IBaseMethod, MultiStatus)}
  * method for {@link IIpsArtefactBuilder}s handling {@link IExpression}s.
  * 
  * @author schwering
@@ -47,7 +47,7 @@ public class ExpressionBuilderHelper {
      * @return the Java code compiled from the formula
      */
     public static JavaCodeFragment compileFormulaToJava(IExpression formula,
-            IProductCmptTypeMethod formulaSignature,
+            IBaseMethod formulaSignature,
             MultiStatus buildStatus) {
         String expression = formula.getExpression();
         if (StringUtils.isEmpty(expression)) {

@@ -447,8 +447,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            throws CoreException;
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates new methods in this type that override the given methods. Note that it is not checked

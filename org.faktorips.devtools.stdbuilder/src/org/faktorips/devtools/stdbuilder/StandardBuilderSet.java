@@ -635,6 +635,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return modelService.getModelNode(object, type, generatorModelContext);
     }
 
+    public ModelService getModelService() {
+        return modelService;
+    }
+
+    public GeneratorModelContext getGeneratorModelContext() {
+        return generatorModelContext;
+    }
+
     private class StandardParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
         private StandardParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
             super(formula2, exprCompiler);

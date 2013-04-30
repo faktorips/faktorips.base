@@ -20,7 +20,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**

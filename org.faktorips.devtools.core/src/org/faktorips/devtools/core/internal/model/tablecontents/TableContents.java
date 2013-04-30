@@ -226,7 +226,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     /**
-     * This Method always returns false because differences to model is not supported at the moment
+     * This method always returns false because differences to model is not supported at the moment
      */
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {

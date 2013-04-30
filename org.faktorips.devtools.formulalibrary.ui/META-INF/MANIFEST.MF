@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Formula Library
+Bundle-SymbolicName: org.faktorips.devtools.formulalibrary.ui;singleton:=true
+Bundle-Version: 3.10.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Faktor Zehn AG
+Bundle-ClassPath: .
+Bundle-Localization: plugin
+Export-Package: org.faktorips.devtools.formulalibrary.ui.editors,
+ org.faktorips.devtools.formulalibrary.ui.wizards,
+ org.faktorips.devtools.formulalibrary.ui.workbenchadapters
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
+ org.eclipse.ui;bundle-version="3.5.0",
+ org.faktorips.devtools.core;bundle-version="3.10.0",
+ org.faktorips.devtools.core.ui;bundle-version="3.10.0",
+ org.faktorips.devtools.formulalibrary;bundle-version="3.10.0"

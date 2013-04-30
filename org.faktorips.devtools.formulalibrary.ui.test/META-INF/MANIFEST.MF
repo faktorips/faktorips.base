@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Formula Library Test
+Bundle-SymbolicName: org.faktorips.devtools.formulalibrary.ui.test
+Bundle-Version: 3.10.0.qualifier
+Bundle-ClassPath: .
+Fragment-Host: org.faktorips.devtools.formulalibrary
+Require-Bundle: org.eclipse.core.runtime,
+ org.faktorips.abstracttest;bundle-version="0.0.0",
+ org.faktorips.devtools.core,
+ org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
+ org.faktorips.devtools.formulalibrary.ui;bundle-version="3.10.0",
+ org.faktorips.devtools.core.ui;bundle-version="3.10.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.faktorips.devtools.formulalibrary.ui.workbenchadapters

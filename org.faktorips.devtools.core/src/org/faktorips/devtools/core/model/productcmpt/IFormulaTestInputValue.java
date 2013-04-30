@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.method.IParameter;
 
 /**
  * Specification of a input test value to test a product formula.

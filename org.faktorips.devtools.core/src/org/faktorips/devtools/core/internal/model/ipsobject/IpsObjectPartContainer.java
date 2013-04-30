@@ -673,10 +673,18 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         String nodeName = xmlTag.getNodeName();
         if (nodeName.equals(ILabel.XML_TAG_NAME)) {
-            return newLabel(id);
+            if (this instanceof ILabeledElement) {
+                return newLabel(id);
+            } else {
+                return null;
+            }
 
         } else if (nodeName.equals(IDescription.XML_TAG_NAME)) {
-            return newDescription(id);
+            if (this instanceof IDescribedElement) {
+                return newDescription(id);
+            } else {
+                return null;
+            }
         }
         return newPartThis(xmlTag, id);
     }

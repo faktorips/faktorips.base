@@ -17,8 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -55,8 +56,8 @@ public class MethodWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IMethod) {
-            IMethod method = (IMethod)ipsObjectPart;
+        if (ipsObjectPart instanceof IBaseMethod) {
+            IBaseMethod method = (IBaseMethod)ipsObjectPart;
             StringBuffer buffer = new StringBuffer(method.getName());
             buffer.append('(');
             IParameter[] params = method.getParameters();

@@ -24,6 +24,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.method.BaseMethod;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -32,13 +35,17 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public class XMethod extends AbstractGeneratorModelNode {
 
-    public XMethod(IMethod method, GeneratorModelContext context, ModelService modelService) {
+    public XMethod(IBaseMethod method, GeneratorModelContext context, ModelService modelService) {
         super(method, context, modelService);
     }
 
     @Override
     public IMethod getIpsObjectPartContainer() {
-        return (IMethod)super.getIpsObjectPartContainer();
+        IIpsObjectPartContainer ipsObjectPartContainer = super.getIpsObjectPartContainer();
+        if (ipsObjectPartContainer instanceof BaseMethod) {
+            ipsObjectPartContainer = (IIpsObjectPartContainer)ipsObjectPartContainer.getParent();
+        }
+        return (IMethod)ipsObjectPartContainer;
     }
 
     public IMethod getMethod() {

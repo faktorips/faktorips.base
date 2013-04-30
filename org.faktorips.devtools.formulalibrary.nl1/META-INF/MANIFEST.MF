@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Formula Library German
+Bundle-SymbolicName: org.faktorips.devtools.formulalibrary.nl1
+Bundle-Version: 3.10.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: org.faktorips.devtools.formulalibrary

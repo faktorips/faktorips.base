@@ -11,8 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.type;
+package org.faktorips.devtools.core.model.method;
 
+import java.util.List;
+
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -33,6 +36,13 @@ public interface IParameterContainer extends IIpsObjectPart {
      * parameter.
      */
     public String[] getParameterNames();
+
+    /**
+     * Returns the method's parameter {@link Datatype datatypes}. Returns an empty array if the
+     * method doesn't have any parameter.
+     * 
+     */
+    public List<Datatype> getParameterDatatypes();
 
     /**
      * Returns the number of parameters.

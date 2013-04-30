@@ -257,20 +257,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
     }
 
-    private static class Node {
-        IType type;
-        IType supertype;
-        List<IType> subtypes;
-
-        Node(IType type, IType supertype, List<IType> subtypes) {
-            ArgumentCheck.notNull(type);
-            ArgumentCheck.notNull(subtypes);
-            this.type = type;
-            this.supertype = supertype;
-            this.subtypes = subtypes;
-        }
-    }
-
     @Override
     public List<IAttribute> getAllAttributes(IType type) {
         List<IAttribute> attributes = new ArrayList<IAttribute>();
@@ -361,5 +347,19 @@ public class TypeHierarchy implements ITypeHierarchy {
     @Override
     public boolean isSelectedType(String name) {
         return pcType.getQualifiedName().equals(name);
+    }
+
+    private static class Node {
+        IType type;
+        IType supertype;
+        List<IType> subtypes;
+
+        Node(IType type, IType supertype, List<IType> subtypes) {
+            ArgumentCheck.notNull(type);
+            ArgumentCheck.notNull(subtypes);
+            this.type = type;
+            this.supertype = supertype;
+            this.subtypes = subtypes;
+        }
     }
 }

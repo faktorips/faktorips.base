@@ -771,6 +771,26 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testNewPart() throws CoreException {
+        TestUnlabeledIpsObjectPartContainer unlabeledContainer = new TestUnlabeledIpsObjectPartContainer(
+                newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent2"));
+
+        Element xmlTagLabel = newDocument().createElement(ILabel.XML_TAG_NAME);
+        Element xmlTagDescription = newDocument().createElement(IDescription.XML_TAG_NAME);
+
+        String idLabel = "ABCDE";
+        String idDescription = "ABCDEF";
+
+        assertNull(unlabeledContainer.newPart(xmlTagLabel, idLabel));
+        assertEquals(idLabel, container.newPart(xmlTagLabel, idLabel).getId());
+
+        assertNull(unlabeledContainer.newPart(xmlTagDescription, idDescription));
+        assertEquals(idDescription, container.newPart(xmlTagDescription, idDescription).getId());
+        assertEquals(0, unlabeledContainer.numOfUpdateSrcFileCalls);
+        assertEquals(container.xml, unlabeledContainer.copyXml);
+    }
+
+    @Test
     public void testGetLabel() {
         assertEquals(usLabel, container.getLabel(Locale.US));
         assertEquals(germanLabel, container.getLabel(Locale.GERMAN));
@@ -865,6 +885,129 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         properties.addSupportedLanguage(languageArray[1].getLocale());
         properties.addSupportedLanguage(languageArray[0].getLocale());
         ipsProject.setProperties(properties);
+    }
+
+    private static class TestUnlabeledIpsObjectPartContainer extends IpsObjectPartContainer {
+
+        private int numOfUpdateSrcFileCalls;
+
+        private Element xml;
+
+        private Element copyXml;
+
+        public TestUnlabeledIpsObjectPartContainer(IIpsElement parent) {
+            super(parent, "someId");
+        }
+
+        @Override
+        protected void objectHasChanged() {
+            ++numOfUpdateSrcFileCalls;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        protected Element createElement(Document doc) {
+            xml = doc.createElement("TestPart");
+            return xml;
+        }
+
+        @Override
+        public boolean isPluralLabelSupported() {
+            return true;
+        }
+
+        @Override
+        public IResource getCorrespondingResource() {
+            return null;
+        }
+
+        @Override
+        public void delete() throws CoreException {
+
+        }
+
+        @Override
+        public IIpsObject getIpsObject() {
+            IIpsObject ipsObject = mock(IIpsObject.class);
+            IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+            when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+            return ipsObject;
+        }
+
+        @Override
+        public boolean isValid() throws CoreException {
+            return false;
+        }
+
+        @Override
+        public boolean isValid(IIpsProject ipsProject) throws CoreException {
+            return false;
+        }
+
+        @Override
+        public int getValidationResultSeverity() throws CoreException {
+            return 0;
+        }
+
+        @Override
+        public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+            return 0;
+        }
+
+        @Override
+        protected IIpsElement[] getChildrenThis() {
+            return new IIpsElement[0];
+        }
+
+        @Override
+        protected void propertiesToXml(Element element) {
+
+        }
+
+        @Override
+        protected void initPropertiesFromXml(Element element, String id) {
+            copyXml = element;
+        }
+
+        @Override
+        protected void reinitPartCollectionsThis() {
+
+        }
+
+        @Override
+        protected boolean addPartThis(IIpsObjectPart part) {
+            return false;
+        }
+
+        @Override
+        protected boolean removePartThis(IIpsObjectPart part) {
+            return false;
+        }
+
+        @Override
+        protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+            return null;
+        }
+
+        @Override
+        protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+            return null;
+        }
+
+        @Override
+        protected void objectHasChanged(PropertyChangeEvent propertyChangeEvent) {
+            objectHasChanged();
+        }
+
     }
 
     private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,

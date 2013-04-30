@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
  */
 public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledElement {
 
-    public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+    public static final String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
 
     public static final String PROPERTY_CATEGORY = "category"; //$NON-NLS-1$
 

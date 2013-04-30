@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -24,11 +26,10 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
+public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProductCmptProperty {
 
     public static final String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
     public static final String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
-    public static final String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULA_MANDATORY = "formulaMandatory"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULA_OPTIONAL_SUPPORTED = "formulaOptionalSupported"; //$NON-NLS-1$
 
@@ -36,25 +37,20 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
      * Validation message code to indicate that the data type of a formula signature definition is
      * void or a none value data type.
      */
-    public static final String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IMethod.MSGCODE_PREFIX
+    public static final String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IBaseMethod.MSGCODE_PREFIX
             + "DatatypeMustBeAValueDatatypeForFormulaSignature"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a method is marked as formula signature but the
      * formula name is missing.
      */
-    public static final String MSGCODE_FORMULA_NAME_IS_EMPTY = IMethod.MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
+    public static final String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IBaseMethod.MSGCODE_PREFIX
+            + "FormulaMustntBeAbstract"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that a method is marked as formula signature but the
-     * formula name is missing.
-     */
-    public static final String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IMethod.MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
-
-    public static final String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IMethod.MSGCODE_PREFIX
+    public static final String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IBaseMethod.MSGCODE_PREFIX
             + "NoFormulaWithSameNameInTypeHierarchy"; //$NON-NLS-1$
 
-    public static final String MSGCODE_FORMULA_MUSTBE_MANDATORY = IMethod.MSGCODE_PREFIX
+    public static final String MSGCODE_FORMULA_MUSTBE_MANDATORY = IBaseMethod.MSGCODE_PREFIX
             + "NotOptionalIfNotOptionalInTypeHierarchy"; //$NON-NLS-1$
 
     /**
@@ -107,20 +103,6 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
     public boolean isFormulaOptionalSupported();
 
     /**
-     * Returns the name of the formula signature. Note that this is not equal to the method name.
-     * For example the formula name might be 'Premium' while the method name might be
-     * 'calculatePremium'. The formula name is presented when editing product components.
-     */
-    public String getFormulaName();
-
-    /**
-     * Sets the name of the formula signature.
-     * 
-     * @see #getFormulaName() for more information.
-     */
-    public void setFormulaName(String newName);
-
-    /**
      * Returns true if this is a formula method that overloads a formula method within the supertype
      * hierarchy.
      */
@@ -141,11 +123,4 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
      * be the method that will be overloaded.
      */
     public void setOverloadsFormula(boolean overloadsFormula);
-
-    /**
-     * Returns a default name for the method based on the formula name. E.g. if the formula name is
-     * 'Premium' the method might return 'computePremium'.
-     */
-    public String getDefaultMethodName();
-
 }

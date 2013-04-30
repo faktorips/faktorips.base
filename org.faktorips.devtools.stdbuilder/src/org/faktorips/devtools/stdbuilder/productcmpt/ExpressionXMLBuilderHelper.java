@@ -21,10 +21,11 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -84,7 +85,7 @@ public class ExpressionXMLBuilderHelper {
             NodeList formulaElements,
             MultiStatus buildStatus) {
         for (int formulaIndex = 0; formulaIndex < formulas.length; formulaIndex++) {
-            IExpression formula = formulas[formulaIndex];
+            IFormula formula = (IFormula)formulas[formulaIndex];
             IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
             Element formulaElement = (Element)formulaElements.item(formulaIndex);
             if (method != null && formulaElement != null) {

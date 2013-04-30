@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+      <extension
+         point="org.faktorips.devtools.core.ui.adapterprovider">
+      <workbenchadapter
+            class="org.faktorips.devtools.formulalibrary.ui.workbenchadapters.FormulaLibraryWorkbenchAdapterProvider">
+      </workbenchadapter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      	<editor
+      		class="org.faktorips.devtools.formulalibrary.ui.editors.FormulaLibraryContentEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
+            default="true"
+            extensions="ipsformulalibrary"
+            icon="icons/FormulaLibrary.gif"
+            id="formulaLibraryEditor"
+            name="%formulaLibraryEditor">
+      	</editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+   	<actionSet
+            id="org.faktorips.devtools.actions.FormulaLibraryActionSet"
+            label="%org.faktorips.devtools.actions.FormulaLibraryActionSet"
+            visible="true">
+            
+            <action
+               class="org.faktorips.devtools.formulalibrary.ui.wizards.OpenNewFormulaLibraryWizardAction"
+               icon="icons/NewFormulaLibrary.gif"
+               id="org.faktorips.devtools.actions.OpenNewFormulaLibraryWizardAction"
+               label="%org.faktorips.devtools.actions.OpenNewFormulaLibraryWizardAction.label"
+               toolbarPath="org.faktorips.devtools.actions.ProductDefinitionActionSet/formulaLibrary"
+               tooltip="%org.faktorips.devtools.actions.OpenNewFormulaLibraryWizardAction.tooltip">
+         </action>
+      </actionSet>
+   </extension>
+   
+   <extension
+        point = "org.eclipse.ui.newWizards">
+        <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.formulalibrary.ui.wizards.NewFormulaLibraryWizard"
+            icon="icons/NewFormulaLibrary.gif"
+            id="newFormulaLibraryWizard"
+            name="%NewFormulaLibraryWizard.text">
+    	   <description>%NewFormulaLibraryWizard.description</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+  		 <handler
+            commandId="org.faktorips.devtools.formulalibrary.ui.wizards.newFormulaLibrary">
+         <class
+               class="org.faktorips.devtools.formulalibrary.ui.wizards.NewFormulaLibraryHandler">
+         </class>
+      </handler>
+   </extension>
+         
+   <extension
+         point="org.eclipse.ui.commands">
+   		 <command
+            id="org.faktorips.devtools.formulalibrary.ui.wizards.newFormulaLibrary"
+            name="%NewFormulaLibraryWizard.text">
+      </command>
+   </extension>
+   
+   <extension
+            point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.modelExplorer">
+            <menu
+            	  label=""
+                  id="group.new">
+		         <command
+		               commandId="org.faktorips.devtools.formulalibrary.ui.wizards.newFormulaLibrary"
+		               icon="icons/NewFormulaLibrary.gif"
+		               id="org.faktorips.devtools.formulalibrary.ui.wizard.FormulaLibraryHandler"
+		               label="%NewFormulaLibraryWizard.text"
+		               style="push">
+		               <visibleWhen
+                       		checkEnabled="false">
+                       		<iterate
+                               ifEmpty="false">
+                            <and>
+                               <adapt
+                                     type="org.faktorips.devtools.core.model.IIpsElement">
+                               </adapt>
+                               <not>
+                                  <adapt
+                                        type="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                                  </adapt>
+                               </not>
+                            </and>
+                       		</iterate>
+		               </visibleWhen>
+		         </command>
+         </menu>
+      </menuContribution>
+  </extension>
+</plugin>

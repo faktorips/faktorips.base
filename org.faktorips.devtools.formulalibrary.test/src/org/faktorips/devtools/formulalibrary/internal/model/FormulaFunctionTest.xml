@@ -1,0 +1,11 @@
+<FormulaFunction>
+    <Method datatype="Integer" formulaName="formula1" id="1a" name="computeFormula1">
+        <Description id="2a" locale="en" >english</Description>
+        <Description id="2b" locale="de" >deutsch</Description>
+        <Parameter datatype="Boolean" id="3a" name="param1"/>
+        <Parameter datatype="Integer" id="3b" name="param2"/>
+    </Method>
+	<Formula formulaSignature="formula1" id="4a">
+		<Expression isNull="false">1 + ABS(3.4)</Expression>
+	</Formula>
+</FormulaFunction>

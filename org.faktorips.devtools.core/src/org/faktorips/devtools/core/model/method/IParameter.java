@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.type;
+package org.faktorips.devtools.core.model.method;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IParameter extends IIpsObjectPart {
 
-    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /**
      * Returns the parent container this parameter is part of.

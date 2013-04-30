@@ -43,7 +43,8 @@ Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.xpand.productcmpt,
  org.faktorips.devtools.stdbuilder.xpand.productcmpt.model,
  org.faktorips.devtools.stdbuilder.xpand.stringout,
- org.faktorips.devtools.stdbuilder.xpand.table.model
+ org.faktorips.devtools.stdbuilder.xpand.table.model,
+ org.faktorips.devtools.stdbuilder.xpand.template
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
  org.eclipse.jdt.core.refactoring,

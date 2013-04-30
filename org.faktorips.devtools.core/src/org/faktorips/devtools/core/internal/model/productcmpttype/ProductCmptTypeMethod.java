@@ -39,11 +39,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     private boolean formulaSignatureDefinition = true;
 
-    private String formulaName = ""; //$NON-NLS-1$
-
     private boolean overloadsFormula = false;
 
     private boolean formulaMandatory = true;
+
+    private String formulaName = StringUtils.EMPTY;
 
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
@@ -52,18 +52,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
-    }
-
-    @Override
-    public String getFormulaName() {
-        return formulaName;
-    }
-
-    @Override
-    public void setFormulaName(String newName) {
-        String oldName = formulaName;
-        formulaName = newName;
-        valueChanged(oldName, newName);
     }
 
     @Override
@@ -76,7 +64,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         boolean oldValue = formulaSignatureDefinition;
         formulaSignatureDefinition = newValue;
         if (!formulaSignatureDefinition) {
-            formulaName = ""; //$NON-NLS-1$
+            setFormulaName(StringUtils.EMPTY);
             overloadsFormula = false;
         } else {
             setAbstract(false);
@@ -111,7 +99,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (isFormulaSignatureDefinition()) {
             return "compute" + StringUtils.capitalize(getFormulaName()); //$NON-NLS-1$
         }
-        return ""; //$NON-NLS-1$
+        return StringUtils.EMPTY;
     }
 
     @Override
@@ -119,27 +107,27 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         super.initPropertiesFromXml(element, id);
         formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
                 .booleanValue();
-        formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA));
         String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
         formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
+        formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, String.valueOf(formulaSignatureDefinition));
-        element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
         element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
+        element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
     }
 
     @Override
     public String getPropertyName() {
         if (formulaSignatureDefinition) {
-            return formulaName;
+            return getFormulaName();
         }
-        return ""; //$NON-NLS-1$
+        return StringUtils.EMPTY;
     }
 
     @Override
@@ -156,7 +144,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (!isFormulaSignatureDefinition()) {
             return;
         }
-        if (StringUtils.isEmpty(formulaName)) {
+        if (StringUtils.isEmpty(getFormulaName())) {
             String text = Messages.ProductCmptTypeMethod_FormulaNameIsMissing;
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this,
                     IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
@@ -182,7 +170,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (isFormulaSignatureDefinition() && isOverloadsFormula()) {
             FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
             finder.start(getProductCmptType().findSuperProductCmptType(ipsProject));
-            if (!StringUtils.isEmpty(formulaName) && !finder.formulaNameFound()) {
+            if (!StringUtils.isEmpty(getFormulaName()) && !finder.formulaNameFound()) {
                 result.add(new Message(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY,
                         Messages.ProductCmptTypeMethod_msgNoOverloadableFormulaInSupertypeHierarchy, Message.ERROR,
                         this, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA));
@@ -239,6 +227,18 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         return isFormulaSignatureDefinition();
     }
 
+    @Override
+    public String getFormulaName() {
+        return formulaName;
+    }
+
+    @Override
+    public void setFormulaName(String newFormulaName) {
+        String oldFormulaName = getFormulaName();
+        this.formulaName = newFormulaName;
+        valueChanged(oldFormulaName, formulaName, PROPERTY_FORMULA_NAME);
+    }
+
     /**
      * Searches for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. Stops searching when the first formula method is found that meets this
@@ -258,10 +258,10 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            if (StringUtils.isEmpty(formulaName) || currentType == null) {
+            if (StringUtils.isEmpty(getFormulaName()) || currentType == null) {
                 return false;
             }
-            method = currentType.getFormulaSignature(formulaName);
+            method = currentType.getFormulaSignature(getFormulaName());
             return method == null;
         }
 
@@ -270,5 +270,4 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
 
     }
-
 }

@@ -18,21 +18,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -51,18 +57,6 @@ public class MethodTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Product");
         method = type.newMethod();
-    }
-
-    @Test
-    public void testGetSignatureString() {
-        method.setName("calc");
-        assertEquals("calc()", method.getSignatureString());
-
-        method.newParameter("base.Vertrag", "vertrag");
-        assertEquals("calc(base.Vertrag)", method.getSignatureString());
-
-        method.newParameter("Integer", "zahlweise");
-        assertEquals("calc(base.Vertrag, Integer)", method.getSignatureString());
     }
 
     @Test
@@ -123,6 +117,49 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testDuplicateID() {
+        Element docElement = getTestDocument().getDocumentElement();
+
+        method.initFromXml(XmlUtil.getElement(docElement, "Method", 0));
+
+        Element element = method.toXml(newDocument());
+
+        String duplicateID = checkForDuplicateID(element);
+        if (duplicateID != null) {
+            fail("Duplicate ID: " + duplicateID);
+        }
+    }
+
+    private String checkForDuplicateID(Element element) {
+        Set<String> ids = new HashSet<String>();
+        NodeList children = element.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node node = children.item(i);
+            if (!(node instanceof Element)) {
+                continue;
+            }
+            Element nodeElement = (Element)node;
+
+            System.out.println(nodeElement.getNodeName());
+
+            if (!nodeElement.hasAttribute("id")) {
+                System.out.println("\tno id");
+                continue;
+            }
+            String id = nodeElement.getAttribute("id");
+            System.out.println("\tid: " + id);
+
+            if (ids.contains(id)) {
+                System.out.println("BINGO");
+                return id + "(" + nodeElement + ")";
+            } else {
+                ids.add(id);
+            }
+        }
+        return null;
+    }
+
+    @Test
     public void testToXmlDocument() {
         method = type.newMethod(); // => id=1, because it's the second method
         method.setName("getAge");
@@ -155,65 +192,8 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewParameter() {
-        IParameter param = method.newParameter();
-        assertEquals(1, method.getParameters().length);
-        assertEquals(param, method.getParameters()[0]);
-        assertTrue(method.getIpsSrcFile().isDirty());
-    }
-
-    @Test
-    public void testSetName() {
-        testPropertyAccessReadWrite(Method.class, IIpsElement.PROPERTY_NAME, method, "calcPremium");
-    }
-
-    @Test
-    public void testSetDatatype() {
-        testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_DATATYPE, method, "Integer");
-    }
-
-    @Test
     public void testSetAbstract() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_ABSTRACT, method, Boolean.TRUE);
-    }
-
-    @Test
-    public void testIsSameSignature() {
-        method.setName("calc");
-        method.setDatatype("void");
-        IParameter param0 = method.newParameter();
-        param0.setName("p1");
-        param0.setDatatype("Decimal");
-        IParameter param1 = method.newParameter();
-        param1.setName("p2");
-        param1.setDatatype("Money");
-
-        IMethod other = type.newMethod();
-        other.setDatatype("Money");
-        other.setName("calc");
-        IParameter otherParam0 = other.newParameter();
-        otherParam0.setName("x");
-        otherParam0.setDatatype("Decimal");
-        IParameter otherParam1 = other.newParameter();
-        otherParam1.setName("y");
-        otherParam1.setDatatype("Money");
-
-        // ok case
-        assertTrue(method.isSameSignature(other));
-
-        // different name
-        other.setName("differentName");
-        assertFalse(method.isSameSignature(other));
-
-        // different parameter type
-        other.setName("calc"); // make names equals again
-        assertTrue(method.isSameSignature(other)); // and test it
-        otherParam1.setDatatype("int");
-        assertFalse(method.isSameSignature(other));
-
-        // different number of parameters
-        other.newParameter();
-        assertFalse(method.isSameSignature(other));
     }
 
     @Test
@@ -269,7 +249,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.INTEGER.getName(), "index");
 
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_DUBLICATE_SIGNATURE));
+        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_DUBLICATE_SIGNATURE));
     }
 
     @Test
@@ -283,7 +263,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.INTEGER.getName(), "index");
 
         MessageList msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         IType superType = newPolicyCmptType(ipsProject, "SuperType");
         IMethod overridden = superType.newMethod();
@@ -294,25 +274,25 @@ public class MethodTest extends AbstractIpsPluginTest {
         overridden.newParameter(Datatype.INTEGER.getName(), "index");
 
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         pcType.setSupertype(superType.getQualifiedName());
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         method.setDatatype("int");
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         // test, if the datatype in the supertype is invalid, the error message is still generated.
         overridden.setDatatype("unknownType");
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         // if the datatype in the method itself is invalid, no message should be generated.
         method.setDatatype("unknown");
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
     }
 
     @Test
@@ -330,11 +310,11 @@ public class MethodTest extends AbstractIpsPluginTest {
 
         p2.setName("param1");
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
+        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
 
         p2.setName("param2");
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
+        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
 
     }
 
@@ -352,14 +332,14 @@ public class MethodTest extends AbstractIpsPluginTest {
         IMethod subMethod = subType.newMethod();
         assertTrue(subMethod.overrides(thisMethod));
 
-        IMethod result = thisMethod.findOverridingMethod(thisType, ipsProject);
-        assertEquals(null, result);
-
-        result = thisMethod.findOverridingMethod(superType, ipsProject);
+        IMethod result = thisMethod.findOverridingMethod(superType, ipsProject);
         assertEquals(null, result);
 
         result = thisMethod.findOverridingMethod(subType, ipsProject);
         assertEquals(subMethod, result);
+
+        result = thisMethod.findOverridingMethod(thisType, ipsProject);
+        assertEquals(null, result);
 
     }
 
@@ -374,6 +354,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         IMethod superSuperMethod = superSuperType.newMethod();
         IMethod superMethod = superType.newMethod();
         assertTrue(superMethod.overrides(superSuperMethod));
+
         IMethod thisMethod = thisType.newMethod();
         assertTrue(thisMethod.overrides(superMethod));
 

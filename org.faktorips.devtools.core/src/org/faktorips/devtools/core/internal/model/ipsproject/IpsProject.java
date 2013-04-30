@@ -56,6 +56,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
+import org.faktorips.devtools.core.AbstractProjectRelatedFunctionResolverFactory;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -197,8 +198,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (IFunctionResolverFactory factory : factories) {
             if (getProperties().isActive(factory)) {
                 try {
-                    compiler.add(factory.newFunctionResolver(getFormulaLanguageLocale()));
+                    if (factory instanceof AbstractProjectRelatedFunctionResolverFactory) {
+                        compiler.add(((AbstractProjectRelatedFunctionResolverFactory)factory).newFunctionResolver(this,
+                                getFormulaLanguageLocale()));
+                    } else {
+                        compiler.add(factory.newFunctionResolver(getFormulaLanguageLocale()));
+                    }
+                    // CSOFF: IllegalCatch
                 } catch (Exception e) {
+                    // CSON: IllegalCatch
                     IpsPlugin.log(new IpsStatus("Unable to create the function resolver for the following factory: " //$NON-NLS-1$
                             + factory.getClass(), e));
                 }
@@ -296,8 +304,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private Boolean isJavaProjectErrorFree(IJavaProject javaProject, boolean checkReferencedJavaProjects)
             throws CoreException {
-        IProject project = javaProject.getProject();
-        if (!project.isAccessible()) {
+        IProject tmpProject = javaProject.getProject();
+        if (!tmpProject.isAccessible()) {
             return null;
         }
         if (!javaProject.exists()) {
@@ -311,7 +319,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (getJavaProjectBuildPathProblemSeverity(javaProject) == IStatus.ERROR) {
             return Boolean.FALSE;
         }
-        IMarker[] markers = project.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false,
+        IMarker[] markers = tmpProject.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false,
                 IResource.DEPTH_INFINITE);
         if (containsErrorMarker(markers)) {
             return Boolean.FALSE;
@@ -405,25 +413,25 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException {
-        IIpsProject[] projects = getIpsModel().getIpsProjects();
-        List<IIpsProject> result = new ArrayList<IIpsProject>(projects.length);
+        IIpsProject[] ipsPprojects = getIpsModel().getIpsProjects();
+        List<IIpsProject> result = new ArrayList<IIpsProject>(ipsPprojects.length);
         result.add(this);
-        for (IIpsProject project : projects) {
-            if (this.isReferencedBy(project, true)) {
+        for (IIpsProject ipsProject : ipsPprojects) {
+            if (this.isReferencedBy(ipsProject, true)) {
                 boolean foundDependent = false;
                 for (Iterator<IIpsProject> iterator = result.iterator(); iterator.hasNext();) {
                     IIpsProject aResult = iterator.next();
-                    if (project.isReferencedBy(aResult, true)) {
+                    if (ipsProject.isReferencedBy(aResult, true)) {
                         foundDependent = true;
                         break;
                     } else {
-                        if (aResult.isReferencedBy(project, true)) {
+                        if (aResult.isReferencedBy(ipsProject, true)) {
                             iterator.remove();
                         }
                     }
                 }
                 if (!foundDependent) {
-                    result.add(project);
+                    result.add(ipsProject);
                 }
             }
         }
@@ -528,7 +536,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 return new IpsPackageFragmentRoot(this, name);
             }
         } catch (CoreException e) {
-            // nothing to do, return null
+            // nothing to do,
+            return null;
         }
 
         return null;
@@ -626,9 +635,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (!getCorrespondingResource().exists()) {
             return false;
         }
-        IProject project = getProject();
         try {
-            String[] natures = project.getDescription().getNatureIds();
+            String[] natures = getProject().getDescription().getNatureIds();
             for (String nature : natures) {
                 if (nature.equals(IIpsProject.NATURE_ID)) {
                     return true;
@@ -1675,7 +1683,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private void validateRequiredFeatures(MessageList ml, IIpsProjectProperties props) {
-        String features[] = props.getRequiredIpsFeatureIds();
+        String[] features = props.getRequiredIpsFeatureIds();
 
         for (String feature : features) {
             IIpsFeatureVersionManager manager = IpsPlugin.getDefault().getIpsFeatureVersionManager(feature);
@@ -1785,7 +1793,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             for (IIpsSrcFile element : baseCheck) {
                 ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT);
                 IIpsSrcFile productCmptToCheckB = element;
-                if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
+                if (!productCmptToCheck.getQualifiedNameType().equals(productCmptToCheckB.getQualifiedNameType())) {
                     strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                     boolean duplicate = checkSameRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result,
                             false);

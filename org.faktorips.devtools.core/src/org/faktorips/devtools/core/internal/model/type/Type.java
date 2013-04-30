@@ -36,13 +36,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
@@ -374,8 +374,8 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            throws CoreException {
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods,
+            IIpsProject ipsProject) throws CoreException {
 
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
                 onlyNotImplementedAbstractMethods);

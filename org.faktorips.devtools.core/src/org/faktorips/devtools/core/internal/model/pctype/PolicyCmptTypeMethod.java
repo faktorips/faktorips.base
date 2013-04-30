@@ -33,5 +33,4 @@ public class PolicyCmptTypeMethod extends Method implements IPolicyCmptTypeMetho
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
     }
-
 }

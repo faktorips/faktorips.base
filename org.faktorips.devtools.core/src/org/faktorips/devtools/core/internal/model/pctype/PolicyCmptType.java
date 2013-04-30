@@ -27,7 +27,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.type.Method;
+import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.IDependency;
@@ -88,7 +88,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
         methods = new IpsObjectPartCollection<IPolicyCmptTypeMethod>(this, PolicyCmptTypeMethod.class,
-                IPolicyCmptTypeMethod.class, Method.XML_ELEMENT_NAME);
+                IPolicyCmptTypeMethod.class, BaseMethod.XML_ELEMENT_NAME);
         associations = new IpsObjectPartCollection<IPolicyCmptTypeAssociation>(this, PolicyCmptTypeAssociation.class,
                 IPolicyCmptTypeAssociation.class, PolicyCmptTypeAssociation.TAG_NAME);
         attributes = new IpsObjectPartCollection<IPolicyCmptTypeAttribute>(this, PolicyCmptTypeAttribute.class,

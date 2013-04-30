@@ -31,13 +31,14 @@ import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsPackageF
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.internal.model.method.Parameter;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
-import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
+import org.faktorips.devtools.core.internal.model.productcmpt.Expression;
 import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestCase;
 import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestInputValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
@@ -68,7 +69,6 @@ import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTyp
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.internal.model.type.Method;
-import org.faktorips.devtools.core.internal.model.type.Parameter;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -194,7 +194,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         // ProductCmpt
         register(AttributeValue.class, new AttributeValueWorkbenchAdapter());
         register(ConfigElement.class, new ConfigElementWorkbenchAdapter());
-        register(Formula.class, formulaWA);
+        register(Expression.class, formulaWA);
         register(ProductCmptLink.class, new ProductCmptLinkWorkbenchAdapter());
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContentsUsage.gif", true); //$NON-NLS-1$
         register(TableContentUsage.class, new TableContentUsageWorkbenchAdapter(imageDescriptor));

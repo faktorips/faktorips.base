@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+
 /**
  * A {@link IFormula} is a {@link IExpression} use by a {@link IPropertyValueContainer}. It provides
  * additional testing capabilities.
@@ -30,6 +33,13 @@ public interface IFormula extends IPropertyValue, IExpression {
      * Returns all formula test cases.
      */
     public IFormulaTestCase[] getFormulaTestCases();
+
+    /**
+     * Returns the method signature this formula implements. Returns <code>null</code> if the method
+     * signature is not found.
+     */
+    @Override
+    public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject);
 
     /**
      * Returns the formula test case identified by the given name. Return <code>null</code> if no

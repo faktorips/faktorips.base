@@ -1,0 +1,23 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::formulalibrary::builder::xpand::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::ClassNames»
+
+«DEFINE method FOR XFormulaMethod-»
+	    /**
+	     * «description» 
+	     * @generated
+	     */
+	    «javaModifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
+	    	try {
+        		return «compiledExpression»;
+            } catch (Exception e) {
+            	StringBuilder parameterValues = new StringBuilder();
+            	«FOREACH formulaParameters AS parameter SEPARATOR "parameterValues.append(\", \");"-»
+					parameterValues.append("«parameter.name»=");
+					parameterValues.append(«parameter.name»);
+	        	«ENDFOREACH-»
+        		throw new «FormulaExecutionException()»(«formulaExpression», parameterValues.toString(), e);
+			}		
+		 }
+«ENDDEFINE»

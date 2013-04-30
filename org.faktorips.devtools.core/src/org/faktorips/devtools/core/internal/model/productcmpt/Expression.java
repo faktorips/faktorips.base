@@ -16,12 +16,9 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -34,19 +31,19 @@ import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -121,7 +118,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
-        IMethod signature = findFormulaSignature(ipsProject);
+        IBaseMethod signature = findFormulaSignature(ipsProject);
         if (signature != null) {
             try {
                 Datatype datatype = signature.findDatatype(ipsProject);
@@ -161,7 +158,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         compiler.add(new TableSingleContentFunctionsResolver(ipsProject));
 
         IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
-        IMethod method = findFormulaSignature(ipsProject);
+        IBaseMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
             return compiler;
         }
@@ -201,7 +198,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     private void collectEnumTypesFromAssociationNavigation(final Map<String, EnumDatatype> nameToTypeMap) {
         IIpsProject ipsProject = getIpsProject();
-        IMethod method = findFormulaSignature(ipsProject);
+        IBaseMethod method = findFormulaSignature(ipsProject);
         String actualExpression = getExpression();
         IParameter[] params = method.getParameters();
         try {
@@ -264,7 +261,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     private void collectEnumTypesFromMethod(Map<String, EnumDatatype> enumtypes) {
         IIpsProject ipsProject = getIpsProject();
-        IMethod method = findFormulaSignature(ipsProject);
+        IBaseMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
             return;
         }
@@ -316,7 +313,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (StringUtils.isEmpty(expression)) {
             return new String[0];
         }
-        IProductCmptTypeMethod signature = findFormulaSignature(ipsProject);
+        IBaseMethod signature = findFormulaSignature(ipsProject);
         if (signature == null) {
             return new String[0];
         }
@@ -332,24 +329,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         collectEnumsAllowedInFormula(enumNamesToTypes);
         List<String> filteredIdentifieres = removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
 
-        List<IAttribute> attributes = Collections.emptyList();
-        try {
-            attributes = signature.getProductCmptType().findAllAttributes(ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
-        Set<String> attributeNames = new HashSet<String>(attributes.size());
-        for (IAttribute attribute : attributes) {
-            attributeNames.add(attribute.getName());
-        }
-
-        for (Iterator<String> it = filteredIdentifieres.iterator(); it.hasNext();) {
-            String idendtifier = it.next();
-            if (attributeNames.contains(idendtifier)) {
-                it.remove();
-            }
-        }
         return filteredIdentifieres.toArray(new String[filteredIdentifieres.size()]);
+
     }
 
     private List<String> removeIdentifieresOfEnumDatatypes(Map<String, EnumDatatype> enumDatatypes,
@@ -393,17 +374,17 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             throw new CoreRuntimeException(e.getMessage(), e);
         }
 
-        IProductCmptTypeMethod method = findFormulaSignature(ipsProject);
+        IBaseMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
             String text = Messages.Formula_msgFormulaSignatureMissing;
             list.add(new Message(MSGCODE_SIGNATURE_CANT_BE_FOUND, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
-        if (StringUtils.isEmpty(expression)) {
-            if (!method.isFormulaMandatory()) {
+        if (StringUtils.isEmpty(getExpression())) {
+            if (!isFormulaMandatory()) {
                 return;
             }
-            String text = NLS.bind(Messages.Formula_msgExpressionMissing, formulaSignature);
+            String text = NLS.bind(Messages.Formula_msgExpressionMissing, getFormulaSignature());
             list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
@@ -455,9 +436,13 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         ArgumentCheck.notNull(locale);
 
         String caption = null;
-        IProductCmptTypeMethod signature = findFormulaSignature(getIpsProject());
+        IBaseMethod signature = findFormulaSignature(getIpsProject());
         if (signature != null) {
-            caption = signature.getLabelValue(locale);
+            if (signature instanceof ILabeledElement) {
+                caption = ((ILabeledElement)signature).getLabelValue(locale);
+            } else {
+                caption = signature.getSignatureString();
+            }
         }
         return caption;
     }
@@ -465,6 +450,16 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     @Override
     public String getLastResortCaption() {
         return StringUtils.capitalize(formulaSignature);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Expression: "); //$NON-NLS-1$
+        builder.append(getFormulaSignature());
+        builder.append(" : "); //$NON-NLS-1$
+        builder.append(getExpression());
+        return builder.toString();
     }
 
     class EnumDatatypesCollector extends TypeHierarchyVisitor<IPolicyCmptType> {
