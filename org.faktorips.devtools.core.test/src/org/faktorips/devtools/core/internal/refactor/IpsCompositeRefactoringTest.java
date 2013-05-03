@@ -140,8 +140,14 @@ public class IpsCompositeRefactoringTest {
 
     @Test
     public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
+        RefactoringStatus status1 = RefactoringStatus.createWarningStatus("");
+        when(ltkRefactoring1.checkFinalConditions(any(IProgressMonitor.class))).thenReturn(status1);
+        RefactoringStatus status2 = RefactoringStatus.createFatalErrorStatus("");
+        when(ltkRefactoring2.checkFinalConditions(any(IProgressMonitor.class))).thenReturn(status2);
+
         RefactoringStatus refactoringStatus = ipsCompositeRefactoring.checkFinalConditions(progressMonitor);
-        assertTrue(refactoringStatus.isOK());
+        assertTrue(refactoringStatus.hasFatalError());
+        assertEquals(2, refactoringStatus.getEntries().length);
     }
 
     @Test

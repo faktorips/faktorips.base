@@ -40,6 +40,8 @@ public class Messages extends NLS {
 
     public static String IpsCompositeRefactoring_taskCheckInitialConditions;
     public static String IpsCompositeRefactoring_subTaskCheckInitialConditionsForElement;
+    public static String IpsCompositeRefactoring_taskCheckFinalConditions;
+    public static String IpsCompositeRefactoring_subTaskCheckFinalConditionsForElement;
     public static String IpsCompositeRefactoring_taskProcessElements;
     public static String IpsCompositeRefactoring_subTaskProcessElement;
     public static String IpsCompositeRefactoring_childRefactoringNotExecuted;

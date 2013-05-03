@@ -115,17 +115,18 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
                 continue;
             }
 
-            checkInitialConditions(element, status);
+            checkConditions(element, status, CheckConditionsOperation.INITIAL_CONDITONS);
 
             pm.worked(1);
         }
         return status;
     }
 
-    private void checkInitialConditions(IIpsElement element, RefactoringStatus status) throws CoreException {
+    private void checkConditions(IIpsElement element, RefactoringStatus status, int checkConditionOperation)
+            throws CoreException {
         IIpsRefactoring refactoring = createRefactoring(element);
         CheckConditionsOperation checkConditionsOperation = new CheckConditionsOperation(
-                refactoring.toLtkRefactoring(), CheckConditionsOperation.INITIAL_CONDITONS);
+                refactoring.toLtkRefactoring(), checkConditionOperation);
         checkConditionsOperation.run(new NullProgressMonitor());
         status.merge(checkConditionsOperation.getStatus());
     }
@@ -134,7 +135,27 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException,
             OperationCanceledException {
 
-        return new RefactoringStatus();
+        pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$ 
+        pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckFinalConditions);
+
+        RefactoringStatus status = new RefactoringStatus();
+        int i = 0;
+        for (IIpsElement element : elements) {
+            i++;
+            pm.subTask(NLS.bind(Messages.IpsCompositeRefactoring_subTaskCheckFinalConditionsForElement, i,
+                    getNumberOfRefactorings()));
+
+            if (skippedElements.contains(element)) {
+                pm.worked(1);
+                continue;
+            }
+
+            checkConditions(element, status, CheckConditionsOperation.FINAL_CONDITIONS);
+
+            pm.worked(1);
+        }
+        return status;
+
     }
 
     @Override
