@@ -20,7 +20,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -32,12 +34,15 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class GeneralInfoSection extends IpsSection {
 
+    private final ExtensionPropertyControlFactory extFactory;
+
     private final ITableStructure tableStructure;
 
     public GeneralInfoSection(ITableStructure tableStructure, Composite parent, UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
 
         this.tableStructure = tableStructure;
+        extFactory = new ExtensionPropertyControlFactory(tableStructure.getClass());
 
         initControls();
         setText(Messages.GeneralInfoSection_labelGeneralInfoSection);
@@ -54,6 +59,9 @@ public class GeneralInfoSection extends IpsSection {
 
         EnumValueField typeField = new EnumValueField(combo, TableStructureType.getEnumType());
         getBindingContext().bindContent(typeField, tableStructure, ITableStructure.PROPERTY_TYPE);
+
+        extFactory.createControls(composite, toolkit, tableStructure, IExtensionPropertyDefinition.POSITION_TOP);
+        extFactory.bind(getBindingContext());
     }
 
 }
