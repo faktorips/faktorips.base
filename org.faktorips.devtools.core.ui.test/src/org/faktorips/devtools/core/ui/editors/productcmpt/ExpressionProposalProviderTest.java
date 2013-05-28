@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -433,6 +434,12 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("WE", 2);
         IContentProposal proposal = results[0];
         assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());
+        assertEquals("WE", ((ContentProposal)proposal).getPrefix());
+        assertEquals(2, ((ContentProposal)proposal).getPrefixLength());
+
+        results = proposalProvider.getProposals("We", 2);
+        proposal = results[0];
+        assertEquals("WENN", proposal.getContent());
 
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setFormulaLanguageLocale(Locale.ENGLISH);

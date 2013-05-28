@@ -60,6 +60,9 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     /** edit fields */
     private TextField formulaField;
 
+    private ContentProposalAdapter contentProposalAdapter;
+    private ContentProposalListener contentProposalListener;
+
     /**
      * Creates a new dialog which allows to edit a formula.
      * 
@@ -158,8 +161,12 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         } catch (final ParseException e) {
             throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
         }
-        new ContentProposalAdapter(formulaText, new TextContentAdapter(), new ExpressionProposalProvider(formula),
-                keyStroke, autoActivationCharacters);
+        contentProposalAdapter = new ContentProposalAdapter(formulaText, new TextContentAdapter(),
+                new ExpressionProposalProvider(formula), keyStroke, autoActivationCharacters);
+
+        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
+        contentProposalListener = new ContentProposalListener(contentProposalAdapter);
+        contentProposalAdapter.addContentProposalListener(contentProposalListener);
 
         // create fields
         formulaField = new TextField(formulaText);
@@ -198,4 +205,11 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return localizedCaption + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
+    public boolean close() {
+        if (contentProposalAdapter != null) {
+            contentProposalAdapter.removeContentProposalListener(contentProposalListener);
+        }
+        return super.close();
+    }
 }

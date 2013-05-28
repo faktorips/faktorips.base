@@ -42,6 +42,9 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmptTypeMethod, IFormula> {
 
+    private ContentProposalAdapter contentProposalAdapter;
+    private ContentProposalListener contentProposalListener;
+
     public FormulaEditComposite(IProductCmptTypeMethod property, IFormula propertyValue, IpsSection parentSection,
             Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
@@ -63,12 +66,24 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         } catch (final ParseException e) {
             throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
         }
-        new ContentProposalAdapter(formulaEditControl.getTextControl(), new TextContentAdapter(),
-                new ExpressionProposalProvider(getPropertyValue()), keyStroke, new char[] { '.' });
+        contentProposalAdapter = new ContentProposalAdapter(formulaEditControl.getTextControl(),
+                new TextContentAdapter(), new ExpressionProposalProvider(getPropertyValue()), keyStroke,
+                new char[] { '.' });
+
+        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
+        contentProposalListener = new ContentProposalListener(contentProposalAdapter);
+        contentProposalAdapter.addContentProposalListener(contentProposalListener);
 
         TextButtonField editField = new TextButtonField(formulaEditControl);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (contentProposalAdapter != null) {
+            contentProposalAdapter.removeContentProposalListener(contentProposalListener);
+        }
+    }
 }
