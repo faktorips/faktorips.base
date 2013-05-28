@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -92,32 +93,32 @@ public class ExprCompiler {
     /**
      * The prefix for all compiler messages.
      */
-    public final static String PREFIX = "FLC-"; //$NON-NLS-1$
+    public static final String PREFIX = "FLC-"; //$NON-NLS-1$
 
     /**
      * An internal compiler error occurred during compilation. This message is generated if the
      * compiler fails because of a bug, there is nothing wrong with the expression.
      */
-    public final static String INTERNAL_ERROR = PREFIX + "InternalError"; //$NON-NLS-1$
+    public static final String INTERNAL_ERROR = PREFIX + "InternalError"; //$NON-NLS-1$
 
     /**
      * The expression has a syntax error, it does not confirm to the grammar.
      * <p>
      * Example: 2 + + b does not conform to the grammar.
      */
-    public final static String SYNTAX_ERROR = PREFIX + "SyntaxError"; //$NON-NLS-1$
+    public static final String SYNTAX_ERROR = PREFIX + "SyntaxError"; //$NON-NLS-1$
 
     /**
      * The expression has a lexical error.
      */
-    public final static String LEXICAL_ERROR = PREFIX + "LexicalError"; //$NON-NLS-1$
+    public static final String LEXICAL_ERROR = PREFIX + "LexicalError"; //$NON-NLS-1$
 
     /**
      * The operation like +, *, - can't be done on the provided types.
      * <p>
      * Example: You can't multiply (*) two money values.
      */
-    public final static String UNDEFINED_OPERATOR = PREFIX + "UndefinedOperator"; //$NON-NLS-1$
+    public static final String UNDEFINED_OPERATOR = PREFIX + "UndefinedOperator"; //$NON-NLS-1$
 
     /**
      * An identifier can't be resolved.
@@ -127,7 +128,7 @@ public class ExprCompiler {
      * In the expression a is an identifier and it is possible that it can't be resolved by the
      * {IdentifierResolver} the compiler uses.
      */
-    public final static String UNDEFINED_IDENTIFIER = PREFIX + "UndefinedIdentifier"; //$NON-NLS-1$
+    public static final String UNDEFINED_IDENTIFIER = PREFIX + "UndefinedIdentifier"; //$NON-NLS-1$
 
     /**
      * A qualifier can't be resolved.
@@ -137,7 +138,7 @@ public class ExprCompiler {
      * In the expression a and b are identifiers, qual is a qualifier which does not correspond to
      * any product component's unqualified name.
      */
-    public final static String UNKNOWN_QUALIFIER = PREFIX + "UnknownQualifier"; //$NON-NLS-1$
+    public static final String UNKNOWN_QUALIFIER = PREFIX + "UnknownQualifier"; //$NON-NLS-1$
 
     /**
      * An identifier is resolved to an association but the association's target can't be found.
@@ -148,7 +149,7 @@ public class ExprCompiler {
      * can't identify the target types of associations a and b then an error message
      * {@link ExprCompiler#NO_ASSOCIATION_TARGET} is returned.
      */
-    public final static String NO_ASSOCIATION_TARGET = PREFIX + "NoAssociationTarget"; //$NON-NLS-1$
+    public static final String NO_ASSOCIATION_TARGET = PREFIX + "NoAssociationTarget"; //$NON-NLS-1$
 
     /**
      * An identifier is resolved to an 1to1 association but an index is also provided.
@@ -158,7 +159,7 @@ public class ExprCompiler {
      * In the expression a and b are identifiers. The identifier b is resolved to a 1to1
      * association.
      */
-    public final static String NO_INDEX_FOR_1TO1_ASSOCIATION = PREFIX + "NoIndexFor1to1Association"; //$NON-NLS-1$
+    public static final String NO_INDEX_FOR_1TO1_ASSOCIATION = PREFIX + "NoIndexFor1to1Association"; //$NON-NLS-1$
 
     /**
      * An identifier is resolved to an association with index and qualifier.
@@ -167,47 +168,35 @@ public class ExprCompiler {
      * <p>
      * In the expression a and b are identifiers. The identifier b is resolved to an association.
      */
-    public final static String INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED = PREFIX + "IndexAndQualifierCanNotBeCombined"; //$NON-NLS-1$
+    public static final String INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED = PREFIX + "IndexAndQualifierCanNotBeCombined"; //$NON-NLS-1$
 
     /**
      * The expression contains a call to an undefined function.
      */
-    public final static String UNDEFINED_FUNCTION = PREFIX + "UndefinedFunction"; //$NON-NLS-1$
+    public static final String UNDEFINED_FUNCTION = PREFIX + "UndefinedFunction"; //$NON-NLS-1$
 
     /**
      * The expression contains a function call to a function with wrong argument types.
      */
-    public final static String WRONG_ARGUMENT_TYPES = PREFIX + "WrongArgumentTypes"; //$NON-NLS-1$
+    public static final String WRONG_ARGUMENT_TYPES = PREFIX + "WrongArgumentTypes"; //$NON-NLS-1$
 
     /**
      * The expression contains a literal that is identified by the parser as a money literal that
      * doesn't have a valid currency.
      */
-    public final static String WRONG_MONEY_LITERAL = PREFIX + "Money"; //$NON-NLS-1$
+    public static final String WRONG_MONEY_LITERAL = PREFIX + "Money"; //$NON-NLS-1$
+
+    /**
+     * The Expression calls a function, which could be resolved to several functions.
+     */
+    public static final String AMBIGUOUS_FUNCTION_CALL = PREFIX + "AmbiguousFunctionCall"; //$NON-NLS-1$
 
     /**
      * The expression contains a the expression <code>null</code>.
      */
-    public final static String NULL_NOT_ALLOWED = PREFIX + "NullNotAllowed"; //$NON-NLS-1$
+    public static final String NULL_NOT_ALLOWED = PREFIX + "NullNotAllowed"; //$NON-NLS-1$
 
-    /**
-     * Verifies if the provided string is a valid identifier according to the identifier definition
-     * of the Fl-Parser.
-     */
-    public final static boolean isValidIdentifier(String identifier) {
-        JavaCharStream s = new JavaCharStream(new StringReader(identifier));
-        FlParserTokenManager manager = new FlParserTokenManager(s);
-        Token token = manager.getNextToken();
-        if (token.kind == FlParserConstants.IDENTIFIER) {
-            if (manager.getNextToken().kind == 0) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    final static LocalizedStringsSet localizedStrings = new LocalizedStringsSet(
+    static final LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(
             "org.faktorips.fl.Messages", ExprCompiler.class.getClassLoader()); //$NON-NLS-1$
 
     // locale that is used for the locale dependant messages generated by the compiler
@@ -254,6 +243,23 @@ public class ExprCompiler {
         this.locale = locale;
         parser = new FlParser(new ByteArrayInputStream("".getBytes())); //$NON-NLS-1$
         registerDefaults();
+    }
+
+    /**
+     * Verifies if the provided string is a valid identifier according to the identifier definition
+     * of the Fl-Parser.
+     */
+    public static final boolean isValidIdentifier(String identifier) {
+        JavaCharStream s = new JavaCharStream(new StringReader(identifier));
+        FlParserTokenManager manager = new FlParserTokenManager(s);
+        Token token = manager.getNextToken();
+        if (token.kind == FlParserConstants.IDENTIFIER) {
+            if (manager.getNextToken().kind == 0) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     /**
@@ -509,6 +515,31 @@ public class ExprCompiler {
     }
 
     /**
+     * Returns a Set of ambiguous {@link FlFunction}s, which the parser could not differentiate.
+     * <p>
+     * Maybe the rolename of a table equals the qualified name of a table structure in the root
+     * package.
+     */
+    public LinkedHashSet<FlFunction> getAmbiguousFunctions() {
+
+        LinkedHashSet<FlFunction> ambiguousFunctions = new LinkedHashSet<FlFunction>();
+        FlFunction[] functions = getFunctions();
+        for (int i = 0; i < functions.length; i++) {
+            FlFunction flFunction = functions[i];
+
+            for (int j = i + 1; j < functions.length; j++) {
+                FlFunction comparedFlFunction = functions[j];
+
+                if (flFunction.isSame(comparedFlFunction)) {
+                    ambiguousFunctions.add(comparedFlFunction);
+                    ambiguousFunctions.add(flFunction);
+                }
+            }
+        }
+        return ambiguousFunctions;
+    }
+
+    /**
      * Compiles the given expression string into Java sourcecode. If the compilation is not
      * successful, the result contains messages that describe the error/problem that has occurred.
      * If the compilation is successful, the result contains Java sourcecode that represents the
@@ -522,11 +553,13 @@ public class ExprCompiler {
             rootNode = parse(expr);
         } catch (ParseException pe) {
             return parseExceptionToResult(pe);
+            // CSOFF: IllegalCatch
         } catch (Exception pe) {
+            // CSON: IllegalCatch
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    localizedStrings.getString(INTERNAL_ERROR, locale)));
+                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, locale)));
         } catch (TokenMgrError e) {
-            String text = localizedStrings.getString(LEXICAL_ERROR, locale, e.getMessage());
+            String text = LOCALIZED_STRINGS.getString(LEXICAL_ERROR, locale, e.getMessage());
             return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
         }
         // parse ok, generate the sourcecode via the visitor visiting the parse tree
@@ -534,9 +567,11 @@ public class ExprCompiler {
         try {
             ParseTreeVisitor visitor = new ParseTreeVisitor(this);
             result = (CompilationResultImpl)rootNode.jjtAccept(visitor, null);
-        } catch (Exception e) {
+            // CSOFF: IllegalCatch
+        } catch (Exception pe) {
+            // CSON: IllegalCatch
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    localizedStrings.getString(INTERNAL_ERROR, locale)));
+                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, locale)));
         }
         if (result.failed()) {
             return result;
@@ -552,9 +587,11 @@ public class ExprCompiler {
                     ((ValueDatatype)resultType).getWrapperType());
             finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
             return finalResult;
-        } catch (Exception e) {
+            // CSOFF: IllegalCatch
+        } catch (Exception pe) {
+            // CSON: IllegalCatch
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    localizedStrings.getString(INTERNAL_ERROR, locale)));
+                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, locale)));
         }
     }
 
@@ -571,7 +608,7 @@ public class ExprCompiler {
         Object[] replacements = new Object[] { e.currentToken.next.toString(),
                 new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
         return new CompilationResultImpl(Message.newError(SYNTAX_ERROR,
-                localizedStrings.getString(SYNTAX_ERROR, locale, replacements)));
+                LOCALIZED_STRINGS.getString(SYNTAX_ERROR, locale, replacements)));
     }
 
     BinaryOperation[] getBinaryOperations(String operator) {
@@ -614,5 +651,4 @@ public class ExprCompiler {
         }
         return datatypeHelperProvider.getDatatypeHelper(type);
     }
-
 }

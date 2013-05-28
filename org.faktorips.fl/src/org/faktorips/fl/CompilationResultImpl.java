@@ -33,7 +33,7 @@ public class CompilationResultImpl implements CompilationResult {
      * method is intended to be used by implementations of <code>IdentifierResolver</code>
      */
     public final static CompilationResult newResultUndefinedIdentifier(Locale locale, String identifier) {
-        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 

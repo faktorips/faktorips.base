@@ -31,6 +31,7 @@ import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -66,6 +67,7 @@ import org.w3c.dom.Element;
  */
 public class FormulaTest extends AbstractIpsPluginTest {
 
+    private static final String TABLE_ROLE = "TableRole";
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
@@ -73,6 +75,9 @@ public class FormulaTest extends AbstractIpsPluginTest {
     private IFormula formula;
     private IProductCmptTypeMethod formulaSignature;
     private IProductCmptGeneration productCmptGen;
+    private ITableStructure tableStructure;
+    private ITableContents tableContents;
+    private ITableContentUsage tableContentUsage;
 
     @Override
     @Before
@@ -91,10 +96,34 @@ public class FormulaTest extends AbstractIpsPluginTest {
         formulaSignature.newParameter(Datatype.BOOLEAN.getQualifiedName(), "param2");
         formulaSignature.newParameter(policyCmptType.getQualifiedName(), "policy");
 
+        tableStructure = newTableStructure(ipsProject, TABLE_ROLE);
+        tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
+
+        IColumn idColumn = tableStructure.newColumn();
+        idColumn.setName("id");
+        idColumn.setDatatype("Integer");
+
+        IColumn valueColumn = tableStructure.newColumn();
+        valueColumn.setName("value");
+        valueColumn.setDatatype("Integer");
+
+        IUniqueKey uniqueKey = tableStructure.newUniqueKey();
+        uniqueKey.addKeyItem("id");
+
+        ITableStructureUsage tableStructureUsage = productCmptType.newTableStructureUsage();
+        tableStructureUsage.addTableStructure(tableStructure.getName());
+        tableStructureUsage.setRoleName(tableStructure.getName());
+
+        tableContents = newTableContents(ipsProject, "table.Param1TableContent");
+        tableContents.setTableStructure(tableStructure.getQualifiedName());
+
         productCmpt = newProductCmpt(productCmptType, "ProductA");
         productCmptGen = productCmpt.getProductCmptGeneration(0);
         formula = productCmptGen.newFormula();
         formula.setFormulaSignature(formulaSignature.getFormulaName());
+
+        tableContentUsage = productCmptGen.newTableContentUsage(tableStructureUsage);
+        tableContentUsage.setTableContentName(tableContents.getQualifiedName());
     }
 
     @Test
@@ -378,7 +407,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         // e.g. TableUsage.value1(key1, 1), key1 is Integer
 
         ITableStructure tableStructure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
-                "Table");
+                "TableStruct");
         IColumn col = tableStructure.newColumn();
         col.setDatatype("Integer");
         col.setName("column1");
@@ -397,7 +426,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         tableContents.setTableStructure(tableStructure.getQualifiedName());
 
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
-        structureUsage.setRoleName("Table");
+        structureUsage.setRoleName("TableStruct");
         structureUsage.addTableStructure(tableStructure.getQualifiedName());
         productCmpt.fixAllDifferencesToModel(ipsProject);
 
@@ -512,4 +541,23 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals("Blub", formula.getLastResortCaption());
     }
 
+    @Test
+    public void testValidateAmbiguousFunctionCall() throws CoreException {
+
+        formula = productCmptGen.newFormula();
+        formula.setFormulaSignature(formulaSignature.getFormulaName());
+
+        formula.setExpression("WENN(" + TABLE_ROLE + ".value(1) > 1; \"A\"; \"B\")");
+
+        MessageList messageList = formula.validate(ipsProject);
+
+        assertEquals(1, messageList.size());
+
+        Message message = messageList.getMessage(0);
+
+        assertEquals(message.toString(), Message.ERROR, message.getSeverity());
+        assertEquals(message.toString(), ExprCompiler.AMBIGUOUS_FUNCTION_CALL, message.getCode());
+
+        assertTrue(message.getText().contains(TABLE_ROLE + ".value"));
+    }
 }

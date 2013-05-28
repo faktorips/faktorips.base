@@ -163,8 +163,11 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         // there needs to be a table content available for the structure otherwise no completion is
         // proposed
-        IContentProposal[] results = proposalProvider.getProposals("TestT", 5);
+        IContentProposal[] results = proposalProvider.getProposals("TestAnyTable", 12);
         assertEquals(0, results.length);
+
+        results = proposalProvider.getProposals("TestT", 5);
+        assertEquals(1, results.length);
 
         results = proposalProvider.getProposals("ratePlan", 8);
         assertEquals(1, results.length);

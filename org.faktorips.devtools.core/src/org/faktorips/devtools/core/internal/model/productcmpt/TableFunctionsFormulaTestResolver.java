@@ -39,7 +39,7 @@ public class TableFunctionsFormulaTestResolver extends TableUsageFunctionsResolv
     }
 
     @Override
-    protected FlFunction createFlFunctionAdapter(ITableContents tableContents,
+    protected FlFunction createFlFunction(ITableContents tableContents,
             ITableAccessFunction function,
             String roleName) {
 

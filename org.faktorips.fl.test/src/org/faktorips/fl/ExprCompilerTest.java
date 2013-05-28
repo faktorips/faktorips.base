@@ -16,8 +16,13 @@ package org.faktorips.fl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalMatchers.aryEq;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Locale;
+import java.util.Set;
 
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
@@ -29,6 +34,7 @@ import org.faktorips.fl.functions.If;
 import org.faktorips.fl.operations.AddDecimalDecimal;
 import org.faktorips.fl.operations.PlusInteger;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 import org.junit.Test;
@@ -344,5 +350,99 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(0, new Integer(1 + -1).intValue());
         assertTrue(compiler.compile("1>1").successfull());
         assertTrue(compiler.compile("1=1").successfull());
+    }
+
+    @Test
+    public void testGetAmbiguousFunctions() {
+
+        Datatype[] argTypesDecimal = { Datatype.DECIMAL };
+        Datatype[] argTypesString = { Datatype.STRING };
+
+        String matchingFunctionName = "functionMatchingName";
+
+        FlFunction function1 = createFunction("function1", argTypesDecimal);
+        FlFunction function2 = createFunction(matchingFunctionName, argTypesDecimal);
+        FlFunction function3 = createFunction(matchingFunctionName, argTypesDecimal);
+        FlFunction function4 = createFunction(matchingFunctionName, argTypesString);
+        FlFunction function5 = createFunction("function5", argTypesDecimal);
+
+        matchingFunctions(function2, function3);
+
+        FunctionResolver fctResolver1 = createFunctionResolver(function1, function2);
+        FunctionResolver fctResolver2 = createFunctionResolver(function3, function4, function5);
+
+        compiler.add(fctResolver1);
+        compiler.add(fctResolver2);
+
+        Set<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions();
+
+        assertEquals(2, ambiguousFunctions.size());
+
+        assertTrue(ambiguousFunctions.contains(function2));
+        assertTrue(ambiguousFunctions.contains(function3));
+    }
+
+    @Test
+    public void testCompileWithAmbiguousFunctions() {
+
+        Datatype[] argTypesDecimal = { Datatype.DECIMAL };
+        Datatype[] argTypesString = { Datatype.STRING };
+
+        String matchingFunctionName = "x.functionMatchingName";
+
+        FlFunction function1 = createFunction("function1", argTypesDecimal);
+        FlFunction function2 = createFunction(matchingFunctionName, argTypesDecimal);
+        FlFunction function3 = createFunction(matchingFunctionName, argTypesDecimal);
+        FlFunction function4 = createFunction(matchingFunctionName, argTypesString);
+        FlFunction function5 = createFunction("function5", argTypesDecimal);
+
+        matchingFunctions(function2, function3);
+
+        FunctionResolver fctResolver1 = createFunctionResolver(function1, function2);
+        FunctionResolver fctResolver2 = createFunctionResolver(function3, function4, function5);
+
+        compiler.add(fctResolver1);
+        compiler.add(fctResolver2);
+
+        CompilationResult resultWithAmbiguousFunctionCall = compiler.compile(matchingFunctionName + "(2.0)");
+
+        MessageList messageList = resultWithAmbiguousFunctionCall.getMessages();
+        assertTrue(messageList.containsErrorMsg());
+
+        Message message = messageList.getFirstMessage(Message.ERROR);
+
+        assertEquals(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, message.getCode());
+
+    }
+
+    private FunctionResolver createFunctionResolver(FlFunction... functions) {
+        FunctionResolver newFctResolver = mock(FunctionResolver.class);
+
+        when(newFctResolver.getFunctions()).thenReturn(functions);
+
+        return newFctResolver;
+    }
+
+    private FlFunction createFunction(String name, Datatype[] argTypes) {
+        FlFunction newFunction = mock(FlFunction.class);
+
+        when(newFunction.getName()).thenReturn(name);
+        when(newFunction.getArgTypes()).thenReturn(argTypes);
+        when(newFunction.getType()).thenReturn(Datatype.INTEGER);
+
+        return newFunction;
+    }
+
+    private void matchingFunctions(FlFunction matchingFunction, FlFunction newFunction) {
+        when(newFunction.isSame(matchingFunction)).thenReturn(true);
+        when(matchingFunction.isSame(newFunction)).thenReturn(true);
+
+        Datatype[] matchingArgTypes = matchingFunction.getArgTypes();
+        String matchingName = matchingFunction.getName();
+        when(newFunction.match(eq(matchingName), aryEq(matchingArgTypes))).thenReturn(true);
+
+        String name = newFunction.getName();
+        Datatype[] argTypes = newFunction.getArgTypes();
+        when(matchingFunction.match(eq(name), aryEq(argTypes))).thenReturn(true);
     }
 }

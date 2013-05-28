@@ -13,7 +13,7 @@
 
 package org.faktorips.fl;
 
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.faktorips.codegen.ConversionCodeGenerator;
@@ -56,7 +56,7 @@ import org.faktorips.util.message.Message;
  */
 class ParseTreeVisitor implements FlParserVisitor {
 
-    private ExprCompiler compiler;
+    private final ExprCompiler compiler;
 
     ParseTreeVisitor(ExprCompiler compiler) {
         this.compiler = compiler;
@@ -304,7 +304,7 @@ class ParseTreeVisitor implements FlParserVisitor {
         if (isParable) {
             return generateConstant(node, DatatypeHelper.MONEY);
         }
-        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),
                 node.getLastToken().toString());
         return new CompilationResultImpl(Message.newError(ExprCompiler.SYNTAX_ERROR, text));
     }
@@ -316,7 +316,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      *      java.lang.Object)
      */
     public Object visit(ASTNullNode node, Object data) {
-        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.NULL_NOT_ALLOWED, compiler.getLocale());
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.NULL_NOT_ALLOWED, compiler.getLocale());
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 
@@ -350,22 +350,28 @@ class ParseTreeVisitor implements FlParserVisitor {
 
         Datatype[] argTypes = CompilationResultImpl.getDatatypes(argResults);
 
-        FlFunction function = null; // function that matches using implicit conversions
+        // function that matches using implicit conversions
+        FlFunction function = null;
         boolean functionFoundByName = false;
-        for (Iterator<FunctionResolver> it = compiler.getFunctionResolvers(); it.hasNext();) {
-            FunctionResolver resolver = it.next();
-            FlFunction[] functions = resolver.getFunctions();
-            for (FlFunction function2 : functions) {
-                if (function2.match(fctName, argTypes)) {
-                    return function2.compile(argResults);
-                } else if (function2.matchUsingConversion(fctName, argTypes, compiler.getConversionCodeGenerator())) {
-                    function = function2;
-                } else if (!functionFoundByName && function2.getName().equals(fctName)) {
-                    functionFoundByName = true;
+        LinkedHashSet<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions();
+
+        for (FlFunction function2 : compiler.getFunctions()) {
+            if (function2.match(fctName, argTypes)) {
+                if (isAmbiguousFunction(function2, ambiguousFunctions)) {
+                    return createAmbiguousFunctionCompilationResultImpl(function2);
                 }
+                return function2.compile(argResults);
+            } else if (function2.matchUsingConversion(fctName, argTypes, compiler.getConversionCodeGenerator())) {
+                function = function2;
+            } else if (!functionFoundByName && function2.getName().equals(fctName)) {
+                functionFoundByName = true;
             }
         }
+
         if (function != null) {
+            if (isAmbiguousFunction(function, ambiguousFunctions)) {
+                return createAmbiguousFunctionCompilationResultImpl(function);
+            }
             return function.compile(convert(function, argResults));
         }
 
@@ -373,15 +379,31 @@ class ParseTreeVisitor implements FlParserVisitor {
         // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
         if (functionFoundByName) {
             Object[] replacements = new String[] { fctName, argTypesToString(argResults) };
-            String text = ExprCompiler.localizedStrings.getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
+            String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
                     compiler.getLocale(), replacements);
             return new CompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
         }
 
         // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
-        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
                 fctName);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
+    }
+
+    private CompilationResultImpl createAmbiguousFunctionCompilationResultImpl(FlFunction flFunction) {
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
+                compiler.getLocale(), flFunction.getName());
+
+        return new CompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
+    }
+
+    private boolean isAmbiguousFunction(FlFunction flFunction, LinkedHashSet<FlFunction> ambiguousFunctions) {
+        for (FlFunction ambiguousFlFunction : ambiguousFunctions) {
+            if (flFunction.isSame(ambiguousFlFunction)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -440,7 +462,7 @@ class ParseTreeVisitor implements FlParserVisitor {
             return compilationResult;
         }
         Object[] replacements = new Object[] { operator, argResult.getDatatype().getName() };
-        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
                 replacements);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
@@ -509,7 +531,7 @@ class ParseTreeVisitor implements FlParserVisitor {
         }
         Object[] replacements = new Object[] { operator,
                 lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
-        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
+        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
                 replacements);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }

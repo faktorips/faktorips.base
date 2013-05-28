@@ -36,12 +36,12 @@ import org.faktorips.util.message.Message;
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
-public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
+public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
 
-    private ITableAccessFunction fct;
+    private final ITableAccessFunction fct;
     private ExprCompiler compiler;
-    private ITableContents tableContents;
-    private String roleName;
+    private final ITableContents tableContents;
+    private final String referencedName;
     private final IIpsProject ipsProject;
 
     /**
@@ -49,16 +49,16 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
      *            table that doesn't allow multiple contents
      * @param fct the table access function
      */
-    public TableUsageAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
-            String roleName, IIpsProject ipsProject) {
+    public TableAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
+            String referencedName, IIpsProject ipsProject) {
 
         this.ipsProject = ipsProject;
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
-        ArgumentCheck.notNull(roleName);
+        ArgumentCheck.notNull(referencedName);
         this.fct = fct;
         this.tableContents = tableContents;
-        this.roleName = roleName;
+        this.referencedName = referencedName;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
 
     @Override
     public String getName() {
-        return StringUtils.capitalize(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+        return StringUtils.capitalize(referencedName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     @Override
@@ -155,4 +155,15 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
         return false;
     }
 
+    ITableAccessFunction getTableAccessFunction() {
+        return fct;
+    }
+
+    ITableContents getTableContents() {
+        return tableContents;
+    }
+
+    String getReferencedName() {
+        return referencedName;
+    }
 }
