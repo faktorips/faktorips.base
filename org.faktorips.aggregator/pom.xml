@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.3.0</version>
 	</parent>
 	
 	<!-- These are all modules that are included in the Faktor-IPS build -->
@@ -31,6 +31,18 @@
 	<scm>
 		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
 	</scm>
+	
+	<build>
+		<extensions>
+			<!-- Include this build artifact to every child's classpath. This is used 
+				for example by the checkstyle or findbugs configuration -->
+			<extension>
+				<groupId>org.faktorips</groupId>
+				<artifactId>org.faktorips.build.config</artifactId>
+				<version>1.0.1</version>
+			</extension>
+		</extensions>
+	</build>
 	
 	<profiles>
 			<profile>

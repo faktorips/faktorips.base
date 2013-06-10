@@ -321,5 +321,28 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(2, result.getResolvedIdentifiers().length);
         assertEquals("b", result.getResolvedIdentifiers()[0]);
         assertEquals("a", result.getResolvedIdentifiers()[1]);
+
+        result = compiler.compile("b+a");
+        assertEquals(2, result.getResolvedIdentifiers().length);
+        assertEquals("b", result.getResolvedIdentifiers()[0]);
+        assertEquals("a", result.getResolvedIdentifiers()[1]);
+    }
+
+    @Test
+    public void testSpaceInSyntax() {
+        assertTrue(compiler.compile("1+1").successfull());
+        assertTrue(compiler.compile("1 +1").successfull());
+        assertTrue(compiler.compile("1+ 1").successfull());
+        assertTrue(compiler.compile("1 + 1").successfull());
+        assertTrue(compiler.compile("1-1").successfull());
+        assertTrue(compiler.compile("1 -1").successfull());
+        assertTrue(compiler.compile("1- 1").successfull());
+        assertTrue(compiler.compile("1 - 1").successfull());
+        CompilationResult compile = compiler.compile("1+-1");
+        assertTrue(compile.successfull());
+        assertEquals("\nnew Integer(1 + -1)", compile.getCodeFragment().toString());
+        assertEquals(0, new Integer(1 + -1).intValue());
+        assertTrue(compiler.compile("1>1").successfull());
+        assertTrue(compiler.compile("1=1").successfull());
     }
 }
