@@ -13,26 +13,22 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
-
 /**
  * This enumeration defines all possible value for the type of the table structure.
  * 
  * @author Thorsten Guenther
  */
-public class TableStructureType extends DefaultEnumValue {
+public enum TableStructureType {
 
     /**
      * Single content - for this table structure only on table content is allowed.
      */
-    public static final TableStructureType SINGLE_CONTENT;
+    SINGLE_CONTENT("singleContent", Messages.TableStructureType_labelSingleContent), //$NON-NLS-1$
 
     /**
      * Multiple contents - for this table structure one or more table contents are allowed.
      */
-    public static final TableStructureType MULTIPLE_CONTENTS;
+    MULTIPLE_CONTENTS("multipleContents", Messages.TableStructureType_lableMultipleContents), //$NON-NLS-1$
 
     /**
      * EnumType, values are model-defined - this table structure represents an EnumType. All values
@@ -42,25 +38,14 @@ public class TableStructureType extends DefaultEnumValue {
      *             in version 2.3. It only remains for migration purposes.
      */
     @Deprecated
-    public static final TableStructureType ENUMTYPE_MODEL;
+    ENUMTYPE_MODEL("enumTypeModel", Messages.TableStructureType_labelEnumTypeModel); //$NON-NLS-1$
 
-    private final static DefaultEnumType enumType;
+    private final String id;
+    private final String name;
 
-    static {
-        enumType = new DefaultEnumType("TableStructureType", TableStructureType.class); //$NON-NLS-1$
-        SINGLE_CONTENT = new TableStructureType(enumType,
-                "singleContent", Messages.TableStructureType_labelSingleContent); //$NON-NLS-1$
-        MULTIPLE_CONTENTS = new TableStructureType(enumType,
-                "multipleContents", Messages.TableStructureType_lableMultipleContents); //$NON-NLS-1$
-        ENUMTYPE_MODEL = new TableStructureType(enumType,
-                "enumTypeModel", Messages.TableStructureType_labelEnumTypeModel); //$NON-NLS-1$
-        // this value is currently disabled since the builder doesn't support this feature yet. pk
-        // 2007-03-30
-        //        ENUMTYPE_PRODUCTDEFINTION = new TableStructureType(enumType, "enumTypeProductDefinition", Messages.TableStructureType_labelEnumTypeProductDefinition); //$NON-NLS-1$
-    }
-
-    private TableStructureType(DefaultEnumType type, String id, String name) {
-        super(type, id, name);
+    private TableStructureType(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     /**
@@ -70,15 +55,15 @@ public class TableStructureType extends DefaultEnumValue {
      * 
      * @throws IndexOutOfBoundsException If the index is out of bounds.
      */
-    public TableStructureType getType(int index) throws IndexOutOfBoundsException {
-        return (TableStructureType)enumType.getEnumValue(index);
+    public TableStructureType getType(int index) {
+        return values()[index];
     }
 
     /**
      * @return The numer of types avaliable.
      */
     public int getNumberOfTypes() {
-        return enumType.getNumOfValues();
+        return values().length;
     }
 
     /**
@@ -86,21 +71,28 @@ public class TableStructureType extends DefaultEnumValue {
      * @return The type defined by the given id.
      * @throws IllegalArgumentException If the given id does not represent a valid type.
      */
-    public static TableStructureType getTypeForId(String id) throws IllegalArgumentException {
-        return (TableStructureType)enumType.getEnumValue(id);
+    public static TableStructureType getTypeForId(String id) {
+        for (TableStructureType type : values()) {
+            if (type.getId().equals(id)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(id + " is no valid " + TableStructureType.class.getName()); //$NON-NLS-1$
     }
 
     /**
      * @return All types defined as array.
      */
     public static TableStructureType[] getAll() {
-        return (TableStructureType[])enumType.getValues();
+        return values();
     }
 
-    /**
-     * @return The datatype these values are based on.
-     */
-    public final static EnumType getEnumType() {
-        return enumType;
+    public String getId() {
+        return id;
     }
+
+    public String getName() {
+        return name;
+    }
+
 }
