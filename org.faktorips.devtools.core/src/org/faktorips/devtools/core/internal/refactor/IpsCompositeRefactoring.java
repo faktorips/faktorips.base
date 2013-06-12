@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
@@ -97,8 +96,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
 
         pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$ 
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckInitialConditions);
@@ -132,8 +130,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     @Override
-    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException {
 
         pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$ 
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckFinalConditions);
@@ -159,7 +156,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public final Change createChange(IProgressMonitor pm) throws CoreException {
         pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskProcessElements);
 
