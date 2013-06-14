@@ -304,7 +304,7 @@ public class IpsPreferences {
         if (enumTypeDisplay == null) {
             IpsPlugin.log(new IpsStatus("Unknown enum type with id: " + id //$NON-NLS-1$
                     + ". Use default enum type display."));//$NON-NLS-1$
-            enumTypeDisplay = EnumTypeDisplay.DEFAULT;
+            enumTypeDisplay = EnumTypeDisplay.NAME_AND_ID;
         }
         return enumTypeDisplay;
     }

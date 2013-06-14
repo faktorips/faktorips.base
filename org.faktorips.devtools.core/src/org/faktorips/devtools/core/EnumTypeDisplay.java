@@ -29,9 +29,7 @@ public enum EnumTypeDisplay {
 
     NAME("name", Messages.EnumTypeDisplay_name), //$NON-NLS-1$
 
-    NAME_AND_ID("nameAndId", Messages.EnumTypeDisplay_nameAndId), //$NON-NLS-1$
-
-    DEFAULT("nameAndId", Messages.EnumTypeDisplay_nameAndId); //$NON-NLS-1$
+    NAME_AND_ID("nameAndId", Messages.EnumTypeDisplay_nameAndId); //$NON-NLS-1$
 
     private final String id;
 
