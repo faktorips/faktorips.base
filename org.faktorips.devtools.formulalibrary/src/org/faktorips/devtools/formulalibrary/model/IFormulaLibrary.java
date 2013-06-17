@@ -35,10 +35,6 @@ public interface IFormulaLibrary extends IIpsObject {
      */
     public static final String MSGCODE_PREFIX = "FORMULA_LIBRARY-"; //$NON-NLS-1$
 
-    public static final String MSGCODE_DUPLICATE_FUNCTION = MSGCODE_PREFIX + "duplicateFunction"; //$NON-NLS-1$
-
-    public static final String MSGCODE_DUPLICATE_SIGNATURE = MSGCODE_PREFIX + "duplicateSignature"; //$NON-NLS-1$
-
     public static final String MSGCODE_DUPLICATE_LIBRARY = MSGCODE_PREFIX + "duplicateLibrary"; //$NON-NLS-1$
 
     /**

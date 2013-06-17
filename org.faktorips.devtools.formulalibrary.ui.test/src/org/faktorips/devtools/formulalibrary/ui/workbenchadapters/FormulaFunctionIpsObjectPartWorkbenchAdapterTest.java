@@ -33,7 +33,6 @@ public class FormulaFunctionIpsObjectPartWorkbenchAdapterTest {
         when(formulaFunction.getFormulaMethod()).thenReturn(method);
         when(method.getSignatureString()).thenReturn("computeFormula1(Boolean, Integer)");
         when(method.getDatatype()).thenReturn("String");
-
         FormulaFunctionIpsObjectPartWorkbenchAdapter adapter = new FormulaFunctionIpsObjectPartWorkbenchAdapter(null);
 
         assertEquals("computeFormula1(Boolean, Integer) : String", adapter.getLabel(formulaFunction));

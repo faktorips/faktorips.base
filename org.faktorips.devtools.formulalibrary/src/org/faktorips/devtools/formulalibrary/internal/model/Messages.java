@@ -28,8 +28,8 @@ public class Messages extends NLS {
     public static String FormulaLibraryIpsObjectType_nameFormulaLibrary;
     public static String FormulaLibraryIpsObjectType_nameFormulaLibraryPlural;
 
-    public static String FormulaLibrary_msgDuplicateFormulaName;
-    public static String FormulaLibrary_msgDuplicateSignature;
+    public static String FormulaMethod_msgDuplicateFormulaName;
+    public static String FormulaMethod_msgDuplicateSignature;
     public static String FormulaFunction_expression;
     public static String FormulaMethod_FormulaNameIsMissing;
     public static String FormulaMethod_FormulaSignatureDatatypeMustBeAValueDatatype;

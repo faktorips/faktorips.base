@@ -57,7 +57,7 @@ public class ContentProposalListener implements IContentProposalListener {
                 controlContentAdapter.setControlContents(control, textBefore + textBehind, newCursorPosition);
             }
         }
-        controlContentAdapter.insertControlContents(control, content, pos);
+        controlContentAdapter.insertControlContents(control, content, pos + content.length());
     }
 
 }

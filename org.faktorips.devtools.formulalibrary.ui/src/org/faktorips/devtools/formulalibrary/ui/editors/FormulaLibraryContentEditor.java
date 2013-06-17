@@ -18,6 +18,7 @@ import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.formulalibrary.model.IFormulaLibrary;
+import org.faktorips.devtools.formulalibrary.ui.Messages;
 
 /**
  * The Faktor-IPS editor to edit <tt>IFormulaLibrary</tt> objects with.
@@ -35,7 +36,6 @@ public class FormulaLibraryContentEditor extends IpsObjectEditor implements IMod
         return Messages.FormulaLibraryEditor_title + getIpsObject().getName();
     }
 
-    /** Returns the <tt>IEnumContent</tt> this editor is currently editing. */
     protected IFormulaLibrary getFormulaLibrary() {
         return (IFormulaLibrary)getIpsObject();
     }
@@ -44,5 +44,4 @@ public class FormulaLibraryContentEditor extends IpsObjectEditor implements IMod
     public IPage createModelDescriptionPage() throws CoreException {
         return null;
     }
-
 }

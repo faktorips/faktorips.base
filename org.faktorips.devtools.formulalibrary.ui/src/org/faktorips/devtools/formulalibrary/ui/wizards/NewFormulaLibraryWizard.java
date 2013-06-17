@@ -25,8 +25,7 @@ import org.faktorips.devtools.formulalibrary.model.IFormulaLibrary;
  * @author frank
  */
 public class NewFormulaLibraryWizard extends NewIpsObjectWizard {
-
-	private static final String PLUGIN_ID = "org.faktorips.devtools.formulalibrary.ui"; //$NON-NLS-1$
+    private static final String PLUGIN_ID = "org.faktorips.devtools.formulalibrary.ui"; //$NON-NLS-1$
     private static final String FORMULA_LIBRARY_WIZARD_PNG = "NewFormulaLibraryWizard.png"; //$NON-NLS-1$
     private static final String WIZARD_FOLDER = "icons/wizards/"; //$NON-NLS-1$
 

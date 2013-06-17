@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -48,7 +49,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
  */
 public final class DescriptionEditComposite extends Composite {
 
-    private final IDescribedElement describedElement;
+    private IDescribedElement describedElement;
 
     private final UIToolkit uiToolkit;
 
@@ -127,15 +128,30 @@ public final class DescriptionEditComposite extends Composite {
     }
 
     /**
+     * Sets the element to be described.
+     * 
+     * @param describedElement The <tt>IDescribedElement</tt> to be described.
+     */
+    public void setDescribedElement(IDescribedElement describedElement) {
+        this.describedElement = describedElement;
+        if (this.describedElement == null) {
+            currentDescription.setText(StringUtils.EMPTY);
+        }
+        updateDescription();
+    }
+
+    /**
      * Checks whether the language combo needs to be refreshed. This has to be done because it might
      * happen that the editor is opened while the supported languages change.
      */
     private boolean isLanguageComboRefreshRequired() {
         Map<String, String> newLanguageCodes = new LinkedHashMap<String, String>();
-        for (IDescription description : describedElement.getDescriptions()) {
-            Locale locale = description.getLocale();
-            if (locale != null) {
-                newLanguageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
+        if (describedElement != null) {
+            for (IDescription description : describedElement.getDescriptions()) {
+                Locale locale = description.getLocale();
+                if (locale != null) {
+                    newLanguageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
+                }
             }
         }
         if (!languageCodes.equals(newLanguageCodes)) {
@@ -234,7 +250,10 @@ public final class DescriptionEditComposite extends Composite {
         currentLanguage = currentLanguage.substring(0, currentLanguage.indexOf(" (")); //$NON-NLS-1$
         String currentLanguageCode = languageCodes.get(currentLanguage);
         Locale currentLocale = new Locale(currentLanguageCode);
-        currentDescription = describedElement.getDescription(currentLocale);
+
+        if (describedElement != null) {
+            currentDescription = describedElement.getDescription(currentLocale);
+        }
     }
 
     private void updateTextArea() {

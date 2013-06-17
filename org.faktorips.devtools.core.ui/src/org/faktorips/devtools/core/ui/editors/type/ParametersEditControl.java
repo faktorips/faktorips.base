@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -35,8 +34,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
@@ -52,20 +49,19 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.method.IParameterContainer;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.DatatypeContentProposalLabelProvider;
+import org.faktorips.devtools.core.ui.controls.DatatypeContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -160,6 +156,19 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         }
         createParameterList(this);
         createButtonComposite(this);
+        uiToolkit.setDataChangeable(this, false);
+    }
+
+    public void setInput(IParameterContainer paramContainer) {
+        // ArgumentCheck.notNull(paramContainer);
+        this.paramContainer = paramContainer;
+        fTableViewer.setInput(paramContainer);
+        if (this.paramContainer != null) {
+            if (paramContainer.getParameters().length > 0) {
+                fTableViewer.setSelection(new StructuredSelection(paramContainer.getParameters()[0]));
+            }
+        }
+        uiToolkit.setDataChangeable(this, paramContainer != null);
     }
 
     private MessageList validate(IParameter param) throws CoreException {
@@ -178,15 +187,6 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             }
         }
         return true;
-    }
-
-    public void setInput(IParameterContainer paramContainer) {
-        ArgumentCheck.notNull(paramContainer);
-        this.paramContainer = paramContainer;
-        fTableViewer.setInput(paramContainer);
-        if (paramContainer.getParameters().length > 0) {
-            fTableViewer.setSelection(new StructuredSelection(paramContainer.getParameters()[0]));
-        }
     }
 
     // ---- Parameter table
@@ -495,8 +495,6 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     private void addCellEditors() {
         class UnfocusableTextCellEditor extends TextCellEditor {
             private Object fOriginalValue;
-            SubjectControlContentAssistant fContentAssistant;
-            private boolean fSaveNextModification;
 
             public UnfocusableTextCellEditor(Composite parent) {
                 super(parent);
@@ -517,33 +515,6 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                         ((IStructuredSelection)fTableViewer.getSelection()).getFirstElement(), PROPERTIES[property],
                         newValue);
             }
-
-            @Override
-            protected void focusLost() {
-                if (fContentAssistant != null && fContentAssistant.hasProposalPopupFocus()) {
-                    fSaveNextModification = true;
-                } else {
-                    super.focusLost();
-                }
-            }
-
-            public void setContentAssistant(SubjectControlContentAssistant assistant, final int property) {
-                fContentAssistant = assistant;
-                // workaround for bugs 53629, 58777:
-                text.addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent e) {
-                        if (fSaveNextModification) {
-                            fSaveNextModification = false;
-                            final String newValue = text.getText();
-                            fTableViewer.getCellModifier().modify(
-                                    ((IStructuredSelection)fTableViewer.getSelection()).getFirstElement(),
-                                    PROPERTIES[property], newValue);
-                            editColumnOrNextPossible(property);
-                        }
-                    }
-                });
-            }
         }
 
         final UnfocusableTextCellEditor editors[] = new UnfocusableTextCellEditor[PROPERTIES.length];
@@ -552,8 +523,8 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         editors[NEWNAME_PROP] = new UnfocusableTextCellEditor(getTable());
         editors[DEFAULT_PROP] = new UnfocusableTextCellEditor(getTable());
 
-        SubjectControlContentAssistant assistant = installParameterTypeContentAssist(editors[TYPE_PROP].getControl());
-        editors[TYPE_PROP].setContentAssistant(assistant, TYPE_PROP);
+        installParameterTypeContentAssist(editors[TYPE_PROP].getControl());
+        // editors[TYPE_PROP].setContentAssistant(assistant, TYPE_PROP);
 
         for (int i = 1; i < editors.length; i++) {
             final int editorColumn = i;
@@ -664,19 +635,18 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         fTableViewer.setCellModifier(new ParametersCellModifier());
     }
 
-    private SubjectControlContentAssistant installParameterTypeContentAssist(Control control) {
+    private void installParameterTypeContentAssist(Control control) {
         if (!(control instanceof Text)) {
-            return null;
+            return;
         }
         Text text = (Text)control;
         DatatypeCompletionProcessor processor = new DatatypeCompletionProcessor();
         processor.setIpsProject(ipsProject);
         processor.setValueDatatypesOnly(false);
         processor.setIncludeAbstract(true);
-        SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
 
-        ContentAssistHandler.createHandlerForText(text, contentAssistant);
-        return contentAssistant;
+        DatatypeContentProposalProvider provider = new DatatypeContentProposalProvider(ipsProject, false, true);
+        uiToolkit.attachContentProposalAdapter(text, provider, new DatatypeContentProposalLabelProvider());
     }
 
     private class ParameterInfoContentProvider implements IStructuredContentProvider {

@@ -46,6 +46,10 @@ public interface IFormulaMethod extends IBaseMethod, IDescribedElement, ILabeled
      */
     public static final String MSGCODE_INVALID_FORMULA_NAME = IBaseMethod.MSGCODE_PREFIX + "InvalidFormulaName"; //$NON-NLS-1$
 
+    public static final String MSGCODE_DUPLICATE_FUNCTION = MSGCODE_PREFIX + "duplicateFunction"; //$NON-NLS-1$
+
+    public static final String MSGCODE_DUPLICATE_SIGNATURE = MSGCODE_PREFIX + "duplicateSignature"; //$NON-NLS-1$
+
     /**
      * Returns the name of the formula signature. Note that this is not equal to the method name.
      * For example the formula name might be 'Premium' while the method name might be

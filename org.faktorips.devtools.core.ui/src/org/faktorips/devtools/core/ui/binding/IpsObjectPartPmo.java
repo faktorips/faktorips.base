@@ -13,10 +13,16 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
+import java.beans.PropertyChangeEvent;
+
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 
 /**
  * An abstract base class for presentation model objects that are based on a single ips object part.
@@ -26,17 +32,29 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPartPmo extends PresentationModelObject implements ContentsChangeListener {
+public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeListener {
+
+    public static final String PROPERTY_IPS_OBJECT_PART_CONTAINER = "ipsObjectPartContainer"; //$NON-NLS-1$
 
     private IIpsObjectPartContainer part;
+
+    public IpsObjectPartPmo() {
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+    }
 
     /**
      * @throws NullPointerException if part is <code>null</code>.
      */
     public IpsObjectPartPmo(IIpsObjectPartContainer part) {
+        this();
         ArgumentCheck.notNull(part);
         this.part = part;
-        part.getIpsModel().addChangeListener(this);
+    }
+
+    public void setIpsObjectPartContainer(IIpsObjectPartContainer part) {
+        IIpsObjectPartContainer oldValue = this.part;
+        this.part = part;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_OBJECT_PART_CONTAINER, oldValue, part));
     }
 
     public IIpsObjectPartContainer getIpsObjectPartContainer() {
@@ -44,7 +62,7 @@ public class IpsObjectPartPmo extends PresentationModelObject implements Content
     }
 
     public void dispose() {
-        part.getIpsModel().removeChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
     }
 
     @Override
@@ -62,6 +80,25 @@ public class IpsObjectPartPmo extends PresentationModelObject implements Content
 
     protected void partHasChanged() {
         // Empty default implementation
+    }
+
+    @Override
+    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        if (getIpsObjectPartContainer() == null) {
+            return new MessageList();
+        } else {
+            MessageList messageList = getIpsObjectPartContainer().getIpsObject().validate(ipsProject);
+            MessageList copy = createCopyAndMapObjectProperties(messageList);
+            return copy;
+        }
+    }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        if (getIpsObjectPartContainer() != null) {
+            return getIpsObjectPartContainer().getIpsProject();
+        }
+        return null;
     }
 
 }

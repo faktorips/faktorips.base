@@ -16,6 +16,7 @@ package org.faktorips.devtools.formulalibrary.ui.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.formulalibrary.internal.model.FormulaLibraryIpsObjectType;
+import org.faktorips.devtools.formulalibrary.ui.Messages;
 
 /**
  * Page with Source, Package and Name

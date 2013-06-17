@@ -61,7 +61,7 @@ public class ContentProposalListenerTest {
         listener.proposalAccepted(proposal);
 
         verify(controlContentAdapter).setControlContents(textControl, "", 0);
-        verify(controlContentAdapter).insertControlContents(textControl, "WENN", 4);
+        verify(controlContentAdapter).insertControlContents(textControl, "WENN", 8);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class ContentProposalListenerTest {
         listener.proposalAccepted(proposal);
 
         verify(controlContentAdapter).setControlContents(textControl, "MAX(1;2) +  + MAX(3;4)", 11);
-        verify(controlContentAdapter).insertControlContents(textControl, "WENN", 11);
+        verify(controlContentAdapter).insertControlContents(textControl, "WENN", 15);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ContentProposalListenerTest {
         listener.proposalAccepted(proposal);
 
         verify(controlContentAdapter).setControlContents(textControl, "MAX(1;2) + ", 11);
-        verify(controlContentAdapter).insertControlContents(textControl, "WENN", 11);
+        verify(controlContentAdapter).insertControlContents(textControl, "WENN", 15);
     }
 
 }

@@ -34,9 +34,8 @@ import org.faktorips.devtools.formulalibrary.model.IFormulaLibrary;
  * @author frank
  */
 public class FormulaLibraryWorkbenchAdapterProvider implements IWorkbenchAdapterProvider {
-
-	private static final String PLUGIN_ID = "org.faktorips.devtools.formulalibrary.ui"; //$NON-NLS-1$
-	private static final String FORMULA_LIBRARY_GIF = "FormulaLibrary.gif"; //$NON-NLS-1$
+    private static final String PLUGIN_ID = "org.faktorips.devtools.formulalibrary.ui"; //$NON-NLS-1$
+    private static final String FORMULA_LIBRARY_GIF = "FormulaLibrary.gif"; //$NON-NLS-1$
     private static final String FORMULA_FUNCTION_GIF = "Function.gif"; //$NON-NLS-1$
     private static final String ICONS_FOLDER = "icons/"; //$NON-NLS-1$
 
@@ -56,8 +55,7 @@ public class FormulaLibraryWorkbenchAdapterProvider implements IWorkbenchAdapter
         ImageDescriptor imageDescriptor = IpsUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ICONS_FOLDER
                 + FORMULA_LIBRARY_GIF);
         register(FormulaLibrary.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ICONS_FOLDER
-                + FORMULA_FUNCTION_GIF);
+        imageDescriptor = IpsUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ICONS_FOLDER + FORMULA_FUNCTION_GIF);
         register(FormulaFunction.class, new FormulaFunctionIpsObjectPartWorkbenchAdapter(imageDescriptor));
         register(FormulaMethod.class, new MethodWorkbenchAdapter());
     }

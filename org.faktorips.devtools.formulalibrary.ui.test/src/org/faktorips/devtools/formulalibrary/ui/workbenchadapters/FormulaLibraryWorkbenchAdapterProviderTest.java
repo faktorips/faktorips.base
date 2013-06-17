@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.faktorips.devtools.formulalibrary.internal.model.FormulaFunction;
 import org.faktorips.devtools.formulalibrary.internal.model.FormulaLibrary;
+import org.faktorips.devtools.formulalibrary.internal.model.FormulaMethod;
 import org.junit.Test;
 
 public class FormulaLibraryWorkbenchAdapterProviderTest extends TestCase {
@@ -24,8 +25,9 @@ public class FormulaLibraryWorkbenchAdapterProviderTest extends TestCase {
     @Test
     public void testRegisterAdapter() {
         FormulaLibraryWorkbenchAdapterProvider adapter = new FormulaLibraryWorkbenchAdapterProvider();
-        assertEquals(2, adapter.getAdapterMap().size());
+        assertEquals(3, adapter.getAdapterMap().size());
         assertNotNull(adapter.getAdapterMap().get(FormulaLibrary.class));
         assertNotNull(adapter.getAdapterMap().get(FormulaFunction.class));
+        assertNotNull(adapter.getAdapterMap().get(FormulaMethod.class));
     }
 }

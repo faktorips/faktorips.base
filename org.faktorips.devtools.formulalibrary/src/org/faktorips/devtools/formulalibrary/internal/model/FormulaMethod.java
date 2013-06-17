@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.formulalibrary.internal.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -24,6 +27,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
+import org.faktorips.devtools.formulalibrary.model.IFormulaFunction;
+import org.faktorips.devtools.formulalibrary.model.IFormulaLibrary;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -87,6 +92,7 @@ public class FormulaMethod extends BaseMethod implements IFormulaMethod {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateFormulaName(list);
+        validateSameFormulaFunctions(list);
         validateDatatype(list, ipsProject);
     }
 
@@ -116,5 +122,37 @@ public class FormulaMethod extends BaseMethod implements IFormulaMethod {
                         text, Message.ERROR, this, IBaseMethod.PROPERTY_DATATYPE));
             }
         }
+    }
+
+    private void validateSameFormulaFunctions(MessageList result) {
+        Set<String> signatures = new HashSet<String>();
+        Set<String> formulaNames = new HashSet<String>();
+
+        for (IFormulaFunction formulaFunction : getFormulaLibrary().getFormulaFunctions()) {
+            IFormulaMethod formulaMethod = formulaFunction.getFormulaMethod();
+            if (this.equals(formulaMethod)) {
+                continue;
+            }
+            signatures.add(formulaMethod.getSignatureString());
+            formulaNames.add(formulaMethod.getFormulaName());
+        }
+        if (formulaNames.contains(getFormulaName())) {
+            result.add(new Message(IFormulaMethod.MSGCODE_DUPLICATE_FUNCTION,
+                    Messages.FormulaMethod_msgDuplicateFormulaName, Message.ERROR, this, PROPERTY_FORMULA_NAME));
+            return;
+        }
+        if (signatures.contains(getSignatureString())) {
+            result.add(new Message(IFormulaMethod.MSGCODE_DUPLICATE_SIGNATURE,
+                    Messages.FormulaMethod_msgDuplicateSignature, Message.ERROR, this, PROPERTY_FORMULA_NAME));
+            return;
+        }
+    }
+
+    private IFormulaLibrary getFormulaLibrary() {
+        return (IFormulaLibrary)getFormulaFunction().getParent();
+    }
+
+    public final IFormulaFunction getFormulaFunction() {
+        return (IFormulaFunction)super.getParent();
     }
 }

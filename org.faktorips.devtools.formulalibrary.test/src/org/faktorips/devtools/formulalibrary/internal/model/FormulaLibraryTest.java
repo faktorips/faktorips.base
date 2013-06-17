@@ -16,7 +16,6 @@ package org.faktorips.devtools.formulalibrary.internal.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -29,9 +28,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.formulalibrary.model.IFormulaFunction;
-import org.faktorips.devtools.formulalibrary.model.IFormulaLibrary;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -98,80 +95,14 @@ public class FormulaLibraryTest extends AbstractIpsPluginTest {
         assertEquals(1, formulaFunctions.size());
     }
 
-    @Test
-    public void testValidateSameLibraryFunctionFormulaName() throws CoreException {
-        FormulaLibrary formulaLibrary = newFormulaLibrary("folder");
+    private FormulaLibrary newFormulaLibrary(String folder) throws CoreException {
+        IFolder parentFolder = null;
+        IIpsPackageFragmentRoot packageFragmentRoot = newIpsPackageFragmentRoot(project, parentFolder, folder);
 
-        IFormulaFunction formulaFunction1 = formulaLibrary.newFormulaFunction();
-        IFormulaMethod formulaMethod1 = formulaFunction1.getFormulaMethod();
-
-        formulaMethod1.setName("Formula1");
-        formulaMethod1.setDatatype("Boolean");
-        formulaMethod1.setFormulaName("NewFormula1");
-        formulaMethod1.newParameter("Integer", "param1");
-        formulaMethod1.newParameter("Boolean", "param2");
-
-        formulaFunction1.getExpression().setExpression("true");
-
-        IFormulaFunction formulaFunction2 = formulaLibrary.newFormulaFunction();
-        IFormulaMethod formulaMethod2 = formulaFunction2.getFormulaMethod();
-
-        formulaMethod2.setName("Formula2");
-        formulaMethod2.setDatatype("Boolean");
-        formulaMethod2.setFormulaName("NewFormula2");
-        formulaMethod2.newParameter("Integer", "param1");
-        formulaMethod2.newParameter("Boolean", "param2");
-
-        formulaFunction2.getExpression().setExpression("true");
-
-        MessageList list = formulaLibrary.validate(project);
-
-        assertNull(list.toString(), list.getMessageByCode(IFormulaLibrary.MSGCODE_DUPLICATE_FUNCTION));
-
-        formulaMethod2.setFormulaName(formulaMethod1.getFormulaName());
-
-        getIpsModel().clearValidationCache();
-        list = formulaLibrary.validate(project);
-
-        assertNotNull(list.toString(), list.getMessageByCode(IFormulaLibrary.MSGCODE_DUPLICATE_FUNCTION));
-    }
-
-    @Test
-    public void testValidateSameLibraryFunctionSignatureName() throws CoreException {
-        FormulaLibrary formulaLibrary = newFormulaLibrary("folder");
-
-        IFormulaFunction formulaFunction1 = formulaLibrary.newFormulaFunction();
-        IFormulaMethod formulaMethod1 = formulaFunction1.getFormulaMethod();
-
-        formulaMethod1.setName("Formula1");
-        formulaMethod1.setDatatype("Boolean");
-        formulaMethod1.setFormulaName("NewFormula1");
-        formulaMethod1.newParameter("Integer", "param1");
-        formulaMethod1.newParameter("Boolean", "param2");
-
-        formulaFunction1.getExpression().setExpression("true");
-
-        IFormulaFunction formulaFunction2 = formulaLibrary.newFormulaFunction();
-        IFormulaMethod formulaMethod2 = formulaFunction2.getFormulaMethod();
-
-        formulaMethod2.setName("Formula2");
-        formulaMethod2.setDatatype("Boolean");
-        formulaMethod2.setFormulaName("NewFormula2");
-        formulaMethod2.newParameter("Integer", "param1");
-        formulaMethod2.newParameter("Boolean", "param2");
-
-        formulaFunction2.getExpression().setExpression("true");
-
-        MessageList list = formulaLibrary.validate(project);
-
-        assertNull(list.toString(), list.getMessageByCode(IFormulaLibrary.MSGCODE_DUPLICATE_SIGNATURE));
-
-        formulaMethod2.setName(formulaMethod1.getName());
-
-        getIpsModel().clearValidationCache();
-        list = formulaLibrary.validate(project);
-
-        assertNotNull(list.toString(), list.getMessageByCode(IFormulaLibrary.MSGCODE_DUPLICATE_SIGNATURE));
+        IIpsSrcFile file = new IpsSrcFile(packageFragmentRoot, "lib."
+                + FormulaLibraryIpsObjectType.getInstance().getFileExtension());
+        FormulaLibrary library = new FormulaLibrary(file);
+        return library;
     }
 
     @Test
@@ -215,24 +146,13 @@ public class FormulaLibraryTest extends AbstractIpsPluginTest {
                 .getIpsSrcFile();
         FormulaLibrary formulaLibrary2 = new FormulaLibrary(file2);
 
-        MessageList validation = new MessageList();
-        formulaLibrary1.validateThis(validation, project);
+        MessageList validation = formulaLibrary1.validate(project);
         assertFalse(validation.toString(), validation.containsErrorMsg());
 
         validation.clear();
-        formulaLibrary2.validateThis(validation, project);
+        validation = formulaLibrary2.validate(project);
         assertFalse(validation.toString(), validation.containsErrorMsg());
 
-    }
-
-    private FormulaLibrary newFormulaLibrary(String folder) throws CoreException {
-        IFolder parentFolder = null;
-        IIpsPackageFragmentRoot packageFragmentRoot = newIpsPackageFragmentRoot(project, parentFolder, folder);
-
-        IIpsSrcFile file = new IpsSrcFile(packageFragmentRoot, "lib."
-                + FormulaLibraryIpsObjectType.getInstance().getFileExtension());
-        FormulaLibrary library = new FormulaLibrary(file);
-        return library;
     }
 
 }

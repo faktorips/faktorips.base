@@ -31,26 +31,6 @@ import org.apache.commons.lang.SystemUtils;
  */
 public class MessageList implements Iterable<Message> {
 
-    /**
-     * Creates a copy from the message list and replaces all references to the old object with the
-     * new object.
-     * 
-     * @param list the list to copy
-     * @param oldObject the old object reference that should be replaced.
-     * @param newObject the object reference to set
-     */
-    public final static MessageList createCopy(MessageList list, Object oldObject, Object newObject) {
-        if (list.isEmpty()) {
-            return list;
-        }
-        MessageList newList = new MessageList();
-        int numOfMsg = list.size();
-        for (int i = 0; i < numOfMsg; i++) {
-            newList.add(Message.createCopy(list.getMessage(i), oldObject, newObject));
-        }
-        return newList;
-    }
-
     private List<Message> messages = new ArrayList<Message>(0);
 
     /**
@@ -66,6 +46,24 @@ public class MessageList implements Iterable<Message> {
      */
     public MessageList(Message msg) {
         add(msg);
+    }
+
+    /**
+     * Creates a copy from the message list and replaces all references to the old object with the
+     * new object.
+     * 
+     * @param objectPropertyMap The <tt>Map</tt> between old and new <tt>ObjectProperty</tt>
+     * @return MessageList
+     */
+    public MessageList createCopy(Map<ObjectProperty, ObjectProperty> objectPropertyMap) {
+        if (isEmpty()) {
+            return this;
+        }
+        MessageList newList = new MessageList();
+        for (Message message : messages) {
+            newList.add(message.createCopy(objectPropertyMap));
+        }
+        return newList;
     }
 
     /**

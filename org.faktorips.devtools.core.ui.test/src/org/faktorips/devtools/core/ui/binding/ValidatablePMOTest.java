@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.binding;
+
+import static org.junit.Assert.assertEquals;
+
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ValidatablePMOTest {
+
+    Object object1;
+    Object object2;
+    Object object3;
+    ObjectProperty objectProperty1;
+    ObjectProperty objectProperty2;
+    ObjectProperty objectProperty3;
+
+    MessageList messageList;
+
+    ValidatablePMO validatablePMO = new ValidatablePMO() {
+
+        @Override
+        public MessageList validate(IIpsProject ipsProject) throws CoreException {
+            return null;
+        }
+
+        @Override
+        public IIpsProject getIpsProject() {
+            return null;
+        }
+    };
+
+    @Before
+    public void testSetUp() {
+        creatingObjectProperties();
+        createMessageList();
+        validatablePMO.mapValidationMessagesFor(objectProperty1).to(objectProperty2);
+    }
+
+    @Test
+    public void testMapValidationMessages_matchingObjectProperties() {
+        testSetUp();
+
+        MessageList copy = validatablePMO.createCopyAndMapObjectProperties(messageList);
+        MessageList messageListForObjProp2 = copy.getMessagesFor(objectProperty2.getObject());
+
+        assertEquals(3, messageListForObjProp2.getNoOfMessages(Message.ERROR));
+        assertEquals("This is message 1", messageListForObjProp2.getMessage(0).getText());
+        assertEquals(Message.ERROR, messageListForObjProp2.getSeverity());
+    }
+
+    @Test
+    public void testMapValidationMessages_noMatchingObjectProperties() {
+        testSetUp();
+        validatablePMO.mapValidationMessagesFor(objectProperty3).to(objectProperty1);
+        MessageList copy = validatablePMO.createCopyAndMapObjectProperties(messageList);
+        MessageList messageListForObjProp3 = copy.getMessagesFor(objectProperty3.getObject());
+
+        assertEquals(0, messageListForObjProp3.getNoOfMessages(Message.ERROR));
+    }
+
+    @Test
+    public void testClearObjectPropertyMappings() {
+        assertEquals(false, validatablePMO.getObjectPropertyMapping().isEmpty());
+        validatablePMO.clearObjectPropertyMappings();
+        assertEquals(true, validatablePMO.getObjectPropertyMapping().isEmpty());
+    }
+
+    private void createMessageList() {
+        Message message1 = new Message("message 1", "This is message 1", Message.ERROR, objectProperty1);
+        Message message2 = new Message("message 2", "This is message 2", Message.ERROR, objectProperty1);
+        Message message3 = new Message("message 3", "This is message 3", Message.ERROR, objectProperty1);
+        messageList = new MessageList(message1);
+        messageList.add(message2);
+        messageList.add(message3);
+    }
+
+    private void creatingObjectProperties() {
+        object1 = new Object();
+        object2 = new Object();
+        objectProperty1 = new ObjectProperty(object1, "Property of Object 1");
+        objectProperty2 = new ObjectProperty(object2, "Property of Object 2");
+        objectProperty3 = new ObjectProperty(object3, null);
+    }
+}

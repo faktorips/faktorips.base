@@ -15,13 +15,12 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -35,15 +34,25 @@ public class DatatypeRefControl extends TextButtonControl {
 
     private DatatypeCompletionProcessor completionProcessor;
 
+    private UIToolkit toolkit;
+
     public DatatypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, Messages.DatatypeRefControl_title);
 
         ipsProject = project;
+
+        this.toolkit = toolkit;
+
+        DatatypeContentProposalProvider proposalProvider = new DatatypeContentProposalProvider(ipsProject, true, false);
+        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
+                new DatatypeContentProposalLabelProvider());
+
         completionProcessor = new DatatypeCompletionProcessor();
         completionProcessor.setIpsProject(project);
-        CompletionUtil.createContentAssistant(completionProcessor);
-        ContentAssistHandler.createHandlerForText(getTextControl(),
-                CompletionUtil.createContentAssistant(completionProcessor));
+    }
+
+    public UIToolkit getToolkit() {
+        return toolkit;
     }
 
     public void setVoidAllowed(boolean includeVoid) {
@@ -110,9 +119,8 @@ public class DatatypeRefControl extends TextButtonControl {
                     immediatelyNotifyListener = false;
                 }
             }
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-
 }

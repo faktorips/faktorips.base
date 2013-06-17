@@ -17,14 +17,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
 
 public class MessageTest {
+
+    // TODO
+
     @Test
     public void testCopy() {
+        HashMap<ObjectProperty, ObjectProperty> invalidObjectPropertyMap = new HashMap<ObjectProperty, ObjectProperty>();
+        invalidObjectPropertyMap.put(new ObjectProperty("a", "a"), new ObjectProperty("b", "b"));
+
         Message msg = new Message("code", "text", Message.INFO);
-        Message copy = Message.createCopy(msg, "a", "b");
+        Message copy = msg.createCopy(invalidObjectPropertyMap);
         assertEquals("code", msg.getCode());
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
@@ -36,7 +44,12 @@ public class MessageTest {
         ObjectProperty op2 = new ObjectProperty(oldObject, "prop2");
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty[] { op0, op1, op2 });
         Object newObject = new Object();
-        copy = Message.createCopy(msg, oldObject, newObject);
+
+        HashMap<ObjectProperty, ObjectProperty> objectPropertyMap = new HashMap<ObjectProperty, ObjectProperty>();
+        objectPropertyMap.put(op0, new ObjectProperty(newObject, "prop0"));
+        objectPropertyMap.put(op2, new ObjectProperty(newObject, "prop2"));
+
+        copy = msg.createCopy(objectPropertyMap);
         ObjectProperty[] ops = copy.getInvalidObjectProperties();
         assertEquals(3, ops.length);
         assertEquals(newObject, ops[0].getObject());
