@@ -1452,6 +1452,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
+    public void setReleaseExtensionId(String releaseExtensionId) {
+        this.releaseExtensionId = releaseExtensionId;
+    }
+
+    @Override
     public boolean isAssociationsInFormulas() {
         return associationsInFormulas;
     }
@@ -1475,4 +1480,5 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void setFormulaLanguageLocale(Locale locale) {
         formulaLanguageLocale = locale;
     }
+
 }

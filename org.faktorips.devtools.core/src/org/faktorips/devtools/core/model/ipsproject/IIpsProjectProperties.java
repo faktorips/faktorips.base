@@ -543,6 +543,13 @@ public interface IIpsProjectProperties {
     public String getReleaseExtensionId();
 
     /**
+     * Setting the id of the release extension associated with this project
+     * 
+     * @param releaseExtensionId The new id of the release extension for this project
+     */
+    public void setReleaseExtensionId(String releaseExtensionId);
+
+    /**
      * Setting the default currency for this project
      * 
      * @param defaultCurrency the default currency

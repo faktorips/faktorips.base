@@ -504,6 +504,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
+    public void setReleaseExtensionId(String releaseExtensionId) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
     public boolean isAssociationsInFormulas() {
         return propertiesInternal.isAssociationsInFormulas();
     }
