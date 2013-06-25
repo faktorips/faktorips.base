@@ -39,7 +39,7 @@
 			<extension>
 				<groupId>org.faktorips</groupId>
 				<artifactId>org.faktorips.build.config</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2</version>
 			</extension>
 		</extensions>
 	</build>
