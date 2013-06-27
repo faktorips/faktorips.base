@@ -18,9 +18,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public interface IForeignKey extends IKey {
 
-    public final static String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure"; //$NON-NLS-1$
+    public static final String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure"; //$NON-NLS-1$
 
-    public final static String PROPERTY_REF_UNIQUE_KEY = "referencedUniqueKey"; //$NON-NLS-1$
+    public static final String PROPERTY_REF_UNIQUE_KEY = "referencedUniqueKey"; //$NON-NLS-1$
 
     /**
      * The name of the foreign key is the name of the table it references followed by an opening

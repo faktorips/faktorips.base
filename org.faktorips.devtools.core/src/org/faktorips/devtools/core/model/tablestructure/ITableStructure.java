@@ -19,20 +19,12 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
 public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
 
-    public final static String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
+    public static final String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "TABLESTRUCTURE-"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that if table contents instances are supposed to be used
-     * in formulas it is not advisable to define more than one key since there exists more than one
-     * table function and it cannot be determined which function is used.
-     */
-    public final static String MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS = MSGCODE_PREFIX
-            + "MoreThanOneKeyNotAdvisableInFormulas"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "TABLESTRUCTURE-"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if multiple table contents are allowed for this table structure,
@@ -187,6 +179,11 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
      * Returns the number of unique keys in the table.
      */
     public int getNumOfUniqueKeys();
+
+    /**
+     * Returns true, if there are several unique keys based on the same datatypes
+     */
+    public boolean hasUniqueKeysWithSameDatatype();
 
     /**
      * Creates a new unique key.

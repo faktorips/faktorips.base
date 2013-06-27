@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -43,8 +44,6 @@ import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class TableStructure extends IpsObject implements ITableStructure {
@@ -334,10 +333,10 @@ public class TableStructure extends IpsObject implements ITableStructure {
         IUniqueKey[] keys = getUniqueKeys();
         // add functions for each key and column which is not in the key
         for (IUniqueKey key : keys) {
-            IColumn[] columns = getColumnsNotInKey(key);
-            for (int j = 0; j < columns.length; j++) {
+            IColumn[] columnsNotInKey = getColumnsNotInKey(key);
+            for (int j = 0; j < columnsNotInKey.length; j++) {
                 // add function for each column which is not included in the key
-                functions.add(createFunction("" + j, key, columns[j])); //$NON-NLS-1$
+                functions.add(createFunction("" + j, key, columnsNotInKey[j])); //$NON-NLS-1$
             }
         }
 
@@ -379,7 +378,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 }
                 fct.setArgTypes(argTypes);
                 descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END, locale))
-                        .append(column.getName());
+                        .append(' ').append(column.getName());
 
                 Description description = (Description)fct.getDescription(locale);
                 if (description != null) {
@@ -512,16 +511,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        super.validateThis(list, ipsProject);
-        IUniqueKey[] keys = getUniqueKeys();
-        if (keys.length > 1) {
-            list.add(new Message(MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS,
-                    Messages.TableStructure_msgMoreThanOneKeyNotAdvisableInFormulas, Message.WARNING, this));
-        }
-    }
-
-    @Override
     public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
@@ -531,4 +520,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return result;
     }
 
+    @Override
+    public boolean hasUniqueKeysWithSameDatatype() {
+        Set<List<String>> keysDatatypes = new HashSet<List<String>>();
+        for (IUniqueKey uniqueKey : uniqueKeys) {
+            List<String> keyDatatype = uniqueKey.getDatatypes();
+            if (keysDatatypes.contains(keyDatatype)) {
+                return true;
+            }
+            keysDatatypes.add(keyDatatype);
+        }
+        return false;
+    }
 }

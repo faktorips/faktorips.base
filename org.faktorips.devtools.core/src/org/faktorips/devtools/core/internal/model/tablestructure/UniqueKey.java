@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -30,7 +33,7 @@ import org.w3c.dom.Element;
 
 public class UniqueKey extends Key implements IUniqueKey {
 
-    final static String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
+    static final String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
 
     public UniqueKey(TableStructure tableStructure, String id) {
         super(tableStructure, id);
@@ -155,6 +158,15 @@ public class UniqueKey extends Key implements IUniqueKey {
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
+    }
+
+    @Override
+    public List<String> getDatatypes() {
+        List<String> keyDatatype = new ArrayList<String>();
+        for (IKeyItem keyItem : getKeyItems()) {
+            keyDatatype.add(keyItem.getDatatype());
+        }
+        return keyDatatype;
     }
 
 }

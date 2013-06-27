@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -168,6 +172,52 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
             // do nothing
         }
 
+    }
+
+    @Test
+    public void testGetDatatypes() throws Exception {
+
+        IColumn firstString = table.newColumn();
+        firstString.setDatatype(Datatype.STRING.getQualifiedName());
+        firstString.setName("firstString");
+
+        IColumn secondString = table.newColumn();
+        secondString.setDatatype(Datatype.STRING.getQualifiedName());
+        secondString.setName("secondString");
+
+        IColumn firstInteger = table.newColumn();
+        firstInteger.setDatatype(Datatype.INTEGER.getQualifiedName());
+        firstInteger.setName("firstInteger");
+
+        IColumn secondInteger = table.newColumn();
+        secondInteger.setDatatype(Datatype.INTEGER.getQualifiedName());
+        secondInteger.setName("secondInteger");
+
+        IColumnRange range = table.newRange();
+        range.setFromColumn(firstInteger.getName());
+        range.setToColumn(secondInteger.getName());
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+
+        IUniqueKey firstStringKey = table.newUniqueKey();
+        firstStringKey.addKeyItem(firstString.getName());
+
+        assertEquals(Arrays.asList("String"), firstStringKey.getDatatypes());
+
+        IUniqueKey firstIntegerKey = table.newUniqueKey();
+        firstIntegerKey.addKeyItem(firstInteger.getName());
+
+        assertEquals(Arrays.asList("Integer"), firstIntegerKey.getDatatypes());
+
+        IUniqueKey rangeKey = table.newUniqueKey();
+        rangeKey.addKeyItem(range.getName());
+
+        assertEquals(Arrays.asList("Integer"), firstIntegerKey.getDatatypes());
+
+        IUniqueKey combinedKey = table.newUniqueKey();
+        combinedKey.addKeyItem(firstString.getName());
+        combinedKey.addKeyItem(firstInteger.getName());
+
+        assertEquals(Arrays.asList("String", "Integer"), combinedKey.getDatatypes());
     }
 
     @Test

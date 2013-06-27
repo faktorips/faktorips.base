@@ -23,27 +23,21 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
  */
 public class ColumnRangeType extends DefaultEnumValue {
 
-    public final static ColumnRangeType TWO_COLUMN_RANGE;
+    public static final ColumnRangeType TWO_COLUMN_RANGE;
 
-    public final static ColumnRangeType ONE_COLUMN_RANGE_FROM;
+    public static final ColumnRangeType ONE_COLUMN_RANGE_FROM;
 
-    public final static ColumnRangeType ONE_COLUMN_RANGE_TO;
+    public static final ColumnRangeType ONE_COLUMN_RANGE_TO;
 
-    private final static DefaultEnumType enumType;
+    private static final DefaultEnumType DEFAULT_ENUM_TYPE;
 
     static {
-        enumType = new DefaultEnumType("ColumnRangeType", ColumnRangeType.class); //$NON-NLS-1$
-        TWO_COLUMN_RANGE = new ColumnRangeType(enumType, "twoColumn", Messages.ColumnRangeType_twoColumns); //$NON-NLS-1$
-        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(enumType, "oneColumnFrom", Messages.ColumnRangeType_fromColumnOnly); //$NON-NLS-1$
-        ONE_COLUMN_RANGE_TO = new ColumnRangeType(enumType, "oneColumnTo", Messages.ColumnRangeType_toColumnOnly); //$NON-NLS-1$
-    }
-
-    public static final DefaultEnumType getEnumType() {
-        return enumType;
-    }
-
-    public static final ColumnRangeType getValueById(String id) {
-        return (ColumnRangeType)enumType.getEnumValue(id);
+        DEFAULT_ENUM_TYPE = new DefaultEnumType("ColumnRangeType", ColumnRangeType.class); //$NON-NLS-1$
+        TWO_COLUMN_RANGE = new ColumnRangeType(DEFAULT_ENUM_TYPE, "twoColumn", Messages.ColumnRangeType_twoColumns); //$NON-NLS-1$
+        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(DEFAULT_ENUM_TYPE,
+                "oneColumnFrom", Messages.ColumnRangeType_fromColumnOnly); //$NON-NLS-1$
+        ONE_COLUMN_RANGE_TO = new ColumnRangeType(DEFAULT_ENUM_TYPE,
+                "oneColumnTo", Messages.ColumnRangeType_toColumnOnly); //$NON-NLS-1$
     }
 
     /**
@@ -53,15 +47,23 @@ public class ColumnRangeType extends DefaultEnumValue {
         super(type, id, name);
     }
 
+    public static final DefaultEnumType getEnumType() {
+        return DEFAULT_ENUM_TYPE;
+    }
+
+    public static final ColumnRangeType getValueById(String id) {
+        return (ColumnRangeType)DEFAULT_ENUM_TYPE.getEnumValue(id);
+    }
+
     public boolean isOneColumnFrom() {
-        return ONE_COLUMN_RANGE_FROM.equals(this);
+        return equals(ONE_COLUMN_RANGE_FROM);
     }
 
     public boolean isOneColumnTo() {
-        return ONE_COLUMN_RANGE_TO.equals(this);
+        return equals(ONE_COLUMN_RANGE_TO);
     }
 
     public boolean isTwoColumn() {
-        return TWO_COLUMN_RANGE.equals(this);
+        return equals(TWO_COLUMN_RANGE);
     }
 }

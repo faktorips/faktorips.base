@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -43,7 +42,6 @@ import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -333,34 +331,70 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMoreThanOneKeyNotAdvisableInFormulas() throws Exception {
-        TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "table");
+    public void testHasUniqueKeysWithSameDatatype() throws Exception {
 
-        IColumn first = structure.newColumn();
-        first.setDatatype(Datatype.STRING.getQualifiedName());
-        first.setName("first");
+        TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TableStruct");
 
-        IColumn second = structure.newColumn();
-        second.setDatatype(Datatype.INTEGER.getQualifiedName());
-        second.setName("second");
+        IColumn firstString = structure.newColumn();
+        firstString.setDatatype(Datatype.STRING.getQualifiedName());
+        firstString.setName("firstString");
 
-        IColumn third = structure.newColumn();
-        third.setDatatype(Datatype.INTEGER.getQualifiedName());
-        third.setName("third");
+        IColumn secondString = structure.newColumn();
+        secondString.setDatatype(Datatype.STRING.getQualifiedName());
+        secondString.setName("secondString");
 
-        IUniqueKey firstKey = structure.newUniqueKey();
-        firstKey.addKeyItem(second.getName());
+        IColumn firstInteger = structure.newColumn();
+        firstInteger.setDatatype(Datatype.INTEGER.getQualifiedName());
+        firstInteger.setName("firstInteger");
 
-        IUniqueKey secondKey = structure.newUniqueKey();
-        secondKey.addKeyItem(third.getName());
+        IColumn secondInteger = structure.newColumn();
+        secondInteger.setDatatype(Datatype.INTEGER.getQualifiedName());
+        secondInteger.setName("secondInteger");
 
-        MessageList msgList = structure.validate(project);
-        assertNotNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
+        IColumnRange range = structure.newRange();
+        range.setFromColumn(firstInteger.getName());
+        range.setToColumn(secondInteger.getName());
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
 
-        secondKey.delete();
+        assertFalse(structure.hasUniqueKeysWithSameDatatype());
 
-        msgList = structure.validate(project);
-        assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
+        IUniqueKey firstStringKey = structure.newUniqueKey();
+        firstStringKey.addKeyItem(firstString.getName());
+
+        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+
+        IUniqueKey firstIntegerKey = structure.newUniqueKey();
+        firstIntegerKey.addKeyItem(firstInteger.getName());
+
+        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+
+        IUniqueKey secondIntegerKey = structure.newUniqueKey();
+        secondIntegerKey.addKeyItem(secondInteger.getName());
+
+        assertTrue(structure.hasUniqueKeysWithSameDatatype());
+
+        structure.removeUniqueKey(secondIntegerKey);
+
+        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+
+        IUniqueKey rangeKey = structure.newUniqueKey();
+        rangeKey.addKeyItem(range.getName());
+
+        assertTrue(structure.hasUniqueKeysWithSameDatatype());
+
+        structure.removeUniqueKey(rangeKey);
+        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+
+        IUniqueKey combinedKey = structure.newUniqueKey();
+        combinedKey.addKeyItem(firstString.getName());
+        combinedKey.addKeyItem(firstInteger.getName());
+        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+
+        IUniqueKey secondCombinedKey = structure.newUniqueKey();
+        secondCombinedKey.addKeyItem(secondString.getName());
+        secondCombinedKey.addKeyItem(secondInteger.getName());
+
+        assertTrue(structure.hasUniqueKeysWithSameDatatype());
     }
 
     @Test

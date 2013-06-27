@@ -87,7 +87,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
     private TextField uniqueKeyRefField;
 
     /** completion processor for a table structure's unique keys. */
-    UniqueKeyCompletionProcessor completionProcessor;
+    private UniqueKeyCompletionProcessor completionProcessor;
 
     // buttons
     private Button addButton;
@@ -410,7 +410,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
             newSelection = mover.moveDown(table.getSelectionIndices());
         }
         key.setKeyItems(items);
-        itemsViewer.refresh(); // must refresh before changing selection!
+        // must refresh before changing selection!
+        itemsViewer.refresh();
         table.setSelection(newSelection);
         refreshUi();
     }
@@ -449,7 +450,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
         private ResourceManager resourceManager;
 
-        ImageDescriptor tableColumnDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TableColumn.gif"); //$NON-NLS-1$
+        private ImageDescriptor tableColumnDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "TableColumn.gif"); //$NON-NLS-1$
 
         public KeyItemLabelProvider() {
             super();

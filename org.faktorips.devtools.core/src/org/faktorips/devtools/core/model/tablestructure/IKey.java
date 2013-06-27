@@ -24,7 +24,7 @@ public interface IKey extends IIpsObjectPart, IDescribedElement {
     /**
      * Java beans property name for the property keyItems.
      */
-    public final static String PROPERTY_KEY_ITEMS = "keyItems"; //$NON-NLS-1$
+    public static final String PROPERTY_KEY_ITEMS = "keyItems"; //$NON-NLS-1$
 
     /**
      * Returns the table structure the key belongs to.

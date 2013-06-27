@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 
 public class ForeignKey extends Key implements IForeignKey {
 
-    final static String TAG_NAME = "ForeignKey"; //$NON-NLS-1$
+    static final String TAG_NAME = "ForeignKey"; //$NON-NLS-1$
 
     /** the table structure referenced by this fk. */
     private String refTableStructure = ""; //$NON-NLS-1$

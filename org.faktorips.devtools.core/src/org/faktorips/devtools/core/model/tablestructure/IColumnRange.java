@@ -18,33 +18,33 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 public interface IColumnRange extends IIpsObjectPart, IKeyItem, IDescribedElement {
 
-    public final static String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
-    public final static String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
-    public final static String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
-    public final static String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
+    public static final String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
+    public static final String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
+    public static final String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
+    public static final String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
 
     /**
      * Prefix for all messages of this class.
      */
-    public final static String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the from-column has an data type not valid for
      * ranges.
      */
-    public final static String MSGCODE_INVALID_DATATYPE_FOR_FROM = MSGCODE_PREFIX + "InvalidDatatypeForFromColumn"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_DATATYPE_FOR_FROM = MSGCODE_PREFIX + "InvalidDatatypeForFromColumn"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the to-column has an data type not valid for
      * ranges.
      */
-    public final static String MSGCODE_INVALID_DATATYPE_FOR_TO = MSGCODE_PREFIX + "InvalidDatatypeForToColumn"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_DATATYPE_FOR_TO = MSGCODE_PREFIX + "InvalidDatatypeForToColumn"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that if the column range type is two column then the
      * from and the to column must have the same data type
      */
-    public final static String MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE = MSGCODE_PREFIX
             + "TwoColumnRangeFromToColumnWithDifferentDatatype"; //$NON-NLS-1$
 
     /**

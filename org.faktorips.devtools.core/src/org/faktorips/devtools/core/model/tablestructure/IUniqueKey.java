@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import java.util.List;
+
 /**
  * A unique key is a list of key items that, given a value for each item, you can find exactly one
  * row in the table is belongs to or no none.
@@ -22,27 +24,27 @@ public interface IUniqueKey extends IKey {
     /**
      * Identifies a validation rule.
      */
-    public final static String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem"; //$NON-NLS-1$
+    public static final String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public final static String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem"; //$NON-NLS-1$
+    public static final String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public final static String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString"; //$NON-NLS-1$
+    public static final String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public final static String MSGCODE_TOO_LESS_ITEMS = "TooLessItems"; //$NON-NLS-1$
+    public static final String MSGCODE_TOO_LESS_ITEMS = "TooLessItems"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public final static String MSGCODE_KEY_ITEM_MISMATCH = "KeyItemMismatch"; //$NON-NLS-1$
+    public static final String MSGCODE_KEY_ITEM_MISMATCH = "KeyItemMismatch"; //$NON-NLS-1$
 
     /**
      * The name of the unique key is the concatenation of it's items separated by a comma and a
@@ -74,5 +76,10 @@ public interface IUniqueKey extends IKey {
      * Returns <code>true</code> if the key contains only ranges.
      */
     public boolean containsRangesOnly();
+
+    /**
+     * Returns a list with datatypes the key is based on.
+     */
+    public List<String> getDatatypes();
 
 }

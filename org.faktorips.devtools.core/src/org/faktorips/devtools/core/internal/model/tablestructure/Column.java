@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 
 public class Column extends AtomicIpsObjectPart implements IColumn {
 
-    final static String TAG_NAME = "Column"; //$NON-NLS-1$
+    static final String TAG_NAME = "Column"; //$NON-NLS-1$
 
     private String datatype = ""; //$NON-NLS-1$
 

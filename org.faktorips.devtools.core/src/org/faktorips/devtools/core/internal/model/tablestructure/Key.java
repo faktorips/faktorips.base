@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class Key extends AtomicIpsObjectPart implements IKey {
 
-    final static String KEY_ITEM_TAG_NAME = "Item"; //$NON-NLS-1$
+    static final String KEY_ITEM_TAG_NAME = "Item"; //$NON-NLS-1$
 
     private List<String> items = new ArrayList<String>(0);
 
@@ -178,12 +178,12 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     @Override
     public int getIndexForKeyItem(IKeyItem item) {
 
-        IKeyItem[] keyItems = getKeyItems();
-        for (int i = 0; i < keyItems.length; i++) {
-            if (keyItems[i].equals(item)) {
-                return i;
-            }
+        int indexOfKeyItem = keyItems.indexOf(item);
+
+        if (indexOfKeyItem >= 0) {
+            return indexOfKeyItem;
         }
+
         throw new IllegalArgumentException(
                 "The provided item: " + item + " is not part of the list of items hold by this key."); //$NON-NLS-1$ //$NON-NLS-2$
     }

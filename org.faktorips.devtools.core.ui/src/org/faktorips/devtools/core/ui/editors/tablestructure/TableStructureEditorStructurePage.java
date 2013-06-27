@@ -16,10 +16,13 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -27,7 +30,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "Structure"; //$NON-NLS-1$
+    static final String PAGE_ID = "Structure"; //$NON-NLS-1$
+
+    private TableStructureContentsChangeListener contentsChangeListener;
 
     public TableStructureEditorStructurePage(TableStructureEditor editor) {
         super(editor, PAGE_ID, Messages.StructurePage_title);
@@ -51,6 +56,21 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
         new UniqueKeysSection(getTableStructure(), members, toolkit);
         new RangesSection(getTableStructure(), members, toolkit);
         new ForeignKeysSection(getTableStructure(), members, toolkit);
+        updatePageMessage();
+        contentsChangeListener = new TableStructureContentsChangeListener(this);
+        getTableStructure().getIpsModel().addChangeListener(contentsChangeListener);
+    }
+
+    private void updatePageMessage() {
+        boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasUniqueKeysWithSameDatatype();
+
+        if (hasUniqueKeysWithSameDatatype) {
+            getManagedForm().getForm().setMessage(
+                    Messages.TableStructureEditorStructurePage_warningUniqueKeysWithSameDatatypes,
+                    IMessageProvider.WARNING);
+        } else {
+            getManagedForm().getForm().setMessage(null, IMessageProvider.NONE);
+        }
     }
 
     @Override
@@ -62,4 +82,25 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_TABLE_STRUCTURE_EDITOR_PAGE.getId()));
     }
 
+    @Override
+    public void dispose() {
+        getTableStructure().getIpsModel().removeChangeListener(contentsChangeListener);
+        super.dispose();
+    }
+
+    private static class TableStructureContentsChangeListener implements ContentsChangeListener {
+
+        private final TableStructureEditorStructurePage page;
+
+        public TableStructureContentsChangeListener(TableStructureEditorStructurePage page) {
+            this.page = page;
+        }
+
+        @Override
+        public void contentsChanged(ContentChangeEvent event) {
+            if (event.isAffected(page.getTableStructure())) {
+                page.updatePageMessage();
+            }
+        }
+    }
 }
