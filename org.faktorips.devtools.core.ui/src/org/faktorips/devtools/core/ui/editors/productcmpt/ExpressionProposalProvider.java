@@ -244,10 +244,30 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
         });
         for (FlFunction function : functions) {
-            if (function.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+            if (checkMatchingFunctionName(function.getName().toLowerCase(), prefix.toLowerCase())) {
                 addFunctionToResult(result, function, prefix);
             }
         }
+    }
+
+    protected boolean checkMatchingFunctionName(final String functionName, final String prefix) {
+        if (functionName.startsWith(prefix)) {
+            return true;
+        }
+        return checkMatchingQualifiedFunctionName(functionName, prefix);
+    }
+
+    private boolean checkMatchingQualifiedFunctionName(final String functionName, final String prefix) {
+        String newFunctionName = functionName;
+        int pos = newFunctionName.indexOf('.');
+        while (pos > 0) {
+            newFunctionName = newFunctionName.substring(pos + 1);
+            if (newFunctionName.startsWith(prefix)) {
+                return true;
+            }
+            pos = newFunctionName.indexOf('.');
+        }
+        return false;
     }
 
     private void addFunctionToResult(List<IContentProposal> result, FlFunction function, String prefix) {
@@ -300,9 +320,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         if (param == null) {
             return null;
         }
-        final IIpsProject ipsProject = getIpsProject();
+        final IIpsProject ipsProjectTmp = getIpsProject();
         try {
-            Datatype target = param.findDatatype(ipsProject);
+            Datatype target = param.findDatatype(ipsProjectTmp);
             for (int i = 1; i < names.length; i++) {
                 String name = names[i];
                 boolean isIndexed = false;
@@ -319,16 +339,16 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 if (isList) {
                     target = ((ListOfTypeDatatype)target).getBasicDatatype();
                 }
-                final IAssociation association = ((IType)target).findAssociation(name, ipsProject);
-                target = association.findTarget(ipsProject);
+                final IAssociation association = ((IType)target).findAssociation(name, ipsProjectTmp);
+                target = association.findTarget(ipsProjectTmp);
                 if (qualifier != null && target instanceof IPolicyCmptType) {
-                    IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(
-                            ((IPolicyCmptType)target).findProductCmptType(ipsProject), true);
+                    IIpsSrcFile[] productCmptSrcFiles = ipsProjectTmp.findAllProductCmptSrcFiles(
+                            ((IPolicyCmptType)target).findProductCmptType(ipsProjectTmp), true);
                     for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
                         if (qualifier.equals(ipsSrcFile.getIpsObjectName())) {
                             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
                             if (productCmpt != null) {
-                                IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
+                                IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProjectTmp);
                                 if (policyCmptType != null) {
                                     target = policyCmptType;
                                 }
@@ -421,12 +441,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 return;
             }
             String prefix = attributePrefix;
-            if (prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) { // @
+            if (prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) {
                 prefix = prefix.substring(0,
                         prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR));
             }
-            final IIpsProject ipsProject = getIpsProject();
-            final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype, ipsProject);
+            final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype,
+                    getIpsProject());
             final List<String> attributeNames = new ArrayList<String>();
             for (final IAttribute attribute : attributes) {
                 if (attribute.getName().startsWith(prefix) && !attributeNames.contains(attribute.getName())) {

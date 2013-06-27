@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -454,5 +455,19 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         results = proposalProvider.getProposals("I", 1);
         proposal = results[0];
         assertEquals("IF(boolean; any; any) - any", proposal.getLabel());
+    }
+
+    @Test
+    public void testCheckMatchingFunctionName() {
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        String functionName = "produkte.hr_kompakt.FormLib.computeFormnula";
+
+        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "Form"));
+        assertFalse(proposalProvider.checkMatchingFunctionName(functionName, "Lib"));
+        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "produk"));
+        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "hr_kompakt"));
+        assertFalse(proposalProvider.checkMatchingFunctionName(functionName, ".FormLib"));
+        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "compute"));
+        assertFalse(proposalProvider.checkMatchingFunctionName(functionName, "Test"));
     }
 }
