@@ -35,6 +35,10 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public abstract class EnumContentValidations {
 
+    private EnumContentValidations() {
+        // Prohibit initialization.
+    }
+
     /**
      * Validates whether the given qualified name of an <tt>IEnumContent</tt> is equal to the
      * enumeration content name that is specified in provided <tt>IEnumType</tt>. Therefore it is
@@ -138,9 +142,4 @@ public abstract class EnumContentValidations {
                     Message.ERROR, objectProperties));
         }
     }
-
-    private EnumContentValidations() {
-        // Prohibit initialization.
-    }
-
 }

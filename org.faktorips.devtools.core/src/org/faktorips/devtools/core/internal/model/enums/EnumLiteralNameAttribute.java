@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
@@ -88,7 +89,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         if (list.containsErrorMsg()) {
             return;
         }
-        validateDefaultValueProviderAttribute(list, ipsProject);
+        validateDefaultValueProviderAttribute(list);
     }
 
     /**
@@ -105,9 +106,9 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /** Validates the <tt>defaultValueProviderAttribute</tt> property. */
-    private void validateDefaultValueProviderAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateDefaultValueProviderAttribute(MessageList list) throws CoreException {
         // Pass validation if no provider is specified.
-        if (defaultValueProviderAttribute.length() == 0) {
+        if (StringUtils.isEmpty(defaultValueProviderAttribute)) {
             return;
         }
 
@@ -137,15 +138,6 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
                         text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
                 list.add(msg);
             }
-        }
-
-        // The provider attribute must be unique.
-        if (!(providerAttribute.findIsUnique(ipsProject))) {
-            String text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotUnique,
-                    defaultValueProviderAttribute);
-            Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE,
-                    text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
-            list.add(msg);
         }
     }
 

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.enums;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierarchyVisitor;
@@ -36,6 +37,10 @@ import org.faktorips.util.message.ObjectProperty;
  * @since 2.3
  */
 public class EnumTypeValidations {
+
+    private EnumTypeValidations() {
+        // Prohibit initialization.
+    }
 
     /**
      * Validates whether the given super <tt>IEnumType</tt> exists in the IPS object path of the
@@ -60,7 +65,7 @@ public class EnumTypeValidations {
             IIpsProject ipsProject) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, superEnumTypeQualifiedName, ipsProject });
-        ArgumentCheck.isTrue(!(superEnumTypeQualifiedName.equals(""))); //$NON-NLS-1$
+        ArgumentCheck.isTrue(StringUtils.isNotEmpty(superEnumTypeQualifiedName));
 
         // Super EnumType exists?
         IEnumType superEnumType = ipsProject.findEnumType(superEnumTypeQualifiedName);
@@ -162,10 +167,6 @@ public class EnumTypeValidations {
                 msgList.add(message);
             }
         }
-    }
-
-    private EnumTypeValidations() {
-        // Prohibit initialization.
     }
 
     private static class SupertypeCollector extends EnumTypeHierarchyVisitor {

@@ -122,7 +122,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      */
     // Deprecated since 3.1
     @Deprecated
-    public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsPrimitive"; //$NON-NLS-1$
 
     /**

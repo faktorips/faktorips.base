@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,14 @@ import org.w3c.dom.Element;
  * @since 2.3
  */
 public class EnumContent extends EnumValueContainer implements IEnumContent {
+
+    private static final List<String> FIX_REQUIRING_ERROR_CODES = Arrays.asList(
+            MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT,
+            MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE,
+            MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID,
+            MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID,
+            MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID,
+            IEnumAttributeValue.MSGCODE_INVALID_VALUE_TYPE);
 
     /** The <tt>IEnumType</tt> this <tt>IEnumContent</tt> is build upon. */
     private String enumType;
@@ -316,15 +325,15 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
     @Override
     public boolean isFixToModelRequired() throws CoreException {
-        MessageList validationList = validate(getIpsProject());
-        return validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID) != null
-                || validationList.getMessageByCode(MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null
-                || validationList.getMessageByCode(IEnumAttributeValue.MSGCODE_INVALID_VALUE_TYPE) != null;
+
+        MessageList messages = validate(getIpsProject());
+
+        for (Message message : messages) {
+            if (FIX_REQUIRING_ERROR_CODES.contains(message.getCode())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

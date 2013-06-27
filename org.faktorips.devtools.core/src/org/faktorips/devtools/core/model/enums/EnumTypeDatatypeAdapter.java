@@ -193,8 +193,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
          */
     }
 
+    /**
+     * Comparing of {@link IEnumType} is not supported and therefore this Method throws always an
+     * UnsupportedOperationException.
+     */
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         throw new UnsupportedOperationException();
     }
 

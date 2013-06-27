@@ -32,43 +32,36 @@ package org.faktorips.devtools.core.model.enums;
 public interface IEnumLiteralNameAttribute extends IEnumAttribute {
 
     /** The XML tag for this <tt>IpsObjectPart</tt>. */
-    public final static String XML_TAG = "EnumLiteralNameAttribute"; //$NON-NLS-1$
+    public static final String XML_TAG = "EnumLiteralNameAttribute"; //$NON-NLS-1$
 
     /** Name of the <tt>defaultValueProviderAttribute</tt> property. */
-    public final static String PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE = "defaultValueProviderAttribute"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE = "defaultValueProviderAttribute"; //$NON-NLS-1$
 
     /** The default name for a <tt>IEnumLiteralNameAttribute</tt>. */
-    public final static String DEFAULT_NAME = "LITERAL_NAME"; //$NON-NLS-1$
+    public static final String DEFAULT_NAME = "LITERAL_NAME"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "ENUMLITERALNAMEATTRIBUTE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ENUMLITERALNAMEATTRIBUTE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the chosen default value provider attribute does not
      * exist.
      */
-    public final static String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeDefaultValueProviderAttributeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the chosen default value provider attribute is not
      * of data type <tt>String</tt>.
      */
-    public final static String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeDefaultValueProviderAttributeNotOfDatatypeString"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the chosen default value provider attribute is not
-     * unique.
-     */
-    public final static String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE = MSGCODE_PREFIX
-            + "EnumLiteralNameAttributeDefaultValueProviderAttributeNotUnique"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <tt>IEnumLiteralNameAttribute</tt> is not
      * required by the <tt>IEnumType</tt> it belongs to and therefore should be deleted.
      */
-    public final static String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED = MSGCODE_PREFIX
+    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeAttributeNotNeeded"; //$NON-NLS-1$
 
     /**

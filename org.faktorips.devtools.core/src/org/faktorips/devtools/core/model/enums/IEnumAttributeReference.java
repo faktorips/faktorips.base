@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 public interface IEnumAttributeReference extends IIpsObjectPart {
 
     /** The XML tag for this IPS object part. */
-    public final static String XML_TAG = "EnumAttributeReference"; //$NON-NLS-1$
+    public static final String XML_TAG = "EnumAttributeReference"; //$NON-NLS-1$
 
     /**
      * Sets the name of this <tt>IEnumAttributeReference</tt>.

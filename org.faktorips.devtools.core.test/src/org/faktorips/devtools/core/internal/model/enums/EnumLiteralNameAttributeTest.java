@@ -86,12 +86,14 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttribute() throws CoreException {
-        // Test pass validation if no default value provider attribute specified.
+    public void testValidateDefaultValueProviderAttributePassValidationIfAttributeNotSpecified() throws CoreException {
         literalNameAttribute.setDefaultValueProviderAttribute("");
         assertTrue(literalNameAttribute.isValid(ipsProject));
 
-        // Test not existing default value provider attribute.
+    }
+
+    @Test
+    public void testValidateDefaultValueProviderAttributeNotExistingProviderAttribute() throws CoreException {
         literalNameAttribute.setDefaultValueProviderAttribute("foo");
         getIpsModel().clearValidationCache();
         MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
@@ -99,26 +101,33 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST));
 
-        // Test default value provider attribute not of data type String.
+    }
+
+    @Test
+    public void testValidateDefaultValueProviderAttributeProviderAttributeNotString() throws CoreException {
         IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
         invalidProviderAttribute.setName("invalidProviderAttribute");
         invalidProviderAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         invalidProviderAttribute.setUnique(true);
         literalNameAttribute.setDefaultValueProviderAttribute("invalidProviderAttribute");
         getIpsModel().clearValidationCache();
-        validationMessageList = literalNameAttribute.validate(ipsProject);
+        MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING));
 
-        // Test default value provider attribute not unique.
+    }
+
+    @Test
+    public void testValidateDefaultValueProviderAttributeUniquePossible() throws CoreException {
+        IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
+        invalidProviderAttribute.setName("notUniqueProviderAttribute");
         invalidProviderAttribute.setUnique(false);
         invalidProviderAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        literalNameAttribute.setDefaultValueProviderAttribute("notUniqueProviderAttribute");
         getIpsModel().clearValidationCache();
-        validationMessageList = literalNameAttribute.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE));
+        MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
+        assertTrue(validationMessageList.toString(), validationMessageList.isEmpty());
     }
 
     @Test
