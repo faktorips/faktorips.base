@@ -14,10 +14,10 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.devtools.core.internal.model.value.ValueUtil;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -41,7 +41,7 @@ class UniqueIdentifierValidator {
 
     private final EnumValueContainer container;
 
-    private Map<Integer, AttributeValues> columnAttributeValues = new HashMap<Integer, UniqueIdentifierValidator.AttributeValues>();
+    private Map<Integer, AttributeValues> columnAttributeValues = new ConcurrentHashMap<Integer, UniqueIdentifierValidator.AttributeValues>();
 
     public UniqueIdentifierValidator(EnumValueContainer container) {
         this.container = container;
@@ -68,7 +68,7 @@ class UniqueIdentifierValidator {
     }
 
     public List<String> getUniqueIdentifierViolations(IEnumAttributeValue enumAttributeValue) {
-        HashMap<Integer, AttributeValues> columnAttributeValuesCopy = new HashMap<Integer, AttributeValues>(
+        ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy = new ConcurrentHashMap<Integer, AttributeValues>(
                 columnAttributeValues);
         List<String> violatingString = new ArrayList<String>();
         Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
@@ -83,7 +83,8 @@ class UniqueIdentifierValidator {
         return violatingString;
     }
 
-    private AttributeValues getAttributeValues(HashMap<Integer, AttributeValues> columnAttributeValuesCopy, int index) {
+    private AttributeValues getAttributeValues(ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
+            int index) {
         AttributeValues attributeValues = columnAttributeValuesCopy.get(index);
         if (attributeValues == null) {
             attributeValues = createAttributeValues(index);
@@ -116,7 +117,7 @@ class UniqueIdentifierValidator {
 
     private static class AttributeValues {
 
-        private Map<LocalizedString, Integer> identifierCounts = new HashMap<LocalizedString, Integer>();
+        private Map<LocalizedString, Integer> identifierCounts = new ConcurrentHashMap<LocalizedString, Integer>();
 
         public void addIdentifier(LocalizedString identifier) {
             Integer count = identifierCounts.get(identifier);
