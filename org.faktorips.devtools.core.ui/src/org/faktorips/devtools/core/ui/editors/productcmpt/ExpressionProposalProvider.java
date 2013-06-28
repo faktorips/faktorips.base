@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.internal.model.method.Parameter;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -74,6 +75,10 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         this.ipsProject = expression.getIpsProject();
         this.signature = expression.findFormulaSignature(ipsProject);
         multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+    }
+
+    private IdentifierFilter getIdentifierFilter() {
+        return IpsPlugin.getDefault().getIdentifierFilter();
     }
 
     @Override
@@ -149,7 +154,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         List<IAttribute> attributes = expression.findMatchingProductCmptTypeAttributes();
         for (IAttribute attribute : attributes) {
             if (attribute.getName().startsWith(prefix)) {
-                addPartToResult(result, attribute, attribute.getDatatype(), prefix);
+                if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
+                    addPartToResult(result, attribute, attribute.getDatatype(), prefix);
+                }
             }
         }
     }
@@ -303,9 +310,11 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             List<String> attributeNames = new ArrayList<String>();
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().startsWith(attributePrefix)) {
-                    if (!attributeNames.contains(attribute.getName())) {
-                        addAttributeToResult(result, attribute, attributePrefix);
-                        attributeNames.add(attribute.getName());
+                    if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
+                        if (!attributeNames.contains(attribute.getName())) {
+                            addAttributeToResult(result, attribute, attributePrefix);
+                            attributeNames.add(attribute.getName());
+                        }
                     }
                 }
             }

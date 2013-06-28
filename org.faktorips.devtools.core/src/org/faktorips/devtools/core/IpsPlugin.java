@@ -40,6 +40,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
+import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
@@ -121,6 +122,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
 
     private IFunctionResolverFactory[] flFunctionResolvers;
+
+    private IdentifierFilter flIdentifierFilter;
 
     private boolean testMode = false;
 
@@ -595,6 +598,13 @@ public class IpsPlugin extends AbstractUIPlugin {
                     .toArray(new IFunctionResolverFactory[flFunctionResolverFactoryList.size()]);
         }
         return flFunctionResolvers;
+    }
+
+    public IdentifierFilter getIdentifierFilter() {
+        if (flIdentifierFilter == null) {
+            flIdentifierFilter = new IdentifierFilter();
+        }
+        return flIdentifierFilter;
     }
 
     /**

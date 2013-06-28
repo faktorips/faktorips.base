@@ -22,6 +22,8 @@
    <extension-point id="ipsObjectPathContainerType" name="IPS Object Path Container Type" schema="schema/ipsObjectPathContainerType.exsd"/>
    <extension-point id="deepCopyOperation" name="Deep Copy Operation" schema="schema/deepCopyOperation.exsd"/>
    <extension-point id="teamOperationsFactory" name="TeamOperationsFactory" schema="schema/teamOperationsFactory.exsd"/>
+   <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
+   
    
 <!-- 
     Extensions to the Java perspective

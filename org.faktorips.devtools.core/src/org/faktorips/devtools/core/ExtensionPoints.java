@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
@@ -44,21 +45,21 @@ public class ExtensionPoints {
      * 
      * @since 3.4
      */
-    public final static String IPS_OBJECT_PATH_CONTAINER_TYPE = "ipsObjectPathContainerType"; //$NON-NLS-1$
+    public static final String IPS_OBJECT_PATH_CONTAINER_TYPE = "ipsObjectPathContainerType"; //$NON-NLS-1$
 
     /**
      * IpsPlugin relative id of the extension point for IpsObjectTypes.
      * 
      * @see IpsObjectType
      */
-    public final static String IPS_OBJECT_TYPE = "ipsobjecttype"; //$NON-NLS-1$
+    public static final String IPS_OBJECT_TYPE = "ipsobjecttype"; //$NON-NLS-1$
 
     /**
      * IpsPlugin relative id of the extension point for custom validations.
      * 
      * @see ICustomValidation
      */
-    public final static String CUSTOM_VALIDATION = "customValidation"; //$NON-NLS-1$
+    public static final String CUSTOM_VALIDATION = "customValidation"; //$NON-NLS-1$
 
     /**
      * IpsPlugin relative id of the extension point for product component naming strategies.
@@ -66,12 +67,24 @@ public class ExtensionPoints {
      * @see IProductCmptNamingStrategy
      * @see IProductCmptNamingStrategyFactory
      */
-    public final static String PRODUCT_COMPONENT_NAMING_STRATEGY = "productComponentNamingStrategy"; //$NON-NLS-1$
+    public static final String PRODUCT_COMPONENT_NAMING_STRATEGY = "productComponentNamingStrategy"; //$NON-NLS-1$
 
     /**
      * IpsPlugin relative id of the extension point for "Pull Up" refactoring participants.
      */
-    public final static String PULL_UP_PARTICIPANTS = "pullUpParticipants"; //$NON-NLS-1$
+    public static final String PULL_UP_PARTICIPANTS = "pullUpParticipants"; //$NON-NLS-1$
+
+    /**
+     * IpsPlugin relative id of the extension point for "Identifier Filter".
+     * 
+     * @see IFlIdentifierFilterExtension
+     */
+    public static final String FL_IDENTIFIER_FILTER_EXTENSION = "flIdentifierFilterExtension"; //$NON-NLS-1$
+
+    /**
+     * Name of the attribute that holds the name of the executable class
+     */
+    public static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
 
     private final IExtensionRegistry registry;
 
@@ -170,7 +183,7 @@ public class ExtensionPoints {
      * 
      * @throws NullPointerException if any of the arguments is <code>null</code>.
      */
-    public final static <T> List<T> createExecutableExtensions(IExtension extension,
+    public static final <T> List<T> createExecutableExtensions(IExtension extension,
             String elementName,
             String propertyName,
             Class<T> expectedType) {
@@ -210,7 +223,7 @@ public class ExtensionPoints {
      * 
      * @throws NullPointerException if any of the arguments is <code>null</code>.
      */
-    public final static <T> T createExecutableExtension(IExtension extension,
+    public static final <T> T createExecutableExtension(IExtension extension,
             String elementName,
             String propertyName,
             Class<T> expectedType) {
@@ -245,7 +258,7 @@ public class ExtensionPoints {
      * 
      * @see IConfigurationElement#createExecutableExtension(String)
      */
-    public final static <T> T createExecutableExtension(IExtension extension,
+    public static final <T> T createExecutableExtension(IExtension extension,
             IConfigurationElement element,
             String propertyName,
             Class<T> expectedType) {

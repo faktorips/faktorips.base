@@ -202,21 +202,12 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
-    public List<IAttribute> findMatchingProductCmptTypeAttributes() {
-        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-        if (productCmptType != null) {
-            try {
-                return productCmptType.findAllAttributes(getIpsProject());
-            } catch (final CoreException e) {
-                throw new CoreRuntimeException(e.getMessage(), e);
-            }
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
     public boolean isFormulaMandatory() {
-        return findFormulaSignature(getIpsProject()).isFormulaMandatory();
+        IProductCmptTypeMethod formulaSignature = findFormulaSignature(getIpsProject());
+        if (formulaSignature != null) {
+            return formulaSignature.isFormulaMandatory();
+        }
+        return true;
     }
 
 }

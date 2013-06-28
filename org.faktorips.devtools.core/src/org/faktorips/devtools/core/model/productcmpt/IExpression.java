@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -146,7 +147,14 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      */
     String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject);
 
+    /**
+     * Returns all Attributes of the {@link ProductCmptType}
+     */
     List<IAttribute> findMatchingProductCmptTypeAttributes();
 
+    /**
+     * Returns <code>true</code> if the {@link IExpression} is mandatory or <code>false</code> is
+     * ist not.
+     */
     boolean isFormulaMandatory();
 }
