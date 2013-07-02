@@ -83,12 +83,12 @@ class UniqueIdentifierValidator {
         return violatingString;
     }
 
-    private AttributeValues getAttributeValues(ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
+    private synchronized AttributeValues getAttributeValues(ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
             int index) {
         AttributeValues attributeValues = columnAttributeValuesCopy.get(index);
         if (attributeValues == null) {
             attributeValues = createAttributeValues(index);
-            columnAttributeValuesCopy.put(index, attributeValues);
+            attributeValues = columnAttributeValuesCopy.putIfAbsent(index, attributeValues);
         }
         return attributeValues;
     }
