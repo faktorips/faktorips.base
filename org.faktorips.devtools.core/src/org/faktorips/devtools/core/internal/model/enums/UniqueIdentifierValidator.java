@@ -88,7 +88,10 @@ class UniqueIdentifierValidator {
         AttributeValues attributeValues = columnAttributeValuesCopy.get(index);
         if (attributeValues == null) {
             attributeValues = createAttributeValues(index);
-            attributeValues = columnAttributeValuesCopy.putIfAbsent(index, attributeValues);
+            AttributeValues previousValues = columnAttributeValuesCopy.putIfAbsent(index, attributeValues);
+            if (previousValues != null) {
+                attributeValues = previousValues;
+            }
         }
         return attributeValues;
     }
