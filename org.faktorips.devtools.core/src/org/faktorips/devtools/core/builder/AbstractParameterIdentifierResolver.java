@@ -33,6 +33,7 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -80,6 +81,10 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 
     private IProductCmptType getProductCmptType() {
         return formula.findProductCmptType(ipsproject);
+    }
+
+    private IdentifierFilter getIdentifierFilter() {
+        return IpsPlugin.getDefault().getIdentifierFilter();
     }
 
     /**
@@ -197,6 +202,11 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             List<IAttribute> attributes = formula.findMatchingProductCmptTypeAttributes();
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().equals(identifier)) {
+                    if (!getIdentifierFilter().isIdentifierAllowed(attribute)) {
+                        String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
+                                attribute.getName());
+                        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+                    }
                     Datatype attrDatatype = attribute.findDatatype(ipsproject);
                     if (attrDatatype == null) {
                         String text = NLS.bind(
@@ -214,6 +224,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                      */
                     String code = "this." + getParameterAttributGetterName(attribute, attrDatatype) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
                     return new CompilationResultImpl(code, attrDatatype);
+
                 }
             }
         } catch (CoreException e) {
@@ -238,7 +249,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                         param.getDatatype(), param.getName());
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
             }
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving,
                     param.getDatatype(), param.getName());
@@ -299,7 +310,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     return new CompilationResultImpl(frag, enumType);
                 }
             }
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving,
                     enumTypeName);
@@ -319,7 +330,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             return compileAssociationChain(javaCodeFragment, type, attributeName);
         }
 
-        boolean isDefaultValueAccess = type instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
+        boolean isDefaultValueAccess = isDefaultValueAccess(type, attributeName);
         IAttribute attribute = null;
         try {
             attribute = findAttribute(type, attributeName, isDefaultValueAccess);
@@ -329,11 +340,17 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     attributeName, type);
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
-        if (attribute == null && type instanceof IPolicyCmptType) {
+        if (isPolicyCmptTypeAssociationIdentifier(attribute, type)) {
             return compileTypeAssociationIdentifier(javaCodeFragment, type, attributeName);
         }
         if (attribute == null) {
             return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
+        }
+
+        if (!getIdentifierFilter().isIdentifierAllowed(attribute)) {
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
+                    attribute.getName());
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
         }
 
         try {
@@ -347,7 +364,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     attribute, datatype) : getParameterAttributGetterName(attribute, datatype);
             javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
             return new CompilationResultImpl(javaCodeFragment, datatype);
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute,
                     attribute.getDatatype(), attributeName);
@@ -355,18 +372,26 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         }
     }
 
+    private boolean isPolicyCmptTypeAssociationIdentifier(IAttribute attribute, IType type) {
+        return attribute == null && type instanceof IPolicyCmptType;
+    }
+
+    private boolean isDefaultValueAccess(IType type, String attributeName) {
+        return type instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
+    }
+
     private IAttribute findAttribute(IType type, String attributeName, boolean isDefaultValueAccess)
             throws CoreException {
         IAttribute attribute;
         String actualAttributeName = isDefaultValueAccess ? attributeName.substring(0,
-                attributeName.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR)) : attributeName;// '@'
+                attributeName.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR)) : attributeName;
         attribute = type.findAttribute(actualAttributeName, ipsproject);
         return attribute;
     }
 
     private CompilationResult compileTypeAssociationIdentifier(JavaCodeFragment javaCodeFragment,
             IType type,
-            String attributeName) throws NumberFormatException {
+            String attributeName) {
         try {
             String associationName = attributeName;
             Integer index = null;
@@ -390,7 +415,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             if (association == null) {
                 return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
             } else {
-                if (association.is1To1() && index != null) {
+                if (isValidReferenceTo1To1Association(index, association)) {
                     return new CompilationResultImpl(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS
                             .bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
                                     new Object[] { association, index })));
@@ -416,6 +441,10 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             IpsPlugin.log(e);
             return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
         }
+    }
+
+    private boolean isValidReferenceTo1To1Association(Integer index, IAssociation association) {
+        return index != null && association.is1To1();
     }
 
     private CompilationResult compileAssociationQualifier(String qualifier,
@@ -445,7 +474,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, text));
             }
             JavaCodeFragment getQualifiedTargetCode = new JavaCodeFragment();
-            if (policyCmptType != null && !policyCmptType.equals(target)) {
+            boolean isTargetType = isTargetType(policyCmptType, target);
+            if (!isTargetType) {
                 getQualifiedTargetCode.append("(("); //$NON-NLS-1$
                 getQualifiedTargetCode.appendClassName(getJavaClassName(policyCmptType));
                 getQualifiedTargetCode.append(")"); //$NON-NLS-1$
@@ -456,13 +486,17 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             getQualifiedTargetCode.append(", \""); //$NON-NLS-1$
             getQualifiedTargetCode.append(runtimeId);
             getQualifiedTargetCode.append("\")"); //$NON-NLS-1$
-            if (policyCmptType != null && !policyCmptType.equals(target)) {
+            if (!isTargetType) {
                 getQualifiedTargetCode.append(")"); //$NON-NLS-1$
                 return new CompilationResultImpl(getQualifiedTargetCode, policyCmptType);
             } else {
                 return new CompilationResultImpl(getQualifiedTargetCode, target);
             }
         }
+    }
+
+    private boolean isTargetType(IPolicyCmptType policyCmptType, IType target) {
+        return policyCmptType != null && policyCmptType.equals(target);
     }
 
     private CompilationResult compileTypeAssociationTo1Identifier(JavaCodeFragment javaCodeFragment,

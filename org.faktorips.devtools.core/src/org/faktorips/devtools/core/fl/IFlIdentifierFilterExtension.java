@@ -13,17 +13,19 @@
 
 package org.faktorips.devtools.core.fl;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Implementations of this interface are registered by the extension point
- * "flIdentifierFilterExtension". They are instantiated by the {@link IdentifierFilter} and asked
- * for every {@link IIpsObjectPartContainer part container} if it is allowed to use as identifier or
- * not.
+ * "flIdentifierFilterExtension". They are instantiated by the {@link IpsPlugin} and used in
+ * {@link IdentifierFilter}. The {@link IdentifierFilter} asked for every
+ * {@link IIpsObjectPartContainer part container} if it is allowed to use as identifier or not.
  * 
  * @see IdentifierFilter
  * @author frank
+ * @since 3.10.0
  */
 public interface IFlIdentifierFilterExtension {
 

@@ -15,37 +15,32 @@ package org.faktorips.devtools.core.internal.fl;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * An {@link IdentifierFilter} is used to check whether an {@link IIpsObjectPartContainer} is
- * allowed to be used as a identifier in an formula expression.
+ * allowed to be used as a identifier in an formula expression. The List holds the
+ * {@link IFlIdentifierFilterExtension}s who can be extends by an extension point.
  * 
  * @author frank
+ * @since 3.10.0
  */
 public class IdentifierFilter {
 
     private final List<IFlIdentifierFilterExtension> flIdentifierFilters;
 
-    public IdentifierFilter() {
-        flIdentifierFilters = getFlIdentifierFilters();
+    public IdentifierFilter(List<IFlIdentifierFilterExtension> flIdentifierFilters) {
+        this.flIdentifierFilters = flIdentifierFilters;
     }
 
     /**
-     * Returns the {@link IFlIdentifierFilterExtension}s that are registered at the according
-     * extension-point.
+     * Call the check of the {@link IIpsObjectPartContainer} in all the
+     * {@link IFlIdentifierFilterExtension}s and returns <code>true</code> if it is allowed or
+     * <code>false</code> when not.
+     * 
+     * @param ipsObjectPartContainer the {@link IIpsObjectPartContainer} to check
      */
-    private List<IFlIdentifierFilterExtension> getFlIdentifierFilters() {
-        ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
-                IpsPlugin.PLUGIN_ID);
-        return extensionPoints.createExecutableExtensions(ExtensionPoints.FL_IDENTIFIER_FILTER_EXTENSION,
-                ExtensionPoints.FL_IDENTIFIER_FILTER_EXTENSION, ExtensionPoints.ATTRIBUTE_CLASS,
-                IFlIdentifierFilterExtension.class);
-    }
-
     public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer) {
         for (IFlIdentifierFilterExtension flIdentifierFilterExtension : flIdentifierFilters) {
             if (!flIdentifierFilterExtension.isIdentifierAllowed(ipsObjectPartContainer)) {

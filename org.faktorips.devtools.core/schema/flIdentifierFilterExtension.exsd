@@ -76,7 +76,16 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         public class AttributeFragmentFilter implements IFlIdentifierFilterExtension {
+
+    @Override
+    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer) {
+        if (ipsObjectPartContainer.getName().equals(&quot;produktname&quot;)) { //$NON-NLS-1$
+            return false;
+        }
+        return true;
+    }
+}
       </documentation>
    </annotation>
 

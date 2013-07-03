@@ -36,32 +36,32 @@ public class IpsPreferences {
     /**
      * Constant identifying the refactoring mode
      */
-    public final static String REFACTORING_MODE = IpsPlugin.PLUGIN_ID + ".refactoringmode"; //$NON-NLS-1$
+    public static final String REFACTORING_MODE = IpsPlugin.PLUGIN_ID + ".refactoringmode"; //$NON-NLS-1$
 
     /**
      * Constant identifying the refactoring mode direct
      */
-    public final static String REFACTORING_MODE_DIRECT = "direct"; //$NON-NLS-1$
+    public static final String REFACTORING_MODE_DIRECT = "direct"; //$NON-NLS-1$
 
     /**
      * Constant identifying the refactoring mode explicit
      */
-    public final static String REFACTORING_MODE_EXPLICIT = "explicit"; //$NON-NLS-1$
+    public static final String REFACTORING_MODE_EXPLICIT = "explicit"; //$NON-NLS-1$
 
     /**
      * Constant identifying the working mode
      */
-    public final static String WORKING_MODE = IpsPlugin.PLUGIN_ID + ".workingmode"; //$NON-NLS-1$
+    public static final String WORKING_MODE = IpsPlugin.PLUGIN_ID + ".workingmode"; //$NON-NLS-1$
 
     /**
      * Constant identifying the working mode edit
      */
-    public final static String WORKING_MODE_EDIT = "edit"; //$NON-NLS-1$
+    public static final String WORKING_MODE_EDIT = "edit"; //$NON-NLS-1$
 
     /**
      * Constant identifying the working mode browse
      */
-    public final static String WORKING_MODE_BROWSE = "browse"; //$NON-NLS-1$
+    public static final String WORKING_MODE_BROWSE = "browse"; //$NON-NLS-1$
 
     /**
      * Constant identifying the preference for null-value representation
@@ -71,72 +71,72 @@ public class IpsPreferences {
     /**
      * Constant identifying the changes over time naming concept preference.
      */
-    public final static String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept"; //$NON-NLS-1$
+    public static final String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept"; //$NON-NLS-1$
 
     /**
      * Constant identifying the default postfix for product component types
      */
-    public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID
+    public static final String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID
             + ".defaultProductCmptTypePostfix"; //$NON-NLS-1$
 
     /**
      * Constant identifying the preference for editing the runtime id.
      */
-    public final static String MODIFY_RUNTIME_ID = IpsPlugin.PLUGIN_ID + ".modifyRuntimeId"; //$NON-NLS-1$
+    public static final String MODIFY_RUNTIME_ID = IpsPlugin.PLUGIN_ID + ".modifyRuntimeId"; //$NON-NLS-1$
 
     /**
      * Constant identifying the enable generating preference.
      */
-    public final static String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
+    public static final String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the navigate to model or source generating preference.
      */
-    public final static String NAVIGATE_TO_MODEL_OR_SOURCE_CODE = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
+    public static final String NAVIGATE_TO_MODEL_OR_SOURCE_CODE = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the advanced team functions in product definition explorer
      * preference.
      */
-    public final static String ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER = IpsPlugin.PLUGIN_ID
+    public static final String ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER = IpsPlugin.PLUGIN_ID
             + ".advancedTeamFunctionsInProductDefExplorer"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the easy context menu preferencee
      */
-    public final static String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
+    public static final String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the number of sections in type editors preference.
      */
-    public final static String SECTIONS_IN_TYPE_EDITORS = IpsPlugin.PLUGIN_ID + ".sectionsInTypeEditors"; //$NON-NLS-1$
+    public static final String SECTIONS_IN_TYPE_EDITORS = IpsPlugin.PLUGIN_ID + ".sectionsInTypeEditors"; //$NON-NLS-1$
 
     /**
      * Constant that defines 2 sections in type editors preference. This constant is a value for the
      * property <code>SECTIONS_IN_TYPE_EDITORS</code>.
      */
-    public final static String TWO_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".twoSections"; //$NON-NLS-1$
+    public static final String TWO_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".twoSections"; //$NON-NLS-1$
 
     /**
      * Constant that defines 4 sections in type editors preference. This constant is a value for the
      * property <code>SECTIONS_IN_TYPE_EDITORS</code>.
      */
-    public final static String FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".fourSections"; //$NON-NLS-1$
+    public static final String FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".fourSections"; //$NON-NLS-1$
 
     /**
      * Constant identifying the IPS test runner max heap size preference.
      */
-    public final static String IPSTESTRUNNER_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ipsTestTunnerMaxHeapSize"; //$NON-NLS-1$
+    public static final String IPSTESTRUNNER_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ipsTestTunnerMaxHeapSize"; //$NON-NLS-1$
 
     /**
      * Constant identifying the enumeration display type.
      */
-    public final static String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
+    public static final String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the locale to be used for formating values of specific datatypes.
      */
-    public final static String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
+    public static final String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
 
     private final DatatypeFormatter datatypeFormatter;
 
@@ -303,7 +303,7 @@ public class IpsPreferences {
         EnumTypeDisplay enumTypeDisplay = EnumTypeDisplay.getValueById(id);
         if (enumTypeDisplay == null) {
             IpsPlugin.log(new IpsStatus("Unknown enum type with id: " + id //$NON-NLS-1$
-                    + ". Use default enum type display."));//$NON-NLS-1$
+                    + ". Use default enum type display.")); //$NON-NLS-1$
             enumTypeDisplay = EnumTypeDisplay.NAME_AND_ID;
         }
         return enumTypeDisplay;
@@ -403,7 +403,8 @@ public class IpsPreferences {
      */
     public void setSectionsInTypeEditors(String numberOfSections) {
         // identity on purpose!!
-        if (!(numberOfSections == TWO_SECTIONS_IN_TYPE_EDITOR_PAGE || numberOfSections == FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE)) {
+        if (!(numberOfSections.equals(TWO_SECTIONS_IN_TYPE_EDITOR_PAGE) || numberOfSections
+                .equals(FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE))) {
             throw new IllegalArgumentException(
                     "Valid argument values are the constants TWO_SECTIONS_IN_TYPE_EDITOR_PAGE or FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE of the IpsPreferences."); //$NON-NLS-1$
         }

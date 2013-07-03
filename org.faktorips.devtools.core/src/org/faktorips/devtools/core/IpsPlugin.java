@@ -40,6 +40,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
+import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
@@ -600,11 +601,25 @@ public class IpsPlugin extends AbstractUIPlugin {
         return flFunctionResolvers;
     }
 
+    /**
+     * Returns the {@link IdentifierFilter} who calls the extension points
+     * {@link IFlIdentifierFilterExtension}
+     */
     public IdentifierFilter getIdentifierFilter() {
         if (flIdentifierFilter == null) {
-            flIdentifierFilter = new IdentifierFilter();
+            flIdentifierFilter = new IdentifierFilter(getFlIdentifierFilters());
         }
         return flIdentifierFilter;
+    }
+
+    /**
+     * Returns the {@link IFlIdentifierFilterExtension}s that are registered at the according
+     * extension-point.
+     */
+    private List<IFlIdentifierFilterExtension> getFlIdentifierFilters() {
+        return new ExtensionPoints().createExecutableExtensions(ExtensionPoints.FL_IDENTIFIER_FILTER_EXTENSION,
+                ExtensionPoints.FL_IDENTIFIER_FILTER_EXTENSION, ExtensionPoints.ATTRIBUTE_CLASS,
+                IFlIdentifierFilterExtension.class);
     }
 
     /**
