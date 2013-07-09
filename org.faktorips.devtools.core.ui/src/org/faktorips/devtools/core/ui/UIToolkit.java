@@ -408,6 +408,16 @@ public class UIToolkit {
         return spacer;
     }
 
+    public Control createHorizontalSpacer(Composite parent, int width) {
+        Composite spacer = new Composite(parent, SWT.NONE);
+        spacer.setLayout(new GridLayout());
+        GridData data = new GridData(GridData.VERTICAL_ALIGN_FILL);
+        data.heightHint = 1;
+        data.widthHint = width;
+        spacer.setLayoutData(data);
+        return spacer;
+    }
+
     /**
      * Creates a new form label with margin.
      */

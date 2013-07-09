@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
+import java.util.GregorianCalendar;
+
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -60,6 +63,20 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     @Override
     public IProductCmptLink getLink() {
         return link;
+    }
+
+    @Override
+    public GregorianCalendar getValidTo() {
+        IProductCmptGeneration generation = cmpt.getGenerationEffectiveOn(getStructure().getValidAt());
+        GregorianCalendar validTo = generation.getValidTo();
+        IProductCmptReference[] childProductCmptReferences = getStructure().getChildProductCmptReferences(this);
+        for (IProductCmptReference productCmptReference : childProductCmptReferences) {
+            GregorianCalendar childValidTo = productCmptReference.getValidTo();
+            if (validTo == null || (childValidTo != null && childValidTo.before(validTo))) {
+                validTo = childValidTo;
+            }
+        }
+        return validTo;
     }
 
     /**

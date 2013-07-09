@@ -141,4 +141,9 @@ public interface IProductCmptTreeStructure {
      */
     public List<IProductCmptReference> findReferencesFor(List<IProductCmpt> cmpts);
 
+    /**
+     * Returns the validTo property from the {@link IProductCmptReference}
+     */
+    public GregorianCalendar getValidTo();
+
 }

@@ -1,0 +1,109 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
+
+    private ProductCmptReference cmptReference;
+    private GregorianCalendar today;
+    private GregorianCalendar yesterday;
+    private GregorianCalendar tomorow;
+
+    @Mock
+    private IProductCmptTreeStructure structure;
+    @Mock
+    private ProductCmptStructureReference parent;
+    @Mock
+    private IProductCmpt cmpt;
+    @Mock
+    private IProductCmptLink link;
+    @Mock
+    private IProductCmptGeneration productCmptGeneration;
+    @Mock
+    private ProductCmptReference childProductCmptReference;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        MockitoAnnotations.initMocks(this);
+
+        cmptReference = new ProductCmptReference(structure, parent, cmpt, link);
+        today = new GregorianCalendar();
+        today = new GregorianCalendar(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1,
+                today.get(Calendar.DAY_OF_MONTH));
+        yesterday = new GregorianCalendar(today.get(GregorianCalendar.YEAR), today.get(GregorianCalendar.MONTH),
+                today.get(GregorianCalendar.DAY_OF_MONTH) - 1);
+        tomorow = new GregorianCalendar(today.get(GregorianCalendar.YEAR), today.get(GregorianCalendar.MONTH),
+                today.get(GregorianCalendar.DAY_OF_MONTH) + 1);
+
+        IProductCmptReference[] productCmptReferences = new ProductCmptReference[] { childProductCmptReference };
+        when(structure.getChildProductCmptReferences(cmptReference)).thenReturn(productCmptReferences);
+        when(structure.getValidAt()).thenReturn(today);
+        when(cmpt.getGenerationEffectiveOn(structure.getValidAt())).thenReturn(productCmptGeneration);
+    }
+
+    @Test
+    public void testGetValidToFromChild() {
+        when(productCmptGeneration.getValidTo()).thenReturn(today);
+        when(childProductCmptReference.getValidTo()).thenReturn(yesterday);
+        assertEquals(yesterday, cmptReference.getValidTo());
+    }
+
+    @Test
+    public void testGetValidToGenerationIsNull() {
+        when(productCmptGeneration.getValidTo()).thenReturn(null);
+        when(childProductCmptReference.getValidTo()).thenReturn(yesterday);
+        assertEquals(yesterday, cmptReference.getValidTo());
+    }
+
+    @Test
+    public void testGetValidToChildIsNull() {
+        when(productCmptGeneration.getValidTo()).thenReturn(today);
+        when(childProductCmptReference.getValidTo()).thenReturn(null);
+        assertEquals(today, cmptReference.getValidTo());
+    }
+
+    @Test
+    public void testGetValidToAllIsNull() {
+        when(productCmptGeneration.getValidTo()).thenReturn(null);
+        when(childProductCmptReference.getValidTo()).thenReturn(null);
+        assertNull(cmptReference.getValidTo());
+    }
+
+    @Test
+    public void testGetValidToChildAfter() {
+        when(productCmptGeneration.getValidTo()).thenReturn(today);
+        when(childProductCmptReference.getValidTo()).thenReturn(tomorow);
+        assertEquals(today, cmptReference.getValidTo());
+    }
+}

@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
+import java.util.GregorianCalendar;
+
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 /**
@@ -53,5 +56,11 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
      * @return true if there are any associations defined in the corresponding type
      */
     public boolean hasAssociationChildren();
+
+    /**
+     * Returns the minimum validTo Date from the {@link IProductCmptGeneration} and it's child
+     * References
+     */
+    public GregorianCalendar getValidTo();
 
 }

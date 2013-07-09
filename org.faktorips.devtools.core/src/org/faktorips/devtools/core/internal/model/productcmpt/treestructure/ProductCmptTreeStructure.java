@@ -52,7 +52,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     private final IIpsProject ipsProject;
 
-    private ProductCmptReference root;
+    private IProductCmptReference root;
 
     private final GregorianCalendar workingDate;
 
@@ -450,7 +450,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             return associationReferences
                     .toArray(new IProductCmptTypeAssociationReference[associationReferences.size()]);
         } else if (parent instanceof ProductCmptStructureReference) {
-            ProductCmptStructureReference children[] = ((ProductCmptStructureReference)parent).getChildren();
+            ProductCmptStructureReference[] children = ((ProductCmptStructureReference)parent).getChildren();
             List<IProductCmptTypeAssociationReference> result = new ArrayList<IProductCmptTypeAssociationReference>();
             for (ProductCmptStructureReference element : children) {
                 if (element instanceof IProductCmptTypeAssociationReference) {
@@ -538,5 +538,10 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             result.addAll(getReferences(child, selectElement));
         }
         return result;
+    }
+
+    @Override
+    public GregorianCalendar getValidTo() {
+        return getRoot().getValidTo();
     }
 }
