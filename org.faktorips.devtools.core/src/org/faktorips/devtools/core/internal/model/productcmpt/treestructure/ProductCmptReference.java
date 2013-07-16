@@ -67,14 +67,29 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
 
     @Override
     public GregorianCalendar getValidTo() {
-        IProductCmptGeneration generation = cmpt.getGenerationEffectiveOn(getStructure().getValidAt());
-        GregorianCalendar validTo = generation.getValidTo();
+        GregorianCalendar validTo = getValidToForCmptOrGeneration();
+        return getMostRestrictiveValidToInChildren(validTo);
+    }
+
+    protected GregorianCalendar getMostRestrictiveValidToInChildren(final GregorianCalendar validTo) {
+        GregorianCalendar mostRestrictiveValidTo = validTo;
         IProductCmptReference[] childProductCmptReferences = getStructure().getChildProductCmptReferences(this);
         for (IProductCmptReference productCmptReference : childProductCmptReferences) {
             GregorianCalendar childValidTo = productCmptReference.getValidTo();
-            if (validTo == null || (childValidTo != null && childValidTo.before(validTo))) {
-                validTo = childValidTo;
+            if (mostRestrictiveValidTo == null || (childValidTo != null && childValidTo.before(mostRestrictiveValidTo))) {
+                mostRestrictiveValidTo = childValidTo;
             }
+        }
+        return mostRestrictiveValidTo;
+    }
+
+    protected GregorianCalendar getValidToForCmptOrGeneration() {
+        IProductCmptGeneration generation = cmpt.getGenerationEffectiveOn(getStructure().getValidAt());
+        GregorianCalendar validTo;
+        if (generation == null) {
+            validTo = cmpt.getValidTo();
+        } else {
+            validTo = generation.getValidTo();
         }
         return validTo;
     }

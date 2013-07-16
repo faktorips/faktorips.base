@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
+public class ProductCmptReferenceTest {
 
     private ProductCmptReference cmptReference;
     private GregorianCalendar today;
@@ -50,14 +50,20 @@ public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration productCmptGeneration;
     @Mock
     private ProductCmptReference childProductCmptReference;
+    @Mock
+    private IProductCmpt childCmpt;
 
-    @Override
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
+    }
 
-        cmptReference = new ProductCmptReference(structure, parent, cmpt, link);
+    protected void setUpBasic() {
+        try {
+            cmptReference = new ProductCmptReference(structure, parent, cmpt, link);
+        } catch (CycleInProductStructureException e) {
+            throw new RuntimeException(e);
+        }
         today = new GregorianCalendar();
         today = new GregorianCalendar(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1,
                 today.get(Calendar.DAY_OF_MONTH));
@@ -69,11 +75,16 @@ public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
         IProductCmptReference[] productCmptReferences = new ProductCmptReference[] { childProductCmptReference };
         when(structure.getChildProductCmptReferences(cmptReference)).thenReturn(productCmptReferences);
         when(structure.getValidAt()).thenReturn(today);
+    }
+
+    protected void setUpWithValidGeneration() {
+        setUpBasic();
         when(cmpt.getGenerationEffectiveOn(structure.getValidAt())).thenReturn(productCmptGeneration);
     }
 
     @Test
     public void testGetValidToFromChild() {
+        setUpWithValidGeneration();
         when(productCmptGeneration.getValidTo()).thenReturn(today);
         when(childProductCmptReference.getValidTo()).thenReturn(yesterday);
         assertEquals(yesterday, cmptReference.getValidTo());
@@ -81,6 +92,7 @@ public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidToGenerationIsNull() {
+        setUpWithValidGeneration();
         when(productCmptGeneration.getValidTo()).thenReturn(null);
         when(childProductCmptReference.getValidTo()).thenReturn(yesterday);
         assertEquals(yesterday, cmptReference.getValidTo());
@@ -88,6 +100,7 @@ public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidToChildIsNull() {
+        setUpWithValidGeneration();
         when(productCmptGeneration.getValidTo()).thenReturn(today);
         when(childProductCmptReference.getValidTo()).thenReturn(null);
         assertEquals(today, cmptReference.getValidTo());
@@ -95,6 +108,7 @@ public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidToAllIsNull() {
+        setUpWithValidGeneration();
         when(productCmptGeneration.getValidTo()).thenReturn(null);
         when(childProductCmptReference.getValidTo()).thenReturn(null);
         assertNull(cmptReference.getValidTo());
@@ -102,8 +116,27 @@ public class ProductCmptReferenceTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidToChildAfter() {
+        setUpWithValidGeneration();
         when(productCmptGeneration.getValidTo()).thenReturn(today);
         when(childProductCmptReference.getValidTo()).thenReturn(tomorow);
+        assertEquals(today, cmptReference.getValidTo());
+    }
+
+    @Test
+    public void testGetValidToWithoutGeneration() {
+        setUpBasic();
+        when(cmpt.getGenerationEffectiveOn(structure.getValidAt())).thenReturn(null);
+        when(cmptReference.getValidTo()).thenReturn(today);
+
+        assertEquals(today, cmptReference.getValidTo());
+    }
+
+    @Test
+    public void testGetValidToWithoutGenerationInChildren() {
+        setUpWithValidGeneration();
+        when(childCmpt.getGenerationEffectiveOn(structure.getValidAt())).thenReturn(null);
+        when(childProductCmptReference.getValidTo()).thenReturn(today);
+
         assertEquals(today, cmptReference.getValidTo());
     }
 }
