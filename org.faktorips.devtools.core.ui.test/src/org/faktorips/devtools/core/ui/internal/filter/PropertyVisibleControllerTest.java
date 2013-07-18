@@ -86,6 +86,25 @@ public class PropertyVisibleControllerTest {
     }
 
     @Test
+    public void testIsFiltered() {
+        IProductCmptProperty p1 = mock(IProductCmptProperty.class);
+        IProductCmptProperty p2 = mock(IProductCmptProperty.class);
+        IProductCmptPropertyFilter filter1 = mock(IProductCmptPropertyFilter.class);
+        IProductCmptPropertyFilter filter2 = mock(IProductCmptPropertyFilter.class);
+
+        when(filter1.isFiltered(p1)).thenReturn(false);
+        when(filter2.isFiltered(p1)).thenReturn(true);
+        when(filter1.isFiltered(p2)).thenReturn(false);
+        when(filter2.isFiltered(p2)).thenReturn(false);
+
+        controller.addFilter(filter1);
+        controller.addFilter(filter2);
+
+        assertTrue(controller.isFiltered(p1));
+        assertFalse(controller.isFiltered(p2));
+    }
+
+    @Test
     public void testUpdateUI_RelayoutParents() {
         IProductCmptProperty p1 = mock(IProductCmptProperty.class);
         IProductCmptProperty p2 = mock(IProductCmptProperty.class);

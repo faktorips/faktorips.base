@@ -96,4 +96,13 @@ public interface IPropertyVisibleController {
      */
     public boolean removeFilter(IProductCmptPropertyFilter filter);
 
+    /**
+     * Checks, whether controls belonging to the given {@link IProductCmptProperty} must be filtered
+     * or not.
+     * <p>
+     * Return {@code true}, if there is an {@link IProductCmptPropertyFilter}, which filters the
+     * given property. Return {@code false} otherwise.
+     * 
+     */
+    public boolean isFiltered(IProductCmptProperty property);
 }

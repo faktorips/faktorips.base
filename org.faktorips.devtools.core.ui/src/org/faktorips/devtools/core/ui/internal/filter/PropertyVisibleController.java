@@ -72,13 +72,7 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     }
 
     private void updateControlVisibility(Control containerControl, IProductCmptProperty property) {
-        boolean filtered = false;
-        for (IProductCmptPropertyFilter filter : filters) {
-            filtered = filter.isFiltered(property);
-            if (filtered) {
-                break;
-            }
-        }
+        boolean filtered = isFiltered(property);
         for (Control control : propertyControlMappings.get(containerControl).get(property)) {
             control.setVisible(!filtered);
             Object layoutData = control.getLayoutData();
@@ -149,6 +143,16 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     @Override
     public boolean removeFilter(IProductCmptPropertyFilter filter) {
         return filters.remove(filter);
+    }
+
+    @Override
+    public boolean isFiltered(IProductCmptProperty property) {
+        for (IProductCmptPropertyFilter filter : filters) {
+            if (filter.isFiltered(property)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
