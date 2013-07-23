@@ -11,13 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpt;
+package org.faktorips.devtools.core.internal.fl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -27,13 +25,15 @@ import org.faktorips.fl.FunctionResolver;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This class is an abstract implementation of a {@link FunctionResolver} for tables.
+ * This class is an abstract implementation of a {@link FunctionResolver} for tables. We use a cache
+ * for the functions because there always the same. If there is a model-update then the hole
+ * resolver is new.
  * 
- * @author dicker
  */
 public abstract class AbstractTableFunctionsResolver implements FunctionResolver {
 
     private final IIpsProject ipsProject;
+    private List<FlFunction> flfunctions;
 
     public AbstractTableFunctionsResolver(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
@@ -46,14 +46,19 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
 
     @Override
     public FlFunction[] getFunctions() {
-        List<FlFunction> functions = new ArrayList<FlFunction>();
-        List<TableData> tableDatas = createTableDatas();
-
-        for (TableData tableData : tableDatas) {
-            addTableAccessFunction(functions, tableData);
+        if (flfunctions == null) {
+            List<TableData> tableDatas = createTableDatas();
+            flfunctions = getFlFunctionsFor(tableDatas);
         }
+        return flfunctions.toArray(new FlFunction[flfunctions.size()]);
+    }
 
-        return functions.toArray(new FlFunction[functions.size()]);
+    private List<FlFunction> getFlFunctionsFor(List<TableData> tableDatas) {
+        List<FlFunction> functions = new ArrayList<FlFunction>();
+        for (TableData tableData : tableDatas) {
+            functions.addAll(getTableAccessFunctionsFor(tableData));
+        }
+        return functions;
     }
 
     /**
@@ -61,21 +66,13 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
      */
     protected abstract List<TableData> createTableDatas();
 
-    private void addTableAccessFunction(List<FlFunction> functions, TableData tableData) {
-
+    private List<FlFunction> getTableAccessFunctionsFor(TableData tableData) {
         ITableAccessFunction[] fcts = tableData.getTableStructure().getAccessFunctions();
-        for (int j = 0; j < fcts.length; j++) {
-            try {
-                if (!fcts[j].validate(tableData.getTableContents().getIpsProject()).containsErrorMsg()) {
-                    functions
-                            .add(createFlFunction(tableData.getTableContents(), fcts[j], tableData.getReferencedName()));
-                }
-            } catch (CoreException e) {
-                // if an error occurs while search for the function, the functions are not
-                // provided and an error is logged.Länderspiele
-                IpsPlugin.log(e);
-            }
+        List<FlFunction> functions = new ArrayList<FlFunction>();
+        for (ITableAccessFunction tableAccessFunction : fcts) {
+            functions.add(createFlFunction(tableAccessFunction, tableData));
         }
+        return functions;
     }
 
     /**
@@ -83,9 +80,7 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
      * {@link ITableAccessFunction} of the given {@link ITableContents} and the referencedName of
      * the table contents.
      */
-    protected abstract FlFunction createFlFunction(ITableContents tableContents,
-            ITableAccessFunction iTableAccessFunction,
-            String referencedName);
+    protected abstract FlFunction createFlFunction(ITableAccessFunction iTableAccessFunction, TableData tableData);
 
     /**
      * Immutual Parameter-Object to store a table content, its structure and the referencedName,
@@ -94,25 +89,25 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
      * @author dicker
      */
     protected static final class TableData {
-        private final ITableContents tableContents;
+        private final String tableContentQualifiedName;
         private final ITableStructure tableStructure;
         private final String referencedName;
 
-        protected TableData(ITableContents tableContents, ITableStructure tableStructure, String referencedName) {
-            this.tableContents = tableContents;
+        public TableData(String tableContentQualifiedName, ITableStructure tableStructure, String referencedName) {
             this.tableStructure = tableStructure;
+            this.tableContentQualifiedName = tableContentQualifiedName;
             this.referencedName = referencedName;
         }
 
-        protected String getReferencedName() {
+        public String getReferencedName() {
             return referencedName;
         }
 
-        protected ITableContents getTableContents() {
-            return tableContents;
+        public String getTableContentQualifiedName() {
+            return tableContentQualifiedName;
         }
 
-        protected ITableStructure getTableStructure() {
+        public ITableStructure getTableStructure() {
             return tableStructure;
         }
     }

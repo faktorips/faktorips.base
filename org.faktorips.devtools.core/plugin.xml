@@ -289,7 +289,10 @@
          point="org.faktorips.devtools.core.flFunctionResolverFactory">
          <functionResolverFactory class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"/>
          <functionResolverFactory
-               class="org.faktorips.devtools.core.AssociationNavigationFunctionsResolverFactory">
+               class="org.faktorips.devtools.core.fl.AssociationNavigationFunctionsResolverFactory">
+         </functionResolverFactory>
+         <functionResolverFactory
+               class="org.faktorips.devtools.core.fl.TableSingleContentFunctionResolverFactory">
          </functionResolverFactory>
    </extension>
    

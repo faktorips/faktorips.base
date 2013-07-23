@@ -520,10 +520,9 @@ public class ExprCompiler {
      * Maybe the rolename of a table equals the qualified name of a table structure in the root
      * package.
      */
-    public LinkedHashSet<FlFunction> getAmbiguousFunctions() {
+    public LinkedHashSet<FlFunction> getAmbiguousFunctions(final FlFunction[] functions) {
 
         LinkedHashSet<FlFunction> ambiguousFunctions = new LinkedHashSet<FlFunction>();
-        FlFunction[] functions = getFunctions();
         for (int i = 0; i < functions.length; i++) {
             FlFunction flFunction = functions[i];
 

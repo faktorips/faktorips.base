@@ -283,13 +283,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      *         ITypes} exist.
      */
     protected static List<IType> getProjectITypes(IIpsProject ipsProject, IpsObjectType... types) {
-
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-        try {
-            ipsProject.findAllIpsSrcFiles(srcFiles, types);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        List<IIpsSrcFile> srcFiles = ipsProject.findAllIpsSrcFiles(types);
 
         List<IType> components = new ArrayList<IType>(srcFiles.size());
         for (IIpsSrcFile file : srcFiles) {

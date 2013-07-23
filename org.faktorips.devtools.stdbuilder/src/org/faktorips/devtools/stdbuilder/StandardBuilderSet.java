@@ -51,7 +51,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -223,7 +222,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public CompilationResult getTableAccessCode(ITableContents tableContents,
+    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
 
@@ -235,7 +234,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         result.addAllIdentifierUsed(argResults);
         code.appendClassName(getTableImplBuilder().getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
-        code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
+        code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
 
         // TODO pk: findRow is not correct in general. JO: Why?

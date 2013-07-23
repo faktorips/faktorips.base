@@ -195,6 +195,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /** map containing ClassLoaderProviders per IpsProject */
     private Map<IIpsProject, ClassLoaderProvider> classLoaderProviderMap = new HashMap<IIpsProject, ClassLoaderProvider>();
 
+    /** maps from an IpsProject to its ExtensionFunctionResolverChache */
+    private Map<IIpsProject, ExtensionFunctionResolversCache> projectToFunctionResolverCacheMap = new HashMap<IIpsProject, ExtensionFunctionResolversCache>();
+
     /** map containing IpsSrcFileContents as values and IpsSrcFiles as keys. */
     private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<IIpsSrcFile, IpsSrcFileContent>(1000);
 
@@ -980,7 +983,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 && propertyFile.exists()
                 && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(data
                         .getLastPersistentModificationTimestamp())) {
-            clearIpsProjectDataCaches(ipsProject);
+            clearProjectSpecificCaches(ipsProject);
             data = null;
         }
         if (data == null) {
@@ -994,14 +997,21 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getIpsProjectProperties(ipsProject);
     }
 
-    private void clearIpsProjectDataCaches(IpsProject ipsProject) {
+    /**
+     * Clears caches for a given project. Affects only caches whose objects depend on project
+     * settings, e.g. IPS project properties or manifest files.
+     * 
+     * @param ipsProject whose properties and or settings changed
+     */
+    public void clearProjectSpecificCaches(IIpsProject ipsProject) {
         projectDatatypesMap.remove(ipsProject.getName());
         projectDatatypeHelpersMap.remove(ipsProject.getName());
-        clearIpsProjectPropertiesCache(ipsProject);
         projectToBuilderSetMap.remove(ipsProject);
+        clearIpsProjectPropertiesCache(ipsProject);
+        projectToFunctionResolverCacheMap.remove(ipsProject);
     }
 
-    protected void clearIpsProjectPropertiesCache(IIpsProject ipsProject) {
+    private void clearIpsProjectPropertiesCache(IIpsProject ipsProject) {
         projectPropertiesMap.remove(ipsProject.getName());
     }
 
@@ -1337,6 +1347,23 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;
+    }
+
+    /**
+     * Returns the cache for all function resolvers (registered via extension point) for the given
+     * IPS project.
+     * 
+     * @param ipsProject the project to return a cache for
+     */
+    @Override
+    public ExtensionFunctionResolversCache getExtensionFunctionResolverCache(IIpsProject ipsProject) {
+        ArgumentCheck.notNull(ipsProject);
+        ExtensionFunctionResolversCache functionResolversCache = projectToFunctionResolverCacheMap.get(ipsProject);
+        if (functionResolversCache == null) {
+            functionResolversCache = new ExtensionFunctionResolversCache(ipsProject);
+            projectToFunctionResolverCacheMap.put(ipsProject, functionResolversCache);
+        }
+        return functionResolversCache;
     }
 
     /**

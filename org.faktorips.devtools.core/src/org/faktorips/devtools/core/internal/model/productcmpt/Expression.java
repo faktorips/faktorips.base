@@ -155,7 +155,6 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
         // add the table functions based on the table usages defined in the product cmpt type
         compiler.add(new TableUsageFunctionsResolver(ipsProject, getTableContentUsages()));
-        compiler.add(new TableSingleContentFunctionsResolver(ipsProject));
 
         IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
         IBaseMethod method = findFormulaSignature(ipsProject);

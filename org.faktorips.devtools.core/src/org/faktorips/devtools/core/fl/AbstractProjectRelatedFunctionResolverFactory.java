@@ -11,10 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core;
+package org.faktorips.devtools.core.fl;
 
 import java.util.Locale;
 
+import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.FunctionResolver;
 

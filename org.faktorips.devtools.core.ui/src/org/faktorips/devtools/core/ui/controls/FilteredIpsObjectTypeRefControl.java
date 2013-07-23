@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -64,11 +63,11 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject() == null) {
+        if (getIpsProjects().isEmpty()) {
             return new IIpsSrcFile[0];
         }
-        List<IIpsSrcFile> allowedIpsSrcFiles = new ArrayList<IIpsSrcFile>();
-        getIpsProject().findAllIpsSrcFiles(allowedIpsSrcFiles, applicableObjectTypes);
+        IIpsProject ipsProject = getIpsProjects().get(0);
+        List<IIpsSrcFile> allowedIpsSrcFiles = ipsProject.findAllIpsSrcFiles(applicableObjectTypes);
         if (excludeAbstractTypes) {
             for (IIpsSrcFile type : allowedIpsSrcFiles) {
                 if (Boolean.valueOf(type.getPropertyValue(IType.PROPERTY_ABSTRACT)).booleanValue()) {
@@ -80,6 +79,10 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
     }
 
     public IIpsSrcFile findSelectedIpsSrcFile() throws CoreException {
-        return selectedIpsObject == null ? null : getIpsProject().findIpsSrcFile(selectedIpsObject);
+        if (getIpsProjects().isEmpty()) {
+            return null;
+        }
+        IIpsProject ipsProject = getIpsProjects().get(0);
+        return selectedIpsObject == null ? null : ipsProject.findIpsSrcFile(selectedIpsObject);
     }
 }

@@ -374,7 +374,7 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         compiler.add(fctResolver1);
         compiler.add(fctResolver2);
 
-        Set<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions();
+        Set<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions(compiler.getFunctions());
 
         assertEquals(2, ambiguousFunctions.size());
 

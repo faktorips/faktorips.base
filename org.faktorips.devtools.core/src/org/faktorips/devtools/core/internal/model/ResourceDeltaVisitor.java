@@ -61,14 +61,10 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         if (isNotRelatedFile(resource)) {
             return false;
         }
-        IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
-        if (resource.equals(ipsProject.getIpsProjectPropertiesFile())) {
+        if (ipsProjectPropertiesChanged(resource) || manifestChanged(resource)) {
+            IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
+            ipsModel.clearProjectSpecificCaches(ipsProject);
             ipsModel.getValidationResultCache().clear();
-            return false;
-        }
-        if (resource.getProjectRelativePath().equals(new Path(IpsBundleManifest.MANIFEST_NAME))) {
-            ipsModel.getValidationResultCache().clear();
-            ipsModel.clearIpsProjectPropertiesCache(ipsProject);
             return false;
         }
 
@@ -90,6 +86,15 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         traceModelResourceVisited(resource, srcFile, isInSync);
         handleNotSyncResource(srcFile, isInSync);
         return true;
+    }
+
+    private boolean ipsProjectPropertiesChanged(IResource resource) {
+        IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
+        return resource.equals(ipsProject.getIpsProjectPropertiesFile());
+    }
+
+    private boolean manifestChanged(IResource resource) {
+        return resource.getProjectRelativePath().equals(new Path(IpsBundleManifest.MANIFEST_NAME));
     }
 
     private void handleNotSyncResource(IpsSrcFile srcFile, boolean isInSync) {

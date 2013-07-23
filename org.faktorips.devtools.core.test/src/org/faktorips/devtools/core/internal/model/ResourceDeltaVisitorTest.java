@@ -88,7 +88,7 @@ public class ResourceDeltaVisitorTest {
         boolean result = visitor.visitInternal(delta, resource);
 
         assertFalse(result);
-        verify(ipsModel).clearIpsProjectPropertiesCache(ipsProject);
+        verify(ipsModel).clearProjectSpecificCaches(ipsProject);
 
     }
 }

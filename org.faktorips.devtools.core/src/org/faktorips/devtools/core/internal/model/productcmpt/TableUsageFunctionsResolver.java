@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.fl.AbstractTableFunctionsResolver;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -58,7 +59,7 @@ public class TableUsageFunctionsResolver extends AbstractTableFunctionsResolver 
                 ITableStructure table = tableContents.findTableStructure(getIpsProject());
                 if (table != null) {
                     // only add the access-function if the content has a structure...
-                    tableData.add(new TableData(tableContents, table, referencedName));
+                    tableData.add(new TableData(tableContents.getQualifiedName(), table, referencedName));
                 }
             } catch (CoreException e) {
                 // if an error occurs while search for the function, the functions are not
@@ -73,10 +74,9 @@ public class TableUsageFunctionsResolver extends AbstractTableFunctionsResolver 
      * Returns a new table function adapter.
      */
     @Override
-    protected FlFunction createFlFunction(ITableContents tableContents,
-            ITableAccessFunction function,
-            String referencedName) {
+    protected FlFunction createFlFunction(ITableAccessFunction function, TableData tableData) {
 
-        return new TableAccessFunctionFlFunctionAdapter(tableContents, function, referencedName, getIpsProject());
+        return new TableAccessFunctionFlFunctionAdapter(tableData.getTableContentQualifiedName(), function,
+                tableData.getReferencedName(), getIpsProject());
     }
 }

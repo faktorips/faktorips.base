@@ -1170,13 +1170,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITableContents tc1 = newTableContents(ts1, "contets1");
         ITableContents tc2 = newTableContents(ts0, "contets2");
 
-        IIpsSrcFile[] result = ipsProject.findAllTableContentsSrcFiles(ts0);
-        assertEquals(2, result.length);
-        assertEquals(tc0.getIpsSrcFile(), result[0]);
-        assertEquals(tc2.getIpsSrcFile(), result[1]);
+        List<IIpsSrcFile> result = ipsProject.findAllTableContentsSrcFiles(ts0);
+        assertEquals(2, result.size());
+        assertEquals(tc0.getIpsSrcFile(), result.get(0));
+        assertEquals(tc2.getIpsSrcFile(), result.get(1));
 
         result = ipsProject.findAllTableContentsSrcFiles(null);
-        assertEquals(3, result.length);
+        assertEquals(3, result.size());
 
         //
         // test search with different projects
@@ -1187,15 +1187,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITableContents tcProj2 = newTableContents(ts2, "contetnsP2");
 
         result = ipsProject.findAllTableContentsSrcFiles(ts2);
-        assertEquals(0, result.length);
+        assertEquals(0, result.size());
 
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(ipsObjectPath);
 
         result = ipsProject.findAllTableContentsSrcFiles(ts2);
-        assertEquals(1, result.length);
-        assertEquals(tcProj2.getIpsSrcFile(), result[0]);
+        assertEquals(1, result.size());
+        assertEquals(tcProj2.getIpsSrcFile(), result.get(0));
     }
 
     @Test

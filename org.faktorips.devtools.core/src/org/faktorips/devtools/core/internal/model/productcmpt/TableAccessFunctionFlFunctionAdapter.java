@@ -19,7 +19,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -34,23 +33,22 @@ import org.faktorips.util.message.Message;
 public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdapter {
 
     private ITableAccessFunction fct;
-    private ITableContents tableContents;
+    private String tableContentsQualifiedName;
     private String referencedName;
 
     /**
-     * @param tableContents can be null. This indicates that it is a table access function for a
-     *            table that doesn't allow multiple contents
+     * @param tableContentsQName cannot be null
      * @param fct the table access function
      */
-    public TableAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
+    public TableAccessFunctionFlFunctionAdapter(String tableContentsQName, ITableAccessFunction fct,
             String referencedName, IIpsProject ipsProject) {
 
         super(ipsProject);
         ArgumentCheck.notNull(fct);
-        ArgumentCheck.notNull(tableContents);
+        ArgumentCheck.notNull(tableContentsQName);
         ArgumentCheck.notNull(referencedName);
         this.fct = fct;
-        this.tableContents = tableContents;
+        this.tableContentsQualifiedName = tableContentsQName;
         this.referencedName = referencedName;
     }
 
@@ -64,7 +62,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
                 result.addAllIdentifierUsed(argResults);
                 return result;
             }
-            return builderSet.getTableAccessCode(tableContents, fct, argResults);
+            return builderSet.getTableAccessCode(tableContentsQualifiedName, fct, argResults);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return new CompilationResultImpl(Message.newError(
@@ -107,15 +105,15 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
         return types;
     }
 
-    ITableAccessFunction getTableAccessFunction() {
+    protected ITableAccessFunction getTableAccessFunction() {
         return fct;
     }
 
-    ITableContents getTableContents() {
-        return tableContents;
+    protected String getTableContentsQualifiedName() {
+        return tableContentsQualifiedName;
     }
 
-    String getReferencedName() {
+    protected String getReferencedName() {
         return referencedName;
     }
 }

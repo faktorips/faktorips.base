@@ -15,8 +15,8 @@ package org.faktorips.devtools.formulalibrary;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.AbstractProjectRelatedFunctionResolverFactory;
 import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.core.fl.AbstractProjectRelatedFunctionResolverFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.FunctionResolver;
 

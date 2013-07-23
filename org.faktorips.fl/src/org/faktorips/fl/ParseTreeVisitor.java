@@ -353,9 +353,10 @@ class ParseTreeVisitor implements FlParserVisitor {
         // function that matches using implicit conversions
         FlFunction function = null;
         boolean functionFoundByName = false;
-        LinkedHashSet<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions();
+        FlFunction[] functions = compiler.getFunctions();
+        LinkedHashSet<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions(functions);
 
-        for (FlFunction function2 : compiler.getFunctions()) {
+        for (FlFunction function2 : functions) {
             if (function2.match(fctName, argTypes)) {
                 if (isAmbiguousFunction(function2, ambiguousFunctions)) {
                     return createAmbiguousFunctionCompilationResultImpl(function2);

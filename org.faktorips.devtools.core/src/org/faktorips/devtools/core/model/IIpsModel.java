@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -336,5 +337,12 @@ public interface IIpsModel extends IIpsElement {
      *             {@link SingleEventModification}
      */
     <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException;
+
+    /**
+     * Returns the function resolver cache for the given IPS project.
+     * 
+     * @see ExtensionFunctionResolversCache
+     */
+    public ExtensionFunctionResolversCache getExtensionFunctionResolverCache(IIpsProject ipsProject);
 
 }

@@ -24,11 +24,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.MultiLanguageSupport;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -141,12 +141,12 @@ public class DocumentationContext {
 
     public List<IIpsSrcFile> getDocumentedSourceFiles() {
         if (documentedSrcFiles == null) {
-            documentedSrcFiles = new ArrayList<IIpsSrcFile>();
             try {
-                ipsProject.findAllIpsSrcFiles(documentedSrcFiles, getDocumentedIpsObjectTypes());
-            } catch (CoreException e) {
-                addStatus(new IpsStatus(IStatus.ERROR,
-                        "Error finding IpsSrcFiles of types " + StringUtils.join(getDocumentedIpsObjectTypes(), ';'), e)); //$NON-NLS-1$
+                documentedSrcFiles = ipsProject.findAllIpsSrcFiles(getDocumentedIpsObjectTypes());
+            } catch (CoreRuntimeException e) {
+                addStatus(new IpsStatus(
+                        IStatus.ERROR,
+                        "Error finding IpsSrcFiles of types " + StringUtils.join(getDocumentedIpsObjectTypes(), ';'), e.getCause())); //$NON-NLS-1$
             }
         }
 
@@ -162,18 +162,16 @@ public class DocumentationContext {
      * @return List<IIpsSrcFile>
      */
     public List<IIpsSrcFile> getDocumentedSourceFiles(IpsObjectType... ipsObjectTypes) {
-
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {
-            ipsProject.findAllIpsSrcFiles(result, ipsObjectTypes);
-        } catch (CoreException e) {
+            List<IIpsSrcFile> result = ipsProject.findAllIpsSrcFiles(ipsObjectTypes);
+            result.retainAll(getDocumentedSourceFiles());
+
+            return result;
+        } catch (CoreRuntimeException e) {
             addStatus(new IpsStatus(IStatus.ERROR,
-                    "Error finding IpsSrcFiles of types " + StringUtils.join(ipsObjectTypes, ';'), e)); //$NON-NLS-1$
+                    "Error finding IpsSrcFiles of types " + StringUtils.join(ipsObjectTypes, ';'), e.getCause())); //$NON-NLS-1$
+            return new ArrayList<IIpsSrcFile>();
         }
-
-        result.retainAll(getDocumentedSourceFiles());
-
-        return result;
     }
 
     public Collection<IIpsPackageFragment> getLinkedPackageFragments() {

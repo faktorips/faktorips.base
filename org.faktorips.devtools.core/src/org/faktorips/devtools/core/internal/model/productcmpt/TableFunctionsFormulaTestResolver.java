@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.FlFunction;
 
@@ -39,12 +38,10 @@ public class TableFunctionsFormulaTestResolver extends TableUsageFunctionsResolv
     }
 
     @Override
-    protected FlFunction createFlFunction(ITableContents tableContents,
-            ITableAccessFunction function,
-            String roleName) {
+    protected FlFunction createFlFunction(ITableAccessFunction function, TableData tableData) {
 
-        return new TableFunctionFormulaTestFlFunctionAdapter(tableContents, function, formulaTestCase, roleName,
-                getIpsProject());
+        return new TableFunctionFormulaTestFlFunctionAdapter(tableData.getTableContentQualifiedName(), function,
+                formulaTestCase, tableData.getReferencedName(), getIpsProject());
     }
 
 }

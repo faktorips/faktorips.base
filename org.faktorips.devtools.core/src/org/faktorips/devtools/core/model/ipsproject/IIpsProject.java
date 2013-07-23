@@ -31,6 +31,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -303,6 +304,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns an {@link ExtendedExprCompiler} instance that is configured with the default set
      * operations and functions. Functions that are added via the FunctionResolver extension point
      * are also included.
+     * 
      */
     public ExtendedExprCompiler newExpressionCompiler();
 
@@ -519,9 +521,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * class path.
      * 
      * @param structure The product components type product component will be searched for.
-     * 
+     * @throws CoreRuntimeException if an error occurs while searching
      */
-    public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException;
+    public List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure);
 
     /**
      * Returns the first IPS source file on the IPS object path with the the indicated qualified
@@ -565,15 +567,21 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException;
 
     /**
-     * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on.
+     * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
+     * and match the given filter (object type list).
+     * 
+     * @deprecated use {@link #findAllIpsSrcFiles(IpsObjectType...)} instead
      */
-    public List<IIpsSrcFile> findAllIpsSrcFiles();
+    @Deprecated
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter) throws CoreException;
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
      * and match the given filter (object type list).
+     * 
+     * @throws CoreRuntimeException if an error occurs while searching
      */
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter) throws CoreException;
+    public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
 
     /**
      * Puts all {@link IIpsSrcFile}s within this {@link IIpsProject} in the provided result list

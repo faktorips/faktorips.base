@@ -57,8 +57,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
-import org.faktorips.devtools.core.AbstractProjectRelatedFunctionResolverFactory;
-import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
@@ -66,6 +64,7 @@ import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -123,7 +122,7 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
-    public final static boolean TRACE_IPSPROJECT_PROPERTIES;
+    public static final boolean TRACE_IPSPROJECT_PROPERTIES;
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
@@ -205,25 +204,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public ExtendedExprCompiler newExpressionCompiler() {
         ExtendedExprCompiler compiler = new ExtendedExprCompiler();
-        IFunctionResolverFactory[] factories = IpsPlugin.getDefault().getFlFunctionResolverFactories();
-        for (IFunctionResolverFactory factory : factories) {
-            if (getPropertiesInternal().isActive(factory)) {
-                try {
-                    if (factory instanceof AbstractProjectRelatedFunctionResolverFactory) {
-                        compiler.add(((AbstractProjectRelatedFunctionResolverFactory)factory).newFunctionResolver(this,
-                                getFormulaLanguageLocale()));
-                    } else {
-                        compiler.add(factory.newFunctionResolver(getFormulaLanguageLocale()));
-                    }
-                    // CSOFF: IllegalCatch
-                } catch (Exception e) {
-                    // CSON: IllegalCatch
-                    IpsPlugin.log(new IpsStatus("Unable to create the function resolver for the following factory: " //$NON-NLS-1$
-                            + factory.getClass(), e));
-                }
-            }
-        }
-
+        ExtensionFunctionResolversCache resolverCache = getIpsModel().getExtensionFunctionResolverCache(this);
+        resolverCache.addExtensionFunctionResolversToCompiler(compiler);
         return compiler;
     }
 
@@ -974,21 +956,20 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException {
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        return getIpsObjectPathInternal().findIpsSrcFiles(type, visitedEntries);
+        List<IIpsSrcFile> foundSrcFiles = findAllIpsSrcFiles(type);
+        return foundSrcFiles.toArray(new IIpsSrcFile[foundSrcFiles.size()]);
     }
 
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException {
-        findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
+        List<IIpsSrcFile> foundSrcFiles = findAllIpsSrcFilesInternal(getIpsModel().getIpsObjectTypes());
+        result.addAll(foundSrcFiles);
     }
 
     @Override
-    public List<IIpsSrcFile> findAllIpsSrcFiles() {
+    public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... ipsObjectTypes) {
         try {
-            List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-            findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
-            return result;
+            return findAllIpsSrcFilesInternal(ipsObjectTypes);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -1021,13 +1002,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated use findAllIpsSrcFiles(IpsObjectType... ipsObjectTypes)
+     */
     @Override
+    @Deprecated
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] ipsObjectTypes) throws CoreException {
+        List<IIpsSrcFile> foundSrcFiles = findAllIpsSrcFilesInternal(ipsObjectTypes);
+        result.addAll(foundSrcFiles);
+    }
+
+    protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypes) throws CoreException {
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         for (IpsObjectType ipsObjectType : ipsObjectTypes) {
             getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
             visitedEntries.clear();
         }
+        return result;
     }
 
     @Override
@@ -1444,19 +1438,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException {
-        IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
+    public List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure) {
+        List<IIpsSrcFile> ipsSrcFiles = findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
         if (structure == null) {
             return ipsSrcFiles;
         }
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.size());
         for (IIpsSrcFile srcFile : ipsSrcFiles) {
-            String tableContentsCandidateQName = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-            if (structure.getQualifiedName().equals(tableContentsCandidateQName)) {
-                result.add(srcFile);
+            String tableContentsCandidateQName;
+            try {
+                tableContentsCandidateQName = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+                if (structure.getQualifiedName().equals(tableContentsCandidateQName)) {
+                    result.add(srcFile);
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
-        return result.toArray(new IIpsSrcFile[result.size()]);
+        return result;
     }
 
     @Override

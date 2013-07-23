@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -57,7 +56,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public CompilationResult getTableAccessCode(ITableContents tableContents,
+    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
 

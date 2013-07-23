@@ -360,7 +360,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
     protected IIpsProject mockIpsProject() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
-        when(ipsProject.getProperties()).thenReturn(properties);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
         ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
         HashSet<ISupportedLanguage> supportedLanguages = new HashSet<ISupportedLanguage>();
         supportedLanguages.add(supportedLanguage);

@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
@@ -115,7 +114,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
      * Empty implementation. Might be overridden by subclasses that support the formula language.
      */
     @Override
-    public CompilationResult getTableAccessCode(ITableContents tableContents,
+    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
 

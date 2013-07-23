@@ -23,6 +23,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
@@ -49,20 +51,20 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
 
     private ITableAccessFunction fct;
     private ExprCompiler compiler;
-    private ITableContents tableContents;
+    private String tableContentsQName;
     private IFormulaTestCase formulaTestCase;
     private String roleName;
     private IIpsProject ipsProject;
 
-    public TableFunctionFormulaTestFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
+    public TableFunctionFormulaTestFlFunctionAdapter(String tableContentsQName, ITableAccessFunction fct,
             IFormulaTestCase formulaTestCase, String roleName, IIpsProject ipsProject) {
 
         ArgumentCheck.notNull(fct);
-        ArgumentCheck.notNull(tableContents);
+        ArgumentCheck.notNull(tableContentsQName);
         ArgumentCheck.notNull(roleName);
         ArgumentCheck.notNull(ipsProject);
         this.fct = fct;
-        this.tableContents = tableContents;
+        this.tableContentsQName = tableContentsQName;
         this.formulaTestCase = formulaTestCase;
         this.roleName = roleName;
         this.ipsProject = ipsProject;
@@ -186,6 +188,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
          * choosen, otherwise a ClassCastException will be thrown if the repository tries to
          * instantiate the class
          */
+        ITableContents tableContents = getTableContents(ipsProject);
         ClassLoader classLoader = URLClassLoader.newInstance(((URLClassLoader)classLoaderForJavaProject).getURLs(),
                 getClass().getClassLoader());
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
@@ -193,10 +196,9 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
                 .getRuntimeRepositoryTocResourceName(tableContents.getIpsPackageFragment().getRoot()), classLoader);
 
         // search the table in the repository
-        ITable table = repository.getTable(tableContents.getQualifiedName());
+        ITable table = repository.getTable(tableContentsQName);
         if (table == null) {
-            throw new RuntimeException(
-                    "Table '" + tableContents.getQualifiedName() + "' doesn't exists in the repository!"); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new RuntimeException("Table '" + tableContentsQName + "' doesn't exists in the repository!"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         // find the correct getter method via reflections
@@ -217,6 +219,14 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
         Method getColumnMethod = runtimeRow.getClass().getMethod(
                 "get" + StringUtils.capitalize(fct.getAccessedColumn()), new Class[0]); //$NON-NLS-1$
         return getColumnMethod.invoke(runtimeRow, new Object[0]);
+    }
+
+    protected ITableContents getTableContents(IIpsProject ipsProject) {
+        try {
+            return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentsQName);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }

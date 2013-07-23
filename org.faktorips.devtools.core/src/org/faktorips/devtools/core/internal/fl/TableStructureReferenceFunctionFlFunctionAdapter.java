@@ -11,10 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpt;
+package org.faktorips.devtools.core.internal.fl;
 
+import org.faktorips.devtools.core.internal.model.productcmpt.TableAccessFunctionFlFunctionAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 
 /**
@@ -24,9 +24,9 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
  */
 public class TableStructureReferenceFunctionFlFunctionAdapter extends TableAccessFunctionFlFunctionAdapter {
 
-    public TableStructureReferenceFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
+    public TableStructureReferenceFunctionFlFunctionAdapter(String tableContentsQName, ITableAccessFunction fct,
             String referencedName, IIpsProject ipsProject) {
-        super(tableContents, fct, referencedName, ipsProject);
+        super(tableContentsQName, fct, referencedName, ipsProject);
     }
 
     @Override

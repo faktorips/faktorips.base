@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -515,7 +514,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
-            result.addAll(Arrays.asList(project.findAllTableContentsSrcFiles(this)));
+            result.addAll(project.findAllTableContentsSrcFiles(this));
         }
         return result;
     }
