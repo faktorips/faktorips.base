@@ -68,7 +68,7 @@ public class ExtendableVersionManagerTest {
 
         IpsProject ipsProject = mock(IpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
 
-        when(ipsProject.getProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn(
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn(
                 currentVersion.toString());
 
         AbstractIpsProjectMigrationOperation[] migrationOperations = extendableVersionManager
@@ -76,15 +76,15 @@ public class ExtendableVersionManagerTest {
 
         assertEquals(0, migrationOperations.length);
 
-        when(ipsProject.getProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn("0.0.0");
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn("0.0.0");
         migrationOperations = extendableVersionManager.getMigrationOperations(ipsProject);
         assertEquals(0, migrationOperations.length);
 
-        when(ipsProject.getProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn("1.0.0");
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn("1.0.0");
         migrationOperations = extendableVersionManager.getMigrationOperations(ipsProject);
         assertEquals(0, migrationOperations.length);
 
-        when(ipsProject.getProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn("0.0.1");
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn("0.0.1");
         migrationOperations = extendableVersionManager.getMigrationOperations(ipsProject);
         assertEquals(1, migrationOperations.length);
         assertEquals(ipsProjectMigrationOperation1, migrationOperations[0]);

@@ -88,7 +88,7 @@ public class ValidationRuleMessageTextTest {
         ISupportedLanguage defaultLanguage = mock(ISupportedLanguage.class);
         Locale defaultLocale = new Locale("testDefaultLocale");
 
-        when(ipsProject.getProperties()).thenReturn(projectProperties);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
         when(projectProperties.getDefaultLanguage()).thenReturn(defaultLanguage);
         when(defaultLanguage.getLocale()).thenReturn(defaultLocale);
 

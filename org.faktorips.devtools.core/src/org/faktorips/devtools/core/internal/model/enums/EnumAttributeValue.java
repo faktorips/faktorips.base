@@ -260,7 +260,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         InternationalStringValue internationalStringValue = new InternationalStringValue();
         if (getStringValue() != null) {
             internationalStringValue.getContent().add(
-                    new LocalizedString(getIpsProject().getProperties().getDefaultLanguage().getLocale(),
+                    new LocalizedString(getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale(),
                             getStringValue()));
         }
         setValueInternal(internationalStringValue);

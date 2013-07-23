@@ -96,7 +96,8 @@ public class Migration_3_4_0 extends DefaultMigration {
      * Create default label if absent. return true if type has rules.
      */
     private boolean migrateVRules(IPolicyCmptType type) {
-        Set<ISupportedLanguage> supportedLanguages = type.getIpsProject().getProperties().getSupportedLanguages();
+        Set<ISupportedLanguage> supportedLanguages = type.getIpsProject().getReadOnlyProperties()
+                .getSupportedLanguages();
         for (IValidationRule rule : type.getValidationRules()) {
             createAbsentLabels(rule, supportedLanguages);
         }

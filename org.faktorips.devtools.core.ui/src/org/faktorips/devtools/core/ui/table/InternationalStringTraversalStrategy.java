@@ -33,7 +33,7 @@ public class InternationalStringTraversalStrategy extends LinkedColumnsTraversal
         super(editingSupport);
         supportedLocales = new ArrayList<Locale>();
         this.columnIndex = columnIndex;
-        for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage language : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
             supportedLocales.add(language.getLocale());
         }
         this.internationalString = internationalString;

@@ -780,7 +780,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
-        if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
+        if (!ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
             return;
         }
         final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);

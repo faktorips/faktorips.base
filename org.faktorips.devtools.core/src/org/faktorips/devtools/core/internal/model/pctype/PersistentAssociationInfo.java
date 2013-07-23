@@ -595,7 +595,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateLazyFetchOnSingleValuedAssociation(MessageList msgList,
             IIpsProject ipsProject,
             IPolicyCmptTypeAssociation inverseAssociation) {
-        if (ipsProject.getProperties().getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()) {
+        if (ipsProject.getReadOnlyProperties().getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()) {
             return;
         }
         RelationshipType relationshipType = RelationshipType.UNKNOWN;
@@ -726,7 +726,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         // validate max join table name length
         if (!mustBeEmpty) {
-            int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
+            int maxTableNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
+                    .getMaxTableNameLength();
             if (joinTableName.length() > maxTableNameLenght) {
                 msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, NLS.bind(
                         Messages.PersistentAssociationInfo_msgJoinTableNameExceedsMaximumLength,
@@ -742,7 +743,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String messageCode,
             String property) {
 
-        int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        int maxColumnNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
+                .getMaxColumnNameLenght();
         if (columnName.length() > maxColumnNameLenght) {
             msgList.add(new Message(messageCode, NLS.bind(Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
                     new Object[] { propertyName, columnName.length(), maxColumnNameLenght }), Message.ERROR, this,

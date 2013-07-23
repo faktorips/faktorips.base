@@ -209,7 +209,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      */
     void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) throws CoreException {
         IResource projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
-        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        IIpsObjectPath ipsObjectPath = ipsProject.getReadOnlyProperties().getIpsObjectPath();
 
         IFile manifest = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
 
@@ -272,7 +272,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return false;
     }
 
-    private boolean isFullBuildRequired(int kind) throws CoreException {
+    private boolean isFullBuildRequired(int kind) {
         if (kind == FULL_BUILD) {
             return true;
         }
@@ -287,7 +287,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null) {
             return true;
         }
-        IIpsArchiveEntry[] entries = ipsProject.getIpsObjectPath().getArchiveEntries();
+        IIpsArchiveEntry[] entries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getArchiveEntries();
         for (IIpsArchiveEntry entrie : entries) {
             if (entrie.isAffectedBy(delta)) {
                 return true;

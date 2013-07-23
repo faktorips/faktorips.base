@@ -658,10 +658,9 @@ public class IpsObjectPath implements IIpsObjectPath {
                 if (inputStream != null) {
                     return inputStream;
                 }
-                continue;
             } catch (CoreException e) {
                 // may occur if the path does not exists in this entry
-                continue;
+                IpsPlugin.log(e);
             }
         }
         return null;

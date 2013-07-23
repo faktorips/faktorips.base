@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaModelMarker;
 import org.eclipse.jdt.core.IJavaProject;
@@ -122,6 +123,13 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
+    public final static boolean TRACE_IPSPROJECT_PROPERTIES;
+
+    static {
+        TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
+                Platform.getDebugOption("org.faktorips.devtools.core/trace/properties")).booleanValue(); //$NON-NLS-1$
+    }
+
     /**
      * The file extension for IPS projects.
      */
@@ -174,6 +182,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsProjectProperties getProperties() {
+        if (TRACE_IPSPROJECT_PROPERTIES) {
+            System.out.println("Call getProperties() is really expensive!"); //$NON-NLS-1$
+        }
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
 
@@ -196,7 +207,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         ExtendedExprCompiler compiler = new ExtendedExprCompiler();
         IFunctionResolverFactory[] factories = IpsPlugin.getDefault().getFlFunctionResolverFactories();
         for (IFunctionResolverFactory factory : factories) {
-            if (getProperties().isActive(factory)) {
+            if (getPropertiesInternal().isActive(factory)) {
                 try {
                     if (factory instanceof AbstractProjectRelatedFunctionResolverFactory) {
                         compiler.add(((AbstractProjectRelatedFunctionResolverFactory)factory).newFunctionResolver(this,
@@ -1878,12 +1889,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public InputStream getResourceAsStream(String path) {
-        try {
-            return getIpsObjectPath().getResourceAsStream(path);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return null;
+        return getIpsObjectPathInternal().getResourceAsStream(path);
     }
 
     @Override

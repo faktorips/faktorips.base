@@ -65,8 +65,8 @@ public class Migration_3_6_0 extends DefaultMigration {
         super(projectToMigrate, featureId);
         ISupportedLanguage defaultLanguage = projectToMigrate.getProperties().getDefaultLanguage();
         useGermanCategories = Locale.GERMAN.getLanguage().equals(defaultLanguage.getLanguageName());
-        useGermanLabels = projectToMigrate.getProperties().getSupportedLanguage(Locale.GERMAN) != null;
-        useEnglishLabels = projectToMigrate.getProperties().getSupportedLanguage(Locale.ENGLISH) != null;
+        useGermanLabels = projectToMigrate.getReadOnlyProperties().getSupportedLanguage(Locale.GERMAN) != null;
+        useEnglishLabels = projectToMigrate.getReadOnlyProperties().getSupportedLanguage(Locale.ENGLISH) != null;
     }
 
     @Override

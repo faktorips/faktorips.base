@@ -390,7 +390,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             IIpsProject project) throws CoreException {
         List<IAssociation> result = super.findAssociationsForTargetAndAssociationTypeInternal(target, associationType,
                 project);
-        if (getIpsProject().getProperties().isSharedDetailToMasterAssociations()) {
+        if (getIpsProject().getReadOnlyProperties().isSharedDetailToMasterAssociations()) {
             IType targetType = project.findPolicyCmptType(target);
             for (IPolicyCmptTypeAssociation association : getAssociationPartCollection()) {
                 if (association.isSharedAssociation()) {
@@ -611,7 +611,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 return true;
             }
             // FIPS-85
-            if (getIpsProject().getProperties().isSharedDetailToMasterAssociations()) {
+            if (getIpsProject().getReadOnlyProperties().isSharedDetailToMasterAssociations()) {
                 if (inverseAssociationOfCandidate.equals(derivedUnion)) {
                     return true;
                 }

@@ -108,7 +108,7 @@ public class MessagesImportPMO extends PresentationModelObject {
             return new HashSet<ISupportedLanguage>();
         } else {
             IIpsProject ipsProject = getIpsPackageFragmentRoot().getIpsProject();
-            return ipsProject.getProperties().getSupportedLanguages();
+            return ipsProject.getReadOnlyProperties().getSupportedLanguages();
         }
     }
 

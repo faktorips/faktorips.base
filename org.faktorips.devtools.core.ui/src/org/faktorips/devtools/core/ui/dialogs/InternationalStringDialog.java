@@ -173,7 +173,7 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
             if (input instanceof IInternationalString) {
                 ArrayList<LocalizedString> localizedStringInput = new ArrayList<LocalizedString>();
                 IInternationalString inputString = (IInternationalString)input;
-                for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
+                for (ISupportedLanguage language : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
                     LocalizedString localizedString = inputString.get(language.getLocale());
                     localizedStringInput.add(localizedString);
                 }

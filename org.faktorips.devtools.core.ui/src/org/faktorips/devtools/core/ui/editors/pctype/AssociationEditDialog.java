@@ -218,7 +218,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
-        if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
+        if (!ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
             return;
         }
         new PersistenceTabItem(tabFolder, SWT.NONE);
@@ -333,7 +333,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             CompletionUtil.createHandlerForText(inverseRelationText, inverseAssociationCompletionProcessor);
 
             // shared associations
-            if (ipsProject.getProperties().isSharedDetailToMasterAssociations()) {
+            if (ipsProject.getReadOnlyProperties().isSharedDetailToMasterAssociations()) {
                 Button sharedAssociationCheck = getToolkit().createButton(inverseAssoComposite,
                         Messages.AssociationEditDialog_sharedAssociations, SWT.CHECK);
                 sharedAssociationCheck.setToolTipText(Messages.AssociationEditDialog_sharedAssociationsTooltip);
@@ -706,7 +706,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private void createPersistenceTabItem(Composite c) {
-            if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
+            if (!ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
                 return;
             }
 

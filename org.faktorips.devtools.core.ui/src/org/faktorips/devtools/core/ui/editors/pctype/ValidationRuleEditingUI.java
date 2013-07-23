@@ -223,7 +223,7 @@ public class ValidationRuleEditingUI {
         localeComboField.setInput(getSupportedLocales(rule.getIpsProject()));
         bindingContext.bindContent(localeComboField, msgTextPMO, InternationalStringPresentationObject.PROPERTY_LOCALE);
 
-        msgTextPMO.setLocale(rule.getIpsProject().getProperties().getDefaultLanguage().getLocale());
+        msgTextPMO.setLocale(rule.getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale());
         bindingContext.bindContent(msgTextField, msgTextPMO, InternationalStringPresentationObject.PROPERTY_TEXT);
 
         bindingContext.bindContent(new CheckboxField(configurableByProductBox), rule,
@@ -246,7 +246,7 @@ public class ValidationRuleEditingUI {
     }
 
     private Locale[] getSupportedLocales(IIpsProject ipsProject) {
-        Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
+        Set<ISupportedLanguage> supportedLanguages = ipsProject.getReadOnlyProperties().getSupportedLanguages();
         Locale[] result = new Locale[supportedLanguages.size()];
         int i = 0;
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {

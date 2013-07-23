@@ -124,7 +124,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private void initLabelsAndDescriptions() {
         IIpsProject ipsProject = getIpsProject();
         if (ipsProject != null) {
-            for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
+            for (ISupportedLanguage language : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
                 Locale locale = language.getLocale();
                 if (this instanceof ILabeledElement) {
                     Label label = (Label)newLabel();
@@ -988,7 +988,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     public List<ILabel> getLabels() {
         List<ILabel> orderedLabels = new ArrayList<ILabel>(labels.size());
-        for (ISupportedLanguage language : getIpsProject().getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage language : getIpsProject().getReadOnlyProperties().getSupportedLanguages()) {
             Locale locale = language.getLocale();
             if (locale == null) {
                 continue;
@@ -1089,7 +1089,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     public List<IDescription> getDescriptions() {
         List<IDescription> orderedDescriptions = new ArrayList<IDescription>(descriptions.size());
-        for (ISupportedLanguage language : getIpsProject().getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage language : getIpsProject().getReadOnlyProperties().getSupportedLanguages()) {
             Locale locale = language.getLocale();
             if (locale == null) {
                 continue;

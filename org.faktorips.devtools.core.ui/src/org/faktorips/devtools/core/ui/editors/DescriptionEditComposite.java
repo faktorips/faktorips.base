@@ -184,7 +184,7 @@ public final class DescriptionEditComposite extends Composite {
         int i = 0;
         for (String languageName : languageCodes.keySet()) {
             String languageCode = languageCodes.get(languageName);
-            IIpsProjectProperties properties = describedElement.getIpsProject().getProperties();
+            IIpsProjectProperties properties = describedElement.getIpsProject().getReadOnlyProperties();
             ISupportedLanguage language = properties.getSupportedLanguage(new Locale(languageCode));
             if (language != null) {
                 if (language.isDefaultLanguage()) {

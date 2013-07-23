@@ -165,6 +165,6 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
     }
 
     private Locale getDefaultLanguage(IIpsProject ipsProject) {
-        return ipsProject.getProperties().getDefaultLanguage().getLocale();
+        return ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
     }
 }

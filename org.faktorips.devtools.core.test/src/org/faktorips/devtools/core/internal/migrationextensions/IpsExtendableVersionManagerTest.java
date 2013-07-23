@@ -62,7 +62,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         mockMigrationOperations();
 
         IpsProject ipsProject = mock(IpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-        when(ipsProject.getProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn(
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn(
                 currentVersion.toString());
 
         AbstractIpsProjectMigrationOperation[] migrationOperations = ipsExtendableVersionManager
@@ -70,11 +70,13 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
 
         assertEquals(0, migrationOperations.length);
 
-        when(ipsProject.getProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn("1.0.0");
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn(
+                "1.0.0");
         migrationOperations = ipsExtendableVersionManager.getMigrationOperations(ipsProject);
         assertEquals(0, migrationOperations.length);
 
-        when(ipsProject.getProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn("0.0.1");
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn(
+                "0.0.1");
         migrationOperations = ipsExtendableVersionManager.getMigrationOperations(ipsProject);
         assertEquals(1, migrationOperations.length);
         assertEquals(ipsProjectMigrationOperation1, migrationOperations[0]);

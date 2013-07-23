@@ -206,7 +206,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             }
 
             private Set<Locale> getSupportedLocales(IIpsProject ipsProject) {
-                Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
+                Set<ISupportedLanguage> supportedLanguages = ipsProject.getReadOnlyProperties().getSupportedLanguages();
                 Set<Locale> supportedLocales = new HashSet<Locale>(supportedLanguages.size());
                 for (ISupportedLanguage language : supportedLanguages) {
                     Locale locale = language.getLocale();

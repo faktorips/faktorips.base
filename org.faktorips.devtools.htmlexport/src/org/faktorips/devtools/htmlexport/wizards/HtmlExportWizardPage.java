@@ -358,7 +358,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
             return;
         }
         supportedLanguageCombo.removeAll();
-        for (ISupportedLanguage iSupportedLanguage : ipsProject.getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage iSupportedLanguage : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
             supportedLanguageCombo.add(iSupportedLanguage.getLanguageName());
             if (iSupportedLanguage.isDefaultLanguage()) {
                 supportedLanguageCombo.select(supportedLanguageCombo.getItemCount() - 1);
@@ -486,7 +486,8 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
         if (supportedLanguageCombo == null) {
             return null;
         }
-        for (ISupportedLanguage iSupportedLanguage : getSelectedIpsProject().getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage iSupportedLanguage : getSelectedIpsProject().getReadOnlyProperties()
+                .getSupportedLanguages()) {
             if (supportedLanguageCombo.getText().equals(iSupportedLanguage.getLanguageName())) {
                 return iSupportedLanguage.getLocale();
             }

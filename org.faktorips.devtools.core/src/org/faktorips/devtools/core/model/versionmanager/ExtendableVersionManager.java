@@ -189,8 +189,8 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreException {
-        Version projectsVersion = Version.parseVersion(projectToMigrate.getProperties().getMinRequiredVersionNumber(
-                getFeatureId()));
+        Version projectsVersion = Version.parseVersion(projectToMigrate.getReadOnlyProperties()
+                .getMinRequiredVersionNumber(getFeatureId()));
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);
         return result.toArray(new AbstractIpsProjectMigrationOperation[result.size()]);
     }

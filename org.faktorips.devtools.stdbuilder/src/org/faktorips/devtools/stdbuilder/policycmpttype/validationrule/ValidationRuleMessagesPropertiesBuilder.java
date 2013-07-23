@@ -83,7 +83,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
-            for (ISupportedLanguage supportedLanguage : project.getProperties().getSupportedLanguages()) {
+            for (ISupportedLanguage supportedLanguage : project.getReadOnlyProperties().getSupportedLanguages()) {
                 if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
                     getMessagesGenerator(srcRoot, supportedLanguage).loadMessages();
                 }
@@ -98,7 +98,8 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getReadOnlyProperties()
+                .getSupportedLanguages()) {
             ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile, supportedLanguage);
             IIpsObject ipsObject = ipsSrcFile.getIpsObject();
             if (ipsObject instanceof IPolicyCmptType) {
@@ -118,7 +119,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         super.afterBuildProcess(ipsProject, buildKind);
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
-            for (ISupportedLanguage supportedLanguage : ipsProject.getProperties().getSupportedLanguages()) {
+            for (ISupportedLanguage supportedLanguage : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
                 String comment = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
                         + srcRoot.getName());
                 ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(srcRoot, supportedLanguage);
@@ -169,7 +170,8 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
 
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getProperties().getSupportedLanguages()) {
+        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getReadOnlyProperties()
+                .getSupportedLanguages()) {
             ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile.getIpsPackageFragment()
                     .getRoot(), supportedLanguage);
             QualifiedNameType qualifiedNameType = ipsSrcFile.getQualifiedNameType();

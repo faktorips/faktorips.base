@@ -68,7 +68,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
 
         ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
 
-        when(ipsProject.getProperties().getReleaseExtensionId()).thenReturn("releaseExtensionId");
+        when(ipsProject.getReadOnlyProperties().getReleaseExtensionId()).thenReturn("releaseExtensionId");
         when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[0]);
 
         IConfigurationElement configElement = mock(IConfigurationElement.class);

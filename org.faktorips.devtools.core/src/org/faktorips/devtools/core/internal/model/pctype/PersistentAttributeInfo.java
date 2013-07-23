@@ -266,7 +266,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
          * project, therefore it is not possible to overwrite this settings by using a different
          * project
          */
-        int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        int maxColumnNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
+                .getMaxColumnNameLenght();
         if (StringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
             msgList.add(new Message(MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH, NLS.bind(
                     Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength, tableColumnName.length(),
@@ -275,7 +276,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     private void validateUsingPersistentOptions(MessageList msgList, IIpsProject ipsProject) {
-        IPersistenceOptions pOpt = ipsProject.getProperties().getPersistenceOptions();
+        IPersistenceOptions pOpt = ipsProject.getReadOnlyProperties().getPersistenceOptions();
         int minTableColumnSize = pOpt.getMinTableColumnSize();
         int maxTableColumnSize = pOpt.getMaxTableColumnSize();
         int minTableColumnPrecision = pOpt.getMinTableColumnPrecision();

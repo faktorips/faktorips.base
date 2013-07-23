@@ -102,7 +102,7 @@ public class Migration_3_5 extends DefaultMigration {
     }
 
     private boolean migrateRuleNode(Element ruleNode) {
-        Locale locale = getIpsProject().getProperties().getDefaultLanguage().getLocale();
+        Locale locale = getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale();
         String oldMsgText = ruleNode.getAttribute(OLD_XML_ATTR_MESSAGE_TEXT);
         if (StringUtils.isEmpty(oldMsgText)) {
             // either there is no text yet or the element is already migrated. However we do not

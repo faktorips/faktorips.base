@@ -328,7 +328,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         // shared associations are only allowed for detail-to-master associations when the
         // corresponding optional constraint is activated in the project
         return getAssociationType().isCompositionDetailToMaster()
-                && getIpsProject().getProperties().isSharedDetailToMasterAssociations() && sharedAssociation;
+                && getIpsProject().getReadOnlyProperties().isSharedDetailToMasterAssociations() && sharedAssociation;
     }
 
     @Override

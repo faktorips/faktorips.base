@@ -206,7 +206,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xml = null;
         try {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-            String version = getIpsProject().getProperties().getVersion();
+            String version = getIpsProject().getReadOnlyProperties().getVersion();
             if (StringUtils.isEmpty(version)) {
                 version = Long.toString(new Date().getTime());
             }

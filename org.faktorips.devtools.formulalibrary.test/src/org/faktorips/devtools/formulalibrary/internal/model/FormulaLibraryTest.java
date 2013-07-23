@@ -177,8 +177,6 @@ public class FormulaLibraryTest extends AbstractIpsPluginTest {
     @Test
     public void testGetFlFunctions() throws CoreException {
 
-        project.getProperties().getBuilderSetConfig();
-
         IIpsPackageFragmentRoot packageFragmentRoot = newIpsPackageFragmentRoot(project, null, "folder");
         String qualifiedName = "pack.subpack.FormLib";
         IIpsSrcFile file = newIpsObject(packageFragmentRoot, FormulaLibraryIpsObjectType.getInstance(), qualifiedName)

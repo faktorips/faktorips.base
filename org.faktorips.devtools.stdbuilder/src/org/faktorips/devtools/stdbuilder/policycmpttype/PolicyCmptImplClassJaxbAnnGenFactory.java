@@ -47,7 +47,7 @@ public class PolicyCmptImplClassJaxbAnnGenFactory implements AnnotationGenerator
     public boolean isRequiredFor(IIpsProject ipsProject) {
         // need this complex way because the builderSet you could get from IpsProject is not
         // initialized when this method is called
-        IIpsProjectProperties properties = ipsProject.getProperties();
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(
                 properties.getBuilderSetId());
         IIpsArtefactBuilderSetConfig builderSetConfig = properties.getBuilderSetConfig().create(ipsProject,

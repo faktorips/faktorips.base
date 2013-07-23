@@ -130,7 +130,7 @@ public class Migration_3_5Test extends XmlAbstractTestCase {
     IIpsProject mockProject(Locale locale) {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsProjectProperties projectProperties = mock(IIpsProjectProperties.class);
-        when(ipsProject.getProperties()).thenReturn(projectProperties);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
         ISupportedLanguage supportedLanguage = new SupportedLanguage(locale, true);
         when(projectProperties.getDefaultLanguage()).thenReturn(supportedLanguage);
         return ipsProject;

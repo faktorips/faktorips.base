@@ -98,8 +98,8 @@ public class BuilderSetContainer {
         ArgumentCheck.notNull(ipsProject);
 
         this.ipsProject = ipsProject;
-        this.builderSetId = ipsProject.getProperties().getBuilderSetId();
         this.ipsProjectProperties = ipsProject.getProperties();
+        this.builderSetId = ipsProjectProperties.getBuilderSetId();
         this.builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
         this.builderSetModels = new HashMap<String, IIpsArtefactBuilderSetConfigModel>();
         initializeTimeStamps();

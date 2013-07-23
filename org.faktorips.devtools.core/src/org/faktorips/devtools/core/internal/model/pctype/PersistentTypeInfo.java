@@ -291,7 +291,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         // validate max table name length
-        int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
+        int maxTableNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
+                .getMaxTableNameLength();
         if (StringUtils.isNotBlank(tableName) && tableName.length() > maxTableNameLenght) {
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, NLS.bind(
                     Messages.PersistentTypeInfo_msgTableNameExceedsMaximumLength, tableName.length(),

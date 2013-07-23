@@ -211,6 +211,6 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     }
 
     private Locale getDefaultLanguage(IIpsProject ipsProject) {
-        return ipsProject.getProperties().getDefaultLanguage().getLocale();
+        return ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
     }
 }

@@ -226,7 +226,7 @@ public class ProductReleaseProcessor {
     }
 
     public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {
-        String releasaeExtensionId = ipsProject.getProperties().getReleaseExtensionId();
+        String releasaeExtensionId = ipsProject.getReadOnlyProperties().getReleaseExtensionId();
         IConfigurationElement[] configElements = IpsPlugin.getDefault().getExtensionRegistry()
                 .getConfigurationElementsFor(IpsPlugin.PLUGIN_ID, RELEASE_EXTENSION_POINT_NAME);
         for (IConfigurationElement confElement : configElements) {

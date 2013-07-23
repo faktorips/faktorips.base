@@ -94,7 +94,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             addDefaultValuesToResult(result, paramName, attributePrefix);
             addMatchingFunctions(result, identifier);
             addMatchingEnumValues(result, paramName, attributePrefix);
-            if (ipsProject.getProperties().isAssociationsInFormulas()) {
+            if (ipsProject.getReadOnlyProperties().isAssociationsInFormulas()) {
                 addMatchingAssociations(result, paramName, attributePrefix);
             }
             addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
