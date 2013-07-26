@@ -354,7 +354,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             }
             if (contextProductCmpt != null) {
                 contextProductCmpt = defaultProductCmpt;
-                setKindId(contextProductCmpt.findProductCmptKind().getName());
+                setKindId(contextProductCmpt.getKindId().getName());
             }
             setIpsProject(defaultPackage.getIpsProject());
             setPackageRoot(defaultPackage.getRoot());

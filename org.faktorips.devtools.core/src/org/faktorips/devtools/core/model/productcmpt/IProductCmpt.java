@@ -83,8 +83,16 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Returns the product component's kind or <code>null</code> if the kind can't be found.
      * 
      * @throws CoreException if an error occurs while searching for the kind.
+     * @deprecated Use {@link #getKindId()} instead
      */
     public IProductCmptKind findProductCmptKind() throws CoreException;
+
+    /**
+     * Returns the product component's kind or <code>null</code> if the kind can't be found.
+     * 
+     * @throws CoreException if an error occurs while searching for the kind.
+     */
+    public IProductCmptKind getKindId() throws CoreException;
 
     /**
      * Returns the product component's version id. The version id is extracted from the components

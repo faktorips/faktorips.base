@@ -321,32 +321,32 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptKind() throws CoreException {
-        IProductCmptKind kind = productCmpt.findProductCmptKind();
-        assertEquals("TestProduct", kind.getName());
-        assertEquals("TestProduct", kind.getRuntimeId());
-
-        IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setProductCmptNamingStrategy(strategy);
-        ipsProject.setProperties(props);
-        productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2005-10");
-        kind = productCmpt.findProductCmptKind();
-        assertEquals("MotorProduct", kind.getName());
-        assertEquals("MotorProduct", kind.getRuntimeId());
-    }
+        public void testGetKindId() throws CoreException {
+            IProductCmptKind kind = productCmpt.getKindId();
+            assertEquals("TestProduct", kind.getName());
+            assertEquals("TestProduct", kind.getRuntimeId());
+    
+            IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setProductCmptNamingStrategy(strategy);
+            ipsProject.setProperties(props);
+            productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2005-10");
+            kind = productCmpt.getKindId();
+            assertEquals("MotorProduct", kind.getName());
+            assertEquals("MotorProduct", kind.getRuntimeId());
+        }
 
     @Test
-    public void testFindProductCmptKindWithIllegalName() throws CoreException {
-        IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setProductCmptNamingStrategy(strategy);
-        ipsProject.setProperties(props);
-
-        productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2011-11");
-        productCmpt.setName("motor.MotorProduct");
-        assertNull(productCmpt.findProductCmptKind());
-    }
+        public void testGetKindIdWithIllegalName() throws CoreException {
+            IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setProductCmptNamingStrategy(strategy);
+            ipsProject.setProperties(props);
+    
+            productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2011-11");
+            productCmpt.setName("motor.MotorProduct");
+            assertNull(productCmpt.getKindId());
+        }
 
     @Test
     public void testSetProductCmptType() {

@@ -111,15 +111,18 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return latestGeneration == null ? null : (IProductCmptGeneration)latestGeneration;
     }
 
+    /**
+     * @deprecated Use {@link #getKindId()} instead
+     */
     @Override
+    @Deprecated
     public IProductCmptKind findProductCmptKind() throws CoreException {
-        IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
-        try {
-            String kindName = stratgey.getKindId(getName());
-            return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
-        } catch (Exception e) {
-            return null; // error in parsing the name results in a "not found" for the client
-        }
+        return getKindId();
+    }
+
+    @Override
+    public IProductCmptKind getKindId() throws CoreException {
+        return ProductCmptKind.createProductCmptKind(getName(), getIpsProject());
     }
 
     @Override
@@ -133,11 +136,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
-        IProductCmptType productCmptType = findProductCmptType(ipsProject);
-        if (productCmptType == null) {
+        IProductCmptType foundProductCmptType = findProductCmptType(ipsProject);
+        if (foundProductCmptType == null) {
             return null;
         }
-        return productCmptType.findPolicyCmptType(ipsProject);
+        return foundProductCmptType.findPolicyCmptType(ipsProject);
     }
 
     @Override
@@ -257,6 +260,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated use {@link #getStructure(GregorianCalendar, IIpsProject)} instead. Have a look at
+     *             {@link ProductCmptTreeStructure#ProductCmptTreeStructure(IProductCmpt, IIpsProject)}
+     */
     @Override
     @Deprecated
     public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException {
