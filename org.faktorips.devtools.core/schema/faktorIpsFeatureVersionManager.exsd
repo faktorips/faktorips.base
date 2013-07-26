@@ -73,7 +73,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="basedOnFeatureManager" type="string" use="required">
+         <attribute name="basedOnFeatureManager" type="string">
             <annotation>
                <documentation>
                   
