@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -56,7 +55,6 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     private final TypeSelectionPage typeSelectionPage;
     private final ProductCmptPage productCmptPage;
     private final FolderAndPackagePage folderAndPackagePage;
-    private final NewProductCmptValidator validator;
 
     /**
      * Creating a the new wizard.
@@ -66,7 +64,6 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
         setWindowTitle(Messages.NewProductCmptWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
-        validator = new NewProductCmptValidator(getPmo());
         typeSelectionPage = new TypeSelectionPage(getPmo());
         productCmptPage = new ProductCmptPage(getPmo());
         folderAndPackagePage = new FolderAndPackagePage(getPmo());
@@ -105,12 +102,6 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
         } else {
             return super.getStartingPage();
         }
-    }
-
-    @Override
-    public boolean canFinish() {
-        MessageList messageList = validator.validateAll();
-        return super.canFinish() && !messageList.containsErrorMsg();
     }
 
     @Override

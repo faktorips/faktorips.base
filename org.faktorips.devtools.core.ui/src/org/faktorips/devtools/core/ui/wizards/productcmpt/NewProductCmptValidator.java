@@ -19,9 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -48,30 +46,30 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
 
     public static final String MSG_INVALID_VERSION_ID = MSGCODE_PREFIX + "invalidVersionId"; //$NON-NLS-1$
 
-    public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists"; //$NON-NLS-1$
-
     public static final String MSG_INVALID_FULL_NAME = MSGCODE_PREFIX + "invalidFullName"; //$NON-NLS-1$
 
     public static final String MSG_INVALID_ADD_TO_GENERATION = MSGCODE_PREFIX + "addToGeneration"; //$NON-NLS-1$
 
-    private final NewProductCmptPMO pmo;
-
     public NewProductCmptValidator(NewProductCmptPMO pmo) {
         super(pmo);
-        this.pmo = pmo;
+    }
+
+    @Override
+    public NewProductCmptPMO getPmo() {
+        return (NewProductCmptPMO)super.getPmo();
     }
 
     public MessageList validateTypeSelection() {
         MessageList result = new MessageList();
 
-        if (pmo.getIpsProject() == null || !pmo.getIpsProject().isProductDefinitionProject()) {
+        if (getPmo().getIpsProject() == null || !getPmo().getIpsProject().isProductDefinitionProject()) {
             result.add(new Message(MSG_INVALID_PROJECT, Messages.NewProdutCmptValidator_msg_invalidProject,
-                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_IPS_PROJECT));
+                    Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_IPS_PROJECT));
         }
 
-        if (pmo.getSelectedBaseType() == null) {
+        if (getPmo().getSelectedBaseType() == null) {
             result.add(new Message(MSG_INVALID_BASE_TYPE, Messages.NewProdutCmptValidator_msg_invalidBaseType,
-                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
+                    Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
         }
 
         return result;
@@ -84,49 +82,51 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
             return result;
         }
 
-        if (pmo.getSelectedType() == null) {
+        if (getPmo().getSelectedType() == null) {
             result.add(new Message(MSG_INVALID_SELECTED_TYPE, Messages.NewProdutCmptValidator_msg_invalidSelectedType,
-                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
+                    Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
         }
 
-        if (StringUtils.isEmpty(pmo.getKindId())) {
+        if (StringUtils.isEmpty(getPmo().getKindId())) {
             result.add(new Message(MSG_EMPTY_KIND_ID, Messages.NewProdutCmptValidator_msg_emptyKindId, Message.ERROR,
-                    pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
+                    getPmo(), NewProductCmptPMO.PROPERTY_KIND_ID));
         }
 
         IChangesOverTimeNamingConvention convention = getChangeOverTimeNamingConvention();
-        if (pmo.isNeedVersionId() && StringUtils.isEmpty(pmo.getVersionId())) {
+        if (getPmo().isNeedVersionId() && StringUtils.isEmpty(getPmo().getVersionId())) {
             result.add(new Message(MSG_EMPTY_VERSION_ID, NLS.bind(Messages.NewProdutCmptValidator_msg_emptyVersionId,
-                    convention.getVersionConceptNameSingular()), Message.ERROR, pmo,
+                    convention.getVersionConceptNameSingular()), Message.ERROR, getPmo(),
                     NewProductCmptPMO.PROPERTY_VERSION_ID));
         }
-        if (pmo.getKindId() != null && (!pmo.isNeedVersionId() || pmo.getVersionId() != null)) {
-            IProductCmptNamingStrategy productCmptNamingStrategy = pmo.getIpsProject().getProductCmptNamingStrategy();
+        if (getPmo().getKindId() != null && (!getPmo().isNeedVersionId() || getPmo().getVersionId() != null)) {
+            IProductCmptNamingStrategy productCmptNamingStrategy = getPmo().getIpsProject()
+                    .getProductCmptNamingStrategy();
             try {
-                if (!pmo.getKindId().equals(productCmptNamingStrategy.getKindId(pmo.getName()))) {
+                if (!getPmo().getKindId().equals(productCmptNamingStrategy.getKindId(getPmo().getName()))) {
                     result.add(new Message(MSG_INVALID_KIND_ID, Messages.NewProdutCmptValidator_msg_invalidKindId,
-                            Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
+                            Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_KIND_ID));
                 }
-                if (pmo.isNeedVersionId()
-                        && !pmo.getVersionId().equals(productCmptNamingStrategy.getVersionId(pmo.getName()))) {
+                if (getPmo().isNeedVersionId()
+                        && !getPmo().getVersionId().equals(productCmptNamingStrategy.getVersionId(getPmo().getName()))) {
                     result.add(new Message(MSG_INVALID_VERSION_ID, NLS.bind(
                             Messages.NewProdutCmptValidator_msg_invalidVersionId,
-                            convention.getVersionConceptNameSingular()), Message.ERROR, pmo,
+                            convention.getVersionConceptNameSingular()), Message.ERROR, getPmo(),
                             NewProductCmptPMO.PROPERTY_VERSION_ID));
                 }
             } catch (IllegalArgumentException e) {
                 result.add(new Message(MSG_INVALID_FULL_NAME, Messages.NewProdutCmptValidator_msg_invalidFullName,
-                        Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID, NewProductCmptPMO.PROPERTY_KIND_ID));
+                        Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_VERSION_ID,
+                        NewProductCmptPMO.PROPERTY_KIND_ID));
             }
         }
 
-        if (pmo.getEffectiveDate() == null) {
-            result.newError(MSG_INVALID_EFFECTIVE_DATE, Messages.NewProdutCmptValidator_msg_invalidEffectiveDate, pmo,
-                    NewProductDefinitionPMO.PROPERTY_EFFECTIVE_DATE);
+        if (getPmo().getEffectiveDate() == null) {
+            result.newError(MSG_INVALID_EFFECTIVE_DATE, Messages.NewProdutCmptValidator_msg_invalidEffectiveDate,
+                    getPmo(), NewProductDefinitionPMO.PROPERTY_EFFECTIVE_DATE);
         }
 
         if (result.isEmpty()) {
-            result.add(additionalValidateProductCmptName());
+            result.add(validateIpsObjectName(NewProductCmptPMO.PROPERTY_KIND_ID));
             result.add(validateAddToGeneration());
         }
 
@@ -137,23 +137,8 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention();
     }
 
-    MessageList additionalValidateProductCmptName() {
-        MessageList result = new MessageList();
-        IIpsProjectNamingConventions namingConventions = pmo.getIpsProject().getNamingConventions();
-        try {
-            result.add(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, pmo.getName()));
-            IIpsSrcFile file = pmo.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, pmo.getQualifiedName());
-            if (file != null) {
-                result.add(new Message(MSG_SRC_FILE_EXISTS, Messages.NewProdutCmptValidator_msg_srcFileExists,
-                        Message.ERROR));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        return result;
-    }
-
-    public MessageList validateAll() {
+    @Override
+    public MessageList validateAllPages() {
         MessageList result = validateTypeSelection();
         result.add(validateProductCmptPage());
         result.add(validateFolderAndPackage());
@@ -164,7 +149,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
     public MessageList validateAddToGeneration() {
         MessageList messageList = new MessageList();
         messageList.add(validateAddToType());
-        IProductCmptGeneration generation = pmo.getAddToProductCmptGeneration();
+        IProductCmptGeneration generation = getPmo().getAddToProductCmptGeneration();
         if (generation == null) {
             return messageList;
         }
@@ -180,14 +165,14 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
 
     MessageList validateAddToType() {
         MessageList result = new MessageList();
-        if (pmo.getAddToProductCmptGeneration() != null && pmo.getAddToProductCmptGeneration() != null) {
-            IProductCmptTypeAssociation addToAssociation = pmo.getAddToAssociation();
+        if (getPmo().getAddToProductCmptGeneration() != null && getPmo().getAddToProductCmptGeneration() != null) {
+            IProductCmptTypeAssociation addToAssociation = getPmo().getAddToAssociation();
             try {
-                IProductCmptType targetProductCmptType = addToAssociation
-                        .findTargetProductCmptType(pmo.getIpsProject());
-                if (!pmo.getSelectedType().isSubtypeOrSameType(targetProductCmptType, pmo.getIpsProject())) {
+                IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(getPmo()
+                        .getIpsProject());
+                if (!getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
                     result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
-                            Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), pmo
+                            Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
                                     .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
                 }
             } catch (CoreException e) {
@@ -198,7 +183,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
     }
 
     @Override
-    protected MessageList validateBeforeFolderAndPacke() {
+    protected MessageList validateBeforeFolderAndPacket() {
         return validateTypeSelection();
     }
 

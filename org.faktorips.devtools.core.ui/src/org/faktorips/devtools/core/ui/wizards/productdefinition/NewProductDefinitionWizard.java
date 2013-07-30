@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
+import org.faktorips.util.message.MessageList;
 
 public abstract class NewProductDefinitionWizard extends Wizard implements INewWizard {
 
@@ -104,6 +105,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
                             initDefaults(ipsPackageFragmentRoot.getDefaultIpsPackageFragment(), null);
                         }
                     }
+                    return;
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
@@ -119,6 +121,12 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * @param selectedIpsObject the selected {@link IIpsObject}, may be null.
      */
     protected abstract void initDefaults(IIpsPackageFragment selectedPackage, IIpsObject selectedIpsObject);
+
+    @Override
+    public boolean canFinish() {
+        MessageList messageList = getPmo().getValidator().validateAllPages();
+        return super.canFinish() && !messageList.containsErrorMsg();
+    }
 
     @Override
     public boolean performFinish() {

@@ -40,7 +40,6 @@ public class Messages extends NLS {
     public static String NewProdutCmptValidator_msg_invalidSelectedType;
     public static String NewProdutCmptValidator_msg_invalidTypeAddTo;
     public static String NewProdutCmptValidator_msg_invalidVersionId;
-    public static String NewProdutCmptValidator_msg_srcFileExists;
     public static String NewProdutCmptValidator_msg_invalidEffectiveDate;
     public static String ProductCmptPage_label_effectiveFrom;
     public static String ProductCmptPage_label_name;

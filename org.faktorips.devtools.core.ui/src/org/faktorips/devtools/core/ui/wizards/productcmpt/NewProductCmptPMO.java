@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.commands.NewResourceNameValidator;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
-import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * The presentation model object for the {@link NewProductCmptWizard}.
@@ -324,10 +323,6 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         } else {
             return getIpsProject().getProductCmptNamingStrategy().getProductCmptName(kindId, versionId);
         }
-    }
-
-    public String getQualifiedName() {
-        return QNameUtil.concat(getIpsPackage().getName(), getName());
     }
 
     /**

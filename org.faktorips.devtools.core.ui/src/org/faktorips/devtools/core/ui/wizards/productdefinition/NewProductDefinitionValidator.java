@@ -13,9 +13,24 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import java.util.Iterator;
+
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * This validator is called to get all relevant messages while creating an the new object. The
+ * messages will be shown in message section on top of the dialog.
+ * <p>
+ * Currently this basic implementation is used for the last page (select root-folder and package).
+ * You have to implement at least the method {@link #validateBeforeFolderAndPacket()}.
+ * 
+ * @author dirmeier
+ */
 public abstract class NewProductDefinitionValidator {
 
     public static final String MSGCODE_PREFIX = "NEW_PRODUCT_CMPT_WIZARD-"; //$NON-NLS-1$
@@ -26,34 +41,87 @@ public abstract class NewProductDefinitionValidator {
 
     public static final String MSG_INVALID_EFFECTIVE_DATE = MSGCODE_PREFIX + "invalidEffectiveDate"; //$NON-NLS-1$
 
+    public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists"; //$NON-NLS-1$
+
     private final NewProductDefinitionPMO pmo;
 
     public NewProductDefinitionValidator(NewProductDefinitionPMO pmo) {
-        super();
         this.pmo = pmo;
     }
 
+    /**
+     * This method should validate everything. It is called by the wizard to allow finish or to
+     * disable finish. Finish is allowed if there is no error message. You have to include
+     * {@link #validateFolderAndPackage()} and {@link #validateIpsObjectName(String)} in your
+     * result.
+     * 
+     * @return A {@link MessageList} containing all validation errors for creation of the page.
+     */
+    public abstract MessageList validateAllPages();
+
     public MessageList validateFolderAndPackage() {
         MessageList result = new MessageList();
-        if ((result = validateBeforeFolderAndPacke()).containsErrorMsg()) {
+        if ((result = validateBeforeFolderAndPacket()).containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
             return result;
         }
 
-        if (pmo.getPackageRoot() == null) {
+        if (getPmo().getPackageRoot() == null) {
             result.add(new Message(MSG_INVALID_PACKAGE_ROOT,
-                    Messages.NewProductDefinitionValidator_msg_invalidPackageRoot, Message.ERROR, pmo,
+                    Messages.NewProductDefinitionValidator_msg_invalidPackageRoot, Message.ERROR, getPmo(),
                     NewProductDefinitionPMO.PROPERTY_PACKAGE_ROOT));
         }
 
-        if (pmo.getIpsPackage() == null || !pmo.getIpsPackage().getRoot().equals(pmo.getPackageRoot())) {
+        if (getPmo().getIpsPackage() == null || !getPmo().getIpsPackage().getRoot().equals(getPmo().getPackageRoot())) {
             result.add(new Message(MSG_INVALID_PACKAGE, Messages.NewProductDefinitionValidator_msg_invalidPackage,
-                    Message.ERROR, pmo, NewProductDefinitionPMO.PROPERTY_IPS_PACKAGE));
+                    Message.ERROR, getPmo(), NewProductDefinitionPMO.PROPERTY_IPS_PACKAGE));
         }
 
         return result;
     }
 
-    protected abstract MessageList validateBeforeFolderAndPacke();
+    protected MessageList validateIpsObjectName(String propertyOfNameField) {
+        MessageList result = new MessageList();
+        try {
+            if (getPmo().getIpsProject() != null) {
+                IIpsProjectNamingConventions namingConventions = getPmo().getIpsProject().getNamingConventions();
+                MessageList msgListName = namingConventions.validateUnqualifiedIpsObjectName(getPmo()
+                        .getIpsObjectType(), getPmo().getName());
+                result.add(addInvalidObjectProperty(msgListName, propertyOfNameField));
+                IIpsSrcFile file = getPmo().getIpsProject().findIpsSrcFile(getPmo().getIpsObjectType(),
+                        getPmo().getQualifiedName());
+                if (file != null) {
+                    result.add(new Message(MSG_SRC_FILE_EXISTS,
+                            Messages.NewProductDefinitionValidator_msg_srcFileExists, Message.ERROR, getPmo(),
+                            propertyOfNameField));
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return result;
+    }
+
+    protected MessageList addInvalidObjectProperty(MessageList msgListName, String propertyOfNameField) {
+        MessageList result = new MessageList();
+        for (Iterator<Message> msgIterator = msgListName.iterator(); msgIterator.hasNext();) {
+            Message msg = msgIterator.next();
+            result.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), getPmo(), propertyOfNameField));
+        }
+        return result;
+    }
+
+    /**
+     * This method is called before the root folder and package validation is called to be sure.
+     * Only if this validation does return no error the further validations will be performed.
+     * 
+     * @return The {@link MessageList} containing all validation error except those of the root
+     *         folder and the package
+     */
+    protected abstract MessageList validateBeforeFolderAndPacket();
+
+    public NewProductDefinitionPMO getPmo() {
+        return pmo;
+    }
 
 }

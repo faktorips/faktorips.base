@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.util.QNameUtil;
 
 public abstract class NewProductDefinitionPMO extends PresentationModelObject {
 
@@ -144,6 +145,10 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
      * @return The name of the new object
      */
     public abstract String getName();
+
+    public String getQualifiedName() {
+        return QNameUtil.concat(getIpsPackage().getName(), getName());
+    }
 
     /**
      * The IPS object type that should be created with the information of this PMO.

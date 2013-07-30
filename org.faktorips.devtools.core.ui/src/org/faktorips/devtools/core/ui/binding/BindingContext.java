@@ -787,6 +787,7 @@ public class BindingContext {
                 }
             }
 
+            showValidationStatus(copy);
             applyControlBindings(evt.getPropertyName());
         }
     }
