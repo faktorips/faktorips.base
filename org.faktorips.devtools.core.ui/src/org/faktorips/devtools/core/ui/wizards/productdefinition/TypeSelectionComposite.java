@@ -166,7 +166,10 @@ public class TypeSelectionComposite extends Composite {
 
             }
         });
+    }
 
+    public void clearValidationStatus() {
+        bindingContext.clearValidationStatus();
     }
 
     public void setTitle(String titleString) {

@@ -89,7 +89,6 @@ public class TypeSelectionPage extends WizardPage {
 
         typeSelectionUpdater.updateUI();
         bindingContext.updateUI();
-
     }
 
     @Override
