@@ -24,7 +24,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.AssociationType;
 
 public class AggregateRootFinder {
 
@@ -38,7 +41,6 @@ public class AggregateRootFinder {
     }
 
     public List<IProductCmpt> findAggregateRoots() {
-        resetIndices();
         List<IIpsSrcFile> prodCmptSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         return findAggregateRootsFromSrcFiles(prodCmptSrcFiles);
     }
@@ -68,11 +70,12 @@ public class AggregateRootFinder {
     }
 
     private List<IProductCmpt> findAggregateRoots(List<IProductCmpt> prodCmpts) {
-        indexProductComponents(prodCmpts);
+        resetIndices();
+        indexAllProductComponents(prodCmpts);
         return getIndexedRootCmpts();
     }
 
-    protected void indexProductComponents(List<IProductCmpt> prodCmpts) {
+    protected void indexAllProductComponents(List<IProductCmpt> prodCmpts) {
         for (IProductCmpt prodCmpt : prodCmpts) {
             if (!isRegisteredChild(prodCmpt)) {
                 registerAsPotentialRoot(prodCmpt);
@@ -91,10 +94,18 @@ public class AggregateRootFinder {
     }
 
     private void processLinks(IProductCmpt prodCmpt) {
-        List<IProductCmptLink> links = prodCmpt.getLinksAsList();
+        List<IProductCmptLink> links = getChangingAndStaticLinksFor(prodCmpt);
         for (IProductCmptLink link : links) {
             processTarget(prodCmpt, link);
         }
+    }
+
+    protected List<IProductCmptLink> getChangingAndStaticLinksFor(IProductCmpt prodCmpt) {
+        List<IProductCmptLink> allLinks = prodCmpt.getLinksAsList();
+        for (IProductCmptGeneration gen : prodCmpt.getProductCmptGenerations()) {
+            allLinks.addAll(gen.getLinksAsList());
+        }
+        return allLinks;
     }
 
     protected void processTarget(IProductCmpt prodCmpt, IProductCmptLink link) {
@@ -106,7 +117,8 @@ public class AggregateRootFinder {
 
     private boolean isComposition(IProductCmptLink link) {
         try {
-            return link.findAssociation(getIpsProject()).is1ToManyIgnoringQualifier();
+            IProductCmptTypeAssociation association = link.findAssociation(getIpsProject());
+            return association.getAssociationType() == AssociationType.AGGREGATION;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

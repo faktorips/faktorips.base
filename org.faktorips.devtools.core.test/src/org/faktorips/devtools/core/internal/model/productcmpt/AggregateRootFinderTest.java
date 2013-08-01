@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,6 +38,9 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     private ProductCmpt c;
     private ProductCmpt d;
     private IProductCmptTypeAssociation selfReference;
+    private IProductCmptTypeAssociation association;
+    private IProductCmptTypeAssociation genSelfReference;
+    private IProductCmptTypeAssociation genAssociation;
 
     @Override
     public void setUp() throws Exception {
@@ -46,11 +50,36 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
         aggregateRootFinder = new AggregateRootFinder(ipsProject);
 
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "SelfReferencingType");
+
         selfReference = productCmptType.newProductCmptTypeAssociation();
-        selfReference.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        selfReference.setTargetRoleSingular("SelfReference");
+        selfReference.setAssociationType(AssociationType.AGGREGATION);
         selfReference.setTarget(productCmptType.getQualifiedName());
         selfReference.setMinCardinality(0);
         selfReference.setMinCardinality(5);
+
+        association = productCmptType.newProductCmptTypeAssociation();
+        association.setTargetRoleSingular("Association");
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setTarget(productCmptType.getQualifiedName());
+        association.setMinCardinality(0);
+        association.setMinCardinality(5);
+
+        genSelfReference = productCmptType.newProductCmptTypeAssociation();
+        genSelfReference.setChangingOverTime(true);
+        genSelfReference.setTargetRoleSingular("SelfReferenceChangingOverTime");
+        genSelfReference.setAssociationType(AssociationType.AGGREGATION);
+        genSelfReference.setTarget(productCmptType.getQualifiedName());
+        genSelfReference.setMinCardinality(0);
+        genSelfReference.setMinCardinality(5);
+
+        genAssociation = productCmptType.newProductCmptTypeAssociation();
+        genAssociation.setTargetRoleSingular("AssociationChangingOverTime");
+        genAssociation.setChangingOverTime(true);
+        genAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        genAssociation.setTarget(productCmptType.getQualifiedName());
+        genAssociation.setMinCardinality(0);
+        genAssociation.setMinCardinality(5);
 
         a = newProductCmpt(productCmptType, "A");
         b = newProductCmpt(productCmptType, "B");
@@ -67,9 +96,9 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindRoots_oneRoot() {
-        createLinkBetween(a, b);
-        createLinkBetween(a, c);
-        createLinkBetween(c, d);
+        createCompositionBetween(a, b);
+        createCompositionBetween(a, c);
+        createCompositionBetween(c, d);
         saveAll();
 
         assertSingleRoot(a);
@@ -77,23 +106,27 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindRoots_twoRoots() {
-        createLinkBetween(a, b);
-        createLinkBetween(a, d);
-        createLinkBetween(c, d);
+        createCompositionBetween(a, b);
+        createCompositionBetween(a, d);
+        createCompositionBetween(c, d);
         saveAll();
 
+        assertMultipleRoots(a, c);
+    }
+
+    protected void assertMultipleRoots(IProductCmpt... prodCmpts) {
         List<IProductCmpt> roots = aggregateRootFinder.findAggregateRoots();
 
-        assertEquals(2, roots.size());
-        assertTrue(roots.contains(a));
-        assertTrue(roots.contains(c));
+        List<IProductCmpt> prodCmptsList = Arrays.asList(prodCmpts);
+        assertEquals(prodCmptsList.size(), roots.size());
+        assertTrue(roots.containsAll(prodCmptsList));
     }
 
     @Test
     public void testFindRoots_chain() {
-        createLinkBetween(a, b);
-        createLinkBetween(b, c);
-        createLinkBetween(c, d);
+        createCompositionBetween(a, b);
+        createCompositionBetween(b, c);
+        createCompositionBetween(c, d);
         saveAll();
 
         assertSingleRoot(a);
@@ -101,24 +134,20 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindRoots_selfReferenceTwoRoots() {
-        createLinkBetween(b, b);
-        createLinkBetween(b, a);
-        createLinkBetween(c, d);
+        createCompositionBetween(b, b);
+        createCompositionBetween(b, a);
+        createCompositionBetween(c, d);
         saveAll();
 
-        List<IProductCmpt> roots = aggregateRootFinder.findAggregateRoots();
-
-        assertEquals(2, roots.size());
-        assertTrue(roots.contains(b));
-        assertTrue(roots.contains(c));
+        assertMultipleRoots(b, c);
     }
 
     @Test
     public void testFindRoots_selfReferenceSingleRoot() {
-        createLinkBetween(b, b);
-        createLinkBetween(b, a);
-        createLinkBetween(b, c);
-        createLinkBetween(c, d);
+        createCompositionBetween(b, b);
+        createCompositionBetween(b, a);
+        createCompositionBetween(b, c);
+        createCompositionBetween(c, d);
         saveAll();
 
         assertSingleRoot(b);
@@ -126,10 +155,10 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindRoots_CycleSingleRoot() {
-        createLinkBetween(a, b);
-        createLinkBetween(b, c);
-        createLinkBetween(c, d);
-        createLinkBetween(d, b);
+        createCompositionBetween(a, b);
+        createCompositionBetween(b, c);
+        createCompositionBetween(c, d);
+        createCompositionBetween(d, b);
         saveAll();
 
         assertSingleRoot(a);
@@ -137,25 +166,82 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindRoots_CycleInNonRoot() {
-        createLinkBetween(a, b);
-        createLinkBetween(b, b);
-        createLinkBetween(b, c);
-        createLinkBetween(c, d);
+        createCompositionBetween(a, b);
+        createCompositionBetween(b, b);
+        createCompositionBetween(b, c);
+        createCompositionBetween(c, d);
         saveAll();
 
         assertSingleRoot(a);
     }
 
-    protected void assertSingleRoot(ProductCmpt root) {
-        List<IProductCmpt> roots = aggregateRootFinder.findAggregateRoots();
+    @Test
+    public void testFindRoots_associationIgnored() {
+        createCompositionBetween(a, b);
+        createCompositionBetween(c, d);
+        createAssociationBetween(a, c);
+        saveAll();
 
-        assertEquals(1, roots.size());
-        assertTrue(roots.contains(root));
+        assertMultipleRoots(a, c);
     }
 
-    protected void createLinkBetween(ProductCmpt source, ProductCmpt target) {
-        IProductCmptLink linkAB = source.newLink(selfReference);
-        linkAB.setTarget(target.getQualifiedName());
+    @Test
+    public void testFindRoots_associationIgnored2() {
+        createAssociationBetween(d, c);
+        createAssociationBetween(c, b);
+        createAssociationBetween(b, a);
+        saveAll();
+
+        assertMultipleRoots(a, b, c, d);
+    }
+
+    @Test
+    public void testFindRoots_completeCycle() {
+        createCompositionBetween(a, b);
+        createCompositionBetween(b, c);
+        createCompositionBetween(c, d);
+        createCompositionBetween(d, a);
+        saveAll();
+
+        assertZeroRoots();
+    }
+
+    @Test
+    public void testFindRoots_aggregationInGeneration() {
+        createChangingCompositionBetween(a, b);
+        createChangingCompositionBetween(a, d);
+        createChangingCompositionBetween(c, d);
+        saveAll();
+
+        assertMultipleRoots(a, c);
+    }
+
+    protected void assertZeroRoots() {
+        assertMultipleRoots();
+    }
+
+    private void createAssociationBetween(ProductCmpt source, ProductCmpt target) {
+        IProductCmptLink link = source.newLink(association);
+        link.setTarget(target.getQualifiedName());
+    }
+
+    private void createChangingAssociationBetween(ProductCmpt source, ProductCmpt target) {
+        IProductCmptLink link = source.getProductCmptGeneration(0).newLink(genAssociation);
+        link.setTarget(target.getQualifiedName());
+    }
+
+    protected void assertSingleRoot(ProductCmpt root) {
+        assertMultipleRoots(root);
+    }
+
+    protected void createCompositionBetween(ProductCmpt source, ProductCmpt target) {
+        IProductCmptLink link = source.newLink(selfReference);
+        link.setTarget(target.getQualifiedName());
+    }
+
+    private void createChangingCompositionBetween(ProductCmpt source, ProductCmpt target) {
+        IProductCmptLink link = source.getProductCmptGeneration(0).newLink(genSelfReference);
+        link.setTarget(target.getQualifiedName());
     }
 
     private void saveAll() {
