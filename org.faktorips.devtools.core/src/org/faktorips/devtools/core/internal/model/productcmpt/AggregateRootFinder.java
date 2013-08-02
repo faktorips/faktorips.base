@@ -29,10 +29,22 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 
+/**
+ * Utility class that searches a specific project for so called "aggregate roots". An
+ * "aggregate root" is a product component that has no parent. In other words, there is no
+ * master-to-detail relation (composition) between any product component and an aggregate root. Thus
+ * each aggregate root is the root of a product component structure (a.k.a. aggregate).
+ * 
+ * This class searches a given project and all dependent projects for all contained product
+ * components. Using only the product components and the composition-relations between them, the
+ * aggregate roots are calculated. Only compositions and the tree-like structure they define can be
+ * used for this purpose, associations are ignored.
+ * 
+ */
 public class AggregateRootFinder {
 
-    private Set<String> nonRootCmpts = new HashSet<String>();
-    private Set<String> potentialRootCmpts = new HashSet<String>();
+    private final Set<String> nonRootCmpts = new HashSet<String>();
+    private final Set<String> potentialRootCmpts = new HashSet<String>();
 
     private final IIpsProject ipsProject;
 
@@ -40,6 +52,11 @@ public class AggregateRootFinder {
         this.ipsProject = ipsProject;
     }
 
+    /**
+     * Every call of this method calculates the aggregate roots in the specified project. For
+     * projects with many product components or highly linked product structures, this is a costly
+     * operation.
+     */
     public List<IProductCmpt> findAggregateRoots() {
         List<IIpsSrcFile> prodCmptSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         return findAggregateRootsFromSrcFiles(prodCmptSrcFiles);

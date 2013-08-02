@@ -95,7 +95,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_oneRoot() {
+    public void testFindRootsSingleRoot() {
         createCompositionBetween(a, b);
         createCompositionBetween(a, c);
         createCompositionBetween(c, d);
@@ -105,7 +105,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_twoRoots() {
+    public void testFindRootsTwoRoots() {
         createCompositionBetween(a, b);
         createCompositionBetween(a, d);
         createCompositionBetween(c, d);
@@ -114,16 +114,8 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
         assertMultipleRoots(a, c);
     }
 
-    protected void assertMultipleRoots(IProductCmpt... prodCmpts) {
-        List<IProductCmpt> roots = aggregateRootFinder.findAggregateRoots();
-
-        List<IProductCmpt> prodCmptsList = Arrays.asList(prodCmpts);
-        assertEquals(prodCmptsList.size(), roots.size());
-        assertTrue(roots.containsAll(prodCmptsList));
-    }
-
     @Test
-    public void testFindRoots_chain() {
+    public void testFindRootsChain() {
         createCompositionBetween(a, b);
         createCompositionBetween(b, c);
         createCompositionBetween(c, d);
@@ -133,7 +125,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_selfReferenceTwoRoots() {
+    public void testFindRootsSelfReferenceTwoRoots() {
         createCompositionBetween(b, b);
         createCompositionBetween(b, a);
         createCompositionBetween(c, d);
@@ -143,7 +135,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_selfReferenceSingleRoot() {
+    public void testFindRootsSelfReferenceSingleRoot() {
         createCompositionBetween(b, b);
         createCompositionBetween(b, a);
         createCompositionBetween(b, c);
@@ -154,7 +146,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_CycleSingleRoot() {
+    public void testFindRootsCycleSingleRoot() {
         createCompositionBetween(a, b);
         createCompositionBetween(b, c);
         createCompositionBetween(c, d);
@@ -165,7 +157,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_CycleInNonRoot() {
+    public void testFindRootsCycleInNonRoot() {
         createCompositionBetween(a, b);
         createCompositionBetween(b, b);
         createCompositionBetween(b, c);
@@ -176,7 +168,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_associationIgnored() {
+    public void testFindRootsAssociationIgnored() {
         createCompositionBetween(a, b);
         createCompositionBetween(c, d);
         createAssociationBetween(a, c);
@@ -186,7 +178,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_associationIgnored2() {
+    public void testFindRootsAssociationIgnored2() {
         createAssociationBetween(d, c);
         createAssociationBetween(c, b);
         createAssociationBetween(b, a);
@@ -196,7 +188,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_completeCycle() {
+    public void testFindRootsCompleteCycle() {
         createCompositionBetween(a, b);
         createCompositionBetween(b, c);
         createCompositionBetween(c, d);
@@ -207,7 +199,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindRoots_aggregationInGeneration() {
+    public void testFindRootsCompositionInGeneration() {
         createChangingCompositionBetween(a, b);
         createChangingCompositionBetween(a, d);
         createChangingCompositionBetween(c, d);
@@ -216,8 +208,26 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
         assertMultipleRoots(a, c);
     }
 
+    @Test
+    public void testFindRootsAssociationInGeneration() {
+        createChangingAssociationBetween(a, b);
+        createChangingCompositionBetween(a, d);
+        createChangingCompositionBetween(c, d);
+        saveAll();
+
+        assertMultipleRoots(a, b, c);
+    }
+
     protected void assertZeroRoots() {
         assertMultipleRoots();
+    }
+
+    protected void assertMultipleRoots(IProductCmpt... prodCmpts) {
+        List<IProductCmpt> roots = aggregateRootFinder.findAggregateRoots();
+
+        List<IProductCmpt> prodCmptsList = Arrays.asList(prodCmpts);
+        assertEquals(prodCmptsList.size(), roots.size());
+        assertTrue(roots.containsAll(prodCmptsList));
     }
 
     private void createAssociationBetween(ProductCmpt source, ProductCmpt target) {
