@@ -13,12 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
@@ -31,20 +28,15 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.parametertable.ChangeParametersControl;
-import org.faktorips.devtools.core.ui.controls.parametertable.ParameterInfo;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.type.ParametersEditControl;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
-public class FormulaEditDialog extends IpsPartEditDialog {
+public class FormulaEditDialog extends IpsPartEditDialog2 {
 
     /** the formula configuration element being edited */
     private IFormula formula;
@@ -55,7 +47,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private IIpsProject ipsProject;
 
     /** control to display & edit the formula parameters */
-    private ChangeParametersControl parametersControl;
+    private ParametersEditControl parametersControl;
 
     /** edit fields */
     private TextField formulaField;
@@ -80,40 +72,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected IpsObjectUIController createUIController(IIpsObjectPart part) {
-        IpsObjectUIController controller = new IpsObjectUIController(part) {
-
-            @Override
-            protected MessageList validatePartContainerAndUpdateUI() {
-                MessageList messages = super.validatePartContainerAndUpdateUI();
-                return validateAndUpdateDialogUI(messages);
-            }
-        };
-        return controller;
-    }
-
-    /**
-     * Validates and updates the dialog
-     */
-    private MessageList validateAndUpdateDialogUI(MessageList messages) {
-        MessageList relevantMessages = new MessageList();
-        if (messages.size() > 0) {
-            for (Message msg : messages) {
-                relevantMessages.add(msg);
-            }
-            if (!relevantMessages.isEmpty()) {
-                Message firstMessage = relevantMessages.getMessage(0);
-                setMessage(firstMessage.getText(), getJFaceMessageType(firstMessage.getSeverity()));
-            } else {
-                setMessage(""); //$NON-NLS-1$
-            }
-        } else {
-            setMessage(""); //$NON-NLS-1$
-        }
-        return relevantMessages;
-    }
-
-    @Override
     protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -124,6 +82,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         firstPage.setText(Messages.FormulaEditDialog_Formula);
         firstPage.setControl(createFirstPage(folder));
 
+        bindContent();
+
         return folder;
     }
 
@@ -132,15 +92,9 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         GridLayout layout = (GridLayout)c.getLayout();
         layout.verticalSpacing = 20;
 
-        parametersControl = new ChangeParametersControl(c, getToolkit(), SWT.NONE,
-                Messages.FormulaEditDialog_availableParameters, ipsProject) {
+        parametersControl = new ParametersEditControl(c, getToolkit(), SWT.NONE,
+                Messages.FormulaEditDialog_availableParameters, ipsProject);
 
-            @Override
-            public MessageList validate(int paramIndex) throws CoreException {
-                return new MessageList();
-            }
-
-        };
         GridData parameterControlLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
         parameterControlLayoutData.heightHint = 150;
         parametersControl.setLayoutData(parameterControlLayoutData);
@@ -150,7 +104,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setCanChangeParameterNames(false);
         parametersControl.setCanMoveParameters(false);
         parametersControl.setTableStyle(SWT.BORDER);
-        parametersControl.setCanChangeParameterNames(isDataChangeable());
         parametersControl.initControl();
 
         Text formulaText = getToolkit().createMultilineText(c);
@@ -173,36 +126,19 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return c;
     }
 
-    private int getJFaceMessageType(int severity) {
-
-        if (Message.ERROR == severity) {
-            return IMessageProvider.ERROR;
-        }
-        if (Message.INFO == severity) {
-            return IMessageProvider.INFORMATION;
-        }
-        if (Message.WARNING == severity) {
-            return IMessageProvider.WARNING;
-        }
-
-        return IMessageProvider.NONE;
-    }
-
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(formulaField, IFormula.PROPERTY_EXPRESSION);
-        if (signature == null) {
-            return;
-        }
-        List<ParameterInfo> infos = ParameterInfo.createInfosAsList(signature.getParameters());
-        parametersControl.setInput(infos);
-    }
-
     @Override
     protected String buildTitle() {
         String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(formula);
         return localizedCaption + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    private void bindContent() {
+        getBindingContext().bindContent(formulaField, formula, IFormula.PROPERTY_EXPRESSION);
+        if (signature == null) {
+            return;
+        }
+        parametersControl.setInput(signature);
+        getBindingContext().updateUI();
     }
 
     @Override

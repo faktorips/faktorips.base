@@ -31,7 +31,7 @@ public class DatatypeContentProposalLabelProvider extends LabelProvider {
     @Override
     public String getText(Object element) {
         if (element instanceof DatatypeContentProposal) {
-            return internalLabelProvider.getText(((DatatypeContentProposal)element).getDataype());
+            return ((DatatypeContentProposal)element).getDataype().getName();
         } else {
             return super.getText(element);
         }

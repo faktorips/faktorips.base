@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -32,7 +31,7 @@ public class DatatypeRefControl extends TextButtonControl {
 
     private IIpsProject ipsProject;
 
-    private DatatypeCompletionProcessor completionProcessor;
+    private DatatypeContentProposalProvider proposalProvider;
 
     private UIToolkit toolkit;
 
@@ -43,12 +42,9 @@ public class DatatypeRefControl extends TextButtonControl {
 
         this.toolkit = toolkit;
 
-        DatatypeContentProposalProvider proposalProvider = new DatatypeContentProposalProvider(ipsProject, true, false);
+        proposalProvider = new DatatypeContentProposalProvider(ipsProject);
         toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new DatatypeContentProposalLabelProvider());
-
-        completionProcessor = new DatatypeCompletionProcessor();
-        completionProcessor.setIpsProject(project);
     }
 
     public UIToolkit getToolkit() {
@@ -56,48 +52,48 @@ public class DatatypeRefControl extends TextButtonControl {
     }
 
     public void setVoidAllowed(boolean includeVoid) {
-        completionProcessor.setIncludeVoid(includeVoid);
+        proposalProvider.setIncludeVoid(includeVoid);
     }
 
     public void setPrimitivesAllowed(boolean includePrimitives) {
-        completionProcessor.setIncludePrimitives(includePrimitives);
+        proposalProvider.setIncludePrimitives(includePrimitives);
     }
 
     public boolean getPrimitivesAllowed() {
-        return completionProcessor.isIncludePrimitives();
+        return proposalProvider.isIncludePrimitives();
     }
 
     public boolean isVoidAllowed() {
-        return completionProcessor.isIncludeVoid();
+        return proposalProvider.isIncludeVoid();
     }
 
     public void setOnlyValueDatatypesAllowed(boolean valuetypesOnly) {
-        completionProcessor.setValueDatatypesOnly(valuetypesOnly);
+        proposalProvider.setValueDatatypesOnly(valuetypesOnly);
     }
 
     public boolean isOnlyValueDatatypesAllowed() {
-        return completionProcessor.getValueDatatypesOnly();
+        return proposalProvider.isValueDatatypesOnly();
     }
 
     public void setAbstractAllowed(boolean abstractAllowed) {
-        completionProcessor.setIncludeAbstract(abstractAllowed);
+        proposalProvider.setIncludeAbstract(abstractAllowed);
     }
 
     public boolean isAbstractAllowed() {
-        return completionProcessor.isIncludeAbstract();
+        return proposalProvider.isIncludeAbstract();
     }
 
     public void setIpsProject(IIpsProject project) {
         this.ipsProject = project;
-        completionProcessor.setIpsProject(project);
+        proposalProvider.setIpsProject(project);
     }
 
     public void setDisallowedDatatypes(List<Datatype> disallowedDatatypes) {
-        completionProcessor.setExcludedDatatypes(disallowedDatatypes);
+        proposalProvider.setExcludedDatatypes(disallowedDatatypes);
     }
 
     public List<Datatype> getDisallowedDatatypes() {
-        return completionProcessor.getExcludedDatatypes();
+        return proposalProvider.getExcludedDatatypes();
     }
 
     @Override

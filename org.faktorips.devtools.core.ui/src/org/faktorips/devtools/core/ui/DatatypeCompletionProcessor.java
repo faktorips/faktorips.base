@@ -22,7 +22,12 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.ui.controls.DatatypeContentProposalProvider;
 
+/**
+ * @deprecated since 3.10, use {@link DatatypeContentProposalProvider} instead
+ */
+@Deprecated
 public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 
     private boolean includeVoid;

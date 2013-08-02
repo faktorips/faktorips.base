@@ -68,7 +68,6 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
-import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
@@ -492,7 +491,8 @@ public class ParametersEditControl extends Composite {
             return null;
         }
         Text text = (Text)control;
-        DatatypeCompletionProcessor processor = new DatatypeCompletionProcessor();
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.core.ui.DatatypeCompletionProcessor processor = new org.faktorips.devtools.core.ui.DatatypeCompletionProcessor();
         processor.setIpsProject(ipsProject);
         SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
         ContentAssistHandler.createHandlerForText(text, contentAssistant);

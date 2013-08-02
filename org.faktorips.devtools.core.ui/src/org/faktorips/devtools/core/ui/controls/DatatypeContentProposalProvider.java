@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,15 +36,66 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
 
     private IIpsProject ipsProject;
     private Datatype[] dataType;
-    private boolean returnType;
-    private boolean parameterType;
+
+    private boolean includeVoid;
+    private boolean valuetypesOnly;
+    private boolean includePrimitives;
+    private boolean includeAbstract;
+    private List<Datatype> excludedDatatypes;
 
     private SearchPattern searchPattern = new SearchPattern();
 
-    public DatatypeContentProposalProvider(IIpsProject ipsProject, boolean returnType, boolean parameterType) {
+    public DatatypeContentProposalProvider(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
-        this.returnType = returnType;
-        this.parameterType = parameterType;
+
+        includeVoid = false;
+        valuetypesOnly = false;
+        includePrimitives = true;
+        includeAbstract = false;
+        excludedDatatypes = null;
+    }
+
+    public void setIncludeVoid(boolean value) {
+        includeVoid = value;
+    }
+
+    public boolean isIncludeVoid() {
+        return includeVoid;
+    }
+
+    public void setIncludeAbstract(boolean includeAbstract) {
+        this.includeAbstract = includeAbstract;
+    }
+
+    public boolean isIncludeAbstract() {
+        return includeAbstract;
+    }
+
+    public void setValueDatatypesOnly(boolean value) {
+        valuetypesOnly = value;
+    }
+
+    public boolean isValueDatatypesOnly() {
+        return valuetypesOnly;
+    }
+
+    public boolean isIncludePrimitives() {
+        return includePrimitives;
+    }
+
+    public void setIncludePrimitives(boolean includePrimitives) {
+        this.includePrimitives = includePrimitives;
+    }
+
+    public void setExcludedDatatypes(List<Datatype> excludedDatatypes) {
+        this.excludedDatatypes = excludedDatatypes;
+    }
+
+    public List<Datatype> getExcludedDatatypes() {
+        if (excludedDatatypes != null) {
+            return Collections.unmodifiableList(excludedDatatypes);
+        }
+        return null;
     }
 
     private Datatype[] getDataType() {
@@ -52,6 +104,10 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
 
     private void setDataType(Datatype[] dataType) {
         this.dataType = dataType;
+    }
+
+    public void setIpsProject(IIpsProject ipsProject) {
+        this.ipsProject = ipsProject;
     }
 
     @Override
@@ -79,13 +135,8 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
 
     private Datatype[] findDataType() {
         try {
-            if (returnType) {
-                return ipsProject.findDatatypes(true, true, true);
-            } else if (parameterType) {
-                return ipsProject.findDatatypes(false, false, true, null, true);
-            } else {
-                return new Datatype[] {};
-            }
+            return ipsProject.findDatatypes(isValueDatatypesOnly(), isIncludeVoid(), isIncludePrimitives(),
+                    getExcludedDatatypes(), isIncludeAbstract());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

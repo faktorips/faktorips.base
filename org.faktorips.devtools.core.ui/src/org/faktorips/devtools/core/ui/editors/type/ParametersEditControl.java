@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.method.IParameterContainer;
-import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -640,12 +639,10 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             return;
         }
         Text text = (Text)control;
-        DatatypeCompletionProcessor processor = new DatatypeCompletionProcessor();
-        processor.setIpsProject(ipsProject);
-        processor.setValueDatatypesOnly(false);
-        processor.setIncludeAbstract(true);
 
-        DatatypeContentProposalProvider provider = new DatatypeContentProposalProvider(ipsProject, false, true);
+        DatatypeContentProposalProvider provider = new DatatypeContentProposalProvider(ipsProject);
+        provider.setValueDatatypesOnly(false);
+        provider.setIncludeAbstract(true);
         uiToolkit.attachContentProposalAdapter(text, provider, new DatatypeContentProposalLabelProvider());
     }
 
