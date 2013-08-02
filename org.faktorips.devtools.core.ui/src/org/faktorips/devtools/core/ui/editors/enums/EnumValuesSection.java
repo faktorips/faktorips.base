@@ -743,7 +743,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
              */
             IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
             IIpsProject ipsProject = enumAttributeValue.getIpsProject();
-            String columnValue = IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue());
+            String columnValue = IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
+                    ipsProject);
             try {
                 IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
                 if (enumAttribute == null) {

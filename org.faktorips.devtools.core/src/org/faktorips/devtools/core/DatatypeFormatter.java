@@ -131,7 +131,8 @@ public class DatatypeFormatter {
             return null;
         }
         IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(enumAttribute);
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue());
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
+                enumType.getIpsProject());
     }
 
     private IEnumValue getEnumValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -663,6 +665,57 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             nl = nl.substring(0, 2);
         }
         assertEquals(nl, localizationLocale.getLanguage());
+    }
+
+    @Test
+    public void testGetLocalizedContentForEnvironmentLocale() {
+        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, "foo");
+        LocalizedString expectedUs = new LocalizedString(Locale.US, "jee"); // environment locale
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
+
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(expectedEn);
+        internationalStringValue.getContent().add(expectedUs);
+        internationalStringValue.getContent().add(expectedDe);
+
+        assertEquals("jee", support.getLocalizedContent(internationalStringValue, ipsProject));
+    }
+
+    @Test
+    public void testGetLocalizedContentForProjectDefaultLocale() {
+        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, "foo");
+        // project default locale
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, "bar");
+
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(expectedEn);
+        internationalStringValue.getContent().add(expectedDe);
+
+        assertEquals("bar", support.getLocalizedContent(internationalStringValue, ipsProject));
+    }
+
+    @Test
+    public void testGetLocalizedContentFirstNonEmptyValue() {
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
+        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, "foo");
+
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(expectedDe);
+        internationalStringValue.getContent().add(expectedEn);
+
+        assertEquals("foo", support.getLocalizedContent(internationalStringValue, ipsProject));
+    }
+
+    @Test
+    public void testGetLocalizedContentNoValueDefined() {
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
+        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY);
+
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(expectedDe);
+        internationalStringValue.getContent().add(expectedEn);
+
+        assertEquals(StringUtils.EMPTY, support.getLocalizedContent(internationalStringValue, ipsProject));
     }
 
     private void deleteLocalizedLabel() {

@@ -19,6 +19,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.junit.Test;
 import org.w3c.dom.Node;
@@ -38,16 +41,31 @@ public class StringValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-        public void testGetContent() {
-            assertEquals("Versicherung", new StringValue("Versicherung").getContent());
-            assertNull(new StringValue(null).getContent());
-        }
+    public void testGetContent() {
+        assertEquals("Versicherung", new StringValue("Versicherung").getContent());
+        assertNull(new StringValue(null).getContent());
+    }
 
     @Test
-            public void testGetContentAsString() {
-                assertEquals("Versicherung", new StringValue("Versicherung").getContentAsString());
-                assertNull(new StringValue(null).getContentAsString());
-            }
+    public void testGetContentAsString() {
+        assertEquals("Versicherung", new StringValue("Versicherung").getContentAsString());
+        assertNull(new StringValue(null).getContentAsString());
+    }
+
+    @Test
+    public void testGetLocalizedContent() {
+        assertEquals("Versicherung", new StringValue("Versicherung").getLocalizedContent());
+    }
+
+    @Test
+    public void testGetLocalizedContentLocale() {
+        assertEquals("Versicherung", new StringValue("Versicherung").getLocalizedContent(Locale.GERMAN));
+    }
+
+    @Test
+    public void testGetDefaultLocalizedContent() throws CoreException {
+        assertEquals("Versicherung", new StringValue("Versicherung").getDefaultLocalizedContent(newIpsProject()));
+    }
 
     @Test
     public void testToString() {

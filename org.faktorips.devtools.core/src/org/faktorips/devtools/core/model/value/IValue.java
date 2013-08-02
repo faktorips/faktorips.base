@@ -90,4 +90,11 @@ public interface IValue<T> {
      */
     String getDefaultLocalizedContent(IIpsProject ipsProject);
 
+    /**
+     * Returns the first non-empty content, regardless of its locale. Returns an empty string if
+     * none could be found.
+     * 
+     * @see #getLocalizedContent(Locale)
+     */
+    String getLocalizedContent();
 }

@@ -159,6 +159,18 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     }
 
     @Override
+    public String getLocalizedContent() {
+        for (LocalizedString localizedString : getContent().values()) {
+            String value = localizedString.getValue();
+            if (!StringUtils.isEmpty(value)) {
+                return value;
+            }
+        }
+        return StringUtils.EMPTY;
+
+    }
+
+    @Override
     public void addObserver(Observer observer) {
         this.content.addObserver(observer);
 

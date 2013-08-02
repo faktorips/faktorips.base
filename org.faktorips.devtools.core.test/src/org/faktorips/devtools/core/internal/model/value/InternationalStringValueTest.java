@@ -40,9 +40,9 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
     private static final String ENGLISCH_BAR = "bar";
     private static final String GERMAN_FOO = "foo";
-    LocalizedString expectedDe;
-    LocalizedString expectedEn;
-    InternationalStringValue internationalStringValue;
+    private LocalizedString expectedDe;
+    private LocalizedString expectedEn;
+    private InternationalStringValue internationalStringValue;
 
     @Override
     @Before
@@ -70,8 +70,8 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     @Test
     public void testCreateFromXml() {
         Element el = getTestDocument().getDocumentElement();
-        InternationalStringValue internationalStringValue = InternationalStringValue.createFromXml(el);
-        IInternationalString intString = internationalStringValue.getContent();
+        InternationalStringValue internationalStringValueXml = InternationalStringValue.createFromXml(el);
+        IInternationalString intString = internationalStringValueXml.getContent();
         assertEquals(2, intString.values().size());
         assertEquals("Versicherung", intString.get(Locale.GERMAN).getValue());
         assertEquals("Insurance", intString.get(Locale.ENGLISH).getValue());
@@ -96,7 +96,6 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToString() {
-        InternationalStringValue internationalStringValue = new InternationalStringValue();
         assertNotNull(internationalStringValue.toString());
 
         internationalStringValue.getContent().add(expectedDe);
@@ -110,7 +109,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue.getContent().add(expectedEn);
 
         assertTrue(internationalStringValue.equals(internationalStringValue));
-        assertFalse(internationalStringValue.equals(null));
+        assertNotNull(internationalStringValue);
         assertFalse(internationalStringValue.equals(new String()));
 
         InternationalStringValue internationalStringValue2 = new InternationalStringValue();
@@ -185,7 +184,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLocalizedContent() {
+    public void testGetLocalizedContentWithLocal() {
         internationalStringValue.getContent().add(expectedDe);
         internationalStringValue.getContent().add(expectedEn);
 
@@ -202,5 +201,23 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue.getContent().add(expectedEn);
 
         assertEquals(GERMAN_FOO, internationalStringValue.getDefaultLocalizedContent(ipsProject));
+    }
+
+    @Test
+    public void testLocalizedContent() {
+        internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY));
+        internationalStringValue.getContent().add(expectedDe);
+
+        assertEquals(GERMAN_FOO, internationalStringValue.getLocalizedContent());
+    }
+
+    @Test
+    public void testLocalizedContentEmpty() {
+        internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY));
+
+        assertEquals(StringUtils.EMPTY, internationalStringValue.getLocalizedContent());
     }
 }

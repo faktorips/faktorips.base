@@ -36,6 +36,11 @@ public abstract class AbstractValue<T> implements IValue<T> {
         return getLocalizedContent(getDefaultLanguage(ipsProject));
     }
 
+    @Override
+    public String getLocalizedContent() {
+        return getLocalizedContent(null);
+    }
+
     /**
      * Returns the projects default language.
      * 

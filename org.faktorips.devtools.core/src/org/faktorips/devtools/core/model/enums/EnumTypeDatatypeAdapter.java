@@ -116,7 +116,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
             IEnumAttribute displayNameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
             IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue());
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(), ipsProject);
 
         } catch (CoreException e) {
             throw new RuntimeException(e);

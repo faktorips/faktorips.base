@@ -534,7 +534,25 @@ public final class MultiLanguageSupport {
         return supportedLanguage.getLocale();
     }
 
-    public String getLocalizedContent(IValue<?> value) {
-        return value.getLocalizedContent(getLocalizationLocale());
+    /**
+     * Returns the localized content of the {@link IValue}.
+     * <p>
+     * If there is no content for the environment locale, the content for the default project
+     * language is returned. If in turn the content based on the project language is missing, the
+     * first non-empty content (saved in the value) will be returned. If all else fails an empty
+     * string is returned.
+     * 
+     * @param value the value
+     * @param ipsProject the actual {@link IIpsProject} of this value
+     */
+    public String getLocalizedContent(IValue<?> value, IIpsProject ipsProject) {
+        String localizedContent = value.getLocalizedContent(getLocalizationLocale());
+        if (StringUtils.isEmpty(localizedContent)) {
+            localizedContent = value.getDefaultLocalizedContent(ipsProject);
+            if (StringUtils.isEmpty(localizedContent)) {
+                localizedContent = value.getLocalizedContent();
+            }
+        }
+        return localizedContent;
     }
 }
