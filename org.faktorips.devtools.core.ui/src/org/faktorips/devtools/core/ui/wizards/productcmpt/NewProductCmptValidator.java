@@ -76,8 +76,8 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
     }
 
     public MessageList validateProductCmptPage() {
-        MessageList result = new MessageList();
-        if ((result = validateTypeSelection()).containsErrorMsg()) {
+        MessageList result = validateTypeSelection();
+        if (result.containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
             return result;
         }
@@ -92,14 +92,30 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                     getPmo(), NewProductCmptPMO.PROPERTY_KIND_ID));
         }
 
-        IChangesOverTimeNamingConvention convention = getChangeOverTimeNamingConvention();
+        validateNamingConvention(result);
+
+        if (getPmo().getEffectiveDate() == null) {
+            result.newError(MSG_INVALID_EFFECTIVE_DATE, Messages.NewProdutCmptValidator_msg_invalidEffectiveDate,
+                    getPmo(), NewProductDefinitionPMO.PROPERTY_EFFECTIVE_DATE);
+        }
+
+        if (result.isEmpty()) {
+            result.add(validateIpsObjectName(NewProductCmptPMO.PROPERTY_KIND_ID));
+            result.add(validateAddToGeneration());
+        }
+
+        return result;
+    }
+
+    private void validateNamingConvention(MessageList result) {
+        final IChangesOverTimeNamingConvention convention = getChangeOverTimeNamingConvention();
         if (getPmo().isNeedVersionId() && StringUtils.isEmpty(getPmo().getVersionId())) {
             result.add(new Message(MSG_EMPTY_VERSION_ID, NLS.bind(Messages.NewProdutCmptValidator_msg_emptyVersionId,
                     convention.getVersionConceptNameSingular()), Message.ERROR, getPmo(),
                     NewProductCmptPMO.PROPERTY_VERSION_ID));
         }
         if (getPmo().getKindId() != null && (!getPmo().isNeedVersionId() || getPmo().getVersionId() != null)) {
-            IProductCmptNamingStrategy productCmptNamingStrategy = getPmo().getIpsProject()
+            final IProductCmptNamingStrategy productCmptNamingStrategy = getPmo().getIpsProject()
                     .getProductCmptNamingStrategy();
             try {
                 if (!getPmo().getKindId().equals(productCmptNamingStrategy.getKindId(getPmo().getName()))) {
@@ -119,18 +135,6 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                         NewProductCmptPMO.PROPERTY_KIND_ID));
             }
         }
-
-        if (getPmo().getEffectiveDate() == null) {
-            result.newError(MSG_INVALID_EFFECTIVE_DATE, Messages.NewProdutCmptValidator_msg_invalidEffectiveDate,
-                    getPmo(), NewProductDefinitionPMO.PROPERTY_EFFECTIVE_DATE);
-        }
-
-        if (result.isEmpty()) {
-            result.add(validateIpsObjectName(NewProductCmptPMO.PROPERTY_KIND_ID));
-            result.add(validateAddToGeneration());
-        }
-
-        return result;
     }
 
     private IChangesOverTimeNamingConvention getChangeOverTimeNamingConvention() {

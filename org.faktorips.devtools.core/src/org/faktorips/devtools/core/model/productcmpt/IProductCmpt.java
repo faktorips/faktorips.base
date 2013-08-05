@@ -39,29 +39,29 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * The name of the product component type property
      */
-    public final static String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
+    public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
-    public final static String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+    public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
-    public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the product component type the product component
      * is an instance of is missing.
      */
-    public final static String MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "MissingProductCmptType"; //$NON-NLS-1$
+    public static final String MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "MissingProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the product component type is abstract. Abstract
      * product component types can't have an instance (=product component)
      */
-    public final static String MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "AbstractProductCmptType"; //$NON-NLS-1$
+    public static final String MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "AbstractProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the type's hierarchy the product component is based
      * on is inconsistent.
      */
-    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
+    public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Returns the product component's generation at the specified index.
@@ -85,6 +85,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @throws CoreException if an error occurs while searching for the kind.
      * @deprecated Use {@link #getKindId()} instead
      */
+    @Deprecated
     public IProductCmptKind findProductCmptKind() throws CoreException;
 
     /**

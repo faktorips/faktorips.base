@@ -60,8 +60,8 @@ public abstract class NewProductDefinitionValidator {
     public abstract MessageList validateAllPages();
 
     public MessageList validateFolderAndPackage() {
-        MessageList result = new MessageList();
-        if ((result = validateBeforeFolderAndPacket()).containsErrorMsg()) {
+        MessageList result = validateBeforeFolderAndPacket();
+        if (result.containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
             return result;
         }
