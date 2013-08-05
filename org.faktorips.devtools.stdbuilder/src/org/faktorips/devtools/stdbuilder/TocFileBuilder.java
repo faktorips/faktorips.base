@@ -356,7 +356,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (pcType == null) {
             return null;
         }
-        IProductCmptKind kind = productCmpt.findProductCmptKind();
+        IProductCmptKind kind = productCmpt.getKindId();
         if (kind == null) {
             return null;
         }
@@ -368,7 +368,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 pcType.getIpsSrcFile());
         String generationImplClass = getBuilderSet().getProductCmptGenImplClassBuilder().getQualifiedClassName(
                 pcType.getIpsSrcFile());
-        String kindId = productCmpt.findProductCmptKind().getRuntimeId();
+        String kindId = productCmpt.getKindId().getRuntimeId();
         String versionId = productCmpt.getVersionId();
         DateTime validTo = DateTime.createDateOnly(productCmpt.getValidTo());
 

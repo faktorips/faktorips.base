@@ -42,7 +42,7 @@ import org.junit.Test;
 public class NewProductCmptValidatorTest {
 
     @Test
-    public void testValidateTypeSelection_invalidProject() throws Exception {
+    public void testValidateAllPagesTypeSelection_invalidProject() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
 
@@ -62,7 +62,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateTypeSelection_invalidBaseType() throws Exception {
+    public void testValidateAllPagesTypeSelection_invalidBaseType() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
 
@@ -77,7 +77,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_selectedType() throws Exception {
+    public void testValidateAllPagesProductCmptPage_selectedType() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         mockTypeSelection(pmo);
@@ -102,7 +102,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_emptyKindId() throws Exception {
+    public void testValidateAllPagesProductCmptPage_emptyKindId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         IIpsProject ipsProject = mockTypeSelection(pmo);
@@ -120,7 +120,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_emptyVersionId() throws Exception {
+    public void testValidateAllPagesProductCmptPage_emptyVersionId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         IIpsProject ipsProject = mockTypeSelection(pmo);
@@ -147,7 +147,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_invalidKindId() throws Exception {
+    public void testValidateAllPagesProductCmptPage_invalidKindId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         mockTypeSelection(pmo);
@@ -181,7 +181,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_invalidVersionId() throws Exception {
+    public void testValidateAllPagesProductCmptPage_invalidVersionId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         mockTypeSelection(pmo);
@@ -221,7 +221,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_validateName() throws Exception {
+    public void testValidateAllPagesProductCmptPage_validateName() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         mockTypeSelection(pmo);
@@ -240,6 +240,7 @@ public class NewProductCmptValidatorTest {
         when(pmo.getName()).thenReturn("anyFullName");
         when(pmo.getQualifiedName()).thenReturn("qualifiedName");
         when(namingStrategy.getKindId("anyFullName")).thenReturn("anyId");
+        when(pmo.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
 
         IIpsProjectNamingConventions namingConventions = mock(IIpsProjectNamingConventions.class);
         when(ipsProject.getNamingConventions()).thenReturn(namingConventions);
@@ -248,6 +249,8 @@ public class NewProductCmptValidatorTest {
         assertTrue(msgList.containsErrorMsg());
 
         when(pmo.getEffectiveDate()).thenReturn(new GregorianCalendar());
+        when(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, "anyFullName")).thenReturn(
+                new MessageList());
 
         msgList = newProdutCmptValidator.validateProductCmptPage();
         assertFalse(msgList.containsErrorMsg());
@@ -257,7 +260,7 @@ public class NewProductCmptValidatorTest {
                 new MessageList(msg));
 
         msgList = newProdutCmptValidator.validateProductCmptPage();
-        assertEquals(msg, msgList.getMessageWithHighestSeverity());
+        assertEquals(msg.getCode(), msgList.getMessageWithHighestSeverity().getCode());
         assertNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_SRC_FILE_EXISTS));
 
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
@@ -272,7 +275,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateProductCmptPage_validateAddToType() throws CoreException {
+    public void testValidateAllPagesProductCmptPage_validateAddToType() throws CoreException {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         IIpsProject ipsProject = mockTypeSelection(pmo);
@@ -311,7 +314,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateFolderAndPackage_invalidPackageRoot() throws Exception {
+    public void testValidateAllPagesFolderAndPackage_invalidPackageRoot() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         mockTypeSelection(pmo);
@@ -327,7 +330,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateFolderAndPackage_invalidPackage() throws Exception {
+    public void testValidateAllPagesFolderAndPackage_invalidPackage() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         mockTypeSelection(pmo);
