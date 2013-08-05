@@ -17,13 +17,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -40,10 +44,12 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -75,6 +81,10 @@ import org.w3c.dom.NodeList;
  * @author Jan Ortmann
  */
 public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
+
+    private static final String ANY_ID = "anyId";
+
+    private static final String ANY_NAME = "anyName";
 
     private TestIpsObjectPartContainer container;
 
@@ -379,6 +389,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         extProp0.setExtendedType(TestIpsObjectPartContainer.class);
         extProp0.setDefaultValue("default0");
 
+        model.clearExtensionPropertyCache();
         model.addIpsObjectExtensionProperty(extProp0);
 
         final StringBuffer buf = new StringBuffer();
@@ -821,6 +832,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(labelList.get(1), germanLabel);
     }
 
+    private void changeSupportedLanguagesOrder() throws CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
+        ISupportedLanguage[] languageArray = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages
+                .size()]);
+        properties.removeSupportedLanguage(languageArray[0]);
+        properties.removeSupportedLanguage(languageArray[1]);
+        properties.addSupportedLanguage(languageArray[1].getLocale());
+        properties.addSupportedLanguage(languageArray[0].getLocale());
+        ipsProject.setProperties(properties);
+    }
+
     @Test
     public void testGetLabelsDefensiveCopy() {
         List<ILabel> labels = container.getLabels();
@@ -875,16 +898,34 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container.copyFrom(mock(IIpsObjectPartContainer.class));
     }
 
-    private void changeSupportedLanguagesOrder() throws CoreException {
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
-        ISupportedLanguage[] languageArray = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages
-                .size()]);
-        properties.removeSupportedLanguage(languageArray[0]);
-        properties.removeSupportedLanguage(languageArray[1]);
-        properties.addSupportedLanguage(languageArray[1].getLocale());
-        properties.addSupportedLanguage(languageArray[0].getLocale());
-        ipsProject.setProperties(properties);
+    @Test
+    public void testGetExtensionPropertyDefinitions() throws Exception {
+        BooleanExtensionPropertyDefinition property = new BooleanExtensionPropertyDefinition();
+        property.setPropertyId(ANY_ID);
+        property.setName(ANY_NAME);
+        property.setExtendedType(IIpsObjectPartContainer.class);
+        getIpsModel().addIpsObjectExtensionProperty(property);
+        IpsObjectPartContainer ipsObjectPartContainer = mock(IpsObjectPartContainer.class, CALLS_REAL_METHODS);
+
+        Collection<IExtensionPropertyDefinition> extensionPropertyDefinitions = ipsObjectPartContainer
+                .getExtensionPropertyDefinitions();
+
+        assertThat(extensionPropertyDefinitions, hasItem((IExtensionPropertyDefinition)property));
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinition() throws Exception {
+        BooleanExtensionPropertyDefinition property = new BooleanExtensionPropertyDefinition();
+        property.setPropertyId(ANY_ID);
+        property.setName(ANY_NAME);
+        property.setExtendedType(IIpsObjectPartContainer.class);
+        getIpsModel().addIpsObjectExtensionProperty(property);
+        IpsObjectPartContainer ipsObjectPartContainer = mock(IpsObjectPartContainer.class, CALLS_REAL_METHODS);
+
+        IExtensionPropertyDefinition extensionPropertyDefinitions = ipsObjectPartContainer
+                .getExtensionPropertyDefinition(ANY_ID);
+
+        assertNotNull(extensionPropertyDefinitions);
     }
 
     private static class TestUnlabeledIpsObjectPartContainer extends IpsObjectPartContainer {

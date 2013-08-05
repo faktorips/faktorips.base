@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
@@ -69,6 +70,16 @@ public interface ICustomModelExtensions {
     IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces);
+
+    /**
+     * Returns a map {@link IExtensionPropertyDefinition} identified by their IDs, that are defined
+     * and activated for the given {@link IIpsObjectPartContainer}.
+     * 
+     * @param object The {@link IIpsObjectPartContainer} for which you want to get the
+     *            {@link IExtensionPropertyDefinition}
+     * @return A map of {@link IExtensionPropertyDefinition} that are identified by their IDs
+     */
+    Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object);
 
     /**
      * Returns the custom validations for the given type. The result includes also validations that

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.Collection;
+
 /**
  * The interface defines methods to access the values of extension properties.
  * 
@@ -21,6 +23,23 @@ package org.faktorips.devtools.core.model.ipsobject;
  * @author Jan Ortmann
  */
 public interface IExtensionPropertyAccess {
+
+    /**
+     * Getting all {@link IExtensionPropertyDefinition extension property definitions} that are
+     * defined for this object.
+     * 
+     * @return a set with extension property definitions that are relevant for this object
+     */
+    public Collection<IExtensionPropertyDefinition> getExtensionPropertyDefinitions();
+
+    /**
+     * Get the {@link IExtensionPropertyDefinition} with the specified property id if there is any
+     * relevant. Returns <code>null</code> if there is no matching extension property.
+     * 
+     * @param propertyId The id of the extension property you want to have the definition for.
+     * @return The {@link IExtensionPropertyDefinition} you requested or <code>null</code>
+     */
+    public IExtensionPropertyDefinition getExtensionPropertyDefinition(String propertyId);
 
     /**
      * Returns true if a definition of the extension property is available in the current eclipse

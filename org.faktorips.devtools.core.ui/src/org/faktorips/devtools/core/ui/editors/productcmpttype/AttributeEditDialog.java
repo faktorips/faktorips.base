@@ -106,7 +106,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         currentValueSetType = productCmptTypeAttribute.getValueSet().getValueSetType();
-        extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
+        extFactory = new ExtensionPropertyControlFactory(attribute);
         attributePmo = new ProductCmptTypeAttributePmo(attribute);
     }
 
@@ -131,7 +131,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private void createGeneralGroupContent(Composite c) {
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
-        if (extFactory.needsToCreateControlsFor(attribute, IExtensionPropertyDefinition.POSITION_TOP)) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_TOP)) {
             extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_TOP);
         }
 
@@ -183,7 +183,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
-        if (extFactory.needsToCreateControlsFor(attribute, IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         }
         extFactory.bind(getBindingContext());

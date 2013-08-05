@@ -15,12 +15,12 @@ package org.faktorips.devtools.core.ui.search.matcher;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.model.IIpsModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -40,15 +40,15 @@ public class ExtensionPropertiesMatcherTest {
 
     @Test
     public void testKeineExtensionProperties() {
-        IIpsModel ipsModel = mock(IIpsModel.class);
-
-        when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
-                new IExtensionPropertyDefinition[0]);
-
-        ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher, ipsModel);
+        ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher);
 
         IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
         IProductCmptType productCmptType = mock(IProductCmptType.class);
+
+        when(policyCmptType.getExtensionPropertyDefinitions())
+                .thenReturn(new ArrayList<IExtensionPropertyDefinition>());
+        when(policyCmptType.getExtensionPropertyDefinitions())
+                .thenReturn(new ArrayList<IExtensionPropertyDefinition>());
 
         assertFalse(matcher.isMatching(policyCmptType));
         assertFalse(matcher.isMatching(productCmptType));
@@ -56,8 +56,6 @@ public class ExtensionPropertiesMatcherTest {
 
     @Test
     public void testExtensionPropertiesAberKeinTreffer() {
-        IIpsModel ipsModel = mock(IIpsModel.class);
-
         IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
         IProductCmptType productCmptType = mock(IProductCmptType.class);
 
@@ -65,16 +63,15 @@ public class ExtensionPropertiesMatcherTest {
         when(policyCmptType.getExtPropertyValue(PROPERTY_ID)).thenReturn("Toast");
         when(productCmptType.isExtPropertyDefinitionAvailable(PROPERTY_ID)).thenReturn(false);
 
-        when(ipsModel.getExtensionPropertyDefinitions(productCmptType.getClass(), true)).thenReturn(
-                new IExtensionPropertyDefinition[0]);
+        when(productCmptType.getExtensionPropertyDefinitions()).thenReturn(
+                new ArrayList<IExtensionPropertyDefinition>());
 
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
         when(extensionPropertyDefinition.getPropertyId()).thenReturn(PROPERTY_ID);
 
-        when(ipsModel.getExtensionPropertyDefinitions(policyCmptType.getClass(), true)).thenReturn(
-                new IExtensionPropertyDefinition[] { extensionPropertyDefinition });
+        when(policyCmptType.getExtensionPropertyDefinitions()).thenReturn(Arrays.asList(extensionPropertyDefinition));
 
-        ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher, ipsModel);
+        ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher);
 
         assertFalse(matcher.isMatching(policyCmptType));
         assertFalse(matcher.isMatching(productCmptType));
@@ -82,8 +79,6 @@ public class ExtensionPropertiesMatcherTest {
 
     @Test
     public void testExtensionPropertiesTreffer() {
-        IIpsModel ipsModel = mock(IIpsModel.class);
-
         IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
         IProductCmptType productCmptType = mock(IProductCmptType.class);
 
@@ -91,16 +86,15 @@ public class ExtensionPropertiesMatcherTest {
         when(policyCmptType.getExtPropertyValue(PROPERTY_ID)).thenReturn("Zahlweise");
         when(productCmptType.isExtPropertyDefinitionAvailable(PROPERTY_ID)).thenReturn(false);
 
-        when(ipsModel.getExtensionPropertyDefinitions(productCmptType.getClass(), true)).thenReturn(
-                new IExtensionPropertyDefinition[0]);
+        when(productCmptType.getExtensionPropertyDefinitions()).thenReturn(
+                new ArrayList<IExtensionPropertyDefinition>());
 
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
         when(extensionPropertyDefinition.getPropertyId()).thenReturn(PROPERTY_ID);
 
-        when(ipsModel.getExtensionPropertyDefinitions(policyCmptType.getClass(), true)).thenReturn(
-                new IExtensionPropertyDefinition[] { extensionPropertyDefinition });
+        when(policyCmptType.getExtensionPropertyDefinitions()).thenReturn(Arrays.asList(extensionPropertyDefinition));
 
-        ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher, ipsModel);
+        ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher);
 
         assertTrue(matcher.isMatching(policyCmptType));
         assertFalse(matcher.isMatching(productCmptType));

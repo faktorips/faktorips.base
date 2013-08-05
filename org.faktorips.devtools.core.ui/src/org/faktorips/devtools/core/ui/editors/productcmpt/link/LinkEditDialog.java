@@ -57,7 +57,7 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
-        extFactory = new ExtensionPropertyControlFactory(link.getClass());
+        extFactory = new ExtensionPropertyControlFactory(link);
         pmo = new LinkEditDialogPMO();
     }
 

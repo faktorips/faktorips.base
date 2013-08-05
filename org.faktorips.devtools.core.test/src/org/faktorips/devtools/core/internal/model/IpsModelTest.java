@@ -320,7 +320,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("something serious", attribute.getDescriptionText(Locale.US));
     }
 
+    /**
+     * @deprecated tests the deprecated method
+     *             {@link IIpsModel#getExtensionPropertyDefinitions(Class, boolean)}
+     */
     @Test
+    @Deprecated
     public void testGetIpsObjectExtensionProperties() {
         Class<?> extendedClass = model.getClass();
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
@@ -370,7 +375,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(1, props.size());
     }
 
+    /**
+     * @deprecated tests the deprecated method
+     *             {@link IIpsModel#getExtensionPropertyDefinition(Class, String, boolean)}
+     */
     @Test
+    @Deprecated
     public void testGetIpsObjectExtensionProperty() {
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
         property.setPropertyId("prop1");

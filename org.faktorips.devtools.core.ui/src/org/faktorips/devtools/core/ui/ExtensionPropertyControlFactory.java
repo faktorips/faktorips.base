@@ -15,11 +15,13 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
@@ -37,17 +39,44 @@ public class ExtensionPropertyControlFactory {
 
     private ExtPropControlData[] extPropData;
 
-    public ExtensionPropertyControlFactory(Class<?> extensionClass) {
-        IExtensionPropertyDefinition[] extensionProperties = IpsPlugin.getDefault().getIpsModel()
-                .getExtensionPropertyDefinitions(extensionClass, true);
+    /**
+     * Creates a ne {@link ExtensionPropertyControlFactory} for the given
+     * {@link IExtensionPropertyAccess object}.
+     * 
+     * @param extendedObject The object for which the extensin properties are registered
+     */
+    public ExtensionPropertyControlFactory(IExtensionPropertyAccess extendedObject) {
+        Collection<IExtensionPropertyDefinition> extensionProperties = extendedObject.getExtensionPropertyDefinitions();
 
-        extPropData = new ExtPropControlData[extensionProperties.length];
-        for (int i = 0; i < extensionProperties.length; i++) {
-            extPropData[i] = new ExtPropControlData(extensionProperties[i]);
+        extPropData = new ExtPropControlData[extensionProperties.size()];
+        int i = 0;
+        for (IExtensionPropertyDefinition propertyDefinition : extensionProperties) {
+            extPropData[i] = new ExtPropControlData(propertyDefinition);
+            i++;
         }
     }
 
-    public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
+    /**
+     * This constructor uses the extension class to get the registered extension properties. Since
+     * 3.10 we have the ability to limit the scope of an extension property to a specific instance
+     * of {@link IIpsObjectPartContainer}.
+     * 
+     * @param extensionClass The class for which the extension properties are registered
+     * @deprecated Use {@link #ExtensionPropertyControlFactory(IExtensionPropertyAccess)} instead
+     */
+    @Deprecated
+    public ExtensionPropertyControlFactory(Class<?> extensionClass) {
+        IExtensionPropertyDefinition[] extensionProperties = IpsPlugin.getDefault().getIpsModel()
+                .getExtensionPropertyDefinitions(extensionClass, true);
+        extPropData = new ExtPropControlData[extensionProperties.length];
+        int i = 0;
+        for (IExtensionPropertyDefinition propertyDefinition : extensionProperties) {
+            extPropData[i] = new ExtPropControlData(propertyDefinition);
+            i++;
+        }
+    }
+
+    public boolean needsToCreateControlsFor(String position) {
         for (ExtPropControlData element : extPropData) {
             if (position.equals(element.extProperty.getPosition()) && (element.editField == null)) {
                 return true;
@@ -150,7 +179,11 @@ public class ExtensionPropertyControlFactory {
 
     /**
      * Connects all EditFields created by this factory with the model.
+     * 
+     * @deprecated This method uses the deprecated {@link IpsObjectUIController}. Please use the
+     *             {@link BindingContext} and the method {@link #bind(BindingContext)} instead.
      */
+    @Deprecated
     public void connectToModel(IpsObjectUIController uiController) {
         for (ExtPropControlData element : extPropData) {
             uiController.add(element.editField, element.extProperty.getPropertyId());

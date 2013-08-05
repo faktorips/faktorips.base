@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -27,6 +28,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -44,7 +47,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 public interface IIpsModel extends IIpsElement {
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
 
     /** Returns the workspace. */
     public IWorkspace getWorkspace();
@@ -199,19 +202,38 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns the extension properties for the given type. Returns an empty array if no extension
      * property is defined.
+     * <p>
+     * Note: This method simply returns every {@link IExtensionPropertyDefinition} that is
+     * registered for the given type. It does not respect whether it is applicable for the given
+     * {@link IIpsObjectPartContainer} by calling
+     * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}. Better use
+     * {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
+     * 
      * 
      * @param type The published interface of the IPS object or part e.g.
      *            <code>org.faktorips.plugin.model.pctype.IAttribute</code>
      * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
      *            defined for for the type itself should be returned, but also the ones registered
      *            for it's super type(s) and it's interfaces.
+     * @see #getExtensionPropertyDefinitions(IIpsObjectPartContainer)
+     * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
+     *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
+     *             extension property is applicable or not. Use
+     *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
      */
+    @Deprecated
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces);
 
     /**
      * Returns the extension property with the given id that belongs to the given type. Returns
      * <code>null</code> if no such extension property is defined.
+     * <p>
+     * Note: This method simply returns every {@link IExtensionPropertyDefinition} that is
+     * registered for the given type. It does not respect whether it is applicable for the given
+     * {@link IIpsObjectPartContainer} by calling
+     * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}. Better use
+     * {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
      * 
      * @param type The published interface of the IPS object or part e.g.
      *            <code>or.faktorips.plugin.model.pctype.Attribute</code>
@@ -219,10 +241,39 @@ public interface IIpsModel extends IIpsElement {
      * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
      *            defined for for the type itself should be returned, but also the ones registered
      *            for it's super type(s) and it's interfaces.
+     * @see #getExtensionPropertyDefinitions(IIpsObjectPartContainer)
+     * 
+     * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
+     *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
+     *             extension property is applicable or not. Use
+     *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
      */
+    @Deprecated
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces);
+
+    /**
+     * Returns a map {@link IExtensionPropertyDefinition} identified by their IDs, that are defined
+     * and activated for the given {@link IIpsObjectPartContainer}.
+     * 
+     * @param object The {@link IIpsObjectPartContainer} for which you want to get the
+     *            {@link IExtensionPropertyDefinition}
+     * @return A map of {@link IExtensionPropertyDefinition} that are identified by their IDs
+     * @since 3.10
+     */
+    public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object);
+
+    /**
+     * Call this method to clear the extension property cache. This is useful if you use
+     * {@link IExtensionPropertyDefinition2#isApplicableFor(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer)}
+     * and the conditions that influence the activation state have been changed.
+     * <p>
+     * This method may be called by customer implementations when they use
+     * {@link IExtensionPropertyDefinition2} and the activation state of any extension property has
+     * changed.
+     */
+    public void clearExtensionPropertyCache();
 
     /**
      * Returns the predefines value data types like String, Integer etc.

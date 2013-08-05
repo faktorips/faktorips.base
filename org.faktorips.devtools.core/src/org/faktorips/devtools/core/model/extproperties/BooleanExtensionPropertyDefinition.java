@@ -48,7 +48,7 @@ public class BooleanExtensionPropertyDefinition extends ExtensionPropertyDefinit
 
     @Override
     public void setDefaultValue(String s) {
-        defaultValue = Boolean.valueOf(s);
+        setDefaultValue(Boolean.valueOf(s));
     }
 
 }

@@ -77,7 +77,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         initialName = association.getName();
         initialPluralName = association.getTargetRolePlural();
         this.pmoAssociation = new PmoAssociation();
-        extFactory = new ExtensionPropertyControlFactory(association.getClass());
+        extFactory = new ExtensionPropertyControlFactory(association);
         try {
             oldMatchingAssociation = association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
         } catch (CoreException e) {
@@ -127,7 +127,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createExtensionArea(Composite parent, String position) {
-        if (!extFactory.needsToCreateControlsFor(association, position)) {
+        if (!extFactory.needsToCreateControlsFor(position)) {
             return;
         }
         Composite workArea = getToolkit().createLabelEditColumnComposite(parent);

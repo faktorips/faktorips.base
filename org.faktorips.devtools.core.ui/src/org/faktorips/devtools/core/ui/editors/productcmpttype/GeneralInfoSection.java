@@ -50,7 +50,7 @@ public class GeneralInfoSection extends IpsSection {
         ArgumentCheck.notNull(productCmptType);
 
         this.productCmptType = productCmptType;
-        extFactory = new ExtensionPropertyControlFactory(productCmptType.getClass());
+        extFactory = new ExtensionPropertyControlFactory(productCmptType);
 
         initControls();
         setText(Messages.GeneralInfoSection_title);
@@ -90,7 +90,8 @@ public class GeneralInfoSection extends IpsSection {
         getBindingContext().bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
 
         // Layer Supertype flag
-        Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifyerComposite, Messages.GeneralInfoSection_label_layerSupertype);
+        Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifyerComposite,
+                Messages.GeneralInfoSection_label_layerSupertype);
         // layerSupertypeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
         getBindingContext().bindContent(layerSupertypeCheckbox, productCmptType,
                 IProductCmptType.PROPERTY_LAYER_SUPERTYPE);

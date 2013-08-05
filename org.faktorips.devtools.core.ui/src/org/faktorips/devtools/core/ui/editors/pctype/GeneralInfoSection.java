@@ -45,7 +45,7 @@ public class GeneralInfoSection extends IpsSection {
         ArgumentCheck.notNull(policyCmptType);
 
         this.policyCmptType = policyCmptType;
-        extFactory = new ExtensionPropertyControlFactory(policyCmptType.getClass());
+        extFactory = new ExtensionPropertyControlFactory(policyCmptType);
 
         initControls();
         setText(Messages.GeneralInfoSection_title);

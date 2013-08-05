@@ -231,8 +231,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createExtensionFactorySections(Composite left, Composite right) {
-        ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(getActiveGeneration()
-                .getClass());
+        ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(getActiveGeneration());
         leftSections.addAll(extFactory.createSections(left, toolkit, getActiveGeneration(), Position.LEFT));
         rightSections.addAll(extFactory.createSections(right, toolkit, getActiveGeneration(), Position.RIGHT));
     }

@@ -119,7 +119,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         this.enumAttribute = enumAttribute;
         initialName = enumAttribute.getName();
         inherited = enumAttribute.isInherited();
-        extFactory = new ExtensionPropertyControlFactory(enumAttribute.getClass());
+        extFactory = new ExtensionPropertyControlFactory(enumAttribute);
         literalNameAttribute = enumAttribute instanceof IEnumLiteralNameAttribute;
     }
 

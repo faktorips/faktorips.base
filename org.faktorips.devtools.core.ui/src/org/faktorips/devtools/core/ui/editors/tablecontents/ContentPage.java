@@ -96,7 +96,7 @@ public class ContentPage extends IpsObjectEditorPage {
     public ContentPage(TableContentsEditor editor) {
         super(editor, PAGE_ID, Messages.ContentPage_title);
         tableContents = editor.getTableContents();
-        extFactory = new ExtensionPropertyControlFactory(tableContents.getClass());
+        extFactory = new ExtensionPropertyControlFactory(tableContents);
 
     }
 
@@ -119,7 +119,7 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
 
-        if (extFactory.needsToCreateControlsFor(tableContents, IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             createExtensionProperty(formBody, toolkit);
         }
         Table table = createTable(formBody);

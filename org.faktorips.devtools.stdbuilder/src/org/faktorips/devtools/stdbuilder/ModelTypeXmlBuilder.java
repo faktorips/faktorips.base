@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -276,9 +277,9 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     private void addExtensionProperties(IExtensionPropertyAccess element, Element modelElement) {
-        IExtensionPropertyDefinition[] extensionPropertyDefinitions = getIpsProject().getIpsModel()
-                .getExtensionPropertyDefinitions(element.getClass(), true);
-        if (extensionPropertyDefinitions.length > 0) {
+        Collection<IExtensionPropertyDefinition> extensionPropertyDefinitions = element
+                .getExtensionPropertyDefinitions();
+        if (!extensionPropertyDefinitions.isEmpty()) {
             Element extensionProperties = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_WRAPPER_TAG);
             modelElement.appendChild(extensionProperties);
             for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {

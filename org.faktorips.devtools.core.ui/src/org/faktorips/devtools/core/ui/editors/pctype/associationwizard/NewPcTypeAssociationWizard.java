@@ -114,9 +114,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         this.association = association;
         ipsProject = association.getIpsProject();
-        extFactoryAssociation = new ExtensionPropertyControlFactory(association.getClass());
-        extFactoryInverseAssociation = new ExtensionPropertyControlFactory(association.getClass());
-        extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(IProductCmptTypeAssociation.class);
+        extFactoryAssociation = new ExtensionPropertyControlFactory(association);
 
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
@@ -549,6 +547,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
 
         IPolicyCmptTypeAssociation newInverseAssociation = association.newInverseAssociation();
+        extFactoryInverseAssociation = new ExtensionPropertyControlFactory(newInverseAssociation);
         storeInverseAssociation(newInverseAssociation);
     }
 
@@ -562,6 +561,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
         productCmptTypeIsDirty = productCmptType.getIpsSrcFile().isDirty();
         productCmptTypeAssociation = productCmptType.newAssociation();
+        extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(productCmptTypeAssociation);
         IProductCmptType productCmptTypeTarget;
         try {
             productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);

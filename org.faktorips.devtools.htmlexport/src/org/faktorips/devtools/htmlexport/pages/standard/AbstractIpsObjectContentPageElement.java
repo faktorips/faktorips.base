@@ -13,7 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import org.apache.commons.lang.ArrayUtils;
+import java.util.Collection;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -211,10 +212,10 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     }
 
     protected void addExtensionPropertiesTable() {
-        IExtensionPropertyDefinition[] properties = getDocumentedIpsObject().getIpsModel()
-                .getExtensionPropertyDefinitions(getDocumentedIpsObject().getClass(), true);
+        Collection<IExtensionPropertyDefinition> properties = getDocumentedIpsObject()
+                .getExtensionPropertyDefinitions();
 
-        if (ArrayUtils.isEmpty(properties)) {
+        if (properties.isEmpty()) {
             return;
         }
 

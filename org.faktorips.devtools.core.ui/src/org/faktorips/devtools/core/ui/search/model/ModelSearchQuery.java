@@ -65,7 +65,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     private void addMatches(Set<IType> searchedTypes) throws CoreException {
         WildcardMatcher stringMatcher = new WildcardMatcher(getSearchModel().getSearchTerm());
         ClassMatcher classMatcher = new ClassMatcher(getSearchModel().getSearchedClazzes());
-        ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher, getIpsModel());
+        ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher);
 
         for (IType type : searchedTypes) {
 

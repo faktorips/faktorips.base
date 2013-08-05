@@ -84,6 +84,7 @@ import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -1167,21 +1168,47 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
+     *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
+     *             extension property is applicable or not. Use
+     *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
+     */
     @Override
+    @Deprecated
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
-
         Set<IExtensionPropertyDefinition> props = customModelExtensions.getExtensionPropertyDefinitions(type,
                 includeSupertypesAndInterfaces);
         return props.toArray(new IExtensionPropertyDefinition[props.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
+     *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
+     *             extension property is applicable or not. Use
+     *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
+     */
     @Override
+    @Deprecated
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
-
         return customModelExtensions.getExtensionPropertyDefinition(type, propertyId, includeSupertypesAndInterfaces);
+    }
+
+    @Override
+    public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object) {
+        return customModelExtensions.getExtensionPropertyDefinitions(object);
+    }
+
+    @Override
+    public void clearExtensionPropertyCache() {
+        customModelExtensions.clearExtensionPropertyCache();
     }
 
     /**
@@ -1189,6 +1216,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * extension properties are discovered by extension point lookup.
      */
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
+        clearExtensionPropertyCache();
         customModelExtensions.addIpsObjectExtensionProperty(property);
     }
 

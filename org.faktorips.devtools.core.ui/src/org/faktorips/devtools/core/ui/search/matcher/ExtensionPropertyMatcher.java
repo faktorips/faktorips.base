@@ -13,11 +13,11 @@
 
 package org.faktorips.devtools.core.ui.search.matcher;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 
@@ -31,13 +31,13 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
  * @author dicker
  */
 public class ExtensionPropertyMatcher implements IMatcher<IIpsElement> {
-    private final WildcardMatcher wildcardMatcher;
-    private final Map<Class<? extends IExtensionPropertyAccess>, IExtensionPropertyDefinition[]> extensionProperties = new HashMap<Class<? extends IExtensionPropertyAccess>, IExtensionPropertyDefinition[]>();
-    private final IIpsModel ipsModel;
 
-    public ExtensionPropertyMatcher(WildcardMatcher wildcardMatcher, IIpsModel ipsModel) {
+    private final WildcardMatcher wildcardMatcher;
+
+    private final Map<Class<? extends IExtensionPropertyAccess>, Collection<IExtensionPropertyDefinition>> extensionProperties = new HashMap<Class<? extends IExtensionPropertyAccess>, Collection<IExtensionPropertyDefinition>>();
+
+    public ExtensionPropertyMatcher(WildcardMatcher wildcardMatcher) {
         this.wildcardMatcher = wildcardMatcher;
-        this.ipsModel = ipsModel;
     }
 
     @Override
@@ -67,10 +67,10 @@ public class ExtensionPropertyMatcher implements IMatcher<IIpsElement> {
         return false;
     }
 
-    private IExtensionPropertyDefinition[] getExtensionProperties(IExtensionPropertyAccess element) {
+    private Collection<IExtensionPropertyDefinition> getExtensionProperties(IExtensionPropertyAccess element) {
         Class<? extends IExtensionPropertyAccess> clazz = element.getClass();
         if (!extensionProperties.containsKey(clazz)) {
-            extensionProperties.put(clazz, ipsModel.getExtensionPropertyDefinitions(clazz, true));
+            extensionProperties.put(clazz, element.getExtensionPropertyDefinitions());
         }
         return extensionProperties.get(clazz);
     }

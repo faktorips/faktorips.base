@@ -100,7 +100,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         initialName = association.getName();
         initialPluralName = association.getTargetRolePlural();
         ipsProject = association.getIpsProject();
-        extFactory = new ExtensionPropertyControlFactory(association.getClass());
+        extFactory = new ExtensionPropertyControlFactory(association);
         searchInverseAssociation();
         pmoAssociation = new PmoPolicyCmptTypeAssociation(association);
 

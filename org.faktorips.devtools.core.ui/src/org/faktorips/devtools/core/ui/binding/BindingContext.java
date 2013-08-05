@@ -341,8 +341,8 @@ public class BindingContext {
 
     protected <T> FieldPropertyMapping<T> createMapping(EditField<T> editField, Object object, String propertyName) {
         if (object instanceof IExtensionPropertyAccess) {
-            IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel()
-                    .getExtensionPropertyDefinition(object.getClass(), propertyName, true);
+            IExtensionPropertyDefinition extProperty = ((IExtensionPropertyAccess)object)
+                    .getExtensionPropertyDefinition(propertyName);
             if (extProperty != null) {
                 return new FieldExtensionPropertyMapping<T>(editField, (IExtensionPropertyAccess)object, propertyName);
             }
