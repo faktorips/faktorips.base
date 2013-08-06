@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>1.3.0</version>
+	<version>1.4.0</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -23,8 +23,8 @@
 
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
-		<tycho-version>0.16.0</tycho-version>
-		<tycho-extras-version>0.16.0</tycho-extras-version>
+		<tycho-version>0.18.0</tycho-version>
+		<tycho-extras-version>0.18.0</tycho-extras-version>
 		<checkstyle-version>2.9.1</checkstyle-version>
 		<findbugs-version>2.4.0</findbugs-version>
 		<version.kind>ci</version.kind>
@@ -196,6 +196,33 @@
 						<id>plugin-source</id>
 						<goals>
 							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>source-feature</id>
+						<phase>package</phase>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Needed to correctly generate source featured, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=398250 -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-p2-metadata</id>
+						<phase>package</phase>
+						<goals>
+							<goal>p2-metadata</goal>
 						</goals>
 					</execution>
 				</executions>
