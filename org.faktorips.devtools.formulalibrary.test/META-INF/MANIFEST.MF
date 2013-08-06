@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Faktor-IPS Formula Library Test
-Bundle-SymbolicName: org.faktorips.devtools.formulalibrary.test
-Bundle-Version: 3.10.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Fragment-Host: org.faktorips.devtools.formulalibrary
-Bundle-ClassPath: .
-Require-Bundle: org.faktorips.abstracttest

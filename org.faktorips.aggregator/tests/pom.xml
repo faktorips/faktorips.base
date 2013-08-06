@@ -20,8 +20,6 @@
 		<module>../../org.faktorips.devtools.ant.test</module>
 		<module>../../org.faktorips.devtools.core.test</module>
 		<module>../../org.faktorips.devtools.core.ui.test</module>
-		<module>../../org.faktorips.devtools.formulalibrary.test</module>
-		<module>../../org.faktorips.devtools.formulalibrary.ui.test</module>
 		<module>../../org.faktorips.devtools.htmlexport.test</module>
 		<module>../../org.faktorips.devtools.stdbuilder.test</module>
 		<module>../../org.faktorips.devtools.stdbuilder.ui.test</module>
