@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -62,16 +64,26 @@ import org.faktorips.values.LocalizedString;
  */
 public class AttributeValueEditComposite extends EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
 
+    private ExtensionPropertyControlFactory extProContFact;
+    private IAttributeValue propertyValue;
+    private UIToolkit toolkit;
+
     public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
+
+        this.propertyValue = propertyValue;
+        this.toolkit = toolkit;
+        extProContFact = new ExtensionPropertyControlFactory(propertyValue.getClass());
+
         initControls();
     }
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
         createValueEditField(editFields);
+        createControlForExtensionProperty();
     }
 
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
@@ -79,6 +91,17 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                 getPropertyValue().getIpsProject());
         EditField<?> editField = createEditField(datatype);
         registerAndBindEditField(editFields, editField);
+    }
+
+    private void createControlForExtensionProperty() {
+        Composite composite = toolkit.createLabelEditColumnComposite(this);
+        if (extProContFact.needsToCreateControlsFor(propertyValue, IExtensionPropertyDefinition.POSITION_TOP)) {
+            extProContFact.createControls(composite, toolkit, propertyValue, IExtensionPropertyDefinition.POSITION_TOP);
+        }
+        if (extProContFact.needsToCreateControlsFor(propertyValue, IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+            extProContFact.createControls(composite, toolkit, propertyValue,
+                    IExtensionPropertyDefinition.POSITION_BOTTOM);
+        }
     }
 
     protected EditField<?> createEditField(ValueDatatype datatype) {
