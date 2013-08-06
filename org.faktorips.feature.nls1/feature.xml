@@ -420,8 +420,6 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.faktorips.devtools.htmlexport"/>
       <import plugin="org.faktorips.devtools.stdbuilder"/>
       <import plugin="org.faktorips.devtools.stdbuilder.ui"/>
-      <import plugin="org.faktorips.devtools.formulalibrary"/>
-      <import plugin="org.faktorips.devtools.formulalibrary.ui"/>
    </requires>
 
    <plugin
