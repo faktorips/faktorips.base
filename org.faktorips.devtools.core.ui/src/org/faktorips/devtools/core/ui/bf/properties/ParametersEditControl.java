@@ -486,12 +486,13 @@ public class ParametersEditControl extends Composite {
         fTableViewer.setCellModifier(new ParametersCellModifier());
     }
 
+    @SuppressWarnings("deprecation")
     private SubjectControlContentAssistant installParameterTypeContentAssist(Control control) {
         if (!(control instanceof Text)) {
             return null;
         }
         Text text = (Text)control;
-        @SuppressWarnings("deprecation")
+
         org.faktorips.devtools.core.ui.DatatypeCompletionProcessor processor = new org.faktorips.devtools.core.ui.DatatypeCompletionProcessor();
         processor.setIpsProject(ipsProject);
         SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
