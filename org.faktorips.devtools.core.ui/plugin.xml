@@ -3024,16 +3024,4 @@
           primary="true">
     </toc>
  </extension>
- <extension
-       id="org.faktorips.devtools.core.ui.ConfigElementExtensionPropertyDefinition"
-       name="Chelas!"
-       point="org.faktorips.devtools.core.objectExtensionProperty">
-    <property
-          class="org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition"
-          defaultValue="def"
-          extendedType="org.faktorips.devtools.core.model.productcmpt.IConfigElement"
-          order="0"
-          position="top">
-    </property>
- </extension>
 </plugin>

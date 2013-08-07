@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.ValueDatatype;
@@ -65,19 +67,19 @@ import org.faktorips.values.LocalizedString;
 public class AttributeValueEditComposite extends EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
 
     private ExtensionPropertyControlFactory extProContFact;
-    private IAttributeValue propertyValue;
-    private UIToolkit toolkit;
 
     public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
-
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
-
-        this.propertyValue = propertyValue;
-        this.toolkit = toolkit;
-        extProContFact = new ExtensionPropertyControlFactory(propertyValue.getClass());
-
+        extProContFact = new ExtensionPropertyControlFactory(propertyValue);
         initControls();
+    }
+
+    @Override
+    protected void setLayout() {
+        super.setLayout();
+        GridLayout clientLayout = (GridLayout)getLayout();
+        clientLayout.numColumns = 2;
     }
 
     @Override
@@ -91,17 +93,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                 getPropertyValue().getIpsProject());
         EditField<?> editField = createEditField(datatype);
         registerAndBindEditField(editFields, editField);
-    }
-
-    private void createControlForExtensionProperty() {
-        Composite composite = toolkit.createLabelEditColumnComposite(this);
-        if (extProContFact.needsToCreateControlsFor(propertyValue, IExtensionPropertyDefinition.POSITION_TOP)) {
-            extProContFact.createControls(composite, toolkit, propertyValue, IExtensionPropertyDefinition.POSITION_TOP);
-        }
-        if (extProContFact.needsToCreateControlsFor(propertyValue, IExtensionPropertyDefinition.POSITION_BOTTOM)) {
-            extProContFact.createControls(composite, toolkit, propertyValue,
-                    IExtensionPropertyDefinition.POSITION_BOTTOM);
-        }
     }
 
     protected EditField<?> createEditField(ValueDatatype datatype) {
@@ -140,6 +131,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             }
         }
         if (editField != null) {
+            ((GridData)editField.getControl().getLayoutData()).horizontalSpan = 2;
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
             return editField;
@@ -162,6 +154,14 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
+    }
+
+    private void createControlForExtensionProperty() {
+        extProContFact
+                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+        extProContFact.createControls(this, getToolkit(), getPropertyValue(),
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extProContFact.bind(getBindingContext());
     }
 
     private static class MyMultilingualValueAttributeHandler extends InternationalStringDialogHandler {

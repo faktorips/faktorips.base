@@ -57,13 +57,13 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class ConfigElementEditComposite extends EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
 
-    private ExtensionPropertyControlFactory extPropControlFactory = new ExtensionPropertyControlFactory(
-            getPropertyValue());
+    private ExtensionPropertyControlFactory extPropControlFactory;
 
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
+        extPropControlFactory = new ExtensionPropertyControlFactory(propertyValue);
         initControls();
     }
 
@@ -263,6 +263,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 IExtensionPropertyDefinition.POSITION_TOP);
         extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extPropControlFactory.bind(getBindingContext());
     }
 
     @Override

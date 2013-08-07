@@ -76,6 +76,20 @@ public class ExtensionPropertyControlFactory {
         }
     }
 
+    /**
+     * Checks whether controls need to be created.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} for which the controls may
+     *            need to be created
+     * @param position the position where the controls would be created
+     * @deprecated use {@link #needsToCreateControlsFor(String)} instead because the factory
+     *             completely depends on only one {@link IIpsObjectPartContainer}
+     */
+    @Deprecated
+    public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPartContainer, String position) {
+        return needsToCreateControlsFor(position);
+    }
+
     public boolean needsToCreateControlsFor(String position) {
         for (ExtPropControlData element : extPropData) {
             if (position.equals(element.extProperty.getPosition()) && (element.editField == null)) {
@@ -225,9 +239,10 @@ public class ExtensionPropertyControlFactory {
     }
 
     private class ExtPropControlData implements Comparable<ExtPropControlData> {
-        IExtensionPropertyDefinition extProperty;
-        EditField<?> editField;
-        IIpsObjectPartContainer partContainer;
+
+        private IExtensionPropertyDefinition extProperty;
+        private EditField<?> editField;
+        private IIpsObjectPartContainer partContainer;
 
         public ExtPropControlData(IExtensionPropertyDefinition extProperty) {
             this.extProperty = extProperty;
