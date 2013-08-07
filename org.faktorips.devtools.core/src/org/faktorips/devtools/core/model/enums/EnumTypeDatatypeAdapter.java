@@ -192,9 +192,34 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
          */
     }
 
+    /**
+     * Compares enum valueA with enum valueB for order. Returns a negative integer, zero, or a
+     * positive integer as valueA is less than, equal to, or greater than valueB. A null value is
+     * considered to be bigger than any other enum value.
+     * <p>
+     * When a list of enum values is sorted, valueA will have a smaller index than valueB. Null
+     * value will always be placed at the end of the list.
+     * 
+     */
     @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+        try {
+            IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+            IEnumValue enumValueA = getEnumValueContainer().findEnumValue(valueA, ipsProject);
+            IEnumValue enumValueB = getEnumValueContainer().findEnumValue(valueB, ipsProject);
+            if (enumValueA == null) {
+                return enumValueB == null ? 0 : 1;
+            } else {
+                if (enumValueB == null) {
+                    return -1;
+                }
+            }
+            int indexA = getEnumValueContainer().getIndexOfEnumValue(enumValueA);
+            int indexB = getEnumValueContainer().getIndexOfEnumValue(enumValueB);
+            return indexA - indexB;
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -259,11 +284,11 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>false</tt>.
+     * Returns <tt>true</tt>.
      */
     @Override
     public boolean supportsCompare() {
-        return false;
+        return true;
     }
 
     @Override
