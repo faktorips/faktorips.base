@@ -21,6 +21,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -203,7 +204,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * 
      */
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         try {
             IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
             IEnumValue enumValueA = getEnumValueContainer().findEnumValue(valueA, ipsProject);
@@ -219,7 +220,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             int indexB = getEnumValueContainer().getIndexOfEnumValue(enumValueB);
             return indexA - indexB;
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
     }
 
