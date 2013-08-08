@@ -158,9 +158,9 @@ public class AssociationDerivedUnionGroup extends Composite {
 
     public class PmoAssociation extends IpsObjectPartPmo {
 
-        public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+        public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
 
-        public String previousTarget;
+        private String previousTarget;
 
         private IAssociation association;
 

@@ -250,7 +250,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     private static class ExtensionPropertiesCache {
 
-        private Map<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>> internalMap = new ConcurrentHashMap<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>>();
+        private final Map<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>> internalMap = new ConcurrentHashMap<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>>();
 
         public boolean isCached(IIpsObjectPartContainer object) {
             return internalMap.containsKey(object);

@@ -80,10 +80,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private final String initialName;
     private final String initialPluralName;
 
-    private IIpsProject ipsProject;
-    private IPolicyCmptTypeAssociation association;
+    private final IIpsProject ipsProject;
+    private final IPolicyCmptTypeAssociation association;
 
-    private ExtensionPropertyControlFactory extFactory;
+    private final ExtensionPropertyControlFactory extFactory;
     private IPolicyCmptTypeAssociation inverseAssociation;
     private Composite joinColumnComposite;
     private Composite cascadeTypesComposite;
@@ -472,9 +472,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     public class PmoPolicyCmptTypeAssociation extends IpsObjectPartPmo {
 
         public static final String PROPERTY_MATCHING_ASSOCIATION_REF_CONTROL_ENABLED = "matchingAssociationRefControlEnabled"; //$NON-NLS-1$
-        public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
-        public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
-        public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
+        public static final String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
+        public static final String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
+        public static final String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
         public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
         public static final String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$

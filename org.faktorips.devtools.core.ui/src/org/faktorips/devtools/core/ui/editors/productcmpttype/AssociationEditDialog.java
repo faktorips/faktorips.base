@@ -63,9 +63,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private final String initialName;
     private final String initialPluralName;
 
-    private IProductCmptTypeAssociation association;
-    private PmoAssociation pmoAssociation;
-    private ExtensionPropertyControlFactory extFactory;
+    private final IProductCmptTypeAssociation association;
+    private final PmoAssociation pmoAssociation;
+    private final ExtensionPropertyControlFactory extFactory;
 
     // the association that matches this when the dialog is opened. We need to update this
     // association in case of changes to the matching association.
@@ -351,11 +351,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
 
-        public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+        public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
 
-        public final static String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
+        public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
 
-        public final static String PROPERTY_MATCHING_ASSOCIATION = "matchingAssociation"; //$NON-NLS-1$
+        public static final String PROPERTY_MATCHING_ASSOCIATION = "matchingAssociation"; //$NON-NLS-1$
 
         private boolean subset;
 
