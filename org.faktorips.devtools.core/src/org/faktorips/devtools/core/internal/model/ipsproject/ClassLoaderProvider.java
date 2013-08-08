@@ -272,7 +272,7 @@ public class ClassLoaderProvider {
         if (jarFile == null) {
             return null;
         }
-        if (!jarFile.exists()) {
+        if (!jarFile.exists() || !jarFile.isFile()) {
             return null;
         }
         int index = jarFile.getName().lastIndexOf('.');

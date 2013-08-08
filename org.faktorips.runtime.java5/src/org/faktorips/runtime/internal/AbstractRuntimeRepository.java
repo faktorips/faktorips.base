@@ -153,7 +153,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
-    public final IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException {
+    public final IProductComponent getExistingProductComponent(String id) {
         if (id == null) {
             return null;
         }
@@ -488,15 +488,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return rootSuite;
     }
 
-    /*
-     * Comparator for IpsTest2 objects
-     */
-    private class IpsTestComparator implements Comparator<IpsTest2> {
-        public int compare(IpsTest2 o1, IpsTest2 o2) {
-            return (o1).getQualifiedName().compareTo((o2).getQualifiedName());
-        }
-    }
-
     private void addTest(HashMap<String, IpsTestSuite> suites, IpsTest2 test) {
         IpsTestSuite suite = getTestSuite(suites, test.getQualifiedName());
         suite.addTest(test);
@@ -726,6 +717,26 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
+    public <T> int compareEnumValues(T enumValueA, T enumValueB) {
+        if (enumValueA == null) {
+            return enumValueB == null ? 0 : 1;
+        } else {
+            if (enumValueB == null) {
+                return -1;
+            }
+        }
+        if (enumValueA.equals(enumValueB)) {
+            return 0;
+        }
+        List<? extends Object> enumValues = getEnumValues(enumValueA.getClass());
+        int indexA = enumValues.indexOf(enumValueA);
+        int indexB = enumValues.indexOf(enumValueB);
+        if (indexA >= 0 && indexB >= 0) {
+            return indexA - indexB;
+        }
+        throw new ClassCastException("Cannot compare " + enumValueA + " with " + enumValueB);
+    }
+
     private void throwUnableToCallMethodException(Exception e) throws IllegalStateException {
         throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e); //$NON-NLS-1$
     }
@@ -883,5 +894,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * and not the ones this repository depends on.
      */
     protected abstract <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName);
+
+    /*
+     * Comparator for IpsTest2 objects
+     */
+    private class IpsTestComparator implements Comparator<IpsTest2> {
+        public int compare(IpsTest2 o1, IpsTest2 o2) {
+            return (o1).getQualifiedName().compareTo((o2).getQualifiedName());
+        }
+    }
 
 }

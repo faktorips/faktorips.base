@@ -69,6 +69,8 @@ import org.faktorips.values.InternationalString;
  */
 public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
+    private static final String PRODUCT_REPOSITORY = "productRepository";
+
     private static final String VARNAME_MESSAGE_HELPER = "messageHelper";
 
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
@@ -139,11 +141,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return false;
         }
 
-        if (!(enumType.isContainingValues())) {
-            return true;
-        } else {
-            return false;
-        }
+        return !enumType.isContainingValues();
     }
 
     /**
@@ -174,7 +172,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
         mainSection.setClassModifier(classModifier);
-        mainSection.setUnqualifiedName(getJavaNamingConvention().getTypeName(enumType.getName()));
+        String typeName = getJavaNamingConvention().getTypeName(enumType.getName());
+        mainSection.setUnqualifiedName(typeName);
         String description = getDescriptionInGeneratorLanguage(enumType);
         mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
 
@@ -204,6 +203,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 implementedInterfaces.add(Serializable.class.getName());
             }
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
+        }
+        if (isGenerateMethodeCompareTo()) {
+            implementedInterfaces.add(Comparable.class.getName() + "<" + typeName + ">");
         }
         mainSection.setExtendedInterfaces(implementedInterfaces.toArray(new String[implementedInterfaces.size()]));
 
@@ -653,13 +655,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String codeName = getMemberVarName(attributeName);
 
             if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
-                /*
-                 * If the generation artifact is a class and the attribute is inherited do not
-                 * generate source code for this attribute because it is also inherited in the
-                 * source code.
-                 */
-                if (!(useClassGeneration() && currentEnumAttribute.isInherited())
-                        || (useClassGeneration() && !(enumType.isContainingValues()))) {
+                if (isGenerateAttributeCode(currentEnumAttribute)) {
                     DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, true);
                     if (datatypeHelper != null) {
                         /*
@@ -674,6 +670,20 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 }
             }
         }
+        if (isGenerateMethodeCompareTo()) {
+            attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
+            attributeBuilder.append("private final ").appendClassName(IRuntimeRepository.class).append(" ")
+                    .append(PRODUCT_REPOSITORY).append(";");
+        }
+    }
+
+    /**
+     * If the generation artifact is a class and the attribute is inherited do not generate source
+     * code for this attribute because it is also inherited in the source code.
+     */
+    private boolean isGenerateAttributeCode(IEnumAttribute currentEnumAttribute) {
+        return !(useClassGeneration() && currentEnumAttribute.isInherited())
+                || (useClassGeneration() && !(getEnumType().isContainingValues()));
     }
 
     private boolean isGenerateFieldFor(IEnumAttribute enumAttribute) {
@@ -771,6 +781,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         for (IEnumAttribute currentEnumAttribute : enumAttributesIncludeSupertypeCopies) {
             appendFieldDeclaration(currentEnumAttribute, argNames[i++], body);
         }
+        body.append("this.").append(PRODUCT_REPOSITORY).append(" = ").append(PRODUCT_REPOSITORY).append(";");
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
         constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType), argNames, argClasses);
         constructorBuilder.append(body);
@@ -790,7 +801,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 argClasses[i] = String.class;
             }
         }
-        argNames[argNames.length - 1] = "productRepository";
+        argNames[argNames.length - 1] = PRODUCT_REPOSITORY;
         argClasses[argClasses.length - 1] = IRuntimeRepository.class;
     }
 
@@ -827,7 +838,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             EnumTypeDatatypeHelper enumHelper,
             String expression) throws CoreException {
         body.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(),
-                expression, new JavaCodeFragment("productRepository"))); //$NON-NLS-1$
+                expression, new JavaCodeFragment(PRODUCT_REPOSITORY)));
         body.append(';');
         body.appendln();
     }
@@ -849,6 +860,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 constructorMethodBody.appendln();
             }
         }
+        if (isGenerateMethodeCompareTo()) {
+            constructorMethodBody.append("this.").append(PRODUCT_REPOSITORY).append(" = ").append("null").append(";");
+        }
     }
 
     private void generateCodeForMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
@@ -861,6 +875,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodEquals(methodBuilder);
         generateMethodHashCode(methodBuilder);
         generateMethodGetEnumValueId(methodBuilder);
+        generateMethodeCompareToForEnumsWithSeperateContent(methodBuilder);
     }
 
     private void generateMethodGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
@@ -1261,6 +1276,35 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE.getName(), "hashCode", new String[0], new String[0]); //$NON-NLS-1$
         methodBuilder.append(body);
         methodBuilder.methodEnd();
+    }
+
+    private void generateMethodeCompareToForEnumsWithSeperateContent(JavaCodeFragmentBuilder methodBuilder) {
+        if (isGenerateMethodeCompareTo()) {
+            generateCompareToMethod(methodBuilder);
+        }
+    }
+
+    private void generateCompareToMethod(JavaCodeFragmentBuilder methodBuilder) {
+        methodBuilder.javaDoc("", ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodBuilder, true);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE.getName(), "compareTo", new String[] { "o" },
+                new String[] { getJavaNamingConvention().getTypeName(getEnumType().getName()) });
+        methodBuilder.append(getCompareToMethodBody());
+        methodBuilder.methodEnd();
+    }
+
+    private JavaCodeFragment getCompareToMethodBody() {
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.append("if (").append(PRODUCT_REPOSITORY).append(" != ").append("null)"); //$NON-NLS-1$
+        body.appendOpenBracket();
+        body.append("return ").append(PRODUCT_REPOSITORY).append(".compareEnumValues(this, o);");
+        body.appendCloseBracket();
+        body.append("return 0;");
+        return body;
+    }
+
+    boolean isGenerateMethodeCompareTo() {
+        return !getEnumType().isContainingValues() && !useInterfaceGeneration();
     }
 
     /**

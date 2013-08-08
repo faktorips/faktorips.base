@@ -195,6 +195,21 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         assertTrue(generatedJavaElements.contains(javaEnum.getField("NAME")));
     }
 
+    @Test
+    public void testGenerateMethodeCompareToOtherEnum_withoutContentSeperatedEnum() throws Exception {
+        builder.beforeBuild(enumType.getIpsSrcFile(), null);
+
+        assertFalse(builder.isGenerateMethodeCompareTo());
+    }
+
+    @Test
+    public void testGenerateMethodeCompareToOtherEnum_withContentSeperatedEnum() throws Exception {
+        enumType.setContainingValues(false);
+        builder.beforeBuild(enumType.getIpsSrcFile(), null);
+
+        assertTrue(builder.isGenerateMethodeCompareTo());
+    }
+
     private void expectMemberVar(IEnumAttribute enumAttribute, boolean shallExist) {
         String memberVarName = builder.getMemberVarName(enumAttribute.getName());
         IField memberVar = javaEnum.getField(memberVarName);

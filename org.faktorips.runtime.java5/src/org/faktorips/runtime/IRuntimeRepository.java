@@ -95,7 +95,7 @@ public interface IRuntimeRepository {
      * 
      * @see #getProductComponent(String)
      */
-    public IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException;
+    public IProductComponent getExistingProductComponent(String id);
 
     /**
      * Returns the product component identified by the given KindId and versionId. If versionId is
@@ -141,6 +141,25 @@ public interface IRuntimeRepository {
      * @param id The enum value's identification
      */
     public <T> T getEnumValue(Class<T> clazz, Object id);
+
+    /**
+     * Compares two enum values according to value1.compareTo(value2) as defined in
+     * {@link Comparable#compareTo(Object)}.
+     * <p>
+     * If one of the values is <code>null</code> it would be greater than the other one. If both are
+     * <code>null</code> they are equal.
+     * 
+     * @param value1 The first value that is compared to the second one
+     * @param value2 The second value
+     * 
+     * @return 0 if value1 is equal to value2, less than 0 if index of value1 is smaller than the
+     *         index of value2, greater 0 if index of value1 is higher than the index of value2
+     * 
+     * @see Comparable
+     * 
+     * @throws ClassCastException if the two values are not instances of the same enum type
+     */
+    public <T> int compareEnumValues(T value1, T value2);
 
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as
