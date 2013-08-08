@@ -347,31 +347,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
         final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents = new HashMap<IIpsSrcFile, ContentChangeEvent>();
-        ContentsChangeListener batchListener = new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                ContentChangeEvent newEvent = null;
-                ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
-                if (previousEvent == null) {
-                    newEvent = event;
-                } else {
-                    newEvent = mergeChangeEvent(event, previousEvent);
-                }
-                changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
-            }
-
-            private ContentChangeEvent mergeChangeEvent(ContentChangeEvent ce1, ContentChangeEvent ce2) {
-                if (ce1.getEventType() == ce2.getEventType()) {
-                    if (ce1.getPart() != null && ce1.getPart().equals(ce2.getPart())) {
-                        // same event type and part, thus no new event type needed
-                        return ce1;
-                    }
-                }
-                // different event types, return WholeContentChangedEvent
-                return ContentChangeEvent.newWholeContentChangedEvent(ce1.getIpsSrcFile());
-            }
-        };
+        ContentsChangeListener batchListener = new ContentsChangeListenerImplementation(changedSrcFileEvents);
         changeListeners.clear();
         addChangeListener(batchListener);
 
@@ -674,30 +650,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$
         }
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
-        display.syncExec(new Runnable() {
-            @Override
-            public void run() {
-                List<IModificationStatusChangeListener> copy = new CopyOnWriteArrayList<IModificationStatusChangeListener>(
-                        modificationStatusChangeListeners);
-                for (IModificationStatusChangeListener listener : copy) {
-                    try {
-                        if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: "//$NON-NLS-1$
-                                    + listener);
-                        }
-                        listener.modificationStatusHasChanged(event);
-                        if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out
-                                    .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                            + listener);
-                        }
-                    } catch (Exception e) {
-                        IpsPlugin.log(new IpsStatus("Error notifying IPS model ModificationStatusChangeListeners", //$NON-NLS-1$
-                                e));
-                    }
-                }
-            }
-        });
+        display.syncExec(new RunnableModificationStatusChangeListenerImplementation(event));
     }
 
     @Override
@@ -723,31 +676,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.notfiyChangeListeners(): " + changeListeners.size() + " listeners"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        final Runnable notifier = new Runnable() {
-            @Override
-            public void run() {
-                List<ContentsChangeListener> copy = new CopyOnWriteArrayList<ContentsChangeListener>(changeListeners);
-                for (ContentsChangeListener listener : copy) {
-                    if (!event.getIpsSrcFile().exists()) {
-                        break;
-                    }
-                    try {
-                        if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: "//$NON-NLS-1$
-                                    + listener);
-                        }
-                        listener.contentsChanged(event);
-                        if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notfiyChangeListeners(): Finished notifying listener: "//$NON-NLS-1$
-                                    + listener);
-                        }
-                    } catch (Exception e) {
-                        IpsPlugin.log(new IpsStatus("Error notifying IPS model change listener", //$NON-NLS-1$
-                                e));
-                    }
-                }
-            }
-        };
+        final Runnable notifier = new RunnableChangeListenerImplementation(event);
         if (PlatformUI.isWorkbenchRunning() && Display.getCurrent() == null) {
             // only run notify in async display thread if we are not already in display thread.
             PlatformUI.getWorkbench().getDisplay().asyncExec(notifier);
@@ -780,8 +709,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
-        return "IpsModel";//$NON-NLS-1$
+        return "IpsModel"; //$NON-NLS-1$
     }
 
     @Override
@@ -1012,6 +946,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         projectPropertiesMap.remove(ipsProject.getName());
     }
 
+    // CSOFF: IllegalCatch
     /**
      * Reads the project's data from the .ipsproject file.
      */
@@ -1056,6 +991,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
         return data;
     }
+
+    // CSON: IllegalCatch
 
     /**
      * Intializes the datatypes and their helpers for the project.
@@ -1112,10 +1049,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     if (!visitor.changedIpsSrcFiles.isEmpty()) {
                         notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
                     }
+                    // CSOFF: IllegalCatch
                 } catch (Exception e) {
                     IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
                             e));
                 }
+                // CSON: IllegalCatch
             }
         }
     }
@@ -1759,6 +1698,104 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public void delete() throws CoreException {
         throw new UnsupportedOperationException("The IPS Model cannot be deleted."); //$NON-NLS-1$
+    }
+
+    private final class RunnableChangeListenerImplementation implements Runnable {
+        private final ContentChangeEvent event;
+
+        private RunnableChangeListenerImplementation(ContentChangeEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public void run() {
+            List<ContentsChangeListener> copy = new CopyOnWriteArrayList<ContentsChangeListener>(changeListeners);
+            for (ContentsChangeListener listener : copy) {
+                if (!event.getIpsSrcFile().exists()) {
+                    break;
+                }
+                try {
+                    if (TRACE_MODEL_CHANGE_LISTENERS) {
+                        System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: "//$NON-NLS-1$
+                                + listener);
+                    }
+                    listener.contentsChanged(event);
+                    if (TRACE_MODEL_CHANGE_LISTENERS) {
+                        System.out.println("IpsModel.notfiyChangeListeners(): Finished notifying listener: "//$NON-NLS-1$
+                                + listener);
+                    }
+                    // CSOFF: IllegalCatch
+                } catch (Exception e) {
+                    IpsPlugin.log(new IpsStatus("Error notifying IPS model change listener", //$NON-NLS-1$
+                            e));
+                }
+                // CSON: IllegalCatch
+            }
+        }
+    }
+
+    private final class RunnableModificationStatusChangeListenerImplementation implements Runnable {
+        private final ModificationStatusChangedEvent event;
+
+        private RunnableModificationStatusChangeListenerImplementation(ModificationStatusChangedEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public void run() {
+            List<IModificationStatusChangeListener> copy = new CopyOnWriteArrayList<IModificationStatusChangeListener>(
+                    modificationStatusChangeListeners);
+            for (IModificationStatusChangeListener listener : copy) {
+                try {
+                    if (TRACE_MODEL_CHANGE_LISTENERS) {
+                        System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: "//$NON-NLS-1$
+                                + listener);
+                    }
+                    listener.modificationStatusHasChanged(event);
+                    if (TRACE_MODEL_CHANGE_LISTENERS) {
+                        System.out
+                                .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
+                                        + listener);
+                    }
+                    // CSOFF: IllegalCatch
+                } catch (Exception e) {
+                    IpsPlugin.log(new IpsStatus("Error notifying IPS model ModificationStatusChangeListeners", //$NON-NLS-1$
+                            e));
+                }
+                // CSON: IllegalCatch
+            }
+        }
+    }
+
+    private final class ContentsChangeListenerImplementation implements ContentsChangeListener {
+        private final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents;
+
+        private ContentsChangeListenerImplementation(Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents) {
+            this.changedSrcFileEvents = changedSrcFileEvents;
+        }
+
+        @Override
+        public void contentsChanged(ContentChangeEvent event) {
+            ContentChangeEvent newEvent = null;
+            ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
+            if (previousEvent == null) {
+                newEvent = event;
+            } else {
+                newEvent = mergeChangeEvent(event, previousEvent);
+            }
+            changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
+        }
+
+        private ContentChangeEvent mergeChangeEvent(ContentChangeEvent ce1, ContentChangeEvent ce2) {
+            if (ce1.getEventType() == ce2.getEventType()) {
+                if (ce1.getPart() != null && ce1.getPart().equals(ce2.getPart())) {
+                    // same event type and part, thus no new event type needed
+                    return ce1;
+                }
+            }
+            // different event types, return WholeContentChangedEvent
+            return ContentChangeEvent.newWholeContentChangedEvent(ce1.getIpsSrcFile());
+        }
     }
 
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {
