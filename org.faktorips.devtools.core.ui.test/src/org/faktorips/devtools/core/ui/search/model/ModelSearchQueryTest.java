@@ -15,12 +15,11 @@ package org.faktorips.devtools.core.ui.search.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,9 +66,6 @@ public class ModelSearchQueryTest {
         searchModel = mock(ModelSearchPresentationModel.class);
 
         ipsModel = mock(IIpsModel.class);
-
-        when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
-                new IExtensionPropertyDefinition[0]);
 
         scope = mock(IIpsSearchScope.class);
 
@@ -527,9 +523,6 @@ public class ModelSearchQueryTest {
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
         when(extensionPropertyDefinition.getPropertyId()).thenReturn(propertyId);
 
-        when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
-                new IExtensionPropertyDefinition[] { extensionPropertyDefinition });
-
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
         set.add(IAttribute.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
@@ -566,6 +559,9 @@ public class ModelSearchQueryTest {
         when(type2.getExtPropertyValue(propertyId)).thenReturn("XYZ");
 
         when(searchModel.getSearchTerm()).thenReturn("/PM0*");
+
+        when(type1.getExtensionPropertyDefinitions()).thenReturn(Arrays.asList(extensionPropertyDefinition));
+        when(type2.getExtensionPropertyDefinitions()).thenReturn(Arrays.asList(extensionPropertyDefinition));
 
         IStatus status = query.run(new NullProgressMonitor());
 

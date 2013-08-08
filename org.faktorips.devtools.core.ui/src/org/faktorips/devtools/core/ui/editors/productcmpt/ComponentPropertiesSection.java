@@ -88,7 +88,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
         this.product = product;
         this.editor = editor;
-        extFactory = new ExtensionPropertyControlFactory(product.getClass());
+        extFactory = new ExtensionPropertyControlFactory(product);
 
         initControls();
         setText(Messages.ProductAttributesSection_attribute);

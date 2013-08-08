@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.extproperties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -32,7 +33,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class ExtensionPropertyDefinition implements IExtensionPropertyDefinition {
+public abstract class ExtensionPropertyDefinition implements IExtensionPropertyDefinition2 {
 
     private Class<?> extendedType;
     private String propertyId;
@@ -67,6 +68,10 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     @Override
     public Object getDefaultValue() {
         return defaultValue;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -134,6 +139,16 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      */
     @Override
     public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The default implementation simply always return <code>true</code>.
+     */
+    @Override
+    public boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         return true;
     }
 

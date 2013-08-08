@@ -50,7 +50,7 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
 
     public CategoryEditDialog(IProductCmptCategory category, Shell parentShell) {
         super(category, parentShell, Messages.CategoryEditDialog_title, true);
-        extensionFactory = new ExtensionPropertyControlFactory(category.getClass());
+        extensionFactory = new ExtensionPropertyControlFactory(category);
     }
 
     @Override

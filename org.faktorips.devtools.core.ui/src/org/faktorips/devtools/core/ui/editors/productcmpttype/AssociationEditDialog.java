@@ -63,9 +63,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private final String initialName;
     private final String initialPluralName;
 
-    private IProductCmptTypeAssociation association;
-    private PmoAssociation pmoAssociation;
-    private ExtensionPropertyControlFactory extFactory;
+    private final IProductCmptTypeAssociation association;
+    private final PmoAssociation pmoAssociation;
+    private final ExtensionPropertyControlFactory extFactory;
 
     // the association that matches this when the dialog is opened. We need to update this
     // association in case of changes to the matching association.
@@ -77,7 +77,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         initialName = association.getName();
         initialPluralName = association.getTargetRolePlural();
         this.pmoAssociation = new PmoAssociation();
-        extFactory = new ExtensionPropertyControlFactory(association.getClass());
+        extFactory = new ExtensionPropertyControlFactory(association);
         try {
             oldMatchingAssociation = association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
         } catch (CoreException e) {
@@ -127,7 +127,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createExtensionArea(Composite parent, String position) {
-        if (!extFactory.needsToCreateControlsFor(association, position)) {
+        if (!extFactory.needsToCreateControlsFor(position)) {
             return;
         }
         Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
@@ -351,11 +351,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
 
-        public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+        public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
 
-        public final static String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
+        public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
 
-        public final static String PROPERTY_MATCHING_ASSOCIATION = "matchingAssociation"; //$NON-NLS-1$
+        public static final String PROPERTY_MATCHING_ASSOCIATION = "matchingAssociation"; //$NON-NLS-1$
 
         private boolean subset;
 

@@ -40,7 +40,7 @@ public class GeneralInfoSection extends IpsSection {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
 
         this.tableStructure = tableStructure;
-        extFactory = new ExtensionPropertyControlFactory(tableStructure.getClass());
+        extFactory = new ExtensionPropertyControlFactory(tableStructure);
 
         initControls();
         setText(Messages.GeneralInfoSection_labelGeneralInfoSection);

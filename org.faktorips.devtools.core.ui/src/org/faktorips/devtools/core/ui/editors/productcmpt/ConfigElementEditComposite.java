@@ -27,11 +27,13 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -48,16 +50,20 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann, Faktor Zehn AG
+ * @author Alexander Weickmann
  * 
  * @see IConfigElement
  * @see IValueSet
  */
 public class ConfigElementEditComposite extends EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
+
+    private ExtensionPropertyControlFactory extPropControlFactory;
+
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
+        extPropControlFactory = new ExtensionPropertyControlFactory(propertyValue);
         initControls();
     }
 
@@ -79,6 +85,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 createEditFieldForOthers(editFields);
             }
         }
+        createEditFieldsForExtensionProperties();
     }
 
     private void createEditFieldsForRange(List<EditField<?>> editFields) {
@@ -249,6 +256,14 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     private IProductCmptGeneration getGeneration() {
         return getPropertyValue().getProductCmptGeneration();
+    }
+
+    private void createEditFieldsForExtensionProperties() {
+        extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
+                IExtensionPropertyDefinition.POSITION_TOP);
+        extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extPropControlFactory.bind(getBindingContext());
     }
 
     @Override

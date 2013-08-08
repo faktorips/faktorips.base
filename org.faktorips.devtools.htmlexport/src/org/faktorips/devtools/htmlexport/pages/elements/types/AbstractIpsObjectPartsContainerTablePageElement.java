@@ -14,11 +14,13 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -86,7 +88,13 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         }
 
         IIpsElement rowData = getObjectParts().get(0);
-        return rowData.getIpsModel().getExtensionPropertyDefinitions(rowData.getClass(), true);
+        if (rowData instanceof IExtensionPropertyAccess) {
+            Collection<IExtensionPropertyDefinition> extensionPropertyDefinitions = ((IExtensionPropertyAccess)rowData)
+                    .getExtensionPropertyDefinitions();
+            return extensionPropertyDefinitions.toArray(new IExtensionPropertyDefinition[extensionPropertyDefinitions
+                    .size()]);
+        }
+        return new IExtensionPropertyDefinition[0];
     }
 
     private List<IPageElement> createRowWithExtentionPropertiesData(T rowData) {

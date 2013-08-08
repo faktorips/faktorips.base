@@ -86,17 +86,17 @@ public class ContentPage extends IpsObjectEditorPage {
      * The <tt>ITableContents</tt> the <tt>TableContentsEditor</tt> this page belongs to is
      * currently editing.
      */
-    private ITableContents tableContents;
+    private final ITableContents tableContents;
 
     private final BindingContext bindingContext = new BindingContext();
 
     /** The extension property control factory that may extend the controls. */
-    private ExtensionPropertyControlFactory extFactory;
+    private final ExtensionPropertyControlFactory extFactory;
 
     public ContentPage(TableContentsEditor editor) {
         super(editor, PAGE_ID, Messages.ContentPage_title);
         tableContents = editor.getTableContents();
-        extFactory = new ExtensionPropertyControlFactory(tableContents.getClass());
+        extFactory = new ExtensionPropertyControlFactory(tableContents);
 
     }
 
@@ -119,7 +119,7 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
 
-        if (extFactory.needsToCreateControlsFor(tableContents, IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             createExtensionProperty(formBody, toolkit);
         }
         Table table = createTable(formBody);

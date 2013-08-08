@@ -80,7 +80,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         ArgumentCheck.notNull(enumType);
 
         this.enumType = enumType;
-        extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
+        extFactory = new ExtensionPropertyControlFactory(enumType);
 
         setGrabVerticalSpace(false);
         initControls();

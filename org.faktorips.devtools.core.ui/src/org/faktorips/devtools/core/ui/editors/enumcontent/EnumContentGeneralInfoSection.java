@@ -77,7 +77,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
         this.enumContentEditorPage = enumContentEditorPage;
         this.enumContent = enumContent;
 
-        extFactory = new ExtensionPropertyControlFactory(enumContent.getClass());
+        extFactory = new ExtensionPropertyControlFactory(enumContent);
         initControls();
         setText(Messages.EnumContentGeneralInfoSection_title);
     }

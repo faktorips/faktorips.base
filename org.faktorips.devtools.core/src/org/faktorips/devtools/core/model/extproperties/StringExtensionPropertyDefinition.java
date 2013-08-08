@@ -49,7 +49,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
 
     @Override
     public void setDefaultValue(String s) {
-        defaultValue = s;
+        setDefaultValue((Object)s);
     }
 
 }

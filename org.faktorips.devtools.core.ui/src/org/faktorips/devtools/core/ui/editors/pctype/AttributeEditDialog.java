@@ -182,7 +182,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             IpsPlugin.log(e);
         }
         currentAttributeType = attribute.getAttributeType();
-        extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
+        extFactory = new ExtensionPropertyControlFactory(attribute);
     }
 
     @Override

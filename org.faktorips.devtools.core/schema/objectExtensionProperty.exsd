@@ -6,7 +6,9 @@
          <meta.schema plugin="org.faktorips.plugin" id="objectExtensionProperty" name="ObjectExtensionProperty"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         By extending this extension point you are able to add a extension property to an IPS object or part. Basically you could add an extension property to every IIpsObjectPartContainer but the ui part is not implemented for every part. Hence it would be an property that is only editable via XML. We add frequently new UI functionality for not yet supported objects, if your object is not yet supported please send a request.
+
+Since 3.10 there is a new functionality to support extension properties that are not activated for every object of the same class. Have a look in the description of the class attribute.
       </documentation>
    </annotation>
 
@@ -27,7 +29,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="id" type="string">
+         <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -49,10 +51,12 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The definition of the extension property.
+
+Since 3.10 there is a new functionality to support extension properties that are not activated for every object of the same class. To use this funkcionality you have to implement IExtensinoPropertyDefinitino2.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.IIpsObjectExtensionProperty"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -62,7 +66,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.IIpsElement"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"/>
                </appinfo>
             </annotation>
          </attribute>

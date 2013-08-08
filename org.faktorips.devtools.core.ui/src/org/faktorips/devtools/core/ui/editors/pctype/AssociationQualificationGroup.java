@@ -127,10 +127,10 @@ public class AssociationQualificationGroup extends Composite {
 
     public class PmoAssociation extends IpsObjectPartPmo {
 
-        public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
-        public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
-        public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
-        public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote"; //$NON-NLS-1$
+        public static final String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
+        public static final String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
+        public static final String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
+        public static final String PROPERTY_CONSTRAINED_NOTE = "constrainedNote"; //$NON-NLS-1$
 
         private IIpsProject ipsProject;
         private IPolicyCmptTypeAssociation association;

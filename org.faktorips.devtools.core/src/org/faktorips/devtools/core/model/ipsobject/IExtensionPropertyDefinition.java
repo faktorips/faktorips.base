@@ -29,7 +29,8 @@ import org.w3c.dom.Element;
  * A list of the extension properties for a type in the model can be obtained from the
  * <code>IpsModel</code>.
  * 
- * @see org.faktorips.devtools.core.model.IIpsModel#getExtensionPropertyDefinitions(Class, boolean)
+ * @see org.faktorips.devtools.core.model.IIpsModel#getExtensionPropertyDefinitions(IIpsObjectPartContainer)
+ *      )
  * 
  * @author Jan Ortmann
  */
@@ -39,18 +40,18 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * Position to indicate that controls to edit the extension property should be placed above the
      * standard Faktor-IPS controls.
      */
-    public final static String POSITION_TOP = "top"; //$NON-NLS-1$
+    public static final String POSITION_TOP = "top"; //$NON-NLS-1$
 
     /**
      * Position to indicate that controls to edit the extension property should be placed below the
      * standard Faktor-IPS controls.
      */
-    public final static String POSITION_BOTTOM = "bottom"; //$NON-NLS-1$
+    public static final String POSITION_BOTTOM = "bottom"; //$NON-NLS-1$
 
     /**
      * Default sort order.
      */
-    public final static int DEFAULT_ORDER = 10000;
+    public static final int DEFAULT_ORDER = 10000;
 
     /**
      * Returns the type this object defines a property for, e.g.

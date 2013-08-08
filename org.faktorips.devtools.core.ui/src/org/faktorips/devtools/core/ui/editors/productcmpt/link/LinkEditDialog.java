@@ -40,9 +40,9 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
  */
 public class LinkEditDialog extends IpsPartEditDialog2 {
 
-    private IProductCmptLink link;
+    private final IProductCmptLink link;
 
-    private ExtensionPropertyControlFactory extFactory;
+    private final ExtensionPropertyControlFactory extFactory;
 
     private TextButtonField targetField;
     private CardinalityField minCardinalityField;
@@ -52,12 +52,12 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
 
-    private LinkEditDialogPMO pmo;
+    private final LinkEditDialogPMO pmo;
 
     public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
-        extFactory = new ExtensionPropertyControlFactory(link.getClass());
+        extFactory = new ExtensionPropertyControlFactory(link);
         pmo = new LinkEditDialogPMO();
     }
 

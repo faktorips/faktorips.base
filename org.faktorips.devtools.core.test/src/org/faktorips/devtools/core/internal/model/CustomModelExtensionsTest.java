@@ -16,8 +16,15 @@ package org.faktorips.devtools.core.internal.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -31,8 +38,13 @@ import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCm
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
+import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
@@ -41,6 +53,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
+
+    private static final String ANY_ID = "anyId";
+    private static final String ANY_NAME = "anyName";
 
     private IIpsProject ipsProject;
     private CustomModelExtensions modelExtensions;
@@ -51,6 +66,62 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         modelExtensions = (CustomModelExtensions)IpsPlugin.getDefault().getIpsModel().getCustomModelExtensions();
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitionss_empty() throws Exception {
+        IIpsObjectPartContainer object = mock(IIpsObjectPartContainer.class);
+
+        Map<String, IExtensionPropertyDefinition> propertyDefinitions = modelExtensions
+                .getExtensionPropertyDefinitions(object);
+
+        assertTrue(propertyDefinitions.isEmpty());
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitionss_notEmpty() throws Exception {
+        BooleanExtensionPropertyDefinition property = createExtensionProperty(null);
+        modelExtensions.addIpsObjectExtensionProperty(property);
+        IIpsObjectPartContainer object = mock(IAttributeValue.class);
+
+        Map<String, IExtensionPropertyDefinition> propertyDefinitions = modelExtensions
+                .getExtensionPropertyDefinitions(object);
+
+        assertThat(propertyDefinitions.values(), hasItem((IExtensionPropertyDefinition)property));
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitionss_filtered() throws Exception {
+        final IIpsObjectPartContainer object = mock(IAttributeValue.class);
+        BooleanExtensionPropertyDefinition property = createExtensionProperty(object);
+        modelExtensions.addIpsObjectExtensionProperty(property);
+
+        Map<String, IExtensionPropertyDefinition> propertyDefinitions = modelExtensions
+                .getExtensionPropertyDefinitions(object);
+
+        assertTrue(propertyDefinitions.isEmpty());
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitionss_cached() throws Exception {
+        final IIpsObjectPartContainer object = mock(IAttributeValue.class);
+        BooleanExtensionPropertyDefinition property = createExtensionProperty(object);
+        IExtensionPropertyDefinition2 propertySpy = spy(property);
+        modelExtensions.addIpsObjectExtensionProperty(propertySpy);
+
+        // call twice
+        modelExtensions.getExtensionPropertyDefinitions(object);
+        modelExtensions.getExtensionPropertyDefinitions(object);
+
+        verify(propertySpy, times(1)).isApplicableFor(object);
+    }
+
+    private BooleanExtensionPropertyDefinition createExtensionProperty(final IIpsObjectPartContainer diabledObject) {
+        BooleanExtensionPropertyDefinition property = new BooleanExtensionPropertyDefinitionExtension(diabledObject);
+        property.setPropertyId(ANY_ID);
+        property.setName(ANY_NAME);
+        property.setExtendedType(IAttributeValue.class);
+        return property;
     }
 
     @Test
@@ -206,6 +277,24 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
             result.add(msgToReturn);
             return result;
         }
+
+    }
+
+    public static class BooleanExtensionPropertyDefinitionExtension extends BooleanExtensionPropertyDefinition {
+        private final IIpsObjectPartContainer object;
+
+        public BooleanExtensionPropertyDefinitionExtension(IIpsObjectPartContainer object) {
+            this.object = object;
+        }
+
+        @Override
+        public boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+            return ipsObjectPartContainer != object;
+        }
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitions() throws Exception {
 
     }
 

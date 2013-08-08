@@ -16,12 +16,12 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.ICustomModelExtensions;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
@@ -48,8 +49,11 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class CustomModelExtensions implements ICustomModelExtensions {
 
-    /** extension properties per ips object (or part) type, e.g. IAttribute. */
+    /** extension properties per IPS object (or part) class object, e.g. IAttribute.class. */
     private final Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap;
+
+    /** extension properties per {@link IIpsObjectPartContainer}, e.g. an IAttribute. */
+    private final ExtensionPropertiesCache extensionPropertiesCache;
 
     private final CustomValidationsPerType customValidationsPerType;
 
@@ -61,9 +65,10 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
         customValidationsPerType = CustomValidationsPerType.createFromExtensions();
-        typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
+        typeExtensionPropertiesMap = new ConcurrentHashMap<Class<?>, List<IExtensionPropertyDefinition>>();
+        extensionPropertiesCache = new ExtensionPropertiesCache();
         initExtensionPropertiesFromConfiguration();
-        productCmptNamingStrategies = new HashMap<String, IProductCmptNamingStrategyFactory>();
+        productCmptNamingStrategies = new ConcurrentHashMap<String, IProductCmptNamingStrategyFactory>();
         initProductCmptNamingStrategies();
     }
 
@@ -99,6 +104,20 @@ public class CustomModelExtensions implements ICustomModelExtensions {
             }
         }
         return null;
+    }
+
+    @Override
+    public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object) {
+        Map<String, IExtensionPropertyDefinition> result;
+        if (extensionPropertiesCache.isCached(object)) {
+            result = extensionPropertiesCache.get(object);
+        } else {
+            Map<String, IExtensionPropertyDefinition> properties = extensionPropertiesCache.get(object);
+            properties.putAll(extensionPropertiesCache.getMapOfExtensionPropertyDefinitions(object,
+                    getExtensionPropertyDefinitions(object.getClass(), true)));
+            result = properties;
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     /**
@@ -163,7 +182,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     private IExtensionPropertyDefinition createExtensionProperty(IExtension extension) {
         IConfigurationElement[] configElements = extension.getConfigurationElements();
-        if (configElements.length != 1 || !configElements[0].getName().equalsIgnoreCase("property")) { //$NON-NLS-1$
+        if (configElements.length != 1 || !"property".equalsIgnoreCase(configElements[0].getName())) { //$NON-NLS-1$
             IpsPlugin.log(new IpsStatus("Illegal definition of external property " //$NON-NLS-1$
                     + extension.getUniqueIdentifier()));
             return null;
@@ -204,6 +223,10 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         return extProperty;
     }
 
+    public void clearExtensionPropertyCache() {
+        extensionPropertiesCache.clear();
+    }
+
     @Override
     public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type) {
         return customValidationsPerType.getCustomValidations(type);
@@ -224,4 +247,44 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         ArgumentCheck.notNull(extensionId);
         return productCmptNamingStrategies.get(extensionId);
     }
+
+    private static class ExtensionPropertiesCache {
+
+        private final Map<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>> internalMap = new ConcurrentHashMap<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>>();
+
+        public boolean isCached(IIpsObjectPartContainer object) {
+            return internalMap.containsKey(object);
+        }
+
+        public Map<String, IExtensionPropertyDefinition> get(IIpsObjectPartContainer object) {
+            Map<String, IExtensionPropertyDefinition> map = internalMap.get(object);
+            if (map == null) {
+                map = new ConcurrentHashMap<String, IExtensionPropertyDefinition>();
+                internalMap.put(object, map);
+            }
+            return map;
+        }
+
+        public void clear() {
+            internalMap.clear();
+        }
+
+        public Map<String, IExtensionPropertyDefinition> getMapOfExtensionPropertyDefinitions(IIpsObjectPartContainer object,
+                Set<IExtensionPropertyDefinition> extensionPropertyDefinitions) {
+            ConcurrentHashMap<String, IExtensionPropertyDefinition> result = new ConcurrentHashMap<String, IExtensionPropertyDefinition>();
+            for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
+                if (extensionPropertyDefinition instanceof IExtensionPropertyDefinition2) {
+                    IExtensionPropertyDefinition2 def2 = (IExtensionPropertyDefinition2)extensionPropertyDefinition;
+                    if (def2.isApplicableFor(object)) {
+                        result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
+                    }
+                } else {
+                    result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
+                }
+            }
+            return result;
+        }
+
+    }
+
 }
