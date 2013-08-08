@@ -10,13 +10,13 @@
 	
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>3.9.1-SNAPSHOT</version>
+	<version>3.9.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.3.0</version>
 	</parent>
 	
 	<!-- These are all modules that are included in the Faktor-IPS build -->
