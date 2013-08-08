@@ -31,6 +31,17 @@
 	<scm>
 		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
 	</scm>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.faktorips</groupId>
+				<artifactId>org.faktorips.build.config</artifactId>
+				<version>1.0.0</version>
+			</extension>
+
+		</extensions>
+	</build>
 	
 	<profiles>
 			<profile>
