@@ -10109,3 +10109,4 @@ blendet
 kardinalitäten
 assoziationen
 multilingual
+selectable

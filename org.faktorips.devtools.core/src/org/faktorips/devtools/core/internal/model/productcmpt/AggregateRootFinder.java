@@ -16,7 +16,9 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -44,7 +46,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 public class AggregateRootFinder {
 
     private final Set<String> nonRootCmpts = new HashSet<String>();
-    private final Set<String> potentialRootCmpts = new HashSet<String>();
+    private final Map<String, IProductCmpt> potentialRootCmpts = new ConcurrentHashMap<String, IProductCmpt>();
 
     private final IIpsProject ipsProject;
 
@@ -107,7 +109,7 @@ public class AggregateRootFinder {
     }
 
     protected void registerAsPotentialRoot(IProductCmpt prodCmpt) {
-        potentialRootCmpts.add(prodCmpt.getQualifiedName());
+        potentialRootCmpts.put(prodCmpt.getQualifiedName(), prodCmpt);
     }
 
     private void processLinks(IProductCmpt prodCmpt) {
@@ -157,21 +159,8 @@ public class AggregateRootFinder {
     }
 
     private List<IProductCmpt> getIndexedRootCmpts() {
-        List<IProductCmpt> rootCmpts = new ArrayList<IProductCmpt>();
-        for (String rootQName : potentialRootCmpts) {
-            IProductCmpt cmpt = findProductCmpt(rootQName);
-            rootCmpts.add(cmpt);
-        }
+        List<IProductCmpt> rootCmpts = new ArrayList<IProductCmpt>(potentialRootCmpts.values());
         return rootCmpts;
-    }
-
-    protected IProductCmpt findProductCmpt(String rootQName) {
-        try {
-            IProductCmpt cmpt = getIpsProject().findProductCmpt(rootQName);
-            return cmpt;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     private IIpsProject getIpsProject() {

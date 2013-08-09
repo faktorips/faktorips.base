@@ -59,6 +59,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     private ExtensionPropertyControlFactory extPropControlFactory;
 
+    private AnyValueSetControl valueSetControl;
+
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
@@ -185,19 +187,19 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
-        final BooleanValueSetControl valueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
+        BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
-        valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
+        booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
 
-        CheckboxField trueField = new CheckboxField(valueSetControl.getTrueCheckBox());
-        CheckboxField falseField = new CheckboxField(valueSetControl.getFalseCheckBox());
+        CheckboxField trueField = new CheckboxField(booleanValueSetControl.getTrueCheckBox());
+        CheckboxField falseField = new CheckboxField(booleanValueSetControl.getFalseCheckBox());
         editFields.add(trueField);
         editFields.add(falseField);
 
         getBindingContext().bindContent(trueField, pmo, BooleanValueSetPMO.PROPERTY_TRUE);
         getBindingContext().bindContent(falseField, pmo, BooleanValueSetPMO.PROPERTY_FALSE);
-        if (valueSetControl.getNullCheckBox() != null) {
-            CheckboxField nullField = new CheckboxField(valueSetControl.getNullCheckBox());
+        if (booleanValueSetControl.getNullCheckBox() != null) {
+            CheckboxField nullField = new CheckboxField(booleanValueSetControl.getNullCheckBox());
             editFields.add(nullField);
             getBindingContext().bindContent(nullField, pmo, BooleanValueSetPMO.PROPERTY_NULL);
         }
@@ -222,7 +224,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     private void createValueSetEditFieldForOtherThanRange(List<EditField<?>> editFields) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
-        AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
+        valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValueSet(getPropertyValue().getValueSet()));
@@ -269,6 +271,13 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     @Override
     protected int getFirstControlMarginHeight() {
         return isRangeValueEditFieldsRequired() ? 4 : 0;
+    }
+
+    public void setEnumValueSetProvider(IEnumValueSetProvider enumValueSetProvider) {
+        // anyValueSetControl might be null in case of a Range ValueSet
+        if (valueSetControl != null) {
+            valueSetControl.setEnumValueSetProvider(enumValueSetProvider);
+        }
     }
 
 }

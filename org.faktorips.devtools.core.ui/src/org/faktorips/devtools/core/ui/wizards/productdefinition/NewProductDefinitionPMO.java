@@ -64,7 +64,7 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
      * @param ipsProject The ipsProject to set.
      */
     public void setIpsProject(IIpsProject ipsProject) {
-        IIpsProject oldProject = ipsProject;
+        IIpsProject oldProject = this.ipsProject;
         this.ipsProject = ipsProject;
         try {
             setPackageRoot(ipsProject.getSourceIpsPackageFragmentRoots()[0]);
