@@ -189,6 +189,20 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGiveAplhabeticalOrderForCompletionProposalForParam() {
+        formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "bcdparam");
+        formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("", 0);
+        IContentProposal proposal_1 = results[0];
+        IContentProposal proposal_2 = results[1];
+
+        assertEquals("abcparam", proposal_1.getContent());
+        assertEquals("bcdparam", proposal_2.getContent());
+    }
+
+    @Test
     public void testDoComputeCompletionProposalsForProductCmptTypeAttributes() throws Exception {
         IAttribute firstAttr = productCmptType.newAttribute();
         firstAttr.setName("firstAttr");
@@ -215,6 +229,24 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("k", 1);
         assertEquals(0, results.length);
+    }
+
+    @Test
+    public void testGiveAlphabeticalOrderForCompletionProposalsForProductCmptTypeAttributes() {
+        IAttribute firstAttr = productCmptType.newAttribute();
+        firstAttr.setName("BCD");
+        firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        IAttribute secondAttr = productCmptType.newAttribute();
+        secondAttr.setName("ABC");
+        secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("", 0);
+        IContentProposal proposal_1 = results[0];
+        IContentProposal proposal_2 = results[1];
+        assertEquals("ABC", proposal_1.getContent());
+        assertEquals("BCD", proposal_2.getContent());
     }
 
     @Test
@@ -423,11 +455,15 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("", 0);
-        IContentProposal proposal = results[0];
+        // Array index changed (from results[0] to results[1]), because of the now the list is
+        // sorted
+        IContentProposal proposal = results[1];
         assertEquals("aParam - a", proposal.getLabel());
         assertEquals("PolicyCmptTypeLabel - PolicyCmptTypeDescription", proposal.getDescription());
 
-        proposal = results[1];
+        // Array index changed (from results[1] fo results[0]), because of the now the list is
+        // sorted
+        proposal = results[0];
         assertEquals("aConfigParam - aConfigtype", proposal.getLabel());
         assertEquals("ProductCmptTypeLabel - ProductCmptTypeDescription", proposal.getDescription());
     }
