@@ -290,6 +290,34 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGiveAlphabeticalOrderForCompletionProposalForPolicyCmptTypeAttributes() {
+        IAttribute firstAttr = cmptType.newAttribute();
+        firstAttr.setName("abcde");
+        firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        IAttribute secondAttr = cmptType.newAttribute();
+        secondAttr.setName("aabcde");
+        secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.", 7);
+        IContentProposal proposal = results[0];
+        assertEquals("aabcde", proposal.getContent());
+
+        proposal = results[1];
+        assertEquals("abcde", proposal.getContent());
+
+        results = proposalProvider.getProposals("policy.a", 8);
+        proposal = results[0];
+        assertEquals("abcde", proposal.getContent());
+
+        proposal = results[1];
+        assertEquals("bcde", proposal.getContent());
+    }
+
+    @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociations() throws Exception {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setAssociationsInFormulas(true);
@@ -333,6 +361,43 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.a", 8);
         assertEquals(0, results.length);
+    }
+
+    @Test
+    public void testGetAlphabeticalOrderForCompletionProposalForPolicyCmptTypeAssociation() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(true);
+        ipsProject.setProperties(properties);
+
+        PolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "TestTarget", "TestTargetType");
+
+        IAssociation to1Association = cmptType.newAssociation();
+        to1Association.setTargetRoleSingular("targetABCDE");
+        to1Association.setTarget(targetType.getQualifiedName());
+        to1Association.setMaxCardinality(1);
+
+        IAssociation toManyAssociation = cmptType.newAssociation();
+        toManyAssociation.setTargetRoleSingular("targetAABCDE");
+        toManyAssociation.setTarget(targetType.getQualifiedName());
+        toManyAssociation.setMaxCardinality(1);
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.", 7);
+        IContentProposal proposal = results[0];
+        assertEquals("targetAABCDE", proposal.getContent());
+
+        proposal = results[1];
+        assertEquals("targetABCDE", proposal.getContent());
+
+        results = proposalProvider.getProposals("policy.targetA", 14);
+        proposal = results[0];
+        assertEquals("ABCDE", proposal.getContent());
+
+        proposal = results[1];
+        assertEquals("BCDE", proposal.getContent());
+
     }
 
     @Test
