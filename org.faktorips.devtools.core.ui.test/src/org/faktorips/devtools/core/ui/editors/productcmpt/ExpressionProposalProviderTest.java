@@ -250,6 +250,20 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testDoComputeCompletionProposalsForProductCmptTypeAttributesWithCaseInsensitiv() {
+        IAttribute firstAttr = productCmptType.newAttribute();
+        firstAttr.setName("FirstAttr");
+        firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("F", 1);
+        assertEquals(1, results.length);
+        IContentProposal proposal = results[0];
+        assertEquals("irstAttr", proposal.getContent());
+
+    }
+
+    @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAttributes() throws Exception {
         IAttribute firstAttr = cmptType.newAttribute();
         firstAttr.setName("firstAttr");
