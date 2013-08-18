@@ -256,11 +256,17 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
-        IContentProposal[] results = proposalProvider.getProposals("F", 1);
+        IContentProposal[] results = proposalProvider.getProposals("f", 1);
         assertEquals(1, results.length);
         IContentProposal proposal = results[0];
         assertEquals("irstAttr", proposal.getContent());
 
+        firstAttr.setName("firstAttr");
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("F", 1);
+        assertEquals(1, results.length);
+        proposal = results[0];
+        assertEquals("irstAttr", proposal.getContent());
     }
 
     @Test

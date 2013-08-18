@@ -99,7 +99,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
             addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
         } else {
-            addMatchingProductCmptTypeAttributes(result, identifier);
+            addMatchingProductCmptTypeAttributes(result, identifier.toLowerCase());
             addMatchingParameters(result, identifier);
             addMatchingFunctions(result, identifier);
             addMatchingEnumTypes(result, identifier);
@@ -157,7 +157,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         List<IAttribute> attributes = expression.findMatchingProductCmptTypeAttributes();
         Collections.sort(attributes, new SortList());
         for (IAttribute attribute : attributes) {
-            if (attribute.getName().startsWith(prefix)) {
+
+            // if condition need to be refactored
+            if ((attribute.getName().toLowerCase()).startsWith(prefix.toLowerCase())) {
                 if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
                     addPartToResult(result, attribute, attribute.getDatatype(), prefix);
                 }
@@ -294,7 +296,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     protected String removePrefix(String name, String prefix) {
-        return name.startsWith(prefix) ? name.substring(prefix.length()) : name;
+
+        // set toLowerCase so the case insensitive works
+        return (name.toLowerCase()).startsWith(prefix.toLowerCase()) ? name.substring(prefix.length()) : name;
     }
 
     private void addMatchingAttributes(List<IContentProposal> result, String paramName, String attributePrefix) {
