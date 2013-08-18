@@ -202,6 +202,23 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals("bcdparam", proposal_2.getContent());
     }
 
+
+    @Test
+    public void testDoComputeCompletionProposalsForParamWithCaseInsensitiv() {
+        formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("AB", 2);
+        IContentProposal proposal = results[0];
+        assertEquals("cparam", proposal.getContent());
+
+        formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "Abcparam");
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("a", 1);
+        proposal = results[1];
+        assertEquals("bcparam", proposal.getContent());
+    }
+
     @Test
     public void testDoComputeCompletionProposalsForProductCmptTypeAttributes() throws Exception {
         IAttribute firstAttr = productCmptType.newAttribute();
@@ -338,6 +355,29 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAttributesWithCaseInsensitiv() {
+        IAttribute firstAttr = cmptType.newAttribute();
+        firstAttr.setName("firstAttr");
+        firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        IAttribute secondAttr = cmptType.newAttribute();
+        secondAttr.setName("SecondAttr");
+        secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.F", 8);
+        IContentProposal proposal = results[0];
+        assertEquals("irstAttr", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.s", 8);
+        proposal = results[0];
+        assertEquals("econdAttr", proposal.getContent());
+    }
+    
+    @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociations() throws Exception {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setAssociationsInFormulas(true);
@@ -420,6 +460,28 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociationsWithCaseInsensitiv() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(true);
+        ipsProject.setProperties(properties);
+
+        PolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "TestTarget", "TestTargetType");
+
+        IAssociation to1Association = cmptType.newAssociation();
+        to1Association.setTargetRoleSingular("mainTarget");
+        to1Association.setTarget(targetType.getQualifiedName());
+        to1Association.setMaxCardinality(1);
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.M", 8);
+        assertEquals(1, results.length);
+        IContentProposal proposal = results[0];
+        assertEquals("ainTarget", proposal.getContent());
+    }
+    
     @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociationChains() throws Exception {
         IIpsProjectProperties properties = ipsProject.getProperties();
@@ -579,16 +641,16 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCheckMatchingFunctionName() {
+    public void testCheckMatchingNameWithCaseInsensitive() {
         proposalProvider = new ExpressionProposalProvider(configElement);
         String functionName = "produkte.hr_kompakt.FormLib.computeFormnula";
 
-        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "Form"));
-        assertFalse(proposalProvider.checkMatchingFunctionName(functionName, "Lib"));
-        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "produk"));
-        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "hr_kompakt"));
-        assertFalse(proposalProvider.checkMatchingFunctionName(functionName, ".FormLib"));
-        assertTrue(proposalProvider.checkMatchingFunctionName(functionName, "compute"));
-        assertFalse(proposalProvider.checkMatchingFunctionName(functionName, "Test"));
+        assertTrue(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, "Form"));
+        assertFalse(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, "Lib"));
+        assertTrue(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, "produk"));
+        assertTrue(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, "hr_kompakt"));
+        assertFalse(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, ".FormLib"));
+        assertTrue(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, "compute"));
+        assertFalse(proposalProvider.checkMatchingNameWithCaseInsensitive(functionName, "Test"));
     }
 }
