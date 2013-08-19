@@ -64,7 +64,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver {
         add(new And(getFctName(AND), getFctDescription(AND)));
         add(new Round(getFctName(ROUND), getFctDescription(ROUND), BigDecimal.ROUND_HALF_UP));
         add(new Round(getFctName(ROUNDUP), getFctDescription(ROUNDUP), BigDecimal.ROUND_UP));
-        add(new Round(getFctName(ROUNDDOWN), getFctDescription(ROUNDDOWN), BigDecimal.ROUND_UP));
+        add(new Round(getFctName(ROUNDDOWN), getFctDescription(ROUNDDOWN), BigDecimal.ROUND_DOWN));
         add(new WholeNumber(getFctName(WHOLENUMBER), getFctDescription(WHOLENUMBER)));
         add(new IsEmpty(getFctName(ISEMPTY), getFctDescription(ISEMPTY)));
         add(new Not(getFctName(NOT), getFctDescription(NOT)));
