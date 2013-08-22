@@ -181,7 +181,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("a", 1);
         IContentProposal proposal = results[0];
-        assertEquals("bcparam", proposal.getContent());
+        assertEquals("abcparam", proposal.getContent());
 
         results = proposalProvider.getProposals("", 0);
         proposal = results[0];
@@ -210,13 +210,13 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("AB", 2);
         IContentProposal proposal = results[0];
-        assertEquals("cparam", proposal.getContent());
+        assertEquals("abcparam", proposal.getContent());
 
         formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "Abcparam");
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("a", 1);
         proposal = results[1];
-        assertEquals("bcparam", proposal.getContent());
+        assertEquals("Abcparam", proposal.getContent());
     }
 
     @Test
@@ -235,13 +235,13 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("f", 1);
         IContentProposal proposal = results[0];
-        assertEquals("irstAttr", proposal.getContent());
+        assertEquals("firstAttr", proposal.getContent());
         assertEquals("FirstAttrLabel - FirstAttrDescription", proposal.getDescription());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("s", 1);
         proposal = results[0];
-        assertEquals("econdAttr", proposal.getContent());
+        assertEquals("secondAttr", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("k", 1);
@@ -276,14 +276,14 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("f", 1);
         assertEquals(1, results.length);
         IContentProposal proposal = results[0];
-        assertEquals("irstAttr", proposal.getContent());
+        assertEquals("FirstAttr", proposal.getContent());
 
         firstAttr.setName("firstAttr");
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("F", 1);
         assertEquals(1, results.length);
         proposal = results[0];
-        assertEquals("irstAttr", proposal.getContent());
+        assertEquals("firstAttr", proposal.getContent());
     }
 
     @Test
@@ -304,13 +304,13 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("policy.f", 8);
         IContentProposal proposal = results[0];
-        assertEquals("irstAttr", proposal.getContent());
+        assertEquals("firstAttr", proposal.getContent());
         assertEquals("FirstAttrLabel - FirstAttrDescription", proposal.getDescription());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.s", 8);
         proposal = results[0];
-        assertEquals("econdAttr", proposal.getContent());
+        assertEquals("secondAttr", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.k", 8);
@@ -321,9 +321,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         thirdAttr.setProductRelevant(true);
         results = proposalProvider.getProposals("policy.t", 8);
         proposal = results[0];
-        assertEquals("hirdAttr", proposal.getContent());
+        assertEquals("thirdAttr", proposal.getContent());
         proposal = results[1];
-        assertEquals("hirdAttr@default", proposal.getContent());
+        assertEquals("thirdAttr@default", proposal.getContent());
     }
 
     @Test
@@ -369,12 +369,12 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("policy.F", 8);
         IContentProposal proposal = results[0];
-        assertEquals("irstAttr", proposal.getContent());
+        assertEquals("firstAttr", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.s", 8);
         proposal = results[0];
-        assertEquals("econdAttr", proposal.getContent());
+        assertEquals("SecondAttr", proposal.getContent());
     }
     
     @Test
@@ -401,15 +401,15 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("policy.m", 8);
         assertEquals(1, results.length);
         IContentProposal proposal = results[0];
-        assertEquals("ainTarget", proposal.getContent());
+        assertEquals("mainTarget", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.a", 8);
         assertEquals(2, results.length);
         proposal = results[0];
-        assertEquals("dditionalTarget", proposal.getContent());
+        assertEquals("additionalTarget", proposal.getContent());
         proposal = results[1];
-        assertEquals("dditionalTarget[0]", proposal.getContent());
+        assertEquals("additionalTarget[0]", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.x", 8);
@@ -479,7 +479,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("policy.M", 8);
         assertEquals(1, results.length);
         IContentProposal proposal = results[0];
-        assertEquals("ainTarget", proposal.getContent());
+        assertEquals("mainTarget", proposal.getContent());
     }
     
     @Test
@@ -511,29 +511,29 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("policy.t", 8);
         assertEquals(1, results.length);
         IContentProposal proposal = results[0];
-        assertEquals("arget1", proposal.getContent());
+        assertEquals("target1", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.target1.t", 16);
         assertEquals(2, results.length);
         proposal = results[0];
-        assertEquals("arget2", proposal.getContent());
+        assertEquals("target2", proposal.getContent());
         proposal = results[1];
-        assertEquals("arget2[0]", proposal.getContent());
+        assertEquals("target2[0]", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.target1.target2.t", 24);
         assertEquals(2, results.length);
         proposal = results[0];
-        assertEquals("arget3", proposal.getContent());
+        assertEquals("target3", proposal.getContent());
         proposal = results[1];
-        assertEquals("arget3[0]", proposal.getContent());
+        assertEquals("target3[0]", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.target1.target2[0].t", 27);
         assertEquals(1, results.length);
         proposal = results[0];
-        assertEquals("arget3", proposal.getContent());
+        assertEquals("target3", proposal.getContent());
     }
 
     @Test
@@ -565,13 +565,13 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("policy.t", 8);
         assertEquals(4, results.length);
         IContentProposal proposal = results[0];
-        assertEquals("arget", proposal.getContent());
+        assertEquals("target", proposal.getContent());
         proposal = results[1];
-        assertEquals("arget[0]", proposal.getContent());
+        assertEquals("target[0]", proposal.getContent());
         proposal = results[2];
-        assertEquals("arget[\"MyProduct1\"]", proposal.getContent());
+        assertEquals("target[\"MyProduct1\"]", proposal.getContent());
         proposal = results[3];
-        assertEquals("arget[\"MyProduct2\"]", proposal.getContent());
+        assertEquals("target[\"MyProduct2\"]", proposal.getContent());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.target[\"MyProduct1\"].m", 29);
@@ -581,7 +581,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         results = proposalProvider.getProposals("policy.target[\"MyProduct2\"].m", 29);
         assertEquals(1, results.length);
         proposal = results[0];
-        assertEquals("yAttr", proposal.getContent());
+        assertEquals("myAttr", proposal.getContent());
 
         properties = ipsProject.getProperties();
         properties.setAssociationsInFormulas(false);
