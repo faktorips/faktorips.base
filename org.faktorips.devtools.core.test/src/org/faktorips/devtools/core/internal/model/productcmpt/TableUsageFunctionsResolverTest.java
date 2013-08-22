@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.junit.Assert.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -67,7 +68,7 @@ public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
         ITableContentUsage[] usages = { contentUsage };
         TableUsageFunctionsResolver resolver = new TableUsageFunctionsResolver(project, usages);
 
-        FlFunction[] functions = resolver.getFunctions();
+        FlFunction<JavaCodeFragment>[] functions = resolver.getFunctions();
 
         assertEquals(0, functions.length);
     }
@@ -88,7 +89,7 @@ public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
         ITableContentUsage[] usages = { contentUsage };
         TableUsageFunctionsResolver resolver = new TableUsageFunctionsResolver(project, usages);
 
-        FlFunction[] functions = resolver.getFunctions();
+        FlFunction<JavaCodeFragment>[] functions = resolver.getFunctions();
 
         assertEquals(0, functions.length);
     }
@@ -118,16 +119,16 @@ public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
         ITableContentUsage[] usages = { contentUsage };
         TableUsageFunctionsResolver resolver = new TableUsageFunctionsResolver(project, usages);
 
-        FlFunction[] functions = resolver.getFunctions();
+        FlFunction<JavaCodeFragment>[] functions = resolver.getFunctions();
 
         assertEquals(2, functions.length);
 
-        FlFunction flFunction = functions[0];
+        FlFunction<JavaCodeFragment> flFunction = functions[0];
 
         assertEquals("." + nameInteger, flFunction.getName());
         assertEquals(typeInteger, flFunction.getType().getName());
 
-        FlFunction flFunctionDecimal = functions[1];
+        FlFunction<JavaCodeFragment> flFunctionDecimal = functions[1];
 
         assertEquals("." + nameDecimal, flFunctionDecimal.getName());
         assertEquals(typeDecimal, flFunctionDecimal.getType().getName());

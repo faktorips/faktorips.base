@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
@@ -79,7 +80,7 @@ public class TableSingleContentFunctionsResolver extends AbstractTableFunctionsR
      * Returns a new table function adapter.
      */
     @Override
-    protected FlFunction createFlFunction(ITableAccessFunction function, TableData tableData) {
+    protected FlFunction<JavaCodeFragment> createFlFunction(ITableAccessFunction function, TableData tableData) {
 
         return new TableStructureReferenceFunctionFlFunctionAdapter(tableData.getTableContentQualifiedName(), function,
                 tableData.getReferencedName(), getIpsProject());

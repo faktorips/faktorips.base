@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Parenthesis <i>()</i> operator for datatype String.
  */
-public class ParenthesisString extends AbstractUnaryOperation {
+public class ParenthesisString extends AbstractUnaryJavaOperation {
 
     public ParenthesisString() {
         super(Datatype.STRING, "()");
@@ -28,6 +28,7 @@ public class ParenthesisString extends AbstractUnaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;
     }

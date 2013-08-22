@@ -20,7 +20,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Parenthesis <i>()</i> operator for datatype primitive integer.
  */
-public class ParenthesisInt extends AbstractUnaryOperation {
+public class ParenthesisInt extends AbstractUnaryJavaOperation {
 
     public ParenthesisInt() {
         super(Datatype.PRIMITIVE_INT, "()");
@@ -29,6 +29,7 @@ public class ParenthesisInt extends AbstractUnaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         JavaCodeFragment parenthesis = new JavaCodeFragment();
         parenthesis.append('(');

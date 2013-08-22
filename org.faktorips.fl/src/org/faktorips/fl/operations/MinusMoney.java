@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Minus (-) operator for datatype Money.
  */
-public class MinusMoney extends AbstractUnaryOperation {
+public class MinusMoney extends AbstractUnaryJavaOperation {
 
     public MinusMoney() {
         super(Datatype.MONEY, "-"); //$NON-NLS-1$
@@ -28,8 +28,9 @@ public class MinusMoney extends AbstractUnaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResult)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl result) {
         result.getCodeFragment().append(".multiply(-1)"); //$NON-NLS-1$
         return result;

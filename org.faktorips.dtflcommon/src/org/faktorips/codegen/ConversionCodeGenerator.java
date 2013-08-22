@@ -52,7 +52,7 @@ import org.faktorips.datatype.Datatype;
  * sourcecode needed to convert the value of a given datatype to another (if the conversion is
  * possible).
  */
-public class ConversionCodeGenerator implements ConversionMatrix {
+public class ConversionCodeGenerator<T extends CodeFragment> implements ConversionMatrix {
 
     /**
      * Returns a default ConversionCodeGenerator that contains the following conversions.
@@ -66,8 +66,8 @@ public class ConversionCodeGenerator implements ConversionMatrix {
      * <li>Integer to Decimal</li>
      * </ul>
      */
-    public final static ConversionCodeGenerator getDefault() {
-        ConversionCodeGenerator ccg = new ConversionCodeGenerator();
+    public final static ConversionCodeGenerator<JavaCodeFragment> getDefault() {
+        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
         ccg.add(new BooleanToPrimitiveBooleanCg());
         ccg.add(new DecimalToIntegerCg());
         ccg.add(new IntegerToBigDecimalCg());
@@ -99,9 +99,9 @@ public class ConversionCodeGenerator implements ConversionMatrix {
     }
 
     /** List of single conversion code generators. */
-    private List<SingleConversionCg> conversions = new ArrayList<SingleConversionCg>();
+    private List<SingleConversionCg<T>> conversions = new ArrayList<SingleConversionCg<T>>();
 
-    public void add(SingleConversionCg conversion) {
+    public void add(SingleConversionCg<T> conversion) {
         conversions.add(conversion);
     }
 
@@ -112,9 +112,8 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         if (to instanceof AnyDatatype) {
             return true;
         }
-        for (SingleConversionCg singleConversionCg : conversions) {
-            SingleConversionCg cg = singleConversionCg;
-            if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
+        for (SingleConversionCg<T> singleConversionCg : conversions) {
+            if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
                 return true;
             }
         }
@@ -130,17 +129,16 @@ public class ConversionCodeGenerator implements ConversionMatrix {
      * @param fromValue A Java sourcecode fragment containing an expression that evaluates to a
      *            value of Datatype from.
      */
-    public JavaCodeFragment getConversionCode(Datatype from, Datatype to, JavaCodeFragment fromValue) {
+    public T getConversionCode(Datatype from, Datatype to, T fromValue) {
         if (from.equals(to)) {
             return fromValue;
         }
         if (to instanceof AnyDatatype) {
             return fromValue;
         }
-        for (SingleConversionCg singleConversionCg : conversions) {
-            SingleConversionCg cg = singleConversionCg;
-            if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
-                return cg.getConversionCode(fromValue);
+        for (SingleConversionCg<T> singleConversionCg : conversions) {
+            if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
+                return singleConversionCg.getConversionCode(fromValue);
             }
         }
         return null;

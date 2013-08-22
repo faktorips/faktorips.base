@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Operation for the multiplication of two ints.
  */
-public class MultiplyIntInt extends AbstractBinaryOperation {
+public class MultiplyIntInt extends AbstractBinaryJavaOperation {
 
     public MultiplyIntInt() {
         super("*", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT); //$NON-NLS-1$
@@ -28,9 +28,10 @@ public class MultiplyIntInt extends AbstractBinaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.addCodeFragment(" * "); //$NON-NLS-1$
         lhs.add(rhs);

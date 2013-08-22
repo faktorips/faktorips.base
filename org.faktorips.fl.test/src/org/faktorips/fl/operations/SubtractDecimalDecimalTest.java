@@ -14,9 +14,8 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.BinaryOperation;
-import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.JavaExprCompilerAbstractTest;
 import org.faktorips.values.Decimal;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +23,13 @@ import org.junit.Test;
 /**
  *
  */
-public class SubtractDecimalDecimalTest extends CompilerAbstractTest {
+public class SubtractDecimalDecimalTest extends JavaExprCompilerAbstractTest {
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(new BinaryOperation[] { new SubtractDecimalDecimal() });
+        compiler.setBinaryOperations(toArray(new SubtractDecimalDecimal()));
     }
 
     @Test

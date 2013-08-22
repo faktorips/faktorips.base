@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Greater than operation for money.
  */
-public class GreaterThanMoneyMoney extends AbstractBinaryOperation {
+public class GreaterThanMoneyMoney extends AbstractBinaryJavaOperation {
 
     public GreaterThanMoneyMoney() {
         super(">", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
@@ -28,9 +28,10 @@ public class GreaterThanMoneyMoney extends AbstractBinaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".greaterThan("); //$NON-NLS-1$
         lhs.add(rhs);

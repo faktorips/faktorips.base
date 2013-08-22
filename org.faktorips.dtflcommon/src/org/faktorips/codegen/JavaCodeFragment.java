@@ -14,7 +14,6 @@
 package org.faktorips.codegen;
 
 import java.util.Iterator;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.util.StringUtil;
@@ -28,38 +27,21 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Jan Ortmann
  */
-public class JavaCodeFragment {
-
-    private final static String INDENT_HELPER = "                                                         "; //$NON-NLS-1$
-
-    // true if lines after a call to appendOpenBracket() are indented or not
-    // the default is false, as Faktor-IPS formats the generated sourcecode via the Eclipse
-    // formatter.
-    private boolean indent = false;
-
-    // buffer holding the sourcecode text
-    private StringBuilder sourcecode;
+public class JavaCodeFragment extends CodeFragment {
 
     // import declaration needed to compile the sourcecode
     private ImportDeclaration importDecl;
-
-    // number of blanks used for indentation
-    private int indentation = 4;
-
-    // the indentation level at the end of the sourcecode
-    private int indentLevel = 0;
 
     /**
      * Creates a new empty JavaCodeFragment.
      */
     public JavaCodeFragment() {
-        sourcecode = new StringBuilder(1024);
-        importDecl = new ImportDeclaration();
+        this(false);
     }
 
     public JavaCodeFragment(boolean indent) {
-        this();
-        this.indent = indent;
+        super(indent);
+        this.importDecl = new ImportDeclaration(importDecl);
     }
 
     /**
@@ -73,8 +55,7 @@ public class JavaCodeFragment {
      * Creates a new JavaCodeFragment with the indicated source code and import declaration.
      */
     public JavaCodeFragment(String sourcecode, ImportDeclaration importDecl) {
-        this.sourcecode = new StringBuilder(1024);
-        this.sourcecode.append(sourcecode);
+        super(sourcecode);
         this.importDecl = new ImportDeclaration(importDecl);
     }
 
@@ -83,7 +64,7 @@ public class JavaCodeFragment {
      * import statements removed that are obsolete because of the indicated package.
      */
     public JavaCodeFragment(JavaCodeFragment fragment, String packageName) {
-        sourcecode = fragment.sourcecode;
+        super(fragment);
         importDecl = new ImportDeclaration(fragment.importDecl, packageName);
     }
 
@@ -111,39 +92,6 @@ public class JavaCodeFragment {
     }
 
     /**
-     * Returns the sourcecode.
-     */
-    public String getSourcecode() {
-        return sourcecode.toString();
-    }
-
-    /**
-     * Increases the indentation level used for appending sourcecode.
-     */
-    public void incIndentationLevel() {
-        indentLevel++;
-    }
-
-    /**
-     * Decreases the indentation level used for appending sourcecode.
-     * 
-     * @throws RuntimeException if the level is 0.
-     */
-    public void decIndentationLevel() {
-        if (indentLevel == 0) {
-            throw new RuntimeException("Indentation level can't be lesser than 0."); //$NON-NLS-1$
-        }
-        indentLevel--;
-    }
-
-    /**
-     * Returns the current indentation level at the end of the sourcecode.
-     */
-    public int getIndentationLevel() {
-        return indentLevel;
-    }
-
-    /**
      * Appends '{' to the sourcecode and increases the indentation level.
      */
     public JavaCodeFragment appendOpenBracket() {
@@ -162,33 +110,59 @@ public class JavaCodeFragment {
     }
 
     /**
-     * Appends the given String to the sourcecode.
+     * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment append(String s) {
-        indentIfBol();
-        sourcecode.append(s);
-        return this;
+        return (JavaCodeFragment)super.append(s);
     }
 
     /**
-     * Encloses the given String with doublequotes (") and appends it to the sourcecode.
+     * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment appendQuoted(String s) {
-        append('"');
-        append(s);
-        append('"');
-        return this;
+        return (JavaCodeFragment)super.appendQuoted(s);
     }
 
     /**
-     * Appends the given char to the sourcecode.
+     * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment append(char c) {
-        if (indent) {
-            indentIfBol();
-        }
-        sourcecode.append(c);
-        return this;
+        return (JavaCodeFragment)super.append(c);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JavaCodeFragment appendln() {
+        return (JavaCodeFragment)super.appendln();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JavaCodeFragment appendln(String s) {
+        return (JavaCodeFragment)super.appendln(s);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JavaCodeFragment appendlnUnindented(String arg) {
+        return (JavaCodeFragment)super.appendlnUnindented(arg);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JavaCodeFragment appendln(char c) {
+        return (JavaCodeFragment)super.appendln(c);
     }
 
     /**
@@ -308,43 +282,11 @@ public class JavaCodeFragment {
     }
 
     /**
-     * Appends a line separator to the sourcecode.
+     * Appends the given fragment to his fragment and indents it properly.
      */
-    public JavaCodeFragment appendln() {
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
-        return this;
-    }
-
-    /**
-     * Appends the given String and a line separator to the sourcecode.
-     */
-    public JavaCodeFragment appendln(String s) {
-        if (indent) {
-            indentIfBol();
-        }
-        indentIfBol();
-        sourcecode.append(s);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
-        return this;
-    }
-
-    /**
-     * Appends the given String as is to the sourcecode without indenting it.
-     */
-    public JavaCodeFragment appendlnUnindented(String arg) {
-        sourcecode.append(arg);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
-        return this;
-    }
-
-    /**
-     * Appends the given char to the sourcecode.
-     */
-    public JavaCodeFragment appendln(char c) {
-        indentIfBol();
-        sourcecode.append(c);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
-        return this;
+    @Override
+    public JavaCodeFragment append(CodeFragment fragment) {
+        return append((JavaCodeFragment)fragment);
     }
 
     /**
@@ -352,34 +294,15 @@ public class JavaCodeFragment {
      */
     public JavaCodeFragment append(JavaCodeFragment fragment) {
         importDecl.add(fragment.getImportDeclaration());
-        if (!indent) {
-            sourcecode.append(fragment.sourcecode);
-        } else {
-            if (indent) {
-                String sourcecode = fragment.getSourcecode();
-                StringTokenizer tokenizer = new StringTokenizer(sourcecode, SystemUtils.LINE_SEPARATOR);
-                while (tokenizer.hasMoreTokens()) {
-                    String token = tokenizer.nextToken();
-                    if (tokenizer.hasMoreTokens()) {
-                        appendln(token);
-                    } else {
-                        append(token);
-                    }
-                }
-                if (sourcecode.endsWith(SystemUtils.LINE_SEPARATOR)) {
-                    appendln(""); //$NON-NLS-1$
-                }
-            }
-        }
+        super.append(fragment);
         return this;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + ((importDecl == null) ? 0 : importDecl.hashCode());
-        result = prime * result + ((sourcecode == null) ? 0 : sourcecode.hashCode());
         return result;
     }
 
@@ -399,6 +322,9 @@ public class JavaCodeFragment {
             return false;
         }
         JavaCodeFragment other = (JavaCodeFragment)obj;
+        if (!super.equals(obj)) {
+            return false;
+        }
         if (importDecl == null) {
             if (other.importDecl != null) {
                 return false;
@@ -406,36 +332,7 @@ public class JavaCodeFragment {
         } else if (!importDecl.equals(other.importDecl)) {
             return false;
         }
-        if (sourcecode == null) {
-            if (other.sourcecode != null) {
-                return false;
-            }
-        } else if (!sourcecode.toString().equals(other.sourcecode.toString())) {
-            return false;
-        }
         return true;
-    }
-
-    /**
-     * Returns true if the last character in the sourcecode is a line separator and so any text
-     * appended to the sourcecode goes to a new line (bol = begin of line).
-     */
-    public boolean bol() {
-        int length = sourcecode.length();
-        if (length == 0) {
-            return true;
-        }
-        if (SystemUtils.LINE_SEPARATOR.length() == 1) {
-            return sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(0);
-        }
-        if (SystemUtils.LINE_SEPARATOR.length() == 2) {
-            if (length == 1) {
-                return false;
-            }
-            return (sourcecode.charAt(length - 2) == SystemUtils.LINE_SEPARATOR.charAt(0))
-                    && (sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(1));
-        }
-        throw new RuntimeException("Unknown line separator [" + SystemUtils.LINE_SEPARATOR + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -446,23 +343,6 @@ public class JavaCodeFragment {
      */
     @Override
     public String toString() {
-        return importDecl.toString() + SystemUtils.LINE_SEPARATOR + sourcecode;
-    }
-
-    /*
-     * Appends the proper indentation if the sourcecode ens with a line separator.
-     */
-    private void indentIfBol() {
-        if (!indent) {
-            return;
-        }
-        if (bol()) {
-            int length = indentation * indentLevel;
-            if (length < INDENT_HELPER.length()) {
-                sourcecode.append(INDENT_HELPER.substring(0, length));
-            } else {
-                sourcecode.append(INDENT_HELPER);
-            }
-        }
+        return importDecl.toString() + SystemUtils.LINE_SEPARATOR + super.toString();
     }
 }

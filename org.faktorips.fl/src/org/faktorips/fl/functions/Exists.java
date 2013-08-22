@@ -19,14 +19,14 @@ import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.CompilationResultImpl;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class Exists extends AbstractFlFunction {
+public class Exists extends AbstractJavaFlFunction {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
 
@@ -37,7 +37,7 @@ public class Exists extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         Datatype argType = argResults[0].getDatatype();
         if (argType.isPrimitive()) {
             // values of primitive types can never be null

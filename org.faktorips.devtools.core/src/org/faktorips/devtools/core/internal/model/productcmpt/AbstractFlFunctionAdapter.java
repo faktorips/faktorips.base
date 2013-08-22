@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -27,9 +28,9 @@ import org.faktorips.fl.FunctionSignatureImpl;
  * 
  * @author dicker
  */
-public abstract class AbstractFlFunctionAdapter implements FlFunction {
+public abstract class AbstractFlFunctionAdapter<T extends CodeFragment> implements FlFunction<T> {
 
-    private ExprCompiler compiler;
+    private ExprCompiler<T> compiler;
     private final IIpsProject ipsProject;
 
     public AbstractFlFunctionAdapter(IIpsProject ipsProject) {
@@ -38,12 +39,12 @@ public abstract class AbstractFlFunctionAdapter implements FlFunction {
     }
 
     @Override
-    public void setCompiler(ExprCompiler compiler) {
+    public void setCompiler(ExprCompiler<T> compiler) {
         this.compiler = compiler;
     }
 
     @Override
-    public ExprCompiler getCompiler() {
+    public ExprCompiler<T> getCompiler() {
         return compiler;
     }
 

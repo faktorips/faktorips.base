@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -111,9 +112,9 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @throws CoreException if an error occurs while generating the code.
      */
-    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
+    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult[] argResults) throws CoreException;
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException;
 
     /**
      * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given formula.
@@ -123,8 +124,8 @@ public interface IIpsArtefactBuilderSet {
      * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or
      *            services that are necessary to be able to resolve an identifier properly
      */
-    public IdentifierResolver createFlIdentifierResolver(IExpression expression, ExprCompiler exprCompiler)
-            throws CoreException;
+    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression expression,
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException;
 
     /**
      * Returns the data type helper for the provided {@link IEnumType}. <code>IEnumType</code>

@@ -16,6 +16,7 @@ package org.faktorips.fl.functions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class ExistsTest extends FunctionAbstractTest {
      * datatype is the expected one.
      */
     private void compileSuccessfull(String expression) throws Exception {
-        CompilationResult result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }

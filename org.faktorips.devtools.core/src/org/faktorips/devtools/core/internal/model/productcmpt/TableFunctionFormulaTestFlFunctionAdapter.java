@@ -31,11 +31,11 @@ import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.fl.FunctionSignature;
 import org.faktorips.fl.FunctionSignatureImpl;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
@@ -47,10 +47,10 @@ import org.faktorips.util.message.Message;
  * This class resolves the access function by generating a compilation result which result is the
  * same value as the access function will be return in runtime by executing the access function.
  */
-public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
+public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction<JavaCodeFragment> {
 
     private ITableAccessFunction fct;
-    private ExprCompiler compiler;
+    private ExprCompiler<JavaCodeFragment> compiler;
     private String tableContentsQName;
     private IFormulaTestCase formulaTestCase;
     private String roleName;
@@ -71,7 +71,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     }
 
     @Override
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         try {
             Object result = getTableContentValue(argResults, ipsProject);
 
@@ -98,12 +98,12 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     }
 
     @Override
-    public void setCompiler(ExprCompiler compiler) {
+    public void setCompiler(ExprCompiler<JavaCodeFragment> compiler) {
         this.compiler = compiler;
     }
 
     @Override
-    public ExprCompiler getCompiler() {
+    public ExprCompiler<JavaCodeFragment> getCompiler() {
         return compiler;
     }
 
@@ -176,7 +176,8 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     /**
      * Returns the corresponding table content.
      */
-    private Object getTableContentValue(CompilationResult[] argResults, IIpsProject ipsProject) throws Exception {
+    private Object getTableContentValue(CompilationResult<JavaCodeFragment>[] argResults, IIpsProject ipsProject)
+            throws Exception {
         /*
          * create the classloader to run the table access function with and to create the runtime
          * repository

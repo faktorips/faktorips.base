@@ -88,9 +88,9 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribu
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
@@ -222,9 +222,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
+    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
 
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
@@ -253,8 +253,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
+    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
         return new StandardParameterIdentifierResolver(formula, exprCompiler);
     }
 
@@ -643,14 +643,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private class StandardParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
-        private StandardParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+        private StandardParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(formula2, exprCompiler);
         }
 
         @Override
         protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
                 EnumTypeDatatypeAdapter datatype,
-                ExprCompiler exprCompiler,
+                ExprCompiler<JavaCodeFragment> exprCompiler,
                 String value) throws CoreException {
             getEnumTypeBuilder().setExtendedExprCompiler((ExtendedExprCompiler)exprCompiler);
             fragment.append(getEnumTypeBuilder().getNewInstanceCodeFragement(datatype, value));

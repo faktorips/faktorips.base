@@ -18,15 +18,15 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
 /**
  *
  */
-public class If extends AbstractFlFunction {
+public class If extends AbstractJavaFlFunction {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF"; //$NON-NLS-1$
 
@@ -38,10 +38,10 @@ public class If extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 3);
 
-        ConversionCodeGenerator ccg = compiler.getConversionCodeGenerator();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = compiler.getConversionCodeGenerator();
         Datatype datatype1 = argResults[1].getDatatype();
         Datatype datatype2 = argResults[2].getDatatype();
 

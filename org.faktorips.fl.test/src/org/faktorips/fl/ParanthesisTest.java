@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  *
  */
-public class ParanthesisTest extends CompilerAbstractTest {
+public class ParanthesisTest extends JavaExprCompilerAbstractTest {
     @Test
     public void test() throws Exception {
         execAndTestSuccessfull("3.0 + 2.0 * 5.0", Decimal.valueOf("13.00"), Datatype.DECIMAL);

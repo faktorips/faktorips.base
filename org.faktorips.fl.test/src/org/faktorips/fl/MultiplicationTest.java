@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  *
  */
-public class MultiplicationTest extends CompilerAbstractTest {
+public class MultiplicationTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testDecimalDecimal() throws Exception {

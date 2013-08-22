@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Operation for the addition of two decimals.
  */
-public class SubtractMoneyMoney extends AbstractBinaryOperation {
+public class SubtractMoneyMoney extends AbstractBinaryJavaOperation {
 
     public SubtractMoneyMoney() {
         super("-", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
@@ -28,6 +28,7 @@ public class SubtractMoneyMoney extends AbstractBinaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".subtract("); //$NON-NLS-1$
         lhs.add(rhs);

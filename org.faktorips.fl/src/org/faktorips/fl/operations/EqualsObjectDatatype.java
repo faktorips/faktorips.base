@@ -16,8 +16,8 @@ package org.faktorips.fl.operations;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.functions.Messages;
 import org.faktorips.util.message.Message;
 import org.faktorips.values.ObjectUtil;
@@ -26,7 +26,7 @@ import org.faktorips.values.ObjectUtil;
  * Equals operation for none primitive datatypes that are tested for equality with the equals()
  * Method.
  */
-public class EqualsObjectDatatype extends AbstractBinaryOperation {
+public class EqualsObjectDatatype extends AbstractBinaryJavaOperation {
 
     protected static String getErrorMessageCode() {
         return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
@@ -47,22 +47,22 @@ public class EqualsObjectDatatype extends AbstractBinaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
-
-        ConversionCodeGenerator ccg = getCompiler().getConversionCodeGenerator();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();
         Datatype datatype1 = lhs.getDatatype();
         Datatype datatype2 = rhs.getDatatype();
 
         if (!datatype1.equals(datatype2)) {
             if (ccg.canConvert(datatype1, datatype2)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2, lhs.getCodeFragment());
-                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2, lhs.getMessages(),
-                        lhs.getIdentifiersUsedAsSet());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2,
+                        lhs.getMessages(), lhs.getIdentifiersUsedAsSet());
                 lhs = newResult;
             } else if (ccg.canConvert(datatype2, datatype1)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1, rhs.getCodeFragment());
-                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages(),
-                        rhs.getIdentifiersUsedAsSet());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1,
+                        rhs.getMessages(), rhs.getIdentifiersUsedAsSet());
                 rhs = newResult;
             } else {
                 String text = Messages.INSTANCE.getString(getErrorMessageCode(), new Object[] { datatype1, datatype2 });

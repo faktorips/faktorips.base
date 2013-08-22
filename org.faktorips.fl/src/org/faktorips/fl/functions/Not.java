@@ -23,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * 
  * @author Jan Ortmann
  */
-public class Not extends AbstractFlFunction {
+public class Not extends AbstractJavaFlFunction {
 
     public Not(String name, String description) {
         super(name, description, Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { Datatype.PRIMITIVE_BOOLEAN });
@@ -32,11 +32,11 @@ public class Not extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment("!(");
         code.append(argResults[0].getCodeFragment());
         code.append(')');
-        ((CompilationResultImpl)argResults[0]).setJavaCodeFragment(code);
+        ((CompilationResultImpl)argResults[0]).setCodeFragment(code);
         return argResults[0];
     }
 

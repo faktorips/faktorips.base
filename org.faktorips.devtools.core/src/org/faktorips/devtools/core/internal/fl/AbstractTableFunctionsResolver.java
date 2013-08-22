@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.fl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -30,10 +31,10 @@ import org.faktorips.util.ArgumentCheck;
  * resolver is new.
  * 
  */
-public abstract class AbstractTableFunctionsResolver implements FunctionResolver {
+public abstract class AbstractTableFunctionsResolver implements FunctionResolver<JavaCodeFragment> {
 
     private final IIpsProject ipsProject;
-    private List<FlFunction> flfunctions;
+    private List<FlFunction<JavaCodeFragment>> flfunctions;
 
     public AbstractTableFunctionsResolver(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
@@ -45,16 +46,18 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
     }
 
     @Override
-    public FlFunction[] getFunctions() {
+    public FlFunction<JavaCodeFragment>[] getFunctions() {
         if (flfunctions == null) {
             List<TableData> tableDatas = createTableDatas();
             flfunctions = getFlFunctionsFor(tableDatas);
         }
-        return flfunctions.toArray(new FlFunction[flfunctions.size()]);
+        @SuppressWarnings("unchecked")
+        FlFunction<JavaCodeFragment>[] functions = new FlFunction[flfunctions.size()];
+        return flfunctions.toArray(functions);
     }
 
-    private List<FlFunction> getFlFunctionsFor(List<TableData> tableDatas) {
-        List<FlFunction> functions = new ArrayList<FlFunction>();
+    private List<FlFunction<JavaCodeFragment>> getFlFunctionsFor(List<TableData> tableDatas) {
+        List<FlFunction<JavaCodeFragment>> functions = new ArrayList<FlFunction<JavaCodeFragment>>();
         for (TableData tableData : tableDatas) {
             functions.addAll(getTableAccessFunctionsFor(tableData));
         }
@@ -66,9 +69,9 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
      */
     protected abstract List<TableData> createTableDatas();
 
-    private List<FlFunction> getTableAccessFunctionsFor(TableData tableData) {
+    private List<FlFunction<JavaCodeFragment>> getTableAccessFunctionsFor(TableData tableData) {
         ITableAccessFunction[] fcts = tableData.getTableStructure().getAccessFunctions();
-        List<FlFunction> functions = new ArrayList<FlFunction>();
+        List<FlFunction<JavaCodeFragment>> functions = new ArrayList<FlFunction<JavaCodeFragment>>();
         for (ITableAccessFunction tableAccessFunction : fcts) {
             functions.add(createFlFunction(tableAccessFunction, tableData));
         }
@@ -80,7 +83,8 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
      * {@link ITableAccessFunction} of the given {@link ITableContents} and the referencedName of
      * the table contents.
      */
-    protected abstract FlFunction createFlFunction(ITableAccessFunction iTableAccessFunction, TableData tableData);
+    protected abstract FlFunction<JavaCodeFragment> createFlFunction(ITableAccessFunction iTableAccessFunction,
+            TableData tableData);
 
     /**
      * Immutual Parameter-Object to store a table content, its structure and the referencedName,

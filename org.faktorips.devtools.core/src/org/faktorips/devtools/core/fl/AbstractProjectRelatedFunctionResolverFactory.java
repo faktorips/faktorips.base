@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.fl;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.FunctionResolver;
@@ -34,7 +35,7 @@ public abstract class AbstractProjectRelatedFunctionResolverFactory implements I
      * Creates a new FunctionResolver with respect to the provided locale and the related project.
      * It is in the responsibility of the factory provider if the locale is considered.
      */
-    public abstract FunctionResolver newFunctionResolver(IIpsProject ipsProject, Locale locale);
+    public abstract FunctionResolver<JavaCodeFragment> newFunctionResolver(IIpsProject ipsProject, Locale locale);
 
     /**
      * This methods throws an {@link UnsupportedOperationException}, because the resolving of
@@ -43,7 +44,7 @@ public abstract class AbstractProjectRelatedFunctionResolverFactory implements I
      * 
      */
     @Override
-    public final FunctionResolver newFunctionResolver(Locale locale) {
+    public final FunctionResolver<JavaCodeFragment> newFunctionResolver(Locale locale) {
         throw new UnsupportedOperationException();
     }
 

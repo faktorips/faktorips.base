@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Operation for the addition of two decimals.
  */
-public class AddStringString extends AbstractBinaryOperation {
+public class AddStringString extends AbstractBinaryJavaOperation {
 
     public AddStringString() {
         super("+", Datatype.STRING, Datatype.STRING); //$NON-NLS-1$
@@ -28,9 +28,10 @@ public class AddStringString extends AbstractBinaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append('+');
         lhs.add(rhs);

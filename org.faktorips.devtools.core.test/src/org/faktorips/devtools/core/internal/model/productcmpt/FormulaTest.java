@@ -28,6 +28,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -450,8 +451,8 @@ public class FormulaTest extends AbstractIpsPluginTest {
         attr.setName("hello");
         attr.setDatatype(Datatype.INTEGER.getName());
         formula.setExpression("hello");
-        ExprCompiler compiler = formula.newExprCompiler(ipsProject);
-        CompilationResult result = compiler.compile(formula.getExpression());
+        ExprCompiler<JavaCodeFragment> compiler = formula.newExprCompiler(ipsProject);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(formula.getExpression());
         assertTrue(result.successfull());
         identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
         assertEquals(0, identifierInFormula.size());

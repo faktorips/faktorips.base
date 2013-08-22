@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  *
  */
-public class GreaterThanTest extends CompilerAbstractTest {
+public class GreaterThanTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("7.45 > 3.45", Boolean.TRUE, Datatype.BOOLEAN);

@@ -13,6 +13,7 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.util.ArgumentCheck;
@@ -20,7 +21,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * The abs() function.
  */
-public class Abs extends AbstractFlFunction {
+public class Abs extends AbstractJavaFlFunction {
 
     /**
      * Constructs a abs function with the given name.
@@ -38,7 +39,7 @@ public class Abs extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         argResults[0].getCodeFragment().append(".abs()"); //$NON-NLS-1$
         return argResults[0];

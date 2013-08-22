@@ -22,7 +22,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class MinMaxDecimal extends AbstractFlFunction {
+public class MinMaxDecimal extends AbstractJavaFlFunction {
 
     private String functionName = null;
 
@@ -34,7 +34,7 @@ public class MinMaxDecimal extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         // value1.max(value2)
         JavaCodeFragment fragment = new JavaCodeFragment();

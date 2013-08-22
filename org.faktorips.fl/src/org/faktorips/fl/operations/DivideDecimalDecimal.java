@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Operation for the multiplication of two decimals.
  */
-public class DivideDecimalDecimal extends AbstractBinaryOperation {
+public class DivideDecimalDecimal extends AbstractBinaryJavaOperation {
 
     // the default scale used for rounding
     private int scale = 10;
@@ -48,9 +48,10 @@ public class DivideDecimalDecimal extends AbstractBinaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         JavaCodeFragment fragment = lhs.getCodeFragment();
         fragment.append(".divide("); //$NON-NLS-1$

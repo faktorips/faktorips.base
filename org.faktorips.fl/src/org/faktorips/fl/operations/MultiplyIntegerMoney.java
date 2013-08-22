@@ -16,7 +16,7 @@ package org.faktorips.fl.operations;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
 
-public class MultiplyIntegerMoney extends AbstractBinaryOperation {
+public class MultiplyIntegerMoney extends AbstractBinaryJavaOperation {
 
     public MultiplyIntegerMoney() {
         super("*", Datatype.INTEGER, Datatype.MONEY); //$NON-NLS-1$
@@ -25,6 +25,7 @@ public class MultiplyIntegerMoney extends AbstractBinaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         rhs.addCodeFragment(".multiply("); //$NON-NLS-1$
         rhs.add(lhs);

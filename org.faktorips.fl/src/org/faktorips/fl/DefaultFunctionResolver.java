@@ -16,15 +16,18 @@ package org.faktorips.fl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A default FunctionResolver.
+ * A default {@link FunctionResolver}.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public class DefaultFunctionResolver implements FunctionResolver {
+public class DefaultFunctionResolver<T extends CodeFragment> implements FunctionResolver<T> {
 
     // list of supported FlFunction
-    private List<FlFunction> functions = new ArrayList<FlFunction>();
+    private List<FlFunction<T>> functions = new ArrayList<FlFunction<T>>();
 
     /**
      * Creates a new resolver.
@@ -34,33 +37,30 @@ public class DefaultFunctionResolver implements FunctionResolver {
     }
 
     /**
-     * Adds the FlFunction.
+     * Adds the {@link FlFunction}.
      * 
-     * @throws IllegalArgumentException if function is null.
+     * @throws IllegalArgumentException if function is {@code null}.
      */
-    public void add(FlFunction function) {
+    public void add(FlFunction<T> function) {
         ArgumentCheck.notNull(function);
         functions.add(function);
     }
 
     /**
-     * Removes the FlFunction from the resolver. Does nothing if the function hasn't been added
-     * before.
+     * Removes the {@link FlFunction} from the resolver. Does nothing if the function hasn't been
+     * added before.
      * 
-     * @throws IllegalArgumentException if function is null.
+     * @throws IllegalArgumentException if function is {@code null}.
      */
-    public void remove(FlFunction function) {
+    public void remove(FlFunction<T> function) {
         ArgumentCheck.notNull(function);
         functions.remove(function);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.fl.FunctionResolver#getFunctions()
-     */
-    public FlFunction[] getFunctions() {
-        return functions.toArray(new FlFunction[functions.size()]);
+    public FlFunction<T>[] getFunctions() {
+        @SuppressWarnings("unchecked")
+        FlFunction<T>[] flFunctions = new FlFunction[functions.size()];
+        return functions.toArray(flFunctions);
     }
 
 }

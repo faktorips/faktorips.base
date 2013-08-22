@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  *
  */
-public class AdditionTest extends CompilerAbstractTest {
+public class AdditionTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("3.5 + 7.45", Decimal.valueOf("10.95"), Datatype.DECIMAL);

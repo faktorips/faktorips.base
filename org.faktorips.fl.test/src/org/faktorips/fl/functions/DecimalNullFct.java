@@ -23,7 +23,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Jan Ortmann
  */
-public class DecimalNullFct extends AbstractFlFunction {
+public class DecimalNullFct extends AbstractJavaFlFunction {
 
     public DecimalNullFct() {
         super("DECIMALNULL", "", Datatype.DECIMAL, new Datatype[0]);
@@ -32,7 +32,7 @@ public class DecimalNullFct extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment();
         code.appendClassName(Decimal.class);
         code.append(".NULL");

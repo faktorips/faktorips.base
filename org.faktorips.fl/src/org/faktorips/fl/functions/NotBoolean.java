@@ -23,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * 
  * @author Jan Ortmann
  */
-public class NotBoolean extends AbstractFlFunction {
+public class NotBoolean extends AbstractJavaFlFunction {
 
     public NotBoolean(String name, String description) {
         super(name, description, Datatype.BOOLEAN, new Datatype[] { Datatype.BOOLEAN });
@@ -32,7 +32,7 @@ public class NotBoolean extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         CompilationResultImpl result = (CompilationResultImpl)argResults[0];
         JavaCodeFragment code = result.getCodeFragment();
         JavaCodeFragment newCode = new JavaCodeFragment();
@@ -41,7 +41,7 @@ public class NotBoolean extends AbstractFlFunction {
         newCode.append(")==null ? (Boolean)null : ");
         newCode.append("Boolean.valueOf(!(" + code + ").booleanValue())");
         newCode.append(')');
-        result.setJavaCodeFragment(newCode);
+        result.setCodeFragment(newCode);
         return result;
     }
 

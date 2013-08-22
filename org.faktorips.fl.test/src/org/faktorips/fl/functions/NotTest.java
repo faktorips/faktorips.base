@@ -15,11 +15,12 @@ package org.faktorips.fl.functions;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.fl.CompilationResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,9 +37,11 @@ public class NotTest extends FunctionAbstractTest {
         compiler.setEnsureResultIsObject(false);
         registerFunction(new Not("NOT", ""));
         registerFunction(new NotBoolean("NOT", ""));
-        compiler.setIdentifierResolver(new IdentifierResolver() {
+        compiler.setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
 
-            public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
+            public CompilationResult<JavaCodeFragment> compile(String identifier,
+                    ExprCompiler<JavaCodeFragment> exprCompiler,
+                    Locale locale) {
                 if (identifier.equals("beTrue")) {
                     return new CompilationResultImpl("Boolean.TRUE", Datatype.BOOLEAN);
                 } else if (identifier.equals("beFalse")) {

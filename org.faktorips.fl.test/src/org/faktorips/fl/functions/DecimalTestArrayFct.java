@@ -25,7 +25,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Jan Ortmann
  */
-public class DecimalTestArrayFct extends AbstractFlFunction {
+public class DecimalTestArrayFct extends AbstractJavaFlFunction {
 
     public final static String name = "DECIMALTESTARRAY";
 
@@ -45,7 +45,7 @@ public class DecimalTestArrayFct extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.fl.CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (values == null) {
             fragment.append("null");

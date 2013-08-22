@@ -24,7 +24,7 @@ import org.faktorips.values.Decimal;
 /**
  * The function: Decimal sum(Decimal[])
  */
-public class SumDecimal extends AbstractFlFunction {
+public class SumDecimal extends AbstractJavaFlFunction {
 
     /**
      * Constructs a sum() function with the given name.
@@ -42,7 +42,7 @@ public class SumDecimal extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);

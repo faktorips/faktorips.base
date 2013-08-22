@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class Round extends AbstractFlFunction {
+public class Round extends AbstractJavaFlFunction {
 
     private final static String[] ROUNDING_MODES = new String[7];
 
@@ -61,7 +61,7 @@ public class Round extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(argResults[0].getCodeFragment());

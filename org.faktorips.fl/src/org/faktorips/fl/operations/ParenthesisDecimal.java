@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Parenthesis <i>()</i> operator for datatype Decimal.
  */
-public class ParenthesisDecimal extends AbstractUnaryOperation {
+public class ParenthesisDecimal extends AbstractUnaryJavaOperation {
 
     public ParenthesisDecimal() {
         super(Datatype.DECIMAL, "()");
@@ -28,6 +28,7 @@ public class ParenthesisDecimal extends AbstractUnaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;
     }

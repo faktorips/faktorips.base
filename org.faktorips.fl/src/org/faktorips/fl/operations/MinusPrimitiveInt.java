@@ -20,7 +20,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Minus (-) operator for datatype primitive int.
  */
-public class MinusPrimitiveInt extends AbstractUnaryOperation {
+public class MinusPrimitiveInt extends AbstractUnaryJavaOperation {
 
     public MinusPrimitiveInt() {
         super(Datatype.PRIMITIVE_INT, "-"); //$NON-NLS-1$
@@ -29,8 +29,9 @@ public class MinusPrimitiveInt extends AbstractUnaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResult)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         if (arg.failed()) {
             return arg;
@@ -38,7 +39,7 @@ public class MinusPrimitiveInt extends AbstractUnaryOperation {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append('-');
         fragment.append(arg.getCodeFragment());
-        arg.setJavaCodeFragment(fragment);
+        arg.setCodeFragment(fragment);
         return arg;
     }
 

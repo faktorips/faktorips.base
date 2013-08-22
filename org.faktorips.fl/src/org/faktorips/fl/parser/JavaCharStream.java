@@ -313,8 +313,7 @@ public class JavaCharStream {
     }
 
     /**
-     * @deprecated
-     * @see #getEndColumn
+     * @deprecated use {@link #getEndColumn()}
      */
 
     @Deprecated
@@ -323,8 +322,7 @@ public class JavaCharStream {
     }
 
     /**
-     * @deprecated
-     * @see #getEndLine
+     * @deprecated use {@link #getEndLine()}
      */
 
     @Deprecated
@@ -402,7 +400,7 @@ public class JavaCharStream {
     }
 
     public JavaCharStream(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-        this(new java.io.InputStreamReader(dstream), startline, startcolumn, 4096);
+        this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
     }
 
     public JavaCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
@@ -414,7 +412,7 @@ public class JavaCharStream {
     }
 
     public void ReInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-        ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, 4096);
+        ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
     }
 
     public void ReInit(java.io.InputStream dstream, int startline, int startcolumn) {

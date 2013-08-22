@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  *
  */
-public class NotEqualsTest extends CompilerAbstractTest {
+public class NotEqualsTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("7.45 != 7.45", Boolean.FALSE, Datatype.BOOLEAN);

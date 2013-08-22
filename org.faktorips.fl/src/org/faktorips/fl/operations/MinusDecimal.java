@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Plus (+) operator for datatype Decimal.
  */
-public class MinusDecimal extends AbstractUnaryOperation {
+public class MinusDecimal extends AbstractUnaryJavaOperation {
 
     public MinusDecimal() {
         super(Datatype.DECIMAL, "-"); //$NON-NLS-1$
@@ -28,8 +28,9 @@ public class MinusDecimal extends AbstractUnaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResult)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         arg.getCodeFragment().append(".multiply(-1)"); //$NON-NLS-1$
         return arg;

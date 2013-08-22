@@ -23,7 +23,7 @@ import org.faktorips.values.Money;
  * 
  * @author Jan Ortmann
  */
-public class MoneyNullFct extends AbstractFlFunction {
+public class MoneyNullFct extends AbstractJavaFlFunction {
 
     public MoneyNullFct() {
         super("MONEYNULL", "", Datatype.MONEY, new Datatype[0]);
@@ -32,7 +32,7 @@ public class MoneyNullFct extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment();
         code.appendClassName(Money.class);
         code.append(".NULL");

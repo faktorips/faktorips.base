@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.fl;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.fl.FunctionResolver;
@@ -30,7 +31,7 @@ public class AssociationNavigationFunctionsResolverFactory implements IFunctionR
      * for association navigation.
      */
     @Override
-    public FunctionResolver newFunctionResolver(Locale locale) {
+    public FunctionResolver<JavaCodeFragment> newFunctionResolver(Locale locale) {
         return new AssociationNavigationFunctionsResolver(locale);
     }
 

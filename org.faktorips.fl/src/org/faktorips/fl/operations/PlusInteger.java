@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Plus (+) operator for datatype Decimal.
  */
-public class PlusInteger extends AbstractUnaryOperation {
+public class PlusInteger extends AbstractUnaryJavaOperation {
 
     public PlusInteger() {
         super(Datatype.INTEGER, "+"); //$NON-NLS-1$
@@ -28,6 +28,7 @@ public class PlusInteger extends AbstractUnaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;
     }

@@ -23,54 +23,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.faktorips.codegen.CodeGenUtil;
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.fl.operations.AddDecimalDecimal;
-import org.faktorips.fl.operations.AddDecimalInt;
-import org.faktorips.fl.operations.AddDecimalInteger;
-import org.faktorips.fl.operations.AddIntDecimal;
-import org.faktorips.fl.operations.AddIntInt;
-import org.faktorips.fl.operations.AddIntegerDecimal;
-import org.faktorips.fl.operations.AddMoneyMoney;
-import org.faktorips.fl.operations.AddStringString;
-import org.faktorips.fl.operations.DivideDecimalDecimal;
-import org.faktorips.fl.operations.DivideMoneyDecimal;
-import org.faktorips.fl.operations.EqualsObjectDatatype;
-import org.faktorips.fl.operations.EqualsPrimtiveType;
-import org.faktorips.fl.operations.GreaterThanDecimalDecimal;
-import org.faktorips.fl.operations.GreaterThanMoneyMoney;
-import org.faktorips.fl.operations.GreaterThanOrEqualDecimalDecimal;
-import org.faktorips.fl.operations.GreaterThanOrEqualMoneyMoney;
-import org.faktorips.fl.operations.LessThanDecimalDecimal;
-import org.faktorips.fl.operations.LessThanMoneyMoney;
-import org.faktorips.fl.operations.LessThanOrEqualDecimalDecimal;
-import org.faktorips.fl.operations.LessThanOrEqualMoneyMoney;
-import org.faktorips.fl.operations.MinusDecimal;
-import org.faktorips.fl.operations.MinusInteger;
-import org.faktorips.fl.operations.MinusMoney;
-import org.faktorips.fl.operations.MinusPrimitiveInt;
-import org.faktorips.fl.operations.MultiplyDecimalDecimal;
-import org.faktorips.fl.operations.MultiplyDecimalMoney;
-import org.faktorips.fl.operations.MultiplyIntInt;
-import org.faktorips.fl.operations.MultiplyIntegerMoney;
-import org.faktorips.fl.operations.MultiplyMoneyDecimal;
-import org.faktorips.fl.operations.NotEqualsObjectDatatype;
-import org.faktorips.fl.operations.ParenthesisDecimal;
-import org.faktorips.fl.operations.ParenthesisInt;
-import org.faktorips.fl.operations.ParenthesisMoney;
-import org.faktorips.fl.operations.ParenthesisString;
-import org.faktorips.fl.operations.PlusDecimal;
-import org.faktorips.fl.operations.PlusInteger;
-import org.faktorips.fl.operations.PlusMoney;
-import org.faktorips.fl.operations.PlusPrimitiveInt;
-import org.faktorips.fl.operations.SubtractDecimalDecimal;
-import org.faktorips.fl.operations.SubtractIntInt;
-import org.faktorips.fl.operations.SubtractMoneyMoney;
 import org.faktorips.fl.parser.FlParser;
 import org.faktorips.fl.parser.FlParserConstants;
 import org.faktorips.fl.parser.FlParserTokenManager;
@@ -78,17 +34,17 @@ import org.faktorips.fl.parser.JavaCharStream;
 import org.faktorips.fl.parser.ParseException;
 import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
-import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.Message;
 
 /**
- * A compiler to compile expressions.
+ * A compiler to compile expressions. This abstract class is target language agnostic and is by
+ * default implemented by the {@link JavaExprCompiler}.
  * <p>
- * This class is not threadsafe!
+ * This class is not thread safe!
  */
-public class ExprCompiler {
+public abstract class ExprCompiler<T extends CodeFragment> {
 
     /**
      * The prefix for all compiler messages.
@@ -203,20 +159,20 @@ public class ExprCompiler {
     private Locale locale;
 
     // Resolver for identifiers
-    private IdentifierResolver identifierResolver = new DefaultIdentifierResolver();
+    private IdentifierResolver<T> identifierResolver;
 
     // list of function resolvers
-    private List<FunctionResolver> functionResolvers = new ArrayList<FunctionResolver>(2);
+    private List<FunctionResolver<T>> functionResolvers = new ArrayList<FunctionResolver<T>>(2);
 
     // ConversionCodeGenerator that defines the implizit datatype conversion performed
     // by the compiler and can generate the appropriate Java sourcecode.
-    private ConversionCodeGenerator conversionCg = ConversionCodeGenerator.getDefault();
+    private ConversionCodeGenerator<T> conversionCg;
 
     // Map containing a list of available binary operations per operator.
-    private Map<String, List<BinaryOperation>> binaryOperations = new HashMap<String, List<BinaryOperation>>();
+    private Map<String, List<BinaryOperation<T>>> binaryOperations = new HashMap<String, List<BinaryOperation<T>>>();
 
     // Map containing a list of available unary operations per operator.
-    private Map<String, List<UnaryOperation>> unaryOperations = new HashMap<String, List<UnaryOperation>>();
+    private Map<String, List<UnaryOperation<T>>> unaryOperations = new HashMap<String, List<UnaryOperation<T>>>();
 
     // the parser (generated by JavaCC)
     private FlParser parser;
@@ -224,11 +180,14 @@ public class ExprCompiler {
     // true, if the expression's type should always be an object and not a primitive.
     private boolean ensureResultIsObject = true;
 
-    private DatatypeHelperProvider datatypeHelperProvider = new DefaultDatatypeHelperProvider();
+    private DatatypeHelperProvider datatypeHelperProvider;
 
     /**
-     * Creates a new compiler. Messages returned by the compiler are generated using the default
-     * locale.
+     * Creates a new compiler. Messages returned by the compiler are generated using the
+     * {@link Locale#getDefault() default locale}.
+     * 
+     * A {@link ConversionCodeGenerator}, {@link DatatypeHelperProvider} and
+     * {@link IdentifierResolver} must be set via the corresponding setters.
      */
     public ExprCompiler() {
         this(Locale.getDefault());
@@ -237,12 +196,35 @@ public class ExprCompiler {
     /**
      * Creates a new compiler.
      * 
-     * @param locale The locale that is used to generate locale dependant messages.
+     * A {@link ConversionCodeGenerator}, {@link DatatypeHelperProvider} and
+     * {@link IdentifierResolver} must be set via the corresponding setters.
+     * 
+     * @param locale The locale that is used to generate locale dependent messages.
      */
     public ExprCompiler(Locale locale) {
         this.locale = locale;
         parser = new FlParser(new ByteArrayInputStream("".getBytes())); //$NON-NLS-1$
         registerDefaults();
+    }
+
+    /**
+     * Creates a new Compiler.
+     * 
+     * @param locale the {@link Locale} used to generate locale dependent messages
+     * @param identifierResolver the {@link IdentifierResolver} used to convert formula language
+     *            identifiers to target language code
+     * @param conversionCg the {@link ConversionCodeGenerator} used to convert between
+     *            {@link Datatype data types}
+     * @param datatypeHelperProvider the {@link DatatypeHelperProvider} used to get
+     *            {@link DatatypeHelper DatatypeHelpers} that generate code for the creation and
+     *            processing of values in their respective {@link Datatype data types}
+     */
+    public ExprCompiler(Locale locale, IdentifierResolver<T> identifierResolver,
+            ConversionCodeGenerator<T> conversionCg, DatatypeHelperProvider datatypeHelperProvider) {
+        this(locale);
+        this.identifierResolver = identifierResolver;
+        this.conversionCg = conversionCg;
+        this.datatypeHelperProvider = datatypeHelperProvider;
     }
 
     /**
@@ -265,88 +247,15 @@ public class ExprCompiler {
     /**
      * Registers the default operations.
      */
-    protected void registerDefaults() {
-
-        // plus operation
-        register(new PlusDecimal());
-        register(new PlusPrimitiveInt());
-        register(new PlusInteger());
-        register(new PlusMoney());
-
-        // minus operation
-        register(new MinusDecimal());
-        register(new MinusInteger());
-        register(new MinusPrimitiveInt());
-        register(new MinusMoney());
-
-        // add operation
-        register(new AddIntInt());
-        register(new AddDecimalInt());
-        register(new AddIntDecimal());
-        register(new AddDecimalInteger());
-        register(new AddIntegerDecimal());
-        register(new AddDecimalDecimal());
-        register(new AddMoneyMoney());
-        register(new AddStringString());
-
-        // subtract operation
-        register(new SubtractIntInt());
-        register(new SubtractDecimalDecimal());
-        register(new SubtractMoneyMoney());
-
-        // multiply operation
-        register(new MultiplyIntInt());
-        register(new MultiplyDecimalMoney());
-        register(new MultiplyMoneyDecimal());
-        register(new MultiplyIntegerMoney());
-        register(new MultiplyDecimalDecimal());
-
-        // divide operation
-        register(new DivideDecimalDecimal());
-        register(new DivideMoneyDecimal());
-
-        // greater than operation
-        register(new GreaterThanDecimalDecimal());
-        register(new GreaterThanMoneyMoney());
-
-        // greater than or equal operation
-        register(new GreaterThanOrEqualDecimalDecimal());
-        register(new GreaterThanOrEqualMoneyMoney());
-
-        // less than operation
-        register(new LessThanDecimalDecimal());
-        register(new LessThanMoneyMoney());
-
-        // less than or equal operation
-        register(new LessThanOrEqualDecimalDecimal());
-        register(new LessThanOrEqualMoneyMoney());
-
-        // equals operation
-        register(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT));
-        register(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN));
-        register(new EqualsObjectDatatype(Datatype.DECIMAL));
-        register(new EqualsObjectDatatype(Datatype.MONEY));
-        register(new EqualsObjectDatatype(Datatype.STRING));
-        register(new EqualsObjectDatatype(AnyDatatype.INSTANCE));
-
-        // not equals operation
-        register(new NotEqualsObjectDatatype(Datatype.DECIMAL));
-        register(new NotEqualsObjectDatatype(Datatype.MONEY));
-
-        // parenthesis operation
-        register(new ParenthesisInt());
-        register(new ParenthesisDecimal());
-        register(new ParenthesisMoney());
-        register(new ParenthesisString());
-    }
+    protected abstract void registerDefaults();
 
     /**
      * Registers the binary operation.
      */
-    public void register(BinaryOperation op) {
-        List<BinaryOperation> operatorOperations = binaryOperations.get(op.getOperator());
+    public void register(BinaryOperation<T> op) {
+        List<BinaryOperation<T>> operatorOperations = binaryOperations.get(op.getOperator());
         if (operatorOperations == null) {
-            operatorOperations = new ArrayList<BinaryOperation>(20);
+            operatorOperations = new ArrayList<BinaryOperation<T>>(20);
             binaryOperations.put(op.getOperator(), operatorOperations);
         }
         operatorOperations.add(op);
@@ -356,52 +265,45 @@ public class ExprCompiler {
     /**
      * Registers the unary operation.
      */
-    public void register(UnaryOperation op) {
-        List<UnaryOperation> operatorOperations = unaryOperations.get(op.getOperator());
+    public void register(UnaryOperation<T> op) {
+        List<UnaryOperation<T>> operatorOperations = unaryOperations.get(op.getOperator());
         if (operatorOperations == null) {
-            operatorOperations = new ArrayList<UnaryOperation>(20);
+            operatorOperations = new ArrayList<UnaryOperation<T>>(20);
             unaryOperations.put(op.getOperator(), operatorOperations);
         }
         operatorOperations.add(op);
     }
 
     /**
-     * Sets the <code>BinaryOperation</code>s the compiler uses. Overwrites all operations
+     * Sets the {@link BinaryOperation BinaryOperations} the compiler uses. Overwrites all
+     * operations previously registered.
+     * 
+     * @throws IllegalArgumentException if operations is {@code null}.
+     */
+    public void setBinaryOperations(BinaryOperation<T>[] operations) {
+        ArgumentCheck.notNull(operations);
+        binaryOperations = new HashMap<String, List<BinaryOperation<T>>>();
+        for (BinaryOperation<T> operation : operations) {
+            register(operation);
+        }
+    }
+
+    /**
+     * Sets the {@link UnaryOperation UnaryOperations} the compiler uses. Overwrites all operations
      * previously registered.
      * 
-     * @throws IllegalArgumentException if operations is null.
+     * @throws IllegalArgumentException if operations is {@code null}.
      */
-    public void setBinaryOperations(BinaryOperation[] operations) {
+    public void setUnaryOperations(UnaryOperation<T>[] operations) {
         ArgumentCheck.notNull(operations);
-        binaryOperations = new HashMap<String, List<BinaryOperation>>();
-        for (BinaryOperation operation : operations) {
+        unaryOperations = new HashMap<String, List<UnaryOperation<T>>>();
+        for (UnaryOperation<T> operation : operations) {
             register(operation);
         }
     }
 
     /**
-     * Sets the <code>UnaryOperation</code>s the compiler uses. Overwrites all operations previously
-     * registered.
-     * 
-     * @throws IllegalArgumentException if operations is null.
-     */
-    public void setUnaryOperations(UnaryOperation[] operations) {
-        ArgumentCheck.notNull(operations);
-        unaryOperations = new HashMap<String, List<UnaryOperation>>();
-        for (UnaryOperation operation : operations) {
-            register(operation);
-        }
-    }
-
-    /**
-     * Returns the locale the compiler uses for it's messages.
-     */
-    public Locale getLocale() {
-        return locale;
-    }
-
-    /**
-     * Returns the compiler's EnsureResultIsObject property.
+     * Returns the compiler's {@code EnsureResultIsObject} property.
      * 
      * @see #setEnsureResultIsObject(boolean)
      */
@@ -410,54 +312,61 @@ public class ExprCompiler {
     }
 
     /**
-     * Sets the compiler's EnsureResultIsObject property. If set to true, the compiler will check if
-     * an expression's type is a Java primitive before returning the result. If the type is a
-     * primitive the compiler will convert it to the appropriate wrapper class. E.g. the expresison
-     * <code>2+4</code> is of type primitive int. If this property is set to true the compiler would
-     * wrap the resulting source code with a <code>Integer(..)</code>.
+     * Sets the compiler's {@code EnsureResultIsObject} property. If set to {@code true}, the
+     * compiler will check if an expression's type is a Java primitive before returning the result.
+     * If the type is a primitive the compiler will convert it to the appropriate wrapper class.
+     * E.g. the expression <code>2+4</code> is of type primitive int. If this property is set to
+     * true the compiler would wrap the resulting source code with a <code>Integer(..)</code>.
      */
     public void setEnsureResultIsObject(boolean newValue) {
         this.ensureResultIsObject = newValue;
     }
 
     /**
-     * Returns the resover the compiler uses to resolve identifiers.
+     * Returns the resolver the compiler uses to resolve identifiers.
      */
-    public IdentifierResolver getIdentifierResolver() {
+    public IdentifierResolver<T> getIdentifierResolver() {
         return identifierResolver;
     }
 
     /**
-     * Sets the <code>IdentifierResolver</code> the compiler uses to resolve identifiers.
+     * Sets the {@link IdentifierResolver} the compiler uses to resolve identifiers.
      * 
      * @throws IllegalArgumentException if resolver is null.
      */
-    public void setIdentifierResolver(IdentifierResolver resolver) {
+    public void setIdentifierResolver(IdentifierResolver<T> resolver) {
         ArgumentCheck.notNull(resolver);
         this.identifierResolver = resolver;
     }
 
     /**
-     * Returns the <code>ConversionCodeGenerator </code> that defines the compiler's implicit
-     * conversions, e.g. convert a primtive int to an Integer.
+     * Returns the {@link ConversionCodeGenerator} that defines the compiler's implicit conversions,
+     * e.g. convert a primitive int to an Integer.
      */
-    public ConversionCodeGenerator getConversionCodeGenerator() {
+    public ConversionCodeGenerator<T> getConversionCodeGenerator() {
         return conversionCg;
     }
 
     /**
-     * Sets the <code>ConversionCodeGenerator</code> that the compiler uses for implicit
-     * conversions, e.g. convert a primtive int to an Integer.
+     * Sets the {@link ConversionCodeGenerator} that the compiler uses for implicit conversions,
+     * e.g. convert a primitive int to an Integer.
      * 
      * @throws IllegalArgumentException if ccg is null.
      */
-    public void setConversionCodeGenerator(ConversionCodeGenerator ccg) {
+    public void setConversionCodeGenerator(ConversionCodeGenerator<T> ccg) {
         ArgumentCheck.notNull(ccg);
         conversionCg = ccg;
     }
 
     /**
-     * Sets the <code>Locale</code> the compiler uses to generate it's messages.
+     * Returns the {@link Locale} the compiler uses for it's {@link Message messages}.
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Sets the {@link Locale} the compiler uses to generate it's {@link Message messages}.
      * 
      * @throws IllegalArgumentException if locale is null.
      */
@@ -472,22 +381,22 @@ public class ExprCompiler {
      * 
      * @throws IllegalArgumentException if fctResolver is null.
      */
-    public void add(FunctionResolver fctResolver) {
+    public void add(FunctionResolver<T> fctResolver) {
         ArgumentCheck.notNull(fctResolver);
         functionResolvers.add(fctResolver);
-        FlFunction[] functions = fctResolver.getFunctions();
-        for (FlFunction function : functions) {
+        FlFunction<T>[] functions = fctResolver.getFunctions();
+        for (FlFunction<T> function : functions) {
             function.setCompiler(this);
         }
     }
 
     /**
      * Removes the function resolver from the ones used by the compiler to resolve function calls.
-     * If the resolver hasn't been added before this method does nothing.
+     * If the resolver hasn't been added before, this method does nothing.
      * 
      * @throws IllegalArgumentException if fctResolver is null.
      */
-    public void remove(FunctionResolver fctResolver) {
+    public void remove(FunctionResolver<T> fctResolver) {
         ArgumentCheck.notNull(fctResolver);
         functionResolvers.remove(fctResolver);
     }
@@ -495,39 +404,42 @@ public class ExprCompiler {
     /**
      * Returns an iterator to access the added function resolvers.
      */
-    Iterator<FunctionResolver> getFunctionResolvers() {
+    Iterator<FunctionResolver<T>> getFunctionResolvers() {
         return functionResolvers.iterator();
     }
 
     /**
      * Return the functions supported by the compiler.
      */
-    public FlFunction[] getFunctions() {
-        List<FlFunction> functions = new ArrayList<FlFunction>();
-        for (Iterator<FunctionResolver> it = getFunctionResolvers(); it.hasNext();) {
-            FunctionResolver resolver = it.next();
-            FlFunction[] resolverFunctions = resolver.getFunctions();
-            for (FlFunction resolverFunction : resolverFunctions) {
+    public FlFunction<T>[] getFunctions() {
+        List<FlFunction<T>> functions = new ArrayList<FlFunction<T>>();
+        for (Iterator<FunctionResolver<T>> it = getFunctionResolvers(); it.hasNext();) {
+            FunctionResolver<T> resolver = it.next();
+            FlFunction<T>[] resolverFunctions = resolver.getFunctions();
+            for (FlFunction<T> resolverFunction : resolverFunctions) {
                 functions.add(resolverFunction);
             }
         }
-        return functions.toArray(new FlFunction[functions.size()]);
+        @SuppressWarnings("unchecked")
+        FlFunction<T>[] flFunctions = new FlFunction[functions.size()];
+        return functions.toArray(flFunctions);
     }
 
     /**
-     * Returns a Set of ambiguous {@link FlFunction}s, which the parser could not differentiate.
+     * Returns a Set of ambiguous {@link FlFunction FlFunctions}, which the parser could not
+     * differentiate.
      * <p>
      * Maybe the rolename of a table equals the qualified name of a table structure in the root
      * package.
      */
-    public LinkedHashSet<FlFunction> getAmbiguousFunctions(final FlFunction[] functions) {
+    public LinkedHashSet<FlFunction<T>> getAmbiguousFunctions(final FlFunction<T>[] functions) {
 
-        LinkedHashSet<FlFunction> ambiguousFunctions = new LinkedHashSet<FlFunction>();
+        LinkedHashSet<FlFunction<T>> ambiguousFunctions = new LinkedHashSet<FlFunction<T>>();
         for (int i = 0; i < functions.length; i++) {
-            FlFunction flFunction = functions[i];
+            FlFunction<T> flFunction = functions[i];
 
             for (int j = i + 1; j < functions.length; j++) {
-                FlFunction comparedFlFunction = functions[j];
+                FlFunction<T> comparedFlFunction = functions[j];
 
                 if (flFunction.isSame(comparedFlFunction)) {
                     ambiguousFunctions.add(comparedFlFunction);
@@ -539,110 +451,64 @@ public class ExprCompiler {
     }
 
     /**
-     * Compiles the given expression string into Java sourcecode. If the compilation is not
-     * successful, the result contains messages that describe the error/problem that has occurred.
-     * If the compilation is successful, the result contains Java sourcecode that represents the
-     * expression along with the expression's datatype. In this case the result does not contain any
-     * error messages, but may contain warnings or informations.
+     * Compiles the given expression string into {@link CodeFragment source code}. If the
+     * compilation is not successful, the {@link CompilationResult result} contains {@link Message
+     * messages} that describe the error/problem that has occurred. If the compilation is
+     * successful, the result contains {@link CodeFragment source code} that represents the
+     * expression along with the expression's {@link Datatype}. In this case the result does not
+     * contain any {@link Message#ERROR error} messages, but may contain {@link Message#WARNING
+     * warnings} or {@link Message#INFO informations}.
      */
-    public CompilationResult compile(String expr) {
-        SimpleNode rootNode;
-        // parse the expression
-        try {
-            rootNode = parse(expr);
-        } catch (ParseException pe) {
-            return parseExceptionToResult(pe);
-            // CSOFF: IllegalCatch
-        } catch (Exception pe) {
-            // CSON: IllegalCatch
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, locale)));
-        } catch (TokenMgrError e) {
-            String text = LOCALIZED_STRINGS.getString(LEXICAL_ERROR, locale, e.getMessage());
-            return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
-        }
-        // parse ok, generate the sourcecode via the visitor visiting the parse tree
-        CompilationResultImpl result;
-        try {
-            ParseTreeVisitor visitor = new ParseTreeVisitor(this);
-            result = (CompilationResultImpl)rootNode.jjtAccept(visitor, null);
-            // CSOFF: IllegalCatch
-        } catch (Exception pe) {
-            // CSON: IllegalCatch
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, locale)));
-        }
-        if (result.failed()) {
-            return result;
-        }
-        try {
-            Datatype resultType = result.getDatatype();
-            if (!ensureResultIsObject || !resultType.isPrimitive()) {
-                return result;
-            }
-            // convert primitive to wrapper object
-            JavaCodeFragment converted = CodeGenUtil.convertPrimitiveToWrapper(resultType, result.getCodeFragment());
-            CompilationResultImpl finalResult = new CompilationResultImpl(converted,
-                    ((ValueDatatype)resultType).getWrapperType());
-            finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
-            return finalResult;
-            // CSOFF: IllegalCatch
-        } catch (Exception pe) {
-            // CSON: IllegalCatch
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, locale)));
-        }
-    }
+    public abstract CompilationResult<T> compile(String expr);
 
-    private SimpleNode parse(String expr) throws ParseException {
+    protected SimpleNode parse(String expr) throws ParseException {
         parser.ReInit(new StringReader(expr));
         return parser.start();
     }
 
-    private CompilationResult parseExceptionToResult(ParseException e) {
-        String expected = ""; //$NON-NLS-1$
-        for (int[] expectedTokenSequence : e.expectedTokenSequences) {
-            expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
+    protected abstract CompilationResult<T> parseExceptionToResult(ParseException e);
+
+    BinaryOperation<T>[] getBinaryOperations(String operator) {
+        List<BinaryOperation<T>> operatorOperations = binaryOperations.get(operator);
+        if (operatorOperations == null) {
+            @SuppressWarnings("unchecked")
+            BinaryOperation<T>[] binaryOperations = new BinaryOperation[0];
+            return binaryOperations;
         }
-        Object[] replacements = new Object[] { e.currentToken.next.toString(),
-                new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
-        return new CompilationResultImpl(Message.newError(SYNTAX_ERROR,
-                LOCALIZED_STRINGS.getString(SYNTAX_ERROR, locale, replacements)));
+        @SuppressWarnings("unchecked")
+        BinaryOperation<T>[] binaryOperations = new BinaryOperation[operatorOperations.size()];
+        return operatorOperations.toArray(binaryOperations);
     }
 
-    BinaryOperation[] getBinaryOperations(String operator) {
-        List<BinaryOperation> operatorOperations = binaryOperations.get(operator);
+    UnaryOperation<T>[] getUnaryOperations(String operator) {
+        List<UnaryOperation<T>> operatorOperations = unaryOperations.get(operator);
         if (operatorOperations == null) {
-            return new BinaryOperation[0];
+            @SuppressWarnings("unchecked")
+            UnaryOperation<T>[] unaryOperations = new UnaryOperation[0];
+            return unaryOperations;
         }
-        return operatorOperations.toArray(new BinaryOperation[operatorOperations.size()]);
-    }
-
-    UnaryOperation[] getUnaryOperations(String operator) {
-        List<UnaryOperation> operatorOperations = unaryOperations.get(operator);
-        if (operatorOperations == null) {
-            return new UnaryOperation[0];
-        }
-        return operatorOperations.toArray(new UnaryOperation[operatorOperations.size()]);
+        @SuppressWarnings("unchecked")
+        UnaryOperation<T>[] unaryOperations = new UnaryOperation[operatorOperations.size()];
+        return operatorOperations.toArray(unaryOperations);
     }
 
     /**
-     * @return Returns the datatypeHelperProvider.
+     * @return Returns the {@link DatatypeHelperProvider}.
      */
     public DatatypeHelperProvider getDatatypeHelperProvider() {
         return datatypeHelperProvider;
     }
 
     /**
-     * @param provider The datatypeHelperProvider to set.
+     * @param provider The {@link DatatypeHelperProvider} to set.
      */
     public void setDatatypeHelperProvider(DatatypeHelperProvider provider) {
         this.datatypeHelperProvider = provider;
     }
 
     /**
-     * Returns the code generation helper for the given type or <code>null</code> if no helper is
-     * available.
+     * Returns the {@link DatatypeHelper code generation helper} for the given type or {@code null}
+     * if no helper is available.
      */
     public DatatypeHelper getDatatypeHelper(Datatype type) {
         if (datatypeHelperProvider == null || type == null) {

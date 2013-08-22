@@ -21,15 +21,15 @@ import org.faktorips.fl.CompilationResult;
  * A function that provides a boolean and-operation and has the following signature <i>boolean
  * AND(boolean...)</i>.
  */
-public class And extends AbstractVarArgFunction {
+public class And extends AbstractJavaVarArgFunction {
 
     public And(String name, String description) {
         super(name, description, Datatype.PRIMITIVE_BOOLEAN, Datatype.PRIMITIVE_BOOLEAN);
     }
 
     @Override
-    protected void compileInternal(CompilationResult returnValue,
-            CompilationResult[] convertedArgs,
+    protected void compileInternal(CompilationResult<JavaCodeFragment> returnValue,
+            CompilationResult<JavaCodeFragment>[] convertedArgs,
             JavaCodeFragment fragment) {
         fragment.append('(');
         for (int i = 0; i < convertedArgs.length; i++) {

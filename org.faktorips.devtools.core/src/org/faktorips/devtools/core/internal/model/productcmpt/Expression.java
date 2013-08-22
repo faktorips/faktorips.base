@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -46,8 +47,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -150,7 +151,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     }
 
     @Override
-    public ExprCompiler newExprCompiler(IIpsProject ipsProject) {
+    public JavaExprCompiler newExprCompiler(IIpsProject ipsProject) {
         ExtendedExprCompiler compiler = ipsProject.newExpressionCompiler();
 
         // add the table functions based on the table usages defined in the product cmpt type
@@ -161,7 +162,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (method == null) {
             return compiler;
         }
-        IdentifierResolver resolver;
+        IdentifierResolver<JavaCodeFragment> resolver;
         try {
             resolver = builderSet.createFlIdentifierResolver(this, compiler);
         } catch (final CoreException e) {
@@ -316,8 +317,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (signature == null) {
             return new String[0];
         }
-        ExprCompiler compiler = newExprCompiler(ipsProject);
-        CompilationResult compilationResult = compiler.compile(expression);
+        JavaExprCompiler compiler = newExprCompiler(ipsProject);
+        CompilationResult<JavaCodeFragment> compilationResult = compiler.compile(expression);
 
         // store the resolved identifiers in the cache
         String[] resolvedIdentifiers = compilationResult.getResolvedIdentifiers();
@@ -397,8 +398,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (list.containsErrorMsg()) {
             return;
         }
-        ExprCompiler compiler = newExprCompiler(ipsProject);
-        CompilationResult result = compiler.compile(expression);
+        JavaExprCompiler compiler = newExprCompiler(ipsProject);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
         validateCompilationResult(list, result);
         if (list.containsErrorMsg()) {
             return;
@@ -420,7 +421,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         }
     }
 
-    private void validateCompilationResult(MessageList list, CompilationResult result) {
+    private void validateCompilationResult(MessageList list, CompilationResult<JavaCodeFragment> result) {
         if (!result.successfull()) {
             MessageList compilerMessageList = result.getMessages();
             for (int i = 0; i < compilerMessageList.size(); i++) {

@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Operation for the addition of two ints.
  */
-public class SubtractIntInt extends AbstractBinaryOperation {
+public class SubtractIntInt extends AbstractBinaryJavaOperation {
 
     public SubtractIntInt() {
         super("-", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT); //$NON-NLS-1$
@@ -28,6 +28,7 @@ public class SubtractIntInt extends AbstractBinaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(" - "); //$NON-NLS-1$
         lhs.add(rhs);

@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Operation for the addition of two decimals.
  */
-public class LessThanDecimalDecimal extends AbstractBinaryOperation {
+public class LessThanDecimalDecimal extends AbstractBinaryJavaOperation {
 
     public LessThanDecimalDecimal() {
         super("<", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
@@ -28,9 +28,10 @@ public class LessThanDecimalDecimal extends AbstractBinaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".lessThan("); //$NON-NLS-1$
         lhs.add(rhs);

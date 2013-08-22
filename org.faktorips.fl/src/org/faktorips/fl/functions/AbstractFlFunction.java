@@ -13,6 +13,7 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
@@ -20,11 +21,13 @@ import org.faktorips.fl.FunctionSignatureImpl;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Abstract default implementation of FlFunction.
+ * Abstract default implementation of {@link FlFunction}.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public abstract class AbstractFlFunction extends FunctionSignatureImpl implements FlFunction {
+public abstract class AbstractFlFunction<T extends CodeFragment> extends FunctionSignatureImpl implements FlFunction<T> {
 
-    protected ExprCompiler compiler;
+    protected ExprCompiler<T> compiler;
     private String description;
 
     /**
@@ -51,7 +54,7 @@ public abstract class AbstractFlFunction extends FunctionSignatureImpl implement
     /**
      * {@inheritDoc}
      */
-    public void setCompiler(ExprCompiler compiler) {
+    public void setCompiler(ExprCompiler<T> compiler) {
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
     }
@@ -61,7 +64,7 @@ public abstract class AbstractFlFunction extends FunctionSignatureImpl implement
      * 
      * @see org.faktorips.fl.FlFunction#getCompiler()
      */
-    public ExprCompiler getCompiler() {
+    public ExprCompiler<T> getCompiler() {
         return compiler;
     }
 

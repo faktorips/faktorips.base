@@ -13,17 +13,18 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.fl.CompilerAbstractTest;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.DefaultFunctionResolver;
 import org.faktorips.fl.FlFunction;
+import org.faktorips.fl.JavaExprCompilerAbstractTest;
 
 /**
  *
  */
-public abstract class FunctionAbstractTest extends CompilerAbstractTest {
+public abstract class FunctionAbstractTest extends JavaExprCompilerAbstractTest {
 
-    protected void registerFunction(FlFunction function) {
-        DefaultFunctionResolver resolver = new DefaultFunctionResolver();
+    protected void registerFunction(FlFunction<JavaCodeFragment> function) {
+        DefaultFunctionResolver<JavaCodeFragment> resolver = new DefaultFunctionResolver<JavaCodeFragment>();
         resolver.add(function);
         compiler.add(resolver);
     }

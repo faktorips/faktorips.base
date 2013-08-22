@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 /**
  * Parenthesis <i>()</i> operator for datatype Money.
  */
-public class ParenthesisMoney extends AbstractUnaryOperation {
+public class ParenthesisMoney extends AbstractUnaryJavaOperation {
 
     public ParenthesisMoney() {
         super(Datatype.MONEY, "()");
@@ -28,6 +28,7 @@ public class ParenthesisMoney extends AbstractUnaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;
     }

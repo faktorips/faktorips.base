@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.JavaExprCompiler;
 
 /**
  * Base interface for expressions using the formula language.
@@ -122,7 +122,7 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * Returns an expression compiler that can be used to compile the formula. or <code>null</code>
      * if the element does not contain a formula.
      */
-    ExprCompiler newExprCompiler(IIpsProject ipsProject);
+    JavaExprCompiler newExprCompiler(IIpsProject ipsProject);
 
     /**
      * Returns the enumeration data types that can be use in this formula. Allowed enumeration types

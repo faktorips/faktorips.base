@@ -13,17 +13,23 @@
 
 package org.faktorips.fl.operations;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.UnaryOperation;
 
 /**
- *
+ * Abstract implementation of {@link UnaryOperation}.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public abstract class AbstractUnaryOperation implements UnaryOperation {
+public abstract class AbstractUnaryOperation<T extends CodeFragment> implements UnaryOperation<T> {
 
     private Datatype datatype;
     private String operator;
 
+    /**
+     * Creates a new unary operation for the indicated operator and {@link Datatype data type}.
+     */
     public AbstractUnaryOperation(Datatype datatype, String operator) {
         this.datatype = datatype;
         this.operator = operator;

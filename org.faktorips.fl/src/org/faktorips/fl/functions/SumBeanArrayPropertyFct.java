@@ -21,8 +21,8 @@ import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BeanDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.PropertyDatatype;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -35,7 +35,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Jan Ortmann
  */
-public class SumBeanArrayPropertyFct extends AbstractFlFunction {
+public class SumBeanArrayPropertyFct extends AbstractJavaFlFunction {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "SUM-BEAN-ARRAY-PROPERTYFCT"; //$NON-NLS-1$
 
@@ -48,7 +48,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.fl.CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.notNull(argResults[0]);
         ArgumentCheck.notNull(argResults[1]);
         ArrayOfValueDatatype array = (ArrayOfValueDatatype)argResults[0].getDatatype();

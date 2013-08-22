@@ -38,8 +38,8 @@ import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.fl.DefaultIdentifierResolver;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.ExprEvaluator;
+import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -133,8 +133,8 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * Returns the expression compiler used to compile the formula preview result.
      */
-    private ExprCompiler getPreviewExprCompiler(IIpsProject ipsProject) throws CoreException {
-        ExprCompiler compiler = ipsProject.newExpressionCompiler();
+    private JavaExprCompiler getPreviewExprCompiler(IIpsProject ipsProject) throws CoreException {
+        JavaExprCompiler compiler = ipsProject.newExpressionCompiler();
 
         // add the table functions based on the table usages defined in the product cmpt type
         IProductCmptGeneration gen = getFormula().getProductCmptGeneration();
@@ -206,7 +206,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     private ExprEvaluator getExprEvaluatorInternal(ClassLoader classLoader, IIpsProject ipsProject)
             throws CoreException {
 
-        ExprCompiler compiler = getPreviewExprCompiler(ipsProject);
+        JavaExprCompiler compiler = getPreviewExprCompiler(ipsProject);
         return new ExprEvaluator(compiler, classLoader);
     }
 

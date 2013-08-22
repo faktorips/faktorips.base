@@ -16,6 +16,7 @@ package org.faktorips.fl;
 import java.math.BigDecimal;
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.If;
@@ -32,10 +33,10 @@ import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.WholeNumber;
 
 /**
- * A <code>FunctionResolver</code> that supports Excel functions. The functions are available in
+ * A {@link FunctionResolver} that supports Excel functions. The functions are available in
  * different languages.
  */
-public class ExcelFunctionsResolver extends LocalizedFunctionsResolver {
+public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeFragment> {
 
     public static final String MIN = "min";
     public static final String MAX = "max";
@@ -51,8 +52,8 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver {
     public static final String AND = "and";
 
     /**
-     * Creates a new resolver that contains a set of functions that are similiar by name and
-     * argument list as those provided by Microsoft's Excel.
+     * Creates a new resolver that contains a set of functions that are similar by name and argument
+     * list to those provided by Microsoft's Excel.
      * 
      * @param locale The locale that determines the language of the function names.
      */

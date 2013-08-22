@@ -26,14 +26,14 @@ import org.junit.Test;
 public class ExprEvaluatorTest {
     @Test
     public void testExecute() throws Exception {
-        ExprEvaluator processor = new ExprEvaluator(new ExprCompiler());
+        ExprEvaluator processor = new ExprEvaluator(new JavaExprCompiler());
         Object o = processor.evaluate("10.123");
         assertEquals(Decimal.valueOf("10.123"), o);
     }
 
     @Test
     public void testExecuteWithVariables() throws Exception {
-        ExprCompiler compiler = new ExprCompiler();
+        JavaExprCompiler compiler = new JavaExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         resolver.register("a", new JavaCodeFragment("new Integer(42)"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
@@ -48,7 +48,7 @@ public class ExprEvaluatorTest {
         System.setProperty("debug", "true");
         System.setProperty("trace", "true");
 
-        ExprCompiler compiler = new ExprCompiler();
+        JavaExprCompiler compiler = new JavaExprCompiler();
         compiler.setIdentifierResolver(new TestEnumIdentifierResolver());
         String expression = "TestEnum.MONTH";
         ExprEvaluator processor = new ExprEvaluator(compiler);

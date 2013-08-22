@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -114,9 +115,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
      * Empty implementation. Might be overridden by subclasses that support the formula language.
      */
     @Override
-    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
+    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
 
         return null;
     }
@@ -127,8 +128,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
+    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
         return null;
     }
 

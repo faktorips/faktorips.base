@@ -18,15 +18,15 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
 /**
  *
  */
-public abstract class MinMaxNativeTypes extends AbstractFlFunction {
+public abstract class MinMaxNativeTypes extends AbstractJavaFlFunction {
 
     protected String functionName = null;
     private String errorCodeSuffix = null;
@@ -75,18 +75,18 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
 
-        ConversionCodeGenerator ccg = compiler.getConversionCodeGenerator();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = compiler.getConversionCodeGenerator();
         Datatype datatype1 = argResults[0].getDatatype();
         Datatype datatype2 = argResults[1].getDatatype();
 
-        CompilationResult first = convertIfNecessay(datatype1, ccg, argResults[0]);
+        CompilationResult<JavaCodeFragment> first = convertIfNecessay(datatype1, ccg, argResults[0]);
         if (first == null) {
             return createErrorCompilationResult(datatype1);
         }
-        CompilationResult second = convertIfNecessay(datatype2, ccg, argResults[1]);
+        CompilationResult<JavaCodeFragment> second = convertIfNecessay(datatype2, ccg, argResults[1]);
         if (second == null) {
             return createErrorCompilationResult(datatype2);
         }
@@ -103,9 +103,11 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         return result;
     }
 
-    protected abstract void writeBody(JavaCodeFragment fragment, CompilationResult first, CompilationResult second);
+    protected abstract void writeBody(JavaCodeFragment fragment,
+            CompilationResult<JavaCodeFragment> first,
+            CompilationResult<JavaCodeFragment> second);
 
-    private CompilationResult createErrorCompilationResult(Datatype datatype) {
+    private CompilationResult<JavaCodeFragment> createErrorCompilationResult(Datatype datatype) {
         String code = ExprCompiler.PREFIX + errorCodeSuffix;
         String text = Messages.INSTANCE.getString(code, new Object[] { datatype });
         Message msg = Message.newError(code, text);
@@ -113,9 +115,9 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
 
     }
 
-    private CompilationResult convertIfNecessay(Datatype datatype,
-            ConversionCodeGenerator ccg,
-            CompilationResult argResult) {
+    private CompilationResult<JavaCodeFragment> convertIfNecessay(Datatype datatype,
+            ConversionCodeGenerator<JavaCodeFragment> ccg,
+            CompilationResult<JavaCodeFragment> argResult) {
         if (!functionDatatype.equals(datatype)) {
             if (ccg.canConvert(datatype, functionDatatype)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype, functionDatatype,

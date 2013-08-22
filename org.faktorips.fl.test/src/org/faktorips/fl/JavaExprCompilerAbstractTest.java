@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
@@ -29,14 +30,14 @@ import org.junit.Before;
 /**
  *
  */
-public abstract class CompilerAbstractTest {
+public abstract class JavaExprCompilerAbstractTest {
 
-    protected ExprCompiler compiler;
+    protected JavaExprCompiler compiler;
     private ExprEvaluator processor;
 
     @Before
     public void setUp() throws Exception {
-        compiler = new ExprCompiler();
+        compiler = new JavaExprCompiler();
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);
         processor = new ExprEvaluator(compiler);
@@ -47,11 +48,11 @@ public abstract class CompilerAbstractTest {
      * datatype is the expected one. After that the expression is executed and it is tested if it
      * returns the expected value.
      */
-    protected CompilationResult execAndTestSuccessfull(String expression,
+    protected CompilationResult<JavaCodeFragment> execAndTestSuccessfull(String expression,
             Object expectedValue,
             Datatype expectedDatatype) throws Exception {
 
-        CompilationResult result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
@@ -66,7 +67,7 @@ public abstract class CompilerAbstractTest {
         return result;
     }
 
-    protected CompilationResult execAndTestSuccessfull(String expression,
+    protected CompilationResult<JavaCodeFragment> execAndTestSuccessfull(String expression,
             Object expectedValue,
             String[] parameterNames,
             Datatype[] parameterTypes,
@@ -77,18 +78,20 @@ public abstract class CompilerAbstractTest {
         for (int i = 0; i < parameterNames.length; i++) {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }
-        IdentifierResolver resolver = new IdentifierResolver() {
-            public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
+        IdentifierResolver<JavaCodeFragment> resolver = new IdentifierResolver<JavaCodeFragment>() {
+            public CompilationResult<JavaCodeFragment> compile(String identifier,
+                    ExprCompiler<JavaCodeFragment> exprCompiler,
+                    Locale locale) {
                 Object paramDatatype = parameterMap.get(identifier);
                 if (paramDatatype != null) {
                     return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
                 }
-                return new CompilationResultImpl(new Message("",
-                        "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
+                return new CompilationResultImpl(new Message("", "The parameter " + identifier
+                        + " cannot be resolved.", Message.ERROR));
             }
         };
         compiler.setIdentifierResolver(resolver);
-        CompilationResult result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
@@ -108,9 +111,10 @@ public abstract class CompilerAbstractTest {
      * datatype is the expected one. After that the expression is executed and it is tested if it
      * returns the expected value.
      */
-    protected CompilationResult execAndTestSuccessfull(String expression, boolean expectedValue) throws Exception {
+    protected CompilationResult<JavaCodeFragment> execAndTestSuccessfull(String expression, boolean expectedValue)
+            throws Exception {
 
-        CompilationResult result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
@@ -130,10 +134,17 @@ public abstract class CompilerAbstractTest {
      * Compiles the given expression and tests if the compilation failed and the compilation result
      * contains a message with the indicated message code.
      */
-    protected CompilationResult execAndTestFail(String expression, String expectedMessageCode) throws Exception {
-        CompilationResult result = compiler.compile(expression);
+    protected CompilationResult<JavaCodeFragment> execAndTestFail(String expression, String expectedMessageCode)
+            throws Exception {
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
         assertTrue(result.failed());
         assertNotNull(result.getMessages().getMessageByCode(expectedMessageCode));
         return result;
+    }
+
+    protected BinaryOperation<JavaCodeFragment>[] toArray(BinaryOperation<JavaCodeFragment> binaryOperation) {
+        @SuppressWarnings("unchecked")
+        BinaryOperation<JavaCodeFragment>[] binaryOperations = new BinaryOperation[] { binaryOperation };
+        return binaryOperations;
     }
 }

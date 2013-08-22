@@ -15,6 +15,7 @@ package org.faktorips.devtools.core;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.FunctionResolver;
 
 /**
@@ -30,6 +31,6 @@ public interface IFunctionResolverFactory {
      * Creates a new FunctionResolver with respect to the provided local. It is in the
      * responsibility of the factory provider if the locale is considered.
      */
-    public FunctionResolver newFunctionResolver(Locale locale);
+    public FunctionResolver<JavaCodeFragment> newFunctionResolver(Locale locale);
 
 }

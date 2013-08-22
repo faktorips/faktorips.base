@@ -21,9 +21,9 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.values.Decimal;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,9 +57,11 @@ public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
         assertEquals(Decimal.valueOf(42, 0), sum);
     }
 
-    class BeanIdentifierResolver implements IdentifierResolver {
+    class BeanIdentifierResolver implements IdentifierResolver<JavaCodeFragment> {
 
-        public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
+        public CompilationResult<JavaCodeFragment> compile(String identifier,
+                ExprCompiler<JavaCodeFragment> exprCompiler,
+                Locale locale) {
             if (identifier.equals("beans")) {
                 return getResultForBeans();
             } else if (identifier.equals("value")) {
@@ -68,7 +70,7 @@ public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
             return null;
         }
 
-        private CompilationResult getResultForBeans() {
+        private CompilationResult<JavaCodeFragment> getResultForBeans() {
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment.append("new Object[]{");
             fragment.append("new ");

@@ -13,26 +13,30 @@
 
 package org.faktorips.fl;
 
+import org.faktorips.codegen.CodeFragment;
+
 /**
- *
+ * A function used in the formula language.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public interface FlFunction extends FunctionSignature {
+public interface FlFunction<T extends CodeFragment> extends FunctionSignature {
 
     /**
-     * Generates the Java sourcecode for the function given the compilation results for the
-     * arguments.
+     * Generates the {@link CompilationResult source code} for the function given the
+     * {@link CompilationResult compilation results} for the arguments.
      */
-    public CompilationResult compile(CompilationResult[] argResults);
+    public CompilationResult<T> compile(CompilationResult<T>[] argResults);
 
     /**
      * Sets the compiler in which the function is used.
      */
-    public void setCompiler(ExprCompiler compiler);
+    public void setCompiler(ExprCompiler<T> compiler);
 
     /**
      * Returns the compiler in which the function is used.
      */
-    public ExprCompiler getCompiler();
+    public ExprCompiler<T> getCompiler();
 
     /**
      * Returns the function's description.

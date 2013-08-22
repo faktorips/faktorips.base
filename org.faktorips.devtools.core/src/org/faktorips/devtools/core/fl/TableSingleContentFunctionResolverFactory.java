@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.fl;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.fl.TableSingleContentFunctionsResolver;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.FunctionResolver;
@@ -22,7 +23,7 @@ import org.faktorips.fl.FunctionResolver;
 public class TableSingleContentFunctionResolverFactory extends AbstractProjectRelatedFunctionResolverFactory {
 
     @Override
-    public FunctionResolver newFunctionResolver(IIpsProject ipsProject, Locale locale) {
+    public FunctionResolver<JavaCodeFragment> newFunctionResolver(IIpsProject ipsProject, Locale locale) {
         return new TableSingleContentFunctionsResolver(ipsProject);
     }
 

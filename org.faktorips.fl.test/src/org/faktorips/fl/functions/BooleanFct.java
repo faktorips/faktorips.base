@@ -13,6 +13,7 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -22,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * 
  * @author Jan Ortmann
  */
-public class BooleanFct extends AbstractFlFunction {
+public class BooleanFct extends AbstractJavaFlFunction {
 
     private Boolean value;
 
@@ -34,7 +35,7 @@ public class BooleanFct extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         if (value == null) {
             return new CompilationResultImpl("((Boolean)null)", Datatype.BOOLEAN);
         } else {
