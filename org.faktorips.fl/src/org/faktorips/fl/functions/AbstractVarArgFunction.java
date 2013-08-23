@@ -13,21 +13,23 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.codegen.CodeFragment;
+import java.util.ArrayList;
+
+import org.faktorips.codegen.ConversionCodeGenerator;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.util.message.Message;
 
 /**
- * An extension of the {@link AbstractFlFunction} that provides base functionality for variable
- * argument functions.
+ * {@link AbstractBaseVarArgFunction} for {@link JavaCodeFragment Java code} generating functions.
  */
-public abstract class AbstractVarArgFunction<T extends CodeFragment> extends AbstractFlFunction<T> {
-
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "VARARG"; //$NON-NLS-1$
+// Should be renamed to AbstractJavaVarArgFunction, but that might break the API
+public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<JavaCodeFragment> {
 
     /**
-     * Creates a new {@link AbstractVarArgFunction}.
+     * Creates a new AbstractJavaVarArgFunction.
      * 
      * @see AbstractFlFunction the super class constructor parameter descripton for more details.
      */
@@ -36,28 +38,47 @@ public abstract class AbstractVarArgFunction<T extends CodeFragment> extends Abs
     }
 
     /**
-     * Returns the expected {@link Datatype} used to convert arguments in a varargs statement to a
-     * common {@link Datatype}. This default implementation returns the {@link Datatype} defined for
-     * the first argument in the expression signature.
-     * 
-     * @param argResults the results of the compilation of the individual parameters; may be used by
-     *            subclasses to infer a {@link Datatype}.
-     * @return the expected {@link Datatype}
+     * {@inheritDoc}
      */
-    protected Datatype getExpectedDatatypeForArgResultConversion(CompilationResult<T>[] argResults) {
-        return getArgTypes()[0];
-    }
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
 
-    /**
-     * The actual compile logic for this function has to be implemented within this method. The
-     * called provides the {@link CompilationResult} that will be returned by this function, an
-     * array of already converted arguments and a {@link CodeFragment} into which the code is to be
-     * generated. The compilation result is provided to this method to write error messages that may
-     * occur during the code generation or to get status information. Implementations don't need to
-     * care about shoveling messages from the argument {@link CompilationResult} object to the
-     * returned CompilationResult object. This is already handled by the caller.
-     */
-    protected abstract void compileInternal(CompilationResult<T> returnValue,
-            CompilationResult<T>[] convertedArgs,
-            T fragment);
+        ConversionCodeGenerator<JavaCodeFragment> ccg = compiler.getConversionCodeGenerator();
+        ArrayList<CompilationResultImpl> convertedResults = new ArrayList<CompilationResultImpl>(argResults.length);
+        Datatype expectedArgType = getExpectedDatatypeForArgResultConversion(argResults);
+
+        for (int i = 0; i < argResults.length; i++) {
+
+            CompilationResultImpl newResult = (CompilationResultImpl)argResults[i];
+            Datatype argDatatype = argResults[i].getDatatype();
+
+            if (!expectedArgType.equals(argDatatype)) {
+
+                if (!ccg.canConvert(argDatatype, expectedArgType)) {
+                    String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { expectedArgType,
+                            new Integer(i), argDatatype });
+                    Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
+                    return new CompilationResultImpl(msg);
+                }
+                JavaCodeFragment converted = ccg.getConversionCode(argDatatype, expectedArgType,
+                        argResults[i].getCodeFragment());
+                newResult = new CompilationResultImpl(converted, expectedArgType);
+                // TODO pk CompilationResult needs addMessages!?
+                newResult.addMessages(argResults[i].getMessages());
+            }
+            convertedResults.add(newResult);
+        }
+
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        CompilationResultImpl returnValue = new CompilationResultImpl(fragment, getType());
+        @SuppressWarnings("unchecked")
+        CompilationResult<JavaCodeFragment>[] compilationResults = new CompilationResult[convertedResults.size()];
+        compileInternal(returnValue, convertedResults.toArray(compilationResults), fragment);
+
+        for (int i = 0; i < convertedResults.size(); i++) {
+            CompilationResultImpl compilationResult = convertedResults.get(i);
+            returnValue.addMessages(compilationResult.getMessages());
+        }
+
+        return returnValue;
+    }
 }
