@@ -68,7 +68,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFra
     /*
      * Adds the given identifier candidate to the compilation result
      */
-    private void addCurrentIdentifer(CompilationResult<JavaCodeFragment> result, String identifierCandidate) {
+    protected void addCurrentIdentifer(CompilationResult<JavaCodeFragment> result, String identifierCandidate) {
         if (result instanceof CompilationResultImpl) {
             ((CompilationResultImpl)result).addIdentifierUsed(identifierCandidate);
         }

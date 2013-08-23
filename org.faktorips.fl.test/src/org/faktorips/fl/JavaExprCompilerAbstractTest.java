@@ -86,8 +86,8 @@ public abstract class JavaExprCompilerAbstractTest {
                 if (paramDatatype != null) {
                     return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
                 }
-                return new CompilationResultImpl(new Message("", "The parameter " + identifier
-                        + " cannot be resolved.", Message.ERROR));
+                return new CompilationResultImpl(new Message("",
+                        "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
             }
         };
         compiler.setIdentifierResolver(resolver);

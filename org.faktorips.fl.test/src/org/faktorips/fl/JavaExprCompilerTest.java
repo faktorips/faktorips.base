@@ -43,40 +43,6 @@ import org.junit.Test;
  */
 public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
-    /**
-     * Test if a syntax error message is generated when the expression is not a valid expression as
-     * defined by the grammar.
-     */
-    @Test
-    public void testSyntaxError() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("1 * * 2");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        assertEquals(ExprCompiler.SYNTAX_ERROR, result.getMessages().getMessage(0).getCode());
-
-        // Tokens like , and " cause a TokenMgrError (Error not Exception!)
-        // Test if this is catched
-        result = compiler.compile("1, 2");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        assertEquals(ExprCompiler.LEXICAL_ERROR, result.getMessages().getMessage(0).getCode());
-
-        result = compiler.compile("1\" 2");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        assertEquals(ExprCompiler.LEXICAL_ERROR, result.getMessages().getMessage(0).getCode());
-    }
-
-    @Test
-    public void testOpInvalidTypesError() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("1.5 + 2EUR");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        Message msg = result.getMessages().getMessage(0);
-        assertEquals(ExprCompiler.UNDEFINED_OPERATOR, msg.getCode());
-        assertEquals("The operator + is undefined for the type(s) Decimal, Money.", msg.getText());
-    }
-
     @Test
     public void testBinaryOperationCasting() throws Exception {
         // Make only implicit conversions int to Decimal.
@@ -95,68 +61,6 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         execAndTestSuccessfull("1.2 + 41", Decimal.valueOf(422, 1), Datatype.DECIMAL);
         // same for lhs and rhs
         execAndTestSuccessfull("1.2 + 41.0", Decimal.valueOf(422, 1), Datatype.DECIMAL);
-    }
-
-    /**
-     * Test if the lhs of a binary operation contains an error message, that the result of the
-     * operation is a compilation result with that message.
-     */
-    @Test
-    public void testBinaryOperationWithLhsError() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("a + 2");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        Message msg = result.getMessages().getMessage(0);
-        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, msg.getCode());
-    }
-
-    /**
-     * Test if the rhs of a binary operation contains an error message, that the result of the
-     * operation is a compilation result with that message.
-     */
-    @Test
-    public void testBinaryOperationWithRhsError() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("a + 2");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        Message msg = result.getMessages().getMessage(0);
-        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, msg.getCode());
-    }
-
-    /**
-     * Test if the lhs and the rhs of a binary operation contains an error message, that the result
-     * of the operation is a compilation result with the two messages.
-     */
-    @Test
-    public void testBinaryOperationWithLhsAndRhsError() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("a + b");
-        assertTrue(result.failed());
-        assertEquals(2, result.getMessages().size());
-        Message lhsMsg = result.getMessages().getMessage(0);
-        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, lhsMsg.getCode());
-        Message rhsMsg = result.getMessages().getMessage(1);
-        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, rhsMsg.getCode());
-    }
-
-    @Test
-    public void testIdentifierResolvingFailed() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("a + 2");
-        assertTrue(result.failed());
-        assertEquals(1, result.getMessages().size());
-        Message msg = result.getMessages().getMessage(0);
-        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, msg.getCode());
-    }
-
-    @Test
-    public void testIdentifierResolvingSuccessfull() {
-        compiler = new JavaExprCompiler(Locale.ENGLISH);
-        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        resolver.register("a", new JavaCodeFragment("getA()"), Datatype.DECIMAL);
-        compiler.setIdentifierResolver(resolver);
-        CompilationResult<JavaCodeFragment> result = compiler.compile("a + 2.1");
-        assertTrue(result.successfull());
-        assertTrue(result.getCodeFragment().getSourcecode().startsWith("getA().add("));
-        assertEquals(Datatype.DECIMAL, result.getDatatype());
     }
 
     @Test
@@ -268,43 +172,6 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         assertTrue(result.successfull());
         result = compiler.compile("1;a");
         assertFalse(result.successfull());
-    }
-
-    @Test
-    public void testUsedIdentifiers() {
-        compiler.setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
-            public CompilationResult<JavaCodeFragment> compile(String identifier,
-                    ExprCompiler<JavaCodeFragment> exprCompiler,
-                    Locale locale) {
-                CompilationResultImpl compilationResult = new CompilationResultImpl(identifier,
-                        Datatype.INTEGER);
-                // the identifier is always used as parameter
-                compilationResult.addIdentifierUsed(identifier);
-                return compilationResult;
-            }
-
-        });
-        CompilationResult<JavaCodeFragment> result = compiler.compile("1");
-        assertEquals(0, result.getResolvedIdentifiers().length);
-
-        result = compiler.compile("a + 1");
-        assertEquals(1, result.getResolvedIdentifiers().length);
-        assertEquals("a", result.getResolvedIdentifiers()[0]);
-
-        result = compiler.compile("a + b");
-        assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("a", result.getResolvedIdentifiers()[0]);
-        assertEquals("b", result.getResolvedIdentifiers()[1]);
-
-        result = compiler.compile("b + a");
-        assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("b", result.getResolvedIdentifiers()[0]);
-        assertEquals("a", result.getResolvedIdentifiers()[1]);
-
-        result = compiler.compile("b+a");
-        assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("b", result.getResolvedIdentifiers()[0]);
-        assertEquals("a", result.getResolvedIdentifiers()[1]);
     }
 
     @Test

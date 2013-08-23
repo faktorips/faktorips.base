@@ -20,7 +20,6 @@ import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.operations.AddDecimalDecimal;
 import org.faktorips.fl.operations.AddDecimalInt;
 import org.faktorips.fl.operations.AddDecimalInteger;
@@ -62,9 +61,6 @@ import org.faktorips.fl.operations.PlusPrimitiveInt;
 import org.faktorips.fl.operations.SubtractDecimalDecimal;
 import org.faktorips.fl.operations.SubtractIntInt;
 import org.faktorips.fl.operations.SubtractMoneyMoney;
-import org.faktorips.fl.parser.ParseException;
-import org.faktorips.fl.parser.SimpleNode;
-import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.util.message.Message;
 
 /**
@@ -169,64 +165,23 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
     }
 
     @Override
-    public CompilationResult<JavaCodeFragment> compile(String expr) {
-        SimpleNode rootNode;
-        // parse the expression
-        try {
-            rootNode = parse(expr);
-        } catch (ParseException pe) {
-            return parseExceptionToResult(pe);
-            // CSOFF: IllegalCatch
-        } catch (Exception pe) {
-            // CSON: IllegalCatch
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
-        } catch (TokenMgrError e) {
-            String text = LOCALIZED_STRINGS.getString(LEXICAL_ERROR, getLocale(), e.getMessage());
-            return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
-        }
-        // parse ok, generate the sourcecode via the visitor visiting the parse tree
-        CompilationResultImpl result;
-        try {
-            ParseTreeVisitor<JavaCodeFragment> visitor = new JavaParseTreeVisitor(this);
-            result = (CompilationResultImpl)rootNode.jjtAccept(visitor, null);
-            // CSOFF: IllegalCatch
-        } catch (Exception pe) {
-            // CSON: IllegalCatch
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
-        }
-        if (result.failed()) {
-            return result;
-        }
-        try {
-            Datatype resultType = result.getDatatype();
-            if (!getEnsureResultIsObject() || !resultType.isPrimitive()) {
-                return result;
-            }
-            // convert primitive to wrapper object
-            JavaCodeFragment converted = CodeGenUtil.convertPrimitiveToWrapper(resultType, result.getCodeFragment());
-            AbstractCompilationResult<JavaCodeFragment> finalResult = new CompilationResultImpl(converted,
-                    ((ValueDatatype)resultType).getWrapperType());
-            finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
-            return finalResult;
-            // CSOFF: IllegalCatch
-        } catch (Exception pe) {
-            // CSON: IllegalCatch
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
-                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
-        }
+    protected JavaCodeFragment convertPrimitiveToWrapper(Datatype resultType, JavaCodeFragment codeFragment) {
+        return CodeGenUtil.convertPrimitiveToWrapper(resultType, codeFragment);
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> parseExceptionToResult(ParseException e) {
-        String expected = ""; //$NON-NLS-1$
-        for (int[] expectedTokenSequence : e.expectedTokenSequences) {
-            expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
-        }
-        Object[] replacements = new Object[] { e.currentToken.next.toString(),
-                new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
-        return new CompilationResultImpl(Message.newError(SYNTAX_ERROR,
-                LOCALIZED_STRINGS.getString(SYNTAX_ERROR, getLocale(), replacements)));
+    protected ParseTreeVisitor<JavaCodeFragment> newParseTreeVisitor() {
+        return new JavaParseTreeVisitor(this);
+    }
+
+    @Override
+    protected AbstractCompilationResult<JavaCodeFragment> newCompilationResultImpl(Message message) {
+        return new CompilationResultImpl(message);
+    }
+
+    @Override
+    protected AbstractCompilationResult<JavaCodeFragment> newCompilationResultImpl(JavaCodeFragment sourcecode,
+            Datatype datatype) {
+        return new CompilationResultImpl(sourcecode, datatype);
     }
 }

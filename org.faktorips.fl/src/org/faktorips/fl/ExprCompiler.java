@@ -27,6 +27,7 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.parser.FlParser;
 import org.faktorips.fl.parser.FlParserConstants;
 import org.faktorips.fl.parser.FlParserTokenManager;
@@ -34,6 +35,7 @@ import org.faktorips.fl.parser.JavaCharStream;
 import org.faktorips.fl.parser.ParseException;
 import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
+import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.Message;
@@ -459,14 +461,81 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * contain any {@link Message#ERROR error} messages, but may contain {@link Message#WARNING
      * warnings} or {@link Message#INFO informations}.
      */
-    public abstract CompilationResult<T> compile(String expr);
+    public CompilationResult<T> compile(String expr) {
+        SimpleNode rootNode;
+        // parse the expression
+        try {
+            rootNode = parse(expr);
+        } catch (ParseException pe) {
+            return parseExceptionToResult(pe);
+            // CSOFF: IllegalCatch
+        } catch (Exception pe) {
+            // CSON: IllegalCatch
+            return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
+                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
+        } catch (TokenMgrError e) {
+            String text = LOCALIZED_STRINGS.getString(LEXICAL_ERROR, getLocale(), e.getMessage());
+            return newCompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
+        }
+        // parse ok, generate the sourcecode via the visitor visiting the parse tree
+        AbstractCompilationResult<T> result;
+        try {
+            ParseTreeVisitor<T> visitor = newParseTreeVisitor();
+            @SuppressWarnings("unchecked")
+            AbstractCompilationResult<T> compilationResult = (AbstractCompilationResult<T>)rootNode.jjtAccept(visitor,
+                    null);
+            result = compilationResult;
+            // CSOFF: IllegalCatch
+        } catch (Exception pe) {
+            // CSON: IllegalCatch
+            return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
+                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
+        }
+        if (result.failed()) {
+            return result;
+        }
+        try {
+            Datatype resultType = result.getDatatype();
+            if (!getEnsureResultIsObject() || !resultType.isPrimitive()) {
+                return result;
+            }
+            // convert primitive to wrapper object
+            T converted = convertPrimitiveToWrapper(resultType, result.getCodeFragment());
+            AbstractCompilationResult<T> finalResult = newCompilationResultImpl(converted,
+                    ((ValueDatatype)resultType).getWrapperType());
+            finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
+            return finalResult;
+            // CSOFF: IllegalCatch
+        } catch (Exception pe) {
+            // CSON: IllegalCatch
+            return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
+                    LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
+        }
+    }
+
+    protected abstract T convertPrimitiveToWrapper(Datatype resultType, T codeFragment);
+
+    protected abstract ParseTreeVisitor<T> newParseTreeVisitor();
+
+    protected abstract AbstractCompilationResult<T> newCompilationResultImpl(Message message);
+
+    protected abstract AbstractCompilationResult<T> newCompilationResultImpl(T sourcecode, Datatype datatype);
 
     protected SimpleNode parse(String expr) throws ParseException {
         parser.ReInit(new StringReader(expr));
         return parser.start();
     }
 
-    protected abstract CompilationResult<T> parseExceptionToResult(ParseException e);
+    protected CompilationResult<T> parseExceptionToResult(ParseException e) {
+        String expected = ""; //$NON-NLS-1$
+        for (int[] expectedTokenSequence : e.expectedTokenSequences) {
+            expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
+        }
+        Object[] replacements = new Object[] { e.currentToken.next.toString(),
+                new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
+        return newCompilationResultImpl(Message.newError(SYNTAX_ERROR,
+                LOCALIZED_STRINGS.getString(SYNTAX_ERROR, getLocale(), replacements)));
+    }
 
     BinaryOperation<T>[] getBinaryOperations(String operator) {
         List<BinaryOperation<T>> operatorOperations = binaryOperations.get(operator);

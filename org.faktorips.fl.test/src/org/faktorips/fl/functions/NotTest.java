@@ -18,9 +18,9 @@ import java.util.Locale;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.fl.CompilationResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 
