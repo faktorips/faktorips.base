@@ -110,13 +110,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addAdditionalProposals(final List<IContentProposal> result,
             final List<IContentProposal> additionalProposals) {
-        Collections.sort(additionalProposals, new Comparator<IContentProposal>() {
-
-            @Override
-            public int compare(IContentProposal proposalToCompare, IContentProposal proposalCompareTo) {
-                return proposalToCompare.getContent().compareTo(proposalCompareTo.getContent());
-            }
-        });
+        Collections.sort(additionalProposals, new SortContentProposal());
         for (IContentProposal proposal : additionalProposals) {
             if (!result.contains(proposal)) {
                 result.add(proposal);
@@ -252,15 +246,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addMatchingFunctions(List<IContentProposal> result, String prefix) {
         ExprCompiler compiler = expression.newExprCompiler(expression.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
-        Arrays.sort(functions, new Comparator<FlFunction>() {
-
-            @Override
-            public int compare(FlFunction o1, FlFunction o2) {
-                FlFunction f1 = o1;
-                FlFunction f2 = o2;
-                return f1.getName().compareTo(f2.getName());
-            }
-        });
+        Arrays.sort(functions, new SortFunctions());
         for (FlFunction function : functions) {
             if (checkMatchingFunctionName(function.getName().toLowerCase(), prefix.toLowerCase())) {
                 addFunctionToResult(result, function, prefix);
@@ -568,7 +554,23 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private static class SortList implements Comparator<IIpsObjectPart> {
+    private static final class SortFunctions implements Comparator<FlFunction> {
+
+        @Override
+        public int compare(FlFunction o1, FlFunction o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    private static final class SortContentProposal implements Comparator<IContentProposal> {
+
+        @Override
+        public int compare(IContentProposal proposalToCompare, IContentProposal proposalCompareTo) {
+            return proposalToCompare.getLabel().compareTo(proposalCompareTo.getLabel());
+        }
+    }
+
+    private static final class SortList implements Comparator<IIpsObjectPart> {
 
         @Override
         public int compare(IIpsObjectPart toCompare, IIpsObjectPart compareTo) {
