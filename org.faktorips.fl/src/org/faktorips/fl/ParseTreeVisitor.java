@@ -56,11 +56,11 @@ import org.faktorips.util.message.Message;
  * 
  * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisitor {
+abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisitor {
 
     private final ExprCompiler<T> compiler;
 
-    ParseTreeVisitor(ExprCompiler<T> compiler) {
+    protected ParseTreeVisitor(ExprCompiler<T> compiler) {
         this.compiler = compiler;
     }
 
@@ -314,7 +314,7 @@ abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisit
         if (isParable) {
             return generateConstant(node, DatatypeHelper.MONEY);
         }
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),
                 node.getLastToken().toString());
         return newCompilationResultImpl(Message.newError(ExprCompiler.SYNTAX_ERROR, text));
     }
@@ -326,7 +326,7 @@ abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisit
      *      java.lang.Object)
      */
     public Object visit(ASTNullNode node, Object data) {
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.NULL_NOT_ALLOWED, compiler.getLocale());
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.NULL_NOT_ALLOWED, compiler.getLocale());
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 
@@ -395,19 +395,19 @@ abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisit
         // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
         if (functionFoundByName) {
             Object[] replacements = new String[] { fctName, argTypesToString(argResults) };
-            String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
+            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
                     compiler.getLocale(), replacements);
             return newCompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
         }
 
         // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
                 fctName);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
     }
 
     private AbstractCompilationResult<T> createAmbiguousFunctionCompilationResultImpl(FlFunction<T> flFunction) {
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
                 compiler.getLocale(), flFunction.getName());
 
         return newCompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
@@ -478,7 +478,7 @@ abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisit
             return compilationResult;
         }
         Object[] replacements = new Object[] { operator, argResult.getDatatype().getName() };
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
                 replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
@@ -545,7 +545,7 @@ abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisit
         }
         Object[] replacements = new Object[] { operator,
                 lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
                 replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }

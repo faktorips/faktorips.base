@@ -265,7 +265,7 @@ public class ExprCompilerTest {
             public CompilationResult<DummyCodeFragment> compile(String identifier,
                     ExprCompiler<DummyCodeFragment> exprCompiler,
                     Locale locale) {
-                String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
+                String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
                         identifier);
                 DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(Message.newError(
                         ExprCompiler.UNDEFINED_IDENTIFIER, text));

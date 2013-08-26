@@ -58,7 +58,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFra
             addCurrentIdentifer(compilationResult, identifier);
             return compilationResult;
         }
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
         CompilationResultImpl compilationResult = new CompilationResultImpl(Message.newError(
                 ExprCompiler.UNDEFINED_IDENTIFIER, text));
         addCurrentIdentifer(compilationResult, identifier);
