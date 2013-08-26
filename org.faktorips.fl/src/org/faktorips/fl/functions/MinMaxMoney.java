@@ -17,6 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -27,7 +28,7 @@ public class MinMaxMoney extends AbstractJavaFlFunction {
     private String functionName = null;
 
     public MinMaxMoney(String name, String description, boolean isMax) {
-        super(name, description, Datatype.MONEY, new Datatype[] { Datatype.MONEY, Datatype.MONEY });
+        super(name, description, isMax ? FunctionSignatures.MaxMoney : FunctionSignatures.MaxMoney);
         functionName = isMax ? "max" : "min";
     }
 

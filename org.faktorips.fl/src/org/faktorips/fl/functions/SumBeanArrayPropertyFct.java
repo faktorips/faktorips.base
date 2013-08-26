@@ -16,13 +16,13 @@ package org.faktorips.fl.functions;
 import java.lang.reflect.Method;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BeanDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.PropertyDatatype;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -40,7 +40,7 @@ public class SumBeanArrayPropertyFct extends AbstractJavaFlFunction {
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "SUM-BEAN-ARRAY-PROPERTYFCT"; //$NON-NLS-1$
 
     public SumBeanArrayPropertyFct() {
-        super("SUM", "", AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }); //$NON-NLS-1$ //$NON-NLS-2$
+        super("SUM", "", FunctionSignatures.SumBeanArrayPropertyFct); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

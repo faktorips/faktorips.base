@@ -15,11 +15,11 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
@@ -31,8 +31,7 @@ public class If extends AbstractJavaFlFunction {
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF"; //$NON-NLS-1$
 
     public If(String name, String description) {
-        super(name, description, AnyDatatype.INSTANCE, new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
-                AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
+        super(name, description, FunctionSignatures.If);
     }
 
     /**

@@ -17,6 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -27,7 +28,7 @@ public class MinMaxDecimal extends AbstractJavaFlFunction {
     private String functionName = null;
 
     public MinMaxDecimal(String name, String description, boolean isMax) {
-        super(name, description, Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.DECIMAL });
+        super(name, description, isMax ? FunctionSignatures.MaxDecimal : FunctionSignatures.MinDecimal);
         functionName = isMax ? "max" : "min";
     }
 

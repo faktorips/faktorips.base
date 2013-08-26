@@ -14,8 +14,8 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * A function that provides a boolean or-operation and has the following signature <i>boolean
@@ -24,7 +24,7 @@ import org.faktorips.fl.CompilationResult;
 public class Or extends AbstractVarArgFunction {
 
     public Or(String name, String description) {
-        super(name, description, Datatype.PRIMITIVE_BOOLEAN, Datatype.PRIMITIVE_BOOLEAN);
+        super(name, description, FunctionSignatures.Or);
     }
 
     @Override

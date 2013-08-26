@@ -15,12 +15,12 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * 
@@ -31,7 +31,7 @@ public class Exists extends AbstractJavaFlFunction {
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
 
     public Exists(String name, String description) {
-        super(name, description, Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE });
+        super(name, description, FunctionSignatures.Exists);
     }
 
     /**

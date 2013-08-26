@@ -17,6 +17,7 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * An extension of the {@link AbstractFlFunction} that provides base functionality for variable
@@ -27,6 +28,15 @@ import org.faktorips.fl.ExprCompiler;
 public abstract class AbstractBaseVarArgFunction<T extends CodeFragment> extends AbstractFlFunction<T> {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "VARARG"; //$NON-NLS-1$
+
+    /**
+     * Creates a new {@link AbstractBaseVarArgFunction}.
+     * 
+     * @see AbstractFlFunction the super class constructor parameter descripton for more details.
+     */
+    public AbstractBaseVarArgFunction(String name, String description, FunctionSignatures signature) {
+        super(name, description, signature);
+    }
 
     /**
      * Creates a new {@link AbstractBaseVarArgFunction}.

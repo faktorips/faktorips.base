@@ -20,6 +20,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.message.Message;
 
 /**
@@ -29,7 +30,14 @@ import org.faktorips.util.message.Message;
 public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<JavaCodeFragment> {
 
     /**
-     * Creates a new AbstractJavaVarArgFunction.
+     * Creates a new AbstractVarArgFunction.
+     */
+    public AbstractVarArgFunction(String name, String description, FunctionSignatures signature) {
+        super(name, description, signature);
+    }
+
+    /**
+     * Creates a new AbstractVarArgFunction.
      * 
      * @see AbstractFlFunction the super class constructor parameter descripton for more details.
      */
