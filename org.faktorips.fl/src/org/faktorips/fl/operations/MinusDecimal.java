@@ -13,8 +13,8 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Plus (+) operator for datatype Decimal.
@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MinusDecimal extends AbstractUnaryJavaOperation {
 
     public MinusDecimal() {
-        super(Datatype.DECIMAL, "-"); //$NON-NLS-1$
+        super(Operation.MinusDecimal);
     }
 
     /**

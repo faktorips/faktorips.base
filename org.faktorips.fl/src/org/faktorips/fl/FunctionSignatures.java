@@ -13,6 +13,15 @@
 
 package org.faktorips.fl;
 
+import static org.faktorips.datatype.Datatype.BOOLEAN;
+import static org.faktorips.datatype.Datatype.DECIMAL;
+import static org.faktorips.datatype.Datatype.DOUBLE;
+import static org.faktorips.datatype.Datatype.INTEGER;
+import static org.faktorips.datatype.Datatype.MONEY;
+import static org.faktorips.datatype.Datatype.PRIMITIVE_BOOLEAN;
+import static org.faktorips.datatype.Datatype.PRIMITIVE_INT;
+import static org.faktorips.datatype.Datatype.PRIMITIVE_LONG;
+
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
@@ -21,30 +30,30 @@ import org.faktorips.datatype.Datatype;
  * A list of all function signatures that are supported by the formula language.
  */
 public enum FunctionSignatures {
-    Abs(Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL }),
-    And(Datatype.PRIMITIVE_BOOLEAN, Datatype.PRIMITIVE_BOOLEAN),
-    Exists(Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
-    If(AnyDatatype.INSTANCE, new Datatype[] { Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
-    IsEmpty(Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
-    MaxDecimal(Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.DECIMAL }),
-    MaxDouble(Datatype.DOUBLE, new Datatype[] { Datatype.DOUBLE, Datatype.DOUBLE }),
-    MaxInt(Datatype.PRIMITIVE_INT, new Datatype[] { Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT }),
-    MaxLong(Datatype.PRIMITIVE_LONG, new Datatype[] { Datatype.PRIMITIVE_LONG, Datatype.PRIMITIVE_LONG }),
-    MaxMoney(Datatype.MONEY, new Datatype[] { Datatype.MONEY, Datatype.MONEY }),
-    MinDecimal(Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.DECIMAL }),
-    MinDouble(Datatype.DOUBLE, new Datatype[] { Datatype.DOUBLE, Datatype.DOUBLE }),
-    MinInt(Datatype.PRIMITIVE_INT, new Datatype[] { Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT }),
-    MinLong(Datatype.PRIMITIVE_LONG, new Datatype[] { Datatype.PRIMITIVE_LONG, Datatype.PRIMITIVE_LONG }),
-    MinMoney(Datatype.MONEY, new Datatype[] { Datatype.MONEY, Datatype.MONEY }),
-    Not(Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { Datatype.PRIMITIVE_BOOLEAN }),
-    NotBoolean(Datatype.BOOLEAN, new Datatype[] { Datatype.BOOLEAN }),
-    Or(Datatype.PRIMITIVE_BOOLEAN, Datatype.PRIMITIVE_BOOLEAN),
-    Round(Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.PRIMITIVE_INT }),
-    RoundDown(Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.PRIMITIVE_INT }),
-    RoundUp(Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.PRIMITIVE_INT }),
+    Abs(DECIMAL, new Datatype[] { DECIMAL }),
+    And(PRIMITIVE_BOOLEAN, PRIMITIVE_BOOLEAN),
+    Exists(PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
+    If(AnyDatatype.INSTANCE, new Datatype[] { PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
+    IsEmpty(PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
+    MaxDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
+    MaxDouble(DOUBLE, new Datatype[] { DOUBLE, DOUBLE }),
+    MaxInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
+    MaxLong(PRIMITIVE_LONG, new Datatype[] { PRIMITIVE_LONG, PRIMITIVE_LONG }),
+    MaxMoney(MONEY, new Datatype[] { MONEY, MONEY }),
+    MinDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
+    MinDouble(DOUBLE, new Datatype[] { DOUBLE, DOUBLE }),
+    MinInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
+    MinLong(PRIMITIVE_LONG, new Datatype[] { PRIMITIVE_LONG, PRIMITIVE_LONG }),
+    MinMoney(MONEY, new Datatype[] { MONEY, MONEY }),
+    Not(PRIMITIVE_BOOLEAN, new Datatype[] { PRIMITIVE_BOOLEAN }),
+    NotBoolean(BOOLEAN, new Datatype[] { BOOLEAN }),
+    Or(PRIMITIVE_BOOLEAN, PRIMITIVE_BOOLEAN),
+    Round(DECIMAL, new Datatype[] { DECIMAL, PRIMITIVE_INT }),
+    RoundDown(DECIMAL, new Datatype[] { DECIMAL, PRIMITIVE_INT }),
+    RoundUp(DECIMAL, new Datatype[] { DECIMAL, PRIMITIVE_INT }),
     SumBeanArrayPropertyFct(AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
-    SumDecimal(Datatype.DECIMAL, new Datatype[] { new ArrayOfValueDatatype(Datatype.DECIMAL, 1) }),
-    WholeNumber(Datatype.INTEGER, new Datatype[] { Datatype.DECIMAL });
+    SumDecimal(DECIMAL, new Datatype[] { new ArrayOfValueDatatype(DECIMAL, 1) }),
+    WholeNumber(INTEGER, new Datatype[] { DECIMAL });
 
     private final Datatype type;
     private final Datatype[] argTypes;

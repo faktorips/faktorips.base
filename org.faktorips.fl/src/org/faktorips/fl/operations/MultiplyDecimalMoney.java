@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the multiplication of two decimals.
@@ -25,7 +26,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyDecimalMoney extends AbstractBinaryJavaOperation {
 
     public MultiplyDecimalMoney() {
-        super("*", Datatype.DECIMAL, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.MultiplyDecimalMoney);
     }
 
     /**

@@ -15,6 +15,7 @@ package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Less than operation for money.
@@ -22,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class LessThanMoneyMoney extends AbstractBinaryJavaOperation {
 
     public LessThanMoneyMoney() {
-        super("<", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.LessThanMoneyMoney);
     }
 
     /**

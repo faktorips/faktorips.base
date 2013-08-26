@@ -13,8 +13,8 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the multiplication of two decimals.
@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyDecimalDecimal extends AbstractBinaryJavaOperation {
 
     public MultiplyDecimalDecimal() {
-        super("*", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
+        super(Operation.MultiplyDecimalDecimal);
     }
 
     /**

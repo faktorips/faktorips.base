@@ -13,8 +13,8 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Parenthesis <i>()</i> operator for datatype Money.
@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class ParenthesisMoney extends AbstractUnaryJavaOperation {
 
     public ParenthesisMoney() {
-        super(Datatype.MONEY, "()");
+        super(Operation.ParenthesisMoney);
     }
 
     /**

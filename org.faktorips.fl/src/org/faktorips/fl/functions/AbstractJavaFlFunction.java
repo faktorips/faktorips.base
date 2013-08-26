@@ -16,12 +16,20 @@ package org.faktorips.fl.functions;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.FlFunction;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.JavaExprCompiler;
 
 /**
  * Abstract {@link JavaCodeFragment Java} implementation of {@link FlFunction}.
  */
 public abstract class AbstractJavaFlFunction extends AbstractFlFunction<JavaCodeFragment> {
+
+    /**
+     * Creates a new function with a defined argument list.
+     */
+    public AbstractJavaFlFunction(String name, String description, FunctionSignatures signature) {
+        super(name, description, signature);
+    }
 
     /**
      * Creates a new function with a defined argument list.

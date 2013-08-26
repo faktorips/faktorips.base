@@ -13,13 +13,13 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 public class MultiplyIntegerMoney extends AbstractBinaryJavaOperation {
 
     public MultiplyIntegerMoney() {
-        super("*", Datatype.INTEGER, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.MultiplyIntegerMoney);
     }
 
     /**

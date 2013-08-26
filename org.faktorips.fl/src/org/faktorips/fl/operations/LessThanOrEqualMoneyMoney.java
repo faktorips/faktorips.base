@@ -15,6 +15,7 @@ package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the addition of two decimals.
@@ -22,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class LessThanOrEqualMoneyMoney extends AbstractBinaryJavaOperation {
 
     public LessThanOrEqualMoneyMoney() {
-        super("<=", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.LessThanOrEqualMoneyMoney);
     }
 
     /**

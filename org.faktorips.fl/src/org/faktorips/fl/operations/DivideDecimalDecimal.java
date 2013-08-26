@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the multiplication of two decimals.
@@ -28,7 +29,7 @@ public class DivideDecimalDecimal extends AbstractBinaryJavaOperation {
     private int scale = 10;
 
     public DivideDecimalDecimal() {
-        super("/", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
+        super(Operation.DivideDecimalDecimal);
     }
 
     /**

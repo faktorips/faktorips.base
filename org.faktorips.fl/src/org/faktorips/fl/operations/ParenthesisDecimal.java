@@ -13,8 +13,8 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Parenthesis <i>()</i> operator for datatype Decimal.
@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class ParenthesisDecimal extends AbstractUnaryJavaOperation {
 
     public ParenthesisDecimal() {
-        super(Datatype.DECIMAL, "()");
+        super(Operation.ParenthesisDecimal);
     }
 
     /**

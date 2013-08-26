@@ -14,8 +14,8 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Minus (-) operator for datatype Integer.
@@ -23,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MinusInteger extends AbstractUnaryJavaOperation {
 
     public MinusInteger() {
-        super(Datatype.INTEGER, "-"); //$NON-NLS-1$
+        super(Operation.MinusInteger);
     }
 
     /**

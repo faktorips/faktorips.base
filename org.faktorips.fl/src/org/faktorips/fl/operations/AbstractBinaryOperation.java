@@ -17,6 +17,7 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.Operation;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -30,6 +31,13 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
     private String operator;
     private Datatype lhsDatatype;
     private Datatype rhsDatatype;
+
+    /**
+     * Creates a new unary operation for the indicated {@link Operation}.
+     */
+    public AbstractBinaryOperation(Operation operation) {
+        this(operation.getOperator(), operation.getLhs(), operation.getRhs());
+    }
 
     /**
      * Creates a new binary operation for the indicated left hand side and right hand side

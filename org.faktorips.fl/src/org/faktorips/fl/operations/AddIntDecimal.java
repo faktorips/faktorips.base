@@ -13,8 +13,8 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the addition of two decimals.
@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class AddIntDecimal extends AbstractBinaryJavaOperation {
 
     public AddIntDecimal() {
-        super("+", Datatype.PRIMITIVE_INT, Datatype.DECIMAL); //$NON-NLS-1$
+        super(Operation.AddIntDecimal);
     }
 
     /**

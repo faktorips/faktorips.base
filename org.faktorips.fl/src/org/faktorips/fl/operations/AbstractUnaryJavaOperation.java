@@ -17,6 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 import org.faktorips.fl.UnaryOperation;
 
 /**
@@ -24,6 +25,13 @@ import org.faktorips.fl.UnaryOperation;
  * generating operations.
  */
 public abstract class AbstractUnaryJavaOperation extends AbstractUnaryOperation<JavaCodeFragment> {
+
+    /**
+     * Creates a new unary operation for the indicated {@link Operation}.
+     */
+    public AbstractUnaryJavaOperation(Operation operation) {
+        super(operation);
+    }
 
     /**
      * Creates a new unary operation for the indicated operator and {@link Datatype data type}.

@@ -13,8 +13,8 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the multiplication of two ints.
@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyIntInt extends AbstractBinaryJavaOperation {
 
     public MultiplyIntInt() {
-        super("*", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT); //$NON-NLS-1$
+        super(Operation.MultiplyIntInt);
     }
 
     /**

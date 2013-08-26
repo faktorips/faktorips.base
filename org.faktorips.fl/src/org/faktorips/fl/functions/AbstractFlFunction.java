@@ -18,6 +18,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.fl.FunctionSignatureImpl;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -29,6 +30,14 @@ public abstract class AbstractFlFunction<T extends CodeFragment> extends Functio
 
     protected ExprCompiler<T> compiler;
     private String description;
+
+    /**
+     * Creates a new function with a defined argument list.
+     */
+    public AbstractFlFunction(String name, String description, FunctionSignatures signature) {
+        super(name, signature);
+        this.description = description;
+    }
 
     /**
      * Creates a new function with a defined argument list.

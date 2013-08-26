@@ -19,12 +19,20 @@ import org.faktorips.fl.AbstractCompilationResult;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Abstract implementation of {@link BinaryOperation} for {@link JavaCodeFragment Java code}
  * generating operations.
  */
 public abstract class AbstractBinaryJavaOperation extends AbstractBinaryOperation<JavaCodeFragment> {
+
+    /**
+     * Creates a new binary operation for the indicated {@link Operation}.
+     */
+    public AbstractBinaryJavaOperation(Operation operation) {
+        super(operation);
+    }
 
     /**
      * Creates a new binary operation for the indicated left hand side and right hand side
