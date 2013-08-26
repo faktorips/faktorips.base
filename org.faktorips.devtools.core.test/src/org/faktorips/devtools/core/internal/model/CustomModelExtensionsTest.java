@@ -20,9 +20,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +37,6 @@ import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProduct
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -100,20 +96,6 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
                 .getExtensionPropertyDefinitions(object);
 
         assertTrue(propertyDefinitions.isEmpty());
-    }
-
-    @Test
-    public void testGetExtensionPropertyDefinitionss_cached() throws Exception {
-        final IIpsObjectPartContainer object = mock(IAttributeValue.class);
-        BooleanExtensionPropertyDefinition property = createExtensionProperty(object);
-        IExtensionPropertyDefinition2 propertySpy = spy(property);
-        modelExtensions.addIpsObjectExtensionProperty(propertySpy);
-
-        // call twice
-        modelExtensions.getExtensionPropertyDefinitions(object);
-        modelExtensions.getExtensionPropertyDefinitions(object);
-
-        verify(propertySpy, times(1)).isApplicableFor(object);
     }
 
     private BooleanExtensionPropertyDefinition createExtensionProperty(final IIpsObjectPartContainer diabledObject) {

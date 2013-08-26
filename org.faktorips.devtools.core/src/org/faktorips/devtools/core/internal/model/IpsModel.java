@@ -1141,17 +1141,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return customModelExtensions.getExtensionPropertyDefinitions(object);
     }
 
-    @Override
-    public void clearExtensionPropertyCache() {
-        customModelExtensions.clearExtensionPropertyCache();
-    }
-
     /**
      * Adds the extension property. For testing purposes. During normal execution the available
      * extension properties are discovered by extension point lookup.
      */
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
-        clearExtensionPropertyCache();
         customModelExtensions.addIpsObjectExtensionProperty(property);
     }
 

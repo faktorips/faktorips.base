@@ -265,17 +265,6 @@ public interface IIpsModel extends IIpsElement {
     public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object);
 
     /**
-     * Call this method to clear the extension property cache. This is useful if you use
-     * {@link IExtensionPropertyDefinition2#isApplicableFor(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer)}
-     * and the conditions that influence the activation state have been changed.
-     * <p>
-     * This method may be called by customer implementations when they use
-     * {@link IExtensionPropertyDefinition2} and the activation state of any extension property has
-     * changed.
-     */
-    public void clearExtensionPropertyCache();
-
-    /**
      * Returns the predefines value data types like String, Integer etc.
      */
     public ValueDatatype[] getPredefinedValueDatatypes();

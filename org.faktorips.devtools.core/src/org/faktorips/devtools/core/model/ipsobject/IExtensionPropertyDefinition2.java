@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
-import org.faktorips.devtools.core.model.IIpsModel;
 
 /**
  * This interface extends the {@link IExtensionPropertyDefinition} interface by an additional method
@@ -33,9 +32,6 @@ public interface IExtensionPropertyDefinition2 extends IExtensionPropertyDefinit
     /**
      * This method is called by the extension property framework to decide whether this extension
      * property is applicable for the given {@link IIpsObjectPartContainer part} or not.
-     * <p>
-     * The active state is cached by the extension property framework. If the conditions have
-     * changed you need to call {@link IIpsModel#clearExtensionPropertyCache()} to clear the cache.
      * 
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer part} for which the
      *            extension property should be active or inactive

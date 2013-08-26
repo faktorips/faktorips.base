@@ -389,7 +389,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         extProp0.setExtendedType(TestIpsObjectPartContainer.class);
         extProp0.setDefaultValue("default0");
 
-        model.clearExtensionPropertyCache();
         model.addIpsObjectExtensionProperty(extProp0);
 
         final StringBuffer buf = new StringBuffer();

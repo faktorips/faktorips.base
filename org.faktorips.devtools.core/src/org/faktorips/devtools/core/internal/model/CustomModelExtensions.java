@@ -52,9 +52,6 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     /** extension properties per IPS object (or part) class object, e.g. IAttribute.class. */
     private final Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap;
 
-    /** extension properties per {@link IIpsObjectPartContainer}, e.g. an IAttribute. */
-    private final ExtensionPropertiesCache extensionPropertiesCache;
-
     private final CustomValidationsPerType customValidationsPerType;
 
     private final Map<String, IProductCmptNamingStrategyFactory> productCmptNamingStrategies;
@@ -66,7 +63,6 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         this.ipsModel = ipsModel;
         customValidationsPerType = CustomValidationsPerType.createFromExtensions();
         typeExtensionPropertiesMap = new ConcurrentHashMap<Class<?>, List<IExtensionPropertyDefinition>>();
-        extensionPropertiesCache = new ExtensionPropertiesCache();
         initExtensionPropertiesFromConfiguration();
         productCmptNamingStrategies = new ConcurrentHashMap<String, IProductCmptNamingStrategyFactory>();
         initProductCmptNamingStrategies();
@@ -108,15 +104,24 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     @Override
     public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object) {
-        Map<String, IExtensionPropertyDefinition> result;
-        if (extensionPropertiesCache.isCached(object)) {
-            result = extensionPropertiesCache.get(object);
-        } else {
-            Map<String, IExtensionPropertyDefinition> properties = extensionPropertiesCache.get(object);
-            properties.putAll(extensionPropertiesCache.getMapOfExtensionPropertyDefinitions(object,
-                    getExtensionPropertyDefinitions(object.getClass(), true)));
-            result = properties;
+        ConcurrentHashMap<String, IExtensionPropertyDefinition> result = new ConcurrentHashMap<String, IExtensionPropertyDefinition>();
+
+        for (Class<?> key : typeExtensionPropertiesMap.keySet()) {
+            if (key.isAssignableFrom(object.getClass())) {
+                List<IExtensionPropertyDefinition> propertiesPerClass = typeExtensionPropertiesMap.get(key);
+                for (IExtensionPropertyDefinition extensionPropertyDefinition : propertiesPerClass) {
+                    if (extensionPropertyDefinition instanceof IExtensionPropertyDefinition2) {
+                        IExtensionPropertyDefinition2 def2 = (IExtensionPropertyDefinition2)extensionPropertyDefinition;
+                        if (def2.isApplicableFor(object)) {
+                            result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
+                        }
+                    } else {
+                        result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
+                    }
+                }
+            }
         }
+
         return Collections.unmodifiableMap(result);
     }
 
@@ -223,10 +228,6 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         return extProperty;
     }
 
-    public void clearExtensionPropertyCache() {
-        extensionPropertiesCache.clear();
-    }
-
     @Override
     public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type) {
         return customValidationsPerType.getCustomValidations(type);
@@ -246,45 +247,6 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     public IProductCmptNamingStrategyFactory getProductCmptNamingStrategyFactory(String extensionId) {
         ArgumentCheck.notNull(extensionId);
         return productCmptNamingStrategies.get(extensionId);
-    }
-
-    private static class ExtensionPropertiesCache {
-
-        private final Map<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>> internalMap = new ConcurrentHashMap<IIpsObjectPartContainer, Map<String, IExtensionPropertyDefinition>>();
-
-        public boolean isCached(IIpsObjectPartContainer object) {
-            return internalMap.containsKey(object);
-        }
-
-        public Map<String, IExtensionPropertyDefinition> get(IIpsObjectPartContainer object) {
-            Map<String, IExtensionPropertyDefinition> map = internalMap.get(object);
-            if (map == null) {
-                map = new ConcurrentHashMap<String, IExtensionPropertyDefinition>();
-                internalMap.put(object, map);
-            }
-            return map;
-        }
-
-        public void clear() {
-            internalMap.clear();
-        }
-
-        public Map<String, IExtensionPropertyDefinition> getMapOfExtensionPropertyDefinitions(IIpsObjectPartContainer object,
-                Set<IExtensionPropertyDefinition> extensionPropertyDefinitions) {
-            ConcurrentHashMap<String, IExtensionPropertyDefinition> result = new ConcurrentHashMap<String, IExtensionPropertyDefinition>();
-            for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
-                if (extensionPropertyDefinition instanceof IExtensionPropertyDefinition2) {
-                    IExtensionPropertyDefinition2 def2 = (IExtensionPropertyDefinition2)extensionPropertyDefinition;
-                    if (def2.isApplicableFor(object)) {
-                        result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
-                    }
-                } else {
-                    result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
-                }
-            }
-            return result;
-        }
-
     }
 
 }
