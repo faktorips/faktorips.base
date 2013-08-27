@@ -25,11 +25,9 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.faktorips.codegen.CodeFragment;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.operations.AbstractBinaryOperation;
-import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,12 +82,6 @@ public class ExprCompilerTest {
         @Override
         protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl() {
             return new DummyCompilationResultImpl();
-        }
-
-        @Override
-        protected AbstractCompilationResult<CodeFragment> generateConstant(SimpleNode node, DatatypeHelper helper) {
-            String value = node.getLastToken().toString();
-            return new DummyCompilationResultImpl("CONSTANT " + value, helper.getDatatype());
         }
 
     }

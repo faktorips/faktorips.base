@@ -13,7 +13,7 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -48,7 +48,7 @@ public class IsEmpty extends AbstractJavaFlFunction {
             code.append(argResults[0].getCodeFragment());
             code.append(".isEmpty()");
         } else if (argType.hasNullObject()) {
-            DatatypeHelper helper = getCompiler().getDatatypeHelper(argType);
+            BaseDatatypeHelper<JavaCodeFragment> helper = getCompiler().getDatatypeHelper(argType);
             code.append(helper.nullExpression());
             code.append(".equals(");
             code.append(argResults[0].getCodeFragment());

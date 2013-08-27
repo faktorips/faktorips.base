@@ -13,7 +13,8 @@
 
 package org.faktorips.fl;
 
-import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.BaseDatatypeHelper;
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 
 /**
@@ -21,12 +22,12 @@ import org.faktorips.datatype.Datatype;
  * 
  * @author Jan Ortmann
  */
-public interface DatatypeHelperProvider {
+public interface DatatypeHelperProvider<T extends CodeFragment> {
 
     /**
      * Returns the code generation helper for the given datatype or <code>null</code> if either
      * datatype is <code>null</code> or the provide can't provide a helper.
      */
-    public DatatypeHelper getDatatypeHelper(Datatype datatype);
+    public BaseDatatypeHelper<T> getDatatypeHelper(Datatype datatype);
 
 }

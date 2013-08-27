@@ -13,10 +13,8 @@
 
 package org.faktorips.fl;
 
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.util.message.Message;
 
 /**
@@ -47,12 +45,6 @@ class JavaParseTreeVisitor extends ParseTreeVisitor<JavaCodeFragment> {
     @Override
     protected CompilationResultImpl newCompilationResultImpl() {
         return new CompilationResultImpl();
-    }
-
-    @Override
-    protected CompilationResultImpl generateConstant(SimpleNode node, DatatypeHelper helper) {
-        String value = node.getLastToken().toString();
-        return new CompilationResultImpl(helper.newInstance(value), helper.getDatatype());
     }
 
 }

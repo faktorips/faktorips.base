@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
@@ -65,6 +66,11 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * Example: 2 + + b does not conform to the grammar.
      */
     public static final String SYNTAX_ERROR = PREFIX + "SyntaxError"; //$NON-NLS-1$
+
+    /**
+     * The expression contains a data type that can not be instantiated by this compiler.
+     */
+    public static final String DATATYPE_CREATION_ERROR = PREFIX + "DatatypeCreationError"; //$NON-NLS-1$
 
     /**
      * The expression has a lexical error.
@@ -182,7 +188,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     // true, if the expression's type should always be an object and not a primitive.
     private boolean ensureResultIsObject = true;
 
-    private DatatypeHelperProvider datatypeHelperProvider;
+    private DatatypeHelperProvider<T> datatypeHelperProvider;
 
     /**
      * Creates a new compiler. Messages returned by the compiler are generated using the
@@ -222,7 +228,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      *            processing of values in their respective {@link Datatype data types}
      */
     public ExprCompiler(Locale locale, IdentifierResolver<T> identifierResolver,
-            ConversionCodeGenerator<T> conversionCg, DatatypeHelperProvider datatypeHelperProvider) {
+            ConversionCodeGenerator<T> conversionCg, DatatypeHelperProvider<T> datatypeHelperProvider) {
         this(locale);
         this.identifierResolver = identifierResolver;
         this.conversionCg = conversionCg;
@@ -564,14 +570,14 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     /**
      * @return Returns the {@link DatatypeHelperProvider}.
      */
-    public DatatypeHelperProvider getDatatypeHelperProvider() {
+    public DatatypeHelperProvider<T> getDatatypeHelperProvider() {
         return datatypeHelperProvider;
     }
 
     /**
      * @param provider The {@link DatatypeHelperProvider} to set.
      */
-    public void setDatatypeHelperProvider(DatatypeHelperProvider provider) {
+    public void setDatatypeHelperProvider(DatatypeHelperProvider<T> provider) {
         this.datatypeHelperProvider = provider;
     }
 
@@ -579,7 +585,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * Returns the {@link DatatypeHelper code generation helper} for the given type or {@code null}
      * if no helper is available.
      */
-    public DatatypeHelper getDatatypeHelper(Datatype type) {
+    public BaseDatatypeHelper<T> getDatatypeHelper(Datatype type) {
         if (datatypeHelperProvider == null || type == null) {
             return null;
         }

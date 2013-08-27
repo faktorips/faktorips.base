@@ -32,7 +32,8 @@ import org.faktorips.datatype.classtypes.StringDatatype;
 /**
  * Interface that defines functionality needed to generate Java sourcecode for datatypes.
  */
-public interface DatatypeHelper {
+// Should be renamed to JavaDatatypeHelper, but that would break API
+public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#BOOLEAN Datatype.BOOLEAN}.

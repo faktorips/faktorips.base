@@ -16,6 +16,7 @@ package org.faktorips.fl;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
@@ -257,7 +258,7 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTBooleanNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.PRIMITIVE_BOOLEAN);
+        return generateConstant(node, Datatype.PRIMITIVE_BOOLEAN);
     }
 
     /**
@@ -267,7 +268,7 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTIntegerNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.PRIMITIVE_INTEGER);
+        return generateConstant(node, Datatype.PRIMITIVE_INT);
     }
 
     /**
@@ -277,7 +278,7 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTDecimalNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.DECIMAL);
+        return generateConstant(node, Datatype.DECIMAL);
     }
 
     /**
@@ -312,10 +313,10 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         boolean isParsable = ((ValueDatatype)DatatypeHelper.MONEY.getDatatype()).isParsable(node.getLastToken()
                 .toString());
         if (isParsable) {
-            return generateConstant(node, DatatypeHelper.MONEY);
+            return generateConstant(node, Datatype.MONEY);
         }
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),
-                node.getLastToken().toString());
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_MONEY_LITERAL,
+                compiler.getLocale(), node.getLastToken().toString());
         return newCompilationResultImpl(Message.newError(ExprCompiler.SYNTAX_ERROR, text));
     }
 
@@ -401,8 +402,8 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         }
 
         // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
-                fctName);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_FUNCTION,
+                compiler.getLocale(), fctName);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
     }
 
@@ -443,7 +444,16 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         return argListResult;
     }
 
-    protected abstract AbstractCompilationResult<T> generateConstant(SimpleNode node, DatatypeHelper helper);
+    protected CompilationResult<T> generateConstant(SimpleNode node, Datatype datatype) {
+        BaseDatatypeHelper<T> helper = compiler.getDatatypeHelper(datatype);
+        if (helper == null) {
+            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.DATATYPE_CREATION_ERROR,
+                    compiler.getLocale(), datatype.getName());
+            return newCompilationResultImpl(Message.newError(ExprCompiler.DATATYPE_CREATION_ERROR, text));
+        }
+        String value = node.getLastToken().toString();
+        return newCompilationResultImpl(helper.newInstance(value), datatype);
+    }
 
     private CompilationResult<T> generateUnaryOperation(String operator, SimpleNode node, Object data) {
         SimpleNode argNode = (SimpleNode)node.jjtGetChild(0);
@@ -478,8 +488,8 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
             return compilationResult;
         }
         Object[] replacements = new Object[] { operator, argResult.getDatatype().getName() };
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
-                replacements);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
+                compiler.getLocale(), replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
 
@@ -545,8 +555,8 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         }
         Object[] replacements = new Object[] { operator,
                 lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
-                replacements);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
+                compiler.getLocale(), replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
 

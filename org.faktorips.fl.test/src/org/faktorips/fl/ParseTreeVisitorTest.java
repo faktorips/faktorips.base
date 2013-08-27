@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.parser.ASTAddNode;
 import org.faktorips.fl.parser.ASTArgListNode;
@@ -69,6 +69,7 @@ public class ParseTreeVisitorTest {
     @Before
     public void setUp() {
         compiler = new DummyExprCompiler();
+        compiler.setDatatypeHelperProvider(new DummyDatatypeHelperProvider());
         visitor = new DummyParseTreeVisitor(compiler);
     }
 
@@ -88,6 +89,49 @@ public class ParseTreeVisitorTest {
 
         public DummyCompilationResultImpl() {
             super(new CodeFragment());
+        }
+
+    }
+
+    private class DummyDatatypeHelperProvider implements DatatypeHelperProvider<CodeFragment> {
+
+        public BaseDatatypeHelper<CodeFragment> getDatatypeHelper(Datatype datatype) {
+            BaseDatatypeHelper<CodeFragment> datatypeHelper = new BaseDatatypeHelper<CodeFragment>() {
+
+                @SuppressWarnings("hiding")
+                private Datatype datatype;
+
+                public Datatype getDatatype() {
+                    return datatype;
+                }
+
+                public void setDatatype(Datatype datatype) {
+                    this.datatype = datatype;
+                }
+
+                public CodeFragment nullExpression() {
+                    return new CodeFragment("null");
+                }
+
+                public CodeFragment newInstance(String value) {
+                    return new CodeFragment("CONSTANT " + value);
+                }
+
+                public CodeFragment newInstanceFromExpression(String expression) {
+                    return new CodeFragment("CONSTANT " + expression);
+                }
+
+                public CodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
+                    return new CodeFragment("CONSTANT " + expression);
+                }
+
+                public CodeFragment getToStringExpression(String fieldName) {
+                    return new CodeFragment(fieldName);
+                }
+
+            };
+            datatypeHelper.setDatatype(datatype);
+            return datatypeHelper;
         }
 
     }
@@ -117,12 +161,6 @@ public class ParseTreeVisitorTest {
         @Override
         protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl() {
             return new DummyCompilationResultImpl();
-        }
-
-        @Override
-        protected AbstractCompilationResult<CodeFragment> generateConstant(SimpleNode node, DatatypeHelper helper) {
-            String value = node.getLastToken().toString();
-            return new DummyCompilationResultImpl("CONSTANT " + value, helper.getDatatype());
         }
 
     }
