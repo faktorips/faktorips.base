@@ -110,6 +110,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addAdditionalProposals(final List<IContentProposal> result,
             final List<IContentProposal> additionalProposals) {
+        Collections.sort(additionalProposals, new SortContentProposal());
         for (IContentProposal proposal : additionalProposals) {
             if (!result.contains(proposal)) {
                 result.add(proposal);
@@ -119,6 +120,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addMatchingEnumTypes(List<IContentProposal> result, String enumTypePrefix) {
         EnumDatatype[] enumTypes = expression.getEnumDatatypesAllowedInFormula();
+        Collections.sort(Arrays.asList(enumTypes));
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().startsWith(enumTypePrefix)) {
                 IContentProposal proposal = new ContentProposal(removePrefix(enumType.getName(), enumTypePrefix),
@@ -130,6 +132,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addMatchingEnumValues(List<IContentProposal> result, String enumTypeName, String enumValuePrefix) {
         EnumDatatype[] enumTypes = expression.getEnumDatatypesAllowedInFormula();
+        Collections.sort(Arrays.asList(enumTypes));
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().equals(enumTypeName)) {
                 String[] valueIds = enumType.getAllValueIds(false);
@@ -152,6 +155,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addMatchingProductCmptTypeAttributes(List<IContentProposal> result, String prefix) {
         List<IAttribute> attributes = expression.findMatchingProductCmptTypeAttributes();
+        Collections.sort(attributes, new SortList());
         for (IAttribute attribute : attributes) {
             if (attribute.getName().startsWith(prefix)) {
                 if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
@@ -208,6 +212,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addMatchingParameters(List<IContentProposal> result, String prefix) {
         IParameter[] params = getSignature().getParameters();
+        Collections.sort(Arrays.asList(params), new SortList());
         for (IParameter param : params) {
             if (param.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
                 addPartToResult(result, param, param.getDatatype(), prefix);
@@ -241,15 +246,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addMatchingFunctions(List<IContentProposal> result, String prefix) {
         ExprCompiler compiler = expression.newExprCompiler(expression.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
-        Arrays.sort(functions, new Comparator<FlFunction>() {
-
-            @Override
-            public int compare(FlFunction o1, FlFunction o2) {
-                FlFunction f1 = o1;
-                FlFunction f2 = o2;
-                return f1.getName().compareTo(f2.getName());
-            }
-        });
+        Arrays.sort(functions, new SortFunctions());
         for (FlFunction function : functions) {
             if (checkMatchingFunctionName(function.getName().toLowerCase(), prefix.toLowerCase())) {
                 addFunctionToResult(result, function, prefix);
@@ -307,6 +304,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 return;
             }
             List<IAttribute> attributes = ((IType)datatype).findAllAttributes(getIpsProject());
+            Collections.sort(attributes, new SortList());
             List<String> attributeNames = new ArrayList<String>();
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().startsWith(attributePrefix)) {
@@ -456,6 +454,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
             final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype,
                     getIpsProject());
+            Collections.sort(attributes, new SortList());
             final List<String> attributeNames = new ArrayList<String>();
             for (final IAttribute attribute : attributes) {
                 if (attribute.getName().startsWith(prefix) && !attributeNames.contains(attribute.getName())) {
@@ -507,6 +506,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 return;
             }
             final List<IAssociation> associations = ((IType)datatype).findAllAssociations(getIpsProject());
+            Collections.sort(associations, new SortList());
             final List<String> associationNames = new ArrayList<String>();
             for (final IAssociation association : associations) {
                 if (association.getName().startsWith(attributePrefix)
@@ -552,5 +552,30 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
+    }
+
+    private static final class SortFunctions implements Comparator<FlFunction> {
+
+        @Override
+        public int compare(FlFunction o1, FlFunction o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    private static final class SortContentProposal implements Comparator<IContentProposal> {
+
+        @Override
+        public int compare(IContentProposal proposalToCompare, IContentProposal proposalCompareTo) {
+            return proposalToCompare.getLabel().compareTo(proposalCompareTo.getLabel());
+        }
+    }
+
+    private static final class SortList implements Comparator<IIpsObjectPart> {
+
+        @Override
+        public int compare(IIpsObjectPart toCompare, IIpsObjectPart compareTo) {
+            return toCompare.getName().compareTo(compareTo.getName());
+        }
+
     }
 }
