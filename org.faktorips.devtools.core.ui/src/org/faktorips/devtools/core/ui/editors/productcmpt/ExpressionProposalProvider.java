@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -547,7 +548,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private static final class SortFunctions implements Comparator<FlFunction> {
+    private static final class SortFunctions implements Comparator<FlFunction>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = -6448576956808509752L;
 
         @Override
         public int compare(FlFunction o1, FlFunction o2) {
@@ -555,7 +561,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private static final class SortContentProposal implements Comparator<IContentProposal> {
+    private static final class SortContentProposal implements Comparator<IContentProposal>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 343634258851900476L;
 
         @Override
         public int compare(IContentProposal proposalToCompare, IContentProposal proposalCompareTo) {
@@ -563,7 +574,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private static final class SortList implements Comparator<IIpsObjectPart> {
+    private static final class SortList implements Comparator<IIpsObjectPart>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 4277046702978775385L;
 
         @Override
         public int compare(IIpsObjectPart toCompare, IIpsObjectPart compareTo) {
