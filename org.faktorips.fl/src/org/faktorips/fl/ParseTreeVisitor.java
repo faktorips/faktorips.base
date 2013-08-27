@@ -309,9 +309,9 @@ abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTMoneyNode node, Object data) {
-        boolean isParable = ((ValueDatatype)DatatypeHelper.MONEY.getDatatype()).isParsable(node.getLastToken()
+        boolean isParsable = ((ValueDatatype)DatatypeHelper.MONEY.getDatatype()).isParsable(node.getLastToken()
                 .toString());
-        if (isParable) {
+        if (isParsable) {
             return generateConstant(node, DatatypeHelper.MONEY);
         }
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),

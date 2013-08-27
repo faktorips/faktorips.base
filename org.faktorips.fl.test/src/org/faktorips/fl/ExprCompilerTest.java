@@ -39,79 +39,66 @@ import org.junit.Test;
  */
 public class ExprCompilerTest {
 
-    private class DummyCodeFragment extends CodeFragment {
+    private class DummyCompilationResultImpl extends AbstractCompilationResult<CodeFragment> {
 
-        public DummyCodeFragment(String sourcecode) {
-            super(sourcecode);
-        }
-
-        public DummyCodeFragment() {
-            super();
-        }
-
-    }
-
-    private class DummyCompilationResultImpl extends AbstractCompilationResult<DummyCodeFragment> {
-
-        public DummyCompilationResultImpl(DummyCodeFragment sourcecode, Datatype datatype) {
+        public DummyCompilationResultImpl(CodeFragment sourcecode, Datatype datatype) {
             super(sourcecode, datatype);
         }
 
         public DummyCompilationResultImpl(Message message) {
-            super(message, new DummyCodeFragment());
+            super(message, new CodeFragment());
         }
 
         public DummyCompilationResultImpl(String sourcecode, Datatype datatype) {
-            super(new DummyCodeFragment(sourcecode), datatype);
+            super(new CodeFragment(sourcecode), datatype);
         }
 
         public DummyCompilationResultImpl() {
-            super(new DummyCodeFragment());
+            super(new CodeFragment());
         }
 
     }
 
-    private class DummyParseTreeVisitor extends ParseTreeVisitor<DummyCodeFragment> {
+    private class DummyParseTreeVisitor extends ParseTreeVisitor<CodeFragment> {
 
-        DummyParseTreeVisitor(ExprCompiler<DummyCodeFragment> compiler) {
+        DummyParseTreeVisitor(ExprCompiler<CodeFragment> compiler) {
             super(compiler);
         }
 
         @Override
-        protected AbstractCompilationResult<DummyCodeFragment> newCompilationResultImpl(String sourcecode,
+        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(String sourcecode, Datatype datatype) {
+            return new DummyCompilationResultImpl(sourcecode, datatype);
+        }
+
+        @Override
+        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(CodeFragment sourcecode,
                 Datatype datatype) {
             return new DummyCompilationResultImpl(sourcecode, datatype);
         }
 
         @Override
-        protected AbstractCompilationResult<DummyCodeFragment> newCompilationResultImpl(DummyCodeFragment sourcecode,
-                Datatype datatype) {
-            return new DummyCompilationResultImpl(sourcecode, datatype);
-        }
-
-        @Override
-        protected AbstractCompilationResult<DummyCodeFragment> newCompilationResultImpl(Message message) {
+        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(Message message) {
             return new DummyCompilationResultImpl(message);
         }
 
         @Override
-        protected AbstractCompilationResult<DummyCodeFragment> newCompilationResultImpl() {
+        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl() {
             return new DummyCompilationResultImpl();
         }
 
         @Override
-        protected AbstractCompilationResult<DummyCodeFragment> generateConstant(SimpleNode node, DatatypeHelper helper) {
+        protected AbstractCompilationResult<CodeFragment> generateConstant(SimpleNode node, DatatypeHelper helper) {
             String value = node.getLastToken().toString();
             return new DummyCompilationResultImpl("CONSTANT " + value, helper.getDatatype());
         }
 
     }
 
-    protected ExprCompiler<DummyCodeFragment> compiler;
+    protected ExprCompiler<CodeFragment> compiler;
 
     @Before
     public void setUp() throws Exception {
-        compiler = new ExprCompiler<DummyCodeFragment>() {
+        compiler = new ExprCompiler<CodeFragment>() {
 
             @Override
             protected void registerDefaults() {
@@ -119,25 +106,25 @@ public class ExprCompilerTest {
             }
 
             @Override
-            protected DummyCodeFragment convertPrimitiveToWrapper(Datatype resultType, DummyCodeFragment codeFragment) {
-                DummyCodeFragment wrappedCode = new DummyCodeFragment("WRAPPED(");
+            protected CodeFragment convertPrimitiveToWrapper(Datatype resultType, CodeFragment codeFragment) {
+                CodeFragment wrappedCode = new CodeFragment("WRAPPED(");
                 wrappedCode.append(codeFragment);
                 wrappedCode.append(')');
                 return wrappedCode;
             }
 
             @Override
-            protected ParseTreeVisitor<DummyCodeFragment> newParseTreeVisitor() {
+            protected ParseTreeVisitor<CodeFragment> newParseTreeVisitor() {
                 return new DummyParseTreeVisitor(this);
             }
 
             @Override
-            protected AbstractCompilationResult<DummyCodeFragment> newCompilationResultImpl(Message message) {
+            protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(Message message) {
                 return new DummyCompilationResultImpl(message);
             }
 
             @Override
-            protected AbstractCompilationResult<DummyCodeFragment> newCompilationResultImpl(DummyCodeFragment sourcecode,
+            protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(CodeFragment sourcecode,
                     Datatype datatype) {
                 return new DummyCompilationResultImpl(sourcecode, datatype);
             }
@@ -153,7 +140,7 @@ public class ExprCompilerTest {
      */
     @Test
     public void testSyntaxError() {
-        CompilationResult<DummyCodeFragment> result = compiler.compile("1 * * 2");
+        CompilationResult<CodeFragment> result = compiler.compile("1 * * 2");
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.SYNTAX_ERROR, result.getMessages().getMessage(0).getCode());
@@ -173,7 +160,7 @@ public class ExprCompilerTest {
 
     @Test
     public void testOpInvalidTypesError() {
-        CompilationResult<DummyCodeFragment> result = compiler.compile("1.5 + 2EUR");
+        CompilationResult<CodeFragment> result = compiler.compile("1.5 + 2EUR");
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
@@ -183,18 +170,18 @@ public class ExprCompilerTest {
 
     @Test
     public void testGetFunctions() {
-        DefaultFunctionResolver<DummyCodeFragment> r1 = new DefaultFunctionResolver<DummyCodeFragment>();
-        FlFunction<DummyCodeFragment> f1 = createFunction("IF1", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
+        DefaultFunctionResolver<CodeFragment> r1 = new DefaultFunctionResolver<CodeFragment>();
+        FlFunction<CodeFragment> f1 = createFunction("IF1", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
                 AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
         r1.add(f1);
-        DefaultFunctionResolver<DummyCodeFragment> r2 = new DefaultFunctionResolver<DummyCodeFragment>();
-        FlFunction<DummyCodeFragment> f2 = createFunction("IF2", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
+        DefaultFunctionResolver<CodeFragment> r2 = new DefaultFunctionResolver<CodeFragment>();
+        FlFunction<CodeFragment> f2 = createFunction("IF2", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
                 AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
-        FlFunction<DummyCodeFragment> f3 = createFunction("IF3", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
+        FlFunction<CodeFragment> f3 = createFunction("IF3", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
                 AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
         r2.add(f2);
         r2.add(f3);
-        FlFunction<DummyCodeFragment>[] functions = compiler.getFunctions();
+        FlFunction<CodeFragment>[] functions = compiler.getFunctions();
         assertEquals(0, functions.length);
         compiler.add(r1);
         compiler.add(r2);
@@ -225,23 +212,23 @@ public class ExprCompilerTest {
 
         String matchingFunctionName = "functionMatchingName";
 
-        FlFunction<DummyCodeFragment> function1 = createFunction("function1", argTypesDecimal);
-        FlFunction<DummyCodeFragment> function2 = createFunction(matchingFunctionName, argTypesDecimal);
-        FlFunction<DummyCodeFragment> function3 = createFunction(matchingFunctionName, argTypesDecimal);
-        FlFunction<DummyCodeFragment> function4 = createFunction(matchingFunctionName, argTypesString);
-        FlFunction<DummyCodeFragment> function5 = createFunction("function5", argTypesDecimal);
+        FlFunction<CodeFragment> function1 = createFunction("function1", argTypesDecimal);
+        FlFunction<CodeFragment> function2 = createFunction(matchingFunctionName, argTypesDecimal);
+        FlFunction<CodeFragment> function3 = createFunction(matchingFunctionName, argTypesDecimal);
+        FlFunction<CodeFragment> function4 = createFunction(matchingFunctionName, argTypesString);
+        FlFunction<CodeFragment> function5 = createFunction("function5", argTypesDecimal);
 
         matchingFunctions(function2, function3);
 
         @SuppressWarnings("unchecked")
-        FunctionResolver<DummyCodeFragment> fctResolver1 = createFunctionResolver(function1, function2);
+        FunctionResolver<CodeFragment> fctResolver1 = createFunctionResolver(function1, function2);
         @SuppressWarnings("unchecked")
-        FunctionResolver<DummyCodeFragment> fctResolver2 = createFunctionResolver(function3, function4, function5);
+        FunctionResolver<CodeFragment> fctResolver2 = createFunctionResolver(function3, function4, function5);
 
         compiler.add(fctResolver1);
         compiler.add(fctResolver2);
 
-        Set<FlFunction<DummyCodeFragment>> ambiguousFunctions = compiler.getAmbiguousFunctions(compiler.getFunctions());
+        Set<FlFunction<CodeFragment>> ambiguousFunctions = compiler.getAmbiguousFunctions(compiler.getFunctions());
 
         assertEquals(2, ambiguousFunctions.size());
 
@@ -252,7 +239,7 @@ public class ExprCompilerTest {
     @Test
     public void testIdentifierResolvingFailed() {
         setFailingIdentifierResolver();
-        CompilationResult<DummyCodeFragment> result = compiler.compile("a");
+        CompilationResult<CodeFragment> result = compiler.compile("a");
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
@@ -260,10 +247,10 @@ public class ExprCompilerTest {
     }
 
     private void setFailingIdentifierResolver() {
-        compiler.setIdentifierResolver(new IdentifierResolver<DummyCodeFragment>() {
+        compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
 
-            public CompilationResult<DummyCodeFragment> compile(String identifier,
-                    ExprCompiler<DummyCodeFragment> exprCompiler,
+            public CompilationResult<CodeFragment> compile(String identifier,
+                    ExprCompiler<CodeFragment> exprCompiler,
                     Locale locale) {
                 String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
                         identifier);
@@ -277,16 +264,15 @@ public class ExprCompilerTest {
 
     @Test
     public void testIdentifierResolvingSuccessfull() {
-        compiler.setIdentifierResolver(new IdentifierResolver<DummyCodeFragment>() {
+        compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
 
-            public CompilationResult<DummyCodeFragment> compile(String identifier,
-                    ExprCompiler<DummyCodeFragment> exprCompiler,
+            public CompilationResult<CodeFragment> compile(String identifier,
+                    ExprCompiler<CodeFragment> exprCompiler,
                     Locale locale) {
-                return new DummyCompilationResultImpl(new DummyCodeFragment("IDENTIFIER " + identifier),
-                        Datatype.STRING);
+                return new DummyCompilationResultImpl(new CodeFragment("IDENTIFIER " + identifier), Datatype.STRING);
             }
         });
-        CompilationResult<DummyCodeFragment> result = compiler.compile("a");
+        CompilationResult<CodeFragment> result = compiler.compile("a");
         assertTrue(result.successfull());
         assertTrue(result.getCodeFragment().getSourcecode().startsWith("IDENTIFIER a"));
         assertEquals(Datatype.STRING, result.getDatatype());
@@ -297,7 +283,7 @@ public class ExprCompilerTest {
         setIntIdentifierResolver();
         registerAddIntInt();
 
-        CompilationResult<DummyCodeFragment> result = compiler.compile("1");
+        CompilationResult<CodeFragment> result = compiler.compile("1");
         assertEquals(0, result.getResolvedIdentifiers().length);
 
         result = compiler.compile("a + 1");
@@ -321,9 +307,9 @@ public class ExprCompilerTest {
     }
 
     private void setIntIdentifierResolver() {
-        compiler.setIdentifierResolver(new IdentifierResolver<DummyCodeFragment>() {
-            public CompilationResult<DummyCodeFragment> compile(String identifier,
-                    ExprCompiler<DummyCodeFragment> exprCompiler,
+        compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
+            public CompilationResult<CodeFragment> compile(String identifier,
+                    ExprCompiler<CodeFragment> exprCompiler,
                     Locale locale) {
                 DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(identifier,
                         Datatype.PRIMITIVE_INT);
@@ -336,13 +322,12 @@ public class ExprCompilerTest {
     }
 
     private void registerAddIntInt() {
-        compiler.register(new AbstractBinaryOperation<DummyCodeFragment>("+", Datatype.PRIMITIVE_INT,
-                Datatype.PRIMITIVE_INT) {
+        compiler.register(new AbstractBinaryOperation<CodeFragment>("+", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT) {
 
-            public CompilationResult<DummyCodeFragment> generate(CompilationResult<DummyCodeFragment> lhs,
-                    CompilationResult<DummyCodeFragment> rhs) {
+            public CompilationResult<CodeFragment> generate(CompilationResult<CodeFragment> lhs,
+                    CompilationResult<CodeFragment> rhs) {
                 lhs.getCodeFragment().append(" + "); //$NON-NLS-1$
-                ((AbstractCompilationResult<DummyCodeFragment>)lhs).add(rhs);
+                ((AbstractCompilationResult<CodeFragment>)lhs).add(rhs);
                 return lhs;
             }
         });
@@ -356,7 +341,7 @@ public class ExprCompilerTest {
     public void testBinaryOperationWithLhsError() {
         setFailingIdentifierResolver();
         registerAddIntInt();
-        CompilationResult<DummyCodeFragment> result = compiler.compile("a + 2");
+        CompilationResult<CodeFragment> result = compiler.compile("a + 2");
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
@@ -371,7 +356,7 @@ public class ExprCompilerTest {
     public void testBinaryOperationWithRhsError() {
         setFailingIdentifierResolver();
         registerAddIntInt();
-        CompilationResult<DummyCodeFragment> result = compiler.compile("a + 2");
+        CompilationResult<CodeFragment> result = compiler.compile("a + 2");
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
@@ -386,7 +371,7 @@ public class ExprCompilerTest {
     public void testBinaryOperationWithLhsAndRhsError() {
         setFailingIdentifierResolver();
         registerAddIntInt();
-        CompilationResult<DummyCodeFragment> result = compiler.compile("a + b");
+        CompilationResult<CodeFragment> result = compiler.compile("a + b");
         assertTrue(result.failed());
         assertEquals(2, result.getMessages().size());
         Message lhsMsg = result.getMessages().getMessage(0);
@@ -395,18 +380,18 @@ public class ExprCompilerTest {
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, rhsMsg.getCode());
     }
 
-    private FunctionResolver<DummyCodeFragment> createFunctionResolver(FlFunction<DummyCodeFragment>... functions) {
+    private FunctionResolver<CodeFragment> createFunctionResolver(FlFunction<CodeFragment>... functions) {
         @SuppressWarnings("unchecked")
-        FunctionResolver<DummyCodeFragment> newFctResolver = mock(FunctionResolver.class);
+        FunctionResolver<CodeFragment> newFctResolver = mock(FunctionResolver.class);
 
         when(newFctResolver.getFunctions()).thenReturn(functions);
 
         return newFctResolver;
     }
 
-    private FlFunction<DummyCodeFragment> createFunction(String name, Datatype[] argTypes) {
+    private FlFunction<CodeFragment> createFunction(String name, Datatype[] argTypes) {
         @SuppressWarnings("unchecked")
-        FlFunction<DummyCodeFragment> newFunction = mock(FlFunction.class);
+        FlFunction<CodeFragment> newFunction = mock(FlFunction.class);
 
         when(newFunction.getName()).thenReturn(name);
         when(newFunction.getArgTypes()).thenReturn(argTypes);
@@ -415,8 +400,7 @@ public class ExprCompilerTest {
         return newFunction;
     }
 
-    private void matchingFunctions(FlFunction<DummyCodeFragment> matchingFunction,
-            FlFunction<DummyCodeFragment> newFunction) {
+    private void matchingFunctions(FlFunction<CodeFragment> matchingFunction, FlFunction<CodeFragment> newFunction) {
         when(newFunction.isSame(matchingFunction)).thenReturn(true);
         when(matchingFunction.isSame(newFunction)).thenReturn(true);
 
