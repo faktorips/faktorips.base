@@ -122,9 +122,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         EnumDatatype[] enumTypes = expression.getEnumDatatypesAllowedInFormula();
         Collections.sort(Arrays.asList(enumTypes));
         for (EnumDatatype enumType : enumTypes) {
-            if (enumType.getName().startsWith(enumTypePrefix)) {
-                IContentProposal proposal = new ContentProposal(removePrefix(enumType.getName(), enumTypePrefix),
-                        enumType.getName(), enumType.getName());
+            if (checkMatchingNameWithCaseInsensitive(enumType.getName(), enumTypePrefix)) {
+                IContentProposal proposal = new ContentProposal(enumType.getName(), enumType.getName(),
+                        enumType.getName(), enumTypePrefix);
                 result.add(proposal);
             }
         }
@@ -137,7 +137,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             if (enumType.getName().equals(enumTypeName)) {
                 String[] valueIds = enumType.getAllValueIds(false);
                 for (String valueId : valueIds) {
-                    if (valueId.startsWith(enumValuePrefix)) {
+                    if (checkMatchingNameWithCaseInsensitive(valueId, enumValuePrefix)) {
                         String valueName = enumType.getValueName(valueId);
                         addEnumValueToResult(result, valueId, enumValuePrefix, valueName);
                     }
@@ -148,8 +148,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addEnumValueToResult(List<IContentProposal> result, String enumValue, String prefix, String valueName) {
-        IContentProposal proposal = new ContentProposal(removePrefix(enumValue, prefix), enumValue + '(' + valueName
-                + ')', null);
+        IContentProposal proposal = new ContentProposal(enumValue, enumValue + '(' + valueName + ')', null, prefix);
         result.add(proposal);
     }
 
@@ -157,7 +156,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         List<IAttribute> attributes = expression.findMatchingProductCmptTypeAttributes();
         Collections.sort(attributes, new SortList());
         for (IAttribute attribute : attributes) {
-            if (attribute.getName().startsWith(prefix)) {
+            if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)) {
                 if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
                     addPartToResult(result, attribute, attribute.getDatatype(), prefix);
                 }
@@ -206,7 +205,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 }
             }
         }
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, description);
+        IContentProposal proposal = new ContentProposal(name, displayText, description, prefix);
         result.add(proposal);
     }
 
@@ -214,7 +213,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         IParameter[] params = getSignature().getParameters();
         Collections.sort(Arrays.asList(params), new SortList());
         for (IParameter param : params) {
-            if (param.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+            if (checkMatchingNameWithCaseInsensitive(param.getName(), prefix)) {
                 addPartToResult(result, param, param.getDatatype(), prefix);
             }
         }
@@ -248,28 +247,28 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         FlFunction[] functions = compiler.getFunctions();
         Arrays.sort(functions, new SortFunctions());
         for (FlFunction function : functions) {
-            if (checkMatchingFunctionName(function.getName().toLowerCase(), prefix.toLowerCase())) {
+            if (checkMatchingNameWithCaseInsensitive(function.getName(), prefix)) {
                 addFunctionToResult(result, function, prefix);
             }
         }
     }
 
-    protected boolean checkMatchingFunctionName(final String functionName, final String prefix) {
-        if (functionName.startsWith(prefix)) {
+    protected boolean checkMatchingNameWithCaseInsensitive(final String name, final String prefix) {
+        if (name.toLowerCase().startsWith(prefix.toLowerCase())) {
             return true;
         }
-        return checkMatchingQualifiedFunctionName(functionName, prefix);
+        return checkMatchingQualifiedName(name, prefix);
     }
 
-    private boolean checkMatchingQualifiedFunctionName(final String functionName, final String prefix) {
-        String newFunctionName = functionName;
-        int pos = newFunctionName.indexOf('.');
+    private boolean checkMatchingQualifiedName(final String name, final String prefix) {
+        String newName = name;
+        int pos = newName.indexOf('.');
         while (pos > 0) {
-            newFunctionName = newFunctionName.substring(pos + 1);
-            if (newFunctionName.startsWith(prefix)) {
+            newName = newName.substring(pos + 1);
+            if (newName.startsWith(prefix)) {
                 return true;
             }
-            pos = newFunctionName.indexOf('.');
+            pos = newName.indexOf('.');
         }
         return false;
     }
@@ -293,10 +292,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         result.add(proposal);
     }
 
-    protected String removePrefix(String name, String prefix) {
-        return name.startsWith(prefix) ? name.substring(prefix.length()) : name;
-    }
-
     private void addMatchingAttributes(List<IContentProposal> result, String paramName, String attributePrefix) {
         try {
             Datatype datatype = findParamDatatype(paramName);
@@ -307,7 +302,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(attributes, new SortList());
             List<String> attributeNames = new ArrayList<String>();
             for (IAttribute attribute : attributes) {
-                if (attribute.getName().startsWith(attributePrefix)) {
+                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), attributePrefix)) {
                     if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
                         if (!attributeNames.contains(attribute.getName())) {
                             addAttributeToResult(result, attribute, attributePrefix);
@@ -389,8 +384,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 description = localizedDescription;
             }
         }
-
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, description);
+        IContentProposal proposal = new ContentProposal(name, displayText, description, prefix);
         result.add(proposal);
     }
 
@@ -457,7 +451,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(attributes, new SortList());
             final List<String> attributeNames = new ArrayList<String>();
             for (final IAttribute attribute : attributes) {
-                if (attribute.getName().startsWith(prefix) && !attributeNames.contains(attribute.getName())) {
+                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)
+                        && !attributeNames.contains(attribute.getName())) {
                     addDefaultValueToResult(result, attribute, attributePrefix);
                     attributeNames.add(attribute.getName());
                 }
@@ -475,8 +470,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         final String displayText = name
                 + " - " + attribute.getDatatype() + Messages.ExpressionProposalProvider_defaultValue; //$NON-NLS-1$
         final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
-        final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
-                localizedDescription);
+        final IContentProposal proposal = new ContentProposal(name, displayText, localizedDescription, prefix);
         result.add(proposal);
     }
 
@@ -509,7 +503,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(associations, new SortList());
             final List<String> associationNames = new ArrayList<String>();
             for (final IAssociation association : associations) {
-                if (association.getName().startsWith(attributePrefix)
+                if (checkMatchingNameWithCaseInsensitive(association.getName(), attributePrefix)
                         && !associationNames.contains(association.getName())) {
                     addAssociationToResult(result, association, attributePrefix,
                             association.is1ToManyIgnoringQualifier() || isList);
@@ -531,12 +525,11 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             String displayText = name + " -> " + target.getUnqualifiedName(); //$NON-NLS-1$
             final String localizedDescription = IpsPlugin.getMultiLanguageSupport()
                     .getLocalizedDescription(association);
-            final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
-                    localizedDescription);
+            final IContentProposal proposal = new ContentProposal(name, displayText, localizedDescription, prefix);
             result.add(proposal);
             if (addIndexedProposal) {
-                final IContentProposal proposalWithIndex = new ContentProposal(removePrefix(name, prefix) + "[0]", //$NON-NLS-1$
-                        displayText + "[0]", localizedDescription); //$NON-NLS-1$
+                final IContentProposal proposalWithIndex = new ContentProposal(name + "[0]", //$NON-NLS-1$
+                        displayText + "[0]", localizedDescription, prefix); //$NON-NLS-1$
                 result.add(proposalWithIndex);
             }
             if (target instanceof IPolicyCmptType && ((IPolicyCmptType)target).isConfigurableByProductCmptType()) {
@@ -544,8 +537,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
                 for (IIpsSrcFile srcFile : productCmptSrcFiles) {
                     String qualifier = "[\"" + srcFile.getIpsObjectName() + "\"]"; //$NON-NLS-1$ //$NON-NLS-2$
-                    final IContentProposal proposalWithQualifier = new ContentProposal(removePrefix(name, prefix)
-                            + qualifier, displayText + qualifier, localizedDescription);
+                    final IContentProposal proposalWithQualifier = new ContentProposal(name + qualifier, displayText
+                            + qualifier, localizedDescription, prefix);
                     result.add(proposalWithQualifier);
                 }
             }
