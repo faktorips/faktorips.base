@@ -202,7 +202,6 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals("bcdparam", proposal_2.getContent());
     }
 
-
     @Test
     public void testDoComputeCompletionProposalsForParamWithCaseInsensitiv() {
         formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
@@ -216,7 +215,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("a", 1);
         proposal = results[1];
-        assertEquals("Abcparam", proposal.getContent());
+        assertEquals("abcparam", proposal.getContent());
     }
 
     @Test
@@ -348,10 +347,10 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         results = proposalProvider.getProposals("policy.a", 8);
         proposal = results[0];
-        assertEquals("abcde", proposal.getContent());
+        assertEquals("aabcde", proposal.getContent());
 
         proposal = results[1];
-        assertEquals("bcde", proposal.getContent());
+        assertEquals("abcde", proposal.getContent());
     }
 
     @Test
@@ -376,7 +375,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposal = results[0];
         assertEquals("SecondAttr", proposal.getContent());
     }
-    
+
     @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociations() throws Exception {
         IIpsProjectProperties properties = ipsProject.getProperties();
@@ -453,10 +452,10 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         results = proposalProvider.getProposals("policy.targetA", 14);
         proposal = results[0];
-        assertEquals("ABCDE", proposal.getContent());
+        assertEquals("targetAABCDE", proposal.getContent());
 
         proposal = results[1];
-        assertEquals("BCDE", proposal.getContent());
+        assertEquals("targetABCDE", proposal.getContent());
 
     }
 
@@ -481,7 +480,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal proposal = results[0];
         assertEquals("mainTarget", proposal.getContent());
     }
-    
+
     @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociationChains() throws Exception {
         IIpsProjectProperties properties = ipsProject.getProperties();
