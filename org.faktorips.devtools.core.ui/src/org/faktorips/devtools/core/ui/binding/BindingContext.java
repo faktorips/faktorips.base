@@ -615,7 +615,7 @@ public class BindingContext {
             if (!mapping.getField().getControl().isDisposed()) {
                 mapping.getField().getControl().removeFocusListener(listener);
             }
-            disposeObjectIfNeccessary(disposedPmos, mapping);
+            disposeObjectIfNeccessary(disposedPmos, mapping.getObject());
         }
 
         // defensive copy to avoid concurrent
@@ -623,7 +623,7 @@ public class BindingContext {
 
         // modification exceptions
         for (ControlPropertyBinding mapping : controlsCopy) {
-            disposeObjectIfNeccessary(disposedPmos, mapping);
+            disposeObjectIfNeccessary(disposedPmos, mapping.getObject());
         }
     }
 
