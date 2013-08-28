@@ -23,7 +23,7 @@ import org.faktorips.fl.FunctionSignatures;
  * 
  * @author Jan Ortmann
  */
-public class NotBoolean extends AbstractJavaFlFunction {
+public class NotBoolean extends AbstractFlFunction {
 
     public NotBoolean(String name, String description) {
         super(name, description, FunctionSignatures.NotBoolean);

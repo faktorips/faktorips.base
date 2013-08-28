@@ -25,7 +25,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Jan Ortmann
  */
-public class DecimalTestArrayFct extends AbstractJavaFlFunction {
+public class DecimalTestArrayFct extends AbstractFlFunction {
 
     public final static String name = "DECIMALTESTARRAY";
 

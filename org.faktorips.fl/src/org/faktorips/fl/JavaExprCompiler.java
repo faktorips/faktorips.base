@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import org.faktorips.codegen.CodeGenUtil;
 import org.faktorips.codegen.ConversionCodeGenerator;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
@@ -183,5 +184,10 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
     protected AbstractCompilationResult<JavaCodeFragment> newCompilationResultImpl(JavaCodeFragment sourcecode,
             Datatype datatype) {
         return new CompilationResultImpl(sourcecode, datatype);
+    }
+
+    @Override
+    public DatatypeHelper getDatatypeHelper(Datatype type) {
+        return (DatatypeHelper)super.getDatatypeHelper(type);
     }
 }

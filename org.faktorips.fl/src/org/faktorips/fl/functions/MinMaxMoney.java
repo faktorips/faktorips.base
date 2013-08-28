@@ -23,7 +23,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class MinMaxMoney extends AbstractJavaFlFunction {
+public class MinMaxMoney extends AbstractFlFunction {
 
     private String functionName = null;
 

@@ -23,7 +23,7 @@ import org.faktorips.fl.FunctionSignatures;
  * 
  * @author Jan Ortmann
  */
-public class Not extends AbstractJavaFlFunction {
+public class Not extends AbstractFlFunction {
 
     public Not(String name, String description) {
         super(name, description, FunctionSignatures.Not);

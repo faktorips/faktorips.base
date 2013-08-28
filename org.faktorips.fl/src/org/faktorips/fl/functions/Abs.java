@@ -21,7 +21,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * The abs() function.
  */
-public class Abs extends AbstractJavaFlFunction {
+public class Abs extends AbstractFlFunction {
 
     /**
      * Constructs a abs function with the given name.

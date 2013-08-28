@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 import java.util.Set;
 
+import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
@@ -124,6 +125,41 @@ public class ExprCompilerTest {
         };
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);
+        compiler.setDatatypeHelperProvider(new DatatypeHelperProvider<CodeFragment>() {
+
+            public BaseDatatypeHelper<CodeFragment> getDatatypeHelper(final Datatype datatype) {
+                return new BaseDatatypeHelper<CodeFragment>() {
+
+                    public Datatype getDatatype() {
+                        return datatype;
+                    }
+
+                    public void setDatatype(Datatype datatype) {
+                    }
+
+                    public CodeFragment nullExpression() {
+                        return new CodeFragment("null");
+                    }
+
+                    public CodeFragment newInstance(String value) {
+                        return new CodeFragment(value);
+                    }
+
+                    public CodeFragment newInstanceFromExpression(String expression) {
+                        return new CodeFragment(expression);
+                    }
+
+                    public CodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
+                        return new CodeFragment(expression);
+                    }
+
+                    public CodeFragment getToStringExpression(String fieldName) {
+                        return new CodeFragment(fieldName);
+                    }
+                };
+            }
+
+        });
     }
 
     /**

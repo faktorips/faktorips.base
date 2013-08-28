@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class Round extends AbstractJavaFlFunction {
+public class Round extends AbstractFlFunction {
 
     private final static String[] ROUNDING_MODES = new String[7];
 

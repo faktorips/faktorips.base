@@ -26,7 +26,7 @@ import org.faktorips.util.message.Message;
 /**
  *
  */
-public abstract class MinMaxNativeTypes extends AbstractJavaFlFunction {
+public abstract class MinMaxNativeTypes extends AbstractFlFunction {
 
     protected String functionName = null;
     private String errorCodeSuffix = null;

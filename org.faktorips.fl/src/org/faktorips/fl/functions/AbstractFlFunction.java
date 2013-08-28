@@ -13,38 +13,30 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.codegen.CodeFragment;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
-import org.faktorips.fl.FunctionSignatureImpl;
 import org.faktorips.fl.FunctionSignatures;
-import org.faktorips.util.ArgumentCheck;
+import org.faktorips.fl.JavaExprCompiler;
 
 /**
- * Abstract default implementation of {@link FlFunction}.
- * 
- * @param <T> a {@link CodeFragment} implementation for a specific target language
+ * Abstract {@link JavaCodeFragment Java} implementation of {@link FlFunction}.
  */
-public abstract class AbstractFlFunction<T extends CodeFragment> extends FunctionSignatureImpl implements FlFunction<T> {
-
-    protected ExprCompiler<T> compiler;
-    private String description;
+// Should be renamed to AbstractJavaFlFunction, but that might break the API
+public abstract class AbstractFlFunction extends AbstractBaseFlFunction<JavaCodeFragment> {
 
     /**
      * Creates a new function with a defined argument list.
      */
     public AbstractFlFunction(String name, String description, FunctionSignatures signature) {
-        super(name, signature);
-        this.description = description;
+        super(name, description, signature);
     }
 
     /**
      * Creates a new function with a defined argument list.
      */
     public AbstractFlFunction(String name, String description, Datatype type, Datatype[] argTypes) {
-        super(name, type, argTypes);
-        this.description = description;
+        super(name, description, type, argTypes);
     }
 
     /**
@@ -56,16 +48,11 @@ public abstract class AbstractFlFunction<T extends CodeFragment> extends Functio
      * @param argType defines the Datatype of the arguments in the variable argument list
      */
     public AbstractFlFunction(String name, String description, Datatype type, Datatype argType) {
-        super(name, type, argType);
-        this.description = description;
+        super(name, description, type, argType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setCompiler(ExprCompiler<T> compiler) {
-        ArgumentCheck.notNull(compiler);
-        this.compiler = compiler;
+    public void setCompiler(JavaExprCompiler compiler) {
+        super.setCompiler(compiler);
     }
 
     /**
@@ -73,25 +60,8 @@ public abstract class AbstractFlFunction<T extends CodeFragment> extends Functio
      * 
      * @see org.faktorips.fl.FlFunction#getCompiler()
      */
-    public ExprCompiler<T> getCompiler() {
-        return compiler;
-    }
-
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.fl.FlFunction#getDescription()
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.fl.FlFunction#setDescription(java.lang.String)
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public JavaExprCompiler getCompiler() {
+        return (JavaExprCompiler)super.getCompiler();
     }
 }

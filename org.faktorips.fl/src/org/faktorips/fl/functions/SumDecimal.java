@@ -23,7 +23,7 @@ import org.faktorips.values.Decimal;
 /**
  * The function: Decimal sum(Decimal[])
  */
-public class SumDecimal extends AbstractJavaFlFunction {
+public class SumDecimal extends AbstractFlFunction {
 
     /**
      * Constructs a sum() function with the given name.

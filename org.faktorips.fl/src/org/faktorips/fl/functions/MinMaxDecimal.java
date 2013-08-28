@@ -23,7 +23,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class MinMaxDecimal extends AbstractJavaFlFunction {
+public class MinMaxDecimal extends AbstractFlFunction {
 
     private String functionName = null;
 

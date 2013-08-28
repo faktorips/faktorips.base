@@ -26,7 +26,7 @@ import org.faktorips.fl.FunctionSignatures;
  * 
  * @author Jan Ortmann
  */
-public class Exists extends AbstractJavaFlFunction {
+public class Exists extends AbstractFlFunction {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
 

@@ -26,7 +26,7 @@ import org.faktorips.fl.FunctionSignatures;
  * 
  * @author Jan Ortmann
  */
-public class IsEmpty extends AbstractJavaFlFunction {
+public class IsEmpty extends AbstractFlFunction {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "ISEMPTY"; //$NON-NLS-1$
 

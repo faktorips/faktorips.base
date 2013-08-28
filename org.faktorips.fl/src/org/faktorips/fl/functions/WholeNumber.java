@@ -25,7 +25,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class WholeNumber extends AbstractJavaFlFunction {
+public class WholeNumber extends AbstractFlFunction {
 
     /**
      */

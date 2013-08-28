@@ -23,7 +23,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * 
  * @author Jan Ortmann
  */
-public class BooleanFct extends AbstractJavaFlFunction {
+public class BooleanFct extends AbstractFlFunction {
 
     private Boolean value;
 

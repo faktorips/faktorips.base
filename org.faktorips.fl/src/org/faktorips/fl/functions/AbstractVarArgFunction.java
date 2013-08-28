@@ -39,7 +39,7 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
     /**
      * Creates a new AbstractVarArgFunction.
      * 
-     * @see AbstractFlFunction the super class constructor parameter descripton for more details.
+     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more details.
      */
     public AbstractVarArgFunction(String name, String description, Datatype type, Datatype argType) {
         super(name, description, type, argType);

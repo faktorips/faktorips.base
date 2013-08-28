@@ -18,7 +18,7 @@ import static org.junit.Assert.assertSame;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.functions.AbstractJavaFlFunction;
+import org.faktorips.fl.functions.AbstractFlFunction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,7 +52,7 @@ public class DefaultFunctionResolverTest {
         resolver.remove(fct1); // should do nothing
     }
 
-    static class AbstractTestFlFunction extends AbstractJavaFlFunction {
+    static class AbstractTestFlFunction extends AbstractFlFunction {
 
         // result to be returned.
         private CompilationResult<JavaCodeFragment> result;

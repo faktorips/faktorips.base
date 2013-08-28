@@ -26,7 +26,7 @@ import org.faktorips.util.message.Message;
 /**
  *
  */
-public class If extends AbstractJavaFlFunction {
+public class If extends AbstractFlFunction {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF"; //$NON-NLS-1$
 
