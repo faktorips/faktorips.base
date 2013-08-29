@@ -19,6 +19,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -49,7 +50,8 @@ public class Round extends AbstractFlFunction {
      * @throws IllegalArgumentException if name is <code>null</code> or the roundingMode is illegal.
      */
     public Round(String name, String description, int roundingMode) {
-        super(name, description, Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.PRIMITIVE_INT });
+        super(name, description, roundingMode == BigDecimal.ROUND_DOWN ? FunctionSignatures.RoundDown
+                : roundingMode == BigDecimal.ROUND_UP ? FunctionSignatures.RoundUp : FunctionSignatures.Round);
         if (roundingMode < 0 || roundingMode > ROUNDING_MODES.length - 1) {
             throw new IllegalArgumentException("Illegal rounding mode " + roundingMode); //$NON-NLS-1$
         }

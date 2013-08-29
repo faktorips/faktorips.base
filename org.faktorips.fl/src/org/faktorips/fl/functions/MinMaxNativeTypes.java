@@ -18,8 +18,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
@@ -78,7 +78,7 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
 
-        ConversionCodeGenerator<JavaCodeFragment> ccg = compiler.getConversionCodeGenerator();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();
         Datatype datatype1 = argResults[0].getDatatype();
         Datatype datatype2 = argResults[1].getDatatype();
 

@@ -28,7 +28,7 @@ import org.faktorips.util.message.Message;
  */
 public class If extends AbstractFlFunction {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF"; //$NON-NLS-1$
+    public static final String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF"; //$NON-NLS-1$
 
     public If(String name, String description) {
         super(name, description, FunctionSignatures.If);
@@ -40,7 +40,7 @@ public class If extends AbstractFlFunction {
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 3);
 
-        ConversionCodeGenerator<JavaCodeFragment> ccg = compiler.getConversionCodeGenerator();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();
         Datatype datatype1 = argResults[1].getDatatype();
         Datatype datatype2 = argResults[2].getDatatype();
 

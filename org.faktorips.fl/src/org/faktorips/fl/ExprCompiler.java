@@ -547,24 +547,24 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         List<BinaryOperation<T>> operatorOperations = binaryOperations.get(operator);
         if (operatorOperations == null) {
             @SuppressWarnings("unchecked")
-            BinaryOperation<T>[] binaryOperations = new BinaryOperation[0];
-            return binaryOperations;
+            BinaryOperation<T>[] binaryOperationsArray = new BinaryOperation[0];
+            return binaryOperationsArray;
         }
         @SuppressWarnings("unchecked")
-        BinaryOperation<T>[] binaryOperations = new BinaryOperation[operatorOperations.size()];
-        return operatorOperations.toArray(binaryOperations);
+        BinaryOperation<T>[] binaryOperationsArray = new BinaryOperation[operatorOperations.size()];
+        return operatorOperations.toArray(binaryOperationsArray);
     }
 
     UnaryOperation<T>[] getUnaryOperations(String operator) {
         List<UnaryOperation<T>> operatorOperations = unaryOperations.get(operator);
         if (operatorOperations == null) {
             @SuppressWarnings("unchecked")
-            UnaryOperation<T>[] unaryOperations = new UnaryOperation[0];
-            return unaryOperations;
+            UnaryOperation<T>[] unaryOperationsArray = new UnaryOperation[0];
+            return unaryOperationsArray;
         }
         @SuppressWarnings("unchecked")
-        UnaryOperation<T>[] unaryOperations = new UnaryOperation[operatorOperations.size()];
-        return operatorOperations.toArray(unaryOperations);
+        UnaryOperation<T>[] unaryOperationsArray = new UnaryOperation[operatorOperations.size()];
+        return operatorOperations.toArray(unaryOperationsArray);
     }
 
     /**

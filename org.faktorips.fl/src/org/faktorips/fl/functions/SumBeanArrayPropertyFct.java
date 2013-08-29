@@ -37,7 +37,7 @@ import org.faktorips.values.Decimal;
  */
 public class SumBeanArrayPropertyFct extends AbstractFlFunction {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "SUM-BEAN-ARRAY-PROPERTYFCT"; //$NON-NLS-1$
+    public static final String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "SUM-BEAN-ARRAY-PROPERTYFCT"; //$NON-NLS-1$
 
     public SumBeanArrayPropertyFct() {
         super("SUM", "", FunctionSignatures.SumBeanArrayPropertyFct); //$NON-NLS-1$ //$NON-NLS-2$

@@ -57,7 +57,7 @@ import org.faktorips.util.message.Message;
  * 
  * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-abstract public class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisitor {
+public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisitor {
 
     private final ExprCompiler<T> compiler;
 

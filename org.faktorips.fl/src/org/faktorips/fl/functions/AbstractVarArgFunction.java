@@ -39,7 +39,8 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
     /**
      * Creates a new AbstractVarArgFunction.
      * 
-     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more details.
+     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more
+     *      details.
      */
     public AbstractVarArgFunction(String name, String description, Datatype type, Datatype argType) {
         super(name, description, type, argType);
@@ -50,7 +51,7 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
      */
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
 
-        ConversionCodeGenerator<JavaCodeFragment> ccg = compiler.getConversionCodeGenerator();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();
         ArrayList<CompilationResultImpl> convertedResults = new ArrayList<CompilationResultImpl>(argResults.length);
         Datatype expectedArgType = getExpectedDatatypeForArgResultConversion(argResults);
 

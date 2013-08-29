@@ -57,7 +57,7 @@ public class ExprEvaluator {
     public Object evaluate(String expression) throws Exception {
         // compiles the expression to Java source code
         JavaCodeFragment fragment = compileExpressionToJava(expression);
-        Interpreter i = new Interpreter(); // Construct an interpreter
+        Interpreter i = new Interpreter();
         if (classLoader != null) {
             i.setClassLoader(classLoader);
         }

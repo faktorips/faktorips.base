@@ -28,7 +28,7 @@ import org.faktorips.fl.FunctionSignatures;
  */
 public class IsEmpty extends AbstractFlFunction {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "ISEMPTY"; //$NON-NLS-1$
+    public static final String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "ISEMPTY"; //$NON-NLS-1$
 
     public IsEmpty(String name, String description) {
         super(name, description, FunctionSignatures.IsEmpty);

@@ -26,7 +26,7 @@ import org.apache.commons.lang.SystemUtils;
  */
 public class CodeFragment {
 
-    private final static String INDENT_HELPER = "                                                         "; //$NON-NLS-1$
+    private static final String INDENT_HELPER = "                                                         "; //$NON-NLS-1$
 
     // true if lines after a call to appendOpenBracket() are indented or not
     // the default is false, as Faktor-IPS formats the generated sourcecode via the Eclipse

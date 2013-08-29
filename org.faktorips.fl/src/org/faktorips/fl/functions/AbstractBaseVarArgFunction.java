@@ -27,12 +27,13 @@ import org.faktorips.fl.FunctionSignatures;
 // on that class handling JavaCodeFragments
 public abstract class AbstractBaseVarArgFunction<T extends CodeFragment> extends AbstractBaseFlFunction<T> {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "VARARG"; //$NON-NLS-1$
+    public static final String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "VARARG"; //$NON-NLS-1$
 
     /**
      * Creates a new {@link AbstractBaseVarArgFunction}.
      * 
-     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more details.
+     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more
+     *      details.
      */
     public AbstractBaseVarArgFunction(String name, String description, FunctionSignatures signature) {
         super(name, description, signature);
@@ -41,7 +42,8 @@ public abstract class AbstractBaseVarArgFunction<T extends CodeFragment> extends
     /**
      * Creates a new {@link AbstractBaseVarArgFunction}.
      * 
-     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more details.
+     * @see AbstractBaseFlFunction the super class constructor parameter descripton for more
+     *      details.
      */
     public AbstractBaseVarArgFunction(String name, String description, Datatype type, Datatype argType) {
         super(name, description, type, argType);

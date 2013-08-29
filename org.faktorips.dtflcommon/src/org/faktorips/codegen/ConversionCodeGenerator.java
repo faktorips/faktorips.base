@@ -49,10 +49,13 @@ import org.faktorips.datatype.Datatype;
 
 /**
  * The ConversionCodeGenerator extends the ConversionMatrix with the ability to generate the Java
- * sourcecode needed to convert the value of a given datatype to another (if the conversion is
+ * source code needed to convert the value of a given data type to another (if the conversion is
  * possible).
  */
 public class ConversionCodeGenerator<T extends CodeFragment> implements ConversionMatrix {
+
+    /** List of single conversion code generators. */
+    private List<SingleConversionCg<T>> conversions = new ArrayList<SingleConversionCg<T>>();
 
     /**
      * Returns a default ConversionCodeGenerator that contains the following conversions.
@@ -66,7 +69,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
      * <li>Integer to Decimal</li>
      * </ul>
      */
-    public final static ConversionCodeGenerator<JavaCodeFragment> getDefault() {
+    public static final ConversionCodeGenerator<JavaCodeFragment> getDefault() {
         ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
         ccg.add(new BooleanToPrimitiveBooleanCg());
         ccg.add(new DecimalToIntegerCg());
@@ -98,9 +101,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         return ccg;
     }
 
-    /** List of single conversion code generators. */
-    private List<SingleConversionCg<T>> conversions = new ArrayList<SingleConversionCg<T>>();
-
     public void add(SingleConversionCg<T> conversion) {
         conversions.add(conversion);
     }
@@ -121,13 +121,14 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     }
 
     /**
-     * Returns the Java sourcecode that converts a value of Datatype <code>from</code> to a value of
-     * Datatype <code>to</code> if possible. Returns null if the conversion is not possible.
+     * Returns the Java source code that converts a value of {@link Datatype} <code>from</code> to a
+     * value of {@link Datatype} <code>to</code> if possible. Returns null if the conversion is not
+     * possible.
      * 
-     * @param from The datatype to convert from.
-     * @param to The datatype to convert to.
-     * @param fromValue A Java sourcecode fragment containing an expression that evaluates to a
-     *            value of Datatype from.
+     * @param from The data type to convert from.
+     * @param to The data type to convert to.
+     * @param fromValue A Java source code fragment containing an expression that evaluates to a
+     *            value of {@link Datatype} from.
      */
     public T getConversionCode(Datatype from, Datatype to, T fromValue) {
         if (from.equals(to)) {

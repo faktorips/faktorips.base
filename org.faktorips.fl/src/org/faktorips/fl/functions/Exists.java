@@ -28,7 +28,7 @@ import org.faktorips.fl.FunctionSignatures;
  */
 public class Exists extends AbstractFlFunction {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
+    public static final String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
 
     public Exists(String name, String description) {
         super(name, description, FunctionSignatures.Exists);

@@ -31,7 +31,7 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends FunctionSignatureImpl implements
         FlFunction<T> {
 
-    protected ExprCompiler<T> compiler;
+    private ExprCompiler<T> compiler;
     private String description;
 
     /**
