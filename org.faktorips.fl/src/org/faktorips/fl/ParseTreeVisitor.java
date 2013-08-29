@@ -245,7 +245,8 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                 // identifier candidate as identifier
                 // e.g. enum constants must not be used as parameter identifier in formulas
                 // see AbstractParameterIdentifierResolver#compileEnumDatatypeValueIdentifier
-                result.addIdentifierUsed(identifier); // note: add method does not create duplicates
+                // note: add method does not create duplicates
+                result.addIdentifierUsed(identifier);
             }
         }
         return result;
@@ -337,6 +338,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTFunctionCallNode,
      *      java.lang.Object)
      */
+    // CSOFF: CyclomaticComplexityCheck
     public Object visit(ASTFunctionCallNode node, Object data) {
 
         String fctName = node.getFirstToken().toString();
@@ -406,6 +408,8 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                 compiler.getLocale(), fctName);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
     }
+
+    // CSOFN: CyclomaticComplexityCheck
 
     private AbstractCompilationResult<T> createAmbiguousFunctionCompilationResultImpl(FlFunction<T> flFunction) {
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
@@ -493,6 +497,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
 
+    // CSOFF: CyclomaticComplexityCheck
     private CompilationResult<T> generateBinaryOperation(String operator, SimpleNode node, Object data) {
 
         SimpleNode lhsNode = (SimpleNode)node.jjtGetChild(0);
@@ -522,7 +527,8 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
             // match with implicit casting
             if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
                     && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(),
-                            operation2.getRhsDatatype()) && operation == null) { // we use the
+                            operation2.getRhsDatatype()) && operation == null) {
+                // we use the
                 // operation
                 // that matches
                 // with code
@@ -559,6 +565,8 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                 compiler.getLocale(), replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
+
+    // CSON: CyclomaticComplexityCheck
 
     private String argTypesToString(CompilationResult<T>[] results) {
         StringBuffer buffer = new StringBuffer();

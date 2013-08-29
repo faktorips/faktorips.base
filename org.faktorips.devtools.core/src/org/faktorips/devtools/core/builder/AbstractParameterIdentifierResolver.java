@@ -47,11 +47,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.AbstractCompilationResult;
+import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -419,8 +419,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
             } else {
                 if (isValidReferenceTo1To1Association(index, association)) {
-                    return new CompilationResultImpl(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION,
-                            NLS.bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
+                    return new CompilationResultImpl(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS
+                            .bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
                                     new Object[] { association, index })));
                 }
                 IType target = association.findTarget(ipsproject);
@@ -561,6 +561,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return new CompilationResultImpl(codeFragment, compilationResult2.getDatatype(), messages, identifiers);
     }
 
+    // CSOFF: CyclomaticComplexityCheck
     private CompilationResult<JavaCodeFragment> compileAssociationToManyChain(JavaCodeFragment javaCodeFragment,
             ListOfTypeDatatype datatype,
             String code) {
@@ -628,6 +629,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         }
         return null;
     }
+
+    // CSON: CyclomaticComplexityCheck
 
     private CompilationResult<JavaCodeFragment> returnErrorCompilationResultForNoAttribute(JavaCodeFragment javaCodeFragment,
             String attributeName,
