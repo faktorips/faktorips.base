@@ -41,7 +41,7 @@ public class JavaCodeFragment extends CodeFragment {
 
     public JavaCodeFragment(boolean indent) {
         super(indent);
-        this.importDecl = new ImportDeclaration(importDecl);
+        this.importDecl = new ImportDeclaration();
     }
 
     /**

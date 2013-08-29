@@ -28,7 +28,7 @@ public class MinMaxMoney extends AbstractFlFunction {
     private String functionName = null;
 
     public MinMaxMoney(String name, String description, boolean isMax) {
-        super(name, description, isMax ? FunctionSignatures.MaxMoney : FunctionSignatures.MaxMoney);
+        super(name, description, isMax ? FunctionSignatures.MaxMoney : FunctionSignatures.MinMoney);
         functionName = isMax ? "max" : "min";
     }
 

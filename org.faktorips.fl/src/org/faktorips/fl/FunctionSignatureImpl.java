@@ -98,10 +98,8 @@ public class FunctionSignatureImpl implements FunctionSignature {
             return false;
         }
         if (hasVarArgs()) {
-            for (int i = 0; i < otherArgTypes.length; i++) {
-                if (!getArgTypes()[0].equals(otherArgTypes)) {
-                    return false;
-                }
+            if (!getArgTypes()[0].equals(otherArgTypes[0])) {
+                return false;
             }
             return true;
         }

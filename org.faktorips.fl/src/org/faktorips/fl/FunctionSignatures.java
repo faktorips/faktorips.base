@@ -22,6 +22,8 @@ import static org.faktorips.datatype.Datatype.PRIMITIVE_BOOLEAN;
 import static org.faktorips.datatype.Datatype.PRIMITIVE_INT;
 import static org.faktorips.datatype.Datatype.PRIMITIVE_LONG;
 
+import java.util.Arrays;
+
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
@@ -227,7 +229,7 @@ public enum FunctionSignatures {
     }
 
     public Datatype[] getArgTypes() {
-        return argTypes;
+        return Arrays.copyOf(argTypes, argTypes.length);
     }
 
     public boolean hasVarArgs() {
