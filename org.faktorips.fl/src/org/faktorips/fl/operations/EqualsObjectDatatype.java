@@ -28,20 +28,20 @@ import org.faktorips.values.ObjectUtil;
  */
 public class EqualsObjectDatatype extends AbstractBinaryJavaOperation {
 
-    protected static String getErrorMessageCode() {
-        return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
-    }
-
     protected EqualsObjectDatatype(String operator, Datatype lhsDatatype, Datatype rhsDatatype) {
         super(operator, lhsDatatype, rhsDatatype);
+    }
+
+    public EqualsObjectDatatype(Datatype lhsDatatype, Datatype rhsDatatype) {
+        super("=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
     }
 
     public EqualsObjectDatatype(Datatype type) {
         super("=", type, type); //$NON-NLS-1$
     }
 
-    public EqualsObjectDatatype(Datatype lhsDatatype, Datatype rhsDatatype) {
-        super("=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
+    protected static String getErrorMessageCode() {
+        return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
     }
 
     @Override
