@@ -16,9 +16,10 @@ package org.faktorips.fl;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.faktorips.codegen.BaseDatatypeHelper;
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -51,14 +52,16 @@ import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.util.message.Message;
 
 /**
- * Visitor that visits the parse tree and generates the Java sourcecode that represents the
- * expression in Java.
+ * Visitor that visits the parse tree and generates the {@link CodeFragment source code} that
+ * represents the expression in a target language.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-class ParseTreeVisitor implements FlParserVisitor {
+public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlParserVisitor {
 
-    private final ExprCompiler compiler;
+    private final ExprCompiler<T> compiler;
 
-    ParseTreeVisitor(ExprCompiler compiler) {
+    protected ParseTreeVisitor(ExprCompiler<T> compiler) {
         this.compiler = compiler;
     }
 
@@ -231,8 +234,8 @@ class ParseTreeVisitor implements FlParserVisitor {
      */
     public Object visit(ASTIdentifierNode node, Object data) {
         String identifier = node.getLastToken().toString();
-        CompilationResultImpl result = (CompilationResultImpl)compiler.getIdentifierResolver().compile(identifier,
-                compiler, compiler.getLocale());
+        AbstractCompilationResult<T> result = (AbstractCompilationResult<T>)compiler.getIdentifierResolver().compile(
+                identifier, compiler, compiler.getLocale());
 
         if (!result.failed()) {
             // add the identifier only if there are no errors in the compilation result
@@ -242,7 +245,8 @@ class ParseTreeVisitor implements FlParserVisitor {
                 // identifier candidate as identifier
                 // e.g. enum constants must not be used as parameter identifier in formulas
                 // see AbstractParameterIdentifierResolver#compileEnumDatatypeValueIdentifier
-                result.addIdentifierUsed(identifier); // note: add method does not create duplicates
+                // note: add method does not create duplicates
+                result.addIdentifierUsed(identifier);
             }
         }
         return result;
@@ -255,7 +259,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      *      java.lang.Object)
      */
     public Object visit(ASTBooleanNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.PRIMITIVE_BOOLEAN);
+        return generateConstant(node, Datatype.PRIMITIVE_BOOLEAN);
     }
 
     /**
@@ -265,7 +269,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      *      java.lang.Object)
      */
     public Object visit(ASTIntegerNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.PRIMITIVE_INTEGER);
+        return generateConstant(node, Datatype.PRIMITIVE_INT);
     }
 
     /**
@@ -275,7 +279,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      *      java.lang.Object)
      */
     public Object visit(ASTDecimalNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.DECIMAL);
+        return generateConstant(node, Datatype.DECIMAL);
     }
 
     /**
@@ -289,8 +293,16 @@ class ParseTreeVisitor implements FlParserVisitor {
         // note: we can't use generateConstant here because value contains
         // the String value including double quotes, but the StringHelper class
         // expects the value without.
-        return new CompilationResultImpl(value, Datatype.STRING);
+        return newCompilationResultImpl(value, Datatype.STRING);
     }
+
+    protected abstract AbstractCompilationResult<T> newCompilationResultImpl(String sourcecode, Datatype datatype);
+
+    protected abstract AbstractCompilationResult<T> newCompilationResultImpl(T sourcecode, Datatype datatype);
+
+    protected abstract AbstractCompilationResult<T> newCompilationResultImpl(Message message);
+
+    protected abstract AbstractCompilationResult<T> newCompilationResultImpl();
 
     /**
      * Overridden method.
@@ -299,14 +311,14 @@ class ParseTreeVisitor implements FlParserVisitor {
      *      java.lang.Object)
      */
     public Object visit(ASTMoneyNode node, Object data) {
-        boolean isParable = ((ValueDatatype)DatatypeHelper.MONEY.getDatatype()).isParsable(node.getLastToken()
+        boolean isParsable = ((ValueDatatype)DatatypeHelper.MONEY.getDatatype()).isParsable(node.getLastToken()
                 .toString());
-        if (isParable) {
-            return generateConstant(node, DatatypeHelper.MONEY);
+        if (isParsable) {
+            return generateConstant(node, Datatype.MONEY);
         }
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(),
-                node.getLastToken().toString());
-        return new CompilationResultImpl(Message.newError(ExprCompiler.SYNTAX_ERROR, text));
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_MONEY_LITERAL,
+                compiler.getLocale(), node.getLastToken().toString());
+        return newCompilationResultImpl(Message.newError(ExprCompiler.SYNTAX_ERROR, text));
     }
 
     /**
@@ -316,8 +328,8 @@ class ParseTreeVisitor implements FlParserVisitor {
      *      java.lang.Object)
      */
     public Object visit(ASTNullNode node, Object data) {
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.NULL_NOT_ALLOWED, compiler.getLocale());
-        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.NULL_NOT_ALLOWED, compiler.getLocale());
+        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 
     /**
@@ -326,20 +338,26 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTFunctionCallNode,
      *      java.lang.Object)
      */
+    // CSOFF: CyclomaticComplexityCheck
     public Object visit(ASTFunctionCallNode node, Object data) {
 
         String fctName = node.getFirstToken().toString();
 
-        CompilationResultImpl[] argResults;
+        AbstractCompilationResult<T>[] argResults;
         if (node.jjtGetNumChildren() == 0) {
-            argResults = new CompilationResultImpl[0];
+            @SuppressWarnings("unchecked")
+            AbstractCompilationResult<T>[] compilationResultImpls = new AbstractCompilationResult[0];
+            argResults = compilationResultImpls;
         } else {
-            argResults = (CompilationResultImpl[])node.jjtGetChild(0).jjtAccept(this, data);
+            @SuppressWarnings("unchecked")
+            AbstractCompilationResult<T>[] compilationResultImpls = (AbstractCompilationResult<T>[])node.jjtGetChild(0)
+                    .jjtAccept(this, data);
+            argResults = compilationResultImpls;
         }
 
         // compilation errors in the result?
-        CompilationResultImpl result = new CompilationResultImpl();
-        for (CompilationResultImpl argResult : argResults) {
+        AbstractCompilationResult<T> result = newCompilationResultImpl();
+        for (AbstractCompilationResult<T> argResult : argResults) {
             if (argResult.failed()) {
                 result.addMessages(argResult.getMessages());
             }
@@ -348,15 +366,15 @@ class ParseTreeVisitor implements FlParserVisitor {
             return result;
         }
 
-        Datatype[] argTypes = CompilationResultImpl.getDatatypes(argResults);
+        Datatype[] argTypes = result.getDatatypes(argResults);
 
         // function that matches using implicit conversions
-        FlFunction function = null;
+        FlFunction<T> function = null;
         boolean functionFoundByName = false;
-        FlFunction[] functions = compiler.getFunctions();
-        LinkedHashSet<FlFunction> ambiguousFunctions = compiler.getAmbiguousFunctions(functions);
+        FlFunction<T>[] functions = compiler.getFunctions();
+        LinkedHashSet<FlFunction<T>> ambiguousFunctions = compiler.getAmbiguousFunctions(functions);
 
-        for (FlFunction function2 : functions) {
+        for (FlFunction<T> function2 : functions) {
             if (function2.match(fctName, argTypes)) {
                 if (isAmbiguousFunction(function2, ambiguousFunctions)) {
                     return createAmbiguousFunctionCompilationResultImpl(function2);
@@ -380,26 +398,28 @@ class ParseTreeVisitor implements FlParserVisitor {
         // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
         if (functionFoundByName) {
             Object[] replacements = new String[] { fctName, argTypesToString(argResults) };
-            String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
+            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
                     compiler.getLocale(), replacements);
-            return new CompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
+            return newCompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
         }
 
         // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
-                fctName);
-        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_FUNCTION,
+                compiler.getLocale(), fctName);
+        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
     }
 
-    private CompilationResultImpl createAmbiguousFunctionCompilationResultImpl(FlFunction flFunction) {
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
+    // CSOFN: CyclomaticComplexityCheck
+
+    private AbstractCompilationResult<T> createAmbiguousFunctionCompilationResultImpl(FlFunction<T> flFunction) {
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
                 compiler.getLocale(), flFunction.getName());
 
-        return new CompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
+        return newCompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
     }
 
-    private boolean isAmbiguousFunction(FlFunction flFunction, LinkedHashSet<FlFunction> ambiguousFunctions) {
-        for (FlFunction ambiguousFlFunction : ambiguousFunctions) {
+    private boolean isAmbiguousFunction(FlFunction<T> flFunction, LinkedHashSet<FlFunction<T>> ambiguousFunctions) {
+        for (FlFunction<T> ambiguousFlFunction : ambiguousFunctions) {
             if (flFunction.isSame(ambiguousFlFunction)) {
                 return true;
             }
@@ -415,36 +435,45 @@ class ParseTreeVisitor implements FlParserVisitor {
      */
     public Object visit(ASTArgListNode node, Object data) {
         int numOfArgs = node.jjtGetNumChildren();
-        CompilationResultImpl[] argListResult = new CompilationResultImpl[numOfArgs];
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T>[] argListResult = new AbstractCompilationResult[numOfArgs];
 
         for (int i = 0; i < numOfArgs; i++) {
             SimpleNode argNode = (SimpleNode)node.jjtGetChild(i);
-            argListResult[i] = (CompilationResultImpl)argNode.jjtAccept(this, data);
+            @SuppressWarnings("unchecked")
+            AbstractCompilationResult<T> compilationResultImpl = (AbstractCompilationResult<T>)argNode.jjtAccept(this,
+                    data);
+            argListResult[i] = compilationResultImpl;
         }
         return argListResult;
     }
 
-    private CompilationResultImpl generateConstant(SimpleNode node, DatatypeHelper helper) {
+    protected CompilationResult<T> generateConstant(SimpleNode node, Datatype datatype) {
+        BaseDatatypeHelper<T> helper = compiler.getDatatypeHelper(datatype);
+        if (helper == null) {
+            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.DATATYPE_CREATION_ERROR,
+                    compiler.getLocale(), datatype.getName());
+            return newCompilationResultImpl(Message.newError(ExprCompiler.DATATYPE_CREATION_ERROR, text));
+        }
         String value = node.getLastToken().toString();
-        return new CompilationResultImpl(helper.newInstance(value), helper.getDatatype());
+        return newCompilationResultImpl(helper.newInstance(value), datatype);
     }
 
-    private CompilationResultImpl generateUnaryOperation(String operator, SimpleNode node, Object data) {
-
+    private CompilationResult<T> generateUnaryOperation(String operator, SimpleNode node, Object data) {
         SimpleNode argNode = (SimpleNode)node.jjtGetChild(0);
-        CompilationResultImpl argResult = (CompilationResultImpl)argNode.jjtAccept(this, data);
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T> argResult = (AbstractCompilationResult<T>)argNode.jjtAccept(this, data);
 
         if (argResult.failed()) {
             return argResult;
         }
 
-        UnaryOperation operation = null;
-        UnaryOperation[] operations = compiler.getUnaryOperations(operator);
-        for (UnaryOperation operation2 : operations) {
+        UnaryOperation<T> operation = null;
+        UnaryOperation<T>[] operations = compiler.getUnaryOperations(operator);
+        for (UnaryOperation<T> operation2 : operations) {
             // exact match?
             if (operation2.getDatatype().equals(argResult.getDatatype())) {
-                CompilationResultImpl compilationResult = operation2.generate(argResult);
-                compilationResult.addIdentifiersUsed(argResult.getIdentifiersUsedAsSet());
+                CompilationResult<T> compilationResult = operation2.generate(argResult);
                 return compilationResult;
             }
             // match with implicit casting
@@ -454,26 +483,29 @@ class ParseTreeVisitor implements FlParserVisitor {
         }
         if (operation != null) {
             // use operation with implicit casting
-            JavaCodeFragment converted = compiler.getConversionCodeGenerator().getConversionCode(
-                    argResult.getDatatype(), operation.getDatatype(), argResult.getCodeFragment());
-            CompilationResultImpl convertedArgResult = new CompilationResultImpl(converted, operation.getDatatype());
+            T converted = compiler.getConversionCodeGenerator().getConversionCode(argResult.getDatatype(),
+                    operation.getDatatype(), argResult.getCodeFragment());
+            AbstractCompilationResult<T> convertedArgResult = newCompilationResultImpl(converted,
+                    operation.getDatatype());
             convertedArgResult.addMessages(argResult.getMessages());
-            CompilationResultImpl compilationResult = operation.generate(convertedArgResult);
-            compilationResult.addIdentifiersUsed(argResult.getIdentifiersUsedAsSet());
+            CompilationResult<T> compilationResult = operation.generate(convertedArgResult);
             return compilationResult;
         }
         Object[] replacements = new Object[] { operator, argResult.getDatatype().getName() };
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
-                replacements);
-        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
+                compiler.getLocale(), replacements);
+        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
 
-    private CompilationResultImpl generateBinaryOperation(String operator, SimpleNode node, Object data) {
+    // CSOFF: CyclomaticComplexityCheck
+    private CompilationResult<T> generateBinaryOperation(String operator, SimpleNode node, Object data) {
 
         SimpleNode lhsNode = (SimpleNode)node.jjtGetChild(0);
         SimpleNode rhsNode = (SimpleNode)node.jjtGetChild(1);
-        CompilationResultImpl lhsResult = (CompilationResultImpl)lhsNode.jjtAccept(this, data);
-        CompilationResultImpl rhsResult = (CompilationResultImpl)rhsNode.jjtAccept(this, data);
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T> lhsResult = (AbstractCompilationResult<T>)lhsNode.jjtAccept(this, data);
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T> rhsResult = (AbstractCompilationResult<T>)rhsNode.jjtAccept(this, data);
 
         if (lhsResult.failed()) {
             lhsResult.addMessages(rhsResult.getMessages());
@@ -483,21 +515,20 @@ class ParseTreeVisitor implements FlParserVisitor {
             return rhsResult;
         }
 
-        BinaryOperation operation = null;
-        BinaryOperation[] operations = compiler.getBinaryOperations(operator);
-        for (BinaryOperation operation2 : operations) {
+        BinaryOperation<T> operation = null;
+        BinaryOperation<T>[] operations = compiler.getBinaryOperations(operator);
+        for (BinaryOperation<T> operation2 : operations) {
             // exact match?
             if (operation2.getLhsDatatype().equals(lhsResult.getDatatype())
                     && operation2.getRhsDatatype().equals(rhsResult.getDatatype())) {
-                CompilationResultImpl compilationResult = operation2.generate(lhsResult, rhsResult);
-                compilationResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
-                compilationResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
+                CompilationResult<T> compilationResult = operation2.generate(lhsResult, rhsResult);
                 return compilationResult;
             }
             // match with implicit casting
             if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
                     && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(),
-                            operation2.getRhsDatatype()) && operation == null) { // we use the
+                            operation2.getRhsDatatype()) && operation == null) {
+                // we use the
                 // operation
                 // that matches
                 // with code
@@ -507,37 +538,37 @@ class ParseTreeVisitor implements FlParserVisitor {
         }
         if (operation != null) {
             // use operation with implicit casting
-            CompilationResultImpl convertedLhsResult = lhsResult;
+            AbstractCompilationResult<T> convertedLhsResult = lhsResult;
             if (!lhsResult.getDatatype().equals(operation.getLhsDatatype())
                     && (!(operation.getLhsDatatype() instanceof AnyDatatype))) {
-                JavaCodeFragment convertedLhs = compiler.getConversionCodeGenerator().getConversionCode(
-                        lhsResult.getDatatype(), operation.getLhsDatatype(), lhsResult.getCodeFragment());
-                convertedLhsResult = new CompilationResultImpl(convertedLhs, operation.getLhsDatatype());
+                T convertedLhs = compiler.getConversionCodeGenerator().getConversionCode(lhsResult.getDatatype(),
+                        operation.getLhsDatatype(), lhsResult.getCodeFragment());
+                convertedLhsResult = newCompilationResultImpl(convertedLhs, operation.getLhsDatatype());
                 convertedLhsResult.addMessages(lhsResult.getMessages());
                 convertedLhsResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
             }
-            CompilationResultImpl convertedRhsResult = rhsResult;
+            AbstractCompilationResult<T> convertedRhsResult = rhsResult;
             if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
                     && (!(operation.getRhsDatatype() instanceof AnyDatatype))) {
-                JavaCodeFragment convertedRhs = compiler.getConversionCodeGenerator().getConversionCode(
-                        rhsResult.getDatatype(), operation.getRhsDatatype(), rhsResult.getCodeFragment());
-                convertedRhsResult = new CompilationResultImpl(convertedRhs, operation.getRhsDatatype());
+                T convertedRhs = compiler.getConversionCodeGenerator().getConversionCode(rhsResult.getDatatype(),
+                        operation.getRhsDatatype(), rhsResult.getCodeFragment());
+                convertedRhsResult = newCompilationResultImpl(convertedRhs, operation.getRhsDatatype());
                 convertedRhsResult.addMessages(rhsResult.getMessages());
                 convertedRhsResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
             }
-            CompilationResultImpl result = operation.generate(convertedLhsResult, convertedRhsResult);
-            result.addIdentifiersUsed(convertedLhsResult.getIdentifiersUsedAsSet());
-            result.addIdentifiersUsed(convertedRhsResult.getIdentifiersUsedAsSet());
+            CompilationResult<T> result = operation.generate(convertedLhsResult, convertedRhsResult);
             return result;
         }
         Object[] replacements = new Object[] { operator,
                 lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(),
-                replacements);
-        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
+                compiler.getLocale(), replacements);
+        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
 
-    private String argTypesToString(CompilationResult[] results) {
+    // CSON: CyclomaticComplexityCheck
+
+    private String argTypesToString(CompilationResult<T>[] results) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < results.length; i++) {
             if (i > 0) {
@@ -548,23 +579,23 @@ class ParseTreeVisitor implements FlParserVisitor {
         return buffer.toString();
     }
 
-    private CompilationResult[] convert(FlFunction flFunction, CompilationResult[] argResults) {
-
-        ConversionCodeGenerator conversionCg = compiler.getConversionCodeGenerator();
-        CompilationResultImpl[] convertedArgs = new CompilationResultImpl[argResults.length];
+    private CompilationResult<T>[] convert(FlFunction<T> flFunction, CompilationResult<T>[] argResults) {
+        ConversionCodeGenerator<T> conversionCg = compiler.getConversionCodeGenerator();
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T>[] convertedArgs = new AbstractCompilationResult[argResults.length];
         for (int i = 0; i < argResults.length; i++) {
 
             Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0] : flFunction
                     .getArgTypes()[i];
             if (functionDatatype instanceof AnyDatatype) {
-                convertedArgs[i] = (CompilationResultImpl)argResults[i];
+                convertedArgs[i] = (AbstractCompilationResult<T>)argResults[i];
             } else {
-                JavaCodeFragment fragment = conversionCg.getConversionCode(argResults[i].getDatatype(),
-                        functionDatatype, argResults[i].getCodeFragment());
-                convertedArgs[i] = new CompilationResultImpl(fragment, functionDatatype);
+                T fragment = conversionCg.getConversionCode(argResults[i].getDatatype(), functionDatatype,
+                        argResults[i].getCodeFragment());
+                convertedArgs[i] = newCompilationResultImpl(fragment, functionDatatype);
                 convertedArgs[i].addMessages(argResults[i].getMessages());
-                if (argResults[i] instanceof CompilationResultImpl) {
-                    convertedArgs[i].addIdentifiersUsed(((CompilationResultImpl)argResults[i])
+                if (argResults[i] instanceof AbstractCompilationResult) {
+                    convertedArgs[i].addIdentifiersUsed(((AbstractCompilationResult<T>)argResults[i])
                             .getIdentifiersUsedAsSet());
                 }
             }

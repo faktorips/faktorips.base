@@ -13,21 +13,22 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Plus (+) operator for datatype Decimal.
  */
-public class PlusPrimitiveInt extends AbstractUnaryOperation {
+public class PlusPrimitiveInt extends AbstractUnaryJavaOperation {
 
     public PlusPrimitiveInt() {
-        super(Datatype.PRIMITIVE_INT, "+"); //$NON-NLS-1$
+        super(Operation.PlusPrimitiveInt);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;
     }

@@ -14,23 +14,24 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Minus (-) operator for datatype Integer.
  */
-public class MinusInteger extends AbstractUnaryOperation {
+public class MinusInteger extends AbstractUnaryJavaOperation {
 
     public MinusInteger() {
-        super(Datatype.INTEGER, "-"); //$NON-NLS-1$
+        super(Operation.MinusInteger);
     }
 
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResult)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         if (arg.failed()) {
             return arg;
@@ -41,7 +42,7 @@ public class MinusInteger extends AbstractUnaryOperation {
         fragment.append("==null?null:new Integer(-1 * "); //$NON-NLS-1$
         fragment.append(arg.getCodeFragment());
         fragment.append(".intValue()))"); //$NON-NLS-1$
-        arg.setJavaCodeFragment(fragment);
+        arg.setCodeFragment(fragment);
         return arg;
     }
 

@@ -18,22 +18,24 @@ import java.math.BigDecimal;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the multiplication of two decimals.
  */
-public class MultiplyDecimalMoney extends AbstractBinaryOperation {
+public class MultiplyDecimalMoney extends AbstractBinaryJavaOperation {
 
     public MultiplyDecimalMoney() {
-        super("*", Datatype.DECIMAL, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.MultiplyDecimalMoney);
     }
 
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         JavaCodeFragment fragment = rhs.getCodeFragment();
         fragment.append(".multiply("); //$NON-NLS-1$

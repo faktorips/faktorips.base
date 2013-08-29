@@ -18,17 +18,18 @@ import java.math.BigDecimal;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the multiplication of two decimals.
  */
-public class DivideDecimalDecimal extends AbstractBinaryOperation {
+public class DivideDecimalDecimal extends AbstractBinaryJavaOperation {
 
     // the default scale used for rounding
     private int scale = 10;
 
     public DivideDecimalDecimal() {
-        super("/", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
+        super(Operation.DivideDecimalDecimal);
     }
 
     /**
@@ -48,9 +49,10 @@ public class DivideDecimalDecimal extends AbstractBinaryOperation {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         JavaCodeFragment fragment = lhs.getCodeFragment();
         fragment.append(".divide("); //$NON-NLS-1$

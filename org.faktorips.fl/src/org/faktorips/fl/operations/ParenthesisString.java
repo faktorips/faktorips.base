@@ -13,21 +13,22 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Parenthesis <i>()</i> operator for datatype String.
  */
-public class ParenthesisString extends AbstractUnaryOperation {
+public class ParenthesisString extends AbstractUnaryJavaOperation {
 
     public ParenthesisString() {
-        super(Datatype.STRING, "()");
+        super(Operation.ParenthesisString);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;
     }

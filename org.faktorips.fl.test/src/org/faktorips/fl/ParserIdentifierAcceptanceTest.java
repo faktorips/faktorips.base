@@ -26,11 +26,11 @@ import org.junit.Test;
 
 public class ParserIdentifierAcceptanceTest {
 
-    private ExprCompiler compiler;
+    private JavaExprCompiler compiler;
 
     @Before
     public void setUp() {
-        compiler = new ExprCompiler();
+        compiler = new JavaExprCompiler();
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
@@ -42,7 +42,7 @@ public class ParserIdentifierAcceptanceTest {
 
     @Test
     public void testParserIdentifiers() {
-        CompilationResult result = compiler.compile("Altersgruppe_1980-01-01");
+        CompilationResult<JavaCodeFragment> result = compiler.compile("Altersgruppe_1980-01-01");
         assertTrue(result.successfull());
 
         result = compiler.compile("Altersgruppe_1980-01");
@@ -57,7 +57,7 @@ public class ParserIdentifierAcceptanceTest {
 
     @Test
     public void testParserWithUmlaut() throws Exception {
-        compiler = new ExprCompiler();
+        compiler = new JavaExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
         resolver.register("Ä", new JavaCodeFragment("a"), Datatype.INTEGER);
@@ -67,7 +67,7 @@ public class ParserIdentifierAcceptanceTest {
         resolver.register("Ö", new JavaCodeFragment("a"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
 
-        CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
+        CompilationResult<JavaCodeFragment> result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
         MessageList msgList = result.getMessages();
         assertTrue(msgList.isEmpty());
     }

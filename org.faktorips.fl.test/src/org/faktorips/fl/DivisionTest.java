@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  *
  */
-public class DivisionTest extends CompilerAbstractTest {
+public class DivisionTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("10.8 / 4.2", Decimal.valueOf("2.5714285714"), Datatype.DECIMAL);

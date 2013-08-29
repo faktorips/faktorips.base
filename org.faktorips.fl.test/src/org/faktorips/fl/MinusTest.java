@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
@@ -27,7 +28,7 @@ import org.junit.Test;
  * Contains all tests for the unary minus (+) operator that as defined by the default unary
  * operations.
  */
-public class MinusTest extends CompilerAbstractTest {
+public class MinusTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimal() throws Exception {
         execAndTestSuccessfull("- 10.23", Decimal.valueOf(-1023, 2), Datatype.DECIMAL);
@@ -42,7 +43,7 @@ public class MinusTest extends CompilerAbstractTest {
     @Test
     public void testInt() throws Exception {
         compiler.setEnsureResultIsObject(false);
-        CompilationResult result = compiler.compile("- 42");
+        CompilationResult<JavaCodeFragment> result = compiler.compile("- 42");
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_INT, result.getDatatype());
         assertEquals("-42", result.getCodeFragment().getSourcecode());

@@ -571,7 +571,7 @@ public interface IIpsProjectProperties {
      * @return whether the given {@link IFunctionResolverFactory} is active for the
      *         {@link IIpsProject}
      */
-    boolean isActive(IFunctionResolverFactory factory);
+    boolean isActive(IFunctionResolverFactory<?> factory);
 
     /**
      * Returns the language in which the expression language's functions are used. E.g. the

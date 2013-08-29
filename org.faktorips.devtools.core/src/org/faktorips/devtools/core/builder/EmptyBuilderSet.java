@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.fl.CompilationResultImpl;
 
 /**
  * An IIpsArtefactBuilderSet implementation that is supposed to be used in cases where no builder
@@ -56,9 +56,9 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
+    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
 
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
@@ -66,8 +66,8 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
+    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
         return new EmptyParameterIdentifierResolver(formula, exprCompiler);
     }
 
@@ -113,7 +113,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     private final class EmptyParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
-        private EmptyParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+        private EmptyParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(formula2, exprCompiler);
         }
 

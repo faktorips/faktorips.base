@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -143,7 +144,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompile() throws Exception {
         // no parameter registered => undefined identifier
-        CompilationResult result = resolver.compile("identifier", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("identifier", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
@@ -236,7 +237,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         IPolicyCmptTypeAttribute primitiveBooleanAttribute = policyCmptType.newPolicyCmptTypeAttribute("bug");
         primitiveBooleanAttribute.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName());
 
-        CompilationResult result = resolver.compile("policy.bug", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("policy.bug", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
         String expected = "policy.isBug()";
@@ -261,7 +262,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1toMany() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
-        CompilationResult result = resolver.compile("tree.branch", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch", null, locale);
         assertTrue(result.successfull());
         assertEquals(new ListOfTypeDatatype(branchPolicyCmptType), result.getDatatype());
         XPolicyAssociation xPolicyAssociation = standardBuilderSet.getModelNode(associationTreeToBranches,
@@ -283,7 +284,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testDontCompileAssociations_1toManyIndexedAndQualified() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
-        CompilationResult result = resolver.compile("tree.branch[1][\"Branch\"]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch[1][\"Branch\"]", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED, result.getMessages().getMessage(0).getCode());
@@ -307,7 +308,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1toManyIndexed() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
-        CompilationResult result = resolver.compile("tree.branch[1]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch[1]", null, locale);
         assertTrue(result.successfull());
         assertEquals(branchPolicyCmptType, result.getDatatype());
         XPolicyAssociation xPolicyAssociation = standardBuilderSet.getModelNode(associationTreeToBranches,
@@ -336,7 +337,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1toMany1to1() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
-        CompilationResult result = resolver.compile("tree.branch.leaf", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(new ListOfTypeDatatype(leafPolicyCmptType), result.getDatatype());
         XPolicyCmptClass xLeafPct = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class);
@@ -372,7 +373,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1to1() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        CompilationResult result = resolver.compile("twig.leaf", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         XPolicyAssociation xPolicyAssociation = standardBuilderSet.getModelNode(associationTwigToLeaf,
@@ -397,7 +398,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1to1Indexed() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        CompilationResult result = resolver.compile("twig.leaf[0]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf[0]", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, result.getMessages().getMessage(0).getCode());
@@ -422,7 +423,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1to1Chain() {
         method.newParameter(branchPolicyCmptType.getQualifiedName(), "branch");
-        CompilationResult result = resolver.compile("branch.twig.leaf", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("branch.twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         XPolicyAssociation xBranchToTwig = standardBuilderSet.getModelNode(associationBranchToTwig,
@@ -456,7 +457,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_fullChainWithIndexInBetween() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
-        CompilationResult result = resolver.compile("tree.branch[0].twig.leaf", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch[0].twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         XPolicyAssociation xTreeToBranches = standardBuilderSet.getModelNode(associationTreeToBranches,
@@ -492,7 +493,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_fullChainWithIndexAtEnd() {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
-        CompilationResult result = resolver.compile("tree.branch.twig.leaf[2]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch.twig.leaf[2]", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         // new AssociationTo1Helper<ITwig, ILeaf>(){@Override
@@ -547,7 +548,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_associationAndAttribute() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        CompilationResult result = resolver.compile("twig.leaf.color", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf.color", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
         String expected = "twig."
@@ -589,7 +590,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         IPolicyCmptTypeAttribute attributeColor2 = multiColoredLeafPolicyCmptType.newPolicyCmptTypeAttribute("color2");
         attributeColor2.setDatatype(Datatype.STRING.getQualifiedName());
         newProductCmpt(multiColoredLeafProductCmptType, "pack.MyLeaf");
-        CompilationResult result = resolver.compile("twig.leaf[\"MyLeaf\"].color2", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf[\"MyLeaf\"].color2", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
         String expected = "(("
@@ -621,7 +622,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_associationTargetNotFound() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         associationTwigToLeaf.setTarget("unknownTarget");
-        CompilationResult result = resolver.compile("twig.leaf", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.NO_ASSOCIATION_TARGET, result.getMessages().getMessage(0).getCode());
@@ -643,7 +644,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_associationTargetUndefined() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        CompilationResult result = resolver.compile("twig.thorn", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.thorn", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
@@ -672,7 +673,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_1toManyQualified() throws CoreException {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         newProductCmpt(branchPolicyCmptType.findProductCmptType(ipsProject), "my.Branch");
-        CompilationResult result = resolver.compile("tree.branch[\"Branch\"]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch[\"Branch\"]", null, locale);
         assertTrue(result.successfull());
         assertEquals(branchPolicyCmptType, result.getDatatype());
         String expected = FormulaEvaluatorUtil.class.getSimpleName()
@@ -705,7 +706,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_1toManyChainQualified() throws CoreException {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.ALeaf");
-        CompilationResult result = resolver.compile("tree.branch.leaf[\"ALeaf\"]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch.leaf[\"ALeaf\"]", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         String iLeaf = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class).getInterfaceName();
@@ -751,7 +752,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_1toManyChainQualifiedAndAttribute() throws CoreException {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.MyLeaf");
-        CompilationResult result = resolver.compile("tree.branch.moreLeaf[\"MyLeaf\"].color", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("tree.branch.moreLeaf[\"MyLeaf\"].color", null,
+                locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
         String iLeaf = standardBuilderSet.getModelNode(leafPolicyCmptType, XPolicyCmptClass.class).getInterfaceName();
@@ -795,7 +797,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_1to1Qualified() throws CoreException {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.ALeaf");
-        CompilationResult result = resolver.compile("twig.leaf[\"ALeaf\"]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf[\"ALeaf\"]", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         Object expected = FormulaEvaluatorUtil.class.getSimpleName()
@@ -823,7 +825,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testDontCompileAssociations_1to1QualifiedWithUnknownProduct() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        CompilationResult result = resolver.compile("twig.leaf[\"UnknownLeaf\"]", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("twig.leaf[\"UnknownLeaf\"]", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNKNOWN_QUALIFIER, result.getMessages().getMessage(0).getCode());
@@ -835,7 +837,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         assertNotNull(testType);
 
-        CompilationResult result = resolver.compile("TestEnumType.1", null, locale);
+        CompilationResult<JavaCodeFragment> result = resolver.compile("TestEnumType.1", null, locale);
         assertTrue(result.failed());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 

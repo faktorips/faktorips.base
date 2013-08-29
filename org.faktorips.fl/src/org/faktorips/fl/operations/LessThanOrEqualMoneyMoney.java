@@ -15,22 +15,24 @@ package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the addition of two decimals.
  */
-public class LessThanOrEqualMoneyMoney extends AbstractBinaryOperation {
+public class LessThanOrEqualMoneyMoney extends AbstractBinaryJavaOperation {
 
     public LessThanOrEqualMoneyMoney() {
-        super("<=", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.LessThanOrEqualMoneyMoney);
     }
 
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".lessThanOrEqual("); //$NON-NLS-1$
         lhs.add(rhs);

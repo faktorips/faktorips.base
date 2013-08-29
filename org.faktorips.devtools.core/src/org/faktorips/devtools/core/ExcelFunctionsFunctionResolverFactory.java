@@ -15,6 +15,7 @@ package org.faktorips.devtools.core;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.FunctionResolver;
 
@@ -24,14 +25,14 @@ import org.faktorips.fl.FunctionResolver;
  * 
  * @author Peter Erzberger
  */
-public class ExcelFunctionsFunctionResolverFactory implements IFunctionResolverFactory {
+public class ExcelFunctionsFunctionResolverFactory implements IFunctionResolverFactory<JavaCodeFragment> {
 
     /**
      * Returns a function resolver factory that contains a set of functions similar to a subset of
      * functions found in excel.
      */
     @Override
-    public FunctionResolver newFunctionResolver(Locale locale) {
+    public FunctionResolver<JavaCodeFragment> newFunctionResolver(Locale locale) {
         return new ExcelFunctionsResolver(locale);
     }
 

@@ -15,12 +15,15 @@ package org.faktorips.fl;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * A {@link FunctionResolver} that supports localized names for {@link FlFunction functions}.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public abstract class LocalizedFunctionsResolver extends DefaultFunctionResolver {
+public abstract class LocalizedFunctionsResolver<T extends CodeFragment> extends DefaultFunctionResolver<T> {
 
     private LocalizedStringsSet localizedStrings;
 
@@ -28,8 +31,7 @@ public abstract class LocalizedFunctionsResolver extends DefaultFunctionResolver
     private Locale locale;
 
     /**
-     * Creates a new resolver that contains a set of functions that are similiar by name and
-     * argument list as those provided by Microsoft's Excel.
+     * Creates a new resolver that contains a set of functions that use locale dependent names.
      * 
      * @param locale The locale that determines the language of the function names.
      */

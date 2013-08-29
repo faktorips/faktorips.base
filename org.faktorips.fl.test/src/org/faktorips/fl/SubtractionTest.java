@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  *
  */
-public class SubtractionTest extends CompilerAbstractTest {
+public class SubtractionTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("7.55 - 3.4", Decimal.valueOf("4.15"), Datatype.DECIMAL);

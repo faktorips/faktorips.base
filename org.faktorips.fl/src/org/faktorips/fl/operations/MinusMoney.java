@@ -13,23 +13,24 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Minus (-) operator for datatype Money.
  */
-public class MinusMoney extends AbstractUnaryOperation {
+public class MinusMoney extends AbstractUnaryJavaOperation {
 
     public MinusMoney() {
-        super(Datatype.MONEY, "-"); //$NON-NLS-1$
+        super(Operation.MinusMoney);
     }
 
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResult)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl result) {
         result.getCodeFragment().append(".multiply(-1)"); //$NON-NLS-1$
         return result;

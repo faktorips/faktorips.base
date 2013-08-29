@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.fl.AbstractCompilationResult;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -59,15 +60,15 @@ import org.faktorips.util.message.MessageList;
  * An identifier resolver that resolves identifiers against a set of <code>Parameter</code>s that
  * can be registered via the <code>add()</code> methods.
  */
-public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver {
+public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver<JavaCodeFragment> {
 
     public static final char VALUE_SUFFIX_SEPARATOR_CHAR = '@';
     public static final String DEFAULT_VALUE_SUFFIX = "@default"; //$NON-NLS-1$
     private IIpsProject ipsproject;
     private IExpression formula;
-    private ExprCompiler exprCompiler;
+    private ExprCompiler<JavaCodeFragment> exprCompiler;
 
-    public AbstractParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+    public AbstractParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
         ArgumentCheck.notNull(formula2, this);
         ArgumentCheck.notNull(exprCompiler, this);
         this.formula = formula2;
@@ -141,7 +142,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     }
 
     @Override
-    public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
+    public CompilationResult<JavaCodeFragment> compile(String identifier,
+            ExprCompiler<JavaCodeFragment> exprCompiler,
+            Locale locale) {
         if (ipsproject == null) {
             throw new IllegalStateException(Messages.AbstractParameterIdentifierResolver_msgResolverMustBeSet);
         }
@@ -159,7 +162,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         IParameter[] params = getParameters();
         for (IParameter param : params) {
             if (param.getName().equals(paramName)) {
-                CompilationResult result = compile(param, attributeName);
+                CompilationResult<JavaCodeFragment> result = compile(param, attributeName);
                 addCurrentIdentifer(result, identifier);
                 return result;
             }
@@ -169,7 +172,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
          * Assuming that the identifier is an attribute of the product component type where the
          * formula method is defined.
          */
-        CompilationResult result = compileThis(identifier);
+        CompilationResult<JavaCodeFragment> result = compileThis(identifier);
         if (result != null) {
             addCurrentIdentifer(result, identifier);
             return result;
@@ -189,13 +192,13 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     /**
      * Adds the given identifier candidate to the compilation result.
      */
-    private void addCurrentIdentifer(CompilationResult result, String identifierCandidate) {
-        if (result instanceof CompilationResultImpl) {
+    private void addCurrentIdentifer(CompilationResult<JavaCodeFragment> result, String identifierCandidate) {
+        if (result instanceof AbstractCompilationResult) {
             ((CompilationResultImpl)result).addIdentifierUsed(identifierCandidate);
         }
     }
 
-    private CompilationResult compileThis(String identifier) {
+    private CompilationResult<JavaCodeFragment> compileThis(String identifier) {
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getProductCmptType();
@@ -240,7 +243,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     /**
      * Returns the compilation result for the a parameter and attribute name.
      */
-    protected CompilationResult compile(IParameter param, String attributeName) {
+    protected CompilationResult<JavaCodeFragment> compile(IParameter param, String attributeName) {
         Datatype datatype;
         try {
             datatype = param.findDatatype(ipsproject);
@@ -283,13 +286,13 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      */
     protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
             EnumTypeDatatypeAdapter enumType,
-            ExprCompiler exprCompiler,
+            ExprCompiler<JavaCodeFragment> exprCompiler,
             String value) throws CoreException {
 
         // Could be implemented in subclass.
     }
 
-    private CompilationResult compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName) {
+    private CompilationResult<JavaCodeFragment> compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName) {
         try {
             Map<String, EnumDatatype> enumDatatypes = createEnumMap();
             EnumDatatype enumType = enumDatatypes.get(enumTypeName);
@@ -319,7 +322,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return null;
     }
 
-    private CompilationResult compileTypeAttributeIdentifier(JavaCodeFragment javaCodeFragment,
+    private CompilationResult<JavaCodeFragment> compileTypeAttributeIdentifier(JavaCodeFragment javaCodeFragment,
             IType type,
             String attributeName) {
         if (StringUtils.isEmpty(attributeName)) {
@@ -389,7 +392,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return attribute;
     }
 
-    private CompilationResult compileTypeAssociationIdentifier(JavaCodeFragment javaCodeFragment,
+    private CompilationResult<JavaCodeFragment> compileTypeAssociationIdentifier(JavaCodeFragment javaCodeFragment,
             IType type,
             String attributeName) {
         try {
@@ -427,7 +430,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                             NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, new Object[] {
                                     association, type.getName() })));
                 }
-                CompilationResult associationIdentifier = null;
+                CompilationResult<JavaCodeFragment> associationIdentifier = null;
                 if (association.is1ToManyIgnoringQualifier() && index == null) {
                     associationIdentifier = compileTypeAssociationToManyIdentifier(javaCodeFragment, type, association,
                             target);
@@ -447,9 +450,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return index != null && association.is1To1();
     }
 
-    private CompilationResult compileAssociationQualifier(String qualifier,
+    private CompilationResult<JavaCodeFragment> compileAssociationQualifier(String qualifier,
             IType target,
-            CompilationResult associationIdentifier) throws CoreException {
+            CompilationResult<JavaCodeFragment> associationIdentifier) throws CoreException {
         if (qualifier == null || associationIdentifier.failed()) {
             return associationIdentifier;
         } else {
@@ -499,7 +502,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return policyCmptType != null && policyCmptType.equals(target);
     }
 
-    private CompilationResult compileTypeAssociationTo1Identifier(JavaCodeFragment javaCodeFragment,
+    private CompilationResult<JavaCodeFragment> compileTypeAssociationTo1Identifier(JavaCodeFragment javaCodeFragment,
             Integer index,
             IType type,
             IAssociation association,
@@ -516,7 +519,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return new CompilationResultImpl(javaCodeFragment, target);
     }
 
-    private CompilationResult compileTypeAssociationToManyIdentifier(JavaCodeFragment javaCodeFragment,
+    private CompilationResult<JavaCodeFragment> compileTypeAssociationToManyIdentifier(JavaCodeFragment javaCodeFragment,
             IType type,
             IAssociation association,
             IType target) {
@@ -525,11 +528,12 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return new CompilationResultImpl(javaCodeFragment, new ListOfTypeDatatype(target));
     }
 
-    private CompilationResult compileAssociationChain(JavaCodeFragment javaCodeFragment,
+    private CompilationResult<JavaCodeFragment> compileAssociationChain(JavaCodeFragment javaCodeFragment,
             IType type,
             String attributeName) {
         String target = attributeName.substring(0, attributeName.indexOf('.'));
-        CompilationResult compilationResult1 = compileTypeAttributeIdentifier(javaCodeFragment, type, target);
+        CompilationResult<JavaCodeFragment> compilationResult1 = compileTypeAttributeIdentifier(javaCodeFragment, type,
+                target);
         String tail = attributeName.substring(attributeName.indexOf('.') + 1);
         Datatype datatype = compilationResult1.getDatatype();
         if (datatype instanceof IType) {
@@ -542,11 +546,11 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         }
     }
 
-    private CompilationResult compileAssociationTo1Chain(CompilationResult compilationResult1,
+    private CompilationResult<JavaCodeFragment> compileAssociationTo1Chain(CompilationResult<JavaCodeFragment> compilationResult1,
             String tail,
             Datatype datatype) {
-        CompilationResult compilationResult2 = compileTypeAttributeIdentifier(compilationResult1.getCodeFragment(),
-                (IType)datatype, tail);
+        CompilationResult<JavaCodeFragment> compilationResult2 = compileTypeAttributeIdentifier(
+                compilationResult1.getCodeFragment(), (IType)datatype, tail);
         MessageList messages = compilationResult1.getMessages();
         messages.add(compilationResult2.getMessages());
         Set<String> identifiers = new HashSet<String>();
@@ -557,7 +561,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return new CompilationResultImpl(codeFragment, compilationResult2.getDatatype(), messages, identifiers);
     }
 
-    private CompilationResult compileAssociationToManyChain(JavaCodeFragment javaCodeFragment,
+    // CSOFF: CyclomaticComplexityCheck
+    private CompilationResult<JavaCodeFragment> compileAssociationToManyChain(JavaCodeFragment javaCodeFragment,
             ListOfTypeDatatype datatype,
             String code) {
         if (StringUtils.isEmpty(code)) {
@@ -609,8 +614,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                         return compileTypeAttributeIdentifier(getTargetCode, target, tail);
                     }
                 } else {
-                    CompilationResult compilationResult = compileAssociationQualifier(qualifier, target,
-                            new CompilationResultImpl(getTargetCode, target));
+                    CompilationResult<JavaCodeFragment> compilationResult = compileAssociationQualifier(qualifier,
+                            target, new CompilationResultImpl(getTargetCode, target));
                     if (tail.isEmpty()) {
                         return compilationResult;
                     } else {
@@ -625,7 +630,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return null;
     }
 
-    private CompilationResult returnErrorCompilationResultForNoAttribute(JavaCodeFragment javaCodeFragment,
+    // CSON: CyclomaticComplexityCheck
+
+    private CompilationResult<JavaCodeFragment> returnErrorCompilationResultForNoAttribute(JavaCodeFragment javaCodeFragment,
             String attributeName,
             IType type) {
         String code = javaCodeFragment.getSourcecode().replace("\n", "").trim(); //$NON-NLS-1$//$NON-NLS-2$

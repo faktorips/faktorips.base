@@ -13,8 +13,9 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.datatype.Datatype;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -30,7 +31,7 @@ public class Abs extends AbstractFlFunction {
      * @throws IllegalArgumentException if name is <code>null</code>.
      */
     public Abs(String name, String description) {
-        super(name, description, Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL });
+        super(name, description, FunctionSignatures.Abs);
     }
 
     /**
@@ -38,7 +39,7 @@ public class Abs extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         argResults[0].getCodeFragment().append(".abs()"); //$NON-NLS-1$
         return argResults[0];

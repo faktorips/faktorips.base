@@ -13,13 +13,14 @@
 
 package org.faktorips.codegen.conversion;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.SingleConversionCg;
 import org.faktorips.datatype.Datatype;
 
 /**
  * A ConversionGenerator that ...
  */
-public abstract class AbstractSingleConversionCg implements SingleConversionCg {
+public abstract class AbstractSingleConversionCg implements SingleConversionCg<JavaCodeFragment> {
 
     private Datatype from;
     private Datatype to;

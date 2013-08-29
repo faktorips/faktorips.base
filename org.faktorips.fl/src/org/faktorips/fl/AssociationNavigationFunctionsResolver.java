@@ -15,13 +15,14 @@ package org.faktorips.fl;
 
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.functions.Exists;
 
 /**
  * A {@link FunctionResolver} that supports association navigation {@link FlFunction functions}. The
  * functions are available in different languages.
  */
-public class AssociationNavigationFunctionsResolver extends LocalizedFunctionsResolver {
+public class AssociationNavigationFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeFragment> {
 
     public static final String EXISTS = "exists";
 

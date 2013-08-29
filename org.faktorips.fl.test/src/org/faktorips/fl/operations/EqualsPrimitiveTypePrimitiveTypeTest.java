@@ -14,15 +14,14 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.BinaryOperation;
-import org.faktorips.fl.CompilerAbstractTest;
+import org.faktorips.fl.JavaExprCompilerAbstractTest;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  */
-public class EqualsPrimitiveTypePrimitiveTypeTest extends CompilerAbstractTest {
+public class EqualsPrimitiveTypePrimitiveTypeTest extends JavaExprCompilerAbstractTest {
 
     @Override
     @Before
@@ -33,14 +32,14 @@ public class EqualsPrimitiveTypePrimitiveTypeTest extends CompilerAbstractTest {
 
     @Test
     public void testSuccessfull_int() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[] { new EqualsPrimtiveType(Datatype.PRIMITIVE_INT) });
+        compiler.setBinaryOperations(toArray(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT)));
         execAndTestSuccessfull("1=2", false);
         execAndTestSuccessfull("1=1", true);
     }
 
     @Test
     public void testSuccessfull_boolean() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[] { new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN) });
+        compiler.setBinaryOperations(toArray(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN)));
         execAndTestSuccessfull("true=true", true);
         execAndTestSuccessfull("false=true", false);
     }

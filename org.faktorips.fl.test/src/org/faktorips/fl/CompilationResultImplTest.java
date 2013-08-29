@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import org.junit.Test;
 public class CompilationResultImplTest {
     @Test
     public void testGetIdentifiersUsed() {
-        CompilationResultImpl result = new CompilationResultImpl();
+        AbstractCompilationResult<JavaCodeFragment> result = new CompilationResultImpl();
         assertEquals(0, result.getResolvedIdentifiers().length);
 
         result.addIdentifierUsed("a");
@@ -44,7 +45,7 @@ public class CompilationResultImplTest {
 
     @Test
     public void testIsUsedAsIdentifier() {
-        CompilationResultImpl result = new CompilationResultImpl();
+        AbstractCompilationResult<JavaCodeFragment> result = new CompilationResultImpl();
         assertFalse(result.isUsedAsIdentifier("a"));
 
         result.addIdentifierUsed("a");
@@ -55,7 +56,7 @@ public class CompilationResultImplTest {
 
     @Test
     public void testAddIdentifiersUsed() {
-        CompilationResultImpl result = new CompilationResultImpl();
+        AbstractCompilationResult<JavaCodeFragment> result = new CompilationResultImpl();
         result.addIdentifiersUsed(null);
         assertEquals(0, result.getResolvedIdentifiers().length);
 
@@ -84,9 +85,9 @@ public class CompilationResultImplTest {
 
     @Test
     public void testAdd() {
-        CompilationResultImpl result1 = new CompilationResultImpl();
+        AbstractCompilationResult<JavaCodeFragment> result1 = new CompilationResultImpl();
 
-        CompilationResultImpl result2 = new CompilationResultImpl();
+        AbstractCompilationResult<JavaCodeFragment> result2 = new CompilationResultImpl();
         result1.add(result2);
         assertEquals(0, result1.getResolvedIdentifiers().length);
 
@@ -114,7 +115,7 @@ public class CompilationResultImplTest {
 
     @Test
     public void testSuccessfullFailed() {
-        CompilationResultImpl result = new CompilationResultImpl("blabla", Datatype.STRING);
+        AbstractCompilationResult<JavaCodeFragment> result = new CompilationResultImpl("blabla", Datatype.STRING);
         assertTrue(result.successfull());
         assertFalse(result.failed());
         result.addMessage(Message.newInfo("1", "blabla"));
@@ -127,7 +128,7 @@ public class CompilationResultImplTest {
 
     @Test
     public void testToString() {
-        CompilationResultImpl result = new CompilationResultImpl("blabla", Datatype.STRING);
+        AbstractCompilationResult<JavaCodeFragment> result = new CompilationResultImpl("blabla", Datatype.STRING);
         result.toString();
         result = new CompilationResultImpl(Message.newError("1", "blabla"));
         result.toString();

@@ -16,6 +16,7 @@ package org.faktorips.fl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.functions.AbstractFlFunction;
 import org.junit.Before;
@@ -26,16 +27,16 @@ import org.junit.Test;
  */
 public class DefaultFunctionResolverTest {
 
-    private DefaultFunctionResolver resolver;
+    private DefaultFunctionResolver<JavaCodeFragment> resolver;
 
     @Before
     public void setUp() throws Exception {
-        resolver = new DefaultFunctionResolver();
+        resolver = new DefaultFunctionResolver<JavaCodeFragment>();
     }
 
     @Test
     public void testAdd() {
-        FlFunction fct = new AbstractTestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]);
+        FlFunction<JavaCodeFragment> fct = new AbstractTestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]);
         resolver.add(fct);
         assertEquals(1, resolver.getFunctions().length);
         assertSame(fct, resolver.getFunctions()[0]);
@@ -54,13 +55,13 @@ public class DefaultFunctionResolverTest {
     static class AbstractTestFlFunction extends AbstractFlFunction {
 
         // result to be returned.
-        private CompilationResult result;
+        private CompilationResult<JavaCodeFragment> result;
 
         AbstractTestFlFunction(String name, Datatype type, Datatype[] argTypes) {
             super(name, "", type, argTypes);
         }
 
-        public CompilationResult compile(CompilationResult[] argResults) {
+        public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
             return result;
         }
     }

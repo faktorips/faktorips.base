@@ -14,23 +14,24 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Minus (-) operator for datatype primitive int.
  */
-public class MinusPrimitiveInt extends AbstractUnaryOperation {
+public class MinusPrimitiveInt extends AbstractUnaryJavaOperation {
 
     public MinusPrimitiveInt() {
-        super(Datatype.PRIMITIVE_INT, "-"); //$NON-NLS-1$
+        super(Operation.MinusPrimitiveInt);
     }
 
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResult)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         if (arg.failed()) {
             return arg;
@@ -38,7 +39,7 @@ public class MinusPrimitiveInt extends AbstractUnaryOperation {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append('-');
         fragment.append(arg.getCodeFragment());
-        arg.setJavaCodeFragment(fragment);
+        arg.setCodeFragment(fragment);
         return arg;
     }
 

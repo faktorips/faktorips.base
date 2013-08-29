@@ -14,22 +14,21 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.BinaryOperation;
-import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.JavaExprCompilerAbstractTest;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * 
  */
-public class AddStringStringTest extends CompilerAbstractTest {
+public class AddStringStringTest extends JavaExprCompilerAbstractTest {
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(new BinaryOperation[] { new AddStringString() });
+        compiler.setBinaryOperations(toArray(new AddStringString()));
     }
 
     @Test

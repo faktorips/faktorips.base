@@ -22,11 +22,13 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
 
 /**
- * A default implementation of <code>IdentifierResolver</code> that allows to register constant
- * strings as identifiers together with a JavaCodeFragment and Datatype that are used to create a
- * <code>CompilationResult</code> if the resolver is requested to compile the identifier.
+ * A default implementation of {@link IdentifierResolver} that allows to register constant strings
+ * as identifiers together with a {@link JavaCodeFragment} and {@link Datatype} that are used to
+ * create a {@link CompilationResult} if the resolver is requested to compile the identifier.
+ * 
+ * This implementation generates {@link JavaCodeFragment Java code}.
  */
-public class DefaultIdentifierResolver implements IdentifierResolver {
+public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFragment> {
 
     // map with (String) identifiers as keys and FragmentDatatypeWrapper instances as values.
     private Map<String, FragmentDatatypeWrapper> identifiers = new HashMap<String, FragmentDatatypeWrapper>();
@@ -46,10 +48,9 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
         identifiers.put(identifier, new FragmentDatatypeWrapper(defensiveCopy, datatype));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
+    public CompilationResult<JavaCodeFragment> compile(String identifier,
+            ExprCompiler<JavaCodeFragment> exprCompiler,
+            Locale locale) {
         FragmentDatatypeWrapper wrapper = identifiers.get(identifier);
         if (wrapper != null) {
             CompilationResultImpl compilationResult = new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment),
@@ -57,7 +58,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
             addCurrentIdentifer(compilationResult, identifier);
             return compilationResult;
         }
-        String text = ExprCompiler.LOCALIZED_STRINGS.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
         CompilationResultImpl compilationResult = new CompilationResultImpl(Message.newError(
                 ExprCompiler.UNDEFINED_IDENTIFIER, text));
         addCurrentIdentifer(compilationResult, identifier);
@@ -67,7 +68,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
     /*
      * Adds the given identifier candidate to the compilation result
      */
-    private void addCurrentIdentifer(CompilationResult result, String identifierCandidate) {
+    protected void addCurrentIdentifer(CompilationResult<JavaCodeFragment> result, String identifierCandidate) {
         if (result instanceof CompilationResultImpl) {
             ((CompilationResultImpl)result).addIdentifierUsed(identifierCandidate);
         }

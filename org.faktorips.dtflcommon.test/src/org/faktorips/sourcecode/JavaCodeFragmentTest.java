@@ -55,39 +55,6 @@ public class JavaCodeFragmentTest {
     }
 
     @Test
-    public void testBol() {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        assertTrue(fragment.bol());
-        fragment.append("blabla"); //$NON-NLS-1$
-        assertFalse(fragment.bol());
-        fragment.appendln();
-        assertTrue(fragment.bol());
-    }
-
-    @Test
-    public void testAppend_String() {
-        JavaCodeFragment fragment = new JavaCodeFragment(true);
-        fragment.append("blabla"); //$NON-NLS-1$
-        assertEquals("blabla", fragment.getSourcecode()); //$NON-NLS-1$
-
-        fragment = new JavaCodeFragment(true);
-        fragment.incIndentationLevel();
-        fragment.append("blabla"); //$NON-NLS-1$
-        assertEquals("    blabla", fragment.getSourcecode()); //$NON-NLS-1$
-
-        fragment = new JavaCodeFragment(true);
-        fragment.incIndentationLevel();
-        fragment.append("bla"); //$NON-NLS-1$
-        fragment.append("bla"); //$NON-NLS-1$
-        assertEquals("    blabla", fragment.getSourcecode()); //$NON-NLS-1$
-
-        fragment.appendln();
-        fragment.append("line2"); //$NON-NLS-1$
-        String expected = "    blabla" + SystemUtils.LINE_SEPARATOR + "    line2"; //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(expected, fragment.getSourcecode());
-    }
-
-    @Test
     public void testAppendClassName() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(List.class);

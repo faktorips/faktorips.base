@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -41,9 +42,9 @@ public class ExtensionFunctionResolversCache {
 
     private final IIpsProject ipsProject;
 
-    private List<FunctionResolver> cachedFunctionResolvers;
+    private List<FunctionResolver<JavaCodeFragment>> cachedFunctionResolvers;
 
-    private List<IFunctionResolverFactory> resolverFactories;
+    private List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
 
     /**
      * @param ipsProject the project this class caches function resolvers for.
@@ -61,7 +62,8 @@ public class ExtensionFunctionResolversCache {
      * @param resolverFactories factories creating resolvers. Used instead of the factories provided
      *            by the extension point <code>org.faktorips.fl.FunctionResolver</code>.
      */
-    public ExtensionFunctionResolversCache(IIpsProject ipsProject, List<IFunctionResolverFactory> resolverFactories) {
+    public ExtensionFunctionResolversCache(IIpsProject ipsProject,
+            List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories) {
         this.ipsProject = ipsProject;
         this.resolverFactories = resolverFactories;
         registerListenerWithIpsModel();
@@ -80,37 +82,38 @@ public class ExtensionFunctionResolversCache {
      * Creates a new expression compiler or returns the cached one if it was created before.
      */
     public void addExtensionFunctionResolversToCompiler(ExtendedExprCompiler compiler) {
-        List<FunctionResolver> resolvers = createFunctionResolversIfNeccessary();
+        List<FunctionResolver<JavaCodeFragment>> resolvers = createFunctionResolversIfNeccessary();
         addFunctionResolversTo(resolvers, compiler);
     }
 
-    protected List<FunctionResolver> createFunctionResolversIfNeccessary() {
+    protected List<FunctionResolver<JavaCodeFragment>> createFunctionResolversIfNeccessary() {
         if (cachedFunctionResolvers == null) {
             cachedFunctionResolvers = createExtendingFunctionResolvers();
         }
         return cachedFunctionResolvers;
     }
 
-    protected List<FunctionResolver> createExtendingFunctionResolvers() {
-        ArrayList<FunctionResolver> resolvers = new ArrayList<FunctionResolver>();
-        for (IFunctionResolverFactory factory : resolverFactories) {
+    protected List<FunctionResolver<JavaCodeFragment>> createExtendingFunctionResolvers() {
+        ArrayList<FunctionResolver<JavaCodeFragment>> resolvers = new ArrayList<FunctionResolver<JavaCodeFragment>>();
+        for (IFunctionResolverFactory<JavaCodeFragment> factory : resolverFactories) {
             if (isActive(factory)) {
-                FunctionResolver resolver = createFuntionResolver(factory);
+                FunctionResolver<JavaCodeFragment> resolver = createFuntionResolver(factory);
                 addIfNotNull(resolvers, resolver);
             }
         }
         return resolvers;
     }
 
-    private void addIfNotNull(ArrayList<FunctionResolver> resolverList, FunctionResolver resolver) {
+    private void addIfNotNull(ArrayList<FunctionResolver<JavaCodeFragment>> resolverList,
+            FunctionResolver<JavaCodeFragment> resolver) {
         if (resolver != null) {
             resolverList.add(resolver);
         }
     }
 
-    private FunctionResolver createFuntionResolver(IFunctionResolverFactory factory) {
+    private FunctionResolver<JavaCodeFragment> createFuntionResolver(IFunctionResolverFactory<JavaCodeFragment> factory) {
         try {
-            FunctionResolver resolver = createFunctionResolver(factory);
+            FunctionResolver<JavaCodeFragment> resolver = createFunctionResolver(factory);
             return resolver;
             // CSOFF: IllegalCatch
         } catch (Exception e) {
@@ -121,22 +124,23 @@ public class ExtensionFunctionResolversCache {
         return null;
     }
 
-    private boolean isActive(IFunctionResolverFactory factory) {
+    private boolean isActive(IFunctionResolverFactory<JavaCodeFragment> factory) {
         return getIpsProject().getReadOnlyProperties().isActive(factory);
     }
 
-    private FunctionResolver createFunctionResolver(IFunctionResolverFactory factory) {
+    private FunctionResolver<JavaCodeFragment> createFunctionResolver(IFunctionResolverFactory<JavaCodeFragment> factory) {
         Locale formulaLanguageLocale = getIpsProject().getFormulaLanguageLocale();
         if (factory instanceof AbstractProjectRelatedFunctionResolverFactory) {
-            return ((AbstractProjectRelatedFunctionResolverFactory)factory).newFunctionResolver(getIpsProject(),
-                    formulaLanguageLocale);
+            return ((AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment>)factory).newFunctionResolver(
+                    getIpsProject(), formulaLanguageLocale);
         } else {
             return factory.newFunctionResolver(formulaLanguageLocale);
         }
     }
 
-    private void addFunctionResolversTo(List<FunctionResolver> resolvers, ExtendedExprCompiler compiler) {
-        for (FunctionResolver resolver : resolvers) {
+    private void addFunctionResolversTo(List<FunctionResolver<JavaCodeFragment>> resolvers,
+            ExtendedExprCompiler compiler) {
+        for (FunctionResolver<JavaCodeFragment> resolver : resolvers) {
             compiler.add(resolver);
         }
     }

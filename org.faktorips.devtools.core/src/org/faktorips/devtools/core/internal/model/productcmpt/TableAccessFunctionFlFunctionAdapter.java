@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -30,7 +31,7 @@ import org.faktorips.util.message.Message;
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
-public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdapter {
+public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdapter<JavaCodeFragment> {
 
     private ITableAccessFunction fct;
     private String tableContentsQualifiedName;
@@ -53,7 +54,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
     }
 
     @Override
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         try {
             IIpsArtefactBuilderSet builderSet = getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {

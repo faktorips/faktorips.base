@@ -113,8 +113,8 @@ public class IfTest extends FunctionAbstractTest {
         resolver.register("param2", new JavaCodeFragment(StringEscapeUtils.escapeJava("2")), Datatype.PRIMITIVE_INT);
         resolver.register("param3", new JavaCodeFragment(StringEscapeUtils.escapeJava("3")), Datatype.PRIMITIVE_INT);
         resolver.register("param4", new JavaCodeFragment(StringEscapeUtils.escapeJava("4")), Datatype.PRIMITIVE_INT);
-        CompilationResult result = execAndTestSuccessfull("IF(param1=param2; param3; param4)", new Integer(4),
-                Datatype.INTEGER);
+        CompilationResult<JavaCodeFragment> result = execAndTestSuccessfull("IF(param1=param2; param3; param4)",
+                new Integer(4), Datatype.INTEGER);
         List<String> identifier = Arrays.asList(result.getResolvedIdentifiers());
         assertEquals(4, identifier.size());
         assertTrue(identifier.contains("param1"));

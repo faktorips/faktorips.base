@@ -19,16 +19,16 @@
 package org.faktorips.fl.parser;
 
 class JJTFlParserState {
-    private java.util.Stack nodes;
-    private java.util.Stack marks;
+    private java.util.Stack<Node> nodes;
+    private java.util.Stack<Integer> marks;
 
     private int sp; // number of nodes on stack
     private int mk; // current mark
     private boolean node_created;
 
     JJTFlParserState() {
-        nodes = new java.util.Stack();
-        marks = new java.util.Stack();
+        nodes = new java.util.Stack<Node>();
+        marks = new java.util.Stack<Integer>();
         sp = 0;
         mk = 0;
     }
@@ -56,7 +56,7 @@ class JJTFlParserState {
      * Returns the root node of the AST. It only makes sense to call this after a successful parse.
      */
     Node rootNode() {
-        return (Node)nodes.elementAt(0);
+        return nodes.elementAt(0);
     }
 
     /* Pushes a node on to the stack. */
@@ -70,14 +70,14 @@ class JJTFlParserState {
      */
     Node popNode() {
         if (--sp < mk) {
-            mk = ((Integer)marks.pop()).intValue();
+            mk = marks.pop().intValue();
         }
-        return (Node)nodes.pop();
+        return nodes.pop();
     }
 
     /* Returns the node currently on the top of the stack. */
     Node peekNode() {
-        return (Node)nodes.peek();
+        return nodes.peek();
     }
 
     /*
@@ -87,11 +87,11 @@ class JJTFlParserState {
         return sp - mk;
     }
 
-    void clearNodeScope(Node n) {
+    void clearNodeScope(@SuppressWarnings("unused") Node n) {
         while (sp > mk) {
             popNode();
         }
-        mk = ((Integer)marks.pop()).intValue();
+        mk = marks.pop().intValue();
     }
 
     void openNodeScope(Node n) {
@@ -106,7 +106,7 @@ class JJTFlParserState {
      * pushed on to the stack.
      */
     void closeNodeScope(Node n, int num) {
-        mk = ((Integer)marks.pop()).intValue();
+        mk = marks.pop().intValue();
         while (num-- > 0) {
             Node c = popNode();
             c.jjtSetParent(n);
@@ -126,7 +126,7 @@ class JJTFlParserState {
     void closeNodeScope(Node n, boolean condition) {
         if (condition) {
             int a = nodeArity();
-            mk = ((Integer)marks.pop()).intValue();
+            mk = marks.pop().intValue();
             while (a-- > 0) {
                 Node c = popNode();
                 c.jjtSetParent(n);
@@ -136,7 +136,7 @@ class JJTFlParserState {
             pushNode(n);
             node_created = true;
         } else {
-            mk = ((Integer)marks.pop()).intValue();
+            mk = marks.pop().intValue();
             node_created = false;
         }
     }

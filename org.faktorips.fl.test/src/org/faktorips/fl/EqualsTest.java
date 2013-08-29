@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  *
  */
-public class EqualsTest extends CompilerAbstractTest {
+public class EqualsTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testEnumEnum() throws Exception {
         compiler.setEnsureResultIsObject(false);

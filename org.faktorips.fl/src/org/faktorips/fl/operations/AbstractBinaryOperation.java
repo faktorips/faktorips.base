@@ -13,23 +13,35 @@
 
 package org.faktorips.fl.operations;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.Operation;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Abstract implementation of BinaryOperation.
+ * Abstract implementation of {@link BinaryOperation}.
+ * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public abstract class AbstractBinaryOperation implements BinaryOperation {
+public abstract class AbstractBinaryOperation<T extends CodeFragment> implements BinaryOperation<T> {
 
-    private ExprCompiler compiler;
+    private ExprCompiler<T> compiler;
     private String operator;
     private Datatype lhsDatatype;
     private Datatype rhsDatatype;
 
     /**
-     * Creates a new binary operation for the indicated left-hand-side and right hand side datatype.
+     * Creates a new unary operation for the indicated {@link Operation}.
+     */
+    public AbstractBinaryOperation(Operation operation) {
+        this(operation.getOperator(), operation.getLhs(), operation.getRhs());
+    }
+
+    /**
+     * Creates a new binary operation for the indicated left hand side and right hand side
+     * {@link Datatype data types}.
      */
     public AbstractBinaryOperation(String operator, Datatype lhs, Datatype rhs) {
         ArgumentCheck.notNull(operator);
@@ -43,7 +55,7 @@ public abstract class AbstractBinaryOperation implements BinaryOperation {
     /**
      * {@inheritDoc}
      */
-    public void setCompiler(ExprCompiler compiler) {
+    public void setCompiler(ExprCompiler<T> compiler) {
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
     }
@@ -51,7 +63,7 @@ public abstract class AbstractBinaryOperation implements BinaryOperation {
     /**
      * {@inheritDoc}
      */
-    public ExprCompiler getCompiler() {
+    public ExprCompiler<T> getCompiler() {
         return compiler;
     }
 

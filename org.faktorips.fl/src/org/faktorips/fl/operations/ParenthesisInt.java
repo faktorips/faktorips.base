@@ -14,21 +14,22 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Parenthesis <i>()</i> operator for datatype primitive integer.
  */
-public class ParenthesisInt extends AbstractUnaryOperation {
+public class ParenthesisInt extends AbstractUnaryJavaOperation {
 
     public ParenthesisInt() {
-        super(Datatype.PRIMITIVE_INT, "()");
+        super(Operation.ParenthesisInt);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         JavaCodeFragment parenthesis = new JavaCodeFragment();
         parenthesis.append('(');

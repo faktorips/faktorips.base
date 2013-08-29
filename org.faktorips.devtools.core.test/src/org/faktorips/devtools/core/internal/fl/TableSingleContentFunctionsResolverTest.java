@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.fl.TableSingleContentFunctionsResolver;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -52,7 +52,7 @@ public class TableSingleContentFunctionsResolverTest extends AbstractIpsPluginTe
     public void testGetFunctionsNoContent() {
         TableSingleContentFunctionsResolver resolver = new TableSingleContentFunctionsResolver(project);
 
-        FlFunction[] functions = resolver.getFunctions();
+        FlFunction<JavaCodeFragment>[] functions = resolver.getFunctions();
 
         assertEquals(0, functions.length);
     }
@@ -70,7 +70,7 @@ public class TableSingleContentFunctionsResolverTest extends AbstractIpsPluginTe
 
         TableSingleContentFunctionsResolver resolver = new TableSingleContentFunctionsResolver(project);
 
-        FlFunction[] functions = resolver.getFunctions();
+        FlFunction<JavaCodeFragment>[] functions = resolver.getFunctions();
 
         assertEquals(0, functions.length);
     }
@@ -101,16 +101,16 @@ public class TableSingleContentFunctionsResolverTest extends AbstractIpsPluginTe
 
         TableSingleContentFunctionsResolver resolver = new TableSingleContentFunctionsResolver(project);
 
-        FlFunction[] functions = resolver.getFunctions();
+        FlFunction<JavaCodeFragment>[] functions = resolver.getFunctions();
 
         assertEquals(2, functions.length);
 
-        FlFunction flFunction = functions[0];
+        FlFunction<JavaCodeFragment> flFunction = functions[0];
 
         assertEquals(TABLE_STRUCTURE_NAME + "." + nameInteger, flFunction.getName());
         assertEquals(typeInteger, flFunction.getType().getName());
 
-        FlFunction flFunctionDecimal = functions[1];
+        FlFunction<JavaCodeFragment> flFunctionDecimal = functions[1];
 
         assertEquals(TABLE_STRUCTURE_NAME + "." + nameDecimal, flFunctionDecimal.getName());
         assertEquals(typeDecimal, flFunctionDecimal.getType().getName());

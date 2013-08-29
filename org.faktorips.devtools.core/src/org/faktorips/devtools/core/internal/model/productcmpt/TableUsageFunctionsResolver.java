@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.fl.AbstractTableFunctionsResolver;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -74,7 +75,7 @@ public class TableUsageFunctionsResolver extends AbstractTableFunctionsResolver 
      * Returns a new table function adapter.
      */
     @Override
-    protected FlFunction createFlFunction(ITableAccessFunction function, TableData tableData) {
+    protected FlFunction<JavaCodeFragment> createFlFunction(ITableAccessFunction function, TableData tableData) {
 
         return new TableAccessFunctionFlFunctionAdapter(tableData.getTableContentQualifiedName(), function,
                 tableData.getReferencedName(), getIpsProject());

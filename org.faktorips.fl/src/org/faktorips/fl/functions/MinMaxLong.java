@@ -27,7 +27,9 @@ public class MinMaxLong extends MinMaxNativeTypes {
     }
 
     @Override
-    protected void writeBody(JavaCodeFragment fragment, CompilationResult first, CompilationResult second) {
+    protected void writeBody(JavaCodeFragment fragment,
+            CompilationResult<JavaCodeFragment> first,
+            CompilationResult<JavaCodeFragment> second) {
         // new Long(Math.max(new Long(1).longValue(), new Long(2).longValue()));
         fragment.append("new Long(Math.");
         fragment.append(functionName);

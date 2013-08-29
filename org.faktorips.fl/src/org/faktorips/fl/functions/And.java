@@ -14,8 +14,8 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * A function that provides a boolean and-operation and has the following signature <i>boolean
@@ -24,12 +24,12 @@ import org.faktorips.fl.CompilationResult;
 public class And extends AbstractVarArgFunction {
 
     public And(String name, String description) {
-        super(name, description, Datatype.PRIMITIVE_BOOLEAN, Datatype.PRIMITIVE_BOOLEAN);
+        super(name, description, FunctionSignatures.And);
     }
 
     @Override
-    protected void compileInternal(CompilationResult returnValue,
-            CompilationResult[] convertedArgs,
+    protected void compileInternal(CompilationResult<JavaCodeFragment> returnValue,
+            CompilationResult<JavaCodeFragment>[] convertedArgs,
             JavaCodeFragment fragment) {
         fragment.append('(');
         for (int i = 0; i < convertedArgs.length; i++) {

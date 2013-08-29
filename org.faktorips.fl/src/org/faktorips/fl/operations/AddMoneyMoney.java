@@ -13,24 +13,25 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.Operation;
 
 /**
  * Operation for the addition of two decimals.
  */
-public class AddMoneyMoney extends AbstractBinaryOperation {
+public class AddMoneyMoney extends AbstractBinaryJavaOperation {
 
     public AddMoneyMoney() {
-        super("+", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
+        super(Operation.AddMoneyMoney);
     }
 
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl,
+     * @see org.faktorips.fl.operations.AbstractBinaryJavaOperation#generate(org.faktorips.fl.CompilationResultImpl,
      *      org.faktorips.fl.CompilationResultImpl)
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".add("); //$NON-NLS-1$
         lhs.add(rhs);

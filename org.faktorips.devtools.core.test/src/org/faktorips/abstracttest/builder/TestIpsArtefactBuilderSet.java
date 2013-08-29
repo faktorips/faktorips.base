@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
@@ -139,9 +140,9 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public CompilationResult getTableAccessCode(String tableContentsQualifiedName,
+    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
         return null;
     }
 
@@ -151,8 +152,8 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
-            throws CoreException {
+    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
         return new TestParameterIdentifierResolver(formula, exprCompiler);
     }
 
@@ -181,7 +182,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     private final class TestParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
-        private TestParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+        private TestParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(formula2, exprCompiler);
         }
 

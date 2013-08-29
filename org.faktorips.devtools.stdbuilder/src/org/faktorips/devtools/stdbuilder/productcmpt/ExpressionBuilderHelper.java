@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -57,14 +57,14 @@ public class ExpressionBuilderHelper {
         }
         try {
             IIpsProject ipsProject = formula.getIpsProject();
-            ExprCompiler compiler = formula.newExprCompiler(ipsProject);
-            CompilationResult result = compiler.compile(expression);
+            JavaExprCompiler compiler = formula.newExprCompiler(ipsProject);
+            CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(ipsProject);
                 if (result.getDatatype().equals(attributeDatatype)) {
                     return result.getCodeFragment();
                 }
-                ConversionCodeGenerator conversion = compiler.getConversionCodeGenerator();
+                ConversionCodeGenerator<JavaCodeFragment> conversion = compiler.getConversionCodeGenerator();
                 JavaCodeFragment convertedFrag = conversion.getConversionCode(result.getDatatype(), attributeDatatype,
                         result.getCodeFragment());
                 if (convertedFrag == null) {

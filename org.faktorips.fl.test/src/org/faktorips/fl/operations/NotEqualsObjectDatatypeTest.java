@@ -14,15 +14,13 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.BinaryOperation;
-import org.faktorips.fl.CompilerAbstractTest;
+import org.faktorips.fl.JavaExprCompilerAbstractTest;
 import org.junit.Test;
 
-public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
+public class NotEqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimal() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.DECIMAL,
-                Datatype.DECIMAL) });
+        compiler.setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.DECIMAL, Datatype.DECIMAL)));
         compiler.setEnsureResultIsObject(false);
         execAndTestSuccessfull("1!=2", true);
         execAndTestSuccessfull("1.0!=1.0", false);
@@ -30,7 +28,7 @@ public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
 
     @Test
     public void testMoney() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
+        compiler.setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY)));
         compiler.setEnsureResultIsObject(false);
         execAndTestSuccessfull("1EUR!=2EUR", true);
         execAndTestSuccessfull("1.23EUR!=1.23EUR", false);
@@ -38,8 +36,7 @@ public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
 
     @Test
     public void testString() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.STRING,
-                Datatype.STRING) });
+        compiler.setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.STRING, Datatype.STRING)));
         compiler.setEnsureResultIsObject(false);
         execAndTestSuccessfull("\"abc\"!=\"cde\"", true);
         execAndTestSuccessfull("\"abc\"!=\"abc\"", false);

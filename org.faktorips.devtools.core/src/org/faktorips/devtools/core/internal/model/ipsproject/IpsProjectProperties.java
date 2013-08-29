@@ -1462,7 +1462,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public boolean isActive(IFunctionResolverFactory factory) {
+    public boolean isActive(IFunctionResolverFactory<?> factory) {
         if (!isAssociationsInFormulas()) {
             if (factory instanceof AssociationNavigationFunctionsResolver) {
                 return false;

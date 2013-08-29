@@ -14,9 +14,9 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * Boolean function NOT.
@@ -26,17 +26,17 @@ import org.faktorips.fl.CompilationResultImpl;
 public class Not extends AbstractFlFunction {
 
     public Not(String name, String description) {
-        super(name, description, Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { Datatype.PRIMITIVE_BOOLEAN });
+        super(name, description, FunctionSignatures.Not);
     }
 
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment("!(");
         code.append(argResults[0].getCodeFragment());
         code.append(')');
-        ((CompilationResultImpl)argResults[0]).setJavaCodeFragment(code);
+        ((CompilationResultImpl)argResults[0]).setCodeFragment(code);
         return argResults[0];
     }
 

@@ -19,6 +19,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -29,7 +30,7 @@ public class WholeNumber extends AbstractFlFunction {
     /**
      */
     public WholeNumber(String name, String description) {
-        super(name, description, Datatype.INTEGER, new Datatype[] { Datatype.DECIMAL });
+        super(name, description, FunctionSignatures.WholeNumber);
     }
 
     /**
@@ -37,7 +38,7 @@ public class WholeNumber extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("new "); //$NON-NLS-1$

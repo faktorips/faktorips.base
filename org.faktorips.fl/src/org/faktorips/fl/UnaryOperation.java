@@ -13,17 +13,32 @@
 
 package org.faktorips.fl;
 
+import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 
 /**
+ * An operation combining one operator with it's single operand.
  * 
+ * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
-public interface UnaryOperation {
+public interface UnaryOperation<T extends CodeFragment> {
 
+    /**
+     * Returns the operator.
+     */
     public String getOperator();
 
+    /**
+     * Returns the {@link Datatype} of the operation's result.
+     */
     public Datatype getDatatype();
 
-    public CompilationResultImpl generate(CompilationResultImpl arg);
+    /**
+     * Generates the {@link CompilationResult} for the given operand.
+     * 
+     * @param arg the operand
+     * @return the given operand combined with this operation's operator
+     */
+    public CompilationResult<T> generate(CompilationResult<T> arg);
 
 }

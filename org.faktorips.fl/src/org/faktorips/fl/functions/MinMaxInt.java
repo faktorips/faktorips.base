@@ -27,7 +27,9 @@ public class MinMaxInt extends MinMaxNativeTypes {
     }
 
     @Override
-    protected void writeBody(JavaCodeFragment fragment, CompilationResult first, CompilationResult second) {
+    protected void writeBody(JavaCodeFragment fragment,
+            CompilationResult<JavaCodeFragment> first,
+            CompilationResult<JavaCodeFragment> second) {
         // Math.max(value1, value2)
         fragment.append("Math.");
         fragment.append(functionName);

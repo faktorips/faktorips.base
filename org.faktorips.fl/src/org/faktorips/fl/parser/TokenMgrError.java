@@ -103,7 +103,7 @@ public class TokenMgrError extends Error {
      * error message by modifying this method.
      */
     protected static String LexicalError(boolean EOFSeen,
-            int lexState,
+            @SuppressWarnings("unused") int lexState,
             int errorLine,
             int errorColumn,
             String errorAfter,

@@ -14,9 +14,9 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * Boolean function NOT for the wrapper type.
@@ -26,13 +26,13 @@ import org.faktorips.fl.CompilationResultImpl;
 public class NotBoolean extends AbstractFlFunction {
 
     public NotBoolean(String name, String description) {
-        super(name, description, Datatype.BOOLEAN, new Datatype[] { Datatype.BOOLEAN });
+        super(name, description, FunctionSignatures.NotBoolean);
     }
 
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         CompilationResultImpl result = (CompilationResultImpl)argResults[0];
         JavaCodeFragment code = result.getCodeFragment();
         JavaCodeFragment newCode = new JavaCodeFragment();
@@ -41,7 +41,7 @@ public class NotBoolean extends AbstractFlFunction {
         newCode.append(")==null ? (Boolean)null : ");
         newCode.append("Boolean.valueOf(!(" + code + ").booleanValue())");
         newCode.append(')');
-        result.setJavaCodeFragment(newCode);
+        result.setCodeFragment(newCode);
         return result;
     }
 

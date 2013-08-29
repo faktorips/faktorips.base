@@ -32,7 +32,7 @@ public class MoneyNullFct extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment();
         code.appendClassName(Money.class);
         code.append(".NULL");

@@ -26,44 +26,43 @@ import org.faktorips.values.ObjectUtil;
  * Equals operation for none primitive datatypes that are tested for equality with the equals()
  * Method.
  */
-public class EqualsObjectDatatype extends AbstractBinaryOperation {
-
-    protected static String getErrorMessageCode() {
-        return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
-    }
+public class EqualsObjectDatatype extends AbstractBinaryJavaOperation {
 
     protected EqualsObjectDatatype(String operator, Datatype lhsDatatype, Datatype rhsDatatype) {
         super(operator, lhsDatatype, rhsDatatype);
-    }
-
-    public EqualsObjectDatatype(Datatype type) {
-        super("=", type, type); //$NON-NLS-1$
     }
 
     public EqualsObjectDatatype(Datatype lhsDatatype, Datatype rhsDatatype) {
         super("=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
+    public EqualsObjectDatatype(Datatype type) {
+        super("=", type, type); //$NON-NLS-1$
+    }
 
-        ConversionCodeGenerator ccg = getCompiler().getConversionCodeGenerator();
+    protected static String getErrorMessageCode() {
+        return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
+    }
+
+    @Override
+    public CompilationResultImpl generate(final CompilationResultImpl lhs, final CompilationResultImpl rhs) {
+        ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();
         Datatype datatype1 = lhs.getDatatype();
         Datatype datatype2 = rhs.getDatatype();
 
+        CompilationResultImpl left = lhs;
+        CompilationResultImpl right = rhs;
         if (!datatype1.equals(datatype2)) {
             if (ccg.canConvert(datatype1, datatype2)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2, lhs.getCodeFragment());
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2, lhs.getMessages(),
                         lhs.getIdentifiersUsedAsSet());
-                lhs = newResult;
+                left = newResult;
             } else if (ccg.canConvert(datatype2, datatype1)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1, rhs.getCodeFragment());
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages(),
                         rhs.getIdentifiersUsedAsSet());
-                rhs = newResult;
+                right = newResult;
             } else {
                 String text = Messages.INSTANCE.getString(getErrorMessageCode(), new Object[] { datatype1, datatype2 });
                 Message msg = Message.newError(getErrorMessageCode(), text);
@@ -75,9 +74,9 @@ public class EqualsObjectDatatype extends AbstractBinaryOperation {
         JavaCodeFragment frag = result.getCodeFragment();
         frag.appendClassName(ObjectUtil.class);
         frag.append(".equals("); //$NON-NLS-1$
-        frag.append(rhs.getCodeFragment());
+        frag.append(right.getCodeFragment());
         frag.append(", ");
-        frag.append(lhs.getCodeFragment());
+        frag.append(left.getCodeFragment());
         frag.append(')');
         return result;
     }

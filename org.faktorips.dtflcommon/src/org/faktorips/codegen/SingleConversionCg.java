@@ -18,12 +18,12 @@ import org.faktorips.datatype.Datatype;
 /**
  * 
  */
-public interface SingleConversionCg {
+public interface SingleConversionCg<T extends CodeFragment> {
 
     public Datatype getFrom();
 
     public Datatype getTo();
 
-    public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue);
+    public T getConversionCode(T fromValue);
 
 }

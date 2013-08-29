@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -244,10 +245,10 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addMatchingFunctions(List<IContentProposal> result, String prefix) {
-        ExprCompiler compiler = expression.newExprCompiler(expression.getIpsProject());
-        FlFunction[] functions = compiler.getFunctions();
+        ExprCompiler<JavaCodeFragment> compiler = expression.newExprCompiler(expression.getIpsProject());
+        FlFunction<JavaCodeFragment>[] functions = compiler.getFunctions();
         Arrays.sort(functions, new SortFunctions());
-        for (FlFunction function : functions) {
+        for (FlFunction<JavaCodeFragment> function : functions) {
             if (checkMatchingNameWithCaseInsensitive(function.getName(), prefix)) {
                 addFunctionToResult(result, function, prefix);
             }
@@ -274,7 +275,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         return false;
     }
 
-    private void addFunctionToResult(List<IContentProposal> result, FlFunction function, String prefix) {
+    private void addFunctionToResult(List<IContentProposal> result, FlFunction<JavaCodeFragment> function, String prefix) {
         String name = function.getName();
         StringBuffer displayText = new StringBuffer(name);
         displayText.append('(');
@@ -548,7 +549,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private static final class SortFunctions implements Comparator<FlFunction>, Serializable {
+    private static final class SortFunctions implements Comparator<FlFunction<JavaCodeFragment>>, Serializable {
 
         /**
          * Comment for <code>serialVersionUID</code>
@@ -556,7 +557,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         private static final long serialVersionUID = -6448576956808509752L;
 
         @Override
-        public int compare(FlFunction o1, FlFunction o2) {
+        public int compare(FlFunction<JavaCodeFragment> o1, FlFunction<JavaCodeFragment> o2) {
             return o1.getName().compareTo(o2.getName());
         }
     }

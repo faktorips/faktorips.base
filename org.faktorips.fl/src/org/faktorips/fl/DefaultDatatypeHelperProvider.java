@@ -17,14 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 
 /**
- * Default provider for the default datatypes and their helpers.
+ * Default provider for the default datatypes and their Java helpers.
  * 
  * @author Jan Ortmann
  */
-public class DefaultDatatypeHelperProvider implements DatatypeHelperProvider {
+public class DefaultDatatypeHelperProvider implements DatatypeHelperProvider<JavaCodeFragment> {
 
     private Map<Datatype, DatatypeHelper> helpers = new HashMap<Datatype, DatatypeHelper>();
 

@@ -20,7 +20,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Operation for the equality check for two decimals.
  */
-public class EqualsPrimtiveType extends AbstractBinaryOperation {
+public class EqualsPrimtiveType extends AbstractBinaryJavaOperation {
 
     public EqualsPrimtiveType(Datatype primitiveType) {
         super("=", primitiveType, primitiveType); //$NON-NLS-1$
@@ -30,6 +30,7 @@ public class EqualsPrimtiveType extends AbstractBinaryOperation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append("=="); //$NON-NLS-1$
         lhs.add(rhs);

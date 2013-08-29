@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.fl.AbstractProjectRelatedFunctionResolverFactory;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
-import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.FunctionResolver;
@@ -39,11 +39,11 @@ public class ExtensionFunctionResolversCacheTest {
 
     private ExtensionFunctionResolversCache extensionFunctionResolversCache;
     private ExtendedExprCompiler compiler;
-    private IFunctionResolverFactory resolverFactory;
-    private AbstractProjectRelatedFunctionResolverFactory projectRelatedResolverFactory;
-    private List<IFunctionResolverFactory> resolverFactories;
-    private FunctionResolver resolver;
-    private FunctionResolver projectRelatedResolver;
+    private IFunctionResolverFactory<JavaCodeFragment> resolverFactory;
+    private AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment> projectRelatedResolverFactory;
+    private List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
+    private FunctionResolver<JavaCodeFragment> resolver;
+    private FunctionResolver<JavaCodeFragment> projectRelatedResolver;
     private IIpsProject ipsProject;
 
     @Before
@@ -60,11 +60,12 @@ public class ExtensionFunctionResolversCacheTest {
         extensionFunctionResolversCache = new ExtensionFunctionResolversCache(ipsProject, resolverFactories);
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUpResolverFactories() {
         resolverFactory = mock(IFunctionResolverFactory.class);
         projectRelatedResolverFactory = mock(AbstractProjectRelatedFunctionResolverFactory.class);
 
-        resolverFactories = new ArrayList<IFunctionResolverFactory>();
+        resolverFactories = new ArrayList<IFunctionResolverFactory<JavaCodeFragment>>();
         resolverFactories.add(resolverFactory);
         resolverFactories.add(projectRelatedResolverFactory);
     }
@@ -77,8 +78,12 @@ public class ExtensionFunctionResolversCacheTest {
     }
 
     protected void setUpResolvers() {
-        resolver = mock(FunctionResolver.class);
-        projectRelatedResolver = mock(FunctionResolver.class);
+        @SuppressWarnings("unchecked")
+        FunctionResolver<JavaCodeFragment> mockResolver = mock(FunctionResolver.class);
+        resolver = mockResolver;
+        @SuppressWarnings("unchecked")
+        FunctionResolver<JavaCodeFragment> mockProjectRelatedResolver = mock(FunctionResolver.class);
+        projectRelatedResolver = mockProjectRelatedResolver;
         when(resolverFactory.newFunctionResolver(any(Locale.class))).thenReturn(resolver);
         when(projectRelatedResolverFactory.newFunctionResolver(eq(ipsProject), any(Locale.class))).thenReturn(
                 projectRelatedResolver);

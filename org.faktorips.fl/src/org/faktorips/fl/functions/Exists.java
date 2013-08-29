@@ -13,14 +13,14 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.FunctionSignatures;
 
 /**
  * 
@@ -28,16 +28,16 @@ import org.faktorips.fl.ExprCompiler;
  */
 public class Exists extends AbstractFlFunction {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
+    public static final String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EXISTS"; //$NON-NLS-1$
 
     public Exists(String name, String description) {
-        super(name, description, Datatype.PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE });
+        super(name, description, FunctionSignatures.Exists);
     }
 
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(CompilationResult[] argResults) {
+    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         Datatype argType = argResults[0].getDatatype();
         if (argType.isPrimitive()) {
             // values of primitive types can never be null
@@ -53,7 +53,7 @@ public class Exists extends AbstractFlFunction {
             code.append(".isEmpty()");
         } else if (argType.hasNullObject()) {
             code.append("!");
-            DatatypeHelper helper = getCompiler().getDatatypeHelper(argType);
+            BaseDatatypeHelper<JavaCodeFragment> helper = getCompiler().getDatatypeHelper(argType);
             code.append(helper.nullExpression());
             code.append(".equals(");
             code.append(argResults[0].getCodeFragment());

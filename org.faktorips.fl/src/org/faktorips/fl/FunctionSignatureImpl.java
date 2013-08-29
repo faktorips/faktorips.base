@@ -30,6 +30,16 @@ public class FunctionSignatureImpl implements FunctionSignature {
     /**
      * Creates a new function signature with a defined argument list.
      */
+    public FunctionSignatureImpl(String name, FunctionSignatures signature) {
+        this.name = name;
+        this.type = signature.getType();
+        this.argTypes = signature.getArgTypes();
+        this.hasVarArgs = signature.hasVarArgs();
+    }
+
+    /**
+     * Creates a new function signature with a defined argument list.
+     */
     public FunctionSignatureImpl(String name, Datatype type, Datatype[] argTypes) {
         this.name = name;
         this.type = type;
@@ -88,10 +98,8 @@ public class FunctionSignatureImpl implements FunctionSignature {
             return false;
         }
         if (hasVarArgs()) {
-            for (int i = 0; i < otherArgTypes.length; i++) {
-                if (!getArgTypes()[0].equals(otherArgTypes)) {
-                    return false;
-                }
+            if (!getArgTypes()[0].equals(otherArgTypes[0])) {
+                return false;
             }
             return true;
         }
