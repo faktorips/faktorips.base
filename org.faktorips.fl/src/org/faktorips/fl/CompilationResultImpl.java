@@ -77,8 +77,18 @@ public class CompilationResultImpl extends AbstractCompilationResult<JavaCodeFra
      */
     public static final CompilationResult<JavaCodeFragment> newResultUndefinedIdentifier(Locale locale,
             String identifier) {
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
+                identifier);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+    }
+
+    /**
+     * Sets the code fragment.
+     * 
+     * @see AbstractCompilationResult#setCodeFragment(CodeFragment)
+     */
+    public void setJavaCodeFragment(JavaCodeFragment javaCodeFragment) {
+        setCodeFragment(javaCodeFragment);
     }
 
 }
