@@ -20,7 +20,8 @@ import org.faktorips.devtools.core.internal.fl.TableSingleContentFunctionsResolv
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.FunctionResolver;
 
-public class TableSingleContentFunctionResolverFactory extends AbstractProjectRelatedFunctionResolverFactory {
+public class TableSingleContentFunctionResolverFactory extends
+        AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment> {
 
     @Override
     public FunctionResolver<JavaCodeFragment> newFunctionResolver(IIpsProject ipsProject, Locale locale) {

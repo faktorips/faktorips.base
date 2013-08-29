@@ -39,9 +39,9 @@ public class ExtensionFunctionResolversCacheTest {
 
     private ExtensionFunctionResolversCache extensionFunctionResolversCache;
     private ExtendedExprCompiler compiler;
-    private IFunctionResolverFactory resolverFactory;
-    private AbstractProjectRelatedFunctionResolverFactory projectRelatedResolverFactory;
-    private List<IFunctionResolverFactory> resolverFactories;
+    private IFunctionResolverFactory<JavaCodeFragment> resolverFactory;
+    private AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment> projectRelatedResolverFactory;
+    private List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
     private FunctionResolver<JavaCodeFragment> resolver;
     private FunctionResolver<JavaCodeFragment> projectRelatedResolver;
     private IIpsProject ipsProject;
@@ -60,11 +60,12 @@ public class ExtensionFunctionResolversCacheTest {
         extensionFunctionResolversCache = new ExtensionFunctionResolversCache(ipsProject, resolverFactories);
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUpResolverFactories() {
         resolverFactory = mock(IFunctionResolverFactory.class);
         projectRelatedResolverFactory = mock(AbstractProjectRelatedFunctionResolverFactory.class);
 
-        resolverFactories = new ArrayList<IFunctionResolverFactory>();
+        resolverFactories = new ArrayList<IFunctionResolverFactory<JavaCodeFragment>>();
         resolverFactories.add(resolverFactory);
         resolverFactories.add(projectRelatedResolverFactory);
     }

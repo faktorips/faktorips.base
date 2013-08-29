@@ -44,7 +44,7 @@ public class ExtensionFunctionResolversCache {
 
     private List<FunctionResolver<JavaCodeFragment>> cachedFunctionResolvers;
 
-    private List<IFunctionResolverFactory> resolverFactories;
+    private List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
 
     /**
      * @param ipsProject the project this class caches function resolvers for.
@@ -62,7 +62,8 @@ public class ExtensionFunctionResolversCache {
      * @param resolverFactories factories creating resolvers. Used instead of the factories provided
      *            by the extension point <code>org.faktorips.fl.FunctionResolver</code>.
      */
-    public ExtensionFunctionResolversCache(IIpsProject ipsProject, List<IFunctionResolverFactory> resolverFactories) {
+    public ExtensionFunctionResolversCache(IIpsProject ipsProject,
+            List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories) {
         this.ipsProject = ipsProject;
         this.resolverFactories = resolverFactories;
         registerListenerWithIpsModel();
@@ -94,7 +95,7 @@ public class ExtensionFunctionResolversCache {
 
     protected List<FunctionResolver<JavaCodeFragment>> createExtendingFunctionResolvers() {
         ArrayList<FunctionResolver<JavaCodeFragment>> resolvers = new ArrayList<FunctionResolver<JavaCodeFragment>>();
-        for (IFunctionResolverFactory factory : resolverFactories) {
+        for (IFunctionResolverFactory<JavaCodeFragment> factory : resolverFactories) {
             if (isActive(factory)) {
                 FunctionResolver<JavaCodeFragment> resolver = createFuntionResolver(factory);
                 addIfNotNull(resolvers, resolver);
@@ -110,7 +111,7 @@ public class ExtensionFunctionResolversCache {
         }
     }
 
-    private FunctionResolver<JavaCodeFragment> createFuntionResolver(IFunctionResolverFactory factory) {
+    private FunctionResolver<JavaCodeFragment> createFuntionResolver(IFunctionResolverFactory<JavaCodeFragment> factory) {
         try {
             FunctionResolver<JavaCodeFragment> resolver = createFunctionResolver(factory);
             return resolver;
@@ -123,15 +124,15 @@ public class ExtensionFunctionResolversCache {
         return null;
     }
 
-    private boolean isActive(IFunctionResolverFactory factory) {
+    private boolean isActive(IFunctionResolverFactory<JavaCodeFragment> factory) {
         return getIpsProject().getReadOnlyProperties().isActive(factory);
     }
 
-    private FunctionResolver<JavaCodeFragment> createFunctionResolver(IFunctionResolverFactory factory) {
+    private FunctionResolver<JavaCodeFragment> createFunctionResolver(IFunctionResolverFactory<JavaCodeFragment> factory) {
         Locale formulaLanguageLocale = getIpsProject().getFormulaLanguageLocale();
         if (factory instanceof AbstractProjectRelatedFunctionResolverFactory) {
-            return ((AbstractProjectRelatedFunctionResolverFactory)factory).newFunctionResolver(getIpsProject(),
-                    formulaLanguageLocale);
+            return ((AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment>)factory).newFunctionResolver(
+                    getIpsProject(), formulaLanguageLocale);
         } else {
             return factory.newFunctionResolver(formulaLanguageLocale);
         }

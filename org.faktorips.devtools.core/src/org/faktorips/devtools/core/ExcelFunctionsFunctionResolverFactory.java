@@ -25,7 +25,7 @@ import org.faktorips.fl.FunctionResolver;
  * 
  * @author Peter Erzberger
  */
-public class ExcelFunctionsFunctionResolverFactory implements IFunctionResolverFactory {
+public class ExcelFunctionsFunctionResolverFactory implements IFunctionResolverFactory<JavaCodeFragment> {
 
     /**
      * Returns a function resolver factory that contains a set of functions similar to a subset of

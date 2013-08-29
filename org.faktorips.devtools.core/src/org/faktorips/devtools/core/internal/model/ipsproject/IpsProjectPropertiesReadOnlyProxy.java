@@ -519,7 +519,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isActive(IFunctionResolverFactory factory) {
+    public boolean isActive(IFunctionResolverFactory<?> factory) {
         return propertiesInternal.isActive(factory);
     }
 

@@ -39,6 +39,7 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
@@ -122,7 +123,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
 
-    private IFunctionResolverFactory[] flFunctionResolvers;
+    private IFunctionResolverFactory<JavaCodeFragment>[] flFunctionResolvers;
 
     private IdentifierFilter flIdentifierFilter;
 
@@ -572,9 +573,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the <code>org.faktorips.fl.FunctionResolver</code>s that are registered at the
      * according extension-point.
      */
-    public IFunctionResolverFactory[] getFlFunctionResolverFactories() {
+    public IFunctionResolverFactory<JavaCodeFragment>[] getFlFunctionResolverFactories() {
         if (flFunctionResolvers == null) {
-            ArrayList<IFunctionResolverFactory> flFunctionResolverFactoryList = new ArrayList<IFunctionResolverFactory>();
+            ArrayList<IFunctionResolverFactory<JavaCodeFragment>> flFunctionResolverFactoryList = new ArrayList<IFunctionResolverFactory<JavaCodeFragment>>();
             IExtensionPoint extensionPoint = getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
                     "flFunctionResolverFactory"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
@@ -583,7 +584,8 @@ public class IpsPlugin extends AbstractUIPlugin {
                 for (IConfigurationElement configElement : configElements) {
                     if ("functionResolverFactory".equals(configElement.getName())) { //$NON-NLS-1$
                         try {
-                            IFunctionResolverFactory functionResolverFactory = (IFunctionResolverFactory)configElement
+                            @SuppressWarnings("unchecked")
+                            IFunctionResolverFactory<JavaCodeFragment> functionResolverFactory = (IFunctionResolverFactory<JavaCodeFragment>)configElement
                                     .createExecutableExtension("class"); //$NON-NLS-1$
                             flFunctionResolverFactoryList.add(functionResolverFactory);
 
@@ -595,8 +597,10 @@ public class IpsPlugin extends AbstractUIPlugin {
                     }
                 }
             }
-            flFunctionResolvers = flFunctionResolverFactoryList
+            @SuppressWarnings("unchecked")
+            IFunctionResolverFactory<JavaCodeFragment>[] resolverFactories = flFunctionResolverFactoryList
                     .toArray(new IFunctionResolverFactory[flFunctionResolverFactoryList.size()]);
+            flFunctionResolvers = resolverFactories;
         }
         return flFunctionResolvers;
     }
