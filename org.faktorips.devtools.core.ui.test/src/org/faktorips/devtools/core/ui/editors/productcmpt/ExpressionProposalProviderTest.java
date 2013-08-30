@@ -250,19 +250,19 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGiveAlphabeticalOrderForCompletionProposalsForProductCmptTypeAttributes() {
         IAttribute firstAttr = productCmptType.newAttribute();
-        firstAttr.setName("BCD");
+        firstAttr.setName("Attr_BCD");
         firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
 
         IAttribute secondAttr = productCmptType.newAttribute();
-        secondAttr.setName("ABC");
+        secondAttr.setName("Attr_ABC");
         secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
-        IContentProposal[] results = proposalProvider.getProposals("", 0);
+        IContentProposal[] results = proposalProvider.getProposals("Attr_", 5);
         IContentProposal proposal_1 = results[0];
         IContentProposal proposal_2 = results[1];
-        assertEquals("ABC", proposal_1.getContent());
-        assertEquals("BCD", proposal_2.getContent());
+        assertEquals("Attr_ABC", proposal_1.getContent());
+        assertEquals("Attr_BCD", proposal_2.getContent());
     }
 
     @Test
