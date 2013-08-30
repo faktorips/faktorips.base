@@ -92,18 +92,18 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         if (pos > 0) {
             String paramName = identifier.substring(0, pos);
             String attributePrefix = identifier.substring(pos + 1);
+            addMatchingFunctions(result, identifier);
             addMatchingAttributes(result, paramName, attributePrefix);
             addDefaultValuesToResult(result, paramName, attributePrefix);
-            addMatchingFunctions(result, identifier);
             addMatchingEnumValues(result, paramName, attributePrefix);
             if (ipsProject.getReadOnlyProperties().isAssociationsInFormulas()) {
                 addMatchingAssociations(result, paramName, attributePrefix);
             }
             addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
         } else {
-            addMatchingProductCmptTypeAttributes(result, identifier);
             addMatchingParameters(result, identifier);
             addMatchingFunctions(result, identifier);
+            addMatchingProductCmptTypeAttributes(result, identifier);
             addMatchingEnumTypes(result, identifier);
             addAdditionalProposals(result, getAdditionalProposals(identifier));
         }
