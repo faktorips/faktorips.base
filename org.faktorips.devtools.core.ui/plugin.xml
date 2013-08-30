@@ -497,17 +497,6 @@
          </view>
          <view
                closeable="false"
-               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
-               moveable="true"
-               ratio="0.5"
-               relationship="bottom"
-               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
                id="org.eclipse.ui.views.ProblemView"
                moveable="true"
                ratio="0.75"
@@ -565,11 +554,12 @@
                id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
                minimized="false"
                moveable="true"
+               ratio="0.5"
                relationship="bottom"
                relative="org.faktorips.devtools.core.ui.views.modelExplorer"
                showTitle="true"
                standalone="false"
-               visible="false">
+               visible="true">
          </view>
          <view
                closeable="true"
