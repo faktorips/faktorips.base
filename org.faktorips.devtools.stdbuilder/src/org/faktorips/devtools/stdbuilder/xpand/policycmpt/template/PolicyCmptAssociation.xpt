@@ -297,7 +297,9 @@
     	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
     «ENDIF-»
     «IF typeAssociation-»
-    	if (newObject == «fieldName») return;
+    	if (newObject == «fieldName») {
+    		return;
+    	}
     	«IF hasInverseAssociation()-»
 	        «targetInterfaceName» oldRefObject = «fieldName»;
 	        «fieldName» = null;
