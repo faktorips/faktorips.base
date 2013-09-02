@@ -37,7 +37,7 @@ public class ShowStructureHandler extends IpsAbstractHandler {
 
             try {
                 IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .showView(ProductStructureExplorer.EXTENSION_ID);
+                        .showView(ProductStructureExplorer.EXTENSION_ID, null, IWorkbenchPage.VIEW_ACTIVATE);
                 ((ProductStructureExplorer)pse).showStructure(ipsSrcFile);
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);

@@ -169,7 +169,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
             return true;
         }
 
-        Object otherVersionVersion = Version.parseVersion(otherVersion);
+        Version otherVersionVersion = Version.parseVersion(otherVersion);
         SortedSet<Version> versionsWithMigration = new TreeSet<Version>(registeredMigrations.keySet());
         for (Version version : versionsWithMigration) {
             if (version.compareTo(otherVersionVersion) > 0 && version.compareTo(getVersion()) <= 0) {

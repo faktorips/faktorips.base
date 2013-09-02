@@ -125,17 +125,21 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         setFocusSuccessors();
         registerSelectionProviderActivation(stack.topControl);
 
-        reduceToOneColumnAsNecessary(left, right);
-        sashForm.setWeights(new int[] { 40, 60 });
+        boolean reduced = reduceToOneColumnAsNecessary(left, right);
+        if (!reduced) {
+            sashForm.setWeights(new int[] { 40, 60 });
+        }
     }
 
-    private void reduceToOneColumnAsNecessary(Composite left, Composite right) {
+    private boolean reduceToOneColumnAsNecessary(Composite left, Composite right) {
         boolean leftEmpty = disposeColumnIfEmpty(left, leftSections);
         boolean rightEmpty = disposeColumnIfEmpty(right, rightSections);
         if (leftEmpty || rightEmpty) {
             GridLayout layout = (GridLayout)((Composite)stack.topControl).getLayout();
             layout.numColumns = 1;
+            return true;
         }
+        return false;
     }
 
     private boolean disposeColumnIfEmpty(Composite column, List<IpsSection> columnSections) {
