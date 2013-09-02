@@ -106,7 +106,7 @@
 			«ELSE-»
 				«IF oneToMany-»
 			        for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) { «REM» TODO cast ohne published interfaces nicht noetig«ENDREM»
-			            «targetClassName» «copySupportLoopVarName» = («targetClassName»)it.next();
+			            «targetClassName» «copySupportLoopVarName» = «castToImplementation(targetClassName)» it.next();
 			            «targetClassName» «copySupportCopyVarName» = («targetClassName»)«copySupportLoopVarName».newCopyInternal(copyMap);
 			            «IF setInverseAssociationInCopySupport-»
 				            «copySupportCopyVarName».«inverseAssociation.methodNameSetOrAddInternal»(concreteCopy);
@@ -149,7 +149,7 @@
 			«IF oneToMany-»
 				for («targetInterfaceName» «copySupportLoopVarNameInternal» : «fieldName») {
 		            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«copySupportLoopVarNameInternal»);
-		            ((«targetClassName»)«copySupportLoopVarNameInternal»).copyAssociationsInternal(«copySupportCopyVarName», copyMap);
+		            «castToImplementation(targetClassName, copySupportLoopVarNameInternal)».copyAssociationsInternal(«copySupportCopyVarName», copyMap);
 		        }
 			«ELSE-»
 		        if («fieldName» != null) {

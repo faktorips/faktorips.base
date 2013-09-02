@@ -2,6 +2,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 
@@ -211,7 +212,7 @@
 			        if (newParent != null && «parentVar()» != null) {
 			            throw new «RuntimeException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
 			        }
-			        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
+			        this.«fieldName» = «castToImplementation(targetClassName)» newParent;
 			        «IF typeConfigurableByProductCmptType-»
 			        	effectiveFromHasChanged();
 					«ENDIF-»
@@ -292,7 +293,7 @@
 	            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this")-»
 	        }
         «ENDIF-»
-        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+        «fieldName» = «castToImplementation(targetClassName)» newObject;
     	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
     «ENDIF-»
     «IF typeAssociation-»
@@ -302,7 +303,7 @@
 	        «fieldName» = null;
 	        «EXPAND cleanupOldReference("oldRefObject")-»
 	    «ENDIF-»
-        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+        «fieldName» = «castToImplementation(targetClassName)» newObject;
     	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
     «ENDIF-»
 «ENDDEFINE»
@@ -336,7 +337,7 @@
 «ENDDEFINE»
 
 «DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
-	«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«inverseAssociation.methodNameSetOrAddInternal»(«newRef»);
+	«IF cast»«castToImplementation(targetClassName, varName)»«ELSE»«varName»«ENDIF».«inverseAssociation.methodNameSetOrAddInternal»(«newRef»);
 «ENDDEFINE»
 
 «DEFINE cleanupOldReference(String varToCleanUp) FOR XPolicyAssociation-»
@@ -355,16 +356,6 @@
     «ELSE-»
 		«varToCleanUp».«inverseAssociation.methodNameSetOrAdd»(null);    	
     «ENDIF-»
-«ENDDEFINE»
-
-«DEFINE castIfNeccessary(String varName) FOR XPolicyAssociation-»
-	«IF generatePublishedInterfaces-»
-	(«EXPAND castToImplementationIfNecessary»«varName»)«ELSE-»
-	«varName»«ENDIF-»
-«ENDDEFINE»
-
-«DEFINE castToImplementationIfNecessary FOR XPolicyAssociation-»
-	«IF generatePublishedInterfaces-»(«targetClassName»)«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE newChildMethods FOR XPolicyAssociation-»
@@ -412,7 +403,7 @@
 
 «DEFINE synchronizeInverseCompositionIfNecessaryForAdd FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForAdd-»
-		«EXPAND castIfNeccessary("objectToAdd")».«inverseAssociation.methodNameSetOrAddInternal»(this);
+		«castToImplementation(targetClassName, "objectToAdd")».«inverseAssociation.methodNameSetOrAddInternal»(this);
     «ENDIF-»
 «ENDDEFINE»
 
@@ -431,7 +422,7 @@
 				«ENDREM»
 				«ENDIF-»
 				«IF oneToMany-»
-					«EXPAND castIfNeccessary(objectToSynchronize)».«inverseAssociation.methodNameSetOrAdd»(this);
+					«castToImplementation(targetClassName, objectToSynchronize)».«inverseAssociation.methodNameSetOrAdd»(this);
 				«ELSE-»
 					«objectToSynchronize».«inverseAssociation.methodNameSetOrAdd»(this);
 				«ENDIF-»
@@ -484,9 +475,9 @@
 			objectToRemove.«inverseAssociation.methodNameRemove»(this);
 		«ELSE-»
 			«IF inverseAssociation.typeAssociation-»
-				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
+				«castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
 			«ELSE-»
-				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
+				«castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
 			«ENDIF-»
 		«ENDIF-»
 	«ENDIF-»
@@ -496,14 +487,14 @@
 	«IF considerInEffectiveFromHasChanged-»
 		«IF oneToMany-»
 			for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) {
-	            «AbstractConfigurableModelObject()» child = («AbstractConfigurableModelObject()»)it.next();
+	            «AbstractConfigurableModelObject()» child = «castToImplementation(AbstractConfigurableModelObject())»it.next();
 	            child.effectiveFromHasChanged();
 	        }
 		«ELSE-»
 			if («fieldName» != null) {
-	            ((«AbstractConfigurableModelObject()»)«fieldName»).effectiveFromHasChanged();
+	            «castToImplementation(AbstractConfigurableModelObject(), fieldName)».effectiveFromHasChanged();
 	        }
-		«ENDIF-»
+		«ENDIF-»				 
 	«ENDIF-»
 «ENDDEFINE»
 
@@ -543,7 +534,7 @@
             «IF abstractTarget-»
             	throw new RuntimeException(childEl.toString() + ": Attribute className is missing.");
             «ELSE-»
-            	return («AbstractModelObject()»)«methodNameNew»();
+            	return «castToImplementation(AbstractModelObject())»«methodNameNew»();
             «ENDIF-»
         }
 	«ENDIF-»

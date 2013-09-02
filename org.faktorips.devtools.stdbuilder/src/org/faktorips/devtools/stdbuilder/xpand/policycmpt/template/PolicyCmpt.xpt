@@ -175,7 +175,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      * @generated
      */
     public «tableClassName» «method(methodNameGetter)» {
-    	«policyClass.productCmptGenerationNode.implClassName» productCmpt = («policyClass.productCmptGenerationNode.implClassName»)«policyClass.methodNameGetProductCmptGeneration»();
+    	«policyClass.productCmptGenerationNode.implClassName» productCmpt = «castToImplementation(policyClass.productCmptGenerationNode.implClassName)»«policyClass.methodNameGetProductCmptGeneration»();
         if (productCmpt == null) {
             return null;
         }

@@ -119,3 +119,9 @@ abstract(XType this) :
 
 isPolicyCmptClass(XClass xClass) :
 	if XPolicyCmptClass.isInstance(xClass) then true else false;
+
+castToImplementation(AbstractGeneratorModelNode this, String className) :
+	if generatePublishedInterfaces then "(" + className + ")" else "";
+	
+castToImplementation(AbstractGeneratorModelNode this, String className, String varName) :
+	if generatePublishedInterfaces then "((" + className + ")" + varName + ")" else varName;
