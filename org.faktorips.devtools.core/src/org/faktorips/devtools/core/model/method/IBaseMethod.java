@@ -31,11 +31,6 @@ public interface IBaseMethod extends IParameterContainer {
      */
     public static final String MSGCODE_PREFIX = "METHOD-"; //$NON-NLS-1$
 
-    public static final String MSGCODE_DUBLICATE_SIGNATURE = MSGCODE_PREFIX + "duplicateSignature"; //$NON-NLS-1$
-
-    public static final String MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE = MSGCODE_PREFIX
-            + "returnTypeIsIncompatibleWithOverriddenMethod"; //$NON-NLS-1$
-
     public static final String MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME = MSGCODE_PREFIX
             + "multipleUseOfSameParameterName"; //$NON-NLS-1$
 

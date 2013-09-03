@@ -249,7 +249,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.INTEGER.getName(), "index");
 
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_DUBLICATE_SIGNATURE));
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_DUBLICATE_SIGNATURE));
     }
 
     @Test
@@ -263,7 +263,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.INTEGER.getName(), "index");
 
         MessageList msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         IType superType = newPolicyCmptType(ipsProject, "SuperType");
         IMethod overridden = superType.newMethod();
@@ -274,25 +274,60 @@ public class MethodTest extends AbstractIpsPluginTest {
         overridden.newParameter(Datatype.INTEGER.getName(), "index");
 
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         pcType.setSupertype(superType.getQualifiedName());
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         method.setDatatype("int");
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         // test, if the datatype in the supertype is invalid, the error message is still generated.
         overridden.setDatatype("unknownType");
         msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
 
         // if the datatype in the method itself is invalid, no message should be generated.
         method.setDatatype("unknown");
         msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
+    }
+
+    @Test
+    public void testValidateModifierOverriddenMethod() throws Exception {
+        IType pcType = newPolicyCmptType(ipsProject, "AType");
+        method = pcType.newMethod();
+        method.setModifier(Modifier.PUBLISHED);
+        method.setName("calculate");
+        method.setDatatype("String");
+        method.setAbstract(true);
+
+        MessageList msgList = method.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_MODIFIER_NOT_EQUAL));
+
+        IType superType = newPolicyCmptType(ipsProject, "SuperType");
+        pcType.setSupertype(superType.getQualifiedName());
+        IMethod overridden = superType.newMethod();
+        overridden.setModifier(Modifier.PUBLISHED);
+        overridden.setName("calculate");
+        overridden.setDatatype("String");
+
+        msgList = method.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_MODIFIER_NOT_EQUAL));
+
+        overridden.setModifier(Modifier.PUBLIC);
+        msgList = method.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_MODIFIER_NOT_EQUAL));
+
+        method.setModifier(Modifier.PUBLIC);
+        msgList = method.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_MODIFIER_NOT_EQUAL));
+
+        overridden.setModifier(Modifier.PUBLISHED);
+        msgList = method.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_MODIFIER_NOT_EQUAL));
     }
 
     @Test

@@ -165,69 +165,6 @@ public class BaseMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws Exception {
-        IType pcType = newPolicyCmptType(ipsProject, "aType");
-        method = pcType.newMethod();
-        method.setName("calculate");
-        method.setDatatype("String");
-        method.newParameter(Datatype.STRING.getName(), "strategy");
-        method.newParameter(Datatype.INTEGER.getName(), "index");
-
-        MessageList msgList = method.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
-
-        method = pcType.newMethod();
-        method.setName("calculate");
-        method.setDatatype("String");
-        method.newParameter(Datatype.STRING.getName(), "strategy");
-        method.newParameter(Datatype.INTEGER.getName(), "index");
-
-        msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_DUBLICATE_SIGNATURE));
-    }
-
-    @Test
-    public void testValidateInconsistentReturnType() throws Exception {
-        IType pcType = newPolicyCmptType(ipsProject, "AType");
-        method = pcType.newMethod();
-        method.setName("calculate");
-        method.setDatatype("String");
-        method.newParameter(Datatype.STRING.getName(), "strategy");
-        method.newParameter(Datatype.INTEGER.getName(), "index");
-
-        MessageList msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
-
-        IType superType = newPolicyCmptType(ipsProject, "SuperType");
-        IBaseMethod overridden = superType.newMethod();
-        overridden.setName("calculate");
-        overridden.setDatatype("String");
-        overridden.newParameter(Datatype.STRING.getName(), "strategy");
-        overridden.newParameter(Datatype.INTEGER.getName(), "index");
-
-        msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
-
-        pcType.setSupertype(superType.getQualifiedName());
-        msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
-
-        method.setDatatype("int");
-        msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
-
-        // test, if the datatype in the supertype is invalid, the error message is still generated.
-        overridden.setDatatype("unknownType");
-        msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
-
-        // if the datatype in the method itself is invalid, no message should be generated.
-        method.setDatatype("unknown");
-        msgList = method.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
-    }
-
-    @Test
     public void testValidateMultipleParameterNames() throws CoreException {
         IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();

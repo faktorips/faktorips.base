@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -187,24 +188,38 @@ public abstract class Method extends TypePart implements IMethod {
                     "", NLS.bind(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
         if (validateDuplicateMethodInSameType(result)) {
-            validateReturnTypeOfOverriddenMethod(result, ipsProject);
+            validateOverriddenMethod(result, ipsProject);
         }
     }
 
-    private void validateReturnTypeOfOverriddenMethod(MessageList list, IIpsProject ipsProject) throws CoreException {
-        Datatype returnType = findDatatype(ipsProject);
-        if (returnType == null) {
-            return;
-        }
+    private void validateOverriddenMethod(MessageList list, IIpsProject ipsProject) throws CoreException {
         IMethod overridden = findOverriddenMethod(ipsProject);
         if (overridden == null) {
+            return;
+        }
+        validateModifierOfOverriddenMethod(list, overridden);
+        validateReturnTypeOfOverriddenMethod(list, overridden, ipsProject);
+    }
+
+    private void validateModifierOfOverriddenMethod(MessageList list, IMethod overridden) {
+        if (!getModifier().equals(overridden.getModifier())) {
+            list.add(Message.newError(MSGCODE_MODIFIER_NOT_EQUAL,
+                    NLS.bind(Messages.TypeMethod_msg_modifierOverriddenNotEqual, overridden.getModifier().getId()),
+                    this, ITypePart.PROPERTY_MODIFIER));
+        }
+    }
+
+    private void validateReturnTypeOfOverriddenMethod(MessageList list, IMethod overridden, IIpsProject ipsProject)
+            throws CoreException {
+        Datatype returnType = findDatatype(ipsProject);
+        if (returnType == null) {
             return;
         }
         Datatype overriddenReturnType = overridden.findDatatype(ipsProject);
         if (!returnType.equals(overriddenReturnType)) {
             String text = NLS.bind(Messages.TypeMethod_incompatbileReturnType, overridden.getType()
                     .getUnqualifiedName(), overridden.getSignatureString());
-            Message msg = Message.newError(IBaseMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE, text, this,
+            Message msg = Message.newError(MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE, text, this,
                     IBaseMethod.PROPERTY_DATATYPE);
             list.add(msg);
         }
