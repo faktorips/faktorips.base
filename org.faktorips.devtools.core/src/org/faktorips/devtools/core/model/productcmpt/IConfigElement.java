@@ -36,50 +36,50 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  */
 public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescribedElement {
 
-    public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
-    public final static String PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE = "policyCmptTypeAttribute"; //$NON-NLS-1$
-    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    public static final String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+    public static final String PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE = "policyCmptTypeAttribute"; //$NON-NLS-1$
+    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
     public static final String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute the configuration element is based
      * can't be found.
      */
-    public final static String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute's data type can't be found and so the
      * value can't be parsed.
      */
-    public final static String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type is invalid. (E.g. the definition of a
      * dynamic data type can be wrong.)
      */
-    public final static String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value can't be parsed, it is not an instance of
      * the data type
      */
-    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value is not contained in the value set.
      */
-    public final static String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value-set of the attribute (in the model) is
      * invalid.
      */
-    public final static String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the config'elements value set is not of a type that
@@ -89,17 +89,22 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
      * are allowed. If <code>RANGE</code> is specified in the model, then only <code>RANGE</code> is
      * allowed in the configuration element.
      */
-    public final static String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the config'elements value set is not a subset of the
      * value set defined in the model.
      */
-    public final static String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
 
     /**
      * Returns the product component generation this configuration element belongs to.
+     * 
+     * @deprecated Config-elements can be used in a context other than product component
+     *             generations. This method will then yield unexpected and or erroneous results. Use
+     *             {@link #getParent()} instead.
      */
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**

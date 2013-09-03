@@ -53,7 +53,7 @@ import org.w3c.dom.Element;
 
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
-    public final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
+    public static final String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
 
     private String pcTypeAttribute;
 
@@ -76,7 +76,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return (IPropertyValueContainer)getParent();
     }
 
+    /**
+     * Returns the product component generation this configuration element belongs to.
+     * 
+     * @deprecated Config-elements can be used in a context other than product component
+     *             generations. This method will then yield unexpected and or erroneous results. Use
+     *             {@link #getParent()} instead.
+     */
     @Override
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
@@ -250,7 +258,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(),
                     modelValueSet.toShortString());
         } else {
-            throw new RuntimeException(); // should never happen
+            // should never happen
+            throw new RuntimeException();
         }
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
         String[] invalidProperties = null;
@@ -319,7 +328,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     public IEnumValueSet convertValueSetToEnumType() {
         ValueSetType newValueSetType = ValueSetType.ENUM;
         if (valueSet.getValueSetType().equals(newValueSetType)) {
-            return (IEnumValueSet)valueSet; // unchanged
+            // unchanged
+            return (IEnumValueSet)valueSet;
         }
         setValueSetType(newValueSetType);
         EnumValueSet newValueSet = (EnumValueSet)valueSet;

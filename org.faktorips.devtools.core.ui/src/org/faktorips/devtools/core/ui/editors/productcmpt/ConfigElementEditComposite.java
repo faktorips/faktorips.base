@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -128,7 +127,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         }
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
-                .getValueSet(), getGeneration().getIpsProject());
+                .getValueSet(), getPropertyValue().getIpsProject());
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
         return editField;
@@ -254,10 +253,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     private int getLabelWidthForText(Label label, String text) {
         label.setText(text);
         return label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-    }
-
-    private IProductCmptGeneration getGeneration() {
-        return getPropertyValue().getProductCmptGeneration();
     }
 
     private void createEditFieldsForExtensionProperties() {
