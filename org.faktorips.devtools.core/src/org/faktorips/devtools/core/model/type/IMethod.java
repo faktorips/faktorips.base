@@ -21,6 +21,13 @@ public interface IMethod extends ITypePart, IBaseMethod {
 
     public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
+    public static final String MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE = IBaseMethod.MSGCODE_PREFIX
+            + "returnTypeIsIncompatibleWithOverriddenMethod"; //$NON-NLS-1$
+
+    public static final String MSGCODE_DUBLICATE_SIGNATURE = IBaseMethod.MSGCODE_PREFIX + "duplicateSignature"; //$NON-NLS-1$
+
+    public static final String MSGCODE_MODIFIER_NOT_EQUAL = IBaseMethod.MSGCODE_PREFIX + "modifierNotEqual"; //$NON-NLS-1$
+
     /**
      * Returns <code>true</code> if this is an abstract method, <code>false</code> otherwise.
      */

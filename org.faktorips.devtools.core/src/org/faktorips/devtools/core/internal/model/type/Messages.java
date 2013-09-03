@@ -56,6 +56,7 @@ public class Messages extends NLS {
     public static String TypeMethod_duplicateSignature;
     public static String TypeMethod_incompatbileReturnType;
     public static String TypeMethod_msg_abstractMethodError;
+    public static String TypeMethod_msg_modifierOverriddenNotEqual;
 
     public static String Type_msg_AbstractMissmatch;
     public static String Type_msg_cycleInTypeHierarchy;
