@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
@@ -306,8 +307,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        computeDeltaToModel(ipsProject).fixAllDifferencesToModel();
+    public void fixAllDifferencesToModel(final IIpsProject ipsProject) throws CoreException {
+        getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Object>(getIpsSrcFile()) {
+
+            @Override
+            protected boolean execute() throws CoreException {
+                computeDeltaToModel(ipsProject).fixAllDifferencesToModel();
+                return true;
+            }
+
+        });
     }
 
     @Override
