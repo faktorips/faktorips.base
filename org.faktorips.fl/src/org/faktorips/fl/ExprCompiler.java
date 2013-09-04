@@ -14,10 +14,13 @@
 package org.faktorips.fl;
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -410,23 +413,15 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     }
 
     /**
-     * Returns an iterator to access the added function resolvers.
-     */
-    Iterator<FunctionResolver<T>> getFunctionResolvers() {
-        return functionResolvers.iterator();
-    }
-
-    /**
      * Return the functions supported by the compiler.
      */
     public FlFunction<T>[] getFunctions() {
         List<FlFunction<T>> functions = new ArrayList<FlFunction<T>>();
-        for (Iterator<FunctionResolver<T>> it = getFunctionResolvers(); it.hasNext();) {
-            FunctionResolver<T> resolver = it.next();
+        for (FunctionResolver<T> resolver : functionResolvers) {
             FlFunction<T>[] resolverFunctions = resolver.getFunctions();
-            for (FlFunction<T> resolverFunction : resolverFunctions) {
-                functions.add(resolverFunction);
-            }
+            List<FlFunction<T>> functionsOfResolver = Arrays.asList(resolverFunctions);
+            Collections.sort(functionsOfResolver, new FunctionComparator());
+            functions.addAll(functionsOfResolver);
         }
         @SuppressWarnings("unchecked")
         FlFunction<T>[] flFunctions = new FlFunction[functions.size()];
@@ -595,4 +590,17 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     public static LocalizedStringsSet getLocalizedStrings() {
         return LOCALIZED_STRINGS;
     }
+
+    private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = -6448576956808509752L;
+
+        public int compare(FlFunction<?> o1, FlFunction<?> o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
 }

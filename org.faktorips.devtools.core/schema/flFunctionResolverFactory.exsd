@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.devtools.core">
+<schema targetNamespace="org.faktorips.devtools.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.faktorips.devtools.core" id="flFunctionResolverFactory" name="factory for formula language function resolvers"/>
@@ -11,11 +11,15 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="functionResolverFactory"/>
          </sequence>
-      
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
@@ -58,6 +62,13 @@
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.IFunctionResolverFactory"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="sortorder" type="string">
+            <annotation>
+               <documentation>
+                  You can set the sort order of the functions provided by this function resolver factory. The order will be used for example in auto completion help context. Only numeric values are allowed!
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,6 +26,7 @@ import org.faktorips.devtools.core.fl.AbstractProjectRelatedFunctionResolverFact
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.SortorderSet;
 import org.faktorips.fl.FunctionResolver;
 
 /**
@@ -44,14 +44,14 @@ public class ExtensionFunctionResolversCache {
 
     private List<FunctionResolver<JavaCodeFragment>> cachedFunctionResolvers;
 
-    private List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
+    private SortorderSet<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
 
     /**
      * @param ipsProject the project this class caches function resolvers for.
      */
     public ExtensionFunctionResolversCache(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
-        resolverFactories = Arrays.asList(IpsPlugin.getDefault().getFlFunctionResolverFactories());
+        resolverFactories = IpsPlugin.getDefault().getFlFunctionResolverFactories();
         registerListenerWithIpsModel();
     }
 
@@ -63,7 +63,7 @@ public class ExtensionFunctionResolversCache {
      *            by the extension point <code>org.faktorips.fl.FunctionResolver</code>.
      */
     public ExtensionFunctionResolversCache(IIpsProject ipsProject,
-            List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories) {
+            SortorderSet<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories) {
         this.ipsProject = ipsProject;
         this.resolverFactories = resolverFactories;
         registerListenerWithIpsModel();
@@ -95,7 +95,7 @@ public class ExtensionFunctionResolversCache {
 
     protected List<FunctionResolver<JavaCodeFragment>> createExtendingFunctionResolvers() {
         ArrayList<FunctionResolver<JavaCodeFragment>> resolvers = new ArrayList<FunctionResolver<JavaCodeFragment>>();
-        for (IFunctionResolverFactory<JavaCodeFragment> factory : resolverFactories) {
+        for (IFunctionResolverFactory<JavaCodeFragment> factory : resolverFactories.getSortedValues()) {
             if (isActive(factory)) {
                 FunctionResolver<JavaCodeFragment> resolver = createFuntionResolver(factory);
                 addIfNotNull(resolvers, resolver);

@@ -61,6 +61,7 @@ import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManager
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.refactor.IIpsRefactoringFactory;
+import org.faktorips.devtools.core.util.SortorderSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.IValueConverter;
@@ -123,7 +124,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
 
-    private IFunctionResolverFactory<JavaCodeFragment>[] flFunctionResolvers;
+    private SortorderSet<IFunctionResolverFactory<JavaCodeFragment>> flFunctionResolvers;
 
     private IdentifierFilter flIdentifierFilter;
 
@@ -573,9 +574,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the <code>org.faktorips.fl.FunctionResolver</code>s that are registered at the
      * according extension-point.
      */
-    public IFunctionResolverFactory<JavaCodeFragment>[] getFlFunctionResolverFactories() {
+    public SortorderSet<IFunctionResolverFactory<JavaCodeFragment>> getFlFunctionResolverFactories() {
         if (flFunctionResolvers == null) {
-            ArrayList<IFunctionResolverFactory<JavaCodeFragment>> flFunctionResolverFactoryList = new ArrayList<IFunctionResolverFactory<JavaCodeFragment>>();
+            flFunctionResolvers = new SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>();
             IExtensionPoint extensionPoint = getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
                     "flFunctionResolverFactory"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
@@ -587,7 +588,13 @@ public class IpsPlugin extends AbstractUIPlugin {
                             @SuppressWarnings("unchecked")
                             IFunctionResolverFactory<JavaCodeFragment> functionResolverFactory = (IFunctionResolverFactory<JavaCodeFragment>)configElement
                                     .createExecutableExtension("class"); //$NON-NLS-1$
-                            flFunctionResolverFactoryList.add(functionResolverFactory);
+                            Integer sortOrder;
+                            try {
+                                sortOrder = Integer.valueOf(configElement.getAttribute("sortorder")); //$NON-NLS-1$
+                            } catch (NumberFormatException e) {
+                                sortOrder = null;
+                            }
+                            flFunctionResolvers.add(functionResolverFactory, sortOrder);
 
                         } catch (CoreException e) {
                             log(new IpsStatus(
@@ -597,10 +604,6 @@ public class IpsPlugin extends AbstractUIPlugin {
                     }
                 }
             }
-            @SuppressWarnings("unchecked")
-            IFunctionResolverFactory<JavaCodeFragment>[] resolverFactories = flFunctionResolverFactoryList
-                    .toArray(new IFunctionResolverFactory[flFunctionResolverFactoryList.size()]);
-            flFunctionResolvers = resolverFactories;
         }
         return flFunctionResolvers;
     }

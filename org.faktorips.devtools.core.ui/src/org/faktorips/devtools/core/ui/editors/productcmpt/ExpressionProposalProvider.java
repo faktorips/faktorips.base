@@ -247,7 +247,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addMatchingFunctions(List<IContentProposal> result, String prefix) {
         ExprCompiler<JavaCodeFragment> compiler = expression.newExprCompiler(expression.getIpsProject());
         FlFunction<JavaCodeFragment>[] functions = compiler.getFunctions();
-        Arrays.sort(functions, new SortFunctions());
         for (FlFunction<JavaCodeFragment> function : functions) {
             if (checkMatchingNameWithCaseInsensitive(function.getName(), prefix)) {
                 addFunctionToResult(result, function, prefix);
@@ -546,19 +545,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
-        }
-    }
-
-    private static final class SortFunctions implements Comparator<FlFunction<JavaCodeFragment>>, Serializable {
-
-        /**
-         * Comment for <code>serialVersionUID</code>
-         */
-        private static final long serialVersionUID = -6448576956808509752L;
-
-        @Override
-        public int compare(FlFunction<JavaCodeFragment> o1, FlFunction<JavaCodeFragment> o2) {
-            return o1.getName().compareTo(o2.getName());
         }
     }
 

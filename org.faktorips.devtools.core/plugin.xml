@@ -287,12 +287,16 @@
          id="excelFunctionResolverFactory"
          name="function resolver factory for an excel function resolver"
          point="org.faktorips.devtools.core.flFunctionResolverFactory">
-         <functionResolverFactory class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"/>
          <functionResolverFactory
-               class="org.faktorips.devtools.core.fl.AssociationNavigationFunctionsResolverFactory">
+               class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"
+               sortorder="0"/>
+         <functionResolverFactory
+               class="org.faktorips.devtools.core.fl.AssociationNavigationFunctionsResolverFactory"
+               sortorder="1">
          </functionResolverFactory>
          <functionResolverFactory
-               class="org.faktorips.devtools.core.fl.TableSingleContentFunctionResolverFactory">
+               class="org.faktorips.devtools.core.fl.TableSingleContentFunctionResolverFactory"
+               sortorder="2">
          </functionResolverFactory>
    </extension>
    

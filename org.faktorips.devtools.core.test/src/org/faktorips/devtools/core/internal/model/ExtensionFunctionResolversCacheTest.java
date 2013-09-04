@@ -20,8 +20,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
@@ -31,6 +29,7 @@ import org.faktorips.devtools.core.fl.AbstractProjectRelatedFunctionResolverFact
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.SortorderSet;
 import org.faktorips.fl.FunctionResolver;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class ExtensionFunctionResolversCacheTest {
     private ExtendedExprCompiler compiler;
     private IFunctionResolverFactory<JavaCodeFragment> resolverFactory;
     private AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment> projectRelatedResolverFactory;
-    private List<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
+    private SortorderSet<IFunctionResolverFactory<JavaCodeFragment>> resolverFactories;
     private FunctionResolver<JavaCodeFragment> resolver;
     private FunctionResolver<JavaCodeFragment> projectRelatedResolver;
     private IIpsProject ipsProject;
@@ -65,9 +64,9 @@ public class ExtensionFunctionResolversCacheTest {
         resolverFactory = mock(IFunctionResolverFactory.class);
         projectRelatedResolverFactory = mock(AbstractProjectRelatedFunctionResolverFactory.class);
 
-        resolverFactories = new ArrayList<IFunctionResolverFactory<JavaCodeFragment>>();
-        resolverFactories.add(resolverFactory);
-        resolverFactories.add(projectRelatedResolverFactory);
+        resolverFactories = new SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>();
+        resolverFactories.add(resolverFactory, 0);
+        resolverFactories.add(projectRelatedResolverFactory, 1);
     }
 
     protected void setUpProjectProperties() {
