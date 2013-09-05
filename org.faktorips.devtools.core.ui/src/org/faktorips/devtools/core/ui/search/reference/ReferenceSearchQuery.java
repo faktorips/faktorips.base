@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
@@ -97,7 +98,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
     @Override
     public String getLabel() {
-        return Messages.ReferenceSearchQuery_labelPrefix + this.referenced.getName();
+        return NLS.bind(Messages.ReferenceSearchQuery_labelPrefix, this.referenced.getName());
     }
 
     public String getReferencedName() {

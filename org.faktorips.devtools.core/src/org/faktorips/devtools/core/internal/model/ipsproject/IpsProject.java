@@ -1014,7 +1014,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
         result.addAll(foundSrcFiles);
     }
 
-    protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypes) throws CoreException {
+    protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypesVarArg) throws CoreException {
+        IpsObjectType[] ipsObjectTypes;
+        if (ipsObjectTypesVarArg.length == 0) {
+            ipsObjectTypes = getIpsModel().getIpsObjectTypes();
+        } else {
+            ipsObjectTypes = ipsObjectTypesVarArg;
+        }
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         for (IpsObjectType ipsObjectType : ipsObjectTypes) {

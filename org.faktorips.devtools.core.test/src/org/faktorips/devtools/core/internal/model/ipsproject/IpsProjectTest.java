@@ -2127,4 +2127,33 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Locale.ENGLISH, ipsProject.getFormulaLanguageLocale());
     }
 
+    @Test
+    public void testFindAllIpsSrcFiles_allTypes() throws Exception {
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.A");
+
+        List<IIpsSrcFile> allIpsSrcFiles = ipsProject.findAllIpsSrcFiles();
+
+        assertEquals(1, allIpsSrcFiles.size());
+        assertTrue(allIpsSrcFiles.contains(a.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testFindAllIpsSrcFiles_oneIpsObjectType() throws Exception {
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.A");
+
+        List<IIpsSrcFile> allIpsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+
+        assertEquals(1, allIpsSrcFiles.size());
+        assertTrue(allIpsSrcFiles.contains(a.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testFindAllIpsSrcFiles_wrongIpsObjectType() throws Exception {
+        newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.A");
+
+        List<IIpsSrcFile> allIpsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+
+        assertTrue(allIpsSrcFiles.isEmpty());
+    }
+
 }
