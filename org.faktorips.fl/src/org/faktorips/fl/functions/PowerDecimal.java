@@ -32,11 +32,15 @@ public class PowerDecimal extends AbstractFlFunction {
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append("Decimal.valueOf(");
         fragment.append(argResults[0].getCodeFragment());
         fragment.append('.');
-        fragment.append("power");
+        fragment.append("bigDecimalValue()");
+        fragment.append('.');
+        fragment.append("pow");
         fragment.append('(');
         fragment.append(argResults[1].getCodeFragment());
+        fragment.append(')');
         fragment.append(')');
 
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.DECIMAL);

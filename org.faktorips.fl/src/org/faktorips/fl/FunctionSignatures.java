@@ -206,9 +206,14 @@ public enum FunctionSignatures {
      */
     WholeNumber(INTEGER, new Datatype[] { DECIMAL }),
     /**
+     * Returns the Decimal argument, to the power of the Integer value.<br/>
+     * {@code Decimal=ValueOf(Decimal.bigDecimalValue().pow(Integer)}
+     */
+    PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, INTEGER }),
+    /**
      * Still need to be documented
      */
-    PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL });
+    Root(DECIMAL, new Datatype[] { DECIMAL });
 
     private final Datatype type;
     private final Datatype[] argTypes;
