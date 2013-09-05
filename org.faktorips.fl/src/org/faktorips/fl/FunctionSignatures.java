@@ -204,7 +204,11 @@ public enum FunctionSignatures {
      * @see Datatype#INTEGER
      * @see Datatype#DECIMAL
      */
-    WholeNumber(INTEGER, new Datatype[] { DECIMAL });
+    WholeNumber(INTEGER, new Datatype[] { DECIMAL }),
+    /**
+     * Still need to be documented
+     */
+    PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL });
 
     private final Datatype type;
     private final Datatype[] argTypes;

@@ -29,6 +29,7 @@ import org.faktorips.fl.functions.MinMaxMoney;
 import org.faktorips.fl.functions.Not;
 import org.faktorips.fl.functions.NotBoolean;
 import org.faktorips.fl.functions.Or;
+import org.faktorips.fl.functions.PowerDecimal;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.WholeNumber;
 
@@ -50,6 +51,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
     public static final String NOT = "not";
     public static final String OR = "or";
     public static final String AND = "and";
+    public static final String POWER = "power";
 
     /**
      * Creates a new resolver that contains a set of functions that are similar by name and argument
@@ -80,6 +82,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new MinMaxLong(getFctName(MIN), getFctDescription(MIN), false));
         add(new MinMaxDouble(getFctName(MAX), getFctDescription(MAX), true));
         add(new MinMaxDouble(getFctName(MIN), getFctDescription(MIN), false));
+        add(new PowerDecimal(getFctName(POWER), getFctDescription(POWER)));
     }
 
     @Override
