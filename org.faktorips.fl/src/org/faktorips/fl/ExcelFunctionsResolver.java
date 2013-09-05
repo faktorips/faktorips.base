@@ -19,6 +19,7 @@ import java.util.Locale;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
+import org.faktorips.fl.functions.Count;
 import org.faktorips.fl.functions.If;
 import org.faktorips.fl.functions.IsEmpty;
 import org.faktorips.fl.functions.MinMaxDecimal;
@@ -55,6 +56,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
     public static final String AND = "and";
     public static final String POWER = "power";
     public static final String SQRT = "sqrt";
+    public static final String COUNT = "count";
 
     /**
      * Creates a new resolver that contains a set of functions that are similar by name and argument
@@ -88,6 +90,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new PowerDecimal(getFctName(POWER), getFctDescription(POWER)));
         add(new PowerInt(getFctName(POWER), getFctDescription(POWER)));
         add(new SqrtDecimal(getFctName(SQRT), getFctDescription(SQRT)));
+        add(new Count(getFctName(COUNT), getFctDescription(COUNT)));
     }
 
     @Override

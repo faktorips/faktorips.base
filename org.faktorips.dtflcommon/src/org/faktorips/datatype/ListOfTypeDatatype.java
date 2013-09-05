@@ -133,6 +133,22 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         throw new UnsupportedOperationException("Not supported yet."); //$NON-NLS-1$
     }
 
+    @Override
+    public boolean matchDatatype(Datatype datatype) {
+        if (super.matchDatatype(datatype)) {
+            return true;
+        }
+        if (datatype instanceof ListOfTypeDatatype) {
+            ListOfTypeDatatype otherListOfTypeDatatype = (ListOfTypeDatatype)datatype;
+            if (otherListOfTypeDatatype.getBasicDatatype() instanceof AnyDatatype) {
+                return true;
+            } else {
+                return otherListOfTypeDatatype.getBasicDatatype().equals(getBasicDatatype());
+            }
+        }
+        return false;
+    }
+
     public boolean isNull(String value) {
         return value == null;
     }

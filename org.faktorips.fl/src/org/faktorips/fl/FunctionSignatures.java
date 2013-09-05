@@ -25,6 +25,7 @@ import static org.faktorips.datatype.Datatype.PRIMITIVE_LONG;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.functions.SumBeanArrayPropertyFct;
 
 /**
@@ -225,7 +226,17 @@ public enum FunctionSignatures {
      * 
      * @see Datatype#DECIMAL
      */
-    SqrtDecimal(DECIMAL, new Datatype[] { DECIMAL });
+    SqrtDecimal(DECIMAL, new Datatype[] { DECIMAL }),
+
+    /**
+     * Returns the count of instances the object path references.<br/>
+     * {@code int=Count(ListOfTypeDatatype<Object>)}
+     * 
+     * @see Datatype#PRIMITIVE_INT
+     * @see ListOfTypeDatatype
+     * @see AnyDatatype
+     */
+    Count(PRIMITIVE_INT, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) });
 
     private final Datatype type;
     private final Datatype[] argTypes;
