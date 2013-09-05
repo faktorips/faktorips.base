@@ -85,8 +85,8 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
-                attributeNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals("this.getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -106,8 +106,8 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getProductCmptGen");
         when(xPolicyAttribute.getMethodNameGetDefaultValue()).thenReturn("getAttribute");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
-                attributeNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals("this.getProductCmptGen().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -122,8 +122,8 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(xProductAttribute.isChangingOverTime()).thenReturn(true);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
-                attributeNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals("this.getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -145,8 +145,8 @@ public class AttributeNodeGeneratorTest {
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
-                attributeNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals("this.getProductCmpt().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -170,8 +170,9 @@ public class AttributeNodeGeneratorTest {
         XPolicyAttribute xPolicyAttribute = mock(XPolicyAttribute.class);
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getWohnflaeche");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
-                attributeNode, contextCompilationResult);
+        when(attributeNodeGenerator.getJavaClassName(listofTypeDatatype.getBasicDatatype())).thenReturn("Integer");
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
         assertFalse(compilationResult.failed());
         System.out.println(compilationResult.getCodeFragment().getSourcecode());
     }

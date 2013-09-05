@@ -85,7 +85,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         getTargetCode.appendClassName(getJavaClassName(conextDatatype));
         getTargetCode.append(", "); //$NON-NLS-1$
         getTargetCode.appendClassName(attribute.getDatatype());
-        getTargetCode.append(">(){@Override protected "); //$NON-NLS-1$
+        getTargetCode.append(">(){\n@Override protected "); //$NON-NLS-1$
         getTargetCode.appendClassName(attribute.getDatatype());
         getTargetCode.append(" getValueInternal("); //$NON-NLS-1$
         getTargetCode.appendClassName(getJavaClassName(conextDatatype));

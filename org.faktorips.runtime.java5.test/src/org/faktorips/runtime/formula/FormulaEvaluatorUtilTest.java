@@ -32,6 +32,7 @@ import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.ExistsHelper;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.FunctionWithListAsArgumentHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -401,4 +402,80 @@ public class FormulaEvaluatorUtilTest {
         }.exists());
     }
 
+    @Test
+    public void testFunctionWithListAsArgumentHelperEmptyList() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
+        List<Integer> emptyList = new ArrayList<Integer>();
+        assertEquals(new Integer(0), helper.getResult(emptyList));
+    }
+
+    @Test
+    public void testFunctionWithListAsArgumentHelperOneElementList() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
+        List<Integer> oneElementList = setUpIntList(21);
+        assertEquals(21, helper.getResult(oneElementList).intValue());
+    }
+
+    @Test
+    public void testFunctionWithListAsArgumentHelperSum() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
+        List<Integer> manyElementList = setUpIntList(47, 11, 8, 15);
+        assertEquals(81, helper.getResult(manyElementList).intValue());
+    }
+
+    protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperSum() {
+        FunctionWithListAsArgumentHelper<Integer> helper = new FunctionWithListAsArgumentHelper<Integer>() {
+            @Override
+            public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
+                return currentResult + nextElement;
+            }
+
+            @Override
+            public Integer getFallBackValue() {
+                return 0;
+            }
+        };
+        return helper;
+    }
+
+    protected List<Integer> setUpIntList(Integer... values) {
+        List<Integer> intList = new ArrayList<Integer>(Arrays.asList(values));
+        return intList;
+    }
+
+    @Test
+    public void testFunctionWithListAsArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
+        List<Integer> manyElementList = setUpIntList(47, 11, 8, 15);
+        assertEquals(47, helper.getResult(manyElementList).intValue());
+    }
+
+    @Test
+    public void testFunctionWithEmptyListAsArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
+        List<Integer> emptyList = new ArrayList<Integer>();
+        assertEquals(new Integer(0), helper.getResult(emptyList));
+    }
+
+    @Test
+    public void testFunctionWithOneListAsArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
+        List<Integer> oneElementList = setUpIntList(21);
+        assertEquals(21, helper.getResult(oneElementList).intValue());
+    }
+
+    protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = new FunctionWithListAsArgumentHelper<Integer>() {
+            @Override
+            public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
+                return Math.max(currentResult, nextElement);
+            }
+
+            @Override
+            public Integer getFallBackValue() {
+                return 0;
+            }
+        };
+        return helper;
+    }
 }

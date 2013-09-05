@@ -245,4 +245,48 @@ public class FormulaEvaluatorUtil {
          */
         protected abstract E getValueInternal(S sourceObject);
     }
+
+    /**
+     * Base class for functions working on list arguments. Subclasses define the function by
+     * overwriting {@link FunctionWithListAsArgumentHelper#getPreliminaryResult(Object, Object)} and
+     * {@link FunctionWithListAsArgumentHelper#getFallBackValue()}.
+     * 
+     * @author HBaagil
+     */
+    public static abstract class FunctionWithListAsArgumentHelper<E> {
+
+        /**
+         * Returns the result of this function given a list of values.
+         * 
+         * @param listOfValues A List of values.
+         */
+        public E getResult(List<E> listOfValues) {
+            if (listOfValues == null || listOfValues.isEmpty()) {
+                return getFallBackValue();
+            }
+            E result = listOfValues.get(0);
+            for (int i = 1; i < listOfValues.size(); i++) {
+                result = getPreliminaryResult(result, listOfValues.get(i));
+            }
+            return result;
+        }
+
+        /**
+         * Returns the value this function defaults to if an empty list or null is given as an
+         * argument. E.g. for the function sum, the fall back value is 0.
+         */
+        public abstract E getFallBackValue();
+
+        /**
+         * Calculates a preliminary result based on the current result and the next value in the
+         * list.
+         * 
+         * @param currentResult The current result calculated up to this point.
+         * @param nextValue The value to be considered next.
+         * @return The result of the operation defined by subclasses.
+         */
+        public abstract E getPreliminaryResult(E currentResult, E nextValue);
+
+    }
+
 }
