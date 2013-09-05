@@ -64,6 +64,7 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         when(builderSet.getEnumTypeBuilder()).thenReturn(enumTypeBuilder);
         when(builderSet.getIpsProject()).thenReturn(ipsProject);
+        when(builderSet.getLanguageUsedInGeneratedSourceCode()).thenReturn(Locale.GERMAN);
         enumType = newEnumType(ipsProject, "AnyEnumType");
         enumType.setContainingValues(true);
         ipsSrcFile = enumType.getIpsSrcFile();
