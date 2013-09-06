@@ -207,13 +207,20 @@ public enum FunctionSignatures {
     WholeNumber(INTEGER, new Datatype[] { DECIMAL }),
     /**
      * Returns the Decimal argument, to the power of the Integer value.<br/>
-     * {@code Decimal=ValueOf(Decimal.bigDecimalValue().pow(Integer)}
+     * {@code Decimal=ValueOf(Math.pow(Decimal.bigDecimalValue().doubleValue(), Decimal.bigDecimalValue().doubleValue()))}
+     * 
+     * @see Datatype#DECIMAL
+     * @see Datatype#BIG_DECIMAL
      */
-    PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, INTEGER }),
+    PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
     /**
-     * Still need to be documented
+     * Returns the square root of the Decimal argument.<br/>
+     * {@code Decimal=ValueOf(Math.sqrt(Decimal.bigDecimalValue().doubleValue()))}
+     * 
+     * @see Datatype#DECIMAL
+     * @see Datatype#BIG_DECIMAL
      */
-    Root(DECIMAL, new Datatype[] { DECIMAL });
+    RootDecimal(DECIMAL, new Datatype[] { DECIMAL });
 
     private final Datatype type;
     private final Datatype[] argTypes;

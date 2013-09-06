@@ -21,38 +21,34 @@ import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A class that implements the power of a Decimal.
+ * A class that implements the square root of a Decimal.
  * 
  * @author hbaagil
  */
-public class PowerDecimal extends AbstractFlFunction {
+
+public class RootDecimal extends AbstractFlFunction {
 
     /**
-     * Constructs the to the power of function.
+     * Constructs a square root function.
      * 
      * @param name The name of the function.
      * @param description The description of the function.
      */
-    public PowerDecimal(String name, String description) {
-        super(name, description, FunctionSignatures.PowerDecimal);
+
+    public RootDecimal(String name, String description) {
+        super(name, description, FunctionSignatures.RootDecimal);
     }
 
     /**
      * {@inheritDoc}
      */
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
-        ArgumentCheck.length(argResults, 2);
+        ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("Decimal.valueOf(");
-        fragment.append("Math.pow");
+        fragment.append("Math.sqrt");
         fragment.append('(');
         fragment.append(argResults[0].getCodeFragment());
-        fragment.append('.');
-        fragment.append("bigDecimalValue()");
-        fragment.append('.');
-        fragment.append("doubleValue()");
-        fragment.append(',');
-        fragment.append(argResults[1].getCodeFragment());
         fragment.append('.');
         fragment.append("bigDecimalValue()");
         fragment.append('.');
@@ -62,9 +58,7 @@ public class PowerDecimal extends AbstractFlFunction {
 
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.DECIMAL);
         result.addMessages(argResults[0].getMessages());
-        result.addMessages(argResults[1].getMessages());
         addIdentifier(argResults[0].getResolvedIdentifiers(), result);
-        addIdentifier(argResults[1].getResolvedIdentifiers(), result);
         return result;
     }
 
