@@ -33,6 +33,7 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -205,7 +206,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             List<IAttribute> attributes = formula.findMatchingProductCmptTypeAttributes();
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().equals(identifier)) {
-                    if (!getIdentifierFilter().isIdentifierAllowed(attribute)) {
+                    if (!getIdentifierFilter().isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE)) {
                         String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
                                 attribute.getName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
@@ -349,10 +350,11 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         if (attribute == null) {
             return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
         }
-
-        if (!getIdentifierFilter().isIdentifierAllowed(attribute)) {
+        IdentifierKind identifierFilterEnum = IdentifierKind
+                .getDefaultIdentifierOrAttribute(isDefaultValueAccess);
+        if (!getIdentifierFilter().isIdentifierAllowed(attribute, identifierFilterEnum)) {
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
-                    attribute.getName());
+                    attribute.getName() + addDefaultValueSuffixIfNeeded(isDefaultValueAccess));
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
         }
 
@@ -373,6 +375,10 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     attribute.getDatatype(), attributeName);
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
+    }
+
+    private String addDefaultValueSuffixIfNeeded(boolean isDefaultValueAccess) {
+        return isDefaultValueAccess ? DEFAULT_VALUE_SUFFIX : StringUtils.EMPTY;
     }
 
     private boolean isPolicyCmptTypeAssociationIdentifier(IAttribute attribute, IType type) {

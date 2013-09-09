@@ -34,7 +34,9 @@ public interface IFlIdentifierFilterExtension {
      * it is important that the decision is found very fast!
      * 
      * @param ipsObjectPartContainer the {@link IIpsObjectPartContainer} to check
-     * @return <code>true</code> if use is allowed and <code>false</code>
+     * @param identifierKind the kind of Identifier {@link IdentifierKind}
+     * @return <code>true</code> if use is allowed and <code>false</code> when not
      */
-    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer);
+    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer, IdentifierKind identifierKind);
+
 }

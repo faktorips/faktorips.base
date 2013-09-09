@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.internal.model.method.Parameter;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -158,8 +159,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         List<IAttribute> attributes = expression.findMatchingProductCmptTypeAttributes();
         Collections.sort(attributes, new SortList());
         for (IAttribute attribute : attributes) {
-            if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)) {
-                if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
+            if (getIdentifierFilter().isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE)) {
+                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)) {
                     addPartToResult(result, attribute, attribute.getDatatype(), prefix);
                 }
             }
@@ -303,8 +304,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(attributes, new SortList());
             List<String> attributeNames = new ArrayList<String>();
             for (IAttribute attribute : attributes) {
-                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), attributePrefix)) {
-                    if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
+                if (getIdentifierFilter().isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE)) {
+                    if (checkMatchingNameWithCaseInsensitive(attribute.getName(), attributePrefix)) {
                         if (!attributeNames.contains(attribute.getName())) {
                             addAttributeToResult(result, attribute, attributePrefix);
                             attributeNames.add(attribute.getName());
@@ -452,10 +453,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(attributes, new SortList());
             final List<String> attributeNames = new ArrayList<String>();
             for (final IAttribute attribute : attributes) {
-                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)
-                        && !attributeNames.contains(attribute.getName())) {
-                    addDefaultValueToResult(result, attribute, attributePrefix);
-                    attributeNames.add(attribute.getName());
+                if (getIdentifierFilter().isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER)) {
+                    if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)
+                            && !attributeNames.contains(attribute.getName())) {
+                        addDefaultValueToResult(result, attribute, attributePrefix);
+                        attributeNames.add(attribute.getName());
+                    }
                 }
             }
 
