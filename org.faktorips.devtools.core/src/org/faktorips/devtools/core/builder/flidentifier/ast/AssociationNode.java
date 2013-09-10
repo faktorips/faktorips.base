@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
@@ -25,27 +23,10 @@ public class AssociationNode extends IdentifierNode {
 
     private final IIpsProject ipsProject;
 
-    public AssociationNode(IAssociation association, IIpsProject ipsProject) throws CoreException {
-        this(association, ipsProject, null);
-    }
-
-    public AssociationNode(IAssociation association, IIpsProject ipsProject, IdentifierNode successor)
-            throws CoreException {
-        super(association.findTarget(ipsProject), successor);
+    public AssociationNode(IAssociation association, boolean listOfTypes, IIpsProject ipsProject) throws CoreException {
+        super(association.findTarget(ipsProject), listOfTypes);
         this.association = association;
         this.ipsProject = ipsProject;
-    }
-
-    @Override
-    public Datatype getDatatype() {
-        if (isReturningListOfTypeDatatype()) {
-            return new ListOfTypeDatatype(super.getDatatype());
-        }
-        return super.getDatatype();
-    }
-
-    protected boolean isReturningListOfTypeDatatype() {
-        return association.is1ToMany();
     }
 
     public IAssociation getAssociation() {

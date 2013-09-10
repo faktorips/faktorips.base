@@ -14,20 +14,24 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 
 public abstract class IdentifierNode {
 
     private final Datatype datatype;
 
-    private final IdentifierNode successor;
+    private IdentifierNode successor;
 
     public IdentifierNode(Datatype datatype) {
-        this(datatype, null);
+        this(datatype, false);
     }
 
-    public IdentifierNode(Datatype datatype, IdentifierNode successor) {
-        this.datatype = datatype;
-        this.successor = successor;
+    public IdentifierNode(Datatype datatype, boolean listOfTypes) {
+        if (listOfTypes) {
+            this.datatype = new ListOfTypeDatatype(datatype);
+        } else {
+            this.datatype = datatype;
+        }
     }
 
     public Datatype getDatatype() {
@@ -38,8 +42,12 @@ public abstract class IdentifierNode {
         return successor;
     }
 
+    public void setSuccessor(IdentifierNode successor) {
+        this.successor = successor;
+    }
+
     public boolean hasSuccessor() {
-        return successor != null;
+        return getSuccessor() != null;
     }
 
 }

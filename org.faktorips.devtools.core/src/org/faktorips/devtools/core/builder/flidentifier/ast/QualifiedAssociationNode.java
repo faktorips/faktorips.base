@@ -21,20 +21,10 @@ public class QualifiedAssociationNode extends AssociationNode {
 
     private final String qualifier;
 
-    public QualifiedAssociationNode(IAssociation association, String qualifier, IIpsProject ipsProject)
-            throws CoreException {
-        this(association, qualifier, ipsProject, null);
-    }
-
-    public QualifiedAssociationNode(IAssociation association, String qualifier, IIpsProject ipsProject,
-            IdentifierNode successor) throws CoreException {
-        super(association, ipsProject, successor);
+    public QualifiedAssociationNode(IAssociation association, String qualifier, boolean listOfTypes,
+            IIpsProject ipsProject) throws CoreException {
+        super(association, listOfTypes, ipsProject);
         this.qualifier = qualifier;
-    }
-
-    @Override
-    protected boolean isReturningListOfTypeDatatype() {
-        return false;
     }
 
     public String getQualifier() {

@@ -23,11 +23,7 @@ public class ParameterNode extends IdentifierNode {
     private final IIpsProject ipsProject;
 
     public ParameterNode(IParameter parameter, IIpsProject ipsProject) throws CoreException {
-        this(parameter, ipsProject, null);
-    }
-
-    public ParameterNode(IParameter parameter, IIpsProject ipsProject, IdentifierNode successor) throws CoreException {
-        super(parameter.findDatatype(ipsProject), successor);
+        super(parameter.findDatatype(ipsProject));
         this.parameter = parameter;
         this.ipsProject = ipsProject;
     }

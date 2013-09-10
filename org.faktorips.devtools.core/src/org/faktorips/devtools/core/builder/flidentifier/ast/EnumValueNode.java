@@ -15,11 +15,17 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 
-public class EnumDatatypeNode extends IdentifierNode {
+public class EnumValueNode extends IdentifierNode {
 
-    public EnumDatatypeNode(Datatype datatype) {
+    private final String enumValueName;
+
+    public EnumValueNode(String enumValueName, Datatype datatype) {
         super(datatype);
-        // TODO Auto-generated constructor stub
+        this.enumValueName = enumValueName;
+    }
+
+    public String getEnumValueName() {
+        return enumValueName;
     }
 
 }

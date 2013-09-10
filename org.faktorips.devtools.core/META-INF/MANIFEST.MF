@@ -36,6 +36,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
+ org.faktorips.devtools.core.builder.flidentifier.ast,
  org.faktorips.devtools.core.builder.naming,
  org.faktorips.devtools.core.builder.organizeimports,
  org.faktorips.devtools.core.enums,

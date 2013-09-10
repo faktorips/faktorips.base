@@ -25,8 +25,9 @@ public class AttributeNode extends IdentifierNode {
 
     private final IIpsProject ipsProject;
 
-    public AttributeNode(IAttribute attribute, boolean defaultValueAccess, IIpsProject ipsProject) throws CoreException {
-        super(attribute.findDatatype(ipsProject));
+    public AttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes, IIpsProject ipsProject)
+            throws CoreException {
+        super(attribute.findDatatype(ipsProject), listOfTypes);
         this.attribute = attribute;
         this.defaultValueAccess = defaultValueAccess;
         this.ipsProject = ipsProject;

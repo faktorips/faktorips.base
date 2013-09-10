@@ -22,18 +22,8 @@ public class IndexBasedAssociationNode extends AssociationNode {
     private final int index;
 
     public IndexBasedAssociationNode(IAssociation association, int index, IIpsProject ipsProject) throws CoreException {
-        this(association, index, ipsProject, null);
-    }
-
-    public IndexBasedAssociationNode(IAssociation association, int index, IIpsProject ipsProject,
-            IdentifierNode successor) throws CoreException {
-        super(association, ipsProject, successor);
+        super(association, false, ipsProject);
         this.index = index;
-    }
-
-    @Override
-    protected boolean isReturningListOfTypeDatatype() {
-        return getAssociation().is1ToManyIgnoringQualifier();
     }
 
     public int getIndex() {
