@@ -22,13 +22,12 @@ public class ParameterNode extends IdentifierNode {
     private final IParameter parameter;
     private final IIpsProject ipsProject;
 
-    public ParameterNode(String name, IParameter parameter, IIpsProject ipsProject) throws CoreException {
-        this(name, parameter, ipsProject, null);
+    public ParameterNode(IParameter parameter, IIpsProject ipsProject) throws CoreException {
+        this(parameter, ipsProject, null);
     }
 
-    public ParameterNode(String name, IParameter parameter, IIpsProject ipsProject, IdentifierNode successor)
-            throws CoreException {
-        super(name, parameter.findDatatype(ipsProject), successor);
+    public ParameterNode(IParameter parameter, IIpsProject ipsProject, IdentifierNode successor) throws CoreException {
+        super(parameter.findDatatype(ipsProject), successor);
         this.parameter = parameter;
         this.ipsProject = ipsProject;
     }

@@ -17,8 +17,8 @@ import org.faktorips.datatype.Datatype;
 
 public class EnumDatatypeNode extends IdentifierNode {
 
-    public EnumDatatypeNode(String name, Datatype datatype) {
-        super(name, datatype);
+    public EnumDatatypeNode(Datatype datatype) {
+        super(datatype);
         // TODO Auto-generated constructor stub
     }
 

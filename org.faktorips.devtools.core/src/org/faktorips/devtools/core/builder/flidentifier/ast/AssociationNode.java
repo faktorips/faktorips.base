@@ -25,13 +25,13 @@ public class AssociationNode extends IdentifierNode {
 
     private final IIpsProject ipsProject;
 
-    public AssociationNode(String name, IAssociation association, IIpsProject ipsProject) throws CoreException {
-        this(name, association, ipsProject, null);
+    public AssociationNode(IAssociation association, IIpsProject ipsProject) throws CoreException {
+        this(association, ipsProject, null);
     }
 
-    public AssociationNode(String name, IAssociation association, IIpsProject ipsProject, IdentifierNode successor)
+    public AssociationNode(IAssociation association, IIpsProject ipsProject, IdentifierNode successor)
             throws CoreException {
-        super(name, association.findTarget(ipsProject), successor);
+        super(association.findTarget(ipsProject), successor);
         this.association = association;
         this.ipsProject = ipsProject;
     }

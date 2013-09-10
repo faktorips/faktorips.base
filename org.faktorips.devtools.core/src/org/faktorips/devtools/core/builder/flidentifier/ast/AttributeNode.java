@@ -21,16 +21,23 @@ public class AttributeNode extends IdentifierNode {
 
     private final IAttribute attribute;
 
+    private final boolean defaultValueAccess;
+
     private final IIpsProject ipsProject;
 
-    public AttributeNode(String name, IAttribute attribute, IIpsProject ipsProject) throws CoreException {
-        super(name, attribute.findDatatype(ipsProject));
+    public AttributeNode(IAttribute attribute, boolean defaultValueAccess, IIpsProject ipsProject) throws CoreException {
+        super(attribute.findDatatype(ipsProject));
         this.attribute = attribute;
+        this.defaultValueAccess = defaultValueAccess;
         this.ipsProject = ipsProject;
     }
 
     public IAttribute getAttribute() {
         return attribute;
+    }
+
+    public boolean isDefaultValueAccess() {
+        return defaultValueAccess;
     }
 
     public IIpsProject getIpsProject() {

@@ -19,26 +19,26 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 
 public class QualifiedAssociationNode extends AssociationNode {
 
-    private final int index;
+    private final String qualifier;
 
-    public QualifiedAssociationNode(String name, int index, IAssociation association, IIpsProject ipsProject)
+    public QualifiedAssociationNode(IAssociation association, String qualifier, IIpsProject ipsProject)
             throws CoreException {
-        this(name, index, association, ipsProject, null);
+        this(association, qualifier, ipsProject, null);
     }
 
-    public QualifiedAssociationNode(String name, int index, IAssociation association, IIpsProject ipsProject,
+    public QualifiedAssociationNode(IAssociation association, String qualifier, IIpsProject ipsProject,
             IdentifierNode successor) throws CoreException {
-        super(name, association, ipsProject, successor);
-        this.index = index;
+        super(association, ipsProject, successor);
+        this.qualifier = qualifier;
     }
 
     @Override
     protected boolean isReturningListOfTypeDatatype() {
-        return getAssociation().is1ToManyIgnoringQualifier();
+        return false;
     }
 
-    public int getIndex() {
-        return index;
+    public String getQualifier() {
+        return qualifier;
     }
 
 }

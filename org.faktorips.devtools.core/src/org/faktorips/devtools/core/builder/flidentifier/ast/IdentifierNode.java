@@ -17,22 +17,17 @@ import org.faktorips.datatype.Datatype;
 
 public abstract class IdentifierNode {
 
-    private final String name;
     private final Datatype datatype;
+
     private final IdentifierNode successor;
 
-    public IdentifierNode(String name, Datatype datatype) {
-        this(name, datatype, null);
+    public IdentifierNode(Datatype datatype) {
+        this(datatype, null);
     }
 
-    public IdentifierNode(String name, Datatype datatype, IdentifierNode successor) {
-        this.name = name;
+    public IdentifierNode(Datatype datatype, IdentifierNode successor) {
         this.datatype = datatype;
         this.successor = successor;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Datatype getDatatype() {
@@ -41,6 +36,10 @@ public abstract class IdentifierNode {
 
     public IdentifierNode getSuccessor() {
         return successor;
+    }
+
+    public boolean hasSuccessor() {
+        return successor != null;
     }
 
 }
