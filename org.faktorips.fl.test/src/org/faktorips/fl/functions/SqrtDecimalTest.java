@@ -17,12 +17,12 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 import org.junit.Test;
 
-public class RootDecimalTest extends FunctionAbstractTest {
+public class SqrtDecimalTest extends FunctionAbstractTest {
 
     @Test
     public void testCompile() throws Exception {
-        registerFunction(new RootDecimal("ROOT", ""));
-        execAndTestSuccessfull("ROOT(4.0)", Decimal.valueOf("2.0"), Datatype.DECIMAL);
-        execAndTestSuccessfull("ROOT(25.0)", Decimal.valueOf("5.0"), Datatype.DECIMAL);
+        registerFunction(new SqrtDecimal("SQRT", ""));
+        execAndTestSuccessfull("SQRT(4.0)", Decimal.valueOf("2.0"), Datatype.DECIMAL);
+        execAndTestSuccessfull("SQRT(25.0)", Decimal.valueOf("5.0"), Datatype.DECIMAL);
     }
 }

@@ -26,7 +26,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author hbaagil
  */
 
-public class RootDecimal extends AbstractFlFunction {
+public class SqrtDecimal extends AbstractFlFunction {
 
     /**
      * Constructs a square root function.
@@ -35,8 +35,8 @@ public class RootDecimal extends AbstractFlFunction {
      * @param description The description of the function.
      */
 
-    public RootDecimal(String name, String description) {
-        super(name, description, FunctionSignatures.RootDecimal);
+    public SqrtDecimal(String name, String description) {
+        super(name, description, FunctionSignatures.SqrtDecimal);
     }
 
     /**
@@ -49,8 +49,6 @@ public class RootDecimal extends AbstractFlFunction {
         fragment.append("Math.sqrt");
         fragment.append('(');
         fragment.append(argResults[0].getCodeFragment());
-        fragment.append('.');
-        fragment.append("bigDecimalValue()");
         fragment.append('.');
         fragment.append("doubleValue()");
         fragment.append(')');

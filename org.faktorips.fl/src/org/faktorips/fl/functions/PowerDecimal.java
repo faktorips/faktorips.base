@@ -48,13 +48,9 @@ public class PowerDecimal extends AbstractFlFunction {
         fragment.append('(');
         fragment.append(argResults[0].getCodeFragment());
         fragment.append('.');
-        fragment.append("bigDecimalValue()");
-        fragment.append('.');
         fragment.append("doubleValue()");
         fragment.append(',');
         fragment.append(argResults[1].getCodeFragment());
-        fragment.append('.');
-        fragment.append("bigDecimalValue()");
         fragment.append('.');
         fragment.append("doubleValue()");
         fragment.append(')');
