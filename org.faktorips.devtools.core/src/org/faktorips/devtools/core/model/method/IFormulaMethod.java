@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
 /**
- * Interface to extend the {@link IBaseMethod}
+ * Interface for methods that represents the signature of a formula
  * 
  * @author frank
  */
@@ -36,14 +36,8 @@ public interface IFormulaMethod extends IBaseMethod, IDescribedElement, ILabeled
      */
     public static final String MSGCODE_FORMULA_NAME_IS_EMPTY = IBaseMethod.MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
 
-    /**
-     * Comment for <code>PROPERTY_FORMULA_NAME</code>
-     */
     public static final String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
 
-    /**
-     * Comment for <code>MSGCODE_INVALID_FORMULA_NAME</code>
-     */
     public static final String MSGCODE_INVALID_FORMULA_NAME = IBaseMethod.MSGCODE_PREFIX + "InvalidFormulaName"; //$NON-NLS-1$
 
     public static final String MSGCODE_DUPLICATE_FUNCTION = MSGCODE_PREFIX + "duplicateFunction"; //$NON-NLS-1$

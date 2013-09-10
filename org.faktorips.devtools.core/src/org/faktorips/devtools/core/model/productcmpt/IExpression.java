@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.JavaExprCompiler;
@@ -87,7 +87,7 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * Returns the method signature this formula implements. Returns <code>null</code> if the method
      * signature is not found.
      */
-    IBaseMethod findFormulaSignature(IIpsProject ipsProject);
+    IFormulaMethod findFormulaSignature(IIpsProject ipsProject);
 
     /**
      * Returns the product component type of the product component this formula belongs to.
