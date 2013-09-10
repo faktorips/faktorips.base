@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.faktorips.codegen.CodeFragment;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilder;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 
 /**
@@ -23,19 +26,70 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
  */
 public enum IdentifierNodeType {
 
-    ASSOCIATION(AssociationNode.class),
+    ASSOCIATION(AssociationNode.class) {
 
-    INDEX_BASED_ASSOCIATION(IndexBasedAssociationNode.class),
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForAssociationNode();
+        }
+    },
 
-    QUALIFIED_ASSOCIATION(QualifiedAssociationNode.class),
+    INDEX_BASED_ASSOCIATION(IndexBasedAssociationNode.class) {
 
-    ATTRIBUTE(AttributeNode.class),
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForIndexBasedAssociationNode();
+        }
+    },
 
-    PARAMETER(ParameterNode.class),
+    QUALIFIED_ASSOCIATION(QualifiedAssociationNode.class) {
 
-    ENUM_CLASS(EnumClassNode.class),
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForQualifiedAssociationNode();
+        }
+    },
 
-    ENUM_VALUE(EnumValueNode.class);
+    ATTRIBUTE(AttributeNode.class) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForAttributeNode();
+        }
+
+    },
+
+    PARAMETER(ParameterNode.class) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForParameterNode();
+        }
+    },
+
+    ENUM_CLASS(EnumClassNode.class) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForEnumClassNode();
+        }
+    },
+
+    ENUM_VALUE(EnumValueNode.class) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForEnumValueNode();
+        }
+    },
+
+    INVALID_IDENTIFIER(InvalidIdentifierNode.class) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory) {
+            return factory.getBuilderForInvalidNode();
+        }
+    };
 
     private final Class<? extends IdentifierNode> nodeClass;
 
@@ -51,11 +105,16 @@ public enum IdentifierNodeType {
      */
     public static IdentifierNodeType getNodeType(Class<? extends IdentifierNode> nodeClass) {
         for (IdentifierNodeType value : values()) {
-            if (value.nodeClass.equals(nodeClass)) {
+            if (value.getNodeClass().equals(nodeClass)) {
                 return value;
             }
         }
         throw new IllegalArgumentException("Illegal node class " + nodeClass); //$NON-NLS-1$
     }
 
+    public Class<? extends IdentifierNode> getNodeClass() {
+        return nodeClass;
+    }
+
+    public abstract <T extends CodeFragment> IdentifierNodeBuilder<T> getBuilderFor(IdentifierNodeBuilderFactory<T> factory);
 }
