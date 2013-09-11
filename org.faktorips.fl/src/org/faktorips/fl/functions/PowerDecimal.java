@@ -13,6 +13,7 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
@@ -42,21 +43,21 @@ public class PowerDecimal extends AbstractFlFunction {
      */
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("Decimal.valueOf(");
+        JavaCodeFragment fragmentResult = new JavaCodeFragment();
         fragment.append("Math.pow");
         fragment.append('(');
-        fragment.append(argResults[0].getCodeFragment());
-        fragment.append('.');
-        fragment.append("doubleValue()");
+        fragment.append(conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE,
+                argResults[0].getCodeFragment()));
         fragment.append(',');
-        fragment.append(argResults[1].getCodeFragment());
-        fragment.append('.');
-        fragment.append("doubleValue()");
+        fragment.append(conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE,
+                argResults[1].getCodeFragment()));
         fragment.append(')');
-        fragment.append(')');
+        fragmentResult.append(conversionCodeGenerator.getConversionCode(Datatype.DOUBLE, Datatype.DECIMAL, fragment));
 
-        CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.DECIMAL);
+        CompilationResultImpl result = new CompilationResultImpl(fragmentResult, Datatype.DECIMAL);
+
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
         addIdentifier(argResults[0].getResolvedIdentifiers(), result);

@@ -14,7 +14,9 @@
 package org.faktorips.codegen.conversion;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.PrimitiveBooleanHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.PrimitiveBooleanDatatype;
 
 public class PrimitiveBooleanToBooleanCg extends AbstractSingleConversionCg {
 
@@ -23,13 +25,7 @@ public class PrimitiveBooleanToBooleanCg extends AbstractSingleConversionCg {
     }
 
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
-        fragment.appendClassName(Boolean.class);
-        fragment.append('(');
-        fragment.append(fromValue);
-        fragment.append(')');
-        return fragment;
+        return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)Datatype.PRIMITIVE_BOOLEAN).toWrapper(fromValue);
     }
 
 }
