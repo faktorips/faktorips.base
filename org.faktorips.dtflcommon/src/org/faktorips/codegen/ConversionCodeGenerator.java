@@ -15,6 +15,8 @@ package org.faktorips.codegen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.codegen.conversion.BigDecimalToDecimalCg;
 import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
@@ -56,6 +58,8 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     /** List of single conversion code generators. */
     private List<SingleConversionCg<T>> conversions = new ArrayList<SingleConversionCg<T>>();
+
+    private FromToConversionMap<T> fromToConversionMap = new FromToConversionMap<T>();
 
     /**
      * Returns a default ConversionCodeGenerator that contains the following conversions.
@@ -103,6 +107,11 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     public void add(SingleConversionCg<T> conversion) {
         conversions.add(conversion);
+        addConversionToMap(conversion);
+    }
+
+    private void addConversionToMap(SingleConversionCg<T> conversion) {
+        fromToConversionMap.add(conversion);
     }
 
     public boolean canConvert(Datatype from, Datatype to) {
@@ -112,11 +121,11 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (to instanceof AnyDatatype) {
             return true;
         }
-        for (SingleConversionCg<T> singleConversionCg : conversions) {
-            if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
-                return true;
-            }
+        // for (SingleConversionCg<T> singleConversionCg : conversions) {
+        if (fromToConversionMap.get(from, to) != null) {
+            return true;
         }
+        // }
         return false;
     }
 
@@ -137,12 +146,54 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (to instanceof AnyDatatype) {
             return fromValue;
         }
-        for (SingleConversionCg<T> singleConversionCg : conversions) {
-            if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
-                return singleConversionCg.getConversionCode(fromValue);
-            }
+        // for (SingleConversionCg<T> singleConversionCg : conversions) {
+        // if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
+        // return singleConversionCg.getConversionCode(fromValue);
+        // }
+        if (fromToConversionMap.get(from, to) != null) {
+            return fromToConversionMap.get(from, to).getConversionCode(fromValue);
         }
         return null;
+    }
+
+    private static class FromToConversionMap<T extends CodeFragment> {
+
+        private Map<Datatype, Map<Datatype, SingleConversionCg<T>>> internalMap = new ConcurrentHashMap<Datatype, Map<Datatype, SingleConversionCg<T>>>();
+
+        /**
+         * 
+         * @param from
+         * @param to
+         * @return
+         */
+        public SingleConversionCg<T> get(Datatype from, Datatype to) {
+            if (from == null) {
+                return null;
+            }
+            Map<Datatype, SingleConversionCg<T>> fromMap = getInternalMap().get(from);
+            if (to == null) {
+                return null;
+            }
+            SingleConversionCg<T> singleConversionCg = fromMap.get(to);
+            return singleConversionCg;
+        }
+
+        public void add(SingleConversionCg<T> singleConversionCg) {
+            Datatype from = singleConversionCg.getFrom();
+            Datatype to = singleConversionCg.getTo();
+            Map<Datatype, SingleConversionCg<T>> innerMap = new ConcurrentHashMap<Datatype, SingleConversionCg<T>>();
+            innerMap.put(to, singleConversionCg);
+
+            if (getInternalMap().containsKey(from) && !getInternalMap().containsValue(innerMap)) {
+                getInternalMap().get(from).put(to, singleConversionCg);
+            } else {
+                getInternalMap().put(from, innerMap);
+            }
+        }
+
+        public Map<Datatype, Map<Datatype, SingleConversionCg<T>>> getInternalMap() {
+            return internalMap;
+        }
     }
 
 }
