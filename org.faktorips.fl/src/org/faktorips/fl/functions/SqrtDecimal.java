@@ -25,9 +25,13 @@ import org.faktorips.util.ArgumentCheck;
  * A class that implements the square root of a Decimal.
  * 
  * @author hbaagil
+ * @since 3.11.0
  */
 
 public class SqrtDecimal extends AbstractFlFunction {
+
+    private static final String MATH_SQRT = "Math.sqrt"; //$NON-NLS-1$
+    private final ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator;
 
     /**
      * Constructs a square root function.
@@ -38,6 +42,7 @@ public class SqrtDecimal extends AbstractFlFunction {
 
     public SqrtDecimal(String name, String description) {
         super(name, description, FunctionSignatures.SqrtDecimal);
+        conversionCodeGenerator = ConversionCodeGenerator.getDefault();
     }
 
     /**
@@ -45,20 +50,31 @@ public class SqrtDecimal extends AbstractFlFunction {
      */
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
         JavaCodeFragment fragment = new JavaCodeFragment();
         JavaCodeFragment fragmentResult = new JavaCodeFragment();
-        fragment.append("Math.sqrt");
+        fragment.append(MATH_SQRT);
         fragment.append('(');
-        fragment.append(conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE,
-                argResults[0].getCodeFragment()));
+        fragment.append(getConversionCodeDecimalDouble(argResults[0].getCodeFragment()));
         fragment.append(')');
-        fragmentResult.append(conversionCodeGenerator.getConversionCode(Datatype.DOUBLE, Datatype.DECIMAL, fragment));
+        fragmentResult.append(getConversionCodeDoubleDecimal(fragment));
 
-        CompilationResultImpl result = new CompilationResultImpl(fragmentResult, Datatype.DECIMAL);
+        CompilationResultImpl result = createCompilationResultImpl(fragmentResult);
+
         result.addMessages(argResults[0].getMessages());
         addIdentifier(argResults[0].getResolvedIdentifiers(), result);
         return result;
+    }
+
+    private CompilationResultImpl createCompilationResultImpl(JavaCodeFragment fragmentResult) {
+        return new CompilationResultImpl(fragmentResult, Datatype.DECIMAL);
+    }
+
+    private JavaCodeFragment getConversionCodeDecimalDouble(JavaCodeFragment fragment) {
+        return conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE, fragment);
+    }
+
+    private JavaCodeFragment getConversionCodeDoubleDecimal(JavaCodeFragment fragment) {
+        return conversionCodeGenerator.getConversionCode(Datatype.DOUBLE, Datatype.DECIMAL, fragment);
     }
 
     private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {

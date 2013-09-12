@@ -25,8 +25,12 @@ import org.faktorips.util.ArgumentCheck;
  * A class that implements the power of a Decimal.
  * 
  * @author hbaagil
+ * @since 3.11.0
  */
 public class PowerDecimal extends AbstractFlFunction {
+
+    private static final String MATH_POW = "Math.pow"; //$NON-NLS-1$
+    private final ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator;
 
     /**
      * Constructs the to the power of function.
@@ -36,6 +40,7 @@ public class PowerDecimal extends AbstractFlFunction {
      */
     public PowerDecimal(String name, String description) {
         super(name, description, FunctionSignatures.PowerDecimal);
+        conversionCodeGenerator = ConversionCodeGenerator.getDefault();
     }
 
     /**
@@ -43,26 +48,35 @@ public class PowerDecimal extends AbstractFlFunction {
      */
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
         JavaCodeFragment fragment = new JavaCodeFragment();
         JavaCodeFragment fragmentResult = new JavaCodeFragment();
-        fragment.append("Math.pow");
+        fragment.append(MATH_POW);
         fragment.append('(');
-        fragment.append(conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE,
-                argResults[0].getCodeFragment()));
+        fragment.append(getConversionCodeDecimalDouble(argResults[0].getCodeFragment()));
         fragment.append(',');
-        fragment.append(conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE,
-                argResults[1].getCodeFragment()));
+        fragment.append(getConversionCodeDecimalDouble(argResults[1].getCodeFragment()));
         fragment.append(')');
-        fragmentResult.append(conversionCodeGenerator.getConversionCode(Datatype.DOUBLE, Datatype.DECIMAL, fragment));
+        fragmentResult.append(getConversionCodeDoubleDecimal(fragment));
 
-        CompilationResultImpl result = new CompilationResultImpl(fragmentResult, Datatype.DECIMAL);
+        CompilationResultImpl result = createCompilationResultImpl(fragmentResult);
 
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
         addIdentifier(argResults[0].getResolvedIdentifiers(), result);
         addIdentifier(argResults[1].getResolvedIdentifiers(), result);
         return result;
+    }
+
+    private CompilationResultImpl createCompilationResultImpl(JavaCodeFragment fragmentResult) {
+        return new CompilationResultImpl(fragmentResult, Datatype.DECIMAL);
+    }
+
+    private JavaCodeFragment getConversionCodeDecimalDouble(JavaCodeFragment fragment) {
+        return conversionCodeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.DOUBLE, fragment);
+    }
+
+    private JavaCodeFragment getConversionCodeDoubleDecimal(JavaCodeFragment fragment) {
+        return conversionCodeGenerator.getConversionCode(Datatype.DOUBLE, Datatype.DECIMAL, fragment);
     }
 
     private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {
