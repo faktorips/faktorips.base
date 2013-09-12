@@ -16,6 +16,7 @@ package org.faktorips.codegen;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.codegen.conversion.AnyToStringCg;
 import org.faktorips.codegen.conversion.BigDecimalToDecimalCg;
 import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
 import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
@@ -67,6 +68,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
      * <li>Integer to primitive int</li>
      * <li>Primitive int to Decimal</li>
      * <li>Integer to Decimal</li>
+     * <li>Any data type to String</li>
      * </ul>
      */
     public static final ConversionCodeGenerator<JavaCodeFragment> getDefault() {
@@ -98,6 +100,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         ccg.add(new LocalDateTimeToGregorianCalendarCg());
         ccg.add(new GregorianCalendarToLocalDateCg());
         ccg.add(new GregorianCalendarToLocalDateTimeCg());
+        ccg.add(new AnyToStringCg());
         return ccg;
     }
 
@@ -113,7 +116,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
             return true;
         }
         for (SingleConversionCg<T> singleConversionCg : conversions) {
-            if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
+            if (isConversionFor(singleConversionCg, from, to)) {
                 return true;
             }
         }
@@ -138,11 +141,17 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
             return fromValue;
         }
         for (SingleConversionCg<T> singleConversionCg : conversions) {
-            if (singleConversionCg.getFrom().equals(from) && singleConversionCg.getTo().equals(to)) {
+            if (isConversionFor(singleConversionCg, from, to)) {
                 return singleConversionCg.getConversionCode(fromValue);
             }
         }
         return null;
+    }
+
+    private boolean isConversionFor(SingleConversionCg<?> conversion, Datatype from, Datatype to) {
+        Datatype conversionFrom = conversion.getFrom();
+        Datatype conversionTo = conversion.getTo();
+        return (conversionFrom.equals(AnyDatatype.INSTANCE) || conversionFrom.equals(from)) && conversionTo.equals(to);
     }
 
 }
