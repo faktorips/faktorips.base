@@ -81,7 +81,7 @@ public class ConversionCodeGeneratorTest {
         ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
 
-        assertEquals("\"\" +FromValue",
+        assertEquals("String.valueOf(FromValue)",
                 conversionCodeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, javaCodeFragment)
                         .getSourcecode());
     }

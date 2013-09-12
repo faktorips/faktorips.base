@@ -151,8 +151,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     private boolean isConversionFor(SingleConversionCg<?> conversion, Datatype from, Datatype to) {
         Datatype conversionFrom = conversion.getFrom();
         Datatype conversionTo = conversion.getTo();
-        return (conversionFrom.equals(AnyDatatype.INSTANCE) || conversionFrom.equals(from)) //
-                && conversionTo.equals(to);
+        return (conversionFrom.equals(AnyDatatype.INSTANCE) || conversionFrom.equals(from)) && conversionTo.equals(to);
     }
 
 }

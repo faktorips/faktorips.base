@@ -25,8 +25,10 @@ public class AnyToStringCg extends AbstractSingleConversionCg {
 
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("\"\" +"); //$NON-NLS-1$ 
+        fragment.appendClassName(String.class);
+        fragment.append(".valueOf("); //$NON-NLS-1$ 
         fragment.append(fromValue);
+        fragment.append(")"); //$NON-NLS-1$ 
         return fragment;
     }
 }
