@@ -19,11 +19,8 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
-import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.fl.ExprCompiler;
@@ -40,11 +37,11 @@ public class EnumParser extends AbstractIdentifierNodeParser {
 
     private Map<String, EnumDatatype> createEnumMap() {
         EnumDatatype[] enumtypes = getExpression().getEnumDatatypesAllowedInFormula();
-        Map<String, EnumDatatype> enumDatatypes = new HashMap<String, EnumDatatype>(enumtypes.length);
+        Map<String, EnumDatatype> newEnumDatatypes = new HashMap<String, EnumDatatype>(enumtypes.length);
         for (EnumDatatype enumtype : enumtypes) {
-            enumDatatypes.put(enumtype.getName(), enumtype);
+            newEnumDatatypes.put(enumtype.getName(), enumtype);
         }
-        return enumDatatypes;
+        return newEnumDatatypes;
     }
 
     @Override
@@ -58,10 +55,10 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         return null;
     }
 
-    private EnumClassNode parseEnumClass() {
+    private IdentifierNode parseEnumClass() {
         EnumDatatype enumType = enumDatatypes.get(getIdentifierPart());
         if (enumType != null) {
-            return new EnumClassNode(new EnumClass(enumType));
+            return nodeFactory().createEnumClassNode(new EnumClass(enumType));
         }
         return null;
     }
@@ -71,11 +68,12 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         String[] valueIds = enumType.getAllValueIds(true);
         for (String enumValueName : valueIds) {
             if (ObjectUtils.equals(enumValueName, getIdentifierPart())) {
-                return new EnumValueNode(enumValueName, enumType);
+                return nodeFactory().createEnumValueNode(enumValueName, enumType);
             }
         }
-        return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind("The identifier {0} is no value of enum {1}.", getIdentifierPart(), enumType.getName())));
+        return nodeFactory().createInvalidIdentifier(
+                Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
+                        Messages.EnumParser_msgErrorInvalidEnumValue, getIdentifierPart(), enumType.getName())));
     }
 
 }

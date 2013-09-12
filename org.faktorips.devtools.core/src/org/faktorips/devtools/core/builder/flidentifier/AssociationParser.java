@@ -15,13 +15,8 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.builder.Messages;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociationNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -54,34 +49,41 @@ public class AssociationParser extends TypeBasedIdentifierParser {
                 }
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            IpsPlugin.log(e);
+            return nodeFactory().createInvalidIdentifier(
+                    Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
+                            Messages.AssociationParser_msgErrorWhileFindAssociation, getIdentifierPart(),
+                            getContextType())));
         }
         return null;
     }
 
-    private QualifiedAssociationNode createQualifiedAssiciationNode(IAssociation association) throws CoreException {
+    private IdentifierNode createQualifiedAssiciationNode(IAssociation association) {
         boolean listOfType = isListOfTypeDatatype() || association.is1ToManyIgnoringQualifier();
-        return new QualifiedAssociationNode(association, getQualifier(), listOfType, getIpsProject());
+        return nodeFactory().createQualifiedAssociationNode(association, getQualifier(), listOfType);
     }
 
-    private IdentifierNode createIndexBasedAssiciationNode(IAssociation association) throws CoreException {
+    private IdentifierNode createIndexBasedAssiciationNode(IAssociation association) {
         if (association.is1To1()) {
-            return new InvalidIdentifierNode(Message.newError(
-                    ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION,
-                    NLS.bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
+            return nodeFactory().createInvalidIdentifier(
+                    Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS.bind(
+                            Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
                             association.getName(), getQualifierOrIndex())));
         }
         try {
-            return new IndexBasedAssociationNode(association, getIndex(), getIpsProject());
+            return nodeFactory().createIndexBasedAssociationNode(association, getIndex());
         } catch (NumberFormatException e) {
-            return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER,
-                    NLS.bind("The statement {0} is no valid qualifier nor a valid index.", getQualifierOrIndex())));
+            IpsPlugin.log(e);
+            return nodeFactory().createInvalidIdentifier(
+                    Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS.bind(
+                            Messages.AssociationParser_msgErrorAssociationQualifierOrIndex, getQualifierOrIndex(),
+                            getIdentifierPart())));
         }
     }
 
-    private AssociationNode createAssociationNode(IAssociation association) throws CoreException {
+    private IdentifierNode createAssociationNode(IAssociation association) {
         boolean listOfType = isListOfTypeDatatype() || association.is1ToMany();
-        return new AssociationNode(association, listOfType, getIpsProject());
+        return nodeFactory().createAssociationNode(association, listOfType);
     }
 
     protected String getAssociationName() {

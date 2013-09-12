@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -92,9 +92,8 @@ public class IdentifierParser {
      *             return a {@link ParseException}.
      */
     public IdentifierNode parse(String identifier) throws ParseException {
-        String[] identifierParts = identifier.split(IDENTIFIER_SEPERATOR_REGEX);
+        identifierParts = identifier.split(IDENTIFIER_SEPERATOR_REGEX);
         contextType = expression.findProductCmptType(ipsProject);
-        this.identifierParts = identifierParts;
         this.currentPartIndex = 0;
         return parseNextPart();
     }
@@ -110,8 +109,9 @@ public class IdentifierParser {
                 return node;
             }
         }
-        return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind("The statement {0} is no valid identifier.", getIdentifierPart())));
+        return new IdentifierNodeFactory(getIdentifierPart(), ipsProject).createInvalidIdentifier(Message.newError(
+                ExprCompiler.UNDEFINED_IDENTIFIER,
+                NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, getIdentifierPart())));
     }
 
     private String getIdentifierPart() {

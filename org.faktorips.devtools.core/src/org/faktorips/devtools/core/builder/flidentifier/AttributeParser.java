@@ -17,11 +17,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.builder.Messages;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -44,12 +41,20 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     @Override
     public IdentifierNode parseInternal() {
         boolean defaultValueAccess = isDefaultValueAccess(getIdentifierPart());
-        List<IAttribute> attributes = findAttributes();
+        List<IAttribute> attributes;
+        try {
+            attributes = findAttributes();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return nodeFactory().createInvalidIdentifier(
+                    Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
+                            Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
+        }
         for (IAttribute anAttribute : attributes) {
             String attributeName = getAttributeName(getIdentifierPart(), defaultValueAccess);
             if (attributeName.equals(anAttribute.getName())) {
                 if (isAllowd(anAttribute)) {
-                    return createAttributeNode(anAttribute, defaultValueAccess);
+                    return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isListOfTypeDatatype());
                 } else {
                     return createInvalidIdentifierNode();
                 }
@@ -70,16 +75,12 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         }
     }
 
-    private List<IAttribute> findAttributes() {
+    private List<IAttribute> findAttributes() throws CoreException {
         List<IAttribute> attributes;
         if (isContextTypeFormulaType()) {
             attributes = getExpression().findMatchingProductCmptTypeAttributes();
         } else {
-            try {
-                attributes = getContextType().findAllAttributes(getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            attributes = getContextType().findAllAttributes(getIpsProject());
         }
         return attributes;
     }
@@ -88,29 +89,10 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return identifierFilter.isIdentifierAllowed(anAttribute);
     }
 
-    private IdentifierNode createAttributeNode(IAttribute anAttribute, boolean defaultValueAccess) {
-        try {
-            AttributeNode attributeNode = new AttributeNode(anAttribute, defaultValueAccess, isListOfTypeDatatype(),
-                    getIpsProject());
-            if (attributeNode.getDatatype() == null) {
-                return new InvalidIdentifierNode(Message.newError(
-                        ExprCompiler.UNDEFINED_IDENTIFIER,
-                        NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved,
-                                anAttribute.getDatatype(), getIdentifierPart())));
-            } else {
-                return attributeNode;
-            }
-        } catch (CoreException e) {
-            return new InvalidIdentifierNode(Message.newError(
-                    ExprCompiler.UNDEFINED_IDENTIFIER,
-                    NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorDatatypeResolving,
-                            anAttribute.getDatatype(), getIdentifierPart())));
-        }
-    }
-
     private IdentifierNode createInvalidIdentifierNode() {
-        return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
+        return nodeFactory().createInvalidIdentifier(
+                Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
+                        Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
     }
 
 }

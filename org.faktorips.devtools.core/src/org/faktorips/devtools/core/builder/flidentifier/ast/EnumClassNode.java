@@ -18,7 +18,7 @@ import org.faktorips.datatype.EnumDatatype;
 
 public class EnumClassNode extends IdentifierNode {
 
-    public EnumClassNode(EnumClass datatype) {
+    EnumClassNode(EnumClass datatype) {
         super(datatype);
     }
 

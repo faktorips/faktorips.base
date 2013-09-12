@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
@@ -80,6 +81,10 @@ public abstract class AbstractIdentifierNodeParser {
 
     protected boolean isContextTypeFormulaType() {
         return getContextType() == getExpression().findProductCmptType(getIpsProject());
+    }
+
+    public IdentifierNodeFactory nodeFactory() {
+        return new IdentifierNodeFactory(getIdentifierPart(), getIpsProject());
     }
 
 }

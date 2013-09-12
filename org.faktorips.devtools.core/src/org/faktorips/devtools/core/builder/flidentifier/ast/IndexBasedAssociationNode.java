@@ -21,7 +21,7 @@ public class IndexBasedAssociationNode extends AssociationNode {
 
     private final int index;
 
-    public IndexBasedAssociationNode(IAssociation association, int index, IIpsProject ipsProject) throws CoreException {
+    IndexBasedAssociationNode(IAssociation association, int index, IIpsProject ipsProject) throws CoreException {
         super(association, false, ipsProject);
         this.index = index;
     }

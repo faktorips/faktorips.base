@@ -19,7 +19,7 @@ public class InvalidIdentifierNode extends IdentifierNode {
 
     private final Message errorMessage;
 
-    public InvalidIdentifierNode(Message errorMessage) {
+    InvalidIdentifierNode(Message errorMessage) {
         super(null);
         this.errorMessage = errorMessage;
     }

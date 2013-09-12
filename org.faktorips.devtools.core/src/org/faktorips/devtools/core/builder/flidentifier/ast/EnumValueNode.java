@@ -19,7 +19,7 @@ public class EnumValueNode extends IdentifierNode {
 
     private final String enumValueName;
 
-    public EnumValueNode(String enumValueName, Datatype datatype) {
+    EnumValueNode(String enumValueName, Datatype datatype) {
         super(datatype);
         this.enumValueName = enumValueName;
     }

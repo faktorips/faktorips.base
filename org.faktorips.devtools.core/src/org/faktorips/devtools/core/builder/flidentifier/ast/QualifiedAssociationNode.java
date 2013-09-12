@@ -21,8 +21,8 @@ public class QualifiedAssociationNode extends AssociationNode {
 
     private final String qualifier;
 
-    public QualifiedAssociationNode(IAssociation association, String qualifier, boolean listOfTypes,
-            IIpsProject ipsProject) throws CoreException {
+    QualifiedAssociationNode(IAssociation association, String qualifier, boolean listOfTypes, IIpsProject ipsProject)
+            throws CoreException {
         super(association, listOfTypes, ipsProject);
         this.qualifier = qualifier;
     }
