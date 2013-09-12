@@ -17,13 +17,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.util.message.Message;
 
 public class EnumParser extends AbstractIdentifierNodeParser {
 
@@ -62,7 +66,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         return null;
     }
 
-    private EnumValueNode parseEnumDatatype() {
+    private IdentifierNode parseEnumDatatype() {
         EnumDatatype enumType = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumType.getAllValueIds(true);
         for (String enumValueName : valueIds) {
@@ -70,7 +74,8 @@ public class EnumParser extends AbstractIdentifierNodeParser {
                 return new EnumValueNode(enumValueName, enumType);
             }
         }
-        return null;
+        return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
+                NLS.bind("The identifier {0} is no value of enum {1}.", getIdentifierPart(), enumType.getName())));
     }
 
 }

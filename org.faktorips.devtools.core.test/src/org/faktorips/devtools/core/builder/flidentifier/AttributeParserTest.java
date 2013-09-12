@@ -1,0 +1,145 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.builder.flidentifier;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.fl.ExprCompiler;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class AttributeParserTest extends AbstractParserTest {
+
+    private static final String MY_ATTRIBUTE = "myAttribute";
+
+    @Mock
+    private IAttribute attribute;
+
+    @Mock
+    private IType otherType;
+
+    @Mock
+    private IPolicyCmptType policyType;
+
+    @Mock
+    private IdentifierFilter identifierFilter;
+
+    private AttributeParser attributeParser;
+
+    @Before
+    public void createAttributeParser() throws Exception {
+        attributeParser = new AttributeParser(getExpression(), getIpsProject(), identifierFilter);
+    }
+
+    @Before
+    public void mockAttribute() throws Exception {
+        when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
+        when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
+        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class))).thenReturn(true);
+    }
+
+    @Test
+    public void testParse_noAttribute() throws Exception {
+        IdentifierNode attributeNode = attributeParser.parse(MY_ATTRIBUTE, getProductCmptType());
+
+        assertNull(attributeNode);
+    }
+
+    @Test
+    public void testParse_findAttributeInExpressionType() throws Exception {
+        when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
+
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, getProductCmptType());
+
+        assertEquals(attribute, attributeNode.getAttribute());
+        assertFalse(attributeNode.isDefaultValueAccess());
+    }
+
+    @Test
+    public void testParse_findAttributeInOtherType() throws Exception {
+        when(otherType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, otherType);
+
+        assertEquals(attribute, attributeNode.getAttribute());
+        assertFalse(attributeNode.isDefaultValueAccess());
+    }
+
+    @Test
+    public void testParse_findAttributeInList() throws Exception {
+        when(otherType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new ListOfTypeDatatype(
+                otherType));
+
+        assertEquals(attribute, attributeNode.getAttribute());
+        assertEquals(new ListOfTypeDatatype(Datatype.INTEGER), attributeNode.getDatatype());
+        assertFalse(attributeNode.isDefaultValueAccess());
+    }
+
+    @Test
+    public void testParse_findDefaultValueAccess() throws Exception {
+        when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
+
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(identifierPart, policyType);
+
+        assertEquals(attribute, attributeNode.getAttribute());
+        assertTrue(attributeNode.isDefaultValueAccess());
+    }
+
+    @Test
+    public void testParse_filteredAttribute() throws Exception {
+        when(identifierFilter.isIdentifierAllowed(attribute)).thenReturn(false);
+        when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
+
+        InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(identifierPart, policyType);
+
+        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
+    }
+
+    @Test
+    public void testParse_noDatatype() throws Exception {
+        when(attribute.findDatatype(getIpsProject())).thenReturn(null);
+        when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
+
+        InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(identifierPart, policyType);
+
+        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
+    }
+
+}

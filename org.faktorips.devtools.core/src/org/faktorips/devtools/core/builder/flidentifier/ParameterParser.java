@@ -14,11 +14,17 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.builder.Messages;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.util.message.Message;
 
 public class ParameterParser extends TypeBasedIdentifierParser {
 
@@ -27,13 +33,13 @@ public class ParameterParser extends TypeBasedIdentifierParser {
     }
 
     @Override
-    public ParameterNode parseInternal() {
+    public IdentifierNode parseInternal() {
         if (isContextTypeFormulaType()) {
             IParameter[] params = getParameters();
             for (IParameter param : params) {
                 if (param.getName().equals(getIdentifierPart())) {
                     try {
-                        return new ParameterNode(param, getIpsProject());
+                        return createParameterNode(param);
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);
                     }
@@ -42,6 +48,17 @@ public class ParameterParser extends TypeBasedIdentifierParser {
         }
         return null;
 
+    }
+
+    protected IdentifierNode createParameterNode(IParameter param) throws CoreException {
+        ParameterNode parameterNode = new ParameterNode(param, getIpsProject());
+        if (parameterNode.getDatatype() == null) {
+            return new InvalidIdentifierNode(Message.newError(
+                    ExprCompiler.UNDEFINED_IDENTIFIER,
+                    NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved,
+                            parameterNode.getDatatype(), getIdentifierPart())));
+        }
+        return parameterNode;
     }
 
     /* private */protected IParameter[] getParameters() {

@@ -28,15 +28,12 @@ public class Messages extends NLS {
     }
 
     public static String AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis;
-    public static String AbstractParameterIdentifierResolver_msgResolverMustBeSet;
     public static String AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved;
-    public static String AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving;
+    public static String AbstractParameterIdentifierResolver_msgErrorDatatypeResolving;
     public static String AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving;
     public static String AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute;
     public static String AbstractParameterIdentifierResolver_msgErrorNoAttribute;
     public static String AbstractParameterIdentifierResolver_msgErrorNoAttributeInClass;
-    public static String AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute;
-    public static String AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute;
     public static String AbstractParameterIdentifierResolver_msgAttributeMissing;
     public static String AbstractParameterIdentifierResolver_noAssociationIdentifier;
     public static String AbstractParameterIdentifierResolver_noAssociationTarget;

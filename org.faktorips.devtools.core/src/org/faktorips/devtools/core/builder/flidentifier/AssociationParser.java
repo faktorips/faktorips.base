@@ -14,14 +14,19 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.builder.Messages;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociationNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.util.message.Message;
 
 public class AssociationParser extends TypeBasedIdentifierParser {
 
@@ -54,20 +59,23 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         return null;
     }
 
-    private QualifiedAssociationNode createQualifiedAssiciationNode(IAssociation association) {
-        try {
-            boolean listOfType = isListOfTypeDatatype() || association.is1ToManyIgnoringQualifier();
-            return new QualifiedAssociationNode(association, getQualifier(), listOfType, getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+    private QualifiedAssociationNode createQualifiedAssiciationNode(IAssociation association) throws CoreException {
+        boolean listOfType = isListOfTypeDatatype() || association.is1ToManyIgnoringQualifier();
+        return new QualifiedAssociationNode(association, getQualifier(), listOfType, getIpsProject());
     }
 
-    private IndexBasedAssociationNode createIndexBasedAssiciationNode(IAssociation association) {
+    private IdentifierNode createIndexBasedAssiciationNode(IAssociation association) throws CoreException {
+        if (association.is1To1()) {
+            return new InvalidIdentifierNode(Message.newError(
+                    ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION,
+                    NLS.bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
+                            association.getName(), getQualifierOrIndex())));
+        }
         try {
             return new IndexBasedAssociationNode(association, getIndex(), getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        } catch (NumberFormatException e) {
+            return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER,
+                    NLS.bind("The statement {0} is no valid qualifier nor a valid index.", getQualifierOrIndex())));
         }
     }
 
@@ -88,7 +96,9 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     private boolean isQualifier() {
-        return getIdentifierPart().indexOf(QUALIFIER_START + QUALIFIER_QUOTATION) > 0;
+        int qualifierStart = getIdentifierPart().indexOf(QUALIFIER_START + QUALIFIER_QUOTATION);
+        int qualifierEnd = getIdentifierPart().indexOf(QUALIFIER_QUOTATION + QUALIFIER_END);
+        return qualifierStart > 0 && qualifierStart < qualifierEnd;
     }
 
     private boolean isIndex() {
@@ -104,12 +114,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     private String getQualifier() {
-        if (getQualifierOrIndex().startsWith(QUALIFIER_QUOTATION)
-                && getQualifierOrIndex().endsWith(QUALIFIER_QUOTATION)) {
-            return getQualifierOrIndex().substring(1, getQualifierOrIndex().length() - 1);
-        } else {
-            throw new IllegalArgumentException("Illegal qualifier syntax " + getQualifierOrIndex()); //$NON-NLS-1$
-        }
+        return getQualifierOrIndex().substring(1, getQualifierOrIndex().length() - 1);
     }
 
     private int getIndex() {
