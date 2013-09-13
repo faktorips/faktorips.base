@@ -13,8 +13,6 @@
 
 package org.faktorips.codegen;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,6 +46,7 @@ import org.faktorips.codegen.conversion.PrimitiveLongToPrimitiveIntCg;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * The ConversionCodeGenerator extends the ConversionMatrix with the ability to generate the Java
@@ -55,9 +54,6 @@ import org.faktorips.datatype.Datatype;
  * possible).
  */
 public class ConversionCodeGenerator<T extends CodeFragment> implements ConversionMatrix {
-
-    /** List of single conversion code generators. */
-    private List<SingleConversionCg<T>> conversions = new ArrayList<SingleConversionCg<T>>();
 
     private FromToConversionMap<T> fromToConversionMap = new FromToConversionMap<T>();
 
@@ -106,7 +102,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     }
 
     public void add(SingleConversionCg<T> conversion) {
-        conversions.add(conversion);
         addConversionToMap(conversion);
     }
 
@@ -121,11 +116,15 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (to instanceof AnyDatatype) {
             return true;
         }
-        if (fromToConversionMap.get(from, to) != null) {
+        SingleConversionCg<T> singleConversionCode = getSingleConversionCode(from, to);
+        if (singleConversionCode != null) {
             return true;
         }
-        // }
         return false;
+    }
+
+    private SingleConversionCg<T> getSingleConversionCode(Datatype from, Datatype to) {
+        return fromToConversionMap.get(from, to);
     }
 
     /**
@@ -139,21 +138,47 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
      *            value of {@link Datatype} from.
      */
     public T getConversionCode(Datatype from, Datatype to, T fromValue) {
+        if (from == null || to == null) {
+            return null;
+        }
         if (from.equals(to)) {
             return fromValue;
         }
         if (to instanceof AnyDatatype) {
             return fromValue;
         }
-        if (fromToConversionMap.get(from, to) != null) {
-            return fromToConversionMap.get(from, to).getConversionCode(fromValue);
+        SingleConversionCg<T> singleConversionCode = getSingleConversionCode(from, to);
+        if (singleConversionCode == null
+                && !(from.equals(Datatype.PRIMITIVE_BOOLEAN) || to.equals(Datatype.PRIMITIVE_BOOLEAN))) {
+            if (from.isPrimitive() && to.isPrimitive()) {
+                singleConversionCode = getSingleConversionCode(getWrapedPrimitiveDatatype(from),
+                        getWrapedPrimitiveDatatype(to));
+            }
+            if (from.isPrimitive() || to.isPrimitive()) {
+                singleConversionCode = from.isPrimitive() ? getSingleConversionCode(getWrapedPrimitiveDatatype(from),
+                        to) : getSingleConversionCode(from, getWrapedPrimitiveDatatype(to));
+            }
+            return singleConversionCode.getConversionCode(fromValue);
+        }
+        if (singleConversionCode != null) {
+            return singleConversionCode.getConversionCode(fromValue);
+        }
+        return null;
+    }
+
+    private Datatype getWrapedPrimitiveDatatype(Datatype primitiveDatatype) {
+        if (primitiveDatatype.equals(Datatype.PRIMITIVE_INT)) {
+            return Datatype.INTEGER;
+        }
+        if (primitiveDatatype.equals(Datatype.PRIMITIVE_LONG)) {
+            return Datatype.LONG;
         }
         return null;
     }
 
     private static class FromToConversionMap<T extends CodeFragment> {
 
-        private Map<Datatype, Map<Datatype, SingleConversionCg<T>>> internalMap = new ConcurrentHashMap<Datatype, Map<Datatype, SingleConversionCg<T>>>();
+        private final Map<Datatype, Map<Datatype, SingleConversionCg<T>>> internalMap = new ConcurrentHashMap<Datatype, Map<Datatype, SingleConversionCg<T>>>();
 
         /**
          * Return single conversion code generator given from-datatype and to-datatype
@@ -208,6 +233,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         }
 
         private SingleConversionCg<T> getMapValueOfToDatatype(Datatype to, Map<Datatype, SingleConversionCg<T>> fromMap) {
+            ArgumentCheck.notNull(fromMap);
             SingleConversionCg<T> singleConversionCg = fromMap.get(to);
             return singleConversionCg;
         }
