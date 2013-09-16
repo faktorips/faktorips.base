@@ -64,9 +64,9 @@ public class ConversionCodeGeneratorTest {
                 new JavaCodeFragment("true"));
         assertNotNull(conversionCode);
 
-        conversionCode = codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, Datatype.INTEGER,
-                new JavaCodeFragment("true"));
-        assertTrue(conversionCode == null);
+        conversionCode = codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.PRIMITIVE_INT,
+                new JavaCodeFragment("21.4"));
+        assertNotNull(conversionCode);
 
         conversionCode = codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true"));
         assertTrue(conversionCode == null);
