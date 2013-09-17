@@ -350,9 +350,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         if (attribute == null) {
             return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
         }
-        IdentifierKind identifierFilterEnum = IdentifierKind
+        IdentifierKind identifierKind = IdentifierKind
                 .getDefaultIdentifierOrAttribute(isDefaultValueAccess);
-        if (!getIdentifierFilter().isIdentifierAllowed(attribute, identifierFilterEnum)) {
+        if (!getIdentifierFilter().isIdentifierAllowed(attribute, identifierKind)) {
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
                     attribute.getName() + addDefaultValueSuffixIfNeeded(isDefaultValueAccess));
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
