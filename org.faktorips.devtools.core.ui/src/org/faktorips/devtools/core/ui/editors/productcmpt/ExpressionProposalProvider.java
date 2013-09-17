@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.internal.model.method.Parameter;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -158,12 +159,22 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         List<IAttribute> attributes = expression.findMatchingProductCmptTypeAttributes();
         Collections.sort(attributes, new SortList());
         for (IAttribute attribute : attributes) {
-            if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)) {
-                if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
-                    addPartToResult(result, attribute, attribute.getDatatype(), prefix);
-                }
+            if (isAttributeIdentifierAllowed(attribute, prefix)) {
+                addPartToResult(result, attribute, attribute.getDatatype(), prefix);
             }
         }
+    }
+
+    private boolean isAttributeIdentifierAllowed(IAttribute attribute, String prefix) {
+        return isAttributeAllowedByFilter(attribute) && isNameMatching(attribute, prefix);
+    }
+
+    private boolean isAttributeAllowedByFilter(IAttribute attribute) {
+        return getIdentifierFilter().isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE);
+    }
+
+    private boolean isNameMatching(IAttribute attribute, String prefix) {
+        return checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix);
     }
 
     private void addPartToResult(List<IContentProposal> result, IIpsObjectPart part, String datatype, String prefix) {
@@ -303,12 +314,10 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(attributes, new SortList());
             List<String> attributeNames = new ArrayList<String>();
             for (IAttribute attribute : attributes) {
-                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), attributePrefix)) {
-                    if (getIdentifierFilter().isIdentifierAllowed(attribute)) {
-                        if (!attributeNames.contains(attribute.getName())) {
-                            addAttributeToResult(result, attribute, attributePrefix);
-                            attributeNames.add(attribute.getName());
-                        }
+                if (isAttributeIdentifierAllowed(attribute, attributePrefix)) {
+                    if (!attributeNames.contains(attribute.getName())) {
+                        addAttributeToResult(result, attribute, attributePrefix);
+                        attributeNames.add(attribute.getName());
                     }
                 }
             }
@@ -452,7 +461,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             Collections.sort(attributes, new SortList());
             final List<String> attributeNames = new ArrayList<String>();
             for (final IAttribute attribute : attributes) {
-                if (checkMatchingNameWithCaseInsensitive(attribute.getName(), prefix)
+                if (isDefaultIdentifierAllowed(attribute, attributePrefix)
                         && !attributeNames.contains(attribute.getName())) {
                     addDefaultValueToResult(result, attribute, attributePrefix);
                     attributeNames.add(attribute.getName());
@@ -462,6 +471,14 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
+    }
+
+    private boolean isDefaultIdentifierAllowed(IAttribute attribute, String prefix) {
+        return isDefaultIdentifierAllowedByFilter(attribute) && isNameMatching(attribute, prefix);
+    }
+
+    private boolean isDefaultIdentifierAllowedByFilter(IAttribute attribute) {
+        return getIdentifierFilter().isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER);
     }
 
     private void addDefaultValueToResult(final List<IContentProposal> result,

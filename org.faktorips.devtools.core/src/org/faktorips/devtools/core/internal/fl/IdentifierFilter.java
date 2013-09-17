@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.fl;
 import java.util.List;
 
 import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
@@ -40,14 +41,14 @@ public class IdentifierFilter {
      * <code>false</code> when not.
      * 
      * @param ipsObjectPartContainer the {@link IIpsObjectPartContainer} to check
+     * @param identifierKind the kind of Identifier {@link IdentifierKind}
      */
-    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer, IdentifierKind identifierKind) {
         for (IFlIdentifierFilterExtension flIdentifierFilterExtension : flIdentifierFilters) {
-            if (!flIdentifierFilterExtension.isIdentifierAllowed(ipsObjectPartContainer)) {
+            if (!flIdentifierFilterExtension.isIdentifierAllowed(ipsObjectPartContainer, identifierKind)) {
                 return false;
             }
         }
         return true;
     }
-
 }

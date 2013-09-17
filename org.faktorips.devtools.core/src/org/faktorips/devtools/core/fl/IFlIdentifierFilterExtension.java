@@ -20,8 +20,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 /**
  * Implementations of this interface are registered by the extension point
  * "flIdentifierFilterExtension". They are instantiated by the {@link IpsPlugin} and used in
- * {@link IdentifierFilter}. The {@link IdentifierFilter} asked for every
- * {@link IIpsObjectPartContainer part container} if it is allowed to use as identifier or not.
+ * {@link IdentifierFilter}. The {@link IdentifierFilter} determines for a given
+ * {@link IIpsObjectPartContainer part container} if it may be used as an identifier in functions.
  * 
  * @see IdentifierFilter
  * @author frank
@@ -30,11 +30,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 public interface IFlIdentifierFilterExtension {
 
     /**
-     * Check if this {@link IIpsObjectPartContainer} is allowed. This method is called very often so
-     * it is important that the decision is found very fast!
+     * Checks whether the given {@link IIpsObjectPartContainer} is allowed by this filter (
+     * <code>true</code>) or disallowed (<code>false</code>) respectively. This method is called
+     * frequently so performance is crucial.
      * 
      * @param ipsObjectPartContainer the {@link IIpsObjectPartContainer} to check
-     * @return <code>true</code> if use is allowed and <code>false</code>
+     * @param identifierKind the kind of Identifier ({@link IdentifierKind})
+     * @return <code>true</code> if the part is allowed, <code>false</code> otherwise
      */
-    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer);
+    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer, IdentifierKind identifierKind);
+
 }

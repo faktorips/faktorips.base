@@ -21,6 +21,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +49,13 @@ public class IdentifierFilterTest extends TestCase {
 
     @Test
     public void testIsIdentifierAllowed() throws Exception {
-        when(flIdentifierExtension.isIdentifierAllowed(attribute)).thenReturn(false);
-        assertFalse(filter.isIdentifierAllowed(attribute));
+        when(flIdentifierExtension.isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE)).thenReturn(false);
+        when(flIdentifierExtension.isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER)).thenReturn(true);
+        assertFalse(filter.isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE));
+        assertTrue(filter.isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER));
 
-        when(flIdentifierExtension.isIdentifierAllowed(attribute)).thenReturn(true);
-        assertTrue(filter.isIdentifierAllowed(attribute));
+        when(flIdentifierExtension.isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE)).thenReturn(true);
+        assertTrue(filter.isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE));
 
     }
 

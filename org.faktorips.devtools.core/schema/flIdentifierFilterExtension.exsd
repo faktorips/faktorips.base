@@ -79,8 +79,13 @@
          public class AttributeFragmentFilter implements IFlIdentifierFilterExtension {
 
     @Override
-    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer) {
-        if (ipsObjectPartContainer.getName().equals(&quot;produktname&quot;)) { //$NON-NLS-1$
+    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer, IdentifierKind identifierKind) {
+    	// disable @default identifiers completely
+    	if (identifierKind.isDefaultIdentifier()) {
+            return false;
+        }
+        // disable the attribute with name premium
+        if (ipsObjectPartContainer.getName().equals(&quot;premium&quot;)) { //$NON-NLS-1$
             return false;
         }
         return true;
