@@ -116,6 +116,9 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (to instanceof AnyDatatype) {
             return true;
         }
+        if (existSingleConversionWithPrimitives(from, to)) {
+            return true;
+        }
         SingleConversionCg<T> singleConversionCode = getSingleConversionCode(from, to);
         if (singleConversionCode != null) {
             return true;
@@ -147,40 +150,52 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (to instanceof AnyDatatype) {
             return fromValue;
         }
-        if (getSingleConversionCode(from, to) == null
-                && (from != Datatype.PRIMITIVE_BOOLEAN && to != Datatype.PRIMITIVE_BOOLEAN)) {
-            if (from.isPrimitive()
-                    && to.isPrimitive()
-                    && getSingleConversionCode(getWrapedPrimitiveDatatype(from), getWrapedPrimitiveDatatype(to)) != null) {
-                SingleConversionCg<T> singleConversionCode = getSingleConversionCode(getWrapedPrimitiveDatatype(from),
-                        getWrapedPrimitiveDatatype(to));
-                T conversionCode = singleConversionCode.getConversionCode(fromValue);
-                SingleConversionCg<T> singleConversionCode2 = getSingleConversionCode(getWrapedPrimitiveDatatype(to),
-                        to);
-                T conversionCode2 = singleConversionCode2.getConversionCode(conversionCode);
-                return conversionCode2;
+        if (existSingleConversionWithPrimitives(from, to)) {
+            if (areFromToPrimitiveAndHaveSingleConversionCode(from, to)) {
+                SingleConversionCg<T> singleConversionCode = getSingleConversionCodeWithPrimitives(from, to);
+                return singleConversionCode.getConversionCode(fromValue);
             }
-            if (to.isPrimitive()) {
-                SingleConversionCg<T> singleConversionCg = getSingleConversionCode(from, getWrapedPrimitiveDatatype(to));
-                T conversionCode = singleConversionCg.getConversionCode(fromValue);
-                SingleConversionCg<T> singleConversionCg2 = getSingleConversionCode(getWrapedPrimitiveDatatype(to), to);
-                T conversionCode2 = singleConversionCg2.getConversionCode(conversionCode);
-                return conversionCode2;
-            }
-            if (from.isPrimitive()) {
-                SingleConversionCg<T> singleConversionCg = getSingleConversionCode(from,
-                        getWrapedPrimitiveDatatype(from));
-                T conversionCode = singleConversionCg.getConversionCode(fromValue);
-                SingleConversionCg<T> singleConversionCg2 = getSingleConversionCode(getWrapedPrimitiveDatatype(from),
-                        to);
-                T conversionCode2 = singleConversionCg2.getConversionCode(conversionCode);
-                return conversionCode2;
+            if (from.isPrimitive() || to.isPrimitive()) {
+                SingleConversionCg<T> singleConversionCg = getSingleConversionCodeWithOnePrimitive(from, to);
+                return singleConversionCg.getConversionCode(fromValue);
             }
         }
         if (getSingleConversionCode(from, to) != null) {
             return getSingleConversionCode(from, to).getConversionCode(fromValue);
         }
         return null;
+    }
+
+    private boolean existSingleConversionWithPrimitives(Datatype from, Datatype to) {
+        if (isSingleConversionEmpty(from, to)) {
+            if (getSingleConversionCode(getWrapedPrimitiveDatatype(from), getWrapedPrimitiveDatatype(to)) != null) {
+                return true;
+            }
+            if (getSingleConversionCode(getWrapedPrimitiveDatatype(from), to) != null) {
+                return true;
+            }
+            if (getSingleConversionCode(from, getWrapedPrimitiveDatatype(to)) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private SingleConversionCg<T> getSingleConversionCodeWithPrimitives(Datatype from, Datatype to) {
+        return getSingleConversionCode(getWrapedPrimitiveDatatype(from), getWrapedPrimitiveDatatype(to));
+    }
+
+    private SingleConversionCg<T> getSingleConversionCodeWithOnePrimitive(Datatype from, Datatype to) {
+        return from.isPrimitive() ? getSingleConversionCode(getWrapedPrimitiveDatatype(from), to)
+                : getSingleConversionCode(from, getWrapedPrimitiveDatatype(to));
+    }
+
+    private boolean areFromToPrimitiveAndHaveSingleConversionCode(Datatype from, Datatype to) {
+        return from.isPrimitive() && to.isPrimitive() && getSingleConversionCodeWithPrimitives(from, to) != null;
+    }
+
+    private boolean isSingleConversionEmpty(Datatype from, Datatype to) {
+        return getSingleConversionCode(from, to) == null;
     }
 
     private Datatype getWrapedPrimitiveDatatype(Datatype primitiveDatatype) {

@@ -70,7 +70,6 @@ public class ConversionCodeGeneratorTest {
         conversionCode = codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.PRIMITIVE_INT,
                 new JavaCodeFragment(string));
         assertNotNull(conversionCode);
-        // assertTrue(conversionCode == null);
 
         conversionCode = codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true"));
         assertTrue(conversionCode == null);
