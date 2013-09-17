@@ -32,11 +32,12 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
     }
 
     /**
-     * Tests whether the given {@link IdentifierNode node} is an invalid node and returns an error
-     * {@link CompilationResult} in that case. If the given given {@link IdentifierNode node} is
-     * valid on the other hand, a {@link CompilationResult} is built for it. This method also
-     * generates the {@link CompilationResult} of the given node's successor, if there is one, by
-     * delegating to its {@link #buildNode(IdentifierNode, CompilationResult)} method. The resulting
+     * Tests whether the given {@link IdentifierNode node} is an invalid node and returns an
+     * {@link CompilationResult} containing error messages in that case. If the given given
+     * {@link IdentifierNode node} is valid on the other hand, a {@link CompilationResult} with a
+     * code fragment is built for it. This method also generates the {@link CompilationResult} of
+     * the given node's successor (following identifier part), if there is one, by delegating to its
+     * {@link #buildNode(IdentifierNode, CompilationResult)} method. The resulting
      * {@link CompilationResult} is returned.
      * 
      * @param identifierNode the node to process
@@ -108,7 +109,7 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
         return IpsPlugin.getDefault().getIdentifierFilter();
     }
 
-    public IdentifierNodeBuilderFactory<T> getNodeBuilderFactory() {
+    protected IdentifierNodeBuilderFactory<T> getNodeBuilderFactory() {
         return nodeBuilderFactory;
     }
 }
