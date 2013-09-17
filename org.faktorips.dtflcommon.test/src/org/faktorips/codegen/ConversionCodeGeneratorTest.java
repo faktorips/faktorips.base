@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,9 +65,12 @@ public class ConversionCodeGeneratorTest {
                 new JavaCodeFragment("true"));
         assertNotNull(conversionCode);
 
+        DecimalDatatype decimalDatatype = new DecimalDatatype("22");
+        String string = decimalDatatype.toString();
         conversionCode = codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.PRIMITIVE_INT,
-                new JavaCodeFragment("21.4"));
+                new JavaCodeFragment(string));
         assertNotNull(conversionCode);
+        // assertTrue(conversionCode == null);
 
         conversionCode = codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true"));
         assertTrue(conversionCode == null);
