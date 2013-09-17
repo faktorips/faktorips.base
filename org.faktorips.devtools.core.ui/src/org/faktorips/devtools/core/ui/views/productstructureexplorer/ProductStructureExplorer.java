@@ -29,7 +29,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,6 +38,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
@@ -445,9 +446,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         labelProvider.setShowAssociationNodes(showAssociationNode);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(labelProvider,
+        ValidationToolTipLabelProvider decoratedLabelProvider = new ValidationToolTipLabelProvider(labelProvider,
                 decoManager.getLabelDecorator(), new DecorationContext());
         treeViewer.setLabelProvider(decoratedLabelProvider);
+        ColumnViewerToolTipSupport.enableFor(treeViewer, ToolTip.NO_RECREATE);
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
 
         treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
