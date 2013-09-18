@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNod
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.flidentifier.AbstractIdentifierJavaBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
@@ -84,7 +85,7 @@ public class AttributeNodeJavaBuilder extends AbstractIdentifierJavaBuilder<Java
                         + xProductAttribute.getMethodNameGetter();
             }
         }
-        return null;
+        throw new GeneratorRuntimeException("This type of attribute is not supported: " + attribute.getClass()); //$NON-NLS-1$
     }
 
     private String getParameterAttributDefaultValueGetterName(IAttribute attribute) {
