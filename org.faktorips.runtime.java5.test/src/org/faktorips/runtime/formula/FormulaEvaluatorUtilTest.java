@@ -16,6 +16,7 @@ package org.faktorips.runtime.formula;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +29,7 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelper;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.ExistsHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +52,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     public interface IBranch extends IModelObject {
+        public Integer getValue();
     }
 
     @Before
@@ -133,6 +136,37 @@ public class FormulaEvaluatorUtilTest {
         assertEquals(branch, targets.get(0));
         assertEquals(branch2, targets.get(1));
         assertEquals(branch3, targets.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * Multiple source objects have a value in special type
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * All the values are in the list
+     */
+    @Test
+    public void testAttributeAccessorHelper() {
+        IBranch branch1 = mock(IBranch.class);
+        IBranch branch2 = mock(IBranch.class);
+
+        List<IBranch> branches = new ArrayList<FormulaEvaluatorUtilTest.IBranch>();
+        when(branch1.getValue()).thenReturn(Integer.valueOf(2));
+        when(branch2.getValue()).thenReturn(Integer.valueOf(3));
+        branches.add(branch1);
+        branches.add(branch2);
+
+        List<Integer> values = new AttributeAccessorHelper<IBranch, Integer>() {
+
+            @Override
+            protected Integer getValueInternal(IBranch sourceObject) {
+                return sourceObject.getValue();
+            }
+
+        }.getAttributeValues(branches);
+
+        assertTrue(values.contains(Integer.valueOf(2)));
+        assertTrue(values.contains(Integer.valueOf(3)));
     }
 
     /**

@@ -21,22 +21,22 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.flidentifier.AttributeNodeGenerator;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.util.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,20 +56,23 @@ public class AttributeNodeGeneratorTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private AttributeNodeGenerator attributeNodeJavaGenerator;
+    private CompilationResult<JavaCodeFragment> contextCompilationResult;
+
+    private AttributeNodeGenerator attributeNodeGenerator;
 
     private AttributeNode attributeNode;
 
     private IAttribute attribute;
 
     @Before
-    public void createAttributeNodeJavaGenerator() {
-        attributeNodeJavaGenerator = new AttributeNodeGenerator(factory, builderSet);
+    public void createAttributeNodeGenerator() {
+        attributeNodeGenerator = new AttributeNodeGenerator(factory, builderSet);
     }
 
     private void createAttributeNode(boolean isDefault) throws CoreException {
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         attributeNode = new AttributeNode(attribute, isDefault, false, ipsProject);
+        when(contextCompilationResult.getDatatype()).thenReturn(Datatype.INTEGER);
     }
 
     @Test
@@ -80,8 +83,8 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
-                attributeNode, null);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+                attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals(".getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -101,8 +104,8 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getProductCmptGen");
         when(xPolicyAttribute.getMethodNameGetDefaultValue()).thenReturn("getAttribute");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
-                attributeNode, null);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+                attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals(".getProductCmptGen().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -117,8 +120,8 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(xProductAttribute.isChangingOverTime()).thenReturn(true);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
-                attributeNode, null);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+                attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals(".getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -140,8 +143,8 @@ public class AttributeNodeGeneratorTest {
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
-                attributeNode, null);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+                attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals(".getProductCmpt().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
@@ -149,11 +152,37 @@ public class AttributeNodeGeneratorTest {
     }
 
     @Test
-    public void testGetErrorCompilationResult() throws Exception {
-        Message errorMessage = new Message("code", "errorMessage", Message.ERROR);
-        InvalidIdentifierNode invalidIdentifierNode = new InvalidIdentifierNode(errorMessage);
-        CompilationResult<JavaCodeFragment> errorCompilationResult = attributeNodeJavaGenerator
-                .getErrorCompilationResult(invalidIdentifierNode);
-        assertEquals(errorMessage, errorCompilationResult.getMessages().getMessageByCode("code"));
+    public void testGetCompilationResult_ListOfTypeDatatype() throws Exception {
+        attribute = mock(IPolicyCmptTypeAttribute.class);
+        IPolicyCmptType type = mock(IPolicyCmptType.class);
+        when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
+        when(attribute.getDatatype()).thenReturn("Integer");
+        attributeNode = new AttributeNode(attribute, false, true, ipsProject);
+
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("hsVertrag.getDeckungen()");
+        when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
+        when(listofTypeDatatype.getBasicDatatype()).thenReturn(type);
+        when(type.getJavaClassName()).thenReturn("HausratVertrag");
+        when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
+        XPolicyAttribute xPolicyAttribute = mock(XPolicyAttribute.class);
+        when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getWohnflaeche");
+        when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+                attributeNode, contextCompilationResult);
+        assertFalse(compilationResult.failed());
+        System.out.println(compilationResult.getCodeFragment().getSourcecode());
     }
+
+    @Test(expected = GeneratorRuntimeException.class)
+    public void testGetCompilationResult_NoListOfTypeDatatype() throws Exception {
+        attribute = mock(IPolicyCmptTypeAttribute.class);
+        when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
+        when(attribute.getDatatype()).thenReturn("Integer");
+        attributeNode = new AttributeNode(attribute, false, false, ipsProject);
+        ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
+        when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
+        attributeNodeGenerator.getCompilationResult(attributeNode, contextCompilationResult);
+    }
+
 }

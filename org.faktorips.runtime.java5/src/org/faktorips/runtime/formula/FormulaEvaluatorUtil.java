@@ -84,7 +84,7 @@ public class FormulaEvaluatorUtil {
      * <strong>This class is intended to be subclassed in compiled formulas only.</strong>
      * </p>
      */
-    public static abstract class ExistsHelper {
+    public abstract static class ExistsHelper {
         public boolean exists() {
             try {
                 return existsInternal();
@@ -93,7 +93,7 @@ public class FormulaEvaluatorUtil {
             }
         }
 
-        abstract protected boolean existsInternal();
+        protected abstract boolean existsInternal();
     }
 
     /**
@@ -103,7 +103,7 @@ public class FormulaEvaluatorUtil {
      * @param <S> the type of the source objects
      * @param <T> the type of the association targets
      */
-    public static abstract class AssociationToManyHelper<S extends IModelObject, T extends IModelObject> {
+    public abstract static class AssociationToManyHelper<S extends IModelObject, T extends IModelObject> {
 
         /**
          * Returns a {@link List} of target {@link IModelObject model objects} found by calling
@@ -134,7 +134,7 @@ public class FormulaEvaluatorUtil {
          * @param sourceObject the {@link IModelObject} source for the association
          * @return a {@link List} of target {@link IModelObject model objects}
          */
-        abstract protected List<T> getTargetsInternal(S sourceObject);
+        protected abstract List<T> getTargetsInternal(S sourceObject);
     }
 
     /**
@@ -144,7 +144,7 @@ public class FormulaEvaluatorUtil {
      * @param <S> the type of the source objects
      * @param <T> the type of the association targets
      */
-    public static abstract class AssociationTo1Helper<S extends IModelObject, T extends IModelObject> {
+    public abstract static class AssociationTo1Helper<S extends IModelObject, T extends IModelObject> {
         /**
          * Returns a {@link List} of target {@link IModelObject model objects} found by calling
          * {@link #getTargetInternal(IModelObject)} for every object in the {@code sourceObjects}
@@ -172,6 +172,42 @@ public class FormulaEvaluatorUtil {
          * @param sourceObject the {@link IModelObject} source for the association
          * @return the target {@link IModelObject}
          */
-        abstract protected T getTargetInternal(S sourceObject);
+        protected abstract T getTargetInternal(S sourceObject);
+    }
+
+    /**
+     * Helper class to get the values from a list of source objects of type {@code <S>} to target
+     * type {@code <E>}.
+     * 
+     * @param <S> the type of the source objects
+     * @param <E> the type of the values
+     */
+    public abstract static class AttributeAccessorHelper<S extends IModelObject, E> {
+        /**
+         * Returns a {@link List} of values from {@link IModelObject model objects} found by calling
+         * {@link #getValueInternal(IModelObject)} for every object in the {@code sourceObjects}
+         * {@link List}.
+         * 
+         * @param objectList the {@link List} of {@link IModelObject model objects} on which
+         *            {@link #getValueInternal(IModelObject)} will be called.
+         * 
+         * @return a {@link List} of Values
+         */
+        public List<E> getAttributeValues(List<S> objectList) {
+            List<E> values = new ArrayList<E>();
+            for (S object : objectList) {
+                values.add(getValueInternal(object));
+            }
+            return values;
+        }
+
+        /**
+         * Returns the value of the property from the {@link IModelObject} by calling the getter
+         * method of the property.
+         * 
+         * @param sourceObject the {@link IModelObject} source
+         * @return the value of property of the {@link IModelObject}
+         */
+        protected abstract E getValueInternal(S sourceObject);
     }
 }

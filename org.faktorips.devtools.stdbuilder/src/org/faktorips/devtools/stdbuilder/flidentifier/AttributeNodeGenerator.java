@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -30,7 +32,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * JavaBuilder for an {@link AttributeNode}
+ * JavaGenerator for an {@link AttributeNode}
  * 
  * @author widmaier
  * @since 3.11.0
@@ -46,9 +48,52 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         final AttributeNode node = (AttributeNode)identifierNode;
-        final String parameterAttributGetterName = getAttributeGetterName(node.getAttribute(),
-                node.isDefaultValueAccess());
-        return new CompilationResultImpl(createCodeFragment(parameterAttributGetterName), node.getDatatype());
+        if (isListOfTypeDatatype(contextCompilationResult)) {
+            return createListCompilationResult(node, contextCompilationResult);
+        } else {
+            final String parameterAttributGetterName = getAttributeGetterName(node.getAttribute(),
+                    node.isDefaultValueAccess());
+            return new CompilationResultImpl(createCodeFragment(parameterAttributGetterName), node.getDatatype());
+        }
+    }
+
+    private boolean isListOfTypeDatatype(CompilationResult<JavaCodeFragment> compilationResult) {
+        return compilationResult.getDatatype() instanceof ListOfTypeDatatype;
+    }
+
+    private CompilationResult<JavaCodeFragment> createListCompilationResult(AttributeNode node,
+            CompilationResult<JavaCodeFragment> contextCompilationResult) {
+
+        if (!node.isListOfTypeDatatype()) {
+            throw new GeneratorRuntimeException("The datatype of this node is not a ListOfTypeDatatype: " + node); //$NON-NLS-1$
+        }
+
+        final Datatype conextDatatype = getBasicDatatype(contextCompilationResult);
+        final IAttribute attribute = node.getAttribute();
+        final String parameterAttributGetterName = getAttributeGetterName(attribute, node.isDefaultValueAccess());
+
+        JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
+        getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper.class);
+        getTargetCode.append("<"); //$NON-NLS-1$
+        getTargetCode.appendClassName(conextDatatype.getJavaClassName());
+        getTargetCode.append(", "); //$NON-NLS-1$
+        getTargetCode.appendClassName(attribute.getDatatype());
+        getTargetCode.append(">(){@Override protected "); //$NON-NLS-1$
+        getTargetCode.appendClassName(attribute.getDatatype());
+        getTargetCode.append(" getValueInternal("); //$NON-NLS-1$
+        getTargetCode.appendClassName(conextDatatype.getJavaClassName());
+        getTargetCode.append(" sourceObject){return sourceObject." + parameterAttributGetterName); //$NON-NLS-1$
+        getTargetCode.append("();}}.getAttributeValues("); //$NON-NLS-1$
+        getTargetCode.append(contextCompilationResult.getCodeFragment());
+        getTargetCode.append(")"); //$NON-NLS-1$
+
+        return new CompilationResultImpl(getTargetCode, node.getDatatype());
+    }
+
+    private Datatype getBasicDatatype(CompilationResult<JavaCodeFragment> contextCompilationResult) {
+        ListOfTypeDatatype contextListofTypeDatatype = (ListOfTypeDatatype)contextCompilationResult.getDatatype();
+        Datatype conextDatatype = contextListofTypeDatatype.getBasicDatatype();
+        return conextDatatype;
     }
 
     private JavaCodeFragment createCodeFragment(final String parameterAttributGetterName) {
@@ -73,7 +118,7 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
                 return xProductAttribute.getMethodNameGetter();
             } else {
                 XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
-                return xProductCmptClass.getMethodNameGetProductCmpt() + "()."
+                return xProductCmptClass.getMethodNameGetProductCmpt() + "()." //$NON-NLS-1$
                         + xProductAttribute.getMethodNameGetter();
             }
         }
@@ -83,7 +128,7 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
     private String getParameterAttributDefaultValueGetterName(IAttribute attribute) {
         XPolicyCmptClass xPolicyCmptClass = getModelNode(attribute.getType(), XPolicyCmptClass.class);
         XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
-        return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "()."
+        return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "()." //$NON-NLS-1$
                 + xPolicyAttribute.getMethodNameGetDefaultValue();
     }
 }

@@ -50,4 +50,8 @@ public abstract class IdentifierNode {
         return getSuccessor() != null;
     }
 
+    public boolean isListOfTypeDatatype() {
+        return datatype instanceof ListOfTypeDatatype;
+    }
+
 }
