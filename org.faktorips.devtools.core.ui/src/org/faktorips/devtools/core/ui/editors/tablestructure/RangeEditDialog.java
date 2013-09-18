@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,7 +34,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -43,12 +44,12 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
  * A dialog to edit a range.
  */
-public class RangeEditDialog extends IpsPartEditDialog {
+public class RangeEditDialog extends IpsPartEditDialog2 {
 
     private IColumnRange range;
     private TableViewer columnViewer;
@@ -70,12 +71,20 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
 
     @Override
+    public void create() {
+        super.create();
+        setMessage(null);
+    }
+
+    @Override
     protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.RangeEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
+
+        bindContent();
 
         return folder;
     }
@@ -261,8 +270,12 @@ public class RangeEditDialog extends IpsPartEditDialog {
                 IColumn[] columns = range.getTableStructure().getColumns();
                 ArrayList<IColumn> result = new ArrayList<IColumn>();
                 for (int i = 0; i < columns.length; i++) {
-                    if (!columns[i].getDatatype().equals(Datatype.BOOLEAN.getName())) {
-                        result.add(columns[i]);
+                    try {
+                        if (columns[i].findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
+                            result.add(columns[i]);
+                        }
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
                     }
                 }
                 return result.toArray();
@@ -281,13 +294,12 @@ public class RangeEditDialog extends IpsPartEditDialog {
         columnViewer.setInput(this);
     }
 
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(rangeTypeField, IColumnRange.PROPERTY_RANGE_TYPE);
-        uiController.add(fromField, IColumnRange.PROPERTY_FROM_COLUMN);
-        uiController.add(toField, IColumnRange.PROPERTY_TO_COLUMN);
-        uiController.add(parameterNameField, IColumnRange.PROPERTY_PARAMETER_NAME);
+    private void bindContent() {
+        getBindingContext().bindContent(rangeTypeField, getIpsPart(), IColumnRange.PROPERTY_RANGE_TYPE);
+        getBindingContext().bindContent(fromField, getIpsPart(), IColumnRange.PROPERTY_FROM_COLUMN);
+        getBindingContext().bindContent(toField, getIpsPart(), IColumnRange.PROPERTY_TO_COLUMN);
+        getBindingContext().bindContent(parameterNameField, getIpsPart(), IColumnRange.PROPERTY_PARAMETER_NAME);
+        getBindingContext().updateUI();
     }
 
     private void selectColumn(TextField field) {
@@ -297,11 +309,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
         }
         IColumn column = (IColumn)((IStructuredSelection)selection).getFirstElement();
         field.setValue(column.getName());
-        uiController.updateModel();
     }
 
     private void clearColumn(TextField field) {
         field.setValue(""); //$NON-NLS-1$
-        uiController.updateModel();
     }
 }

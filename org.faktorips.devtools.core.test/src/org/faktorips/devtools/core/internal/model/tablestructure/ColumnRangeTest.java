@@ -202,27 +202,6 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
 
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());
-
-        from.setDatatype(Datatype.BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
-
-        from.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
-
-        from.setDatatype(Datatype.INTEGER.getName());
-        to.setDatatype(Datatype.BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
-
-        to.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
     }
 
     @Test

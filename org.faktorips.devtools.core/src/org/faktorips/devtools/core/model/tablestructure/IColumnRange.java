@@ -29,18 +29,6 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem, IDescribedElemen
     public static final String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code that indicates that the from-column has an data type not valid for
-     * ranges.
-     */
-    public static final String MSGCODE_INVALID_DATATYPE_FOR_FROM = MSGCODE_PREFIX + "InvalidDatatypeForFromColumn"; //$NON-NLS-1$
-
-    /**
-     * Validation message code that indicates that the to-column has an data type not valid for
-     * ranges.
-     */
-    public static final String MSGCODE_INVALID_DATATYPE_FOR_TO = MSGCODE_PREFIX + "InvalidDatatypeForToColumn"; //$NON-NLS-1$
-
-    /**
      * Validation message code that indicates that if the column range type is two column then the
      * from and the to column must have the same data type
      */

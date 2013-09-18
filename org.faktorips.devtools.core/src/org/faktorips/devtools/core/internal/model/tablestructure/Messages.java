@@ -52,7 +52,6 @@ public class Messages extends NLS {
     public static String TableStructureType_lableMultipleContents;
     public static String TableStructureType_labelEnumTypeModel;
 
-    public static String ColumnRange_msgDatatypeInvalidForRange;
     public static String ColumnRange_msgNameInvalidJavaIdentifier;
     public static String ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype;
 
