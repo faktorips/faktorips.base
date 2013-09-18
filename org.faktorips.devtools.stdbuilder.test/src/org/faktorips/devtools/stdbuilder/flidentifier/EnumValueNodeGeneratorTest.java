@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.flidentifier.java;
+package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,10 +21,11 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.flidentifier.EnumValueNodeGenerator;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,10 +34,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumValueNodeJavaBuilderTest {
+public class EnumValueNodeGeneratorTest {
 
     @Mock
-    private IdentifierNodeBuilderFactory<JavaCodeFragment> factory;
+    private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
 
     @Mock
     private StandardBuilderSet builderSet;
@@ -44,13 +45,13 @@ public class EnumValueNodeJavaBuilderTest {
     @Mock
     private IIpsProject ipsProject;
 
-    private EnumValueNodeJavaBuilder enumValueNodeJavaBuilder;
+    private EnumValueNodeGenerator enumValueNodeJavaBuilder;
 
     private EnumValueNode enumValueNode;
 
     @Before
     public void createEnumValueNodeJavaBuilder() throws Exception {
-        enumValueNodeJavaBuilder = new EnumValueNodeJavaBuilder(factory, builderSet);
+        enumValueNodeJavaBuilder = new EnumValueNodeGenerator(factory, builderSet);
     }
 
     private void setUpEnumValueNode() throws Exception {

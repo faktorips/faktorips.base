@@ -11,30 +11,28 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.flidentifier.java;
+package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.flidentifier.AbstractIdentifierJavaBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
-public class EnumValueNodeJavaBuilder extends AbstractIdentifierJavaBuilder<JavaCodeFragment> {
+public class EnumValueNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
 
-    public EnumValueNodeJavaBuilder(IdentifierNodeBuilderFactory<JavaCodeFragment> nodeBuilderFactory,
+    public EnumValueNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
-        super(nodeBuilderFactory, builderSet);
+        super(factory, builderSet);
     }
 
     @Override
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
-            CompilationResult<CodeFragment> contextCompilationResult) {
+            CompilationResult<JavaCodeFragment> contextCompilationResult) {
         EnumValueNode node = (EnumValueNode)identifierNode;
         Datatype datatype = node.getDatatype();
 
@@ -47,5 +45,4 @@ public class EnumValueNodeJavaBuilder extends AbstractIdentifierJavaBuilder<Java
     protected CompilationResult<JavaCodeFragment> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode) {
         return new CompilationResultImpl(invalidIdentifierNode.getMessage());
     }
-
 }
