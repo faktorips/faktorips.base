@@ -17,7 +17,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -31,12 +30,12 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * JavaBuilder for a {@link AttributeNode}
+ * JavaBuilder for an {@link AttributeNode}
  * 
  * @author widmaier
  * @since 3.11.0
  */
-public class AttributeNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
+public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
 
     public AttributeNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
             StandardBuilderSet builderSet) {
@@ -56,11 +55,6 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator<JavaCode
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
         return javaCodeFragment;
-    }
-
-    @Override
-    protected CompilationResult<JavaCodeFragment> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode) {
-        return new CompilationResultImpl(invalidIdentifierNode.getMessage());
     }
 
     protected String getAttributeGetterName(IAttribute attribute, boolean isDefaultValueAccess) {

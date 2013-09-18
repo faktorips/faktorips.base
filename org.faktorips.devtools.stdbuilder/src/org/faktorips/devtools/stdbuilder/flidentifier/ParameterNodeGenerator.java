@@ -17,7 +17,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -30,7 +29,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author frank
  * @since 3.11.0
  */
-public class ParameterNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
+public class ParameterNodeGenerator extends AbstractIdentifierGenerator {
 
     public ParameterNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
@@ -46,8 +45,4 @@ public class ParameterNodeGenerator extends AbstractIdentifierGenerator<JavaCode
         return new CompilationResultImpl(parameter.getName(), datatype);
     }
 
-    @Override
-    protected CompilationResult<JavaCodeFragment> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode) {
-        return new CompilationResultImpl(invalidIdentifierNode.getMessage());
-    }
 }

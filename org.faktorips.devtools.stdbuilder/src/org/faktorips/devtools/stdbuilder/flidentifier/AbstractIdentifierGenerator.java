@@ -13,18 +13,23 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.faktorips.codegen.CodeFragment;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 
-public abstract class AbstractIdentifierGenerator<T extends CodeFragment> extends AbstractIdentifierNodeGenerator<T> {
+public abstract class AbstractIdentifierGenerator extends AbstractIdentifierNodeGenerator<JavaCodeFragment> {
 
     private final StandardBuilderSet builderSet;
 
-    public AbstractIdentifierGenerator(IdentifierNodeGeneratorFactory<T> factory, StandardBuilderSet builderSet) {
+    public AbstractIdentifierGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
+            StandardBuilderSet builderSet) {
         super(factory);
         this.builderSet = builderSet;
     }
@@ -33,8 +38,20 @@ public abstract class AbstractIdentifierGenerator<T extends CodeFragment> extend
         return getBuilderSet().getModelNode(container, type);
     }
 
-    private StandardBuilderSet getBuilderSet() {
+    @Override
+    protected CompilationResult<JavaCodeFragment> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode) {
+        return new CompilationResultImpl(invalidIdentifierNode.getMessage());
+    }
+
+    protected StandardBuilderSet getBuilderSet() {
         return builderSet;
+    }
+
+    /**
+     * Returns the {@link StandardBuilderSet StandardBuilderSets} project.
+     */
+    protected IIpsProject getIpsProject() {
+        return getBuilderSet().getIpsProject();
     }
 
 }
