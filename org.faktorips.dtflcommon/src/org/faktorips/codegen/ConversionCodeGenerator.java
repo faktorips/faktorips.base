@@ -43,10 +43,10 @@ import org.faktorips.codegen.conversion.PrimitiveIntToPrimitiveLongCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToBigDecimalCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToLongCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToPrimitiveIntCg;
+import org.faktorips.datatype.AbstractPrimitiveDatatype;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * The ConversionCodeGenerator extends the ConversionMatrix with the ability to generate the Java
@@ -110,24 +110,19 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     }
 
     public boolean canConvert(Datatype from, Datatype to) {
-        if (from.equals(to)) {
-            return true;
-        }
-        if (to instanceof AnyDatatype) {
-            return true;
-        }
-        if (existSingleConversionWithPrimitives(from, to)) {
-            return true;
-        }
-        SingleConversionCg<T> singleConversionCode = getSingleConversionCode(from, to);
-        if (singleConversionCode != null) {
-            return true;
-        }
-        return false;
+        return isEqual(from, to) || isToAnyDatatype(to) || isSingleConversionAvailable(from, to);
     }
 
-    private SingleConversionCg<T> getSingleConversionCode(Datatype from, Datatype to) {
-        return fromToConversionMap.get(from, to);
+    private boolean isEqual(Datatype from, Datatype to) {
+        return from.equals(to);
+    }
+
+    private boolean isToAnyDatatype(Datatype to) {
+        return to instanceof AnyDatatype;
+    }
+
+    private boolean isSingleConversionAvailable(Datatype from, Datatype to) {
+        return getSingleConversionCode(from, to) != null;
     }
 
     /**
@@ -141,71 +136,40 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
      *            value of {@link Datatype} from.
      */
     public T getConversionCode(Datatype from, Datatype to, T fromValue) {
-        if (from == null || to == null) {
+        if (nullCheck(from, to)) {
             return null;
         }
-        if (from.equals(to)) {
+        if (isEqual(from, to) || isToAnyDatatype(to)) {
             return fromValue;
         }
-        if (to instanceof AnyDatatype) {
-            return fromValue;
-        }
-        if (existSingleConversionWithPrimitives(from, to)) {
-            if (areFromToPrimitiveAndHaveSingleConversionCode(from, to)) {
-                SingleConversionCg<T> singleConversionCode = getSingleConversionCodeWithPrimitives(from, to);
-                return singleConversionCode.getConversionCode(fromValue);
-            }
-            if (from.isPrimitive() || to.isPrimitive()) {
-                SingleConversionCg<T> singleConversionCg = getSingleConversionCodeWithOnePrimitive(from, to);
-                return singleConversionCg.getConversionCode(fromValue);
-            }
-        }
-        if (getSingleConversionCode(from, to) != null) {
+        if (isSingleConversionAvailable(from, to)) {
             return getSingleConversionCode(from, to).getConversionCode(fromValue);
         }
         return null;
     }
 
-    private boolean existSingleConversionWithPrimitives(Datatype from, Datatype to) {
-        if (isSingleConversionEmpty(from, to)) {
-            if (getSingleConversionCode(getWrapedPrimitiveDatatype(from), getWrapedPrimitiveDatatype(to)) != null) {
-                return true;
-            }
-            if (getSingleConversionCode(getWrapedPrimitiveDatatype(from), to) != null) {
-                return true;
-            }
-            if (getSingleConversionCode(from, getWrapedPrimitiveDatatype(to)) != null) {
-                return true;
-            }
+    private boolean nullCheck(Datatype from, Datatype to) {
+        return from == null || to == null;
+    }
+
+    private SingleConversionCg<T> getSingleConversionCode(Datatype from, Datatype to) {
+        SingleConversionCg<T> singleConversionCg = fromToConversionMap.get(from, to);
+        if (singleConversionCg == null) {
+            singleConversionCg = getSingleConversionCodeForPrimitives(from, to);
         }
-        return false;
+        return singleConversionCg;
     }
 
-    private SingleConversionCg<T> getSingleConversionCodeWithPrimitives(Datatype from, Datatype to) {
-        return getSingleConversionCode(getWrapedPrimitiveDatatype(from), getWrapedPrimitiveDatatype(to));
-    }
-
-    private SingleConversionCg<T> getSingleConversionCodeWithOnePrimitive(Datatype from, Datatype to) {
-        return from.isPrimitive() ? getSingleConversionCode(getWrapedPrimitiveDatatype(from), to)
-                : getSingleConversionCode(from, getWrapedPrimitiveDatatype(to));
-    }
-
-    private boolean areFromToPrimitiveAndHaveSingleConversionCode(Datatype from, Datatype to) {
-        return from.isPrimitive() && to.isPrimitive() && getSingleConversionCodeWithPrimitives(from, to) != null;
-    }
-
-    private boolean isSingleConversionEmpty(Datatype from, Datatype to) {
-        return getSingleConversionCode(from, to) == null;
-    }
-
-    private Datatype getWrapedPrimitiveDatatype(Datatype primitiveDatatype) {
-        if (primitiveDatatype.equals(Datatype.PRIMITIVE_INT)) {
-            return Datatype.INTEGER;
+    private SingleConversionCg<T> getSingleConversionCodeForPrimitives(Datatype from, Datatype to) {
+        Datatype fromWrapperType = from;
+        Datatype toWrapperType = to;
+        if (from.isPrimitive()) {
+            fromWrapperType = ((AbstractPrimitiveDatatype)from).getWrapperType();
         }
-        if (primitiveDatatype.equals(Datatype.PRIMITIVE_LONG)) {
-            return Datatype.LONG;
+        if (to.isPrimitive()) {
+            toWrapperType = ((AbstractPrimitiveDatatype)to).getWrapperType();
         }
-        return null;
+        return fromToConversionMap.get(fromWrapperType, toWrapperType);
     }
 
     private static class FromToConversionMap<T extends CodeFragment> {
@@ -223,8 +187,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
             if (from == null || to == null) {
                 return null;
             }
-            Map<Datatype, SingleConversionCg<T>> fromMap = getMapValueOfFromDatatype(from);
-            SingleConversionCg<T> singleConversionCg = getMapValueOfToDatatype(to, fromMap);
+            SingleConversionCg<T> singleConversionCg = getMapValueOfFromDatatype(from).get(to);
             return singleConversionCg;
         }
 
@@ -236,38 +199,17 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         public void add(SingleConversionCg<T> singleConversionCg) {
             Datatype from = singleConversionCg.getFrom();
             Datatype to = singleConversionCg.getTo();
-            Map<Datatype, SingleConversionCg<T>> innerMap = new ConcurrentHashMap<Datatype, SingleConversionCg<T>>();
+            Map<Datatype, SingleConversionCg<T>> innerMap = getMapValueOfFromDatatype(from);
             innerMap.put(to, singleConversionCg);
-
-            if (ifMappingExist(from, innerMap)) {
-                getInternalMap().get(from).put(to, singleConversionCg);
-            } else {
-                getInternalMap().put(from, innerMap);
-            }
-        }
-
-        /**
-         * Returns the mapping.
-         * 
-         * @return internalMap
-         */
-        public Map<Datatype, Map<Datatype, SingleConversionCg<T>>> getInternalMap() {
-            return internalMap;
-        }
-
-        private boolean ifMappingExist(Datatype from, Map<Datatype, SingleConversionCg<T>> innerMap) {
-            return getInternalMap().containsKey(from) && !getInternalMap().containsValue(innerMap);
         }
 
         private Map<Datatype, SingleConversionCg<T>> getMapValueOfFromDatatype(Datatype from) {
-            Map<Datatype, SingleConversionCg<T>> fromMap = getInternalMap().get(from);
+            Map<Datatype, SingleConversionCg<T>> fromMap = internalMap.get(from);
+            if (fromMap == null) {
+                fromMap = new ConcurrentHashMap<Datatype, SingleConversionCg<T>>();
+                internalMap.put(from, fromMap);
+            }
             return fromMap;
-        }
-
-        private SingleConversionCg<T> getMapValueOfToDatatype(Datatype to, Map<Datatype, SingleConversionCg<T>> fromMap) {
-            ArgumentCheck.notNull(fromMap);
-            SingleConversionCg<T> singleConversionCg = fromMap.get(to);
-            return singleConversionCg;
         }
     }
 
