@@ -14,12 +14,9 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.codegen.CodeFragment;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
-import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.CompilationResult;
 
 public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
@@ -99,14 +96,6 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
 
     private boolean isInvalidNode(IdentifierNode identifierNode) {
         return identifierNode.getClass() == IdentifierNodeType.INVALID_IDENTIFIER.getNodeClass();
-    }
-
-    protected boolean isIdentifierAllowed(IAttribute attribute) {
-        return !getIdentifierFilter().isIdentifierAllowed(attribute);
-    }
-
-    protected IdentifierFilter getIdentifierFilter() {
-        return IpsPlugin.getDefault().getIdentifierFilter();
     }
 
     protected IdentifierNodeBuilderFactory<T> getNodeBuilderFactory() {

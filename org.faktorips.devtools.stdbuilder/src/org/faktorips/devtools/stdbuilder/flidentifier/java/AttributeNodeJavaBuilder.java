@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFac
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -35,32 +36,48 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptCla
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
+/**
+ * JavaBuilder for a {@link AttributeNode}
+ * 
+ * @author widmaier
+ * @since 3.11.0
+ */
 public class AttributeNodeJavaBuilder extends AbstractIdentifierJavaBuilder<JavaCodeFragment> {
 
+    private final IdentifierFilter identifierFilter;
+
     public AttributeNodeJavaBuilder(IdentifierNodeBuilderFactory<JavaCodeFragment> nodeBuilderFactory,
-            StandardBuilderSet builderSet) {
+            StandardBuilderSet builderSet, IdentifierFilter identifierFilter) {
         super(nodeBuilderFactory, builderSet);
+        ArgumentCheck.notNull(identifierFilter);
+        this.identifierFilter = identifierFilter;
     }
 
     @Override
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
             CompilationResult<CodeFragment> contextCompilationResult) {
-        AttributeNode node = (AttributeNode)identifierNode;
-        IAttribute attribute = node.getAttribute();
-        Datatype attrDatatype = node.getDatatype();
-        Datatype contextDatatype = contextCompilationResult.getDatatype();
+        final AttributeNode node = (AttributeNode)identifierNode;
+        final IAttribute attribute = node.getAttribute();
 
-        if (isIdentifierAllowed(attribute)) {
-            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
-                    attribute.getName());
-            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        if (isIdentifierAllowd(attribute)) {
+            final Datatype attrDatatype = node.getDatatype();
+            final Datatype contextDatatype = contextCompilationResult.getDatatype();
+            JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
+            String parameterAttributGetterName = getAttributeGetterName(attribute, contextDatatype);
+            javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
+            return new CompilationResultImpl(javaCodeFragment, attrDatatype);
+        } else {
+            return createUndefinedIdentifierCompilationResult(attribute);
         }
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
-        String parameterAttributGetterName = getAttributeGetterName(attribute, attrDatatype, contextDatatype);
-        javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
-        return new CompilationResultImpl(javaCodeFragment, attrDatatype);
+    }
+
+    private CompilationResult<JavaCodeFragment> createUndefinedIdentifierCompilationResult(final IAttribute attribute) {
+        String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
+                attribute.getName());
+        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 
     @Override
@@ -68,7 +85,7 @@ public class AttributeNodeJavaBuilder extends AbstractIdentifierJavaBuilder<Java
         return new CompilationResultImpl(invalidIdentifierNode.getMessage());
     }
 
-    protected String getAttributeGetterName(IAttribute attribute, Datatype attrDatatype, Datatype contextDatatype) {
+    protected String getAttributeGetterName(IAttribute attribute, Datatype contextDatatype) {
         boolean isDefaultValueAccess = isDefaultValueAccess(contextDatatype, attribute.getName());
         String parameterAttributGetterName = isDefaultValueAccess ? getParameterAttributDefaultValueGetterName(attribute)
                 : getParameterAttributGetterName(attribute);
@@ -104,4 +121,7 @@ public class AttributeNodeJavaBuilder extends AbstractIdentifierJavaBuilder<Java
                 + xPolicyAttribute.getMethodNameGetDefaultValue();
     }
 
+    private boolean isIdentifierAllowd(IAttribute anAttribute) {
+        return identifierFilter.isIdentifierAllowed(anAttribute);
+    }
 }
