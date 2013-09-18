@@ -15,17 +15,22 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.fl.CompilationResult;
 
-public interface IdentifierNodeBuilder<T extends CodeFragment> {
+public class ParameterIdentifierGenerator<T extends CodeFragment> implements IdentifierGenerator<T> {
 
-    /**
-     * Builds the code for the given {@link IdentifierNode} and all its successors.
-     * 
-     * @param identifierNode the {@link IdentifierNode} to generate code for.
-     * @param contextCompilationResult the java code that is used as context for the code that will
-     *            be generated.
-     * @return the {@link CompilationResult} containing code and/or error messages.
-     */
-    public CompilationResult<T> buildNode(IdentifierNode identifierNode, CompilationResult<T> contextCompilationResult);
+    private final IdentifierNodeGeneratorFactory<T> factory;
+
+    public ParameterIdentifierGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        this.factory = factory;
+    }
+
+    @Override
+    public CompilationResult<T> generateIdentifiers(IdentifierNode headIdentifierNode) {
+        IdentifierNodeGenerator<T> nodeGenerator = IdentifierNodeType.getNodeType(headIdentifierNode.getClass())
+                .getGeneratorFor(factory);
+        return nodeGenerator.generateNode(headIdentifierNode, null);
+    }
+
 }

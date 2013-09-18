@@ -11,11 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.flidentifier.java;
+package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
@@ -24,7 +23,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.flidentifier.AbstractIdentifierJavaBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
@@ -38,16 +36,16 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author widmaier
  * @since 3.11.0
  */
-public class AttributeNodeJavaBuilder extends AbstractIdentifierJavaBuilder<JavaCodeFragment> {
+public class AttributeNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
 
-    public AttributeNodeJavaBuilder(IdentifierNodeBuilderFactory<JavaCodeFragment> nodeBuilderFactory,
+    public AttributeNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
             StandardBuilderSet builderSet) {
         super(nodeBuilderFactory, builderSet);
     }
 
     @Override
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
-            CompilationResult<CodeFragment> contextCompilationResult) {
+            CompilationResult<JavaCodeFragment> contextCompilationResult) {
         final AttributeNode node = (AttributeNode)identifierNode;
         final String parameterAttributGetterName = getAttributeGetterName(node.getAttribute(),
                 node.isDefaultValueAccess());

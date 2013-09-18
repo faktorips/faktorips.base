@@ -19,12 +19,12 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.fl.CompilationResult;
 
-public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
+public abstract class AbstractIdentifierNodeGenerator<T extends CodeFragment> implements IdentifierNodeGenerator<T> {
 
     public static final String DEFAULT_VALUE_SUFFIX = "@default"; //$NON-NLS-1$
-    private final IdentifierNodeBuilderFactory<T> nodeBuilderFactory;
+    private final IdentifierNodeGeneratorFactory<T> nodeBuilderFactory;
 
-    public AbstractIdentifierNodeBuilder(IdentifierNodeBuilderFactory<T> factory) {
+    public AbstractIdentifierNodeGenerator(IdentifierNodeGeneratorFactory<T> factory) {
         this.nodeBuilderFactory = factory;
     }
 
@@ -34,7 +34,7 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
      * {@link IdentifierNode node} is valid on the other hand, a {@link CompilationResult} with a
      * code fragment is built for it. This method also generates the {@link CompilationResult} of
      * the given node's successor (following identifier part), if there is one, by delegating to its
-     * {@link #buildNode(IdentifierNode, CompilationResult)} method. The resulting
+     * {@link #generateNode(IdentifierNode, CompilationResult)} method. The resulting
      * {@link CompilationResult} is returned.
      * 
      * @param identifierNode the node to process
@@ -47,16 +47,17 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
      * 
      * @see #getCompilationResult(IdentifierNode, CompilationResult)
      */
-    public CompilationResult<T> buildNode(IdentifierNode identifierNode,
-            CompilationResult<CodeFragment> contextCompilationResult) {
+    @Override
+    public CompilationResult<T> generateNode(IdentifierNode identifierNode,
+            CompilationResult<T> contextCompilationResult) {
         if (isInvalidNode(identifierNode)) {
             return getErrorCompilationResult((InvalidIdentifierNode)identifierNode);
         }
-        return buildNodeAndSuccessors(identifierNode, contextCompilationResult);
+        return generateNodeAndSuccessors(identifierNode, contextCompilationResult);
     }
 
-    private CompilationResult<T> buildNodeAndSuccessors(IdentifierNode identifierNode,
-            CompilationResult<CodeFragment> predecessorCompilationResult) {
+    private CompilationResult<T> generateNodeAndSuccessors(IdentifierNode identifierNode,
+            CompilationResult<T> predecessorCompilationResult) {
         CompilationResult<T> compilationResult = getCompilationResult(identifierNode, predecessorCompilationResult);
         return getBuildSuccessorCompilationResultIfApplicable(identifierNode, compilationResult);
     }
@@ -65,16 +66,16 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
             CompilationResult<T> compilationResult) {
         if (identifierNode.hasSuccessor()) {
             IdentifierNode successorNode = identifierNode.getSuccessor();
-            IdentifierNodeBuilder<T> successorBuilder = getBuilderFor(successorNode);
-            return successorBuilder.buildNode(successorNode, compilationResult);
+            IdentifierNodeGenerator<T> successorBuilder = getGeneratorFor(successorNode);
+            return successorBuilder.generateNode(successorNode, compilationResult);
         } else {
             return compilationResult;
         }
     }
 
-    protected IdentifierNodeBuilder<T> getBuilderFor(IdentifierNode node) {
+    protected IdentifierNodeGenerator<T> getGeneratorFor(IdentifierNode node) {
         IdentifierNodeType nodeType = IdentifierNodeType.getNodeType(node.getClass());
-        return nodeType.getBuilderFor(getNodeBuilderFactory());
+        return nodeType.getGeneratorFor(getNodeGeneratorFactory());
     }
 
     /**
@@ -90,7 +91,7 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
      *         the given {@link IdentifierNode}.
      */
     protected abstract CompilationResult<T> getCompilationResult(IdentifierNode identifierNode,
-            CompilationResult<CodeFragment> contextCompilationResult);
+            CompilationResult<T> contextCompilationResult);
 
     protected abstract CompilationResult<T> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode);
 
@@ -98,7 +99,7 @@ public abstract class AbstractIdentifierNodeBuilder<T extends CodeFragment> {
         return identifierNode.getClass() == IdentifierNodeType.INVALID_IDENTIFIER.getNodeClass();
     }
 
-    protected IdentifierNodeBuilderFactory<T> getNodeBuilderFactory() {
+    protected IdentifierNodeGeneratorFactory<T> getNodeGeneratorFactory() {
         return nodeBuilderFactory;
     }
 }

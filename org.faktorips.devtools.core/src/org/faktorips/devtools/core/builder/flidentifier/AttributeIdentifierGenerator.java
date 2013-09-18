@@ -18,19 +18,19 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.fl.CompilationResult;
 
-public class ParameterIdentifierBuilder<T extends CodeFragment> implements IdentifierBuilder<T> {
+public class AttributeIdentifierGenerator<T extends CodeFragment> implements IdentifierGenerator<T> {
 
-    private final IdentifierNodeBuilderFactory<T> factory;
+    private final IdentifierNodeGeneratorFactory<T> factory;
 
-    public ParameterIdentifierBuilder(IdentifierNodeBuilderFactory<T> factory) {
+    public AttributeIdentifierGenerator(IdentifierNodeGeneratorFactory<T> factory) {
         this.factory = factory;
     }
 
     @Override
-    public CompilationResult<T> buildIdentifiers(IdentifierNode headIdentifierNode) {
-        IdentifierNodeBuilder<T> nodeBuilder = IdentifierNodeType.getNodeType(headIdentifierNode.getClass())
-                .getBuilderFor(factory);
-        return nodeBuilder.buildNode(headIdentifierNode, null);
+    public CompilationResult<T> generateIdentifiers(IdentifierNode headIdentifierNode) {
+        IdentifierNodeGenerator<T> nodeGenerator = IdentifierNodeType.getNodeType(headIdentifierNode.getClass())
+                .getGeneratorFor(factory);
+        return nodeGenerator.generateNode(headIdentifierNode, null);
     }
 
 }

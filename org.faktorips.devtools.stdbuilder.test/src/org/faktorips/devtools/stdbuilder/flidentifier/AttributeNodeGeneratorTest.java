@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.flidentifier.java;
+package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.flidentifier.AttributeNodeGenerator;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
@@ -43,10 +44,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AttributeNodeJavaBuilderTest {
+public class AttributeNodeGeneratorTest {
 
     @Mock
-    private IdentifierNodeBuilderFactory<JavaCodeFragment> factory;
+    private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
 
     @Mock
     private StandardBuilderSet builderSet;
@@ -55,15 +56,15 @@ public class AttributeNodeJavaBuilderTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private AttributeNodeJavaBuilder attributeNodeJavaBuilder;
+    private AttributeNodeGenerator attributeNodeJavaGenerator;
 
     private AttributeNode attributeNode;
 
     private IAttribute attribute;
 
     @Before
-    public void createAttributeNodeJavaBuilder() {
-        attributeNodeJavaBuilder = new AttributeNodeJavaBuilder(factory, builderSet);
+    public void createAttributeNodeJavaGenerator() {
+        attributeNodeJavaGenerator = new AttributeNodeGenerator(factory, builderSet);
     }
 
     private void createAttributeNode(boolean isDefault) throws CoreException {
@@ -79,7 +80,7 @@ public class AttributeNodeJavaBuilderTest {
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaBuilder.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
                 attributeNode, null);
 
         assertFalse(compilationResult.failed());
@@ -100,7 +101,7 @@ public class AttributeNodeJavaBuilderTest {
         when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getProductCmptGen");
         when(xPolicyAttribute.getMethodNameGetDefaultValue()).thenReturn("getAttribute");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaBuilder.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
                 attributeNode, null);
 
         assertFalse(compilationResult.failed());
@@ -116,7 +117,7 @@ public class AttributeNodeJavaBuilderTest {
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(xProductAttribute.isChangingOverTime()).thenReturn(true);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaBuilder.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
                 attributeNode, null);
 
         assertFalse(compilationResult.failed());
@@ -138,7 +139,8 @@ public class AttributeNodeJavaBuilderTest {
         when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaBuilder.getCompilationResult(
+
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeJavaGenerator.getCompilationResult(
                 attributeNode, null);
 
         assertFalse(compilationResult.failed());
@@ -150,7 +152,7 @@ public class AttributeNodeJavaBuilderTest {
     public void testGetErrorCompilationResult() throws Exception {
         Message errorMessage = new Message("code", "errorMessage", Message.ERROR);
         InvalidIdentifierNode invalidIdentifierNode = new InvalidIdentifierNode(errorMessage);
-        CompilationResult<JavaCodeFragment> errorCompilationResult = attributeNodeJavaBuilder
+        CompilationResult<JavaCodeFragment> errorCompilationResult = attributeNodeJavaGenerator
                 .getErrorCompilationResult(invalidIdentifierNode);
         assertEquals(errorMessage, errorCompilationResult.getMessages().getMessageByCode("code"));
     }

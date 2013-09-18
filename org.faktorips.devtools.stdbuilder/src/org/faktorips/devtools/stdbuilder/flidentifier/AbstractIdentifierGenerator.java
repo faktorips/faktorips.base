@@ -14,17 +14,17 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.faktorips.codegen.CodeFragment;
-import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierNodeBuilder;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
+import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierNodeGenerator;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
-public abstract class AbstractIdentifierJavaBuilder<T extends CodeFragment> extends AbstractIdentifierNodeBuilder<T> {
+public abstract class AbstractIdentifierGenerator<T extends CodeFragment> extends AbstractIdentifierNodeGenerator<T> {
 
     private final StandardBuilderSet builderSet;
 
-    public AbstractIdentifierJavaBuilder(IdentifierNodeBuilderFactory<T> factory, StandardBuilderSet builderSet) {
+    public AbstractIdentifierGenerator(IdentifierNodeGeneratorFactory<T> factory, StandardBuilderSet builderSet) {
         super(factory);
         this.builderSet = builderSet;
     }

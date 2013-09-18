@@ -15,29 +15,20 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.fl.CompilationResult;
 
 /**
- * Creates a specific {@link IdentifierNodeBuilder node builder} for each type of
- * {@link IdentifierNode node}.
+ * Translates {@link IdentifierNode IdetifierNodes} into a {@link CompilationResult}.
  * 
  * @author widmaier
  */
-public interface IdentifierNodeBuilderFactory<T extends CodeFragment> {
+public interface IdentifierGenerator<T extends CodeFragment> {
 
-    public IdentifierNodeBuilder<T> getBuilderForAssociationNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForAttributeNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForEnumClassNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForEnumValueNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForIndexBasedAssociationNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForParameterNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForQualifiedAssociationNode();
-
-    public IdentifierNodeBuilder<T> getBuilderForInvalidNode();
+    /**
+     * Translates a list of {@link IdentifierNode IdetifierNodes}, given the head of the linked
+     * list, into a {@link CompilationResult}. The code returned via the {@link CompilationResult}
+     * is always a single line of code that is composed of chained statements and/or function calls.
+     */
+    public CompilationResult<T> generateIdentifiers(IdentifierNode headIdentifierNode);
 
 }

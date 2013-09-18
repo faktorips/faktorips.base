@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.flidentifier.java;
+package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,10 +19,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeBuilderFactory;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -37,10 +36,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ParameterNodeJavaBuilderTest {
+public class ParameterNodeGeneratorTest {
 
     @Mock
-    private IdentifierNodeBuilderFactory<JavaCodeFragment> factory;
+    private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
 
     @Mock
     private StandardBuilderSet builderSet;
@@ -48,13 +47,13 @@ public class ParameterNodeJavaBuilderTest {
     @Mock
     private IIpsProject ipsProject;
 
-    private ParameterNodeJavaBuilder parameterNodeJavaBuilder;
+    private ParameterNodeGenerator parameterNodeJavaGenerator;
 
     private ParameterNode parameterNode;
 
     @Before
-    public void createParameterNodeJavaBuilder() throws Exception {
-        parameterNodeJavaBuilder = new ParameterNodeJavaBuilder(factory, builderSet);
+    public void createParameterNodeJavaGenerator() throws Exception {
+        parameterNodeJavaGenerator = new ParameterNodeGenerator(factory, builderSet);
     }
 
     private void setUpParameterNode() throws Exception {
@@ -67,7 +66,7 @@ public class ParameterNodeJavaBuilderTest {
     @Test
     public void testGetCompilationResult() throws Exception {
         setUpParameterNode();
-        CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaBuilder.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaGenerator.getCompilationResult(
                 parameterNode, null);
         assertNotNull(compilationResult);
         assertNotNull(compilationResult.getCodeFragment());
@@ -79,8 +78,8 @@ public class ParameterNodeJavaBuilderTest {
     @Test
     public void testGetCompilationResult_NoInteractionToContextCompilationResult() throws Exception {
         setUpParameterNode();
-        CompilationResult<CodeFragment> contextCompilationResult = mock(CompilationResult.class);
-        parameterNodeJavaBuilder.getCompilationResult(parameterNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> contextCompilationResult = mock(CompilationResult.class);
+        parameterNodeJavaGenerator.getCompilationResult(parameterNode, contextCompilationResult);
         verifyZeroInteractions(contextCompilationResult);
     }
 
@@ -88,7 +87,7 @@ public class ParameterNodeJavaBuilderTest {
     public void testGetErrorCompilationResult() throws Exception {
         Message errorMessage = new Message("code", "errorMessage", Message.ERROR);
         InvalidIdentifierNode invalidIdentifierNode = new InvalidIdentifierNode(errorMessage);
-        CompilationResult<JavaCodeFragment> errorCompilationResult = parameterNodeJavaBuilder
+        CompilationResult<JavaCodeFragment> errorCompilationResult = parameterNodeJavaGenerator
                 .getErrorCompilationResult(invalidIdentifierNode);
         assertEquals(errorMessage, errorCompilationResult.getMessages().getMessageByCode("code"));
     }

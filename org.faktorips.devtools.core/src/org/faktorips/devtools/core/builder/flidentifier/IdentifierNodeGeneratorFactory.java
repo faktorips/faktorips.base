@@ -15,20 +15,29 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.fl.CompilationResult;
 
 /**
- * Translates {@link IdentifierNode IdetifierNodes} into a {@link CompilationResult}.
+ * Creates a specific {@link IdentifierNodeGenerator node builder} for each type of
+ * {@link IdentifierNode node}.
  * 
  * @author widmaier
  */
-public interface IdentifierBuilder<T extends CodeFragment> {
+public interface IdentifierNodeGeneratorFactory<T extends CodeFragment> {
 
-    /**
-     * Translates a list of {@link IdentifierNode IdetifierNodes}, given the head of the linked
-     * list, into a {@link CompilationResult}. The code returned via the {@link CompilationResult}
-     * is always a single line of code that is composed of chained statements and/or function calls.
-     */
-    public CompilationResult<T> buildIdentifiers(IdentifierNode headIdentifierNode);
+    public IdentifierNodeGenerator<T> getGeneratorForAssociationNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForAttributeNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForEnumClassNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForEnumValueNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForIndexBasedAssociationNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForParameterNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForQualifiedAssociationNode();
+
+    public IdentifierNodeGenerator<T> getGeneratorForInvalidNode();
 
 }
