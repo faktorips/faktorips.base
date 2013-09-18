@@ -27,6 +27,11 @@ public class EnumClassNode extends IdentifierNode {
         return (EnumClass)super.getDatatype();
     }
 
+    @Override
+    public EnumValueNode getSuccessor() {
+        return (EnumValueNode)super.getSuccessor();
+    }
+
     public static class EnumClass extends AbstractDatatype {
 
         private static final String CLASS_NAME = Class.class.getSimpleName();

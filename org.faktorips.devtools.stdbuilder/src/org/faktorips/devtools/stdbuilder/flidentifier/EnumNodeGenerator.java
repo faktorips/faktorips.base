@@ -13,9 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
@@ -23,22 +25,29 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
-public class EnumValueNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
+public class EnumNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
 
-    public EnumValueNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
-            StandardBuilderSet builderSet) {
+    public EnumNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory, StandardBuilderSet builderSet) {
         super(factory, builderSet);
     }
 
     @Override
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        EnumValueNode node = (EnumValueNode)identifierNode;
-        Datatype datatype = node.getDatatype();
+        EnumClassNode classNode = (EnumClassNode)identifierNode;
+        Datatype classDatatype = classNode.getDatatype();
+        EnumValueNode valueNode = classNode.getSuccessor();
 
         JavaCodeFragment codeFragment = new JavaCodeFragment();
-        codeFragment.getImportDeclaration().add(datatype.getJavaClassName());
-        return new CompilationResultImpl(codeFragment, datatype);
+        codeFragment.getImportDeclaration().add(classDatatype.getJavaClassName());
+        // if (classDatatype instanceof EnumTypeDatatypeAdapter) {
+        //
+        // } else {
+        DatatypeHelper helper = getBuilderSet().getIpsProject().getDatatypeHelper(classDatatype);
+        codeFragment.append(helper.newInstance(valueNode.getEnumValueName()));
+        // }
+
+        return new CompilationResultImpl(codeFragment, classDatatype);
     }
 
     @Override

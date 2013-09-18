@@ -13,19 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.flidentifier.EnumValueNodeGenerator;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +32,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumValueNodeGeneratorTest {
+public class EnumNodeGeneratorTest {
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -45,29 +43,34 @@ public class EnumValueNodeGeneratorTest {
     @Mock
     private IIpsProject ipsProject;
 
-    private EnumValueNodeGenerator enumValueNodeJavaBuilder;
+    private EnumNodeGenerator enumNodeJavaBuilder;
+
+    private EnumClassNode enumClassNode;
 
     private EnumValueNode enumValueNode;
 
     @Before
     public void createEnumValueNodeJavaBuilder() throws Exception {
-        enumValueNodeJavaBuilder = new EnumValueNodeGenerator(factory, builderSet);
+        enumNodeJavaBuilder = new EnumNodeGenerator(factory, builderSet);
     }
 
     private void setUpEnumValueNode() throws Exception {
         EnumDatatype enumDatatype = mock(EnumDatatype.class);
-        when(enumDatatype.getValueName("id")).thenReturn("EnumValueName");
-        enumValueNode = new EnumValueNode(enumDatatype.getValueName("id"), Datatype.STRING);
+        EnumClass enumClass = new EnumClass(enumDatatype);
+        enumClassNode = new EnumClassNode(enumClass);
     }
 
     @Test
     public void testGetCompilationResult() throws Exception {
         setUpEnumValueNode();
-        CompilationResult<JavaCodeFragment> compilationResult = enumValueNodeJavaBuilder.getCompilationResult(
-                enumValueNode, null);
-        assertNotNull(compilationResult);
-        assertNotNull(compilationResult.getCodeFragment());
+        CompilationResult<JavaCodeFragment> compilationResult = enumNodeJavaBuilder.getCompilationResult(enumClassNode,
+                null);
+
+        assertFalse(compilationResult.failed());
+        // assertNotNull(compilationResult);
+        // assertNotNull(compilationResult.getCodeFragment());
         // assertEquals("EnumValueName", compilationResult.getCodeFragment().getSourcecode());
-        assertEquals(Datatype.STRING, compilationResult.getDatatype());
+        // assertEquals(Datatype.STRING, compilationResult.getDatatype());
+
     }
 }
