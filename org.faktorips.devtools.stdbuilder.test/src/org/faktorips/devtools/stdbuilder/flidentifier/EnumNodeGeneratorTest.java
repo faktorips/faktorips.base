@@ -13,16 +13,18 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -40,9 +42,6 @@ public class EnumNodeGeneratorTest {
     @Mock
     private StandardBuilderSet builderSet;
 
-    @Mock
-    private IIpsProject ipsProject;
-
     private EnumNodeGenerator enumNodeJavaBuilder;
 
     private EnumClassNode enumClassNode;
@@ -58,6 +57,8 @@ public class EnumNodeGeneratorTest {
         EnumDatatype enumDatatype = mock(EnumDatatype.class);
         EnumClass enumClass = new EnumClass(enumDatatype);
         enumClassNode = new EnumClassNode(enumClass);
+        enumValueNode = new EnumValueNode("EnumValueName", Datatype.STRING);
+        enumClassNode.setSuccessor(enumValueNode);
     }
 
     @Test
@@ -67,10 +68,9 @@ public class EnumNodeGeneratorTest {
                 null);
 
         assertFalse(compilationResult.failed());
-        // assertNotNull(compilationResult);
-        // assertNotNull(compilationResult.getCodeFragment());
-        // assertEquals("EnumValueName", compilationResult.getCodeFragment().getSourcecode());
-        // assertEquals(Datatype.STRING, compilationResult.getDatatype());
-
+        assertNotNull(compilationResult);
+        assertNotNull(compilationResult.getCodeFragment());
+        assertEquals("EnumValueName", compilationResult.getCodeFragment().getSourcecode());
+        assertEquals(Datatype.STRING, compilationResult.getDatatype());
     }
 }

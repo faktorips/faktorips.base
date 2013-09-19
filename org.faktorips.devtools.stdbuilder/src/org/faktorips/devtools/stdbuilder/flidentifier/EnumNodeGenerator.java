@@ -13,9 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
@@ -35,19 +34,26 @@ public class EnumNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragm
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         EnumClassNode classNode = (EnumClassNode)identifierNode;
-        Datatype classDatatype = classNode.getDatatype();
+        EnumDatatype datatype = classNode.getDatatype().getEnumDatatype();
         EnumValueNode valueNode = classNode.getSuccessor();
 
         JavaCodeFragment codeFragment = new JavaCodeFragment();
-        codeFragment.getImportDeclaration().add(classDatatype.getJavaClassName());
+        codeFragment.getImportDeclaration().add(datatype.getJavaClassName());
         // if (classDatatype instanceof EnumTypeDatatypeAdapter) {
-        //
-        // } else {
-        DatatypeHelper helper = getBuilderSet().getIpsProject().getDatatypeHelper(classDatatype);
-        codeFragment.append(helper.newInstance(valueNode.getEnumValueName()));
+        // getE
+        // }
+        // else {
+        // StandardBuilderSet builderSet = getBuilderSet();
+        // IpsProject ipsProject = (IpsProject)builderSet.getIpsProject();
+        // DatatypeHelper helper = ipsProject.getDatatypeHelper(datatype);
+
+        JavaCodeFragment codeFragment2 = new JavaCodeFragment(valueNode.getEnumValueName());
+        codeFragment.append(codeFragment2);
+
+        // codeFragment.append(helper.newInstance(valueNode.getEnumValueName()));
         // }
 
-        return new CompilationResultImpl(codeFragment, classDatatype);
+        return new CompilationResultImpl(codeFragment, datatype);
     }
 
     @Override
