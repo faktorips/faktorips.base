@@ -22,13 +22,11 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.util.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +44,9 @@ public class ParameterNodeGeneratorTest {
 
     @Mock
     private IIpsProject ipsProject;
+
+    @Mock
+    private CompilationResult<JavaCodeFragment> contextCompilationResult;
 
     private ParameterNodeGenerator parameterNodeJavaGenerator;
 
@@ -74,21 +75,10 @@ public class ParameterNodeGeneratorTest {
         assertEquals(Datatype.STRING, compilationResult.getDatatype());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetCompilationResult_NoInteractionToContextCompilationResult() throws Exception {
         setUpParameterNode();
-        CompilationResult<JavaCodeFragment> contextCompilationResult = mock(CompilationResult.class);
         parameterNodeJavaGenerator.getCompilationResult(parameterNode, contextCompilationResult);
         verifyZeroInteractions(contextCompilationResult);
-    }
-
-    @Test
-    public void testGetErrorCompilationResult() throws Exception {
-        Message errorMessage = new Message("code", "errorMessage", Message.ERROR);
-        InvalidIdentifierNode invalidIdentifierNode = new InvalidIdentifierNode(errorMessage);
-        CompilationResult<JavaCodeFragment> errorCompilationResult = parameterNodeJavaGenerator
-                .getErrorCompilationResult(invalidIdentifierNode);
-        assertEquals(errorMessage, errorCompilationResult.getMessages().getMessageByCode("code"));
     }
 }
