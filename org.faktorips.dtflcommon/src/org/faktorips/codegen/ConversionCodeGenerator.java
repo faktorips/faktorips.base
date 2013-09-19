@@ -43,7 +43,6 @@ import org.faktorips.codegen.conversion.PrimitiveIntToPrimitiveLongCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToBigDecimalCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToLongCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToPrimitiveIntCg;
-import org.faktorips.datatype.AbstractPrimitiveDatatype;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
@@ -154,22 +153,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     private SingleConversionCg<T> getSingleConversionCode(Datatype from, Datatype to) {
         SingleConversionCg<T> singleConversionCg = fromToConversionMap.get(from, to);
-        if (singleConversionCg == null) {
-            singleConversionCg = getSingleConversionCodeForPrimitives(from, to);
-        }
         return singleConversionCg;
-    }
-
-    private SingleConversionCg<T> getSingleConversionCodeForPrimitives(Datatype from, Datatype to) {
-        Datatype fromWrapperType = from;
-        Datatype toWrapperType = to;
-        if (from.isPrimitive()) {
-            fromWrapperType = ((AbstractPrimitiveDatatype)from).getWrapperType();
-        }
-        if (to.isPrimitive()) {
-            toWrapperType = ((AbstractPrimitiveDatatype)to).getWrapperType();
-        }
-        return fromToConversionMap.get(fromWrapperType, toWrapperType);
     }
 
     private static class FromToConversionMap<T extends CodeFragment> {
