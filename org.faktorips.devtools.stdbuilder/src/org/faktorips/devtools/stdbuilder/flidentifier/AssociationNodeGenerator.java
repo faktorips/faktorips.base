@@ -34,9 +34,9 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author widmaier
  * @since 3.11.0
  */
-public class AssociationNodeJavaBuilder extends AbstractIdentifierGenerator {
+public class AssociationNodeGenerator extends AbstractIdentifierGenerator {
 
-    public AssociationNodeJavaBuilder(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
+    public AssociationNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
             StandardBuilderSet builderSet) {
         super(nodeBuilderFactory, builderSet);
     }
@@ -54,7 +54,7 @@ public class AssociationNodeJavaBuilder extends AbstractIdentifierGenerator {
         }
     }
 
-    protected CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    private CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(CompilationResult<JavaCodeFragment> contextCompilationResult,
             IAssociation association,
             IType target) {
         if (association.is1To1()) {
@@ -64,7 +64,7 @@ public class AssociationNodeJavaBuilder extends AbstractIdentifierGenerator {
         }
     }
 
-    private CompilationResult<JavaCodeFragment> compileTypeAssociationTo1(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    protected CompilationResult<JavaCodeFragment> compileTypeAssociationTo1(CompilationResult<JavaCodeFragment> contextCompilationResult,
             IAssociation association,
             IType target) {
         JavaCodeFragment javaCodeFragment = copyContextCodeFragment(contextCompilationResult);
@@ -74,7 +74,7 @@ public class AssociationNodeJavaBuilder extends AbstractIdentifierGenerator {
         return createCompilationResultWithDatatype(javaCodeFragment, target);
     }
 
-    private CompilationResult<JavaCodeFragment> compileTypeAssociationToMany(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    protected CompilationResult<JavaCodeFragment> compileTypeAssociationToMany(CompilationResult<JavaCodeFragment> contextCompilationResult,
             IAssociation association,
             IType target) {
         JavaCodeFragment javaCodeFragment = copyContextCodeFragment(contextCompilationResult);
