@@ -151,7 +151,6 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
         register(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN));
         register(new EqualsObjectDatatype(Datatype.DECIMAL));
         register(new EqualsObjectDatatype(Datatype.MONEY));
-        register(new EqualsObjectDatatype(Datatype.STRING));
         register(new EqualsObjectDatatype(AnyDatatype.INSTANCE));
 
         // not equals operation
