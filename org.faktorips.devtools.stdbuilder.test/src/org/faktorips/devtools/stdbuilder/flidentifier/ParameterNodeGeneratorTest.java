@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
@@ -55,18 +56,19 @@ public class ParameterNodeGeneratorTest {
     @Before
     public void createParameterNodeJavaGenerator() throws Exception {
         parameterNodeJavaGenerator = new ParameterNodeGenerator(factory, builderSet);
+        setUpParameterNode();
     }
 
     private void setUpParameterNode() throws Exception {
         IParameter parameter = mock(IParameter.class);
         when(parameter.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         when(parameter.getName()).thenReturn("ParamName");
-        parameterNode = new ParameterNode(parameter, ipsProject);
+        parameterNode = (ParameterNode)new IdentifierNodeFactory(parameter.getName(), ipsProject)
+                .createParameterNode(parameter);
     }
 
     @Test
     public void testGetCompilationResult() throws Exception {
-        setUpParameterNode();
         CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaGenerator.getCompilationResult(
                 parameterNode, null);
         assertNotNull(compilationResult);
@@ -77,7 +79,6 @@ public class ParameterNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult_NoInteractionToContextCompilationResult() throws Exception {
-        setUpParameterNode();
         parameterNodeJavaGenerator.getCompilationResult(parameterNode, contextCompilationResult);
         verifyZeroInteractions(contextCompilationResult);
     }

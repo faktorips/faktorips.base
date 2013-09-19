@@ -24,6 +24,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -71,7 +72,7 @@ public class AttributeNodeGeneratorTest {
 
     private void createAttributeNode(boolean isDefault) throws CoreException {
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
-        attributeNode = new AttributeNode(attribute, isDefault, false, ipsProject);
+        attributeNode = createAttributeNode(isDefault, false);
         when(contextCompilationResult.getDatatype()).thenReturn(Datatype.INTEGER);
     }
 
@@ -157,7 +158,7 @@ public class AttributeNodeGeneratorTest {
         IPolicyCmptType type = mock(IPolicyCmptType.class);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
         when(attribute.getDatatype()).thenReturn("Integer");
-        attributeNode = new AttributeNode(attribute, false, true, ipsProject);
+        attributeNode = createAttributeNode(false, true);
 
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("hsVertrag.getDeckungen()");
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
@@ -179,10 +180,15 @@ public class AttributeNodeGeneratorTest {
         attribute = mock(IPolicyCmptTypeAttribute.class);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
         when(attribute.getDatatype()).thenReturn("Integer");
-        attributeNode = new AttributeNode(attribute, false, false, ipsProject);
+        attributeNode = createAttributeNode(false, false);
         ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
         when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
         attributeNodeGenerator.getCompilationResult(attributeNode, contextCompilationResult);
+    }
+
+    private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
+        return (AttributeNode)new IdentifierNodeFactory(attribute.getName(), ipsProject).createAttributeNode(attribute,
+                defaultAccess, listOfType);
     }
 
 }
