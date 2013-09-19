@@ -47,14 +47,20 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
     @Override
     protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        final AttributeNode node = (AttributeNode)identifierNode;
+        AttributeNode node = (AttributeNode)identifierNode;
         if (isListOfTypeDatatype(contextCompilationResult)) {
             return createListCompilationResult(node, contextCompilationResult);
         } else {
-            final String parameterAttributGetterName = getAttributeGetterName(node.getAttribute(),
-                    node.isDefaultValueAccess());
-            return new CompilationResultImpl(createCodeFragment(parameterAttributGetterName), node.getDatatype());
+            return createNormalCompilationResult(node, contextCompilationResult);
         }
+    }
+
+    private CompilationResult<JavaCodeFragment> createNormalCompilationResult(final AttributeNode node,
+            CompilationResult<JavaCodeFragment> contextCompilationResult) {
+        String attributGetterName = getAttributeGetterName(node.getAttribute(), node.isDefaultValueAccess());
+        JavaCodeFragment attributeFragment = createCodeFragment(attributGetterName,
+                contextCompilationResult.getCodeFragment());
+        return new CompilationResultImpl(attributeFragment, node.getDatatype());
     }
 
     private boolean isListOfTypeDatatype(CompilationResult<JavaCodeFragment> compilationResult) {
@@ -68,9 +74,9 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
             throw new GeneratorRuntimeException("The datatype of this node is not a ListOfTypeDatatype: " + node); //$NON-NLS-1$
         }
 
-        final Datatype conextDatatype = getBasicDatatype(contextCompilationResult);
-        final IAttribute attribute = node.getAttribute();
-        final String parameterAttributGetterName = getAttributeGetterName(attribute, node.isDefaultValueAccess());
+        Datatype conextDatatype = getBasicDatatype(contextCompilationResult);
+        IAttribute attribute = node.getAttribute();
+        String parameterAttributGetterName = getAttributeGetterName(attribute, node.isDefaultValueAccess());
 
         JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
         getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper.class);
@@ -96,8 +102,10 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
         return conextDatatype;
     }
 
-    private JavaCodeFragment createCodeFragment(final String parameterAttributGetterName) {
+    private JavaCodeFragment createCodeFragment(final String parameterAttributGetterName,
+            JavaCodeFragment contextCodeFragment) {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
+        javaCodeFragment.append(contextCodeFragment);
         javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
         return javaCodeFragment;
     }

@@ -20,11 +20,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
@@ -43,20 +42,18 @@ public class AbstractIdentifierNodeGeneratorTest {
     IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
 
     @Mock
-    private IAttribute attribute;
-
-    @Mock
     private IIpsProject ipsProject;
 
-    AttributeNode attributeNode;
+    @Mock
+    private IdentifierNode identifierNode;
 
-    InvalidIdentifierNode invalidNode;
+    private InvalidIdentifierNode invalidNode;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        attributeNode = new AttributeNode(attribute, false, false, ipsProject);
-        invalidNode = new InvalidIdentifierNode(new Message("Code", "text", 0));
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", ipsProject);
+        invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", 0));
         when(generator.generateNode(any(IdentifierNode.class), any(CompilationResult.class))).thenCallRealMethod();
         when(generator.getGeneratorFor(any(IdentifierNode.class))).thenCallRealMethod();
 
@@ -73,9 +70,9 @@ public class AbstractIdentifierNodeGeneratorTest {
     public void testGenerateNode_AttributeNode() {
         @SuppressWarnings("unchecked")
         CompilationResult<JavaCodeFragment> compilationResult = mock(CompilationResult.class);
-        generator.generateNode(attributeNode, compilationResult);
+        generator.generateNode(identifierNode, compilationResult);
 
-        verify(generator).getCompilationResult(attributeNode, compilationResult);
+        verify(generator).getCompilationResult(identifierNode, compilationResult);
     }
 
     @Test
@@ -83,9 +80,9 @@ public class AbstractIdentifierNodeGeneratorTest {
         when(generator.getNodeGeneratorFactory()).thenReturn(factory);
         @SuppressWarnings("unchecked")
         IdentifierNodeGenerator<JavaCodeFragment> identtifierNodeBuilder = mock(IdentifierNodeGenerator.class);
-        when(factory.getGeneratorForAttributeNode()).thenReturn(identtifierNodeBuilder);
+        when(factory.getGeneratorForInvalidNode()).thenReturn(identtifierNodeBuilder);
 
-        IdentifierNodeGenerator<JavaCodeFragment> builderFor = generator.getGeneratorFor(attributeNode);
+        IdentifierNodeGenerator<JavaCodeFragment> builderFor = generator.getGeneratorFor(invalidNode);
         assertEquals(identtifierNodeBuilder, builderFor);
     }
 }

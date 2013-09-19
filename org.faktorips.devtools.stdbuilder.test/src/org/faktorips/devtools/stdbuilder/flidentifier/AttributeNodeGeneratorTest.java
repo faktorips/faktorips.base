@@ -74,6 +74,7 @@ public class AttributeNodeGeneratorTest {
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         attributeNode = createAttributeNode(isDefault, false);
         when(contextCompilationResult.getDatatype()).thenReturn(Datatype.INTEGER);
+        when(contextCompilationResult.getCodeFragment()).thenReturn(new JavaCodeFragment("this"));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class AttributeNodeGeneratorTest {
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
-        assertEquals(".getAttribute()", compilationResult.getCodeFragment().getSourcecode());
+        assertEquals("this.getAttribute()", compilationResult.getCodeFragment().getSourcecode());
         assertEquals(Datatype.STRING, compilationResult.getDatatype());
     }
 
@@ -109,7 +110,7 @@ public class AttributeNodeGeneratorTest {
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
-        assertEquals(".getProductCmptGen().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
+        assertEquals("this.getProductCmptGen().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
         assertEquals(Datatype.STRING, compilationResult.getDatatype());
     }
 
@@ -125,7 +126,7 @@ public class AttributeNodeGeneratorTest {
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
-        assertEquals(".getAttribute()", compilationResult.getCodeFragment().getSourcecode());
+        assertEquals("this.getAttribute()", compilationResult.getCodeFragment().getSourcecode());
         assertEquals(Datatype.STRING, compilationResult.getDatatype());
     }
 
@@ -148,7 +149,7 @@ public class AttributeNodeGeneratorTest {
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
-        assertEquals(".getProductCmpt().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
+        assertEquals("this.getProductCmpt().getAttribute()", compilationResult.getCodeFragment().getSourcecode());
         assertEquals(Datatype.STRING, compilationResult.getDatatype());
     }
 
