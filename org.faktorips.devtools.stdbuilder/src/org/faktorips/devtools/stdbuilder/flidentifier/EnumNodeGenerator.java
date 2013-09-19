@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
@@ -20,11 +21,12 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
-public class EnumNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragment> {
+public class EnumNodeGenerator extends AbstractIdentifierGenerator {
 
     public EnumNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory, StandardBuilderSet builderSet) {
         super(factory, builderSet);
@@ -40,16 +42,13 @@ public class EnumNodeGenerator extends AbstractIdentifierGenerator<JavaCodeFragm
         JavaCodeFragment codeFragment = new JavaCodeFragment();
         codeFragment.getImportDeclaration().add(datatype.getJavaClassName());
         // if (classDatatype instanceof EnumTypeDatatypeAdapter) {
-        // getE
         // }
         // else {
-        // StandardBuilderSet builderSet = getBuilderSet();
-        // IpsProject ipsProject = (IpsProject)builderSet.getIpsProject();
-        // DatatypeHelper helper = ipsProject.getDatatypeHelper(datatype);
-
-        JavaCodeFragment codeFragment2 = new JavaCodeFragment(valueNode.getEnumValueName());
-        codeFragment.append(codeFragment2);
-
+        IIpsProject ipsProject = getIpsProject();
+        DatatypeHelper helper = ipsProject.getDatatypeHelper(datatype);
+        String enumValueName = valueNode.getEnumValueName();
+        JavaCodeFragment newInstance = helper.newInstance(enumValueName);
+        codeFragment.append(newInstance);
         // codeFragment.append(helper.newInstance(valueNode.getEnumValueName()));
         // }
 
