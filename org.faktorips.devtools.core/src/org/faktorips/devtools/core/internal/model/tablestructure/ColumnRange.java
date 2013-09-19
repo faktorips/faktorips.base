@@ -115,25 +115,32 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
             toColumnDatatype = getTableStructure().getColumn(to).getDatatype();
         }
 
-        validateColumn(from, PROPERTY_FROM_COLUMN, "from column", list); //$NON-NLS-1$
-        validateColumn(to, PROPERTY_TO_COLUMN, "to column", list); //$NON-NLS-1$
+        if ((rangeType.isTwoColumn() || rangeType.isOneColumnFrom())) {
+            validateColumn(from, PROPERTY_FROM_COLUMN, "from column", list); //$NON-NLS-1$
+        }
 
+        if ((rangeType.isTwoColumn() || rangeType.isOneColumnTo())) {
+            validateColumn(to, PROPERTY_TO_COLUMN, "to column", list); //$NON-NLS-1$
+        }
+
+        validateTwoColumnSameDatatype(list, fromColumnDatatype, toColumnDatatype);
+    }
+
+    protected void validateColumn(String column, String propertyName, String propertyDisplayName, MessageList list) {
+        if (ValidationUtils.checkStringPropertyNotEmpty(column, propertyDisplayName, this, propertyName, "", list)) { //$NON-NLS-1$ 
+            if (getTableStructure().getColumn(column) == null) {
+                String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, column);
+                list.add(new Message("", text, Message.ERROR, this, propertyName)); //$NON-NLS-1$
+            }
+        }
+    }
+
+    protected void validateTwoColumnSameDatatype(MessageList list, String fromColumnDatatype, String toColumnDatatype) {
         if (rangeType.isTwoColumn() && toColumnDatatype != null && fromColumnDatatype != null) {
             if (!toColumnDatatype.equals(fromColumnDatatype)) {
                 String text = NLS.bind(Messages.ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype, to);
                 list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE,
                         text, Message.ERROR, this));
-            }
-        }
-    }
-
-    protected void validateColumn(String column, String propertyName, String propertyDisplayName, MessageList list) {
-        if ((rangeType.isTwoColumn() || rangeType.isOneColumnFrom())
-                && ValidationUtils.checkStringPropertyNotEmpty(column, propertyDisplayName, this, propertyName,
-                        "", list)) { //$NON-NLS-1$ 
-            if (getTableStructure().getColumn(column) == null) {
-                String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, column);
-                list.add(new Message("", text, Message.ERROR, this, propertyName)); //$NON-NLS-1$
             }
         }
     }
