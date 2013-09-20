@@ -31,7 +31,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author frank
  * @since 3.11.0
  */
-public class QualifiedAssociationNodeGenerator extends AbstractIdentifierGenerator {
+public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     public QualifiedAssociationNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
@@ -39,7 +39,7 @@ public class QualifiedAssociationNodeGenerator extends AbstractIdentifierGenerat
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         QualifiedAssociationNode node = (QualifiedAssociationNode)identifierNode;
 

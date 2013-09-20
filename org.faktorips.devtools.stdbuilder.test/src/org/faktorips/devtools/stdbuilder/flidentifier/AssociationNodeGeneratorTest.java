@@ -29,6 +29,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
@@ -71,12 +72,15 @@ public class AssociationNodeGeneratorTest {
 
     private AssociationNodeGenerator gen;
 
+    private IdentifierNodeFactory nodeFactory;
+
     @Before
     public void setUp() throws CoreException {
+        nodeFactory = new IdentifierNodeFactory("AssociationNodeGeneratorTest", ipsProject);
         setUpMockAssociation();
         setUpCompilationResult();
         setUpBuilderSet();
-        node = new AssociationNode(association, true, ipsProject);
+        node = (AssociationNode)nodeFactory.createAssociationNode(association, true);
         setUpSpyGenerator();
     }
 
@@ -130,8 +134,8 @@ public class AssociationNodeGeneratorTest {
     public void testGetCompilationResult_singleContext_1to1Code() {
         setUpAssociation1to1();
 
-        CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResultForCurrentNode(node, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = gen.getCompilationResultForCurrentNode(node,
+                contextCompilationResult);
 
         assertEquals("contextCode.getCoverages()", compilationResult.getCodeFragment().getSourcecode());
     }
@@ -144,8 +148,8 @@ public class AssociationNodeGeneratorTest {
     public void testGetCompilationResult_singleContext_1toManyCode() {
         setUpAssociation1toMany();
 
-        CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResultForCurrentNode(node, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = gen.getCompilationResultForCurrentNode(node,
+                contextCompilationResult);
 
         assertEquals("contextCode.getCoverages()", compilationResult.getCodeFragment().getSourcecode());
     }
@@ -164,8 +168,8 @@ public class AssociationNodeGeneratorTest {
         setUpAssociation1to1();
         configureCompilatioResultWithListDatatype();
 
-        CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResultForCurrentNode(node, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = gen.getCompilationResultForCurrentNode(node,
+                contextCompilationResult);
 
         assertEquals(
                 "new AssociationTo1Helper<Policy, Coverage>(){@Override protected Coverage getTargetInternal(Policy sourceObject){return sourceObject.getCoverages();}}.getTargets(contextCode)",
@@ -177,8 +181,8 @@ public class AssociationNodeGeneratorTest {
         setUpAssociation1toMany();
         configureCompilatioResultWithListDatatype();
 
-        CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResultForCurrentNode(node, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = gen.getCompilationResultForCurrentNode(node,
+                contextCompilationResult);
 
         assertEquals(
                 "new AssociationToManyHelper<Policy, Coverage>(){@Override protected List<Coverage> getTargetsInternal(Policy sourceObject){return sourceObject.getCoverages();}}.getTargets(contextCode)",

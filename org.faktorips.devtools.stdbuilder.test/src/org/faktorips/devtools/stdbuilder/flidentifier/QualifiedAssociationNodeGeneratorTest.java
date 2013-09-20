@@ -89,8 +89,8 @@ public class QualifiedAssociationNodeGeneratorTest {
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03",
                 "hausrat.HRD-Fahrraddiebstahl 2012-03", target);
 
-        CompilationResult<JavaCodeFragment> compilationResult = qualifiedAssociationNodeGenerator.getCompilationResult(
-                qualifiedAssociationNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = qualifiedAssociationNodeGenerator
+                .getCompilationResultForCurrentNode(qualifiedAssociationNode, contextCompilationResult);
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult.getDatatype());
         assertEquals(target, compilationResult.getDatatype());
@@ -110,8 +110,8 @@ public class QualifiedAssociationNodeGeneratorTest {
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03",
                 "hausrat.HRD-Fahrraddiebstahl 2012-03", type);
 
-        CompilationResult<JavaCodeFragment> compilationResult = qualifiedAssociationNodeGenerator.getCompilationResult(
-                qualifiedAssociationNode, contextCompilationResult);
+        CompilationResult<JavaCodeFragment> compilationResult = qualifiedAssociationNodeGenerator
+                .getCompilationResultForCurrentNode(qualifiedAssociationNode, contextCompilationResult);
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult.getDatatype());
         assertEquals(type, compilationResult.getDatatype());
