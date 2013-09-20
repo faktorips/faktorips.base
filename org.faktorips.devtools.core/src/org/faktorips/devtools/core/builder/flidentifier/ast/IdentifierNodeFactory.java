@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -84,9 +85,13 @@ public class IdentifierNodeFactory {
         }
     }
 
-    public IdentifierNode createQualifiedAssociationNode(IAssociation association, String qualifier, boolean listOfTypes) {
+    public IdentifierNode createQualifiedAssociationNode(IAssociation association,
+            String qualifier,
+            String runtimeID,
+            IType policyCmptType,
+            boolean listOfTypes) {
         try {
-            return new QualifiedAssociationNode(association, qualifier, listOfTypes, ipsProject);
+            return new QualifiedAssociationNode(association, qualifier, runtimeID, policyCmptType, listOfTypes, ipsProject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(association);

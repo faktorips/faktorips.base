@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -22,7 +23,9 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
@@ -34,6 +37,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssociationParserTest extends AbstractParserTest {
+
+    private static final String RUNTIME_ID = "RuntimeID";
 
     private static final String MY_ASSOCIATION = "myAssociation";
 
@@ -112,43 +117,80 @@ public class AssociationParserTest extends AbstractParserTest {
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
     }
 
+    private IPolicyCmptType initSourceFile() throws Exception {
+        return initSourceFile(RUNTIME_ID);
+    }
+
+    private IPolicyCmptType initSourceFileNoRuntimeID() throws Exception {
+        return initSourceFile(null);
+    }
+
+    private IPolicyCmptType initSourceFile(String runtimeID) throws Exception {
+        IPolicyCmptType type = mock(IPolicyCmptType.class);
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(assciation.findTarget(getIpsProject())).thenReturn(type);
+        when(type.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
+        when(getIpsProject().findAllProductCmptSrcFiles(getProductCmptType(), true)).thenReturn(ipsSourceFiles);
+        when(sourceFile.getIpsObjectName()).thenReturn(MY_QUALIFIER);
+        when(sourceFile.getIpsObject()).thenReturn(productCmpt);
+        when(productCmpt.getRuntimeId()).thenReturn(runtimeID);
+        when(productCmpt.findPolicyCmptType(getIpsProject())).thenReturn(policyCmptType);
+        return type;
+    }
+
     @Test
     public void testParse_findAssociationQualified1To1() throws Exception {
         when(assciation.is1ToMany()).thenReturn(true);
         when(assciation.is1ToManyIgnoringQualifier()).thenReturn(false);
+        IPolicyCmptType type = initSourceFile();
 
         QualifiedAssociationNode node = (QualifiedAssociationNode)associationParser.parse(QUALIFIED_ASSOCIATION,
                 policyCmptType);
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(MY_QUALIFIER, node.getQualifier());
-        assertEquals(targetType, node.getDatatype());
+        assertEquals(type, node.getDatatype());
     }
 
     @Test
     public void testParse_findAssociationQualified1ToMany() throws Exception {
         when(assciation.is1ToMany()).thenReturn(true);
         when(assciation.is1ToManyIgnoringQualifier()).thenReturn(true);
+        IPolicyCmptType type = initSourceFile();
 
         QualifiedAssociationNode node = (QualifiedAssociationNode)associationParser.parse(QUALIFIED_ASSOCIATION,
                 policyCmptType);
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(MY_QUALIFIER, node.getQualifier());
-        assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
+        assertEquals(new ListOfTypeDatatype(type), node.getDatatype());
     }
 
     @Test
     public void testParse_findAssociationQualified1To1FromMany() throws Exception {
         when(assciation.is1ToMany()).thenReturn(true);
         when(assciation.is1ToManyIgnoringQualifier()).thenReturn(false);
+        IPolicyCmptType type = initSourceFile();
 
         QualifiedAssociationNode node = (QualifiedAssociationNode)associationParser.parse(QUALIFIED_ASSOCIATION,
                 new ListOfTypeDatatype(policyCmptType));
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(MY_QUALIFIER, node.getQualifier());
-        assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
+        assertEquals(new ListOfTypeDatatype(type), node.getDatatype());
+    }
+
+    @Test
+    public void testParse_findAssociationQualified_NoRuntimeID() throws Exception {
+        when(assciation.is1ToMany()).thenReturn(true);
+        when(assciation.is1ToManyIgnoringQualifier()).thenReturn(false);
+        initSourceFileNoRuntimeID();
+
+        InvalidIdentifierNode node = (InvalidIdentifierNode)associationParser.parse(QUALIFIED_ASSOCIATION,
+                policyCmptType);
+        assertEquals(ExprCompiler.UNKNOWN_QUALIFIER, node.getMessage().getCode());
     }
 
     @Test

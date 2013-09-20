@@ -28,6 +28,7 @@ public class Messages extends NLS {
 
     public static String AssociationParser_msgErrorAssociationQualifierOrIndex;
     public static String AssociationParser_msgErrorWhileFindAssociation;
+    public static String AssociationParser_msgErrorAssociationQualifier;
 
     public static String EnumParser_msgErrorInvalidEnumValue;
     public static String IdentifierParser_msgErrorInvalidIdentifier;

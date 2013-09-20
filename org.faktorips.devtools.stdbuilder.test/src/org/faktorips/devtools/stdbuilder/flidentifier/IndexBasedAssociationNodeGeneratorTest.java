@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -27,6 +29,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactor
 import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociationNode;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
@@ -54,6 +57,9 @@ public class IndexBasedAssociationNodeGeneratorTest {
     @Mock
     Association association;
 
+    @Mock
+    private IType target;
+
     private IndexBasedAssociationNodeGenerator indexBasedAssociationNodeGenerator;
 
     private IndexBasedAssociationNode indexBasedAssociationNode;
@@ -66,7 +72,8 @@ public class IndexBasedAssociationNodeGeneratorTest {
         indexBasedAssociationNodeGenerator = new IndexBasedAssociationNodeGenerator(factory, builderSet);
     }
 
-    private IndexBasedAssociationNode createIndexBasedAssociationNode(int index) {
+    private IndexBasedAssociationNode createIndexBasedAssociationNode(int index) throws Exception {
+        when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
         return (IndexBasedAssociationNode)nodeFactory.createIndexBasedAssociationNode(association, index);
     }
 
@@ -84,6 +91,7 @@ public class IndexBasedAssociationNodeGeneratorTest {
 
         assertFalse(compilationResult.failed());
         assertEquals("vertrag.getDeckungen(1)", compilationResult.getCodeFragment().getSourcecode());
+        assertNotNull(compilationResult.getDatatype());
         verify(javaCodeFragment).getImportDeclaration();
         verifyZeroInteractions(javaCodeFragment);
     }
