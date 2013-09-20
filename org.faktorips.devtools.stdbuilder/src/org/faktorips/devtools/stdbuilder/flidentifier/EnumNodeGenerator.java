@@ -13,27 +13,34 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.faktorips.codegen.DatatypeHelper;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 
-public class EnumNodeGenerator extends AbstractIdentifierGenerator {
+public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
+
+    StandardBuilderSet builderSet;
 
     public EnumNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory, StandardBuilderSet builderSet) {
         super(factory, builderSet);
+        this.builderSet = builderSet;
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         EnumClassNode classNode = (EnumClassNode)identifierNode;
         EnumDatatype datatype = classNode.getDatatype().getEnumDatatype();
@@ -41,16 +48,20 @@ public class EnumNodeGenerator extends AbstractIdentifierGenerator {
 
         JavaCodeFragment codeFragment = new JavaCodeFragment();
         codeFragment.getImportDeclaration().add(datatype.getJavaClassName());
-        // if (classDatatype instanceof EnumTypeDatatypeAdapter) {
-        // }
-        // else {
-        IIpsProject ipsProject = getIpsProject();
-        DatatypeHelper helper = ipsProject.getDatatypeHelper(datatype);
-        String enumValueName = valueNode.getEnumValueName();
-        JavaCodeFragment newInstance = helper.newInstance(enumValueName);
-        codeFragment.append(newInstance);
-        // codeFragment.append(helper.newInstance(valueNode.getEnumValueName()));
-        // }
+        if (datatype instanceof EnumTypeDatatypeAdapter) {
+            ExtendedExprCompiler exprCompiler = new ExtendedExprCompiler();
+            try {
+                addNewInstanceForEnumType(codeFragment, (EnumTypeDatatypeAdapter)datatype, exprCompiler,
+                        valueNode.getEnumValueName());
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            String enumValueName = valueNode.getEnumValueName();
+            JavaCodeFragment javaCodeFragment = new JavaCodeFragment(enumValueName);
+            codeFragment.append(javaCodeFragment);
+        }
 
         return new CompilationResultImpl(codeFragment, datatype);
     }
@@ -58,5 +69,17 @@ public class EnumNodeGenerator extends AbstractIdentifierGenerator {
     @Override
     protected CompilationResult<JavaCodeFragment> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode) {
         return new CompilationResultImpl(invalidIdentifierNode.getMessage());
+    }
+
+    protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+            EnumTypeDatatypeAdapter datatype,
+            ExprCompiler<JavaCodeFragment> exprCompiler,
+            String value) throws CoreException {
+        getEnumTypeBuilder().setExtendedExprCompiler((ExtendedExprCompiler)exprCompiler);
+        fragment.append(getEnumTypeBuilder().getNewInstanceCodeFragement(datatype, value));
+    }
+
+    public EnumTypeBuilder getEnumTypeBuilder() {
+        return builderSet.getBuilderById(BuilderKindIds.ENUM_TYPE, EnumTypeBuilder.class);
     }
 }
