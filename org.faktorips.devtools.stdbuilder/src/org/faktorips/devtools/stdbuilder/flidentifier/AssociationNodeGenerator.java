@@ -31,7 +31,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * JavaBuilder for an {@link AssociationNode}
+ * JavaBuilder for an {@link AssociationNode}. Example in formula language: "policy.coverage" (get
+ * all coverages from policy).
  * 
  * @author widmaier
  * @since 3.11.0

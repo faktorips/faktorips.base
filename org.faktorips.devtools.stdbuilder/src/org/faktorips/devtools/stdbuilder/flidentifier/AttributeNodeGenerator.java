@@ -32,7 +32,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * JavaGenerator for an {@link AttributeNode}
+ * JavaGenerator for an {@link AttributeNode}. Example in formula language: "policy.premium" (get
+ * the value of attribute "premium" from policy).
  * 
  * @author widmaier
  * @since 3.11.0

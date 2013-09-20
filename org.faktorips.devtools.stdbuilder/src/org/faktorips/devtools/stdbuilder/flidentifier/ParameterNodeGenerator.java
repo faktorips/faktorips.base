@@ -24,7 +24,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * JavaBuilder for a {@link ParameterNode}
+ * JavaBuilder for a {@link ParameterNode}. Example in formula language: "policy" (use the function
+ * argument policy).
  * 
  * @author frank
  * @since 3.11.0

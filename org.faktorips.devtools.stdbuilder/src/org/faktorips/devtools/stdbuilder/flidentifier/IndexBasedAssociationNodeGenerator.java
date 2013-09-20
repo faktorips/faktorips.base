@@ -24,7 +24,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * Generator for {@link IndexBasedAssociationNode}
+ * Generator for {@link IndexBasedAssociationNode IndexBasedAssociationNodes}. Example in formula
+ * language: "policy.converage[0]" (get the first coverage from policy).
  * 
  * @author frank
  * @since 3.11.0
