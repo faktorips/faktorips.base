@@ -85,7 +85,7 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
@@ -106,7 +106,7 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getProductCmptGen");
         when(xPolicyAttribute.getMethodNameGetDefaultValue()).thenReturn("getAttribute");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
@@ -122,7 +122,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(xProductAttribute.isChangingOverTime()).thenReturn(true);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
@@ -145,7 +145,7 @@ public class AttributeNodeGeneratorTest {
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
                 attributeNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
@@ -170,7 +170,7 @@ public class AttributeNodeGeneratorTest {
         XPolicyAttribute xPolicyAttribute = mock(XPolicyAttribute.class);
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getWohnflaeche");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
-        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator.getCompilationResultForCurrentNode(
                 attributeNode, contextCompilationResult);
         assertFalse(compilationResult.failed());
         System.out.println(compilationResult.getCodeFragment().getSourcecode());
@@ -184,7 +184,7 @@ public class AttributeNodeGeneratorTest {
         attributeNode = createAttributeNode(false, false);
         ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
         when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
-        attributeNodeGenerator.getCompilationResult(attributeNode, contextCompilationResult);
+        attributeNodeGenerator.getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
     }
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {

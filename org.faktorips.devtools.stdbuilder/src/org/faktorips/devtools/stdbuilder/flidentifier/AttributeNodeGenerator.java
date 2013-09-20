@@ -37,7 +37,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author widmaier
  * @since 3.11.0
  */
-public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
+public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     public AttributeNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
             StandardBuilderSet builderSet) {
@@ -45,7 +45,7 @@ public class AttributeNodeGenerator extends AbstractIdentifierGenerator {
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         AttributeNode node = (AttributeNode)identifierNode;
         if (isListOfTypeDatatype(contextCompilationResult)) {

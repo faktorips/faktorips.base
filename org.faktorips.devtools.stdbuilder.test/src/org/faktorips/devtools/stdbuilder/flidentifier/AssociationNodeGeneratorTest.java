@@ -110,7 +110,7 @@ public class AssociationNodeGeneratorTest {
     public void testGetCompilationResult_singleContext_1to1() {
         when(association.is1To1()).thenReturn(true);
 
-        gen.getCompilationResult(node, contextCompilationResult);
+        gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         verify(gen).compileAssociationTo1(contextCompilationResult, association, target);
         verify(gen, never()).compileAssociationToMany(contextCompilationResult, association, target);
@@ -120,7 +120,7 @@ public class AssociationNodeGeneratorTest {
     public void testGetCompilationResult_singleContext_1toMany() {
         when(association.is1To1()).thenReturn(false);
 
-        gen.getCompilationResult(node, contextCompilationResult);
+        gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         verify(gen, never()).compileAssociationTo1(contextCompilationResult, association, target);
         verify(gen).compileAssociationToMany(contextCompilationResult, association, target);
@@ -131,7 +131,7 @@ public class AssociationNodeGeneratorTest {
         setUpAssociation1to1();
 
         CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResult(node, contextCompilationResult);
+                .getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         assertEquals("contextCode.getCoverages()", compilationResult.getCodeFragment().getSourcecode());
     }
@@ -145,7 +145,7 @@ public class AssociationNodeGeneratorTest {
         setUpAssociation1toMany();
 
         CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResult(node, contextCompilationResult);
+                .getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         assertEquals("contextCode.getCoverages()", compilationResult.getCodeFragment().getSourcecode());
     }
@@ -154,7 +154,7 @@ public class AssociationNodeGeneratorTest {
     public void testGetCompilationResult_listContext() {
         configureCompilatioResultWithListDatatype();
 
-        gen.getCompilationResult(node, contextCompilationResult);
+        gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         verify(gen).compileListContext(contextCompilationResult, association, target);
     }
@@ -165,7 +165,7 @@ public class AssociationNodeGeneratorTest {
         configureCompilatioResultWithListDatatype();
 
         CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResult(node, contextCompilationResult);
+                .getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         assertEquals(
                 "new AssociationTo1Helper<Policy, Coverage>(){@Override protected Coverage getTargetInternal(Policy sourceObject){return sourceObject.getCoverages();}}.getTargets(contextCode)",
@@ -178,7 +178,7 @@ public class AssociationNodeGeneratorTest {
         configureCompilatioResultWithListDatatype();
 
         CompilationResult<JavaCodeFragment> compilationResult = gen
-                .getCompilationResult(node, contextCompilationResult);
+                .getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         assertEquals(
                 "new AssociationToManyHelper<Policy, Coverage>(){@Override protected List<Coverage> getTargetsInternal(Policy sourceObject){return sourceObject.getCoverages();}}.getTargets(contextCode)",

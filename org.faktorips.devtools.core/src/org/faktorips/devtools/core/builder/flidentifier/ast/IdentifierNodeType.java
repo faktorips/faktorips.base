@@ -77,9 +77,14 @@ public enum IdentifierNodeType {
 
     ENUM_VALUE(EnumValueNode.class) {
 
+        /**
+         * This kind of node always exists in conjunction with an enum class node. The
+         * EnumClassBuilder processes both together, so no separate builder should ever be created
+         * for the enum value node. Create an invalid node builder in this case.
+         */
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGeneratorFor(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForEnumValueNode();
+            return factory.getGeneratorForInvalidNode();
         }
     },
 

@@ -69,7 +69,7 @@ public class ParameterNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult() throws Exception {
-        CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaGenerator.getCompilationResult(
+        CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaGenerator.getCompilationResultForCurrentNode(
                 parameterNode, null);
         assertNotNull(compilationResult);
         assertNotNull(compilationResult.getCodeFragment());
@@ -79,7 +79,7 @@ public class ParameterNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult_NoInteractionToContextCompilationResult() throws Exception {
-        parameterNodeJavaGenerator.getCompilationResult(parameterNode, contextCompilationResult);
+        parameterNodeJavaGenerator.getCompilationResultForCurrentNode(parameterNode, contextCompilationResult);
         verifyZeroInteractions(contextCompilationResult);
     }
 }

@@ -29,7 +29,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author frank
  * @since 3.11.0
  */
-public class IndexBasedAssociationNodeGenerator extends AbstractIdentifierGenerator {
+public class IndexBasedAssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     public IndexBasedAssociationNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
@@ -37,11 +37,11 @@ public class IndexBasedAssociationNodeGenerator extends AbstractIdentifierGenera
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         IndexBasedAssociationNode node = (IndexBasedAssociationNode)identifierNode;
-        JavaCodeFragment codeFragement = createAssociationGetterWithIndex(
-                contextCompilationResult.getCodeFragment(), node);
+        JavaCodeFragment codeFragement = createAssociationGetterWithIndex(contextCompilationResult.getCodeFragment(),
+                node);
         return new CompilationResultImpl(codeFragement, node.getDatatype());
     }
 

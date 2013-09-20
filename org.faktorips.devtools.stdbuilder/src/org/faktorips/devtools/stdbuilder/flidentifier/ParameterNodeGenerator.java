@@ -29,7 +29,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author frank
  * @since 3.11.0
  */
-public class ParameterNodeGenerator extends AbstractIdentifierGenerator {
+public class ParameterNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     public ParameterNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
@@ -37,7 +37,7 @@ public class ParameterNodeGenerator extends AbstractIdentifierGenerator {
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         ParameterNode parameterNode = (ParameterNode)identifierNode;
         Datatype datatype = parameterNode.getDatatype();

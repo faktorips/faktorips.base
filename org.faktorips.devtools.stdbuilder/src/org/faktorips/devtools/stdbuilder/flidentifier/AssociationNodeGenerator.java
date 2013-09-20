@@ -36,7 +36,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author widmaier
  * @since 3.11.0
  */
-public class AssociationNodeGenerator extends AbstractIdentifierGenerator {
+public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     public AssociationNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
             StandardBuilderSet builderSet) {
@@ -44,7 +44,7 @@ public class AssociationNodeGenerator extends AbstractIdentifierGenerator {
     }
 
     @Override
-    protected CompilationResult<JavaCodeFragment> getCompilationResult(IdentifierNode identifierNode,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         final AssociationNode node = (AssociationNode)identifierNode;
         IAssociation association = node.getAssociation();

@@ -80,7 +80,7 @@ public class IndexBasedAssociationNodeGeneratorTest {
         indexBasedAssociationNode = createIndexBasedAssociationNode(1);
 
         CompilationResult<JavaCodeFragment> compilationResult = indexBasedAssociationNodeGenerator
-                .getCompilationResult(indexBasedAssociationNode, contextCompilationResult);
+                .getCompilationResultForCurrentNode(indexBasedAssociationNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
         assertEquals("vertrag.getDeckungen(1)", compilationResult.getCodeFragment().getSourcecode());

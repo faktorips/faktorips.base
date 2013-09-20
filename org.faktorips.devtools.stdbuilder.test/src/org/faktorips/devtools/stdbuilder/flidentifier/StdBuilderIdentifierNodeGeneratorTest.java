@@ -29,9 +29,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractIdentifierGeneratorTest {
+public class StdBuilderIdentifierNodeGeneratorTest {
     @Mock
-    AbstractIdentifierGenerator generator;
+    StdBuilderIdentifierNodeGenerator generator;
     @Mock
     CompilationResult<JavaCodeFragment> compilationResult;
 

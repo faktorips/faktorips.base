@@ -33,10 +33,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractIdentifierNodeGeneratorTest {
+public class IdentifierNodeGeneratorTest {
 
     @Mock
-    AbstractIdentifierNodeGenerator<JavaCodeFragment> generator;
+    IdentifierNodeGenerator<JavaCodeFragment> generator;
 
     @Mock
     IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -72,7 +72,7 @@ public class AbstractIdentifierNodeGeneratorTest {
         CompilationResult<JavaCodeFragment> compilationResult = mock(CompilationResult.class);
         generator.generateNode(identifierNode, compilationResult);
 
-        verify(generator).getCompilationResult(identifierNode, compilationResult);
+        verify(generator).getCompilationResultForCurrentNode(identifierNode, compilationResult);
     }
 
     @Test
