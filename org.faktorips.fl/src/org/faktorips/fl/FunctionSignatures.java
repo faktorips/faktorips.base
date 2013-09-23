@@ -213,6 +213,13 @@ public enum FunctionSignatures {
      */
     PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
     /**
+     * Returns the int argument, to the power of the int value.<br/>
+     * {@code int = Math.pow(double, double).intValue()}
+     * 
+     * @see Datatype#PRIMITIVE_INT
+     */
+    PowerInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
+    /**
      * Returns the square root of the Decimal argument.<br/>
      * {@code Decimal=ValueOf(Math.sqrt(Decimal.doubleValue()))}
      * 

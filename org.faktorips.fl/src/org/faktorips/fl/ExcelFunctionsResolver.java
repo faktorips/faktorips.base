@@ -30,6 +30,7 @@ import org.faktorips.fl.functions.Not;
 import org.faktorips.fl.functions.NotBoolean;
 import org.faktorips.fl.functions.Or;
 import org.faktorips.fl.functions.PowerDecimal;
+import org.faktorips.fl.functions.PowerInt;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.SqrtDecimal;
 import org.faktorips.fl.functions.WholeNumber;
@@ -85,6 +86,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new MinMaxDouble(getFctName(MAX), getFctDescription(MAX), true));
         add(new MinMaxDouble(getFctName(MIN), getFctDescription(MIN), false));
         add(new PowerDecimal(getFctName(POWER), getFctDescription(POWER)));
+        add(new PowerInt(getFctName(POWER), getFctDescription(POWER)));
         add(new SqrtDecimal(getFctName(SQRT), getFctDescription(SQRT)));
     }
 
