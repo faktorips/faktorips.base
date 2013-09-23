@@ -30,6 +30,13 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 
+/**
+ * JavaBuilder for a {@link EnumClassNode} and {@link EnumValueNode}.
+ * 
+ * @author hbaagil
+ * @since 3.11.0
+ */
+
 public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     StandardBuilderSet builderSet;
@@ -54,7 +61,6 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
                 addNewInstanceForEnumType(codeFragment, (EnumTypeDatatypeAdapter)datatype, exprCompiler,
                         valueNode.getEnumValueName());
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } else {

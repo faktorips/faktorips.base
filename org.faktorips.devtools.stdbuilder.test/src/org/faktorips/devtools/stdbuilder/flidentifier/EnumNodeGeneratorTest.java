@@ -13,10 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.faktorips.codegen.DatatypeHelper;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactor
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +51,7 @@ public class EnumNodeGeneratorTest {
     @Mock
     private IIpsProject ipsProject;
 
-    @Mock
-    private DatatypeHelper helper;
-
-    private EnumNodeGenerator enumNodeJavaBuilder;
+    private EnumNodeGenerator enumNodeGenerator;
 
     private EnumClassNode enumClassNode;
 
@@ -58,29 +59,50 @@ public class EnumNodeGeneratorTest {
 
     @Before
     public void createEnumValueNodeJavaBuilder() throws Exception {
-        enumNodeJavaBuilder = new EnumNodeGenerator(factory, builderSet);
+        enumNodeGenerator = new EnumNodeGenerator(factory, builderSet);
     }
 
-    private void setUpEnumValueNode() throws Exception {
-        EnumDatatype enumDatatype = mock(EnumTypeDatatypeAdapter.class);
+    @Test
+    public void testGetCompilationResultForEnumTypeDatatypeAdapter() throws Exception {
+        EnumTypeDatatypeAdapter enumDatatype = mock(EnumTypeDatatypeAdapter.class);
         EnumClass enumClass = new EnumClass(enumDatatype);
+        createEnumClassNodeAndEnumValueNode(enumDatatype, enumClass);
+        mockForEnumTypeDatatypeAdapter(enumDatatype);
+        CompilationResult<JavaCodeFragment> compilationResult = enumNodeGenerator.getCompilationResultForCurrentNode(
+                enumClassNode, null);
+        assertionTest(compilationResult);
+    }
+
+    @Test
+    public void testGetCompilationResultForEnumDatatype() throws Exception {
+        EnumDatatype enumDatatype = mock(EnumDatatype.class);
+        EnumClass enumClass = new EnumClass(enumDatatype);
+        createEnumClassNodeAndEnumValueNode(enumDatatype, enumClass);
+        CompilationResult<JavaCodeFragment> compilationResult = enumNodeGenerator.getCompilationResultForCurrentNode(
+                enumClassNode, null);
+        assertionTest(compilationResult);
+    }
+
+    private void mockForEnumTypeDatatypeAdapter(EnumTypeDatatypeAdapter enumDatatype) throws CoreException {
+        EnumTypeBuilder enumTypeBuilder = mock(EnumTypeBuilder.class);
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("EnumValueName");
+        when(enumNodeGenerator.getEnumTypeBuilder()).thenReturn(enumTypeBuilder);
+        when(enumTypeBuilder.getNewInstanceCodeFragement(enumDatatype, enumValueNode.getEnumValueName())).thenReturn(
+                javaCodeFragment);
+    }
+
+    private void assertionTest(CompilationResult<JavaCodeFragment> compilationResult) {
+        assertFalse(compilationResult.failed());
+        assertNotNull(compilationResult);
+        assertNotNull(compilationResult.getCodeFragment());
+        assertEquals("EnumValueName", compilationResult.getCodeFragment().getSourcecode());
+    }
+
+    private void createEnumClassNodeAndEnumValueNode(EnumDatatype enumDatatype, EnumClass enumClass) {
         enumClassNode = (EnumClassNode)new IdentifierNodeFactory(enumDatatype.getName(), ipsProject)
                 .createEnumClassNode(enumClass);
         enumValueNode = (EnumValueNode)new IdentifierNodeFactory(enumDatatype.getName(), ipsProject)
                 .createEnumValueNode("EnumValueName", Datatype.STRING);
         enumClassNode.setSuccessor(enumValueNode);
-    }
-
-    @Test
-    public void testGetCompilationResult() throws Exception {
-        setUpEnumValueNode();
-        CompilationResult<JavaCodeFragment> compilationResult = enumNodeJavaBuilder.getCompilationResultForCurrentNode(
-                enumClassNode, null);
-
-        assertFalse(compilationResult.failed());
-        // assertNotNull(compilationResult);
-        // assertNotNull(compilationResult.getCodeFragment());
-        // assertEquals("EnumValueName", compilationResult.getCodeFragment().getSourcecode());
-        // assertEquals(EnumDatatype.STRING, compilationResult.getDatatype());
     }
 }
