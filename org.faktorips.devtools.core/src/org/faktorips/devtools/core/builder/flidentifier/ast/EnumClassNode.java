@@ -14,8 +14,17 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.AbstractDatatype;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 
+/**
+ * This node represents the first part of a enum reference, the part that identifies the enum type.
+ * It uses a special datatype implementation {@link EnumClass} of {@link Datatype} to store the
+ * found enum type. The successor of a {@link EnumClassNode} have to be always of type
+ * {@link EnumValueNode}
+ * 
+ * @author dirmeier
+ */
 public class EnumClassNode extends IdentifierNode {
 
     EnumClassNode(EnumClass datatype) {
@@ -25,6 +34,15 @@ public class EnumClassNode extends IdentifierNode {
     @Override
     public EnumClass getDatatype() {
         return (EnumClass)super.getDatatype();
+    }
+
+    @Override
+    public void setSuccessor(IdentifierNode successor) {
+        if (successor instanceof EnumValueNode) {
+            super.setSuccessor(successor);
+        } else {
+            throw new RuntimeException("Invalid successor type in enum class node: " + successor); //$NON-NLS-1$
+        }
     }
 
     @Override

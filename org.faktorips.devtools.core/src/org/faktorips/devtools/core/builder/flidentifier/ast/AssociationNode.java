@@ -14,14 +14,18 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.flidentifier.Messages;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * This identifier node represents an association. The resulting {@link Datatype} will either be of
+ * {@link IType} or of {@link ListOfTypeDatatype} with an {@link IType} as basis type.
+ * 
+ * @author dirmeier
+ */
 public class AssociationNode extends IdentifierNode {
 
     private final IAssociation association;
@@ -32,17 +36,6 @@ public class AssociationNode extends IdentifierNode {
         super(association.findTarget(ipsProject), listOfTypes);
         this.association = association;
         this.ipsProject = ipsProject;
-    }
-
-    public IdentifierNode create(IAssociation association, boolean listOfTypes, IIpsProject ipsProject) {
-        try {
-            return new AssociationNode(association, listOfTypes, ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return new InvalidIdentifierNode(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                    Messages.AbstractParameterIdentifierResolver_noAssociationTarget, association.getTarget(),
-                    association.getName())));
-        }
     }
 
     public IAssociation getAssociation() {

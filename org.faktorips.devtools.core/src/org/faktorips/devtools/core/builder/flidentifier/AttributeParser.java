@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -27,6 +28,12 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
+/**
+ * This parser tries to match the identifier part to an attribute of the context type. In case of
+ * success it will return an {@link AttributeNode} otherwise it returns <code>null</code>.
+ * 
+ * @author dirmeier
+ */
 public class AttributeParser extends TypeBasedIdentifierParser {
 
     public static final char VALUE_SUFFIX_SEPARATOR_CHAR = '@';

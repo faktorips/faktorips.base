@@ -16,6 +16,14 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 
+/**
+ * An Identifier nodes represents a part of an identifier. Every identifier part have a
+ * {@link Datatype} that represents the type of the result. If there is at least one following part,
+ * the identifier node also has a successor. Hence the {@link IdentifierNode} is a kind of linked
+ * list.
+ * 
+ * @author dirmeier
+ */
 public abstract class IdentifierNode {
 
     private final Datatype datatype;

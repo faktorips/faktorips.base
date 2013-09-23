@@ -20,6 +20,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * This parser subclass is specialized for parsing any parts of a type like associations or
+ * attributes. The context type will always be a subclass of {@link IType} or a list of
+ * {@link IType} using {@link ListOfTypeDatatype}.
+ * 
+ * @author dirmeier
+ */
 public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodeParser {
 
     public TypeBasedIdentifierParser(IExpression expression, IIpsProject ipsProject) {
@@ -64,5 +71,14 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
         return super.getContextType() instanceof ListOfTypeDatatype;
     }
 
+    /**
+     * Implement this method in subclasses instead of {@link #parse()} to have the type safety
+     * check.
+     * 
+     * @see #parse()
+     * 
+     * @return The parsed {@link IdentifierNode} or null if this parser is not responsible for the
+     *         identifier part
+     */
     protected abstract IdentifierNode parseInternal();
 }

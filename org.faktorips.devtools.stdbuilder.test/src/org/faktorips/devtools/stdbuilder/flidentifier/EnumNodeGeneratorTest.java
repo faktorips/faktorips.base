@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
@@ -99,10 +98,9 @@ public class EnumNodeGeneratorTest {
     }
 
     private void createEnumClassNodeAndEnumValueNode(EnumDatatype enumDatatype, EnumClass enumClass) {
-        enumClassNode = (EnumClassNode)new IdentifierNodeFactory(enumDatatype.getName(), ipsProject)
-                .createEnumClassNode(enumClass);
-        enumValueNode = (EnumValueNode)new IdentifierNodeFactory(enumDatatype.getName(), ipsProject)
-                .createEnumValueNode("EnumValueName", Datatype.STRING);
+        enumClassNode = new IdentifierNodeFactory(enumDatatype.getName(), ipsProject).createEnumClassNode(enumClass);
+        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), ipsProject).createEnumValueNode(
+                "EnumValueName", enumDatatype);
         enumClassNode.setSuccessor(enumValueNode);
     }
 }

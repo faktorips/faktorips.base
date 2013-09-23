@@ -14,9 +14,18 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * The index based association node is a special form of {@link AssociationNode}. It represents an
+ * identifier part that was suffixed with an index access. The resulting {@link Datatype} will
+ * always be a subclass of {@link IType}.
+ * 
+ * @author dirmeier
+ */
 public class IndexBasedAssociationNode extends AssociationNode {
 
     private final int index;

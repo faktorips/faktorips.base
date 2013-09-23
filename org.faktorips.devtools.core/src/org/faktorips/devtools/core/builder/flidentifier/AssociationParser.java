@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -28,6 +29,14 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
+/**
+ * This parser tires to match the identifier node to an association of the context type. It also
+ * handles optional qualifiers or indices. The output will be an {@link AssociationNode} or a
+ * subclass of this class.
+ * 
+ * 
+ * @author dirmeier
+ */
 public class AssociationParser extends TypeBasedIdentifierParser {
 
     private static final char QUALIFIER_START = '[';

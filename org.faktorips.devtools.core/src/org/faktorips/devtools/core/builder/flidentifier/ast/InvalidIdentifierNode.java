@@ -15,6 +15,14 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.util.message.Message;
 
+/**
+ * This node is a special kind of {@link IdentifierNode}. It do not relay represent any identifier
+ * part but is created in case of exceptions or errors while parsing the identifier. The
+ * {@link InvalidIdentifierNode} consists of a helpful human readable and translated error message
+ * that helps the user to correct the invalid identifier part.
+ * 
+ * @author dirmeier
+ */
 public class InvalidIdentifierNode extends IdentifierNode {
 
     private final Message errorMessage;

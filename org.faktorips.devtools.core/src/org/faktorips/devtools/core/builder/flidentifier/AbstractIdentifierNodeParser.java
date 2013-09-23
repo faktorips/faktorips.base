@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
@@ -46,13 +47,38 @@ public abstract class AbstractIdentifierNodeParser {
         this.ipsProject = ipsProject;
     }
 
-    public IdentifierNode parse(String string, Datatype contextType) {
-        this.setIdentifierPart(string);
+    /**
+     * This method is called to parse the identifier part string with the given context type.
+     * 
+     * @param identifierPart The part of the identifier that should be parsed
+     * @param contextType The current context type, retrieved from previous parsing or the product
+     *            component type of the formula
+     * 
+     * @return The parsed identifier node or null if this parser is not responsible
+     */
+    public IdentifierNode parse(String identifierPart, Datatype contextType) {
+        this.setIdentifierPart(identifierPart);
         this.setContextType(contextType);
         IdentifierNode identifierNode = parse();
         return identifierNode;
     }
 
+    /**
+     * This method is implemented by the different parsers to parse the current identifier part,
+     * retrieved from {@link #getIdentifierPart()}, To know the current datatype of the previous
+     * parsing step you could call {@link #getContextType()}.
+     * <p>
+     * If the parser cannot parse the identifier part, this method should return null. The parsing
+     * will be continued with the next parser.
+     * <p>
+     * In case of any exception during parsing, this method should return an
+     * {@link InvalidIdentifierNode} if and only if the identifier part could be parsed in normal
+     * circumstances. An {@link InvalidIdentifierNode} means that the identifier part could be
+     * parsed but there is any error. The parsing will stop.
+     * 
+     * @return The {@link IdentifierNode} that matches to the current identifier part or null if
+     *         this parser cannot parse the identifier.
+     */
     protected abstract IdentifierNode parse();
 
     public IExpression getExpression() {
@@ -83,6 +109,11 @@ public abstract class AbstractIdentifierNodeParser {
         return getContextType() == getExpression().findProductCmptType(getIpsProject());
     }
 
+    /**
+     * Use this {@link IdentifierNodeFactory} to create any kind of {@link IdentifierNode nodes}.
+     * 
+     * @return The {@link IdentifierNodeFactory} to create a new {@link IdentifierNode}
+     */
     public IdentifierNodeFactory nodeFactory() {
         return new IdentifierNodeFactory(getIdentifierPart(), getIpsProject());
     }

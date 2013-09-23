@@ -21,15 +21,31 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
+/**
+ * The parser for enum value identifiers.
+ * <p>
+ * An enum identifier always consists of two parts. First the enum class name and second the id of
+ * the enum value. This parser is able to handle both parts, it depends on the context type which
+ * part it tries to parse.
+ * 
+ * @author dirmeier
+ */
 public class EnumParser extends AbstractIdentifierNodeParser {
 
     private final Map<String, EnumDatatype> enumDatatypes;
 
+    /**
+     * Creates a new {@link EnumParser} for the specified expression and project
+     * 
+     * @param expression The expression that holds the identifier that will be parsed by this parser
+     * @param ipsProject The {@link IIpsProject} used for searching any {@link IIpsObject}.
+     */
     public EnumParser(IExpression expression, IIpsProject ipsProject) {
         super(expression, ipsProject);
         enumDatatypes = createEnumMap();
@@ -71,9 +87,12 @@ public class EnumParser extends AbstractIdentifierNodeParser {
                 return nodeFactory().createEnumValueNode(enumValueName, enumType);
             }
         }
-        return nodeFactory().createInvalidIdentifier(
-                Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                        Messages.EnumParser_msgErrorInvalidEnumValue, getIdentifierPart(), enumType.getName())));
+        return nodeFactory()
+                .createInvalidIdentifier(
+                        Message.newError(
+                                ExprCompiler.UNDEFINED_IDENTIFIER,
+                                NLS.bind(Messages.EnumParser_msgErrorInvalidEnumValue, getIdentifierPart(),
+                                        enumType.getName())));
     }
 
 }

@@ -14,10 +14,20 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * The qualified association node is a special form of {@link AssociationNode}. It represents an
+ * identifier part that was qualified by the name of a product component. The resulting
+ * {@link Datatype} will always be a subclass of {@link IType} or a {@link ListOfTypeDatatype} with
+ * {@link IType} as basis type.
+ * 
+ * @author dirmeier
+ */
 public class QualifiedAssociationNode extends AssociationNode {
 
     private final String qualifier;
