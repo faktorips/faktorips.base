@@ -38,6 +38,12 @@ public class AssociationNode extends IdentifierNode {
         this.ipsProject = ipsProject;
     }
 
+    AssociationNode(IAssociation association, IType type, boolean listOfTypes, IIpsProject ipsProject) {
+        super(type, listOfTypes);
+        this.association = association;
+        this.ipsProject = ipsProject;
+    }
+
     public IAssociation getAssociation() {
         return association;
     }

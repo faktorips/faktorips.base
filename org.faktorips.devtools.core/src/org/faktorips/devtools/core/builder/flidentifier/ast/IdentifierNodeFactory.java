@@ -21,11 +21,15 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.Messages;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -128,21 +132,48 @@ public class IdentifierNodeFactory {
      * an {@link InvalidIdentifierNode} if the target could not be found.
      * 
      * @param association The association for which you want to create an {@link AssociationNode}
-     * @param runtimeID The runtime id of the product component that was found using the qualifier
+     * @param qualifier The qualifier found at the identifier
+     * @param productCmptType the {@link IProductCmptType} of the Association.
      * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
      */
     public IdentifierNode createQualifiedAssociationNode(IAssociation association,
             String qualifier,
-            String runtimeID,
-            IType policyCmptType,
+            IProductCmptType productCmptType,
             boolean listOfTypes) {
+
         try {
-            return new QualifiedAssociationNode(association, qualifier, runtimeID, policyCmptType, listOfTypes,
-                    ipsProject);
+            IProductCmpt productCmpt = findProductCmpt(qualifier, productCmptType);
+
+            if (productCmpt == null || productCmpt.getRuntimeId() == null) {
+                return createInvalidIdentifier(Message.newError(
+                        ExprCompiler.UNKNOWN_QUALIFIER,
+                        NLS.bind(Messages.AssociationParser_msgErrorAssociationQualifier, qualifier,
+                                productCmptType.getName())));
+            }
+
+            IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
+            String runtimeId = productCmpt.getRuntimeId();
+            return new QualifiedAssociationNode(association, policyCmptType, runtimeId, listOfTypes, ipsProject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(association);
         }
+    }
+
+    private IProductCmpt findProductCmpt(String qualifier, IProductCmptType productCmptType) throws CoreException {
+        IIpsSrcFile[] allProductCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
+        IProductCmpt productCmpt = null;
+        for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
+            if (ipsSrcFile.getIpsObjectName().equals(qualifier)
+                    || ipsSrcFile.getQualifiedNameType().getName().equals(qualifier)) {
+                IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+                if (ipsObject instanceof IProductCmpt) {
+                    productCmpt = (IProductCmpt)ipsObject;
+                    break;
+                }
+            }
+        }
+        return productCmpt;
     }
 
     /**

@@ -14,6 +14,7 @@
 package org.faktorips.runtime.formula;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -301,6 +302,78 @@ public class FormulaEvaluatorUtilTest {
     public void testGetModelObjectByIdTString_notConfigurable() {
         IBranch modelObject = FormulaEvaluatorUtil.getModelObjectById(branch, "id1");
         assertNull(modelObject);
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * a list containing multiple entries for the wanted id is searched
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * all objects with a matching id is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString() {
+        when(treePC.getId()).thenReturn("id1");
+
+        ITree tree2 = mock(ITree.class);
+        IProductComponent treePC2 = mock(IProductComponent.class);
+        when(tree2.getProductComponent()).thenReturn(treePC2);
+        when(treePC2.getId()).thenReturn("id2");
+
+        ITree tree22 = mock(ITree.class);
+        IProductComponent treePC22 = mock(IProductComponent.class);
+        when(tree22.getProductComponent()).thenReturn(treePC2);
+        when(treePC22.getId()).thenReturn("id2");
+
+        ITree tree3 = mock(ITree.class);
+        IProductComponent treePC3 = mock(IProductComponent.class);
+        when(tree3.getProductComponent()).thenReturn(treePC3);
+        when(treePC3.getId()).thenReturn("id3");
+
+        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(
+                Arrays.asList(tree, tree2, tree22, tree3), "id2");
+        assertFalse(modelObjectList.isEmpty());
+        assertEquals(2, modelObjectList.size());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * a empty list is searched for an id
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * A empty list is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString_emptyList() {
+        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(new ArrayList<ITree>(), "id1");
+        assertTrue(modelObjectList.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A list not containing the wanted id is searched
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * A empty list is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString_notInList() {
+        when(treePC.getId()).thenReturn("id1");
+        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(tree), "id2");
+        assertTrue(modelObjectList.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A not product configured model object is tested
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * {@code null} is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString_notConfigurable() {
+        List<IBranch> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(branch), "id1");
+        assertTrue(modelObjectList.isEmpty());
     }
 
     @Test

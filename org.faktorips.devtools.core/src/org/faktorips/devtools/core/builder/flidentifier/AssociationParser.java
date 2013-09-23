@@ -18,12 +18,9 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.fl.ExprCompiler;
@@ -74,40 +71,14 @@ public class AssociationParser extends TypeBasedIdentifierParser {
 
     private IdentifierNode createQualifiedAssiciationNode(IAssociation association) throws CoreException {
 
-        IProductCmptType productCmptType = ((IPolicyCmptType)association.findTarget(getIpsProject()))
-                .findProductCmptType(getIpsProject());
-
-        IProductCmpt productCmpt = findProductCmpt(productCmptType);
-
-        if (productCmpt == null || productCmpt.getRuntimeId() == null) {
-            return nodeFactory().createInvalidIdentifier(
-                    Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS.bind(
-                            Messages.AssociationParser_msgErrorAssociationQualifier, getQualifier(),
-                            productCmptType.getName())));
-        }
-
-        String runtimeId = productCmpt.getRuntimeId();
-        IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(getIpsProject());
+        IProductCmptType productCmptType = findProductCmptType(association);
 
         boolean listOfType = isListOfTypeDatatype() || association.is1ToManyIgnoringQualifier();
-        return nodeFactory().createQualifiedAssociationNode(association, getQualifier(), runtimeId, policyCmptType,
-                listOfType);
-
+        return nodeFactory().createQualifiedAssociationNode(association, getQualifier(), productCmptType, listOfType);
     }
 
-    private IProductCmpt findProductCmpt(IProductCmptType productCmptType) throws CoreException {
-        IIpsSrcFile[] allProductCmptSrcFiles = getIpsProject().findAllProductCmptSrcFiles(productCmptType, true);
-        IProductCmpt productCmpt = null;
-        for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
-            if (getQualifier().equals(ipsSrcFile.getIpsObjectName())) {
-                IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                if (ipsObject instanceof IProductCmpt) {
-                    productCmpt = (IProductCmpt)ipsObject;
-                    break;
-                }
-            }
-        }
-        return productCmpt;
+    private IProductCmptType findProductCmptType(IAssociation association) throws CoreException {
+        return ((IPolicyCmptType)association.findTarget(getIpsProject())).findProductCmptType(getIpsProject());
     }
 
     private IdentifierNode createIndexBasedAssiciationNode(IAssociation association) {

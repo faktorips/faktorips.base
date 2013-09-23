@@ -14,24 +14,31 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil;
 
 /**
- * Generator for {@link QualifiedAssociationNode}.
+ * Generator for {@link QualifiedAssociationNode QualifiedAssociationNodes}. <br>
+ * Example in formula language: "policy.converage["hausrat.HRD-Fahrraddiebstahl 2012-03"]"
+ * 
+ * @see FormulaEvaluatorUtil#getListModelObjectById(java.util.List, String)
+ * @see FormulaEvaluatorUtil#getModelObjectById(java.util.List, String)
  * 
  * @author frank
  * @since 3.11.0
  */
 public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator {
+
+    private static final String GET_MODEL_OBJECT_BY_ID = "getModelObjectById"; //$NON-NLS-1$
+    private static final String GET_LIST_MODEL_OBJECT_BY_ID = "getListModelObjectById"; //$NON-NLS-1$
+    private static final Class<FormulaEvaluatorUtil> CLAZZ_FORMULAEVALUATIONUTIL = org.faktorips.runtime.formula.FormulaEvaluatorUtil.class;
 
     public QualifiedAssociationNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
@@ -43,38 +50,50 @@ public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeG
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         QualifiedAssociationNode node = (QualifiedAssociationNode)identifierNode;
 
-        return compileAssociationQualifier(node, contextCompilationResult.getCodeFragment());
+        return compileAssociationQualifier(node.isListOfTypeDatatype(), node,
+                contextCompilationResult.getCodeFragment());
     }
 
-    private CompilationResult<JavaCodeFragment> compileAssociationQualifier(QualifiedAssociationNode node,
-            JavaCodeFragment contextodeFragment) {
-
-        JavaCodeFragment associationCodeFragment = createTypeAssociationCodeFragment(contextodeFragment, node);
-        IType datatype = getElementDatatype(node);
-
-        JavaCodeFragment getQualifiedTargetCode = new JavaCodeFragment();
-        boolean isTargetType = isTargetType(node.getPolicyCmptType(), datatype);
-        if (!isTargetType) {
-            getQualifiedTargetCode.append("(("); //$NON-NLS-1$
-            getQualifiedTargetCode.appendClassName(getBuilderSet().getJavaClassName(node.getPolicyCmptType()));
-            getQualifiedTargetCode.append(")"); //$NON-NLS-1$
-        }
-        getQualifiedTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
-        getQualifiedTargetCode.append(".getModelObjectById("); //$NON-NLS-1$
-        getQualifiedTargetCode.append(associationCodeFragment);
-        getQualifiedTargetCode.append(", \""); //$NON-NLS-1$
-        getQualifiedTargetCode.append(node.getRuntimeID());
-        getQualifiedTargetCode.append("\")"); //$NON-NLS-1$
-        if (!isTargetType) {
-            getQualifiedTargetCode.append(")"); //$NON-NLS-1$
-            return new CompilationResultImpl(getQualifiedTargetCode, node.getPolicyCmptType());
+    private CompilationResult<JavaCodeFragment> compileAssociationQualifier(boolean isListOfDataype,
+            QualifiedAssociationNode node,
+            JavaCodeFragment contextCodeFragment) {
+        JavaCodeFragment qualifiedTargetCode = new JavaCodeFragment();
+        if (isListOfDataype) {
+            appendCallOfFormulaEvaluationUtilMethod(qualifiedTargetCode, node, GET_LIST_MODEL_OBJECT_BY_ID,
+                    contextCodeFragment);
         } else {
-            return new CompilationResultImpl(getQualifiedTargetCode, datatype);
+            boolean isSameTargetDatatype = isSameTargetDatatype(node);
+            if (!isSameTargetDatatype) {
+                qualifiedTargetCode.append("(("); //$NON-NLS-1$
+                qualifiedTargetCode.appendClassName(getJavaClassName(node.getDatatype()));
+                qualifiedTargetCode.append(")"); //$NON-NLS-1$
+            }
+            appendCallOfFormulaEvaluationUtilMethod(qualifiedTargetCode, node, GET_MODEL_OBJECT_BY_ID,
+                    contextCodeFragment);
+            if (!isSameTargetDatatype) {
+                qualifiedTargetCode.append(")"); //$NON-NLS-1$
+            }
         }
+        return new CompilationResultImpl(qualifiedTargetCode, node.getDatatype());
     }
 
-    private JavaCodeFragment createTypeAssociationCodeFragment(JavaCodeFragment contextodeFragment,
-            QualifiedAssociationNode node) {
+    private void appendCallOfFormulaEvaluationUtilMethod(JavaCodeFragment qualifiedTargetCode,
+            QualifiedAssociationNode node,
+            String methodName,
+            JavaCodeFragment contextCodeFragment) {
+
+        qualifiedTargetCode.appendClassName(CLAZZ_FORMULAEVALUATIONUTIL);
+        qualifiedTargetCode.append('.');
+        qualifiedTargetCode.append(methodName);
+        qualifiedTargetCode.append("("); //$NON-NLS-1$
+        qualifiedTargetCode.append(createTypeAssociationCodeFragment(node, contextCodeFragment));
+        qualifiedTargetCode.append(", \""); //$NON-NLS-1$
+        qualifiedTargetCode.append(node.getRuntimeID());
+        qualifiedTargetCode.append("\")"); //$NON-NLS-1$
+    }
+
+    private JavaCodeFragment createTypeAssociationCodeFragment(QualifiedAssociationNode node,
+            JavaCodeFragment contextodeFragment) {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment(contextodeFragment);
         String associationTargetGetterName = getAssociationTargetGetterName(node.getAssociation());
         javaCodeFragment.append('.');
@@ -83,17 +102,10 @@ public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeG
         return javaCodeFragment;
     }
 
-    private IType getElementDatatype(QualifiedAssociationNode node) {
-        if (node.isListOfTypeDatatype()) {
-            ListOfTypeDatatype listOfTypeDatatype = ((ListOfTypeDatatype)node.getDatatype());
-            return (IType)listOfTypeDatatype.getBasicDatatype();
-        } else {
-            return (IType)node.getDatatype();
-        }
-    }
-
-    private boolean isTargetType(IType policyCmptType, IType target) {
-        return policyCmptType != null && policyCmptType.equals(target);
+    private boolean isSameTargetDatatype(QualifiedAssociationNode node) {
+        String dataTypeQualifiedName = node.getDatatype().getQualifiedName();
+        String datatypeAssociationTarget = node.getAssociation().getTarget();
+        return dataTypeQualifiedName != null && dataTypeQualifiedName.equals(datatypeAssociationTarget);
     }
 
     private String getAssociationTargetGetterName(IAssociation association) {

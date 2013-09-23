@@ -144,14 +144,14 @@ public class AssociationParserTest extends AbstractParserTest {
     public void testParse_findAssociationQualified1To1() throws Exception {
         when(assciation.is1ToMany()).thenReturn(true);
         when(assciation.is1ToManyIgnoringQualifier()).thenReturn(false);
-        IPolicyCmptType type = initSourceFile();
+        initSourceFile();
 
         QualifiedAssociationNode node = (QualifiedAssociationNode)associationParser.parse(QUALIFIED_ASSOCIATION,
                 policyCmptType);
 
         assertEquals(assciation, node.getAssociation());
-        assertEquals(MY_QUALIFIER, node.getQualifier());
-        assertEquals(type, node.getDatatype());
+        assertEquals(RUNTIME_ID, node.getRuntimeID());
+        assertEquals(policyCmptType, node.getDatatype());
     }
 
     @Test
@@ -164,7 +164,7 @@ public class AssociationParserTest extends AbstractParserTest {
                 policyCmptType);
 
         assertEquals(assciation, node.getAssociation());
-        assertEquals(MY_QUALIFIER, node.getQualifier());
+        assertEquals(RUNTIME_ID, node.getRuntimeID());
         assertEquals(new ListOfTypeDatatype(type), node.getDatatype());
     }
 
@@ -178,7 +178,7 @@ public class AssociationParserTest extends AbstractParserTest {
                 new ListOfTypeDatatype(policyCmptType));
 
         assertEquals(assciation, node.getAssociation());
-        assertEquals(MY_QUALIFIER, node.getQualifier());
+        assertEquals(RUNTIME_ID, node.getRuntimeID());
         assertEquals(new ListOfTypeDatatype(type), node.getDatatype());
     }
 

@@ -33,6 +33,12 @@ import org.faktorips.runtime.IProductComponent;
 public class FormulaEvaluatorUtil {
 
     /**
+     * no instance
+     */
+    private FormulaEvaluatorUtil() {
+    }
+
+    /**
      * Returns the (first) {@link IConfigurableModelObject} in the list that is configured by a
      * {@link IProductComponent} with the given ID, {@code null} if no such object is found in the
      * list.
@@ -54,6 +60,31 @@ public class FormulaEvaluatorUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns all {@link IConfigurableModelObject} in the list that is configured by a
+     * {@link IProductComponent} with the given ID, the list is empty if no such object is found in
+     * the list.
+     * 
+     * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
+     * @param modelObjects a list of model objects of type <T>
+     * @param id the runtime ID this method searches
+     * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
+     * @return the all {@link IConfigurableModelObject} in the list that is configured by a
+     *         {@link IProductComponent} with the given ID, the list is empty if no such object is
+     *         found in the list
+     */
+    public static <T extends IModelObject> List<T> getListModelObjectById(List<? extends T> modelObjects, String id) {
+        List<T> returnList = new ArrayList<T>();
+        for (T modelObject : modelObjects) {
+            if (modelObject instanceof IConfigurableModelObject) {
+                if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+                    returnList.add(modelObject);
+                }
+            }
+        }
+        return returnList;
     }
 
     /**

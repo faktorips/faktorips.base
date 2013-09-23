@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -34,10 +35,13 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -56,6 +60,8 @@ public class IdentifierParserTest {
     private static final String MY_ATTRIBUTE = "myAttribute";
 
     private static final String MY_ASSOCIATION = "myAssociation";
+
+    private static final String MY_QUALIFIER = "abc123";
 
     private static final String MY_ASSOCIATION_QUALIFIED = "myAssociation1[\"abc123\"]";
 
@@ -86,13 +92,16 @@ public class IdentifierParserTest {
     private IType type1;
 
     @Mock
-    private IType type2;
+    private IPolicyCmptType type2;
 
     @Mock
     private IType type3;
 
     @Mock
     private IProductCmptType productCmptType;
+
+    @Mock
+    private IProductCmpt productCmpt;
 
     @Mock
     private IParameter parameter;
@@ -132,6 +141,14 @@ public class IdentifierParserTest {
         when(association.is1ToMany()).thenReturn(true);
         when(type1.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
         when(associationQualified.findTarget(ipsProject)).thenReturn(type2);
+        when(type2.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
+        when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
+        when(sourceFile.getIpsObjectName()).thenReturn(MY_QUALIFIER);
+        when(sourceFile.getIpsObject()).thenReturn(productCmpt);
+        when(productCmpt.getRuntimeId()).thenReturn("runtimeId." + MY_QUALIFIER);
+        when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(type2);
         when(type2.findAssociation(MY_ASSOCIATION + "2", ipsProject)).thenReturn(associationIndexed);
         when(associationIndexed.findTarget(ipsProject)).thenReturn(type3);
         when(type3.findAllAttributes(ipsProject)).thenReturn(Arrays.asList(attribute));
@@ -164,7 +181,7 @@ public class IdentifierParserTest {
         assertTrue(associationNode.getDatatype() instanceof ListOfTypeDatatype);
         QualifiedAssociationNode qualifiedAssociationNode = (QualifiedAssociationNode)associationNode.getSuccessor();
         assertEquals(associationQualified, qualifiedAssociationNode.getAssociation());
-        assertEquals("abc123", qualifiedAssociationNode.getQualifier());
+        assertEquals("runtimeId.abc123", qualifiedAssociationNode.getRuntimeID());
         assertTrue(qualifiedAssociationNode.getDatatype() instanceof ListOfTypeDatatype);
         IndexBasedAssociationNode indexBasedAssociationNode = (IndexBasedAssociationNode)qualifiedAssociationNode
                 .getSuccessor();
