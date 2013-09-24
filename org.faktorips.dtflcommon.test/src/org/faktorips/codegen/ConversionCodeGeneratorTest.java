@@ -15,18 +15,24 @@ package org.faktorips.codegen;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 public class ConversionCodeGeneratorTest {
 
-    @Mock
-    private SingleConversionCg<JavaCodeFragment> singleConversionCg;
+    ConversionCodeGenerator<JavaCodeFragment> codeGenerator;
+
+    @Before
+    public void setUp() {
+        codeGenerator = ConversionCodeGenerator.getDefault();
+    }
 
     @Test
     public void testCanConvert_ReturnTrueIfFromDatatypeIsEqualsToDatatype() {
@@ -93,5 +99,47 @@ public class ConversionCodeGeneratorTest {
 
         assertNull(conversionCodeGenerator.getConversionCode(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR,
                 javaCodeFragment));
+    }
+
+    @Test
+    public void testCanConvert() {
+        boolean booleanToPrimitiveBoolean = codeGenerator.canConvert(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN);
+        boolean primitiveBooleanToBoolean = codeGenerator.canConvert(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN);
+        assertTrue(booleanToPrimitiveBoolean);
+        assertTrue(primitiveBooleanToBoolean);
+
+        boolean decimalToInteger = codeGenerator.canConvert(Datatype.DECIMAL, Datatype.INTEGER);
+        boolean integerToDecimal = codeGenerator.canConvert(Datatype.INTEGER, Datatype.DECIMAL);
+        assertTrue(integerToDecimal);
+        assertTrue(decimalToInteger);
+
+        boolean primitiveLongToPrimitiveInt = codeGenerator.canConvert(Datatype.PRIMITIVE_LONG, Datatype.PRIMITIVE_INT);
+        boolean primitiveIntToPrimitiveLong = codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_LONG);
+        assertTrue(primitiveLongToPrimitiveInt);
+        assertTrue(primitiveIntToPrimitiveLong);
+
+        boolean localDateToLocalDate = codeGenerator.canConvert(LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE);
+        assertTrue(localDateToLocalDate);
+
+        boolean localDateToPrimitiveInt = codeGenerator.canConvert(LocalDateDatatype.DATATYPE, Datatype.PRIMITIVE_INT);
+        assertTrue(!localDateToPrimitiveInt);
+    }
+
+    @Test
+    public void testGetConversionCode() {
+        JavaCodeFragment conversionCode = codeGenerator.getConversionCode(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN,
+                new JavaCodeFragment("TRUE"));
+        assertNotNull(conversionCode);
+
+        conversionCode = codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN,
+                new JavaCodeFragment("true"));
+        assertNotNull(conversionCode);
+
+        conversionCode = codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true"));
+        assertTrue(conversionCode == null);
+
+        conversionCode = codeGenerator
+                .getConversionCode(Datatype.PRIMITIVE_BOOLEAN, null, new JavaCodeFragment("true"));
+        assertTrue(conversionCode == null);
     }
 }

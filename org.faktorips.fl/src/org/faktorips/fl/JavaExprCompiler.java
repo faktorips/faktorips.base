@@ -15,12 +15,13 @@ package org.faktorips.fl;
 
 import java.util.Locale;
 
-import org.faktorips.codegen.CodeGenUtil;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.AbstractPrimitiveDatatype;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.operations.AddDecimalDecimal;
 import org.faktorips.fl.operations.AddDecimalInt;
 import org.faktorips.fl.operations.AddDecimalInteger;
@@ -166,7 +167,13 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
 
     @Override
     protected JavaCodeFragment convertPrimitiveToWrapper(Datatype resultType, JavaCodeFragment codeFragment) {
-        return CodeGenUtil.convertPrimitiveToWrapper(resultType, codeFragment);
+        if (resultType instanceof AbstractPrimitiveDatatype) {
+            AbstractPrimitiveDatatype primitiveDatatype = (AbstractPrimitiveDatatype)resultType;
+            ValueDatatype wrapperType = primitiveDatatype.getWrapperType();
+            return ConversionCodeGenerator.getDefault().getConversionCode(primitiveDatatype, wrapperType, codeFragment);
+        } else {
+            return codeFragment;
+        }
     }
 
     @Override

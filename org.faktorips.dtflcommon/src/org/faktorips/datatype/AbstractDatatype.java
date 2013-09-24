@@ -51,6 +51,18 @@ public abstract class AbstractDatatype implements Datatype {
     }
 
     /**
+     * Returns true if the dataType is instance of AnyDatatype otherwise it call
+     * {@link #equals(Object)}.
+     * 
+     */
+    public boolean matchDatatype(Datatype datatype) {
+        if (datatype instanceof AnyDatatype) {
+            return true;
+        }
+        return equals(datatype);
+    }
+
+    /**
      * Returns the type's name.
      */
     @Override
