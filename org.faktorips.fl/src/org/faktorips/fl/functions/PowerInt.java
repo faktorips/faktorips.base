@@ -20,9 +20,15 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * A class that implements the power of a int.
+ * 
+ * @author hbaagil
+ * @since 3.11.0
+ */
 public class PowerInt extends AbstractFlFunction {
 
-    private static final String CONVERT_TO_INT = "(int)";
+    private static final String CONVERT_TO_INT = "(int)"; //$NON-NLS-1$
     private static final String MATH_POW = "Math.pow"; //$NON-NLS-1$
 
     /**
