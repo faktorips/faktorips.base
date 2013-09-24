@@ -20,20 +20,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.fl.CompilationResultImpl;
 
 /**
  * An IIpsArtefactBuilderSet implementation that is supposed to be used in cases where no builder
@@ -112,39 +110,20 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-    private final class EmptyParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
-        private EmptyParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
-            super(formula2, exprCompiler);
+    private final class EmptyParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
+
+        public EmptyParameterIdentifierResolver(IExpression expression, ExprCompiler<JavaCodeFragment> exprCompiler) {
+            super(expression, exprCompiler);
         }
 
         @Override
-        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            return ""; //$NON-NLS-1$
+        protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
+            return null;
         }
 
         @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
-            return ""; //$NON-NLS-1$
-        }
-
-        @Override
-        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return ""; //$NON-NLS-1$
-        }
-
-        @Override
-        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return ""; //$NON-NLS-1$
-        }
-
-        @Override
-        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return ""; //$NON-NLS-1$
-        }
-
-        @Override
-        protected String getJavaClassName(IType type) {
-            return ""; //$NON-NLS-1$
+        protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
+            return new CompilationResultImpl();
         }
     }
 

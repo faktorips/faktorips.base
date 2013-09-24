@@ -18,25 +18,20 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
+import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
@@ -181,43 +176,22 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         return (DatatypeHelper)testObjectsMap.get(datatypeAdapter);
     }
 
-    private final class TestParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
+    private final class TestParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
+
         private TestParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(formula2, exprCompiler);
         }
 
         @Override
-        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            return attribute.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(attribute.getName(), datatype);
+        protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
+            // TODO Auto-generated method stub
+            return null;
         }
 
         @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
-            return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
-        }
-
-        @Override
-        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return association.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(association.getName(), policyCmptType);
-        }
-
-        @Override
-        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return association.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(association.getName(), policyCmptType);
-        }
-
-        @Override
-        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return association.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
-        }
-
-        @Override
-        protected String getJavaClassName(IType type) {
-            return type.getQualifiedName();
+        protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

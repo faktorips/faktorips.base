@@ -31,9 +31,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -47,15 +45,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
@@ -79,18 +72,14 @@ import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
@@ -253,7 +242,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
             ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
-        return new StandardParameterIdentifierResolver(formula, exprCompiler);
+        return new StandardIdentifierResolver(formula, exprCompiler, this);
     }
 
     @Override
@@ -638,71 +627,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public GeneratorModelContext getGeneratorModelContext() {
         return generatorModelContext;
-    }
-
-    private class StandardParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
-        private StandardParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
-            super(formula2, exprCompiler);
-        }
-
-        @Override
-        protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
-                EnumTypeDatatypeAdapter datatype,
-                ExprCompiler<JavaCodeFragment> exprCompiler,
-                String value) throws CoreException {
-            getEnumTypeBuilder().setExtendedExprCompiler((ExtendedExprCompiler)exprCompiler);
-            fragment.append(getEnumTypeBuilder().getNewInstanceCodeFragement(datatype, value));
-        }
-
-        @Override
-        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            if (attribute instanceof IPolicyCmptTypeAttribute) {
-                XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
-                return xPolicyAttribute.getMethodNameGetter();
-            }
-            if (attribute instanceof IProductCmptTypeAttribute) {
-                XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
-                if (xProductAttribute.isChangingOverTime()) {
-                    return xProductAttribute.getMethodNameGetter();
-                } else {
-                    XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
-                    return xProductCmptClass.getMethodNameGetProductCmpt() + "()."
-                            + xProductAttribute.getMethodNameGetter();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
-            XPolicyCmptClass xPolicyCmptClass = getModelNode(attribute.getType(), XPolicyCmptClass.class);
-            XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
-            return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "()."
-                    + xPolicyAttribute.getMethodNameGetDefaultValue();
-        }
-
-        @Override
-        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-            return xPolicyAssociation.getMethodNameGetter();
-        }
-
-        @Override
-        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-            return xPolicyAssociation.getMethodNameGetSingle();
-        }
-
-        @Override
-        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-            return xPolicyAssociation.getMethodNameGetter();
-        }
-
-        @Override
-        protected String getJavaClassName(IType type) {
-            return StandardBuilderSet.this.getJavaClassName(type);
-        }
     }
 
     private static class CachedPersistenceProvider {

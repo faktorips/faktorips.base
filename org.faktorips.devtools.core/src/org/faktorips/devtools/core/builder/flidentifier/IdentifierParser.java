@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.parser.ParseException;
 import org.faktorips.util.message.Message;
 
 /**
@@ -88,10 +87,8 @@ public class IdentifierParser {
      * @param identifier The identifier, for example param1.attributeOne
      * @return The {@link IdentifierNode} of the first part of the identifier
      * 
-     * @throws ParseException If any part of the identifier could not be parsed, the method will
-     *             return a {@link ParseException}.
      */
-    public IdentifierNode parse(String identifier) throws ParseException {
+    public IdentifierNode parse(String identifier) {
         identifierParts = identifier.split(IDENTIFIER_SEPERATOR_REGEX);
         contextType = expression.findProductCmptType(ipsProject);
         this.currentPartIndex = 0;

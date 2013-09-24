@@ -72,7 +72,6 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     public void add(CompilationResult<T> result) {
         codeFragment.append(result.getCodeFragment());
         messages.add(result.getMessages());
-        datatype = result.getDatatype();
     }
 
     /**

@@ -49,21 +49,14 @@ public class IdentifierNodeGeneratorTest {
 
     private InvalidIdentifierNode invalidNode;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", ipsProject);
         invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", 0));
-        when(generator.generateNode(any(IdentifierNode.class), any(CompilationResult.class))).thenCallRealMethod();
+        @SuppressWarnings("unchecked")
+        CompilationResult<JavaCodeFragment> anyCompilationResult = any(CompilationResult.class);
+        when(generator.generateNode(any(IdentifierNode.class), anyCompilationResult)).thenCallRealMethod();
         when(generator.getGeneratorFor(any(IdentifierNode.class))).thenCallRealMethod();
-
-    }
-
-    @Test
-    public void testGenerateNode_InvalidNode() {
-        generator.generateNode(invalidNode, null);
-
-        verify(generator).getErrorCompilationResult(invalidNode);
     }
 
     @Test

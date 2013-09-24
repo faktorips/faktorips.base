@@ -24,6 +24,8 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
+import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -174,43 +176,21 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         return (DatatypeHelper)testObjectsMap.get(datatypeAdapter);
     }
 
-    private final class TestParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
+    private final class TestParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
         private TestParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(formula2, exprCompiler);
         }
 
         @Override
-        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            return attribute.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(attribute.getName(), datatype);
+        protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
+            // TODO Auto-generated method stub
+            return null;
         }
 
         @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
-            return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
-        }
-
-        @Override
-        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return association.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(association.getName(), policyCmptType);
-        }
-
-        @Override
-        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return association.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(association.getName(), policyCmptType);
-        }
-
-        @Override
-        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            return association.getIpsProject().getJavaNamingConvention()
-                    .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
-        }
-
-        @Override
-        protected String getJavaClassName(IType type) {
-            return type.getQualifiedName();
+        protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

@@ -18,7 +18,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -26,7 +25,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 
 /**
  * Base class for all java-generating {@link IdentifierNodeGenerator IdentifierNodeGenerators} (in
@@ -46,11 +44,6 @@ public abstract class StdBuilderIdentifierNodeGenerator extends IdentifierNodeGe
 
     protected <X extends AbstractGeneratorModelNode> X getModelNode(IIpsObjectPartContainer container, Class<X> type) {
         return getBuilderSet().getModelNode(container, type);
-    }
-
-    @Override
-    protected CompilationResult<JavaCodeFragment> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode) {
-        return new CompilationResultImpl(invalidIdentifierNode.getMessage());
     }
 
     protected StandardBuilderSet getBuilderSet() {

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
-import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.fl.CompilationResult;
 
 /**
@@ -40,8 +39,7 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
 
     /**
      * Creates a {@link CompilationResult} containing the source code for the given
-     * {@link IdentifierNode node}. If the given node is an {@link InvalidIdentifierNode} on the
-     * other hand a {@link CompilationResult} containing the respective error messages is returned.
+     * {@link IdentifierNode node}.
      * <p>
      * This method also generates the {@link CompilationResult} of the given node's successor
      * (following identifier part), if there is one, by delegating to its
@@ -61,9 +59,6 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
      */
     public CompilationResult<T> generateNode(IdentifierNode identifierNode,
             CompilationResult<T> contextCompilationResult) {
-        if (isInvalidNode(identifierNode)) {
-            return getErrorCompilationResult((InvalidIdentifierNode)identifierNode);
-        }
         return generateNodeAndSuccessors(identifierNode, contextCompilationResult);
     }
 
@@ -76,7 +71,7 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
 
     private CompilationResult<T> getSuccessorCompilationResultIfApplicable(IdentifierNode identifierNode,
             CompilationResult<T> compilationResult) {
-        if (identifierNode.hasSuccessor()) {
+        if (compilationResult != null && !compilationResult.failed() && identifierNode.hasSuccessor()) {
             return getSuccessorCompilationResult(identifierNode, compilationResult);
         } else {
             return compilationResult;
@@ -97,7 +92,7 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
      */
     protected IdentifierNodeGenerator<T> getGeneratorFor(IdentifierNode node) {
         IdentifierNodeType nodeType = IdentifierNodeType.getNodeType(node.getClass());
-        return nodeType.getGeneratorFor(getNodeGeneratorFactory());
+        return nodeType.getGenerator(getNodeGeneratorFactory());
     }
 
     /**
@@ -115,19 +110,6 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
      */
     protected abstract CompilationResult<T> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<T> contextCompilationResult);
-
-    /**
-     * Creates a {@link CompilationResult} containing the error messages of the given
-     * {@link InvalidIdentifierNode} and returns it. This method must be implemented by subclasses
-     * to be able to return instances of {@link CompilationResult} subclasses.
-     * 
-     * @param invalidIdentifierNode the node containing error messages
-     */
-    protected abstract CompilationResult<T> getErrorCompilationResult(InvalidIdentifierNode invalidIdentifierNode);
-
-    private boolean isInvalidNode(IdentifierNode identifierNode) {
-        return identifierNode.getClass() == IdentifierNodeType.INVALID_IDENTIFIER.getNodeClass();
-    }
 
     /**
      * Returns the {@link IdentifierNodeGeneratorFactory} this generator was created with.

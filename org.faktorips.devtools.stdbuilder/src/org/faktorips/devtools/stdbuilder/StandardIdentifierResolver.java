@@ -23,6 +23,7 @@ import org.faktorips.devtools.stdbuilder.flidentifier.AssociationNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.AttributeNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.EnumNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.IndexBasedAssociationNodeGenerator;
+import org.faktorips.devtools.stdbuilder.flidentifier.InvalidNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.ParameterNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.QualifiedAssociationNodeGenerator;
 import org.faktorips.fl.CompilationResult;
@@ -109,7 +110,7 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
 
         @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForInvalidNode() {
-            return null;
+            return new InvalidNodeGenerator(this, builderSet);
         }
     }
 

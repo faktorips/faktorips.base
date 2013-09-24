@@ -214,7 +214,7 @@ public class IdentifierParserTest {
         EnumClassNode enumClassNode = (EnumClassNode)identifierParser.parse(MY_ENUMCLASS + '.' + MY_ENUMVALUE);
 
         assertEquals(enumDatatype, enumClassNode.getDatatype().getEnumDatatype());
-        EnumValueNode enumDatatypeNode = (EnumValueNode)enumClassNode.getSuccessor();
+        EnumValueNode enumDatatypeNode = enumClassNode.getSuccessor();
         assertEquals(MY_ENUMVALUE, enumDatatypeNode.getEnumValueName());
         assertEquals(enumDatatype, enumDatatypeNode.getDatatype());
     }

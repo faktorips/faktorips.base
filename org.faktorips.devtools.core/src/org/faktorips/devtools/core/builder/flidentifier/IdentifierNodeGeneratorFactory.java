@@ -30,6 +30,8 @@ public interface IdentifierNodeGeneratorFactory<T extends CodeFragment> {
 
     public IdentifierNodeGenerator<T> getGeneratorForEnumClassNode();
 
+    public IdentifierNodeGenerator<T> getGeneratorForEnumValueNode();
+
     public IdentifierNodeGenerator<T> getGeneratorForIndexBasedAssociationNode();
 
     public IdentifierNodeGenerator<T> getGeneratorForParameterNode();

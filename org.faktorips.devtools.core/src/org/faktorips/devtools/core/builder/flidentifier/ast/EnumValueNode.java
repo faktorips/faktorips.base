@@ -26,13 +26,18 @@ public class EnumValueNode extends IdentifierNode {
 
     private final String enumValueName;
 
-    EnumValueNode(String enumValueName, Datatype datatype) {
+    EnumValueNode(String enumValueName, EnumDatatype datatype) {
         super(datatype);
         this.enumValueName = enumValueName;
     }
 
     public String getEnumValueName() {
         return enumValueName;
+    }
+
+    @Override
+    public EnumDatatype getDatatype() {
+        return (EnumDatatype)super.getDatatype();
     }
 
 }
