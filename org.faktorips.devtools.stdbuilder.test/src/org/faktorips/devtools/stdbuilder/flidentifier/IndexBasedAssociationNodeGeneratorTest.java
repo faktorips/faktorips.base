@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociationNode;
@@ -83,16 +84,41 @@ public class IndexBasedAssociationNodeGeneratorTest {
         XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
-        when(xPolicyAssociation.getMethodNameGetSingle()).thenReturn("getDeckungen");
+        when(xPolicyAssociation.getMethodNameGetSingle()).thenReturn("getDeckung");
         indexBasedAssociationNode = createIndexBasedAssociationNode(1);
 
         CompilationResult<JavaCodeFragment> compilationResult = indexBasedAssociationNodeGenerator
                 .getCompilationResultForCurrentNode(indexBasedAssociationNode, contextCompilationResult);
 
         assertFalse(compilationResult.failed());
-        assertEquals("vertrag.getDeckungen(1)", compilationResult.getCodeFragment().getSourcecode());
+        assertEquals("vertrag.getDeckung(1)", compilationResult.getCodeFragment().getSourcecode());
         assertNotNull(compilationResult.getDatatype());
         verify(javaCodeFragment).getImportDeclaration();
         verifyZeroInteractions(javaCodeFragment);
     }
+
+    @Test
+    public void testGetCompilationResult_listContext() throws Exception {
+        JavaCodeFragment javaCodeFragment = spy(new JavaCodeFragment("vertrag"));
+        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        ListOfTypeDatatype listOfTypeDatatype = new ListOfTypeDatatype(target);
+        when(contextCompilationResult.getDatatype()).thenReturn(listOfTypeDatatype);
+        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
+        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getDeckungen");
+        when(builderSet.getJavaClassName(target, true)).thenReturn("TargetClassName");
+        indexBasedAssociationNode = createIndexBasedAssociationNode(1);
+
+        CompilationResult<JavaCodeFragment> compilationResult = indexBasedAssociationNodeGenerator
+                .getCompilationResultForCurrentNode(indexBasedAssociationNode, contextCompilationResult);
+
+        assertFalse(compilationResult.failed());
+        assertEquals(
+                "new AssociationTo1Helper<TargetClassName, TargetClassName>(){@Override protected TargetClassName getTargetInternal(TargetClassName sourceObject){return sourceObject.getDeckungen();}}.getTargets(vertrag).get(1)",
+                compilationResult.getCodeFragment().getSourcecode());
+        assertNotNull(compilationResult.getDatatype());
+        verify(javaCodeFragment).getImportDeclaration();
+        verifyZeroInteractions(javaCodeFragment);
+    }
+
 }

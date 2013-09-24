@@ -43,20 +43,22 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
     @Override
     protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        final AssociationNode node = (AssociationNode)identifierNode;
+        AssociationNode node = (AssociationNode)identifierNode;
         return getCompilationResultForAssociation(contextCompilationResult, node);
     }
 
-    private CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(CompilationResult<JavaCodeFragment> contextCompilationResult,
             AssociationNode node) {
         if (isListDatatypeContext(contextCompilationResult)) {
             return compileListContext(contextCompilationResult, node);
         } else {
-            return compileSingleObjectContext(contextCompilationResult, node);
+            JavaCodeFragment javaCodeFragment = compileSingleObjectContext(contextCompilationResult.getCodeFragment(),
+                    node);
+            return createCompilationResult(javaCodeFragment, node);
         }
     }
 
-    private CompilationResult<JavaCodeFragment> compileListContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    /* private */protected CompilationResult<JavaCodeFragment> compileListContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
             AssociationNode node) {
         JavaCodeFragment codeFragment = compileAssociationChain(contextCompilationResult, node);
         return createCompilationResult(codeFragment, node);
@@ -102,12 +104,10 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         } else {
             getTargetCode.append(" getTargetInternal("); //$NON-NLS-1$
         }
-        getTargetCode.appendClassName(sourceClassName);
-        getTargetCode.append(" sourceObject){return sourceObject."); //$NON-NLS-1$
-        getTargetCode.append(getAssociationTargetGetterName(association));
-        getTargetCode.append("();}}.getTargets("); //$NON-NLS-1$
-        getTargetCode.append(contextCompilationResult.getCodeFragment());
-        getTargetCode.append(")"); //$NON-NLS-1$
+        getTargetCode.appendClassName(sourceClassName).append(" sourceObject){return ")
+                .append(compileSingleObjectContext(new JavaCodeFragment("sourceObject"), node)) //
+                .append(";}}.getTargets(") //$NON-NLS-1$
+                .append(contextCompilationResult.getCodeFragment()).append(")"); //$NON-NLS-1$
 
         return getTargetCode;
     }
@@ -121,17 +121,13 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         }
     }
 
-    private CompilationResult<JavaCodeFragment> compileSingleObjectContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    /* private */protected JavaCodeFragment compileSingleObjectContext(JavaCodeFragment contextCode,
             AssociationNode node) {
-        JavaCodeFragment javaCodeFragment = copyContextCodeFragment(contextCompilationResult);
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment(contextCode);
         javaCodeFragment.append('.');
         javaCodeFragment.append(getAssociationTargetGetterName(node.getAssociation()));
         javaCodeFragment.append("()"); //$NON-NLS-1$
-        return createCompilationResult(javaCodeFragment, node);
-    }
-
-    private JavaCodeFragment copyContextCodeFragment(CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        return new JavaCodeFragment(contextCompilationResult.getCodeFragment());
+        return javaCodeFragment;
     }
 
     private CompilationResultImpl createCompilationResult(JavaCodeFragment javaCodeFragment, AssociationNode node) {

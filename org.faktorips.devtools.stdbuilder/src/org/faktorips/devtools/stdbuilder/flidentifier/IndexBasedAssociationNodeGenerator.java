@@ -30,7 +30,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * @author frank
  * @since 3.11.0
  */
-public class IndexBasedAssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator {
+public class IndexBasedAssociationNodeGenerator extends AssociationNodeGenerator {
 
     public IndexBasedAssociationNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
             StandardBuilderSet builderSet) {
@@ -41,9 +41,16 @@ public class IndexBasedAssociationNodeGenerator extends StdBuilderIdentifierNode
     protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         IndexBasedAssociationNode node = (IndexBasedAssociationNode)identifierNode;
-        JavaCodeFragment codeFragement = createAssociationGetterWithIndex(contextCompilationResult.getCodeFragment(),
-                node);
-        return new CompilationResultImpl(codeFragement, node.getDatatype());
+        JavaCodeFragment result;
+        if (isListDatatypeContext(contextCompilationResult)) {
+            CompilationResult<JavaCodeFragment> associationAccessCode = getCompilationResultForAssociation(
+                    contextCompilationResult, node);
+            associationAccessCode.getCodeFragment().append(".get(").append(node.getIndex()).append(")");
+            result = associationAccessCode.getCodeFragment();
+        } else {
+            result = createAssociationGetterWithIndex(contextCompilationResult.getCodeFragment(), node);
+        }
+        return new CompilationResultImpl(result, node.getDatatype());
     }
 
     private JavaCodeFragment createAssociationGetterWithIndex(JavaCodeFragment contextCodeFragment,

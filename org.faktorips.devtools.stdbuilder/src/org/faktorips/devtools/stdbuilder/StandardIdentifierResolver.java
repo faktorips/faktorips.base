@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
@@ -28,21 +29,25 @@ import org.faktorips.devtools.stdbuilder.flidentifier.ParameterNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.QualifiedAssociationNodeGenerator;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
-import org.faktorips.fl.ExprCompiler;
 
 public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
 
     private final StandardBuilderSet builderSet;
 
-    public StandardIdentifierResolver(IExpression expression, ExprCompiler<JavaCodeFragment> exprCompiler,
+    public StandardIdentifierResolver(IExpression expression, ExtendedExprCompiler exprCompiler,
             StandardBuilderSet builderSet) {
         super(expression, exprCompiler);
         this.builderSet = builderSet;
     }
 
     @Override
+    public ExtendedExprCompiler getExprCompiler() {
+        return (ExtendedExprCompiler)super.getExprCompiler();
+    }
+
+    @Override
     protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
-        return new StdIdentifierNodeGeneratorFactory(builderSet);
+        return new StdIdentifierNodeGeneratorFactory(builderSet, getExprCompiler());
     }
 
     @Override
@@ -53,9 +58,11 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
     private static class StdIdentifierNodeGeneratorFactory implements IdentifierNodeGeneratorFactory<JavaCodeFragment> {
 
         private final StandardBuilderSet builderSet;
+        private final ExtendedExprCompiler exprCompiler;
 
-        public StdIdentifierNodeGeneratorFactory(StandardBuilderSet builderSet) {
+        public StdIdentifierNodeGeneratorFactory(StandardBuilderSet builderSet, ExtendedExprCompiler exprCompiler) {
             this.builderSet = builderSet;
+            this.exprCompiler = exprCompiler;
         }
 
         @Override
@@ -90,7 +97,7 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
 
         @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumValueNode() {
-            return new EnumNodeGenerator(this, builderSet);
+            return new EnumNodeGenerator(this, builderSet, exprCompiler);
         }
 
         @Override

@@ -59,11 +59,15 @@ public class AssociationNodeGeneratorTest {
 
     @Mock
     CompilationResult<JavaCodeFragment> contextCompilationResult;
+
     JavaCodeFragment codeFragment;
+
     @Mock
     ListOfTypeDatatype listDatatype;
+
     @Mock
     IType elementDatatype;
+
     @Mock
     Datatype normalDatatype;
 
@@ -115,7 +119,7 @@ public class AssociationNodeGeneratorTest {
 
         gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
-        verify(gen).compileSingleObjectContext(contextCompilationResult, node);
+        verify(gen).compileSingleObjectContext(contextCompilationResult.getCodeFragment(), node);
     }
 
     @Test
@@ -124,7 +128,7 @@ public class AssociationNodeGeneratorTest {
 
         gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
-        verify(gen).compileSingleObjectContext(contextCompilationResult, node);
+        verify(gen).compileSingleObjectContext(contextCompilationResult.getCodeFragment(), node);
     }
 
     @Test

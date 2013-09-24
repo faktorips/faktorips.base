@@ -32,6 +32,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -242,7 +243,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
             ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
-        return new StandardIdentifierResolver(formula, exprCompiler, this);
+        if (exprCompiler instanceof ExtendedExprCompiler) {
+            return new StandardIdentifierResolver(formula, (ExtendedExprCompiler)exprCompiler, this);
+        } else {
+            throw new RuntimeException(
+                    "Illegal expression compiler, only ExtendedExpressionCompiler is allowed but found "
+                            + exprCompiler.getClass());
+        }
     }
 
     @Override

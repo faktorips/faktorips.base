@@ -32,7 +32,7 @@ import org.faktorips.runtime.formula.FormulaEvaluatorUtil;
  * @author frank
  * @since 3.11.0
  */
-public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator {
+public class QualifiedAssociationNodeGenerator extends AssociationNodeGenerator {
 
     private static final String GET_MODEL_OBJECT_BY_ID = "getModelObjectById"; //$NON-NLS-1$
     private static final String GET_LIST_MODEL_OBJECT_BY_ID = "getListModelObjectById"; //$NON-NLS-1$
@@ -47,9 +47,9 @@ public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeG
     protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         QualifiedAssociationNode node = (QualifiedAssociationNode)identifierNode;
-
-        return compileAssociationQualifier(node.isListOfTypeDatatype(), node,
-                contextCompilationResult.getCodeFragment());
+        CompilationResult<JavaCodeFragment> associationAccessCode = getCompilationResultForAssociation(
+                contextCompilationResult, node);
+        return compileAssociationQualifier(node.isListOfTypeDatatype(), node, associationAccessCode.getCodeFragment());
     }
 
     private CompilationResult<JavaCodeFragment> compileAssociationQualifier(boolean isListOfDataype,
@@ -84,20 +84,10 @@ public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeG
         qualifiedTargetCode.append('.');
         qualifiedTargetCode.append(methodName);
         qualifiedTargetCode.append("("); //$NON-NLS-1$
-        qualifiedTargetCode.append(createTypeAssociationCodeFragment(node, contextCodeFragment));
+        qualifiedTargetCode.append(contextCodeFragment);
         qualifiedTargetCode.append(", \""); //$NON-NLS-1$
         qualifiedTargetCode.append(node.getRuntimeID());
         qualifiedTargetCode.append("\")"); //$NON-NLS-1$
-    }
-
-    private JavaCodeFragment createTypeAssociationCodeFragment(QualifiedAssociationNode node,
-            JavaCodeFragment contextodeFragment) {
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment(contextodeFragment);
-        String associationTargetGetterName = getAssociationTargetGetterName(node.getAssociation());
-        javaCodeFragment.append('.');
-        javaCodeFragment.append(associationTargetGetterName);
-        javaCodeFragment.append("()"); //$NON-NLS-1$
-        return javaCodeFragment;
     }
 
     private boolean isSameTargetDatatype(QualifiedAssociationNode node) {
