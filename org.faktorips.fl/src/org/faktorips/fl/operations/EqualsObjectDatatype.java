@@ -55,13 +55,11 @@ public class EqualsObjectDatatype extends AbstractBinaryJavaOperation {
         if (!datatype1.equals(datatype2)) {
             if (ccg.canConvert(datatype1, datatype2)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2, lhs.getCodeFragment());
-                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2, lhs.getMessages(),
-                        lhs.getIdentifiersUsedAsSet());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2, lhs.getMessages());
                 left = newResult;
             } else if (ccg.canConvert(datatype2, datatype1)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1, rhs.getCodeFragment());
-                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages(),
-                        rhs.getIdentifiersUsedAsSet());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages());
                 right = newResult;
             } else {
                 String text = Messages.INSTANCE.getString(getErrorMessageCode(), new Object[] { datatype1, datatype2 });

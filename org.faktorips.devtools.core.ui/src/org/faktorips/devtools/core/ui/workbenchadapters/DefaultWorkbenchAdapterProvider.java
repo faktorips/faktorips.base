@@ -39,8 +39,6 @@ import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.productcmpt.Expression;
-import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestCase;
-import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestInputValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
@@ -229,10 +227,6 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         register(TestRule.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestValue.gif", true); //$NON-NLS-1$
         register(TestValue.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-
-        register(FormulaTestCase.class, formulaWA);
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Parameter.gif", true); //$NON-NLS-1$
-        register(FormulaTestInputValue.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // ValueSet
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValueSet.gif", true); //$NON-NLS-1$

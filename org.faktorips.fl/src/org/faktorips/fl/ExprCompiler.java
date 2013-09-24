@@ -504,7 +504,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             T converted = convertPrimitiveToWrapper(resultType, result.getCodeFragment());
             AbstractCompilationResult<T> finalResult = newCompilationResultImpl(converted,
                     ((ValueDatatype)resultType).getWrapperType());
-            finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
             return finalResult;
             // CSOFF: IllegalCatch
         } catch (Exception pe) {

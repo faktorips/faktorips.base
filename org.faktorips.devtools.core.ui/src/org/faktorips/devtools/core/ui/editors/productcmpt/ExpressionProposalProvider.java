@@ -33,7 +33,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
+import org.faktorips.devtools.core.builder.flidentifier.AttributeParser;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.internal.model.method.Parameter;
@@ -443,9 +443,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 return;
             }
             String prefix = attributePrefix;
-            if (prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) {
-                prefix = prefix.substring(0,
-                        prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR));
+            if (prefix.indexOf(AttributeParser.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) {
+                prefix = prefix.substring(0, prefix.indexOf(AttributeParser.VALUE_SUFFIX_SEPARATOR_CHAR));
             }
             final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype,
                     getIpsProject());
@@ -467,7 +466,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addDefaultValueToResult(final List<IContentProposal> result,
             final IAttribute attribute,
             final String prefix) {
-        String name = attribute.getName() + AbstractParameterIdentifierResolver.DEFAULT_VALUE_SUFFIX;
+        String name = attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX;
         final String displayText = name
                 + " - " + attribute.getDatatype() + Messages.ExpressionProposalProvider_defaultValue; //$NON-NLS-1$
         final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);

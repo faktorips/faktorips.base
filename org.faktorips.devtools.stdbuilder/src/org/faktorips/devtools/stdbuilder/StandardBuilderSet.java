@@ -231,13 +231,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         ITableStructure tableStructure = fct.getTableStructure();
 
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
-        result.addAllIdentifierUsed(argResults);
         code.appendClassName(getTableImplBuilder().getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
 
-        // TODO pk: findRow is not correct in general. JO: Why?
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {
                 code.append(", "); //$NON-NLS-1$

@@ -135,19 +135,6 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
     EnumDatatype[] getEnumDatatypesAllowedInFormula();
 
     /**
-     * Returns all parameter identifiers which are used in the formula. Identifiers used in a
-     * formula an be either identify a parameter or an enum value. This methods returns all
-     * identifiers identifying parameters. Returns an empty string array if no identifier was found
-     * in formula or the config element is no formula type or the policy component type attribute -
-     * which specifies the formula interface - wasn't found.
-     * 
-     * @param ipsProject The project which ips object path is used to search.
-     * 
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
-    String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject);
-
-    /**
      * Returns all Attributes of the {@link ProductCmptType}
      */
     List<IAttribute> findMatchingProductCmptTypeAttributes();

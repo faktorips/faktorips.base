@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
@@ -206,23 +205,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (IIpsObjectGeneration generation : generations) {
             if (((ProductCmptGeneration)generation).containsFormula()) {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean containsFormulaTest() {
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            IProductCmptGeneration gen = (IProductCmptGeneration)generation;
-            if (gen.getNumOfFormulas() > 0) {
-                IFormula[] formulas = gen.getFormulas();
-                for (IFormula formula : formulas) {
-                    if (formula.getFormulaTestCases().length > 0) {
-                        return true;
-                    }
-                }
             }
         }
         return false;

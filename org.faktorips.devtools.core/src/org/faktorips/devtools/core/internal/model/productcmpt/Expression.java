@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -306,49 +305,6 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (datatype instanceof EnumDatatype) {
             types.put(datatypeName, (EnumDatatype)datatype);
         }
-    }
-
-    @Override
-    public String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(expression)) {
-            return new String[0];
-        }
-        IBaseMethod signature = findFormulaSignature(ipsProject);
-        if (signature == null) {
-            return new String[0];
-        }
-        JavaExprCompiler compiler = newExprCompiler(ipsProject);
-        CompilationResult<JavaCodeFragment> compilationResult = compiler.compile(expression);
-
-        // store the resolved identifiers in the cache
-        String[] resolvedIdentifiers = compilationResult.getResolvedIdentifiers();
-        if (resolvedIdentifiers.length == 0) {
-            return resolvedIdentifiers;
-        }
-        Map<String, EnumDatatype> enumNamesToTypes = new HashMap<String, EnumDatatype>();
-        collectEnumsAllowedInFormula(enumNamesToTypes);
-        List<String> filteredIdentifieres = removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
-
-        return filteredIdentifieres.toArray(new String[filteredIdentifieres.size()]);
-
-    }
-
-    private List<String> removeIdentifieresOfEnumDatatypes(Map<String, EnumDatatype> enumDatatypes,
-            String[] allIdentifiersUsedInFormula) {
-        List<String> filteredIdentifiers = new ArrayList<String>(allIdentifiersUsedInFormula.length);
-        for (String element : allIdentifiersUsedInFormula) {
-            if (element != null) {
-                if (element.indexOf('.') != -1) {
-                    String identifierRoot = element.substring(0, element.indexOf('.'));
-                    if (!enumDatatypes.containsKey(identifierRoot)) {
-                        filteredIdentifiers.add(element);
-                    }
-                    continue;
-                }
-                filteredIdentifiers.add(element);
-            }
-        }
-        return filteredIdentifiers;
     }
 
     @Override

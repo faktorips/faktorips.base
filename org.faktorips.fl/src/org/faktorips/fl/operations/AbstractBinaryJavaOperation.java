@@ -45,8 +45,6 @@ public abstract class AbstractBinaryJavaOperation extends AbstractBinaryOperatio
     public AbstractCompilationResult<JavaCodeFragment> generate(CompilationResult<JavaCodeFragment> lhs,
             CompilationResult<JavaCodeFragment> rhs) {
         CompilationResultImpl result = generate((CompilationResultImpl)lhs, (CompilationResultImpl)rhs);
-        result.addIdentifiersUsed(((CompilationResultImpl)lhs).getIdentifiersUsedAsSet());
-        result.addIdentifiersUsed(((CompilationResultImpl)rhs).getIdentifiersUsedAsSet());
         return result;
     }
 

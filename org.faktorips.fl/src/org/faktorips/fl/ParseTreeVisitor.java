@@ -14,7 +14,6 @@
 package org.faktorips.fl;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
@@ -236,19 +235,6 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         String identifier = node.getLastToken().toString();
         AbstractCompilationResult<T> result = (AbstractCompilationResult<T>)compiler.getIdentifierResolver().compile(
                 identifier, compiler, compiler.getLocale());
-
-        if (!result.failed()) {
-            // add the identifier only if there are no errors in the compilation result
-            Set<String> allIdentifiersInCurrentResult = result.getIdentifiersUsedAsSet();
-            if (allIdentifiersInCurrentResult != null && allIdentifiersInCurrentResult.contains(identifier)) {
-                // add the current identifier only if the compilation result knows the given
-                // identifier candidate as identifier
-                // e.g. enum constants must not be used as parameter identifier in formulas
-                // see AbstractParameterIdentifierResolver#compileEnumDatatypeValueIdentifier
-                // note: add method does not create duplicates
-                result.addIdentifierUsed(identifier);
-            }
-        }
         return result;
     }
 
@@ -545,7 +531,6 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                         operation.getLhsDatatype(), lhsResult.getCodeFragment());
                 convertedLhsResult = newCompilationResultImpl(convertedLhs, operation.getLhsDatatype());
                 convertedLhsResult.addMessages(lhsResult.getMessages());
-                convertedLhsResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
             }
             AbstractCompilationResult<T> convertedRhsResult = rhsResult;
             if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
@@ -554,7 +539,6 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                         operation.getRhsDatatype(), rhsResult.getCodeFragment());
                 convertedRhsResult = newCompilationResultImpl(convertedRhs, operation.getRhsDatatype());
                 convertedRhsResult.addMessages(rhsResult.getMessages());
-                convertedRhsResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
             }
             CompilationResult<T> result = operation.generate(convertedLhsResult, convertedRhsResult);
             return result;
@@ -594,10 +578,6 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                         argResults[i].getCodeFragment());
                 convertedArgs[i] = newCompilationResultImpl(fragment, functionDatatype);
                 convertedArgs[i].addMessages(argResults[i].getMessages());
-                if (argResults[i] instanceof AbstractCompilationResult) {
-                    convertedArgs[i].addIdentifiersUsed(((AbstractCompilationResult<T>)argResults[i])
-                            .getIdentifiersUsedAsSet());
-                }
             }
         }
         return convertedArgs;

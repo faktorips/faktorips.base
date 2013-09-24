@@ -55,23 +55,13 @@ public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFra
         if (wrapper != null) {
             CompilationResultImpl compilationResult = new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment),
                     wrapper.datatype);
-            addCurrentIdentifer(compilationResult, identifier);
             return compilationResult;
         }
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
+                identifier);
         CompilationResultImpl compilationResult = new CompilationResultImpl(Message.newError(
                 ExprCompiler.UNDEFINED_IDENTIFIER, text));
-        addCurrentIdentifer(compilationResult, identifier);
         return compilationResult;
-    }
-
-    /*
-     * Adds the given identifier candidate to the compilation result
-     */
-    protected void addCurrentIdentifer(CompilationResult<JavaCodeFragment> result, String identifierCandidate) {
-        if (result instanceof CompilationResultImpl) {
-            ((CompilationResultImpl)result).addIdentifierUsed(identifierCandidate);
-        }
     }
 
     static class FragmentDatatypeWrapper {

@@ -284,7 +284,6 @@ public class ExprCompilerTest {
                         identifier);
                 DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(Message.newError(
                         ExprCompiler.UNDEFINED_IDENTIFIER, text));
-                compilationResult.addIdentifierUsed(identifier);
                 return compilationResult;
             }
         });
@@ -304,49 +303,6 @@ public class ExprCompilerTest {
         assertTrue(result.successfull());
         assertTrue(result.getCodeFragment().getSourcecode().startsWith("IDENTIFIER a"));
         assertEquals(Datatype.STRING, result.getDatatype());
-    }
-
-    @Test
-    public void testUsedIdentifiers() {
-        setIntIdentifierResolver();
-        registerAddIntInt();
-
-        CompilationResult<CodeFragment> result = compiler.compile("1");
-        assertEquals(0, result.getResolvedIdentifiers().length);
-
-        result = compiler.compile("a + 1");
-        assertEquals(1, result.getResolvedIdentifiers().length);
-        assertEquals("a", result.getResolvedIdentifiers()[0]);
-
-        result = compiler.compile("a + b");
-        assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("a", result.getResolvedIdentifiers()[0]);
-        assertEquals("b", result.getResolvedIdentifiers()[1]);
-
-        result = compiler.compile("b + a");
-        assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("b", result.getResolvedIdentifiers()[0]);
-        assertEquals("a", result.getResolvedIdentifiers()[1]);
-
-        result = compiler.compile("b+a");
-        assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("b", result.getResolvedIdentifiers()[0]);
-        assertEquals("a", result.getResolvedIdentifiers()[1]);
-    }
-
-    private void setIntIdentifierResolver() {
-        compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
-            public CompilationResult<CodeFragment> compile(String identifier,
-                    ExprCompiler<CodeFragment> exprCompiler,
-                    Locale locale) {
-                DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(identifier,
-                        Datatype.PRIMITIVE_INT);
-                // the identifier is always used as parameter
-                compilationResult.addIdentifierUsed(identifier);
-                return compilationResult;
-            }
-
-        });
     }
 
     private void registerAddIntInt() {
