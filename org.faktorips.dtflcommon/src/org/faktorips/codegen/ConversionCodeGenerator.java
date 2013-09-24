@@ -156,6 +156,9 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     private SingleConversionCg<T> getSingleConversionCode(Datatype from, Datatype to) {
         SingleConversionCg<T> singleConversionCg = fromToConversionMap.get(from, to);
+        if (singleConversionCg == null) {
+            singleConversionCg = fromToConversionMap.get(AnyDatatype.INSTANCE, to);
+        }
         return singleConversionCg;
     }
 

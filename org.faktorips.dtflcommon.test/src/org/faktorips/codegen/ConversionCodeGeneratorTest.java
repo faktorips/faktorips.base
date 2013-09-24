@@ -13,11 +13,14 @@
 
 package org.faktorips.codegen;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +32,73 @@ public class ConversionCodeGeneratorTest {
     @Before
     public void setUp() {
         codeGenerator = ConversionCodeGenerator.getDefault();
+    }
+
+    @Test
+    public void testCanConvert_ReturnTrueIfFromDatatypeIsEqualsToDatatype() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+
+        assertTrue(conversionCodeGenerator.canConvert(Datatype.STRING, Datatype.STRING));
+    }
+
+    @Test
+    public void testCanConvert_ReturnTrueIfToDatatypeIsInstanceOfAnyDatatype() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+
+        assertTrue(conversionCodeGenerator.canConvert(Datatype.STRING, AnyDatatype.INSTANCE));
+    }
+
+    @Test
+    public void testCanConvert_ReturnTrueIfFromDatatypeIsInstanceOfAnyDatatype() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+
+        assertTrue(conversionCodeGenerator.canConvert(AnyDatatype.INSTANCE, Datatype.STRING));
+    }
+
+    @Test
+    public void testCanConvert_ReturnFalseIfSingleConversionOfDatatypePairNotExist() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+
+        assertFalse(conversionCodeGenerator.canConvert(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR));
+    }
+
+    @Test
+    public void testGetConversionCode_ReturnSourceCodeIfFromDatatypeIsEqualsToDatatype() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
+
+        assertEquals("FromValue",
+                conversionCodeGenerator.getConversionCode(Datatype.STRING, Datatype.STRING, javaCodeFragment)
+                        .getSourcecode());
+    }
+
+    @Test
+    public void testCanConvert_ReturSourceCodeIfToDatatypeIsInstanceOfAnyDatatype() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
+
+        assertEquals("FromValue",
+                conversionCodeGenerator.getConversionCode(Datatype.STRING, AnyDatatype.INSTANCE, javaCodeFragment)
+                        .getSourcecode());
+    }
+
+    @Test
+    public void testCanConvert_ReturnSourceCodeIfFromDatatypeIsIsInstanceOfAnyDatatype() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
+
+        assertEquals("String.valueOf(FromValue)",
+                conversionCodeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, javaCodeFragment)
+                        .getSourcecode());
+    }
+
+    @Test
+    public void testCanConvert_ReturnNullIfSingleConversionOfDatatypePairNotExist() {
+        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
+
+        assertNull(conversionCodeGenerator.getConversionCode(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR,
+                javaCodeFragment));
     }
 
     @Test
@@ -63,12 +133,6 @@ public class ConversionCodeGeneratorTest {
 
         conversionCode = codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN,
                 new JavaCodeFragment("true"));
-        assertNotNull(conversionCode);
-
-        DecimalDatatype decimalDatatype = new DecimalDatatype("22");
-        String string = decimalDatatype.toString();
-        conversionCode = codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.PRIMITIVE_INT,
-                new JavaCodeFragment(string));
         assertNotNull(conversionCode);
 
         conversionCode = codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true"));
