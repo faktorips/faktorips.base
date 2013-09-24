@@ -29,19 +29,19 @@ import org.faktorips.devtools.core.model.type.IType;
 public class AssociationNode extends IdentifierNode {
 
     private final IAssociation association;
+    private final IType targetType;
 
     private final IIpsProject ipsProject;
 
     AssociationNode(IAssociation association, boolean listOfTypes, IIpsProject ipsProject) throws CoreException {
-        super(association.findTarget(ipsProject), listOfTypes);
-        this.association = association;
-        this.ipsProject = ipsProject;
+        this(association, association.findTarget(ipsProject), listOfTypes, ipsProject);
     }
 
-    AssociationNode(IAssociation association, IType type, boolean listOfTypes, IIpsProject ipsProject) {
-        super(type, listOfTypes);
+    AssociationNode(IAssociation association, IType targetType, boolean listOfTypes, IIpsProject ipsProject) {
+        super(targetType, listOfTypes);
         this.association = association;
         this.ipsProject = ipsProject;
+        this.targetType = targetType;
     }
 
     public IAssociation getAssociation() {
@@ -50,6 +50,10 @@ public class AssociationNode extends IdentifierNode {
 
     public IIpsProject getIpsProject() {
         return ipsProject;
+    }
+
+    public IType getTargetType() {
+        return targetType;
     }
 
 }

@@ -15,18 +15,14 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -48,47 +44,41 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
     protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         final AssociationNode node = (AssociationNode)identifierNode;
-        IAssociation association = node.getAssociation();
-        IType target = getTargetType(association);
-        return getCompilationResultForAssociation(contextCompilationResult, association, target);
+        return getCompilationResultForAssociation(contextCompilationResult, node);
     }
 
     private CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(CompilationResult<JavaCodeFragment> contextCompilationResult,
-            IAssociation association,
-            IType associationTarget) {
+            AssociationNode node) {
         if (isListDatatypeContext(contextCompilationResult)) {
-            return compileListContext(contextCompilationResult, association, associationTarget);
+            return compileListContext(contextCompilationResult, node);
         } else {
-            return compileSingleObjectContext(contextCompilationResult, association, associationTarget);
+            return compileSingleObjectContext(contextCompilationResult, node);
         }
     }
 
-    protected CompilationResult<JavaCodeFragment> compileListContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
-            IAssociation association,
-            IType associationTarget) {
-        JavaCodeFragment codeFragment = compileAssociationChain(contextCompilationResult, association);
-        return createCompilationResultWithDatatype(codeFragment, new ListOfTypeDatatype(associationTarget));
+    private CompilationResult<JavaCodeFragment> compileListContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
+            AssociationNode node) {
+        JavaCodeFragment codeFragment = compileAssociationChain(contextCompilationResult, node);
+        return createCompilationResult(codeFragment, node);
     }
 
     private JavaCodeFragment compileAssociationChain(CompilationResult<JavaCodeFragment> contextCompilationResult,
-            IAssociation association) {
+            AssociationNode node) {
 
         IType sourceType = getSourceElementDatatype(contextCompilationResult);
-        IType targetType = getTargetType(association);
-        /**
+        IType targetType = node.getTargetType();
+        IAssociation association = node.getAssociation();
+        /*
          * Example Code:
          * 
-         * <pre>
-         * new AssociationToManyHelper&lt;IPolicy, ICoverage&gt;() {
-         *     &#064;Override
-         *     protected List&lt;ICoverage&gt; getTargetsInternal(IPolicy sourceObject) {
-         *         return sourceObject.getCoverages();
-         *     }
-         * }.getTargets(javaCodeFragment)
-         * </pre>
+         * new AssociationToManyHelper<IPolicy, ICoverage>() {
+         * 
+         * @Override protected List<ICoverage> getTargetsInternal(IPolicy sourceObject) { return
+         * sourceObject.getCoverages(); } }.getTargets(javaCodeFragment)
          */
+        boolean is1ToManyIgnoringQualifier = association.is1ToManyIgnoringQualifier();
         JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
-        if (association.is1ToManyIgnoringQualifier()) {
+        if (is1ToManyIgnoringQualifier) {
             getTargetCode
                     .appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelper.class);
         } else {
@@ -102,12 +92,12 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         String targetClassName = getJavaClassName(targetType);
         getTargetCode.appendClassName(targetClassName);
         getTargetCode.append(">(){@Override protected "); //$NON-NLS-1$
-        if (association.is1ToManyIgnoringQualifier()) {
+        if (is1ToManyIgnoringQualifier) {
             getTargetCode.appendClassName(List.class);
             getTargetCode.append("<"); //$NON-NLS-1$
         }
         getTargetCode.appendClassName(targetClassName);
-        if (association.is1ToManyIgnoringQualifier()) {
+        if (is1ToManyIgnoringQualifier) {
             getTargetCode.append("> getTargetsInternal("); //$NON-NLS-1$
         } else {
             getTargetCode.append(" getTargetInternal("); //$NON-NLS-1$
@@ -123,7 +113,7 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
     }
 
     private IType getSourceElementDatatype(CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        if (contextCompilationResult.getDatatype() instanceof ListOfTypeDatatype) {
+        if (isListDatatypeContext(contextCompilationResult)) {
             ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)contextCompilationResult.getDatatype();
             return (IType)listDatatype.getBasicDatatype();
         } else {
@@ -131,55 +121,21 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         }
     }
 
-    private IType getTargetType(IAssociation association) {
-        try {
-            return association.findTarget(association.getIpsProject());
-        } catch (CoreException e) {
-            throw new GeneratorRuntimeException(e.getMessage());
-        }
-    }
-
-    protected CompilationResult<JavaCodeFragment> compileSingleObjectContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
-            IAssociation association,
-            IType target) {
-        if (association.is1To1()) {
-            return compileAssociationTo1(contextCompilationResult, association, target);
-        } else {
-            return compileAssociationToMany(contextCompilationResult, association, target);
-        }
-    }
-
-    protected CompilationResult<JavaCodeFragment> compileAssociationTo1(CompilationResult<JavaCodeFragment> contextCompilationResult,
-            IAssociation association,
-            IType target) {
+    private CompilationResult<JavaCodeFragment> compileSingleObjectContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
+            AssociationNode node) {
         JavaCodeFragment javaCodeFragment = copyContextCodeFragment(contextCompilationResult);
         javaCodeFragment.append('.');
-        javaCodeFragment.append(getAssociationTargetGetterName(association));
+        javaCodeFragment.append(getAssociationTargetGetterName(node.getAssociation()));
         javaCodeFragment.append("()"); //$NON-NLS-1$
-        return createCompilationResultWithDatatype(javaCodeFragment, target);
-    }
-
-    protected CompilationResult<JavaCodeFragment> compileAssociationToMany(CompilationResult<JavaCodeFragment> contextCompilationResult,
-            IAssociation association,
-            IType target) {
-        JavaCodeFragment javaCodeFragment = copyContextCodeFragment(contextCompilationResult);
-        String associationTargetGetterName = getAssociationTargetGetterName(association);
-        javaCodeFragment.append('.' + associationTargetGetterName + "()"); //$NON-NLS-1$
-        return createCompilationResultWithDatatype(javaCodeFragment, new ListOfTypeDatatype(target));
+        return createCompilationResult(javaCodeFragment, node);
     }
 
     private JavaCodeFragment copyContextCodeFragment(CompilationResult<JavaCodeFragment> contextCompilationResult) {
         return new JavaCodeFragment(contextCompilationResult.getCodeFragment());
     }
 
-    private CompilationResultImpl createCompilationResultWithDatatype(JavaCodeFragment javaCodeFragment,
-            Datatype datatype) {
-        return new CompilationResultImpl(javaCodeFragment, datatype);
-    }
-
-    protected String getAssociationTargetGetterName(IAssociation association) {
-        XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-        return xPolicyAssociation.getMethodNameGetter();
+    private CompilationResultImpl createCompilationResult(JavaCodeFragment javaCodeFragment, AssociationNode node) {
+        return new CompilationResultImpl(javaCodeFragment, node.getDatatype());
     }
 
 }

@@ -17,9 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil;
@@ -106,11 +104,6 @@ public class QualifiedAssociationNodeGenerator extends StdBuilderIdentifierNodeG
         String dataTypeQualifiedName = node.getDatatype().getQualifiedName();
         String datatypeAssociationTarget = node.getAssociation().getTarget();
         return dataTypeQualifiedName != null && dataTypeQualifiedName.equals(datatypeAssociationTarget);
-    }
-
-    private String getAssociationTargetGetterName(IAssociation association) {
-        XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-        return xPolicyAssociation.getMethodNameGetter();
     }
 
 }
