@@ -25,6 +25,7 @@ import static org.faktorips.datatype.Datatype.PRIMITIVE_LONG;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.functions.SumBeanArrayPropertyFct;
 
 /**
@@ -204,7 +205,38 @@ public enum FunctionSignatures {
      * @see Datatype#INTEGER
      * @see Datatype#DECIMAL
      */
-    WholeNumber(INTEGER, new Datatype[] { DECIMAL });
+    WholeNumber(INTEGER, new Datatype[] { DECIMAL }),
+    /**
+     * Returns the Decimal argument, to the power of the Integer value.<br/>
+     * {@code Decimal=ValueOf(Math.pow(Decimal.doubleValue(), Decimal.doubleValue()))}
+     * 
+     * @see Datatype#DECIMAL
+     */
+    PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
+    /**
+     * Returns the int argument, to the power of the int value.<br/>
+     * {@code int = Math.pow(double, double).intValue()}
+     * 
+     * @see Datatype#PRIMITIVE_INT
+     */
+    PowerInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
+    /**
+     * Returns the square root of the Decimal argument.<br/>
+     * {@code Decimal=ValueOf(Math.sqrt(Decimal.doubleValue()))}
+     * 
+     * @see Datatype#DECIMAL
+     */
+    SqrtDecimal(DECIMAL, new Datatype[] { DECIMAL }),
+
+    /**
+     * Returns the count of instances the object path references.<br/>
+     * {@code int=Count(ListOfTypeDatatype<Object>)}
+     * 
+     * @see Datatype#PRIMITIVE_INT
+     * @see ListOfTypeDatatype
+     * @see AnyDatatype
+     */
+    Count(PRIMITIVE_INT, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) });
 
     private final Datatype type;
     private final Datatype[] argTypes;

@@ -14,7 +14,9 @@
 package org.faktorips.codegen.conversion;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.PrimitiveIntegerDatatype;
 
 public class PrimitiveIntToIntegerCg extends AbstractSingleConversionCg {
 
@@ -23,13 +25,7 @@ public class PrimitiveIntToIntegerCg extends AbstractSingleConversionCg {
     }
 
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
-        fragment.appendClassName(Integer.class);
-        fragment.append('(');
-        fragment.append(fromValue);
-        fragment.append(')');
-        return fragment;
+        return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)Datatype.PRIMITIVE_INT).toWrapper(fromValue);
     }
 
 }

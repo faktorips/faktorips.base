@@ -202,27 +202,34 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
 
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());
+    }
 
-        from.setDatatype(Datatype.BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
-
-        from.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
-
+    @Test
+    public void testValidate_FromColumnRange() throws CoreException {
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
+        range.setParameterName("egon");
+        IColumn from = table.newColumn();
         from.setDatatype(Datatype.INTEGER.getName());
-        to.setDatatype(Datatype.BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
+        from.setName("from");
+        range.setFromColumn("from");
 
-        to.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
-        table.getIpsSrcFile().save(true, null);
-        ml = range.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
+        MessageList ml = range.validate(ipsSrcFile.getIpsProject());
+
+        assertTrue(ml.isEmpty());
+    }
+
+    @Test
+    public void testValidate_ToColumnRange() throws CoreException {
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_TO);
+        range.setParameterName("egon");
+        IColumn to = table.newColumn();
+        to.setDatatype(Datatype.INTEGER.getName());
+        to.setName("to");
+        range.setToColumn("to");
+
+        MessageList ml = range.validate(ipsSrcFile.getIpsProject());
+
+        assertTrue(ml.isEmpty());
     }
 
     @Test

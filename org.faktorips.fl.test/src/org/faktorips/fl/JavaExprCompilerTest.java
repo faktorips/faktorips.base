@@ -110,7 +110,8 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testFunctionCall_ErrorInArgumentsTypes() throws Exception {
-        execAndTestFail("ROUND(false + 1; 1)", ExprCompiler.UNDEFINED_OPERATOR);
+        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        execAndTestFail("ROUND(false + 1; 1)", ExprCompiler.WRONG_ARGUMENT_TYPES);
     }
 
     @Test
