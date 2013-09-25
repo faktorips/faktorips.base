@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.mockito.Mockito.when;
 
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -49,6 +51,18 @@ public class AbstractParserTest {
 
     public IProductCmptType getProductCmptType() {
         return productCmptType;
+    }
+
+    public class TestNode extends IdentifierNode {
+
+        TestNode(Datatype datatype) {
+            super(datatype);
+        }
+
+        TestNode(Datatype datatype, boolean listOfTypes) {
+            super(datatype, listOfTypes);
+        }
+
     }
 
 }

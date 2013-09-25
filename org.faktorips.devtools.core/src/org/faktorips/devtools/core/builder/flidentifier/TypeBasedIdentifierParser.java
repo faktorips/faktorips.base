@@ -46,7 +46,7 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
         if (isAllowedType(super.getContextType())) {
             return true;
         }
-        if (isListOfTypeDatatype()) {
+        if (isListOfTypeContext()) {
             ListOfTypeDatatype listOfTypeDatatype = (ListOfTypeDatatype)super.getContextType();
             return isAllowedType(listOfTypeDatatype.getBasicDatatype());
         }
@@ -59,7 +59,7 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
 
     @Override
     public IType getContextType() {
-        if (isListOfTypeDatatype()) {
+        if (isListOfTypeContext()) {
             ListOfTypeDatatype listOfTypeDatatype = (ListOfTypeDatatype)super.getContextType();
             return (IType)listOfTypeDatatype.getBasicDatatype();
         } else {
@@ -67,7 +67,7 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
         }
     }
 
-    protected boolean isListOfTypeDatatype() {
+    protected boolean isListOfTypeContext() {
         return super.getContextType() instanceof ListOfTypeDatatype;
     }
 

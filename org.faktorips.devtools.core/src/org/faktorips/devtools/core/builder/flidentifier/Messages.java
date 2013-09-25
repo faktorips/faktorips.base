@@ -33,6 +33,10 @@ public class Messages extends NLS {
     public static String EnumParser_msgErrorInvalidEnumValue;
     public static String IdentifierParser_msgErrorInvalidIdentifier;
 
+    public static String QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt;
+
+    public static String QualifierAndIndexParser_errorMsg_qualifierMustFollowAssociation;
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -51,11 +51,13 @@ public class FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, {@code null} if no such object is found
      *         in the list
      */
-    public static <T extends IModelObject> T getModelObjectById(List<T> modelObjects, String id) {
+    public static <T extends IModelObject, R extends T> R getModelObjectById(List<T> modelObjects, String id) {
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-                    return modelObject;
+                    @SuppressWarnings("unchecked")
+                    R castedModelObject = (R)modelObject;
+                    return castedModelObject;
                 }
             }
         }
@@ -100,10 +102,12 @@ public class FormulaEvaluatorUtil {
      * @return the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
      *         {@link IProductComponent} with the given ID, {@code null} otherwise
      */
-    public static <T extends IModelObject> T getModelObjectById(T modelObject, String id) {
+    public static <T extends IModelObject, R extends T> R getModelObjectById(T modelObject, String id) {
         if (modelObject instanceof IConfigurableModelObject
                 && ((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-            return modelObject;
+            @SuppressWarnings("unchecked")
+            R castedModelObject = (R)modelObject;
+            return castedModelObject;
         }
         return null;
     }

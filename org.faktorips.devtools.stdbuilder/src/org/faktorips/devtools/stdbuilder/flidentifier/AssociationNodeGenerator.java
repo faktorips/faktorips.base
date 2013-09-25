@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 import java.util.List;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -68,8 +67,8 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
     private JavaCodeFragment compileAssociationChain(CompilationResult<JavaCodeFragment> contextCompilationResult,
             AssociationNode node) {
 
-        IType sourceType = getSourceElementDatatype(contextCompilationResult);
-        IType targetType = node.getTargetType();
+        IType sourceType = getContextBasicDatatype(contextCompilationResult);
+        IType targetType = (IType)getBasicDatatype(node);
         IAssociation association = node.getAssociation();
         /*
          * Example Code:
@@ -111,15 +110,6 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
                 .append(contextCompilationResult.getCodeFragment()).append(")"); //$NON-NLS-1$
 
         return getTargetCode;
-    }
-
-    private IType getSourceElementDatatype(CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        if (isListDatatypeContext(contextCompilationResult)) {
-            ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)contextCompilationResult.getDatatype();
-            return (IType)listDatatype.getBasicDatatype();
-        } else {
-            return (IType)contextCompilationResult.getDatatype();
-        }
     }
 
     /* private */protected JavaCodeFragment compileSingleObjectContext(JavaCodeFragment contextCode,

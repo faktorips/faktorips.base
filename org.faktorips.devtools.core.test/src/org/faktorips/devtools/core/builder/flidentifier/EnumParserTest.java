@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
@@ -56,30 +57,34 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_parseEnumClass() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, getProductCmptType());
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, null);
 
         assertEquals(new EnumClassNode.EnumClass(enumDatatype), enumClassNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumClassNotFound() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, getProductCmptType());
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, null);
 
         assertNull(enumClassNode);
     }
 
     @Test
     public void testParse_parseEnumDatatype() throws Exception {
-        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, new EnumClassNode.EnumClass(
-                enumDatatype));
+        EnumClassNode enumClassNode = new IdentifierNodeFactory("", getIpsProject())
+                .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
+
+        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, enumClassNode);
 
         assertEquals(enumDatatype, enumDatatypeNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumDatatypeNotFount() throws Exception {
-        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE,
-                new EnumClassNode.EnumClass(enumDatatype));
+        EnumClassNode enumClassNode = new IdentifierNodeFactory("", getIpsProject())
+                .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
+
+        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, enumClassNode);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }

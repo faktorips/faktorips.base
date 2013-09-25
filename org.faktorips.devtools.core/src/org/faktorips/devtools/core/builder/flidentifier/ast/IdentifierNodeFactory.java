@@ -21,15 +21,13 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.Messages;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -123,80 +121,56 @@ public class IdentifierNodeFactory {
             return new AssociationNode(association, listOfType, ipsProject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return createInvalidAssociationTargetNode(association);
+            return createInvalidAssociationTargetNode(association.getTarget());
         }
     }
 
     /**
-     * Creates a new {@link QualifiedAssociationNode} for the specified association and qualifier or
-     * an {@link InvalidIdentifierNode} if the target could not be found.
-     * 
-     * @param association The association for which you want to create an {@link AssociationNode}
-     * @param qualifier The qualifier found at the identifier
-     * @param productCmptType the {@link IProductCmptType} of the Association.
-     * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
-     */
-    public IdentifierNode createQualifiedAssociationNode(IAssociation association,
-            String qualifier,
-            IProductCmptType productCmptType,
-            boolean listOfTypes) {
-
-        try {
-            IProductCmpt productCmpt = findProductCmpt(qualifier, productCmptType);
-
-            if (productCmpt == null || productCmpt.getRuntimeId() == null) {
-                return createInvalidIdentifier(Message.newError(
-                        ExprCompiler.UNKNOWN_QUALIFIER,
-                        NLS.bind(Messages.AssociationParser_msgErrorAssociationQualifier, qualifier,
-                                productCmptType.getName())));
-            }
-
-            IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
-            String runtimeId = productCmpt.getRuntimeId();
-            return new QualifiedAssociationNode(association, policyCmptType, runtimeId, listOfTypes, ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return createInvalidAssociationTargetNode(association);
-        }
-    }
-
-    private IProductCmpt findProductCmpt(String qualifier, IProductCmptType productCmptType) throws CoreException {
-        IIpsSrcFile[] allProductCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
-        IProductCmpt productCmpt = null;
-        for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
-            if (ipsSrcFile.getIpsObjectName().equals(qualifier)
-                    || ipsSrcFile.getQualifiedNameType().getName().equals(qualifier)) {
-                IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                if (ipsObject instanceof IProductCmpt) {
-                    productCmpt = (IProductCmpt)ipsObject;
-                    break;
-                }
-            }
-        }
-        return productCmpt;
-    }
-
-    /**
-     * Creates a new {@link IndexBasedAssociationNode} for the specified association and index or an
+     * Creates a new {@link QualifierNode} for the specified association and qualifier or an
      * {@link InvalidIdentifierNode} if the target could not be found.
      * 
-     * @param association The association for which you want to create an {@link AssociationNode}
-     * @param index The index that was specified in the identifier
+     * @param productCmpt the {@link IProductCmpt} that was found for the qualifier.
+     * @param qualifier The qualifier found at the identifier
      * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
      */
-    public IdentifierNode createIndexBasedAssociationNode(IAssociation association, int index) {
+    public IdentifierNode createQualifierNode(IProductCmpt productCmpt, String qualifier, boolean listOfTypes) {
         try {
-            return new IndexBasedAssociationNode(association, index, ipsProject);
+            if (checkProductCmpt(productCmpt)) {
+                return createInvalidQualifierMessage(qualifier);
+            }
+            IPolicyCmptType targetType = productCmpt.findPolicyCmptType(ipsProject);
+            String runtimeId = productCmpt.getRuntimeId();
+            return new QualifierNode(runtimeId, targetType, listOfTypes);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return createInvalidAssociationTargetNode(association);
+            return createInvalidAssociationTargetNode(productCmpt.getProductCmptType());
         }
     }
 
-    private IdentifierNode createInvalidAssociationTargetNode(IAssociation association) {
-        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                Messages.AbstractParameterIdentifierResolver_noAssociationTarget, association.getTarget(),
-                identifierPart)));
+    private InvalidIdentifierNode createInvalidQualifierMessage(String qualifier) {
+        return createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER,
+                NLS.bind(Messages.AssociationParser_msgErrorAssociationQualifier, qualifier)));
+    }
+
+    private boolean checkProductCmpt(IProductCmpt productCmpt) {
+        return productCmpt == null || productCmpt.getRuntimeId() == null;
+    }
+
+    /**
+     * Creates a new {@link IndexNode} for the specified association and index or an
+     * {@link InvalidIdentifierNode} if the target could not be found.
+     * 
+     * @param index The index that was specified in the identifier
+     * @param targetType The target type of the association
+     * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
+     */
+    public IdentifierNode createIndexBasedAssociationNode(int index, IType targetType) {
+        return new IndexNode(index, targetType);
+    }
+
+    private IdentifierNode createInvalidAssociationTargetNode(String targetName) {
+        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
+                NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, targetName, identifierPart)));
     }
 
     /**

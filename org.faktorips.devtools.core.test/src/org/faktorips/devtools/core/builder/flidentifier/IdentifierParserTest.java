@@ -29,10 +29,10 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociationNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IndexNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -41,12 +41,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,16 +86,16 @@ public class IdentifierParserTest {
     private IFormulaMethod formulaMethod;
 
     @Mock
-    private IType type;
+    private IPolicyCmptType type;
 
     @Mock
-    private IType type1;
+    private IPolicyCmptType type1;
 
     @Mock
     private IPolicyCmptType type2;
 
     @Mock
-    private IType type3;
+    private IPolicyCmptType type3;
 
     @Mock
     private IProductCmptType productCmptType;
@@ -111,13 +110,13 @@ public class IdentifierParserTest {
     private IAttribute attribute;
 
     @Mock
-    private IAssociation association;
+    private IPolicyCmptTypeAssociation association;
 
     @Mock
-    private IAssociation associationQualified;
+    private IPolicyCmptTypeAssociation associationQualified;
 
     @Mock
-    private IAssociation associationIndexed;
+    private IPolicyCmptTypeAssociation associationIndexed;
 
     @Mock
     private EnumDatatype enumDatatype;
@@ -181,16 +180,17 @@ public class IdentifierParserTest {
         AssociationNode associationNode = (AssociationNode)parameterNode.getSuccessor();
         assertEquals(association, associationNode.getAssociation());
         assertTrue(associationNode.getDatatype() instanceof ListOfTypeDatatype);
-        QualifiedAssociationNode qualifiedAssociationNode = (QualifiedAssociationNode)associationNode.getSuccessor();
+        AssociationNode qualifiedAssociationNode = (AssociationNode)associationNode.getSuccessor();
         assertEquals(associationQualified, qualifiedAssociationNode.getAssociation());
-        assertEquals("runtimeId.abc123", qualifiedAssociationNode.getRuntimeID());
-        assertTrue(qualifiedAssociationNode.getDatatype() instanceof ListOfTypeDatatype);
-        IndexBasedAssociationNode indexBasedAssociationNode = (IndexBasedAssociationNode)qualifiedAssociationNode
-                .getSuccessor();
-        assertEquals(associationIndexed, indexBasedAssociationNode.getAssociation());
-        assertEquals(0, indexBasedAssociationNode.getIndex());
-        assertEquals(type3, indexBasedAssociationNode.getDatatype());
-        AttributeNode attributeNode = (AttributeNode)indexBasedAssociationNode.getSuccessor();
+        QualifierNode qualifiedNode = (QualifierNode)qualifiedAssociationNode.getSuccessor();
+        assertEquals("runtimeId.abc123", qualifiedNode.getRuntimeId());
+        assertTrue(qualifiedNode.getDatatype() instanceof ListOfTypeDatatype);
+        AssociationNode indexedAssociationNode = (AssociationNode)qualifiedNode.getSuccessor();
+        assertEquals(associationIndexed, indexedAssociationNode.getAssociation());
+        IndexNode indexNode = (IndexNode)indexedAssociationNode.getSuccessor();
+        assertEquals(0, indexNode.getIndex());
+        assertEquals(type3, indexNode.getDatatype());
+        AttributeNode attributeNode = (AttributeNode)indexNode.getSuccessor();
         assertEquals(attribute, attributeNode.getAttribute());
         assertEquals(Datatype.GREGORIAN_CALENDAR, attributeNode.getDatatype());
     }

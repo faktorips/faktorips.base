@@ -29,11 +29,14 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
 public abstract class AbstractIdentifierNodeParser {
 
     private final IExpression expression;
+
     private final IIpsProject ipsProject;
 
     private String identifierPart;
 
     private Datatype contextType;
+
+    private IdentifierNode previousNode;
 
     /**
      * Creates the identifier parser and store the {@link IExpression} as well as the used
@@ -45,20 +48,26 @@ public abstract class AbstractIdentifierNodeParser {
     public AbstractIdentifierNodeParser(IExpression expression, IIpsProject ipsProject) {
         this.expression = expression;
         this.ipsProject = ipsProject;
+        setContextType(expression.findProductCmptType(ipsProject));
     }
 
     /**
      * This method is called to parse the identifier part string with the given context type.
      * 
      * @param identifierPart The part of the identifier that should be parsed
-     * @param contextType The current context type, retrieved from previous parsing or the product
-     *            component type of the formula
+     * @param previousNode The previous node that was already parsed. May be null if there is no
+     *            previous identifier part
      * 
      * @return The parsed identifier node or null if this parser is not responsible
      */
-    public IdentifierNode parse(String identifierPart, Datatype contextType) {
+    public IdentifierNode parse(String identifierPart, IdentifierNode previousNode) {
         this.setIdentifierPart(identifierPart);
-        this.setContextType(contextType);
+        if (previousNode == null) {
+            this.setContextType(expression.findProductCmptType(getIpsProject()));
+        } else {
+            this.setContextType(previousNode.getDatatype());
+        }
+        this.setPreviousNode(previousNode);
         IdentifierNode identifierNode = parse();
         return identifierNode;
     }
@@ -107,6 +116,20 @@ public abstract class AbstractIdentifierNodeParser {
 
     protected boolean isContextTypeFormulaType() {
         return getContextType() == getExpression().findProductCmptType(getIpsProject());
+    }
+
+    /**
+     * Returns the previous node that was parsed using the previous identifier part. The previous
+     * node may be null if this is the first part of the identifier
+     * 
+     * @return The previous parsed identifier node or null if there is none.
+     */
+    public IdentifierNode getPreviousNode() {
+        return previousNode;
+    }
+
+    public void setPreviousNode(IdentifierNode previousNode) {
+        this.previousNode = previousNode;
     }
 
     /**

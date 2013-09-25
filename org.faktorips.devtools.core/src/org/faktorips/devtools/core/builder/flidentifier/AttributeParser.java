@@ -62,7 +62,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
             String attributeName = getAttributeName(getIdentifierPart(), defaultValueAccess);
             if (attributeName.equals(anAttribute.getName())) {
                 if (isAllowd(anAttribute, defaultValueAccess)) {
-                    return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isListOfTypeDatatype());
+                    return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isListOfTypeContext());
                 } else {
                     return createInvalidIdentifierNode();
                 }

@@ -32,76 +32,76 @@ public interface IAssociation extends ITypePart {
 
     // String constants for the relation class' properties according
     // to the Java beans standard.
-    public final static String PROPERTY_ASSOCIATION_TYPE = "associationType"; //$NON-NLS-1$
-    public final static String PROPERTY_AGGREGATION_KIND = "aggregationKind"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
-    public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
-    public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
-    public final static String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
-    public final static String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
-    public final static String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
+    public static final String PROPERTY_ASSOCIATION_TYPE = "associationType"; //$NON-NLS-1$
+    public static final String PROPERTY_AGGREGATION_KIND = "aggregationKind"; //$NON-NLS-1$
+    public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public static final String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
+    public static final String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
+    public static final String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
+    public static final String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
+    public static final String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
+    public static final String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
+    public static final String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "Association-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "Association-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the target does not exist.
      */
-    public final static String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "TargetDoesNotExists"; //$NON-NLS-1$
+    public static final String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "TargetDoesNotExists"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the target role singular must be set and it's not.
      */
-    public final static String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX
+    public static final String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX
             + "TargetRoleSingularMustBeSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the target role plural must be set for to-many
      * associations.
      */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
+    public static final String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association has the same role name singular and
      * plural.
      */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = MSGCODE_PREFIX
+    public static final String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = MSGCODE_PREFIX
             + "TargetRoleSingularEqualsTargetRoleSingular"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX
+    public static final String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX
             + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that for derived union associations the max cardinality
      * must be greater than 1, but it's not.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW = MSGCODE_PREFIX
+    public static final String MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW = MSGCODE_PREFIX
             + "MaxCardinalityForContainerRelationTooLow"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than the minimum,
      * but it must be greater or equal than the minimum.
      */
-    public final static String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
+    public static final String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the an association subsets a derived union, but the
      * derived union can't be found in the type's hierarchy.
      */
-    public final static String MSGCODE_DERIVED_UNION_NOT_FOUND = MSGCODE_PREFIX + "DerivedUnionNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_DERIVED_UNION_NOT_FOUND = MSGCODE_PREFIX + "DerivedUnionNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association specifies to subset another
      * association, but the other one is not marked as derived union.
      */
-    public final static String MSGCODE_NOT_MARKED_AS_DERIVED_UNION = MSGCODE_PREFIX + "NotMarkedAsDerivedUnion"; //$NON-NLS-1$
+    public static final String MSGCODE_NOT_MARKED_AS_DERIVED_UNION = MSGCODE_PREFIX + "NotMarkedAsDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association specifies to subset a derived union,
@@ -109,19 +109,19 @@ public interface IAssociation extends ITypePart {
      * type of the subsetting association is a subtype (or the same type) as the target type of the
      * derived union.
      */
-    public final static String MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST = MSGCODE_PREFIX
+    public static final String MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "ContainerRelationTargetDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that a derived union cannot be its own subset.
      */
-    public final static String MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION = MSGCODE_PREFIX
+    public static final String MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION = MSGCODE_PREFIX
             + "DerivedUnionSubsetNotSameAsDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that a derived union cannot be its own subset.
      */
-    public final static String MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY = MSGCODE_PREFIX
+    public static final String MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY = MSGCODE_PREFIX
             + "SubsetOfDerivedUnionSameMaxCardinality"; //$NON-NLS-1$
 
     /**
@@ -129,24 +129,24 @@ public interface IAssociation extends ITypePart {
      * indicates that the association's target type is not a subtype (or the same type) of the
      * derived union's target type.
      */
-    public final static String MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE = IPolicyCmptTypeAssociation.MSGCODE_PREFIX
+    public static final String MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE = IPolicyCmptTypeAssociation.MSGCODE_PREFIX
             + "TargetTypeNotASubtype"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the target role singular is not a valid Java
      * field name, which is illegal as Java code is generated from this name.
      */
-    public final static String MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME = MSGCODE_PREFIX
+    public static final String MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME = MSGCODE_PREFIX
             + "TargetRoleSingularNotAValidJavaFieldName"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the target role plural is not a valid Java field
      * name, which is illegal as Java code is generated from this name.
      */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME = MSGCODE_PREFIX
+    public static final String MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME = MSGCODE_PREFIX
             + "TargetRolePluralNotAValidJavaFieldName"; //$NON-NLS-1$
 
-    public final static AssociationType DEFAULT_RELATION_TYPE = AssociationType.ASSOCIATION;
+    public static final AssociationType DEFAULT_RELATION_TYPE = AssociationType.ASSOCIATION;
 
     /**
      * Returns the association's type.
@@ -285,7 +285,7 @@ public interface IAssociation extends ITypePart {
     public boolean is1ToManyIgnoringQualifier();
 
     /**
-     * Returns <code>true</code> if this is a 1 (or 0) to 1 association. This is the case if the max
+     * Returns <code>true</code> if this is a 1 to 1 association. This is the case if the max
      * cardinality is 1 and(!) the association is not qualified.
      * <p>
      * If this method returns <code>true</code> {{@link #is1ToMany()} returns <code>false</code> and

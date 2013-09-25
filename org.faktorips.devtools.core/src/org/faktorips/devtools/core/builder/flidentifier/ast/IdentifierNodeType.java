@@ -34,7 +34,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    INDEX_BASED_ASSOCIATION(IndexBasedAssociationNode.class) {
+    INDEX(IndexNode.class) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -42,7 +42,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    QUALIFIED_ASSOCIATION(QualifiedAssociationNode.class) {
+    QUALIFIER(QualifierNode.class) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {

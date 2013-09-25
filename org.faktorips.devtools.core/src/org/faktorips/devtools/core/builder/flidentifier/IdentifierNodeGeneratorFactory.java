@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
  */
 public interface IdentifierNodeGeneratorFactory<T extends CodeFragment> {
 
+    public IdentifierNodeGenerator<T> getGeneratorForParameterNode();
+
     public IdentifierNodeGenerator<T> getGeneratorForAssociationNode();
 
     public IdentifierNodeGenerator<T> getGeneratorForAttributeNode();
@@ -33,8 +35,6 @@ public interface IdentifierNodeGeneratorFactory<T extends CodeFragment> {
     public IdentifierNodeGenerator<T> getGeneratorForEnumValueNode();
 
     public IdentifierNodeGenerator<T> getGeneratorForIndexBasedAssociationNode();
-
-    public IdentifierNodeGenerator<T> getGeneratorForParameterNode();
 
     public IdentifierNodeGenerator<T> getGeneratorForQualifiedAssociationNode();
 

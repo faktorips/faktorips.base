@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import java.util.ArrayList;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -36,13 +35,11 @@ import org.faktorips.util.message.Message;
  */
 public class IdentifierParser {
 
-    private static final String IDENTIFIER_SEPERATOR_REGEX = "\\."; //$NON-NLS-1$
+    private static final String IDENTIFIER_SEPERATOR_REGEX = "[\\.\\[]"; //$NON-NLS-1$
 
-    private final IExpression expression;
     private final IIpsProject ipsProject;
-    private final ArrayList<AbstractIdentifierNodeParser> parsers;
 
-    private Datatype contextType;
+    private final ArrayList<AbstractIdentifierNodeParser> parsers;
 
     private String[] identifierParts;
 
@@ -67,12 +64,12 @@ public class IdentifierParser {
      * @param ipsProject The {@link IIpsProject} to search other {@link IIpsObject IPS objects}
      */
     public IdentifierParser(IExpression expression, IIpsProject ipsProject, IdentifierFilter identifierFilter) {
-        this.expression = expression;
         this.ipsProject = ipsProject;
         parsers = new ArrayList<AbstractIdentifierNodeParser>();
         parsers.add(new ParameterParser(expression, ipsProject));
         parsers.add(new AttributeParser(expression, ipsProject, identifierFilter));
         parsers.add(new AssociationParser(expression, ipsProject));
+        parsers.add(new QualifierAndIndexParser(expression, ipsProject));
         parsers.add(new EnumParser(expression, ipsProject));
     }
 
@@ -90,18 +87,17 @@ public class IdentifierParser {
      */
     public IdentifierNode parse(String identifier) {
         identifierParts = identifier.split(IDENTIFIER_SEPERATOR_REGEX);
-        contextType = expression.findProductCmptType(ipsProject);
         this.currentPartIndex = 0;
-        return parseNextPart();
+        return parseNextPart(null);
     }
 
-    private IdentifierNode parseNextPart() {
+    private IdentifierNode parseNextPart(IdentifierNode previousNode) {
         for (AbstractIdentifierNodeParser parser : parsers) {
-            IdentifierNode node = parser.parse(getIdentifierPart(), contextType);
+            IdentifierNode node = parser.parse(getIdentifierPart(), previousNode);
             if (node != null) {
                 if (hasNextIdentifierPart()) {
-                    nextIdentifierPart(node);
-                    node.setSuccessor(parseNextPart());
+                    nextIdentifierPart();
+                    node.setSuccessor(parseNextPart(node));
                 }
                 return node;
             }
@@ -119,8 +115,7 @@ public class IdentifierParser {
         return identifierParts.length > currentPartIndex + 1;
     }
 
-    protected void nextIdentifierPart(IdentifierNode parsedNode) {
-        contextType = parsedNode.getDatatype();
+    protected void nextIdentifierPart() {
         currentPartIndex++;
     }
 

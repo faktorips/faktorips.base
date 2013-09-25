@@ -14,30 +14,26 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
- * The qualified association node is a special form of {@link AssociationNode}. It represents an
- * identifier part that was qualified by the name of a product component. The resulting
- * {@link Datatype} will always be a subclass of {@link IType} or a {@link ListOfTypeDatatype} with
- * {@link IType} as basis type.
+ * The index node is a special node that follows an {@link AssociationNode}. It represents an
+ * identifier part that was suffixed with an index access. The resulting {@link Datatype} will
+ * always be a subclass of {@link IType}.
  * 
  * @author dirmeier
  */
-public class QualifiedAssociationNode extends AssociationNode {
+public class IndexNode extends IdentifierNode {
 
-    private final String runtimeID;
+    private final int index;
 
-    QualifiedAssociationNode(IAssociation association, IType targetType, String runtimeID, boolean listOfTypes,
-            IIpsProject ipsProject) {
-        super(association, targetType, listOfTypes, ipsProject);
-        this.runtimeID = runtimeID;
+    IndexNode(int index, IType targetType) {
+        super(targetType, false);
+        this.index = index;
     }
 
-    public String getRuntimeID() {
-        return runtimeID;
+    public int getIndex() {
+        return index;
     }
+
 }

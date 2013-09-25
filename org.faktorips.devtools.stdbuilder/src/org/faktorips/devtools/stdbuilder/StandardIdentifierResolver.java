@@ -23,10 +23,10 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.stdbuilder.flidentifier.AssociationNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.AttributeNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.EnumNodeGenerator;
-import org.faktorips.devtools.stdbuilder.flidentifier.IndexBasedAssociationNodeGenerator;
+import org.faktorips.devtools.stdbuilder.flidentifier.IndexNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.InvalidNodeGenerator;
 import org.faktorips.devtools.stdbuilder.flidentifier.ParameterNodeGenerator;
-import org.faktorips.devtools.stdbuilder.flidentifier.QualifiedAssociationNodeGenerator;
+import org.faktorips.devtools.stdbuilder.flidentifier.QualifierNodeGenerator;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -66,6 +66,11 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
         }
 
         @Override
+        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {
+            return new ParameterNodeGenerator(this, builderSet);
+        }
+
+        @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAssociationNode() {
             return new AssociationNodeGenerator(this, builderSet);
         }
@@ -102,17 +107,12 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
 
         @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForIndexBasedAssociationNode() {
-            return new IndexBasedAssociationNodeGenerator(this, builderSet);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {
-            return new ParameterNodeGenerator(this, builderSet);
+            return new IndexNodeGenerator(this, builderSet);
         }
 
         @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForQualifiedAssociationNode() {
-            return new QualifiedAssociationNodeGenerator(this, builderSet);
+            return new QualifierNodeGenerator(this, builderSet);
         }
 
         @Override

@@ -25,7 +25,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -43,7 +43,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class QualifiedAssociationNodeGeneratorTest {
+public class QualifierNodeGeneratorTest {
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -58,17 +58,14 @@ public class QualifiedAssociationNodeGeneratorTest {
     private CompilationResult<JavaCodeFragment> contextCompilationResult;
 
     @Mock
-    Association association;
+    private Association association;
 
     @Mock
     private IPolicyCmptType target;
 
-    @Mock
-    ListOfTypeDatatype listDatatype;
+    private QualifierNodeGenerator qualifiedAssociationNodeGenerator;
 
-    private QualifiedAssociationNodeGenerator qualifiedAssociationNodeGenerator;
-
-    private QualifiedAssociationNode qualifiedAssociationNode;
+    private QualifierNode qualifiedAssociationNode;
 
     private IdentifierNodeFactory nodeFactory;
 
@@ -81,10 +78,10 @@ public class QualifiedAssociationNodeGeneratorTest {
     @Before
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
         nodeFactory = new IdentifierNodeFactory("QualifiedAssociationNodeGeneratorTest", ipsProject);
-        qualifiedAssociationNodeGenerator = new QualifiedAssociationNodeGenerator(factory, builderSet);
+        qualifiedAssociationNodeGenerator = new QualifierNodeGenerator(factory, builderSet);
     }
 
-    private QualifiedAssociationNode createQualifiedAssociationNode(String qualifier,
+    private QualifierNode createQualifiedAssociationNode(String qualifier,
             String packageName,
             IPolicyCmptType targetType,
             boolean isListOfDatatype) throws Exception {
@@ -97,8 +94,7 @@ public class QualifiedAssociationNodeGeneratorTest {
         when(sourceFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmpt.getRuntimeId()).thenReturn(packageName + "." + qualifier);
         when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(targetType);
-        return (QualifiedAssociationNode)nodeFactory.createQualifiedAssociationNode(association, qualifier,
-                productCmptType, isListOfDatatype);
+        return (QualifierNode)nodeFactory.createQualifierNode(productCmpt, qualifier, isListOfDatatype);
     }
 
     @Test
@@ -119,7 +115,9 @@ public class QualifiedAssociationNodeGeneratorTest {
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult.getDatatype());
         assertEquals(target, compilationResult.getDatatype());
-        assertTrue(compilationResult.getCodeFragment().getSourcecode().startsWith("FormulaEvaluatorUtil"));
+        assertEquals(
+                "FormulaEvaluatorUtil.<PolicyCmptType>getModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                compilationResult.getCodeFragment().getSourcecode());
     }
 
     @Test
@@ -129,7 +127,7 @@ public class QualifiedAssociationNodeGeneratorTest {
         XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
-        when(builderSet.getJavaClassName(type, true)).thenReturn("ProductCmptType");
+        when(builderSet.getJavaClassName(type, true)).thenReturn("SubPolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckung");
         when(type.getQualifiedName()).thenReturn("zusatzdeckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", type,
@@ -141,7 +139,9 @@ public class QualifiedAssociationNodeGeneratorTest {
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult.getDatatype());
         assertEquals(type, compilationResult.getDatatype());
-        assertTrue(compilationResult.getCodeFragment().getSourcecode().startsWith("(("));
+        assertEquals(
+                "FormulaEvaluatorUtil.<SubPolicyCmptType>getModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                compilationResult.getCodeFragment().getSourcecode());
     }
 
     @Test

@@ -30,11 +30,11 @@ public abstract class IdentifierNode {
 
     private IdentifierNode successor;
 
-    IdentifierNode(Datatype datatype) {
+    protected IdentifierNode(Datatype datatype) {
         this(datatype, false);
     }
 
-    IdentifierNode(Datatype datatype, boolean listOfTypes) {
+    protected IdentifierNode(Datatype datatype, boolean listOfTypes) {
         if (listOfTypes) {
             this.datatype = new ListOfTypeDatatype(datatype);
         } else {

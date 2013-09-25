@@ -63,21 +63,21 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_wrongType() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(MY_PARAMETER, mock(IProductCmptType.class));
+        IdentifierNode parameterNode = parameterParser.parse(MY_PARAMETER, new TestNode(mock(IProductCmptType.class)));
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_noParameter() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(ANY_PARAMETER, getProductCmptType());
+        IdentifierNode parameterNode = parameterParser.parse(ANY_PARAMETER, null);
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_findParameter() throws Exception {
-        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(MY_PARAMETER, getProductCmptType());
+        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(MY_PARAMETER, null);
 
         assertNotNull(parameterNode);
         assertEquals(parameter, parameterNode.getParameter());
@@ -96,7 +96,7 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testParse_noDatatype() throws Exception {
         when(parameter.findDatatype(getIpsProject())).thenReturn(null);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, getProductCmptType());
+        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }
