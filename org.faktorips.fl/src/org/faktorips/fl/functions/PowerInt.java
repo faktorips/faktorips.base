@@ -59,19 +59,10 @@ public class PowerInt extends AbstractFlFunction {
 
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
-        addIdentifier(argResults[0].getResolvedIdentifiers(), result);
-        addIdentifier(argResults[1].getResolvedIdentifiers(), result);
         return result;
     }
 
     private CompilationResultImpl createCompilationResultImpl(JavaCodeFragment fragmentResult) {
         return new CompilationResultImpl(fragmentResult, Datatype.PRIMITIVE_INT);
     }
-
-    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {
-        for (String identifier : identifiers) {
-            compilationResult.addIdentifierUsed(identifier);
-        }
-    }
-
 }

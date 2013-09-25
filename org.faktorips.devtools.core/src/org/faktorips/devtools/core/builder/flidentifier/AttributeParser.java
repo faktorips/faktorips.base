@@ -20,6 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -60,7 +61,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         for (IAttribute anAttribute : attributes) {
             String attributeName = getAttributeName(getIdentifierPart(), defaultValueAccess);
             if (attributeName.equals(anAttribute.getName())) {
-                if (isAllowd(anAttribute)) {
+                if (isAllowd(anAttribute, defaultValueAccess)) {
                     return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isListOfTypeDatatype());
                 } else {
                     return createInvalidIdentifierNode();
@@ -92,8 +93,9 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return attributes;
     }
 
-    private boolean isAllowd(IAttribute anAttribute) {
-        return identifierFilter.isIdentifierAllowed(anAttribute);
+    private boolean isAllowd(IAttribute anAttribute, boolean isDefaultIdentifier) {
+        return identifierFilter.isIdentifierAllowed(anAttribute,
+                IdentifierKind.getDefaultIdentifierOrAttribute(isDefaultIdentifier));
     }
 
     private IdentifierNode createInvalidIdentifierNode() {

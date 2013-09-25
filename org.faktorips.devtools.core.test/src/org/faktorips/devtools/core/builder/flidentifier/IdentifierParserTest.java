@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IndexBasedAssociatio
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -154,7 +155,8 @@ public class IdentifierParserTest {
         when(type3.findAllAttributes(ipsProject)).thenReturn(Arrays.asList(attribute));
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
-        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class))).thenReturn(true);
+        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
+                .thenReturn(true);
     }
 
     @Before

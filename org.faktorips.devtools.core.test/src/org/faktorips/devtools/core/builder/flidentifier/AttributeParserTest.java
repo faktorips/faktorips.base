@@ -27,6 +27,7 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -67,7 +68,8 @@ public class AttributeParserTest extends AbstractParserTest {
     public void mockAttribute() throws Exception {
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
-        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class))).thenReturn(true);
+        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
+                .thenReturn(true);
     }
 
     @Test
@@ -122,7 +124,7 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_filteredAttribute() throws Exception {
-        when(identifierFilter.isIdentifierAllowed(attribute)).thenReturn(false);
+        when(identifierFilter.isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER)).thenReturn(false);
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
 
