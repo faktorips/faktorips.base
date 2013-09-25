@@ -42,7 +42,7 @@ public class IndexBasedAssociationNodeGenerator extends AssociationNodeGenerator
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         IndexBasedAssociationNode node = (IndexBasedAssociationNode)identifierNode;
         JavaCodeFragment result;
-        if (isListDatatypeContext(contextCompilationResult)) {
+        if (hasToGenerateAsList(contextCompilationResult, node)) {
             CompilationResult<JavaCodeFragment> associationAccessCode = getCompilationResultForAssociation(
                     contextCompilationResult, node);
             associationAccessCode.getCodeFragment().append(".get(").append(node.getIndex()).append(")");
@@ -51,6 +51,11 @@ public class IndexBasedAssociationNodeGenerator extends AssociationNodeGenerator
             result = createAssociationGetterWithIndex(contextCompilationResult.getCodeFragment(), node);
         }
         return new CompilationResultImpl(result, node.getDatatype());
+    }
+
+    private boolean hasToGenerateAsList(CompilationResult<JavaCodeFragment> contextCompilationResult,
+            IndexBasedAssociationNode node) {
+        return (isListDatatypeContext(contextCompilationResult) || node.getAssociation().isDerivedUnion());
     }
 
     private JavaCodeFragment createAssociationGetterWithIndex(JavaCodeFragment contextCodeFragment,

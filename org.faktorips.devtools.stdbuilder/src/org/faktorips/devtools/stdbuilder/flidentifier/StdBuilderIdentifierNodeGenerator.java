@@ -20,10 +20,8 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
 
 /**
@@ -76,16 +74,6 @@ public abstract class StdBuilderIdentifierNodeGenerator extends IdentifierNodeGe
      */
     protected String getJavaClassName(Datatype datatype) {
         return getBuilderSet().getJavaClassName(datatype, true);
-    }
-
-    /**
-     * Returns the name of the getter method generated for the given association's target(s).
-     * Returns different names depending on whether the association is a 1to1 or 1toMany
-     * association.
-     */
-    protected String getAssociationTargetGetterName(IAssociation association) {
-        XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-        return xPolicyAssociation.getMethodNameGetter();
     }
 
 }

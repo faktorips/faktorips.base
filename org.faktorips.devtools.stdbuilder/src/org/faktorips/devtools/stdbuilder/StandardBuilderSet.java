@@ -94,64 +94,62 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class StandardBuilderSet extends DefaultBuilderSet {
 
-    private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
-
-    public final static String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
+    public static final String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 
     /**
      * Configuration property that enables/disables the generation of a copy method.
      * 
      * @see ICopySupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of delta computation.
      * 
      * @see IDeltaSupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of the visitor support.
      * 
      * @see IDeltaSupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that is supposed to be used to read a configuration value from the
      * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
      * IIpsArtefactBuilderSet instance.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the use of enums, if supported by the target
      * java version.
      */
-    public final static String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of JAXB support.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property contains the persistence provider implementation.
      */
-    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
 
     /**
      * Configuration property contains the kind of formula compiling.
      */
-    public final static String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether toXml() methods should be
      * generated.
      */
-    public final static String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether to generate camel case constant
@@ -159,7 +157,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * constant for the name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the
      * property is false the constant name would be CHECKANYTHINGRUL.
      */
-    public final static String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
+
+    private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;
 
@@ -174,9 +174,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
-        annotationGeneratorFactories = new AnnotationGeneratorFactory[] { new PolicyCmptImplClassJpaAnnGenFactory(), // JPA
-                                                                                                                     // support
-                new PolicyCmptImplClassJaxbAnnGenFactory() }; // Jaxb support
+        annotationGeneratorFactories = new AnnotationGeneratorFactory[] {
+                // JPA support
+                new PolicyCmptImplClassJpaAnnGenFactory(),
+                // Jaxb support
+                new PolicyCmptImplClassJaxbAnnGenFactory() };
 
         initSupportedPersistenceProviderMap();
 
@@ -525,9 +527,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         if (datatype instanceof IPolicyCmptType) {
             return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
                     BuilderAspect.getValue(interfaces));
-        } else
-
-        if (datatype instanceof IProductCmptType) {
+        } else if (datatype instanceof IProductCmptType) {
             return modelService.getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class,
                     generatorModelContext).getQualifiedName(BuilderAspect.getValue(interfaces));
         } else {
@@ -637,8 +637,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private static class CachedPersistenceProvider {
-        Class<? extends IPersistenceProvider> persistenceProviderClass;
-        IPersistenceProvider cachedProvider = null;
+        private Class<? extends IPersistenceProvider> persistenceProviderClass;
+        private IPersistenceProvider cachedProvider = null;
 
         private static CachedPersistenceProvider create(Class<? extends IPersistenceProvider> pPClass) {
             CachedPersistenceProvider providerCache = new CachedPersistenceProvider();

@@ -14,9 +14,13 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifiedAssociationNode;
+import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -49,14 +53,27 @@ public class QualifiedAssociationNodeGenerator extends AssociationNodeGenerator 
         QualifiedAssociationNode node = (QualifiedAssociationNode)identifierNode;
         CompilationResult<JavaCodeFragment> associationAccessCode = getCompilationResultForAssociation(
                 contextCompilationResult, node);
-        return compileAssociationQualifier(node.isListOfTypeDatatype(), node, associationAccessCode.getCodeFragment());
+        return compileAssociationQualifier(node, associationAccessCode.getCodeFragment());
     }
 
-    private CompilationResult<JavaCodeFragment> compileAssociationQualifier(boolean isListOfDataype,
-            QualifiedAssociationNode node,
+    @Override
+    protected JavaCodeFragment compileSingleObjectContext(JavaCodeFragment contextCode, AssociationNode node) {
+        JavaCodeFragment compileSingleObjectContext = super.compileSingleObjectContext(contextCode, node);
+        if (!isSameTargetDatatype(node)) {
+            JavaCodeFragment castCodeFragment = new JavaCodeFragment();
+            castCodeFragment.append("("); //$NON-NLS-1$
+            castCodeFragment.appendClassName(getJavaClassName(getNodeDatatypeOrBasicDatatype(node)));
+            castCodeFragment.append(")"); //$NON-NLS-1$
+            castCodeFragment.append(compileSingleObjectContext);
+            return castCodeFragment;
+        }
+        return compileSingleObjectContext;
+    }
+
+    private CompilationResult<JavaCodeFragment> compileAssociationQualifier(QualifiedAssociationNode node,
             JavaCodeFragment contextCodeFragment) {
         JavaCodeFragment qualifiedTargetCode = new JavaCodeFragment();
-        if (isListOfDataype) {
+        if (node.isListOfTypeDatatype()) {
             appendCallOfFormulaEvaluationUtilMethod(qualifiedTargetCode, node, GET_LIST_MODEL_OBJECT_BY_ID,
                     contextCodeFragment);
         } else {
@@ -90,10 +107,22 @@ public class QualifiedAssociationNodeGenerator extends AssociationNodeGenerator 
         qualifiedTargetCode.append("\")"); //$NON-NLS-1$
     }
 
-    private boolean isSameTargetDatatype(QualifiedAssociationNode node) {
-        String dataTypeQualifiedName = node.getDatatype().getQualifiedName();
+    /**
+     * Returns <code>true</code> if the Basicdatatype is equal to the {@link Association}
+     * Targetdatatype.
+     */
+    private boolean isSameTargetDatatype(AssociationNode node) {
+        String dataTypeQualifiedName = getNodeDatatypeOrBasicDatatype(node).getQualifiedName();
         String datatypeAssociationTarget = node.getAssociation().getTarget();
         return dataTypeQualifiedName != null && dataTypeQualifiedName.equals(datatypeAssociationTarget);
     }
 
+    private Datatype getNodeDatatypeOrBasicDatatype(AssociationNode node) {
+        if (node.isListOfTypeDatatype()) {
+            ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)node.getDatatype();
+            return listDatatype.getBasicDatatype();
+        } else {
+            return node.getDatatype();
+        }
+    }
 }

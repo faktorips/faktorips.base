@@ -15,12 +15,20 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
+/**
+ * JavaGenerator for a {@link InvalidIdentifierNode}. Returns in the {@link CompilationResult} the
+ * error message from the {@link IdentifierParser}.
+ * 
+ * @author dirmaier
+ * @since 3.11.0
+ */
 public class InvalidNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     public InvalidNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory, StandardBuilderSet builderSet) {

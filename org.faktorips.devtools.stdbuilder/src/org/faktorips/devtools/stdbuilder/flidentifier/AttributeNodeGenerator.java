@@ -82,13 +82,13 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
         getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper.class);
         getTargetCode.append("<"); //$NON-NLS-1$
-        getTargetCode.appendClassName(conextDatatype.getJavaClassName());
+        getTargetCode.appendClassName(getJavaClassName(conextDatatype));
         getTargetCode.append(", "); //$NON-NLS-1$
         getTargetCode.appendClassName(attribute.getDatatype());
         getTargetCode.append(">(){@Override protected "); //$NON-NLS-1$
         getTargetCode.appendClassName(attribute.getDatatype());
         getTargetCode.append(" getValueInternal("); //$NON-NLS-1$
-        getTargetCode.appendClassName(conextDatatype.getJavaClassName());
+        getTargetCode.appendClassName(getJavaClassName(conextDatatype));
         getTargetCode.append(" sourceObject){return sourceObject." + parameterAttributGetterName); //$NON-NLS-1$
         getTargetCode.append("();}}.getAttributeValues("); //$NON-NLS-1$
         getTargetCode.append(contextCompilationResult.getCodeFragment());

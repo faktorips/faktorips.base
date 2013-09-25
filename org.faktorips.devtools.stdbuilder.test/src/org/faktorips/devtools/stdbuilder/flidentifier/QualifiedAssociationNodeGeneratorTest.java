@@ -89,7 +89,7 @@ public class QualifiedAssociationNodeGeneratorTest {
             IPolicyCmptType targetType,
             boolean isListOfDatatype) throws Exception {
         when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(association.getTarget()).thenReturn("deckung");
+        when(association.getTarget()).thenReturn("Deckung");
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
         IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
         when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
@@ -109,7 +109,7 @@ public class QualifiedAssociationNodeGeneratorTest {
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckung");
-        when(target.getQualifiedName()).thenReturn("deckung");
+        when(target.getQualifiedName()).thenReturn("Deckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 false);
 
@@ -152,7 +152,7 @@ public class QualifiedAssociationNodeGeneratorTest {
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
-        when(target.getQualifiedName()).thenReturn("deckung");
+        when(target.getQualifiedName()).thenReturn("Deckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 true);
 
@@ -175,7 +175,7 @@ public class QualifiedAssociationNodeGeneratorTest {
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
-        when(target.getQualifiedName()).thenReturn("deckung");
+        when(target.getQualifiedName()).thenReturn("Deckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 true);
 
@@ -187,6 +187,31 @@ public class QualifiedAssociationNodeGeneratorTest {
         assertEquals(listOfTypeDatatype, compilationResult.getDatatype());
         assertEquals(
                 "FormulaEvaluatorUtil.getListModelObjectById(new AssociationTo1Helper<PolicyCmptType, PolicyCmptType>(){@Override protected PolicyCmptType getTargetInternal(PolicyCmptType sourceObject){return sourceObject.getHausratZusatzdeckungen();}}.getTargets(vertrag), \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                compilationResult.getCodeFragment().getSourcecode());
+    }
+
+    @Test
+    public void testGetCompilationResult_ListAndContextListDifferentTarget() throws Exception {
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
+        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        ListOfTypeDatatype listOfTypeDatatype = new ListOfTypeDatatype(target);
+        when(contextCompilationResult.getDatatype()).thenReturn(listOfTypeDatatype);
+        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
+        when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
+        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
+        when(target.getQualifiedName()).thenReturn("Zusatzdeckung");
+        qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
+                true);
+
+        CompilationResult<JavaCodeFragment> compilationResult = qualifiedAssociationNodeGenerator
+                .getCompilationResultForCurrentNode(qualifiedAssociationNode, contextCompilationResult);
+
+        assertFalse(compilationResult.failed());
+        assertNotNull(compilationResult.getDatatype());
+        assertEquals(listOfTypeDatatype, compilationResult.getDatatype());
+        assertEquals(
+                "FormulaEvaluatorUtil.getListModelObjectById(new AssociationTo1Helper<PolicyCmptType, PolicyCmptType>(){@Override protected PolicyCmptType getTargetInternal(PolicyCmptType sourceObject){return (PolicyCmptType)sourceObject.getHausratZusatzdeckungen();}}.getTargets(vertrag), \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
                 compilationResult.getCodeFragment().getSourcecode());
     }
 }

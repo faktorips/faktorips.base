@@ -121,4 +121,24 @@ public class IndexBasedAssociationNodeGeneratorTest {
         verifyZeroInteractions(javaCodeFragment);
     }
 
+    @Test
+    public void testGetCompilationResult_listContextDerivedUnion() throws Exception {
+        JavaCodeFragment javaCodeFragment = spy(new JavaCodeFragment("vertrag"));
+        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        when(contextCompilationResult.getDatatype()).thenReturn(target);
+        when(association.isDerivedUnion()).thenReturn(true);
+        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
+        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getDeckungen");
+        when(builderSet.getJavaClassName(target, true)).thenReturn("TargetClassName");
+        indexBasedAssociationNode = createIndexBasedAssociationNode(1);
+
+        CompilationResult<JavaCodeFragment> compilationResult = indexBasedAssociationNodeGenerator
+                .getCompilationResultForCurrentNode(indexBasedAssociationNode, contextCompilationResult);
+
+        assertFalse(compilationResult.failed());
+        assertEquals("vertrag.getDeckungen().get(1)", compilationResult.getCodeFragment().getSourcecode());
+        assertNotNull(compilationResult.getDatatype());
+        verify(javaCodeFragment).getImportDeclaration();
+    }
 }
