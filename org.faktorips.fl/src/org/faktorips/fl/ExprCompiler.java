@@ -130,15 +130,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     public static final String NO_INDEX_FOR_1TO1_ASSOCIATION = PREFIX + "NoIndexFor1to1Association"; //$NON-NLS-1$
 
     /**
-     * An identifier is resolved to an association with index and qualifier.
-     * <p>
-     * Example: a.b[0]["pack.MyB"]
-     * <p>
-     * In the expression a and b are identifiers. The identifier b is resolved to an association.
-     */
-    public static final String INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED = PREFIX + "IndexAndQualifierCanNotBeCombined"; //$NON-NLS-1$
-
-    /**
      * The expression contains a call to an undefined function.
      */
     public static final String UNDEFINED_FUNCTION = PREFIX + "UndefinedFunction"; //$NON-NLS-1$
@@ -473,9 +464,11 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
+            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         } catch (TokenMgrError e) {
+            e.printStackTrace();
             String text = LOCALIZED_STRINGS.getString(LEXICAL_ERROR, getLocale(), e.getMessage());
             return newCompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
         }
@@ -490,6 +483,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
+            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         }
@@ -509,6 +503,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
+            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         }
