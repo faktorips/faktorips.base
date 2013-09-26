@@ -72,7 +72,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(false);
         initSourceFile();
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse(QUALIFIER,
+        InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse(INDEX,
                 createAssociationNode(association, false));
 
         assertEquals(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, node.getMessage().getCode());
