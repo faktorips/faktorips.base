@@ -47,6 +47,7 @@ import org.faktorips.codegen.conversion.PrimitiveLongToPrimitiveIntCg;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 
 /**
  * The ConversionCodeGenerator extends the ConversionMatrix with the ability to generate the Java
@@ -112,7 +113,8 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     }
 
     public boolean canConvert(Datatype from, Datatype to) {
-        return isEqual(from, to) || isToAnyDatatype(to) || isSingleConversionAvailable(from, to);
+        return isEqual(from, to) || isToAnyDatatype(to) || isListOfTypeDatatype(from, to)
+                || isSingleConversionAvailable(from, to);
     }
 
     private boolean isEqual(Datatype from, Datatype to) {
@@ -125,6 +127,26 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     private boolean isSingleConversionAvailable(Datatype from, Datatype to) {
         return getSingleConversionCode(from, to) != null;
+    }
+
+    private boolean isListOfTypeDatatype(Datatype from, Datatype to) {
+        return isFromAndToListOfTypeDatatype(from, to) && canConvertBasicDatatype(from, to);
+    }
+
+    private boolean isFromAndToListOfTypeDatatype(Datatype from, Datatype to) {
+        return isInstanceListOfTypeDatatype(from) && isInstanceListOfTypeDatatype(to);
+    }
+
+    private boolean isInstanceListOfTypeDatatype(Datatype datatype) {
+        return datatype instanceof ListOfTypeDatatype;
+    }
+
+    private boolean canConvertBasicDatatype(Datatype from, Datatype to) {
+        return this.canConvert(getBasicDatatype(from), getBasicDatatype(to));
+    }
+
+    private Datatype getBasicDatatype(Datatype datatype) {
+        return ((ListOfTypeDatatype)datatype).getBasicDatatype();
     }
 
     /**
@@ -143,6 +165,9 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         }
         if (isEqual(from, to) || isToAnyDatatype(to)) {
             return fromValue;
+        }
+        if (isListOfTypeDatatype(from, to)) {
+            return getSingleConversionCode(getBasicDatatype(from), getBasicDatatype(to)).getConversionCode(fromValue);
         }
         if (isSingleConversionAvailable(from, to)) {
             return getSingleConversionCode(from, to).getConversionCode(fromValue);
@@ -174,7 +199,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
          * @return single conversion code {@link SingleConversionCg}
          */
         public SingleConversionCg<T> get(Datatype from, Datatype to) {
-            if (from == null || to == null) {
+            if (nullCheck(from, to)) {
                 return null;
             }
             SingleConversionCg<T> singleConversionCg = getMapValueOfFromDatatype(from).get(to);
@@ -200,6 +225,10 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
                 internalMap.put(from, fromMap);
             }
             return fromMap;
+        }
+
+        private boolean nullCheck(Datatype from, Datatype to) {
+            return from == null || to == null;
         }
     }
 
