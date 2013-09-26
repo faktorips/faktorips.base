@@ -174,7 +174,9 @@ public class AttributeNodeGeneratorTest {
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
         assertFalse(compilationResult.failed());
-        System.out.println(compilationResult.getCodeFragment().getSourcecode());
+        assertEquals(
+                "new AttributeAccessorHelper<Integer, Integer>(){\n@Override protected Integer getValueInternal(Integer sourceObject){return sourceObject.getWohnflaeche();}}.getAttributeValues(hsVertrag.getDeckungen())",
+                compilationResult.getCodeFragment().getSourcecode());
     }
 
     @Test(expected = GeneratorRuntimeException.class)
