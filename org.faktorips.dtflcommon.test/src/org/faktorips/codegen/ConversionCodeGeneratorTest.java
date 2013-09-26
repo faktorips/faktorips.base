@@ -74,8 +74,9 @@ public class ConversionCodeGeneratorTest {
 
     @Test
     public void testCanConvert_ListOfDatatype() {
-        assertTrue(codeGenerator.canConvert(createList(Datatype.DECIMAL), createList(Datatype.INTEGER)));
+        assertTrue(codeGenerator.canConvert(createList(Datatype.DECIMAL), createList(AnyDatatype.INSTANCE)));
 
+        assertFalse(codeGenerator.canConvert(createList(Datatype.DECIMAL), createList(Datatype.INTEGER)));
         assertFalse(codeGenerator.canConvert(createList(Datatype.DECIMAL), Datatype.INTEGER));
         assertFalse(codeGenerator.canConvert(Datatype.DECIMAL, createList(Datatype.INTEGER)));
         assertFalse(codeGenerator.canConvert(createList(Datatype.BIG_DECIMAL), createList(Datatype.GREGORIAN_CALENDAR)));
@@ -113,7 +114,10 @@ public class ConversionCodeGeneratorTest {
 
     @Test
     public void testGetConversionCode_ListOfDatatype() {
-        assertNotNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), createList(Datatype.INTEGER),
+        assertNotNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), createList(AnyDatatype.INSTANCE),
+                new JavaCodeFragment("Decimal.valueOf(2.3)")));
+
+        assertNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), createList(Datatype.INTEGER),
                 new JavaCodeFragment("Decimal.valueOf(2.3)")));
 
         assertNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), Datatype.INTEGER,

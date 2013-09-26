@@ -134,7 +134,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     }
 
     private boolean isListToListConversionAvailable(Datatype from, Datatype to) {
-        return isListToListConversion(from, to) && canConvertBasicDatatype(from, to);
+        return isListToListConversion(from, to) && isAnyDatatype(getBasicDatatype(to));
     }
 
     private boolean isListToListConversion(Datatype from, Datatype to) {
@@ -143,10 +143,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     private boolean isInstanceListOfTypeDatatype(Datatype datatype) {
         return datatype instanceof ListOfTypeDatatype;
-    }
-
-    private boolean canConvertBasicDatatype(Datatype from, Datatype to) {
-        return this.canConvert(getBasicDatatype(from), getBasicDatatype(to));
     }
 
     private Datatype getBasicDatatype(Datatype datatype) {
@@ -167,11 +163,8 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (nullCheck(from, to)) {
             return null;
         }
-        if (isNoConversionNeccessary(from, to)) {
+        if (isNoConversionNeccessary(from, to) || isListToListConversionAvailable(from, to)) {
             return fromValue;
-        }
-        if (isListToListConversionAvailable(from, to)) {
-            return getSingleConversionCode(getBasicDatatype(from), getBasicDatatype(to)).getConversionCode(fromValue);
         }
         if (isSingleConversionAvailable(from, to)) {
             return getSingleConversionCode(from, to).getConversionCode(fromValue);
