@@ -113,7 +113,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     }
 
     public boolean canConvert(Datatype from, Datatype to) {
-        return isEqual(from, to) || isToAnyDatatype(to) || isListOfTypeDatatype(from, to)
+        return isNoConversionNeccessary(from, to) || isListToListConversionAvailable(from, to)
                 || isSingleConversionAvailable(from, to);
     }
 
@@ -121,7 +121,11 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         return from.equals(to);
     }
 
-    private boolean isToAnyDatatype(Datatype to) {
+    private boolean isNoConversionNeccessary(Datatype from, Datatype to) {
+        return isEqual(from, to) || isAnyDatatype(to);
+    }
+
+    private boolean isAnyDatatype(Datatype to) {
         return to instanceof AnyDatatype;
     }
 
@@ -129,11 +133,11 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         return getSingleConversionCode(from, to) != null;
     }
 
-    private boolean isListOfTypeDatatype(Datatype from, Datatype to) {
-        return isFromAndToListOfTypeDatatype(from, to) && canConvertBasicDatatype(from, to);
+    private boolean isListToListConversionAvailable(Datatype from, Datatype to) {
+        return isListToListConversion(from, to) && canConvertBasicDatatype(from, to);
     }
 
-    private boolean isFromAndToListOfTypeDatatype(Datatype from, Datatype to) {
+    private boolean isListToListConversion(Datatype from, Datatype to) {
         return isInstanceListOfTypeDatatype(from) && isInstanceListOfTypeDatatype(to);
     }
 
@@ -163,10 +167,10 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         if (nullCheck(from, to)) {
             return null;
         }
-        if (isEqual(from, to) || isToAnyDatatype(to)) {
+        if (isNoConversionNeccessary(from, to)) {
             return fromValue;
         }
-        if (isListOfTypeDatatype(from, to)) {
+        if (isListToListConversionAvailable(from, to)) {
             return getSingleConversionCode(getBasicDatatype(from), getBasicDatatype(to)).getConversionCode(fromValue);
         }
         if (isSingleConversionAvailable(from, to)) {
