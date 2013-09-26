@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -77,6 +80,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
         Datatype conextDatatype = getBasicDatatype(contextCompilationResult);
         IAttribute attribute = node.getAttribute();
+        String attributeDatatypeClassName = getDatatypeClassname(attribute);
         String parameterAttributGetterName = getAttributeGetterName(attribute, node.isDefaultValueAccess());
 
         JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
@@ -84,9 +88,9 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         getTargetCode.append("<"); //$NON-NLS-1$
         getTargetCode.appendClassName(getJavaClassName(conextDatatype));
         getTargetCode.append(", "); //$NON-NLS-1$
-        getTargetCode.appendClassName(attribute.getDatatype());
+        getTargetCode.appendClassName(attributeDatatypeClassName);
         getTargetCode.append(">(){\n@Override protected "); //$NON-NLS-1$
-        getTargetCode.appendClassName(attribute.getDatatype());
+        getTargetCode.appendClassName(attributeDatatypeClassName);
         getTargetCode.append(" getValueInternal("); //$NON-NLS-1$
         getTargetCode.appendClassName(getJavaClassName(conextDatatype));
         getTargetCode.append(" sourceObject){return sourceObject." + parameterAttributGetterName); //$NON-NLS-1$
@@ -95,6 +99,18 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         getTargetCode.append(")"); //$NON-NLS-1$
 
         return new CompilationResultImpl(getTargetCode, node.getDatatype());
+    }
+
+    private String getDatatypeClassname(IAttribute attribute) {
+        try {
+            ValueDatatype datatype = attribute.findDatatype(getIpsProject());
+            if (datatype.isPrimitive()) {
+                datatype = datatype.getWrapperType();
+            }
+            return getJavaClassName(datatype);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private Datatype getBasicDatatype(CompilationResult<JavaCodeFragment> contextCompilationResult) {
