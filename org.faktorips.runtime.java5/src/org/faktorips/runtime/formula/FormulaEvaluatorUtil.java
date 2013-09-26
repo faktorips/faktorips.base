@@ -75,12 +75,14 @@ public class FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, the list is empty if no such object is
      *         found in the list
      */
-    public static <T extends IModelObject> List<T> getListModelObjectById(List<? extends T> modelObjects, String id) {
-        List<T> returnList = new ArrayList<T>();
+    public static <T extends IModelObject, R extends T> List<R> getListModelObjectById(List<T> modelObjects, String id) {
+        List<R> returnList = new ArrayList<R>();
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-                    returnList.add(modelObject);
+                    @SuppressWarnings("unchecked")
+                    R castedModelObject = (R)modelObject;
+                    returnList.add(castedModelObject);
                 }
             }
         }
@@ -119,7 +121,9 @@ public class FormulaEvaluatorUtil {
         public boolean exists() {
             try {
                 return existsInternal();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 return false;
             }
         }
