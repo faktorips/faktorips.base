@@ -257,7 +257,7 @@ public class FormulaEvaluatorUtil {
      * 
      * @author HBaagil
      */
-    public static abstract class FunctionWithListAsArgumentHelper<E> {
+    public abstract static class FunctionWithListAsArgumentHelper<E> {
 
         /**
          * Returns the result of this function given a list of values.

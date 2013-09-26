@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.fl.AbstractCompilationResult;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.junit.Test;
@@ -31,22 +30,23 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractMinMaxListTest {
-    private MinMaxDecimalList maxList = new MinMaxDecimalList("max", "", true);
+public class MinMaxListTest {
+
+    private MinMaxList maxList = new MinMaxList("max", "", true);
     private JavaCodeFragment argumentFragment = new JavaCodeFragment("valueList");
     private ListOfTypeDatatype datatype = new ListOfTypeDatatype(Datatype.DECIMAL);
 
     @Mock
-    AbstractCompilationResult<JavaCodeFragment> argumentCompilationResult;
+    CompilationResultImpl argumentCompilationResult;
 
     @Test(expected = IllegalArgumentException.class)
     public void testCompile_NumberOfArgumentsZero() {
-        maxList.compile(new CompilationResult[0]);
+        maxList.compile(new CompilationResultImpl[0]);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCompile_NumberOfArgumentsMany() {
-        maxList.compile(new CompilationResult[2]);
+        maxList.compile(new CompilationResultImpl[2]);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class AbstractMinMaxListTest {
         JavaCodeFragment fragment = new JavaCodeFragment("currentResult.max(nextValue)");
         doReturn(fragment).when(maxList).generateFunctionCall(arg1Result, arg2Result);
 
-        CompilationResult[] argument = new CompilationResult[] { argumentCompilationResult };
+        CompilationResultImpl[] argument = new CompilationResultImpl[] { argumentCompilationResult };
 
         CompilationResult<JavaCodeFragment> compile = maxList.compile(argument);
         assertNotNull(compile);

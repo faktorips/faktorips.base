@@ -76,7 +76,7 @@ public enum FunctionSignatures {
      * @see ListOfTypeDatatype
      * @see AnyDatatype
      */
-    MaxList(DECIMAL, new Datatype[] { new ListOfTypeDatatype(DECIMAL) }),
+    MaxList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
      * Returns the maximum of the two arguments.<br/>
      * {@code Decimal=Max(Decimal,Decimal)}
@@ -118,7 +118,7 @@ public enum FunctionSignatures {
      * @see ListOfTypeDatatype
      * @see AnyDatatype
      */
-    MinList(DECIMAL, new Datatype[] { new ListOfTypeDatatype(DECIMAL) }),
+    MinList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
      * Returns the minimum of the two arguments.<br/>
      * {@code Decimal=Min(Decimal,Decimal)}

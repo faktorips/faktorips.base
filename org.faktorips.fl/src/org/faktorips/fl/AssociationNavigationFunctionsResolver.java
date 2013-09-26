@@ -17,7 +17,7 @@ import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.functions.Exists;
-import org.faktorips.fl.functions.MinMaxDecimalList;
+import org.faktorips.fl.functions.MinMaxList;
 
 /**
  * A {@link FunctionResolver} that supports association navigation {@link FlFunction functions}. The
@@ -37,8 +37,8 @@ public class AssociationNavigationFunctionsResolver extends LocalizedFunctionsRe
     public AssociationNavigationFunctionsResolver(Locale locale) {
         super(locale);
         add(new Exists(getFctName(EXISTS), getFctDescription(EXISTS)));
-        add(new MinMaxDecimalList(getFctName(MIN), getFctDescription(MIN), false));
-        add(new MinMaxDecimalList(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxList(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxList(getFctName(MAX), getFctDescription(MAX), true));
     }
 
     @Override

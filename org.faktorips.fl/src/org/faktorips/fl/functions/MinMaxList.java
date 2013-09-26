@@ -22,11 +22,11 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
 
-public abstract class AbstractMinMaxList extends AbstractFlFunction {
+public class MinMaxList extends AbstractFlFunction {
 
     private final String functionName;
 
-    public AbstractMinMaxList(String name, String description, boolean isMax) {
+    public MinMaxList(String name, String description, boolean isMax) {
         super(name, description, isMax ? FunctionSignatures.MaxList : FunctionSignatures.MinList);
         functionName = isMax ? "max" : "min";
     }
@@ -47,7 +47,7 @@ public abstract class AbstractMinMaxList extends AbstractFlFunction {
         CompilationResultImpl arg1Result = new CompilationResultImpl("currentResult", getBasicType(listArgument));
         CompilationResultImpl arg2Result = new CompilationResultImpl("nextValue", getBasicType(listArgument));
 
-        String datatypeClassName = getDatatypeClassName();
+        String datatypeClassName = getBasicType(listArgument).getJavaClassName();
 
         fragment.append("new ");
         fragment.appendClassName("org.faktorips.runtime.formula.FormulaEvaluatorUtil.FunctionWithListAsArgumentHelper");
@@ -72,8 +72,6 @@ public abstract class AbstractMinMaxList extends AbstractFlFunction {
         return fragment;
     }
 
-    protected abstract String getDatatypeClassName();
-
     protected JavaCodeFragment generateReturnFallBackValueCall() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("throw new ");
@@ -85,8 +83,7 @@ public abstract class AbstractMinMaxList extends AbstractFlFunction {
     protected JavaCodeFragment generateFunctionCall(CompilationResultImpl argument1, CompilationResultImpl argument2) {
         CompilationResultImpl[] arguments = new CompilationResultImpl[] { argument1, argument2 };
         Datatype[] datatypes = new Datatype[] { argument1.getDatatype(), argument2.getDatatype() };
-        return getCompiler().getMatchingFunctionUsingConversion(arguments, datatypes, getFunctionName().toUpperCase())
-                .getCodeFragment();
+        return getCompiler().getMatchingFunctionUsingConversion(arguments, datatypes, getName()).getCodeFragment();
     }
 
     protected CompilationResultImpl createCompilationResult(CompilationResult<JavaCodeFragment> listArgument,
