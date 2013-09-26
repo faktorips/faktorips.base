@@ -50,7 +50,7 @@ public abstract class AbstractIdentifierResolver<T extends CodeFragment> impleme
         return exprCompiler;
     }
 
-    public IIpsProject getIpsproject() {
+    public IIpsProject getIpsProject() {
         return ipsProject;
     }
 

@@ -476,9 +476,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private void initSupportedPersistenceProviderMap() {
         allSupportedPersistenceProvider = new HashMap<String, CachedPersistenceProvider>(2);
         allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
-                CachedPersistenceProvider.create(EclipseLink1PersistenceProvider.class));
+                createCachedPersistenceProvider(EclipseLink1PersistenceProvider.class));
         allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0,
-                CachedPersistenceProvider.create(GenericJPA2PersistenceProvider.class));
+                createCachedPersistenceProvider(GenericJPA2PersistenceProvider.class));
     }
 
     @Override
@@ -509,14 +509,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return null;
         }
 
-        if (pProviderCached.cachedProvider == null) {
+        if (pProviderCached.getCachedProvider() == null) {
             try {
-                pProviderCached.cachedProvider = pProviderCached.persistenceProviderClass.newInstance();
+                pProviderCached.setCachedProvider(pProviderCached.getPersistenceProviderClass().newInstance());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        return pProviderCached.cachedProvider;
+        return pProviderCached.getCachedProvider();
     }
 
     public String getJavaClassName(Datatype datatype) {
@@ -636,14 +636,26 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return generatorModelContext;
     }
 
+    private CachedPersistenceProvider createCachedPersistenceProvider(Class<? extends IPersistenceProvider> pPClass) {
+        CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
+        providerCache.persistenceProviderClass = pPClass;
+        return providerCache;
+    }
+
     private static class CachedPersistenceProvider {
         private Class<? extends IPersistenceProvider> persistenceProviderClass;
         private IPersistenceProvider cachedProvider = null;
 
-        private static CachedPersistenceProvider create(Class<? extends IPersistenceProvider> pPClass) {
-            CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
-            providerCache.persistenceProviderClass = pPClass;
-            return providerCache;
+        private Class<? extends IPersistenceProvider> getPersistenceProviderClass() {
+            return persistenceProviderClass;
+        }
+
+        private IPersistenceProvider getCachedProvider() {
+            return cachedProvider;
+        }
+
+        private void setCachedProvider(IPersistenceProvider cachedProvider) {
+            this.cachedProvider = cachedProvider;
         }
     }
 

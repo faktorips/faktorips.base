@@ -105,7 +105,7 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
             getTargetCode.append(" getTargetInternal("); //$NON-NLS-1$
         }
         getTargetCode.appendClassName(sourceClassName).append(" sourceObject){return ")
-                .append(compileSingleObjectContext(new JavaCodeFragment("sourceObject"), node)) //
+                .append(compileSingleObjectContext(new JavaCodeFragment("sourceObject"), node))
                 .append(";}}.getTargets(") //$NON-NLS-1$
                 .append(contextCompilationResult.getCodeFragment()).append(")"); //$NON-NLS-1$
 

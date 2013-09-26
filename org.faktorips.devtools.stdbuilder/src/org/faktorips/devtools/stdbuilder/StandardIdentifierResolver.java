@@ -52,7 +52,7 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
 
     @Override
     protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
-        return new CompilationResultImpl("this", getExpression().findProductCmptType(getIpsproject())); //$NON-NLS-1$
+        return new CompilationResultImpl("this", getExpression().findProductCmptType(getIpsProject())); //$NON-NLS-1$
     }
 
     private static class StdIdentifierNodeGeneratorFactory implements IdentifierNodeGeneratorFactory<JavaCodeFragment> {
