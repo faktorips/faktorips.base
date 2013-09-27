@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -102,6 +101,7 @@ public class QualifierNodeGeneratorTest {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
         XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        when(contextCompilationResult.getDatatype()).thenReturn(target);
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckung");
@@ -116,7 +116,7 @@ public class QualifierNodeGeneratorTest {
         assertNotNull(compilationResult.getDatatype());
         assertEquals(target, compilationResult.getDatatype());
         assertEquals(
-                "FormulaEvaluatorUtil.<PolicyCmptType>getModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                "FormulaEvaluatorUtil.<PolicyCmptType, PolicyCmptType>getModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
                 compilationResult.getCodeFragment().getSourcecode());
     }
 
@@ -126,8 +126,10 @@ public class QualifierNodeGeneratorTest {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
         XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        when(contextCompilationResult.getDatatype()).thenReturn(target);
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(type, true)).thenReturn("SubPolicyCmptType");
+        when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckung");
         when(type.getQualifiedName()).thenReturn("zusatzdeckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", type,
@@ -140,7 +142,7 @@ public class QualifierNodeGeneratorTest {
         assertNotNull(compilationResult.getDatatype());
         assertEquals(type, compilationResult.getDatatype());
         assertEquals(
-                "FormulaEvaluatorUtil.<SubPolicyCmptType>getModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                "FormulaEvaluatorUtil.<PolicyCmptType, SubPolicyCmptType>getModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
                 compilationResult.getCodeFragment().getSourcecode());
     }
 
@@ -149,6 +151,7 @@ public class QualifierNodeGeneratorTest {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
         XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
+        when(contextCompilationResult.getDatatype()).thenReturn(target);
         when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
         when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
@@ -162,7 +165,9 @@ public class QualifierNodeGeneratorTest {
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult.getDatatype());
         assertEquals(new ListOfTypeDatatype(target), compilationResult.getDatatype());
-        assertTrue(compilationResult.getCodeFragment().getSourcecode().startsWith("FormulaEvaluatorUtil"));
+        assertEquals(
+                "FormulaEvaluatorUtil.<PolicyCmptType, PolicyCmptType>getListModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                compilationResult.getCodeFragment().getSourcecode());
     }
 
     @Test
@@ -186,7 +191,7 @@ public class QualifierNodeGeneratorTest {
         assertNotNull(compilationResult.getDatatype());
         assertEquals(listOfTypeDatatype, compilationResult.getDatatype());
         assertEquals(
-                "FormulaEvaluatorUtil.getListModelObjectById(new AssociationTo1Helper<PolicyCmptType, PolicyCmptType>(){@Override protected PolicyCmptType getTargetInternal(PolicyCmptType sourceObject){return sourceObject.getHausratZusatzdeckungen();}}.getTargets(vertrag), \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                "FormulaEvaluatorUtil.<PolicyCmptType, PolicyCmptType>getListModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
                 compilationResult.getCodeFragment().getSourcecode());
     }
 
@@ -211,7 +216,7 @@ public class QualifierNodeGeneratorTest {
         assertNotNull(compilationResult.getDatatype());
         assertEquals(listOfTypeDatatype, compilationResult.getDatatype());
         assertEquals(
-                "FormulaEvaluatorUtil.getListModelObjectById(new AssociationTo1Helper<PolicyCmptType, PolicyCmptType>(){@Override protected PolicyCmptType getTargetInternal(PolicyCmptType sourceObject){return (PolicyCmptType)sourceObject.getHausratZusatzdeckungen();}}.getTargets(vertrag), \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
+                "FormulaEvaluatorUtil.<PolicyCmptType, PolicyCmptType>getListModelObjectById(vertrag, \"hausrat.HRD-Fahrraddiebstahl 2012-03\")",
                 compilationResult.getCodeFragment().getSourcecode());
     }
 }
