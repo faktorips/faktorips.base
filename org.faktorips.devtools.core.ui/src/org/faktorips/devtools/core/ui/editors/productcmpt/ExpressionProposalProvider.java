@@ -327,12 +327,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    protected boolean isListOfTypeDatatype(Datatype datatype) {
+    protected boolean isListDatatype(Datatype datatype) {
         return datatype instanceof ListOfTypeDatatype;
     }
 
     protected Datatype getBasicDatatype(Datatype datatype) {
-        if (isListOfTypeDatatype(datatype)) {
+        if (isListDatatype(datatype)) {
             ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)datatype;
             return listDatatype.getBasicDatatype();
         } else {
@@ -361,10 +361,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                     name = name.substring(0, name.indexOf('['));
                     isIndexed = true;
                 }
-                final boolean isList = target instanceof ListOfTypeDatatype;
-                if (isList) {
-                    target = ((ListOfTypeDatatype)target).getBasicDatatype();
-                }
+                final boolean isList = isListDatatype(target);
+                target = getBasicDatatype(target);
                 final IAssociation association = ((IType)target).findAssociation(name, ipsProjectTmp);
                 target = association.findTarget(ipsProjectTmp);
                 if (qualifier != null && target instanceof IPolicyCmptType) {
