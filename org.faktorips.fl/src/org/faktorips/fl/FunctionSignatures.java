@@ -213,6 +213,10 @@ public enum FunctionSignatures {
      */
     SumDecimal(DECIMAL, new Datatype[] { new ArrayOfValueDatatype(DECIMAL, 1) }),
     /**
+     * 
+     */
+    SumList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
+    /**
      * Returns the argument, rounded down to an Integer.<br/>
      * {@code Integer=WholeNumber(Decimal)}
      * 

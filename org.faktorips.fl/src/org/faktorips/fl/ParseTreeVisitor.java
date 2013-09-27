@@ -16,7 +16,6 @@ package org.faktorips.fl;
 import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.parser.ASTAddNode;
@@ -449,53 +448,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
             return rhsResult;
         }
 
-        BinaryOperation<T> operation = null;
-        BinaryOperation<T>[] operations = compiler.getBinaryOperations(operator);
-        for (BinaryOperation<T> operation2 : operations) {
-            // exact match?
-            if (operation2.getLhsDatatype().equals(lhsResult.getDatatype())
-                    && operation2.getRhsDatatype().equals(rhsResult.getDatatype())) {
-                CompilationResult<T> compilationResult = operation2.generate(lhsResult, rhsResult);
-                return compilationResult;
-            }
-            // match with implicit casting
-            if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
-                    && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(),
-                            operation2.getRhsDatatype()) && operation == null) {
-                // we use the
-                // operation
-                // that matches
-                // with code
-                // conversion
-                operation = operation2;
-            }
-        }
-        if (operation != null) {
-            // use operation with implicit casting
-            AbstractCompilationResult<T> convertedLhsResult = lhsResult;
-            if (!lhsResult.getDatatype().equals(operation.getLhsDatatype())
-                    && (!(operation.getLhsDatatype() instanceof AnyDatatype))) {
-                T convertedLhs = compiler.getConversionCodeGenerator().getConversionCode(lhsResult.getDatatype(),
-                        operation.getLhsDatatype(), lhsResult.getCodeFragment());
-                convertedLhsResult = newCompilationResultImpl(convertedLhs, operation.getLhsDatatype());
-                convertedLhsResult.addMessages(lhsResult.getMessages());
-            }
-            AbstractCompilationResult<T> convertedRhsResult = rhsResult;
-            if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
-                    && (!(operation.getRhsDatatype() instanceof AnyDatatype))) {
-                T convertedRhs = compiler.getConversionCodeGenerator().getConversionCode(rhsResult.getDatatype(),
-                        operation.getRhsDatatype(), rhsResult.getCodeFragment());
-                convertedRhsResult = newCompilationResultImpl(convertedRhs, operation.getRhsDatatype());
-                convertedRhsResult.addMessages(rhsResult.getMessages());
-            }
-            CompilationResult<T> result = operation.generate(convertedLhsResult, convertedRhsResult);
-            return result;
-        }
-        Object[] replacements = new Object[] { operator,
-                lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
-                compiler.getLocale(), replacements);
-        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+        return compiler.getBinaryOperation(operator, lhsResult, rhsResult);
     }
 
     // CSON: CyclomaticComplexityCheck

@@ -13,21 +13,18 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.FunctionSignatures;
 
-public class MinMaxList extends AbstractListFunction {
+public class SumDecimalList extends AbstractMinMaxList {
 
-    public MinMaxList(String name, String description, boolean isMax) {
-        super(name, description, isMax ? FunctionSignatures.MaxList : FunctionSignatures.MinList);
+    public SumDecimalList(String name, String description) {
+        super(name, description, FunctionSignatures.SumDecimalList);
     }
 
     @Override
-    protected JavaCodeFragment generateReturnFallBackValueCall() {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("throw new ");
-        fragment.appendClassName(IllegalArgumentException.class);
-        fragment.append("(\"List argument is empty or null\")");
-        return fragment;
+    protected String getDatatypeClassName() {
+        return Datatype.DECIMAL.getJavaClassName();
     }
+
 }

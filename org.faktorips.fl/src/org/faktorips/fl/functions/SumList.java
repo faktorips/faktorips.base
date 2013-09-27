@@ -14,20 +14,25 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
 
-public class MinMaxList extends AbstractListFunction {
+public class SumList extends AbstractListFunction {
 
-    public MinMaxList(String name, String description, boolean isMax) {
-        super(name, description, isMax ? FunctionSignatures.MaxList : FunctionSignatures.MinList);
+    public SumList(String name, String description) {
+        super(name, description, FunctionSignatures.SumList);
     }
 
     @Override
     protected JavaCodeFragment generateReturnFallBackValueCall() {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("throw new ");
-        fragment.appendClassName(IllegalArgumentException.class);
-        fragment.append("(\"List argument is empty or null\")");
+        fragment.append("return ");
+        fragment.append(getCompiler().getDatatypeHelper(getDatatype()).newInstance("0"));
         return fragment;
+    }
+
+    @Override
+    protected JavaCodeFragment generateFunctionCall(CompilationResultImpl argument1, CompilationResultImpl argument2) {
+        return getCompiler().getBinaryOperation("+", argument1, argument2).getCodeFragment();
     }
 }
