@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -145,10 +144,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         Composite workArea = toolkit.createLabelEditColumnComposite(group);
         workArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-        // top extensions
-        wizard.getExtFactoryInverseAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_TOP);
-
         // role singular
         toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelTargetRoleSingular);
         targetRoleSingularText = toolkit.createText(workArea);
@@ -184,10 +179,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMax = new CardinalityField(maxCardinalityText);
         visibleProperties.add(IAssociation.PROPERTY_MAX_CARDINALITY);
-
-        // bottom extensions
-        wizard.getExtFactoryInverseAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
     }
 
     private void updateDefaultTargetRoleSingular() {
@@ -227,7 +218,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         bindingContext.removeBindings(cardinalityFieldMin.getControl());
         bindingContext.removeBindings(cardinalityFieldMax.getControl());
         bindingContext.removeBindings(description);
-        wizard.getExtFactoryInverseAssociation().removeBinding(bindingContext);
 
         targetRoleSingularText.setText(""); //$NON-NLS-1$
         targetRolePluralText.setText(""); //$NON-NLS-1$
@@ -247,8 +237,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
 
         targetText.setText(association.getTarget());
         typeText.setText(association.getAssociationType().getName());
-
-        wizard.getExtFactoryInverseAssociation().bind(bindingContext);
 
         bindingContext.updateUI();
     }
