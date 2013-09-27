@@ -38,8 +38,8 @@ public class IndexNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
         IndexNode node = (IndexNode)identifierNode;
-        contextCompilationResult.getCodeFragment().append(".get(").append(node.getIndex()).append(")");
-        JavaCodeFragment result = contextCompilationResult.getCodeFragment();
+        JavaCodeFragment result = new JavaCodeFragment(contextCompilationResult.getCodeFragment());
+        result.append(".get(").append(node.getIndex()).append(")");
         return new CompilationResultImpl(result, node.getDatatype());
     }
 }
