@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -42,6 +41,8 @@ import org.faktorips.devtools.core.ui.editors.pctype.AssociationDerivedUnionGrou
  */
 public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage,
         IHiddenWizardPage, IDefaultFocusPage {
+
+    private static final String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
 
     private NewPcTypeAssociationWizard wizard;
     private IProductCmptTypeAssociation association;
@@ -100,7 +101,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
         // description
         descriptionText = wizard.createDescriptionText(pageComposite, 2);
-        visibleProperties.add(IIpsObjectPart.PROPERTY_DESCRIPTION);
+        visibleProperties.add(PROPERTY_DESCRIPTION);
 
         setControl(pageComposite);
     }
@@ -244,7 +245,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
                 IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         bindingContext.bindContent(cardinalityFieldMaxProdCmptType, productCmptAssociation,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(descriptionText, productCmptAssociation, IIpsObjectPart.PROPERTY_DESCRIPTION);
+        bindingContext.bindContent(descriptionText, productCmptAssociation, PROPERTY_DESCRIPTION);
 
         derivedUnionGroup.bindContent(bindingContext, association);
 
