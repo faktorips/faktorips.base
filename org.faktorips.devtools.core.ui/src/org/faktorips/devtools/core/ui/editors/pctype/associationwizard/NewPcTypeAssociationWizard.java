@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.util.memento.Memento;
@@ -50,19 +49,16 @@ import org.faktorips.util.message.MessageList;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
 
-    final static int NEW_INVERSE_ASSOCIATION = 0;
-    final static int USE_EXISTING_INVERSE_ASSOCIATION = 1;
-    final static int NONE_INVERSE_ASSOCIATION = 2;
+    static final int NEW_INVERSE_ASSOCIATION = 0;
+    static final int USE_EXISTING_INVERSE_ASSOCIATION = 1;
+    static final int NONE_INVERSE_ASSOCIATION = 2;
 
     private UIToolkit toolkit = new UIToolkit(null);
 
     /** indicates that there was an error */
     private boolean isError;
 
-    protected BindingContext bindingContext = new BindingContext();
-    private ExtensionPropertyControlFactory extFactoryAssociation;
-    private ExtensionPropertyControlFactory extFactoryInverseAssociation;
-    private ExtensionPropertyControlFactory extFactoryProductCmptTypeAssociation;
+    private BindingContext bindingContext = new BindingContext();
 
     // model objects
     private IIpsProject ipsProject;
@@ -101,7 +97,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     // helper fields to suppress error messages
     private Set<IWizardPage> displayErrorMessageForPages = new HashSet<IWizardPage>();
     private Set<IWizardPage> visiblePages = new HashSet<IWizardPage>();
-    HashMap<IWizardPage, Integer> suppressedEventForPages = new HashMap<IWizardPage, Integer>();
+    private HashMap<IWizardPage, Integer> suppressedEventForPages = new HashMap<IWizardPage, Integer>();
 
     // stores the last inverse association, to indicate changes of this property
     private String prevInverseAssociationRoleName = ""; //$NON-NLS-1$
@@ -114,7 +110,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         this.association = association;
         ipsProject = association.getIpsProject();
-        extFactoryAssociation = new ExtensionPropertyControlFactory(association);
 
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
@@ -275,8 +270,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Validates the given page
      */
     private boolean validatePageAndDisplayError(IBlockedValidationWizardPage page) {
-        IAssociation association = getAssociationFor(page);
-        if (association == null) {
+        IAssociation associationForPage = getAssociationFor(page);
+        if (associationForPage == null) {
             return true;
         }
 
@@ -286,15 +281,15 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         MessageList list;
         try {
-            if (association instanceof IPolicyCmptTypeAssociation) {
+            if (associationForPage instanceof IPolicyCmptTypeAssociation) {
                 /*
                  * in case of policy component type associations we must validate using the parent,
                  * because the check for duplicate attributes/associations is implemented in
                  * type#validateThis() method
                  */
-                list = ((IPolicyCmptTypeAssociation)association).getPolicyCmptType().validate(ipsProject);
+                list = ((IPolicyCmptTypeAssociation)associationForPage).getPolicyCmptType().validate(ipsProject);
             } else {
-                list = association.validate(ipsProject);
+                list = associationForPage.validate(ipsProject);
             }
         } catch (CoreException e) {
             showAndLogError(e);
@@ -302,7 +297,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
 
         for (String prop : page.getProperties()) {
-            MessageList messagesFor = list.getMessagesFor(association, prop);
+            MessageList messagesFor = list.getMessagesFor(associationForPage, prop);
             if (messagesFor.containsErrorMsg()) {
                 if (displayErrorMessageForPages.contains(page)) {
                     page.setErrorMessage(messagesFor.getFirstMessage(Message.ERROR).getText());
@@ -547,7 +542,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
 
         IPolicyCmptTypeAssociation newInverseAssociation = association.newInverseAssociation();
-        extFactoryInverseAssociation = new ExtensionPropertyControlFactory(newInverseAssociation);
         storeInverseAssociation(newInverseAssociation);
     }
 
@@ -561,7 +555,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
         productCmptTypeIsDirty = productCmptType.getIpsSrcFile().isDirty();
         productCmptTypeAssociation = productCmptType.newAssociation();
-        extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(productCmptTypeAssociation);
         IProductCmptType productCmptTypeTarget;
         try {
             productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);
@@ -571,27 +564,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         } catch (Exception e) {
             showAndLogError(e);
         }
-    }
-
-    /**
-     * @return Returns the extFactoryAssociation.
-     */
-    public ExtensionPropertyControlFactory getExtFactoryAssociation() {
-        return extFactoryAssociation;
-    }
-
-    /**
-     * @return Returns the extFactoryInverseAssociation.
-     */
-    public ExtensionPropertyControlFactory getExtFactoryInverseAssociation() {
-        return extFactoryInverseAssociation;
-    }
-
-    /**
-     * @return Returns the extFactoryInverseAssociation.
-     */
-    public ExtensionPropertyControlFactory getExtFactoryProductCmptTypeAssociation() {
-        return extFactoryProductCmptTypeAssociation;
     }
 
     @Override
@@ -651,11 +623,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     private void initPersistentAssociationInfo() throws CoreException {
         association.getPersistenceAssociatonInfo().initDefaults();
-        IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(ipsProject);
-        if (inverseAssociation == null) {
+        IPolicyCmptTypeAssociation findInverseAssociation = association.findInverseAssociation(ipsProject);
+        if (findInverseAssociation == null) {
             return;
         }
-        inverseAssociation.getPersistenceAssociatonInfo().initDefaults();
+        findInverseAssociation.getPersistenceAssociatonInfo().initDefaults();
     }
 
     @Override

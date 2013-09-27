@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -126,10 +125,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         Composite workArea = toolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // top extensions
-        wizard.getExtFactoryProductCmptTypeAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_TOP);
-
         // aggregation kind
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelType);
         typeCombo = toolkit.createCombo(workArea);
@@ -174,10 +169,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMaxProdCmptType = new CardinalityField(maxCardinalityText);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-
-        // bottom extensions
-        wizard.getExtFactoryProductCmptTypeAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
 
         return workArea;
     }
@@ -232,8 +223,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         bindingContext.removeBindings(subsetCheckbox);
         bindingContext.removeBindings(unionText);
 
-        wizard.getExtFactoryProductCmptTypeAssociation().removeBinding(bindingContext);
-
         targetRoleSingularTextProdCmptType.setText(""); //$NON-NLS-1$
         targetRolePluralTextProdCmptType.setText(""); //$NON-NLS-1$
         cardinalityFieldMinProdCmptType.setText(""); //$NON-NLS-1$
@@ -258,8 +247,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         bindingContext.bindContent(descriptionText, productCmptAssociation, IIpsObjectPart.PROPERTY_DESCRIPTION);
 
         derivedUnionGroup.bindContent(bindingContext, association);
-
-        wizard.getExtFactoryProductCmptTypeAssociation().bind(bindingContext);
 
         bindingContext.updateUI();
     }
