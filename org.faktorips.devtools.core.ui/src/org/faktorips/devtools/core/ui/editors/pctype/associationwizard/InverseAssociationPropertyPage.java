@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -45,13 +44,15 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 public class InverseAssociationPropertyPage extends WizardPage implements IBlockedValidationWizardPage,
         IHiddenWizardPage, IDefaultFocusPage {
 
+    private static final String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
+
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
     private BindingContext bindingContext;
 
     private ArrayList<String> visibleProperties = new ArrayList<String>(10);
 
-    protected IPolicyCmptTypeAssociation association;
+    private IPolicyCmptTypeAssociation association;
 
     private Text targetRoleSingularText;
     private Text targetRolePluralText;
@@ -132,7 +133,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         createMainProperties(parent);
 
         description = wizard.createDescriptionText(parent, 2);
-        visibleProperties.add(IIpsObjectPart.PROPERTY_DESCRIPTION);
+        visibleProperties.add(PROPERTY_DESCRIPTION);
 
         return parent;
     }
@@ -233,7 +234,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         bindingContext.bindContent(targetRolePluralText, association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         bindingContext.bindContent(cardinalityFieldMin, association, IAssociation.PROPERTY_MIN_CARDINALITY);
         bindingContext.bindContent(cardinalityFieldMax, association, IAssociation.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(description, association, IIpsObjectPart.PROPERTY_DESCRIPTION);
+        bindingContext.bindContent(description, association, PROPERTY_DESCRIPTION);
 
         targetText.setText(association.getTarget());
         typeText.setText(association.getAssociationType().getName());

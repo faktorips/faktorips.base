@@ -342,17 +342,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return null;
         }
 
-        // set default focus
-        if (page instanceof IDefaultFocusPage) {
-            if (isSuppressedEventFor(page, false)) {
-                getShell().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((IDefaultFocusPage)page).setDefaultFocus();
-                    }
-                });
-            }
-        }
+        setDefaultFocus(page);
 
         // indicates that the page was displayed before
         visiblePages.add(page);
@@ -361,10 +351,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
 
         // if there is an error on the current page then to no next page could be switched
-        if (page instanceof IBlockedValidationWizardPage) {
-            if (!validatePageAndDisplayError((IBlockedValidationWizardPage)page)) {
-                return null;
-            }
+        if (checkError(page)) {
+            return null;
         }
 
         // check if this is the last page
@@ -408,6 +396,29 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
 
         return nextPage;
+    }
+
+    private boolean checkError(IWizardPage page) {
+        if (page instanceof IBlockedValidationWizardPage) {
+            if (!validatePageAndDisplayError((IBlockedValidationWizardPage)page)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setDefaultFocus(final IWizardPage page) {
+        // set default focus
+        if (page instanceof IDefaultFocusPage) {
+            if (isSuppressedEventFor(page, false)) {
+                getShell().getDisplay().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((IDefaultFocusPage)page).setDefaultFocus();
+                    }
+                });
+            }
+        }
     }
 
     private IWizardPage getNextWizardPage(IWizardPage page) {
@@ -561,7 +572,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             productCmptTypeAssociation.setTarget(productCmptTypeTarget.getQualifiedName());
             confProdCmptTypePropertyPage
                     .setProductCmptTypeAssociationAndUpdatePage((IProductCmptTypeAssociation)productCmptTypeAssociation);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             showAndLogError(e);
         }
     }
@@ -570,15 +583,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public boolean performFinish() {
         try {
             // check and perform the last state change of the radio selection pages
-            if (inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION) {
-                handleInverseAssociationSelectionState();
-            }
-            if (!configureProductCmptType) {
-                handleConfProdCmptTypeSelectionState();
-            }
-            if (association.getPolicyCmptType().isPersistentEnabled()) {
-                initPersistentAssociationInfo();
-            }
+            checkAndPerformLastStateChange();
+
             boolean saveTargetAutomatically = false;
             if (targetPolicyCmptType != null
                     && !targetPolicyCmptType.getIpsSrcFile().equals(association.getIpsObject().getIpsSrcFile())) {
@@ -619,6 +625,18 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return false;
         }
         return true;
+    }
+
+    private void checkAndPerformLastStateChange() throws CoreException {
+        if (inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION) {
+            handleInverseAssociationSelectionState();
+        }
+        if (!configureProductCmptType) {
+            handleConfProdCmptTypeSelectionState();
+        }
+        if (association.getPolicyCmptType().isPersistentEnabled()) {
+            initPersistentAssociationInfo();
+        }
     }
 
     private void initPersistentAssociationInfo() throws CoreException {
