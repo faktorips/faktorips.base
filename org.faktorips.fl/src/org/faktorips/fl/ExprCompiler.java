@@ -586,18 +586,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         return LOCALIZED_STRINGS;
     }
 
-    private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
-
-        /**
-         * Comment for <code>serialVersionUID</code>
-         */
-        private static final long serialVersionUID = -6448576956808509752L;
-
-        public int compare(FlFunction<?> o1, FlFunction<?> o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    }
-
     public CompilationResult<T> getMatchingFunctionUsingConversion(AbstractCompilationResult<T>[] argResults,
             Datatype[] argTypes,
             String fctName) {
@@ -683,7 +671,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     }
 
     private CompilationResult<T>[] convert(FlFunction<T> flFunction, CompilationResult<T>[] argResults) {
-        ConversionCodeGenerator<T> conversionCg = getConversionCodeGenerator();
+        ConversionCodeGenerator<T> conversionCodeGenerator = getConversionCodeGenerator();
         @SuppressWarnings("unchecked")
         AbstractCompilationResult<T>[] convertedArgs = new AbstractCompilationResult[argResults.length];
         for (int i = 0; i < argResults.length; i++) {
@@ -693,7 +681,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             if (functionDatatype instanceof AnyDatatype) {
                 convertedArgs[i] = (AbstractCompilationResult<T>)argResults[i];
             } else {
-                T fragment = conversionCg.getConversionCode(argResults[i].getDatatype(), functionDatatype,
+                T fragment = conversionCodeGenerator.getConversionCode(argResults[i].getDatatype(), functionDatatype,
                         argResults[i].getCodeFragment());
                 convertedArgs[i] = newCompilationResultImpl(fragment, functionDatatype);
                 convertedArgs[i].addMessages(argResults[i].getMessages());
@@ -702,4 +690,15 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         return convertedArgs;
     }
 
+    private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = -6448576956808509752L;
+
+        public int compare(FlFunction<?> o1, FlFunction<?> o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
 }

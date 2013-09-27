@@ -467,7 +467,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         String kind = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_FORMULA_COMPILING);
         try {
             return FormulaCompiling.valueOf(kind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // if value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
         }
@@ -512,7 +514,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         if (pProviderCached.getCachedProvider() == null) {
             try {
                 pProviderCached.setCachedProvider(pProviderCached.getPersistenceProviderClass().newInstance());
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 throw new RuntimeException(e);
             }
         }
@@ -555,13 +559,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
-            if (builder instanceof ProductCmptBuilder) {
-                builder = ((ProductCmptBuilder)builder).getGenerationBuilder();
+            IIpsArtefactBuilder builderTemp = builder;
+            if (builderTemp instanceof ProductCmptBuilder) {
+                builderTemp = ((ProductCmptBuilder)builder).getGenerationBuilder();
             }
-            if (!(builder instanceof JavaSourceFileBuilder)) {
+            if (!(builderTemp instanceof JavaSourceFileBuilder)) {
                 continue;
             }
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
+            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builderTemp;
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
             try {
                 if (javaBuilder.isBuilderFor(ipsSrcFile)) {
