@@ -468,7 +468,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         } catch (TokenMgrError e) {
-            e.printStackTrace();
             String text = LOCALIZED_STRINGS.getString(LEXICAL_ERROR, getLocale(), e.getMessage());
             return newCompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
         }
@@ -483,7 +482,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
-            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         }
@@ -503,7 +501,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
-            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         }
