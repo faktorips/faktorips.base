@@ -307,6 +307,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addMatchingAttributes(List<IContentProposal> result, String paramName, String attributePrefix) {
         try {
             Datatype datatype = findParamDatatype(paramName);
+            datatype = getBasicDatatype(datatype);
             if (!(datatype instanceof IType)) {
                 return;
             }
@@ -323,6 +324,19 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    protected boolean isListOfTypeDatatype(Datatype datatype) {
+        return datatype instanceof ListOfTypeDatatype;
+    }
+
+    protected Datatype getBasicDatatype(Datatype datatype) {
+        if (isListOfTypeDatatype(datatype)) {
+            ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)datatype;
+            return listDatatype.getBasicDatatype();
+        } else {
+            return datatype;
         }
     }
 
@@ -447,7 +461,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             final String paramName,
             final String attributePrefix) {
         try {
-            final Datatype datatype = findParamDatatype(paramName);
+            Datatype datatype = findParamDatatype(paramName);
+            datatype = getBasicDatatype(datatype);
             if (!(datatype instanceof IPolicyCmptType)) {
                 return;
             }
