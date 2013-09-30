@@ -687,24 +687,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         return convertedArgs;
     }
 
-    private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
-
-        /**
-         * Comment for <code>serialVersionUID</code>
-         */
-        private static final long serialVersionUID = -6448576956808509752L;
-
-        public int compare(FlFunction<?> o1, FlFunction<?> o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    }
-
-    /**
-     * @param operator
-     * @param lhsResult
-     * @param rhsResult
-     * @return
-     */
     public CompilationResult<T> getBinaryOperation(String operator,
             AbstractCompilationResult<T> lhsResult,
             AbstractCompilationResult<T> rhsResult) {
@@ -755,5 +737,17 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, getLocale(),
                 replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+    }
+
+    private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = -6448576956808509752L;
+
+        public int compare(FlFunction<?> o1, FlFunction<?> o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 }

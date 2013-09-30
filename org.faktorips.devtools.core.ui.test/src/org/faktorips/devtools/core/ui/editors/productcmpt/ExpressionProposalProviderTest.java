@@ -238,7 +238,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals("FirstAttrLabel - FirstAttrDescription", proposal.getDescription());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
-        results = proposalProvider.getProposals("s", 1);
+        results = proposalProvider.getProposals("se", 2);
         proposal = results[0];
         assertEquals("secondAttr", proposal.getContent());
 
