@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -43,6 +41,8 @@ import org.faktorips.devtools.core.ui.editors.pctype.AssociationDerivedUnionGrou
  */
 public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage,
         IHiddenWizardPage, IDefaultFocusPage {
+
+    private static final String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
 
     private NewPcTypeAssociationWizard wizard;
     private IProductCmptTypeAssociation association;
@@ -101,7 +101,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
         // description
         descriptionText = wizard.createDescriptionText(pageComposite, 2);
-        visibleProperties.add(IIpsObjectPart.PROPERTY_DESCRIPTION);
+        visibleProperties.add(PROPERTY_DESCRIPTION);
 
         setControl(pageComposite);
     }
@@ -125,10 +125,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private Composite createGeneralControls(Composite parent) {
         Composite workArea = toolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        // top extensions
-        wizard.getExtFactoryProductCmptTypeAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_TOP);
 
         // aggregation kind
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelType);
@@ -174,10 +170,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMaxProdCmptType = new CardinalityField(maxCardinalityText);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-
-        // bottom extensions
-        wizard.getExtFactoryProductCmptTypeAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
 
         return workArea;
     }
@@ -232,8 +224,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         bindingContext.removeBindings(subsetCheckbox);
         bindingContext.removeBindings(unionText);
 
-        wizard.getExtFactoryProductCmptTypeAssociation().removeBinding(bindingContext);
-
         targetRoleSingularTextProdCmptType.setText(""); //$NON-NLS-1$
         targetRolePluralTextProdCmptType.setText(""); //$NON-NLS-1$
         cardinalityFieldMinProdCmptType.setText(""); //$NON-NLS-1$
@@ -255,11 +245,9 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
                 IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         bindingContext.bindContent(cardinalityFieldMaxProdCmptType, productCmptAssociation,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(descriptionText, productCmptAssociation, IIpsObjectPart.PROPERTY_DESCRIPTION);
+        bindingContext.bindContent(descriptionText, productCmptAssociation, PROPERTY_DESCRIPTION);
 
         derivedUnionGroup.bindContent(bindingContext, association);
-
-        wizard.getExtFactoryProductCmptTypeAssociation().bind(bindingContext);
 
         bindingContext.updateUI();
     }

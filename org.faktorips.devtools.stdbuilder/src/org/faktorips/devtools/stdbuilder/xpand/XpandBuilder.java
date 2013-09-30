@@ -77,6 +77,8 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
 
     private final ThreadLocal<StringOutput> threadLocalOut = new ThreadLocal<StringOutput>();
 
+    private final ThreadLocal<ClassLoader> threadLocalOldClassLoader = new ThreadLocal<ClassLoader>();
+
     private final ModelService modelService;
 
     private final GeneratorModelContext generatorModelContext;
@@ -111,6 +113,7 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
 
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        setCorrectClassLoader();
         super.beforeBuildProcess(project, buildKind);
         if (getTemplateDefinition() == null || DEBUG) {
             initTemplate();
@@ -121,6 +124,22 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
             outlet = new StringOutlet(charset, null);
             getOut().addOutlet(outlet);
         }
+    }
+
+    private void setCorrectClassLoader() {
+        Thread current = Thread.currentThread();
+        setOldClassLoader(current.getContextClassLoader());
+        current.setContextClassLoader(getClass().getClassLoader());
+    }
+
+    @Override
+    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        super.afterBuildProcess(project, buildKind);
+        resetOldClassLoader();
+    }
+
+    private void resetOldClassLoader() {
+        Thread.currentThread().setContextClassLoader(getOldClassLoader());
     }
 
     @Override
@@ -260,6 +279,14 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
 
     public void setTemplateDefinition(XpandDefinition templateDefinition) {
         threadLocalTemplateDefinition.set(templateDefinition);
+    }
+
+    public ClassLoader getOldClassLoader() {
+        return threadLocalOldClassLoader.get();
+    }
+
+    public void setOldClassLoader(ClassLoader classLoader) {
+        threadLocalOldClassLoader.set(classLoader);
     }
 
     @Override

@@ -24,7 +24,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -90,10 +89,6 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         Composite workArea = toolkit.createLabelEditColumnComposite(groupGeneral);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // top extensions
-        wizard.getExtFactoryAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_TOP);
-
         // role singular
         toolkit.createFormLabel(workArea, Messages.PropertyPage_labelTargetRoleSingular);
         targetRoleSingularText = toolkit.createText(workArea);
@@ -132,11 +127,6 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
 
         // create note about constrained by product structure
         noteAboutProductStructureConstrained = AssociationQualificationGroup.createConstrainedNote(toolkit, info);
-
-        // bottom extensions
-        wizard.getExtFactoryAssociation().createControls(workArea, toolkit, association,
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
-        wizard.getExtFactoryAssociation().bind(bindingContext);
 
         bindContent();
     }
