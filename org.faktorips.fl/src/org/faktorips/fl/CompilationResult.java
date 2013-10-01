@@ -44,17 +44,6 @@ public interface CompilationResult<T extends CodeFragment> {
     public MessageList getMessages();
 
     /**
-     * Returns the recognized (resolved) identifiers that are used in the formula. Returns an empty
-     * list if the formula does not contain any identifiers.
-     */
-    public String[] getResolvedIdentifiers();
-
-    /**
-     * Returns <code>true</code> if the given candidate identifier is used as identifier.
-     */
-    public boolean isUsedAsIdentifier(String candidateIdentifier);
-
-    /**
      * Returns {@code true} if the compilation was successful, otherwise {@code false}.
      */
     public boolean successfull();

@@ -13,14 +13,9 @@
 
 package org.faktorips.fl;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
-import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.parser.ASTAddNode;
@@ -236,19 +231,6 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         String identifier = node.getLastToken().toString();
         AbstractCompilationResult<T> result = (AbstractCompilationResult<T>)compiler.getIdentifierResolver().compile(
                 identifier, compiler, compiler.getLocale());
-
-        if (!result.failed()) {
-            // add the identifier only if there are no errors in the compilation result
-            Set<String> allIdentifiersInCurrentResult = result.getIdentifiersUsedAsSet();
-            if (allIdentifiersInCurrentResult != null && allIdentifiersInCurrentResult.contains(identifier)) {
-                // add the current identifier only if the compilation result knows the given
-                // identifier candidate as identifier
-                // e.g. enum constants must not be used as parameter identifier in formulas
-                // see AbstractParameterIdentifierResolver#compileEnumDatatypeValueIdentifier
-                // note: add method does not create duplicates
-                result.addIdentifierUsed(identifier);
-            }
-        }
         return result;
     }
 
@@ -338,11 +320,32 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTFunctionCallNode,
      *      java.lang.Object)
      */
-    // CSOFF: CyclomaticComplexityCheck
     public Object visit(ASTFunctionCallNode node, Object data) {
+        AbstractCompilationResult<T>[] argResults = getCompilationResultForFunctionArguments(node, data);
+        AbstractCompilationResult<T> result = createNewResultAndCopyErrorMessagesIfExistent(argResults);
+        if (result.failed()) {
+            return result;
+        }
 
+        Datatype[] argTypes = result.getDatatypes(argResults);
         String fctName = node.getFirstToken().toString();
 
+        return compiler.getMatchingFunctionUsingConversion(argResults, argTypes, fctName);
+    }
+
+    private AbstractCompilationResult<T> createNewResultAndCopyErrorMessagesIfExistent(AbstractCompilationResult<T>[] argResults) {
+        // compilation errors in the result?
+        AbstractCompilationResult<T> result = newCompilationResultImpl();
+        for (AbstractCompilationResult<T> argResult : argResults) {
+            if (argResult.failed()) {
+                result.addMessages(argResult.getMessages());
+            }
+        }
+        return result;
+    }
+
+    private AbstractCompilationResult<T>[] getCompilationResultForFunctionArguments(ASTFunctionCallNode node,
+            Object data) {
         AbstractCompilationResult<T>[] argResults;
         if (node.jjtGetNumChildren() == 0) {
             @SuppressWarnings("unchecked")
@@ -354,77 +357,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
                     .jjtAccept(this, data);
             argResults = compilationResultImpls;
         }
-
-        // compilation errors in the result?
-        AbstractCompilationResult<T> result = newCompilationResultImpl();
-        for (AbstractCompilationResult<T> argResult : argResults) {
-            if (argResult.failed()) {
-                result.addMessages(argResult.getMessages());
-            }
-        }
-        if (result.failed()) {
-            return result;
-        }
-
-        Datatype[] argTypes = result.getDatatypes(argResults);
-
-        // function that matches using implicit conversions
-        FlFunction<T> function = null;
-        boolean functionFoundByName = false;
-        FlFunction<T>[] functions = compiler.getFunctions();
-        LinkedHashSet<FlFunction<T>> ambiguousFunctions = compiler.getAmbiguousFunctions(functions);
-
-        for (FlFunction<T> function2 : functions) {
-            if (function2.match(fctName, argTypes)) {
-                if (isAmbiguousFunction(function2, ambiguousFunctions)) {
-                    return createAmbiguousFunctionCompilationResultImpl(function2);
-                }
-                return function2.compile(argResults);
-            } else if (function2.matchUsingConversion(fctName, argTypes, compiler.getConversionCodeGenerator())) {
-                function = function2;
-            } else if (!functionFoundByName && function2.getName().equals(fctName)) {
-                functionFoundByName = true;
-            }
-        }
-
-        if (function != null) {
-            if (isAmbiguousFunction(function, ambiguousFunctions)) {
-                return createAmbiguousFunctionCompilationResultImpl(function);
-            }
-            return function.compile(convert(function, argResults));
-        }
-
-        // if the function name is defined but the argument types are wrong
-        // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
-        if (functionFoundByName) {
-            Object[] replacements = new String[] { fctName, argTypesToString(argResults) };
-            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
-                    compiler.getLocale(), replacements);
-            return newCompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
-        }
-
-        // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_FUNCTION,
-                compiler.getLocale(), fctName);
-        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
-    }
-
-    // CSOFN: CyclomaticComplexityCheck
-
-    private AbstractCompilationResult<T> createAmbiguousFunctionCompilationResultImpl(FlFunction<T> flFunction) {
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL,
-                compiler.getLocale(), flFunction.getName());
-
-        return newCompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
-    }
-
-    private boolean isAmbiguousFunction(FlFunction<T> flFunction, LinkedHashSet<FlFunction<T>> ambiguousFunctions) {
-        for (FlFunction<T> ambiguousFlFunction : ambiguousFunctions) {
-            if (flFunction.isSame(ambiguousFlFunction)) {
-                return true;
-            }
-        }
-        return false;
+        return argResults;
     }
 
     /**
@@ -515,92 +448,9 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
             return rhsResult;
         }
 
-        BinaryOperation<T> operation = null;
-        BinaryOperation<T>[] operations = compiler.getBinaryOperations(operator);
-        for (BinaryOperation<T> operation2 : operations) {
-            // exact match?
-            if (operation2.getLhsDatatype().equals(lhsResult.getDatatype())
-                    && operation2.getRhsDatatype().equals(rhsResult.getDatatype())) {
-                CompilationResult<T> compilationResult = operation2.generate(lhsResult, rhsResult);
-                return compilationResult;
-            }
-            // match with implicit casting
-            if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
-                    && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(),
-                            operation2.getRhsDatatype()) && operation == null) {
-                // we use the
-                // operation
-                // that matches
-                // with code
-                // conversion
-                operation = operation2;
-            }
-        }
-        if (operation != null) {
-            // use operation with implicit casting
-            AbstractCompilationResult<T> convertedLhsResult = lhsResult;
-            if (!lhsResult.getDatatype().equals(operation.getLhsDatatype())
-                    && (!(operation.getLhsDatatype() instanceof AnyDatatype))) {
-                T convertedLhs = compiler.getConversionCodeGenerator().getConversionCode(lhsResult.getDatatype(),
-                        operation.getLhsDatatype(), lhsResult.getCodeFragment());
-                convertedLhsResult = newCompilationResultImpl(convertedLhs, operation.getLhsDatatype());
-                convertedLhsResult.addMessages(lhsResult.getMessages());
-                convertedLhsResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
-            }
-            AbstractCompilationResult<T> convertedRhsResult = rhsResult;
-            if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
-                    && (!(operation.getRhsDatatype() instanceof AnyDatatype))) {
-                T convertedRhs = compiler.getConversionCodeGenerator().getConversionCode(rhsResult.getDatatype(),
-                        operation.getRhsDatatype(), rhsResult.getCodeFragment());
-                convertedRhsResult = newCompilationResultImpl(convertedRhs, operation.getRhsDatatype());
-                convertedRhsResult.addMessages(rhsResult.getMessages());
-                convertedRhsResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
-            }
-            CompilationResult<T> result = operation.generate(convertedLhsResult, convertedRhsResult);
-            return result;
-        }
-        Object[] replacements = new Object[] { operator,
-                lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
-        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
-                compiler.getLocale(), replacements);
-        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+        return compiler.getBinaryOperation(operator, lhsResult, rhsResult);
     }
 
     // CSON: CyclomaticComplexityCheck
-
-    private String argTypesToString(CompilationResult<T>[] results) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < results.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(results[i].getDatatype().getName());
-        }
-        return buffer.toString();
-    }
-
-    private CompilationResult<T>[] convert(FlFunction<T> flFunction, CompilationResult<T>[] argResults) {
-        ConversionCodeGenerator<T> conversionCg = compiler.getConversionCodeGenerator();
-        @SuppressWarnings("unchecked")
-        AbstractCompilationResult<T>[] convertedArgs = new AbstractCompilationResult[argResults.length];
-        for (int i = 0; i < argResults.length; i++) {
-
-            Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0] : flFunction
-                    .getArgTypes()[i];
-            if (functionDatatype instanceof AnyDatatype) {
-                convertedArgs[i] = (AbstractCompilationResult<T>)argResults[i];
-            } else {
-                T fragment = conversionCg.getConversionCode(argResults[i].getDatatype(), functionDatatype,
-                        argResults[i].getCodeFragment());
-                convertedArgs[i] = newCompilationResultImpl(fragment, functionDatatype);
-                convertedArgs[i].addMessages(argResults[i].getMessages());
-                if (argResults[i] instanceof AbstractCompilationResult) {
-                    convertedArgs[i].addIdentifiersUsed(((AbstractCompilationResult<T>)argResults[i])
-                            .getIdentifiersUsedAsSet());
-                }
-            }
-        }
-        return convertedArgs;
-    }
 
 }

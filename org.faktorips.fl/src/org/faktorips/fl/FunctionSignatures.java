@@ -71,6 +71,13 @@ public enum FunctionSignatures {
      */
     IsEmpty(PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
     /**
+     * Returns the maximum (greatest value) from a list of values.
+     * 
+     * @see ListOfTypeDatatype
+     * @see AnyDatatype
+     */
+    MaxList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
+    /**
      * Returns the maximum of the two arguments.<br/>
      * {@code Decimal=Max(Decimal,Decimal)}
      * 
@@ -105,6 +112,13 @@ public enum FunctionSignatures {
      * @see Datatype#MONEY
      */
     MaxMoney(MONEY, new Datatype[] { MONEY, MONEY }),
+    /**
+     * Returns the minimum (smallest value) from a list of values.
+     * 
+     * @see ListOfTypeDatatype
+     * @see AnyDatatype
+     */
+    MinList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
      * Returns the minimum of the two arguments.<br/>
      * {@code Decimal=Min(Decimal,Decimal)}
@@ -198,6 +212,10 @@ public enum FunctionSignatures {
      * @see Datatype#DECIMAL
      */
     SumDecimal(DECIMAL, new Datatype[] { new ArrayOfValueDatatype(DECIMAL, 1) }),
+    /**
+     * 
+     */
+    SumList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
      * Returns the argument, rounded down to an Integer.<br/>
      * {@code Integer=WholeNumber(Decimal)}

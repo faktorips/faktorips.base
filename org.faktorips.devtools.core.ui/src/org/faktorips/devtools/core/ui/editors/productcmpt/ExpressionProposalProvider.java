@@ -33,7 +33,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
+import org.faktorips.devtools.core.builder.flidentifier.AttributeParser;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
@@ -307,6 +307,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addMatchingAttributes(List<IContentProposal> result, String paramName, String attributePrefix) {
         try {
             Datatype datatype = findParamDatatype(paramName);
+            datatype = getBasicDatatype(datatype);
             if (!(datatype instanceof IType)) {
                 return;
             }
@@ -323,6 +324,19 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    protected boolean isListDatatype(Datatype datatype) {
+        return datatype instanceof ListOfTypeDatatype;
+    }
+
+    protected Datatype getBasicDatatype(Datatype datatype) {
+        if (isListDatatype(datatype)) {
+            ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)datatype;
+            return listDatatype.getBasicDatatype();
+        } else {
+            return datatype;
         }
     }
 
@@ -347,10 +361,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                     name = name.substring(0, name.indexOf('['));
                     isIndexed = true;
                 }
-                final boolean isList = target instanceof ListOfTypeDatatype;
-                if (isList) {
-                    target = ((ListOfTypeDatatype)target).getBasicDatatype();
-                }
+                final boolean isList = isListDatatype(target);
+                target = getBasicDatatype(target);
                 final IAssociation association = ((IType)target).findAssociation(name, ipsProjectTmp);
                 target = association.findTarget(ipsProjectTmp);
                 if (qualifier != null && target instanceof IPolicyCmptType) {
@@ -447,14 +459,14 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             final String paramName,
             final String attributePrefix) {
         try {
-            final Datatype datatype = findParamDatatype(paramName);
+            Datatype datatype = findParamDatatype(paramName);
+            datatype = getBasicDatatype(datatype);
             if (!(datatype instanceof IPolicyCmptType)) {
                 return;
             }
             String prefix = attributePrefix;
-            if (prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) {
-                prefix = prefix.substring(0,
-                        prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR));
+            if (prefix.indexOf(AttributeParser.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) {
+                prefix = prefix.substring(0, prefix.indexOf(AttributeParser.VALUE_SUFFIX_SEPARATOR_CHAR));
             }
             final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype,
                     getIpsProject());
@@ -484,7 +496,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addDefaultValueToResult(final List<IContentProposal> result,
             final IAttribute attribute,
             final String prefix) {
-        String name = attribute.getName() + AbstractParameterIdentifierResolver.DEFAULT_VALUE_SUFFIX;
+        String name = attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX;
         final String displayText = name
                 + " - " + attribute.getDatatype() + Messages.ExpressionProposalProvider_defaultValue; //$NON-NLS-1$
         final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);

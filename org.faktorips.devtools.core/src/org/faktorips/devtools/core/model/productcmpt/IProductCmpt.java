@@ -144,12 +144,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public boolean containsFormula();
 
     /**
-     * Returns <code>true</code> if any of the generations contain at least one formula with at
-     * least one formula test case. Returns <code>false</code> otherwise.
-     */
-    public boolean containsFormulaTest();
-
-    /**
      * Returns the product component tree that is defined by this component as root and following
      * it's links to other components. This method uses the latest adjustment instead of specific
      * date.

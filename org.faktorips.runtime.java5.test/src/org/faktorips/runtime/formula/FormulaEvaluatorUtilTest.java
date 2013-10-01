@@ -14,8 +14,10 @@
 package org.faktorips.runtime.formula;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +30,9 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelper;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.ExistsHelper;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.FunctionWithListAsArgumentHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +54,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     public interface IBranch extends IModelObject {
+        public Integer getValue();
     }
 
     @Before
@@ -133,6 +138,37 @@ public class FormulaEvaluatorUtilTest {
         assertEquals(branch, targets.get(0));
         assertEquals(branch2, targets.get(1));
         assertEquals(branch3, targets.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * Multiple source objects have a value in special type
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * All the values are in the list
+     */
+    @Test
+    public void testAttributeAccessorHelper() {
+        IBranch branch1 = mock(IBranch.class);
+        IBranch branch2 = mock(IBranch.class);
+
+        List<IBranch> branches = new ArrayList<FormulaEvaluatorUtilTest.IBranch>();
+        when(branch1.getValue()).thenReturn(Integer.valueOf(2));
+        when(branch2.getValue()).thenReturn(Integer.valueOf(3));
+        branches.add(branch1);
+        branches.add(branch2);
+
+        List<Integer> values = new AttributeAccessorHelper<IBranch, Integer>() {
+
+            @Override
+            protected Integer getValueInternal(IBranch sourceObject) {
+                return sourceObject.getValue();
+            }
+
+        }.getAttributeValues(branches);
+
+        assertTrue(values.contains(Integer.valueOf(2)));
+        assertTrue(values.contains(Integer.valueOf(3)));
     }
 
     /**
@@ -269,6 +305,78 @@ public class FormulaEvaluatorUtilTest {
         assertNull(modelObject);
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * a list containing multiple entries for the wanted id is searched
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * all objects with a matching id is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString() {
+        when(treePC.getId()).thenReturn("id1");
+
+        ITree tree2 = mock(ITree.class);
+        IProductComponent treePC2 = mock(IProductComponent.class);
+        when(tree2.getProductComponent()).thenReturn(treePC2);
+        when(treePC2.getId()).thenReturn("id2");
+
+        ITree tree22 = mock(ITree.class);
+        IProductComponent treePC22 = mock(IProductComponent.class);
+        when(tree22.getProductComponent()).thenReturn(treePC2);
+        when(treePC22.getId()).thenReturn("id2");
+
+        ITree tree3 = mock(ITree.class);
+        IProductComponent treePC3 = mock(IProductComponent.class);
+        when(tree3.getProductComponent()).thenReturn(treePC3);
+        when(treePC3.getId()).thenReturn("id3");
+
+        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(
+                Arrays.asList(tree, tree2, tree22, tree3), "id2");
+        assertFalse(modelObjectList.isEmpty());
+        assertEquals(2, modelObjectList.size());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * a empty list is searched for an id
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * A empty list is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString_emptyList() {
+        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(new ArrayList<ITree>(), "id1");
+        assertTrue(modelObjectList.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A list not containing the wanted id is searched
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * A empty list is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString_notInList() {
+        when(treePC.getId()).thenReturn("id1");
+        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(tree), "id2");
+        assertTrue(modelObjectList.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A not product configured model object is tested
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * {@code null} is returned
+     */
+    @Test
+    public void testGetListModelObjectByIdListOfTString_notConfigurable() {
+        List<IBranch> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(branch), "id1");
+        assertTrue(modelObjectList.isEmpty());
+    }
+
     @Test
     public void testExistsHelper() {
         assertEquals(true, new ExistsHelper() {
@@ -294,4 +402,80 @@ public class FormulaEvaluatorUtilTest {
         }.exists());
     }
 
+    @Test
+    public void testFunctionWithListAsArgumentHelperEmptyList() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
+        List<Integer> emptyList = new ArrayList<Integer>();
+        assertEquals(new Integer(0), helper.getResult(emptyList));
+    }
+
+    @Test
+    public void testFunctionWithListAsArgumentHelperOneElementList() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
+        List<Integer> oneElementList = setUpIntList(21);
+        assertEquals(21, helper.getResult(oneElementList).intValue());
+    }
+
+    @Test
+    public void testFunctionWithListAsArgumentHelperSum() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
+        List<Integer> manyElementList = setUpIntList(47, 11, 8, 15);
+        assertEquals(81, helper.getResult(manyElementList).intValue());
+    }
+
+    protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperSum() {
+        FunctionWithListAsArgumentHelper<Integer> helper = new FunctionWithListAsArgumentHelper<Integer>() {
+            @Override
+            public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
+                return currentResult + nextElement;
+            }
+
+            @Override
+            public Integer getFallBackValue() {
+                return 0;
+            }
+        };
+        return helper;
+    }
+
+    protected List<Integer> setUpIntList(Integer... values) {
+        List<Integer> intList = new ArrayList<Integer>(Arrays.asList(values));
+        return intList;
+    }
+
+    @Test
+    public void testFunctionWithListAsArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
+        List<Integer> manyElementList = setUpIntList(47, 11, 8, 15);
+        assertEquals(47, helper.getResult(manyElementList).intValue());
+    }
+
+    @Test
+    public void testFunctionWithEmptyListAsArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
+        List<Integer> emptyList = new ArrayList<Integer>();
+        assertEquals(new Integer(0), helper.getResult(emptyList));
+    }
+
+    @Test
+    public void testFunctionWithOneListAsArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
+        List<Integer> oneElementList = setUpIntList(21);
+        assertEquals(21, helper.getResult(oneElementList).intValue());
+    }
+
+    protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperMax() {
+        FunctionWithListAsArgumentHelper<Integer> helper = new FunctionWithListAsArgumentHelper<Integer>() {
+            @Override
+            public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
+                return Math.max(currentResult, nextElement);
+            }
+
+            @Override
+            public Integer getFallBackValue() {
+                return 0;
+            }
+        };
+        return helper;
+    }
 }

@@ -13,7 +13,6 @@
 
 package org.faktorips.codegen;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -21,7 +20,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,111 +36,98 @@ public class ConversionCodeGeneratorTest {
     }
 
     @Test
-    public void testCanConvert_ReturnTrueIfFromDatatypeIsEqualsToDatatype() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-
-        assertTrue(conversionCodeGenerator.canConvert(Datatype.STRING, Datatype.STRING));
-    }
-
-    @Test
-    public void testCanConvert_ReturnTrueIfToDatatypeIsInstanceOfAnyDatatype() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-
-        assertTrue(conversionCodeGenerator.canConvert(Datatype.STRING, AnyDatatype.INSTANCE));
-    }
-
-    @Test
-    public void testCanConvert_ReturnTrueIfFromDatatypeIsInstanceOfAnyDatatype() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-
-        assertTrue(conversionCodeGenerator.canConvert(AnyDatatype.INSTANCE, Datatype.STRING));
-    }
-
-    @Test
-    public void testCanConvert_ReturnFalseIfSingleConversionOfDatatypePairNotExist() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-
-        assertFalse(conversionCodeGenerator.canConvert(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR));
-    }
-
-    @Test
-    public void testGetConversionCode_ReturnSourceCodeIfFromDatatypeIsEqualsToDatatype() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
-
-        assertEquals("FromValue",
-                conversionCodeGenerator.getConversionCode(Datatype.STRING, Datatype.STRING, javaCodeFragment)
-                        .getSourcecode());
-    }
-
-    @Test
-    public void testCanConvert_ReturSourceCodeIfToDatatypeIsInstanceOfAnyDatatype() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
-
-        assertEquals("FromValue",
-                conversionCodeGenerator.getConversionCode(Datatype.STRING, AnyDatatype.INSTANCE, javaCodeFragment)
-                        .getSourcecode());
-    }
-
-    @Test
-    public void testCanConvert_ReturnSourceCodeIfFromDatatypeIsIsInstanceOfAnyDatatype() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
-
-        assertEquals("String.valueOf(FromValue)",
-                conversionCodeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, javaCodeFragment)
-                        .getSourcecode());
-    }
-
-    @Test
-    public void testCanConvert_ReturnNullIfSingleConversionOfDatatypePairNotExist() {
-        ConversionCodeGenerator<JavaCodeFragment> conversionCodeGenerator = ConversionCodeGenerator.getDefault();
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment("FromValue");
-
-        assertNull(conversionCodeGenerator.getConversionCode(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR,
-                javaCodeFragment));
-    }
-
-    @Test
     public void testCanConvert() {
-        boolean booleanToPrimitiveBoolean = codeGenerator.canConvert(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN);
-        boolean primitiveBooleanToBoolean = codeGenerator.canConvert(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN);
-        assertTrue(booleanToPrimitiveBoolean);
-        assertTrue(primitiveBooleanToBoolean);
+        assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.INTEGER));
+        assertTrue(codeGenerator.canConvert(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN));
+        assertTrue(codeGenerator.canConvert(Datatype.DECIMAL, Datatype.INTEGER));
+        assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.BIG_DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.PRIMITIVE_INT));
+        assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.LONG));
+        assertTrue(codeGenerator.canConvert(Datatype.LONG, Datatype.BIG_DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.LONG, Datatype.DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.LONG, Datatype.INTEGER));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.BIG_DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.INTEGER));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.LONG));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_LONG));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_LONG, Datatype.BIG_DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_LONG, Datatype.LONG));
+        assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_LONG, Datatype.PRIMITIVE_INT));
+        assertTrue(codeGenerator.canConvert(Datatype.BIG_DECIMAL, Datatype.DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.DECIMAL, Datatype.BIG_DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.DOUBLE, Datatype.DECIMAL));
+        assertTrue(codeGenerator.canConvert(Datatype.DECIMAL, Datatype.DOUBLE));
+        assertTrue(codeGenerator.canConvert(LocalDateDatatype.DATATYPE, Datatype.GREGORIAN_CALENDAR));
+        assertTrue(codeGenerator.canConvert(LocalDateTimeDatatype.DATATYPE, Datatype.GREGORIAN_CALENDAR));
+        assertTrue(codeGenerator.canConvert(Datatype.GREGORIAN_CALENDAR, LocalDateDatatype.DATATYPE));
+        assertTrue(codeGenerator.canConvert(Datatype.GREGORIAN_CALENDAR, LocalDateTimeDatatype.DATATYPE));
+        assertTrue(codeGenerator.canConvert(Datatype.STRING, Datatype.STRING));
+        assertTrue(codeGenerator.canConvert(Datatype.STRING, AnyDatatype.INSTANCE));
+        assertTrue(codeGenerator.canConvert(AnyDatatype.INSTANCE, Datatype.STRING));
 
-        boolean decimalToInteger = codeGenerator.canConvert(Datatype.DECIMAL, Datatype.INTEGER);
-        boolean integerToDecimal = codeGenerator.canConvert(Datatype.INTEGER, Datatype.DECIMAL);
-        assertTrue(integerToDecimal);
-        assertTrue(decimalToInteger);
+        assertFalse(codeGenerator.canConvert(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR));
+        assertFalse(codeGenerator.canConvert(LocalDateDatatype.DATATYPE, Datatype.PRIMITIVE_INT));
+    }
 
-        boolean primitiveLongToPrimitiveInt = codeGenerator.canConvert(Datatype.PRIMITIVE_LONG, Datatype.PRIMITIVE_INT);
-        boolean primitiveIntToPrimitiveLong = codeGenerator.canConvert(Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_LONG);
-        assertTrue(primitiveLongToPrimitiveInt);
-        assertTrue(primitiveIntToPrimitiveLong);
+    @Test
+    public void testCanConvert_ListOfDatatype() {
+        assertTrue(codeGenerator.canConvert(createList(Datatype.DECIMAL), createList(AnyDatatype.INSTANCE)));
 
-        boolean localDateToLocalDate = codeGenerator.canConvert(LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE);
-        assertTrue(localDateToLocalDate);
+        assertFalse(codeGenerator.canConvert(createList(Datatype.DECIMAL), createList(Datatype.INTEGER)));
+        assertFalse(codeGenerator.canConvert(createList(Datatype.DECIMAL), Datatype.INTEGER));
+        assertFalse(codeGenerator.canConvert(Datatype.DECIMAL, createList(Datatype.INTEGER)));
+        assertFalse(codeGenerator.canConvert(createList(Datatype.BIG_DECIMAL), createList(Datatype.GREGORIAN_CALENDAR)));
+    }
 
-        boolean localDateToPrimitiveInt = codeGenerator.canConvert(LocalDateDatatype.DATATYPE, Datatype.PRIMITIVE_INT);
-        assertTrue(!localDateToPrimitiveInt);
+    private ListOfTypeDatatype createList(Datatype basicType) {
+        return new ListOfTypeDatatype(basicType);
     }
 
     @Test
     public void testGetConversionCode() {
-        JavaCodeFragment conversionCode = codeGenerator.getConversionCode(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN,
-                new JavaCodeFragment("TRUE"));
-        assertNotNull(conversionCode);
 
-        conversionCode = codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN,
-                new JavaCodeFragment("true"));
-        assertNotNull(conversionCode);
+        assertNotNull(codeGenerator.getConversionCode(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN,
+                new JavaCodeFragment("TRUE")));
 
-        conversionCode = codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true"));
-        assertTrue(conversionCode == null);
+        assertNotNull(codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN,
+                new JavaCodeFragment("true")));
 
-        conversionCode = codeGenerator
-                .getConversionCode(Datatype.PRIMITIVE_BOOLEAN, null, new JavaCodeFragment("true"));
-        assertTrue(conversionCode == null);
+        assertNotNull(codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.INTEGER, new JavaCodeFragment(
+                "Decimal.valueOf(2.3)")));
+
+        assertNotNull(codeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, new JavaCodeFragment(
+                "FromValue")));
+        assertNotNull(codeGenerator.getConversionCode(Datatype.STRING, AnyDatatype.INSTANCE, new JavaCodeFragment(
+                "FromValue")));
+
+        assertNotNull(codeGenerator.getConversionCode(Datatype.STRING, Datatype.STRING, new JavaCodeFragment(
+                "FromValue")));
+
+        assertNull(codeGenerator.getConversionCode(null, Datatype.INTEGER, new JavaCodeFragment("true")));
+        assertNull(codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, null, new JavaCodeFragment("true")));
+        assertNull(codeGenerator.getConversionCode(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR,
+                new JavaCodeFragment("FromValue")));
     }
+
+    @Test
+    public void testGetConversionCode_ListOfDatatype() {
+        assertNotNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), createList(AnyDatatype.INSTANCE),
+                new JavaCodeFragment("Decimal.valueOf(2.3)")));
+
+        assertNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), createList(Datatype.INTEGER),
+                new JavaCodeFragment("Decimal.valueOf(2.3)")));
+
+        assertNull(codeGenerator.getConversionCode(createList(Datatype.DECIMAL), Datatype.INTEGER,
+                new JavaCodeFragment("Decimal.valueOf(2.3)")));
+
+        assertNull(codeGenerator.getConversionCode(Datatype.DECIMAL, createList(Datatype.INTEGER),
+                new JavaCodeFragment("Decimal.valueOf(2.3)")));
+
+        assertNull(codeGenerator.getConversionCode(createList(Datatype.BIG_DECIMAL),
+                createList(Datatype.GREGORIAN_CALENDAR), new JavaCodeFragment("BigDecimal.valueOf(2.3)")));
+    }
+
 }

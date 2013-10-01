@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
-import java.lang.annotation.Inherited;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -576,8 +575,6 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * {@link Inherited}
-     * 
      * Reproduces Bug in old code generator for compatibility. see FIPS-1143. One-To-One Getters are
      * generated without capitalized names.
      */

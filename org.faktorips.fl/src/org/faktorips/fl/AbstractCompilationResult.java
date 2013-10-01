@@ -13,11 +13,6 @@
 
 package org.faktorips.fl;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -33,16 +28,14 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     private T codeFragment;
     private MessageList messages;
     private Datatype datatype;
-    private Set<String> identifiersUsed;
 
     /**
      * Creates a CompilationResult with the given parameters.
      */
-    public AbstractCompilationResult(T sourcecode, Datatype datatype, MessageList messages, Set<String> identifiers) {
+    public AbstractCompilationResult(T sourcecode, Datatype datatype, MessageList messages) {
         codeFragment = sourcecode;
         this.datatype = datatype;
         this.messages = messages;
-        identifiersUsed = new HashSet<String>(identifiers);
     }
 
     /**
@@ -79,14 +72,6 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     public void add(CompilationResult<T> result) {
         codeFragment.append(result.getCodeFragment());
         messages.add(result.getMessages());
-        Set<String> otherIdenifiers = ((AbstractCompilationResult<T>)result).identifiersUsed;
-        if (otherIdenifiers == null) {
-            return;
-        }
-        if (identifiersUsed == null) {
-            identifiersUsed = new LinkedHashSet<String>(2);
-        }
-        identifiersUsed.addAll(otherIdenifiers);
     }
 
     /**
@@ -154,78 +139,6 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
      */
     public void addMessages(MessageList list) {
         messages.add(list);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String[] getResolvedIdentifiers() {
-        if (identifiersUsed == null) {
-            return new String[0];
-        }
-        return identifiersUsed.toArray(new String[identifiersUsed.size()]);
-    }
-
-    /**
-     * Adds the identifier to the ones being used in the formula. If the result already contains
-     * such an identifier, the identifier is not added a second time.
-     */
-    public void addIdentifierUsed(String identifier) {
-        if (identifiersUsed == null) {
-            identifiersUsed = new LinkedHashSet<String>(2);
-        }
-        identifiersUsed.add(identifier);
-    }
-
-    /**
-     * Returns the recognized (resolved) identifiers that are used in the formula. Returns
-     * {@code null} set if the formula does not contain any identifiers.
-     */
-    public Set<String> getIdentifiersUsedAsSet() {
-        return identifiersUsed == null ? null : Collections.unmodifiableSet(identifiersUsed);
-    }
-
-    /**
-     * Adds the identifiers to the ones being used in the formula. If the result already contains
-     * identifiers from the given set, those identifiers are not added a second time.
-     */
-    public void addIdentifiersUsed(Set<String> identifiers) {
-        if (identifiersUsed == null) {
-            if (identifiers != null) {
-                identifiersUsed = new LinkedHashSet<String>(identifiers);
-            }
-            return;
-        }
-        if (identifiers != null) {
-            identifiersUsed.addAll(identifiers);
-        }
-    }
-
-    /**
-     * Adds the identifiers from the given {@link CompilationResult compilation results} to the ones
-     * being used in the formula. If the result already contains identifiers from the given set,
-     * those identifiers are not added a second time.
-     */
-    public void addAllIdentifierUsed(CompilationResult<T>[] argResults) {
-        for (CompilationResult<T> argResult : argResults) {
-            addIdentifier(argResult.getResolvedIdentifiers());
-        }
-    }
-
-    private void addIdentifier(String[] identifiers) {
-        for (String identifier : identifiers) {
-            addIdentifierUsed(identifier);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isUsedAsIdentifier(String candidate) {
-        if (identifiersUsed == null) {
-            return false;
-        }
-        return identifiersUsed.contains(candidate);
     }
 
     /**

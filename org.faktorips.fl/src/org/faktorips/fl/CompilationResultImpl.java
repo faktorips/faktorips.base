@@ -14,7 +14,6 @@
 package org.faktorips.fl;
 
 import java.util.Locale;
-import java.util.Set;
 
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -31,9 +30,8 @@ public class CompilationResultImpl extends AbstractCompilationResult<JavaCodeFra
     /**
      * Creates a {@link CompilationResult} with the given parameters.
      */
-    public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype, MessageList messages,
-            Set<String> identifiers) {
-        super(sourcecode, datatype, messages, identifiers);
+    public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype, MessageList messages) {
+        super(sourcecode, datatype, messages);
     }
 
     /**

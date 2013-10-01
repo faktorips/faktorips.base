@@ -1,7 +1,7 @@
 <project name="org.faktorips.util" default="buildjar">
 
 	<!-- can also be set from outside, ie. eclipse workspace -->
-	<property name="javacchome" value="/var/lib/javacc/" />
+	<property name="javacchome" value="/home/dirmeier/git/faktorips.base/org.faktorips.fl/lib" />
 	
 	<property name="parser_src" value="../src/org/faktorips/fl/parser/" />
 

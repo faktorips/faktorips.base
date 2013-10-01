@@ -42,7 +42,6 @@ public abstract class AbstractUnaryJavaOperation extends AbstractUnaryOperation<
 
     public CompilationResult<JavaCodeFragment> generate(CompilationResult<JavaCodeFragment> arg) {
         CompilationResultImpl result = generate((CompilationResultImpl)arg);
-        result.addIdentifiersUsed(((CompilationResultImpl)arg).getIdentifiersUsedAsSet());
         return result;
     }
 

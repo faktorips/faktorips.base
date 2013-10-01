@@ -61,7 +61,6 @@ public class SqrtDecimal extends AbstractFlFunction {
         CompilationResultImpl result = createCompilationResultImpl(fragmentResult);
 
         result.addMessages(argResults[0].getMessages());
-        addIdentifier(argResults[0].getResolvedIdentifiers(), result);
         return result;
     }
 
@@ -76,11 +75,4 @@ public class SqrtDecimal extends AbstractFlFunction {
     private JavaCodeFragment getConversionCodeDoubleDecimal(JavaCodeFragment fragment) {
         return conversionCodeGenerator.getConversionCode(Datatype.DOUBLE, Datatype.DECIMAL, fragment);
     }
-
-    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {
-        for (String identifier : identifiers) {
-            compilationResult.addIdentifierUsed(identifier);
-        }
-    }
-
 }

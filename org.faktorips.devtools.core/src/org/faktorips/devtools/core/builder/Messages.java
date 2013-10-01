@@ -27,23 +27,6 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis;
-    public static String AbstractParameterIdentifierResolver_msgResolverMustBeSet;
-    public static String AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved;
-    public static String AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving;
-    public static String AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving;
-    public static String AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute;
-    public static String AbstractParameterIdentifierResolver_msgErrorNoAttribute;
-    public static String AbstractParameterIdentifierResolver_msgErrorNoAttributeInClass;
-    public static String AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute;
-    public static String AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute;
-    public static String AbstractParameterIdentifierResolver_msgAttributeMissing;
-    public static String AbstractParameterIdentifierResolver_noAssociationIdentifier;
-    public static String AbstractParameterIdentifierResolver_noAssociationTarget;
-    public static String AbstractParameterIdentifierResolver_noIndexFor1to1Association0;
-    public static String AbstractParameterIdentifierResolver_indexAndQualifierCanNotBeCombined;
-    public static String AbstractParameterIdentifierResolver_msgIdentifierNotAllowed;
-
     public static String IpsBuilder_ipsSrcFileNotParsable;
     public static String IpsBuilder_missingManifestMf;
     public static String IpsBuilder_msgExceptionWhileBuildingDependentProjects;

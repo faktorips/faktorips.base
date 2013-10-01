@@ -33,6 +33,12 @@ import org.faktorips.runtime.IProductComponent;
 public class FormulaEvaluatorUtil {
 
     /**
+     * no instance
+     */
+    private FormulaEvaluatorUtil() {
+    }
+
+    /**
      * Returns the (first) {@link IConfigurableModelObject} in the list that is configured by a
      * {@link IProductComponent} with the given ID, {@code null} if no such object is found in the
      * list.
@@ -45,15 +51,44 @@ public class FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, {@code null} if no such object is found
      *         in the list
      */
-    public static <T extends IModelObject> T getModelObjectById(List<T> modelObjects, String id) {
+    public static <T extends IModelObject, R extends T> R getModelObjectById(List<T> modelObjects, String id) {
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-                    return modelObject;
+                    @SuppressWarnings("unchecked")
+                    R castedModelObject = (R)modelObject;
+                    return castedModelObject;
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * Returns all {@link IConfigurableModelObject} in the list that is configured by a
+     * {@link IProductComponent} with the given ID, the list is empty if no such object is found in
+     * the list.
+     * 
+     * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
+     * @param modelObjects a list of model objects of type <T>
+     * @param id the runtime ID this method searches
+     * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
+     * @return the all {@link IConfigurableModelObject} in the list that is configured by a
+     *         {@link IProductComponent} with the given ID, the list is empty if no such object is
+     *         found in the list
+     */
+    public static <T extends IModelObject, R extends T> List<R> getListModelObjectById(List<T> modelObjects, String id) {
+        List<R> returnList = new ArrayList<R>();
+        for (T modelObject : modelObjects) {
+            if (modelObject instanceof IConfigurableModelObject) {
+                if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+                    @SuppressWarnings("unchecked")
+                    R castedModelObject = (R)modelObject;
+                    returnList.add(castedModelObject);
+                }
+            }
+        }
+        return returnList;
     }
 
     /**
@@ -67,10 +102,12 @@ public class FormulaEvaluatorUtil {
      * @return the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
      *         {@link IProductComponent} with the given ID, {@code null} otherwise
      */
-    public static <T extends IModelObject> T getModelObjectById(T modelObject, String id) {
+    public static <T extends IModelObject, R extends T> R getModelObjectById(T modelObject, String id) {
         if (modelObject instanceof IConfigurableModelObject
                 && ((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-            return modelObject;
+            @SuppressWarnings("unchecked")
+            R castedModelObject = (R)modelObject;
+            return castedModelObject;
         }
         return null;
     }
@@ -84,16 +121,18 @@ public class FormulaEvaluatorUtil {
      * <strong>This class is intended to be subclassed in compiled formulas only.</strong>
      * </p>
      */
-    public static abstract class ExistsHelper {
+    public abstract static class ExistsHelper {
         public boolean exists() {
             try {
                 return existsInternal();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 return false;
             }
         }
 
-        abstract protected boolean existsInternal();
+        protected abstract boolean existsInternal();
     }
 
     /**
@@ -103,7 +142,7 @@ public class FormulaEvaluatorUtil {
      * @param <S> the type of the source objects
      * @param <T> the type of the association targets
      */
-    public static abstract class AssociationToManyHelper<S extends IModelObject, T extends IModelObject> {
+    public abstract static class AssociationToManyHelper<S extends IModelObject, T extends IModelObject> {
 
         /**
          * Returns a {@link List} of target {@link IModelObject model objects} found by calling
@@ -134,7 +173,7 @@ public class FormulaEvaluatorUtil {
          * @param sourceObject the {@link IModelObject} source for the association
          * @return a {@link List} of target {@link IModelObject model objects}
          */
-        abstract protected List<T> getTargetsInternal(S sourceObject);
+        protected abstract List<T> getTargetsInternal(S sourceObject);
     }
 
     /**
@@ -144,7 +183,7 @@ public class FormulaEvaluatorUtil {
      * @param <S> the type of the source objects
      * @param <T> the type of the association targets
      */
-    public static abstract class AssociationTo1Helper<S extends IModelObject, T extends IModelObject> {
+    public abstract static class AssociationTo1Helper<S extends IModelObject, T extends IModelObject> {
         /**
          * Returns a {@link List} of target {@link IModelObject model objects} found by calling
          * {@link #getTargetInternal(IModelObject)} for every object in the {@code sourceObjects}
@@ -172,6 +211,86 @@ public class FormulaEvaluatorUtil {
          * @param sourceObject the {@link IModelObject} source for the association
          * @return the target {@link IModelObject}
          */
-        abstract protected T getTargetInternal(S sourceObject);
+        protected abstract T getTargetInternal(S sourceObject);
     }
+
+    /**
+     * Helper class to get the values from a list of source objects of type {@code <S>} to target
+     * type {@code <E>}.
+     * 
+     * @param <S> the type of the source objects
+     * @param <E> the type of the values
+     */
+    public abstract static class AttributeAccessorHelper<S extends IModelObject, E> {
+        /**
+         * Returns a {@link List} of values from {@link IModelObject model objects} found by calling
+         * {@link #getValueInternal(IModelObject)} for every object in the {@code sourceObjects}
+         * {@link List}.
+         * 
+         * @param objectList the {@link List} of {@link IModelObject model objects} on which
+         *            {@link #getValueInternal(IModelObject)} will be called.
+         * 
+         * @return a {@link List} of Values
+         */
+        public List<E> getAttributeValues(List<S> objectList) {
+            List<E> values = new ArrayList<E>();
+            for (S object : objectList) {
+                values.add(getValueInternal(object));
+            }
+            return values;
+        }
+
+        /**
+         * Returns the value of the property from the {@link IModelObject} by calling the getter
+         * method of the property.
+         * 
+         * @param sourceObject the {@link IModelObject} source
+         * @return the value of property of the {@link IModelObject}
+         */
+        protected abstract E getValueInternal(S sourceObject);
+    }
+
+    /**
+     * Base class for functions working on list arguments. Subclasses define the function by
+     * overwriting {@link FunctionWithListAsArgumentHelper#getPreliminaryResult(Object, Object)} and
+     * {@link FunctionWithListAsArgumentHelper#getFallBackValue()}.
+     * 
+     * @author HBaagil
+     */
+    public abstract static class FunctionWithListAsArgumentHelper<E> {
+
+        /**
+         * Returns the result of this function given a list of values.
+         * 
+         * @param listOfValues A List of values.
+         */
+        public E getResult(List<E> listOfValues) {
+            if (listOfValues == null || listOfValues.isEmpty()) {
+                return getFallBackValue();
+            }
+            E result = listOfValues.get(0);
+            for (int i = 1; i < listOfValues.size(); i++) {
+                result = getPreliminaryResult(result, listOfValues.get(i));
+            }
+            return result;
+        }
+
+        /**
+         * Returns the value this function defaults to if an empty list or null is given as an
+         * argument. E.g. for the function sum, the fall back value is 0.
+         */
+        public abstract E getFallBackValue();
+
+        /**
+         * Calculates a preliminary result based on the current result and the next value in the
+         * list.
+         * 
+         * @param currentResult The current result calculated up to this point.
+         * @param nextValue The value to be considered next.
+         * @return The result of the operation defined by subclasses.
+         */
+        public abstract E getPreliminaryResult(E currentResult, E nextValue);
+
+    }
+
 }

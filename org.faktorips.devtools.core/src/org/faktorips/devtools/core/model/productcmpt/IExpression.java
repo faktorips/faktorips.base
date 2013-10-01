@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IBaseMethod;
+import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.JavaExprCompiler;
@@ -87,7 +87,7 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * Returns the method signature this formula implements. Returns <code>null</code> if the method
      * signature is not found.
      */
-    IBaseMethod findFormulaSignature(IIpsProject ipsProject);
+    IFormulaMethod findFormulaSignature(IIpsProject ipsProject);
 
     /**
      * Returns the product component type of the product component this formula belongs to.
@@ -133,19 +133,6 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * Returns an empty array if this configuration element does not represent a formula.
      */
     EnumDatatype[] getEnumDatatypesAllowedInFormula();
-
-    /**
-     * Returns all parameter identifiers which are used in the formula. Identifiers used in a
-     * formula an be either identify a parameter or an enum value. This methods returns all
-     * identifiers identifying parameters. Returns an empty string array if no identifier was found
-     * in formula or the config element is no formula type or the policy component type attribute -
-     * which specifies the formula interface - wasn't found.
-     * 
-     * @param ipsProject The project which ips object path is used to search.
-     * 
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
-    String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject);
 
     /**
      * Returns all Attributes of the {@link ProductCmptType}

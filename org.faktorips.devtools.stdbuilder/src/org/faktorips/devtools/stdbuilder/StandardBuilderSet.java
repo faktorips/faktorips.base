@@ -31,7 +31,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
@@ -47,15 +46,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
@@ -79,18 +73,14 @@ import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
@@ -104,64 +94,62 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class StandardBuilderSet extends DefaultBuilderSet {
 
-    private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
-
-    public final static String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
+    public static final String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 
     /**
      * Configuration property that enables/disables the generation of a copy method.
      * 
      * @see ICopySupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of delta computation.
      * 
      * @see IDeltaSupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of the visitor support.
      * 
      * @see IDeltaSupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that is supposed to be used to read a configuration value from the
      * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
      * IIpsArtefactBuilderSet instance.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the use of enums, if supported by the target
      * java version.
      */
-    public final static String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of JAXB support.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property contains the persistence provider implementation.
      */
-    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
 
     /**
      * Configuration property contains the kind of formula compiling.
      */
-    public final static String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether toXml() methods should be
      * generated.
      */
-    public final static String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether to generate camel case constant
@@ -169,7 +157,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * constant for the name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the
      * property is false the constant name would be CHECKANYTHINGRUL.
      */
-    public final static String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
+
+    private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;
 
@@ -184,9 +174,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
-        annotationGeneratorFactories = new AnnotationGeneratorFactory[] { new PolicyCmptImplClassJpaAnnGenFactory(), // JPA
-                                                                                                                     // support
-                new PolicyCmptImplClassJaxbAnnGenFactory() }; // Jaxb support
+        annotationGeneratorFactories = new AnnotationGeneratorFactory[] {
+                // JPA support
+                new PolicyCmptImplClassJpaAnnGenFactory(),
+                // Jaxb support
+                new PolicyCmptImplClassJaxbAnnGenFactory() };
 
         initSupportedPersistenceProviderMap();
 
@@ -231,13 +223,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         ITableStructure tableStructure = fct.getTableStructure();
 
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
-        result.addAllIdentifierUsed(argResults);
         code.appendClassName(getTableImplBuilder().getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
 
-        // TODO pk: findRow is not correct in general. JO: Why?
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {
                 code.append(", "); //$NON-NLS-1$
@@ -255,7 +245,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
             ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
-        return new StandardParameterIdentifierResolver(formula, exprCompiler);
+        if (exprCompiler instanceof ExtendedExprCompiler) {
+            return new StandardIdentifierResolver(formula, (ExtendedExprCompiler)exprCompiler, this);
+        } else {
+            throw new RuntimeException(
+                    "Illegal expression compiler, only ExtendedExpressionCompiler is allowed but found "
+                            + exprCompiler.getClass());
+        }
     }
 
     @Override
@@ -471,7 +467,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         String kind = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_FORMULA_COMPILING);
         try {
             return FormulaCompiling.valueOf(kind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // if value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
         }
@@ -480,9 +478,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private void initSupportedPersistenceProviderMap() {
         allSupportedPersistenceProvider = new HashMap<String, CachedPersistenceProvider>(2);
         allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
-                CachedPersistenceProvider.create(EclipseLink1PersistenceProvider.class));
+                createCachedPersistenceProvider(EclipseLink1PersistenceProvider.class));
         allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0,
-                CachedPersistenceProvider.create(GenericJPA2PersistenceProvider.class));
+                createCachedPersistenceProvider(GenericJPA2PersistenceProvider.class));
     }
 
     @Override
@@ -513,14 +511,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return null;
         }
 
-        if (pProviderCached.cachedProvider == null) {
+        if (pProviderCached.getCachedProvider() == null) {
             try {
-                pProviderCached.cachedProvider = pProviderCached.persistenceProviderClass.newInstance();
+                pProviderCached.setCachedProvider(pProviderCached.getPersistenceProviderClass().newInstance());
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 throw new RuntimeException(e);
             }
         }
-        return pProviderCached.cachedProvider;
+        return pProviderCached.getCachedProvider();
     }
 
     public String getJavaClassName(Datatype datatype) {
@@ -531,9 +531,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         if (datatype instanceof IPolicyCmptType) {
             return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
                     BuilderAspect.getValue(interfaces));
-        } else
-
-        if (datatype instanceof IProductCmptType) {
+        } else if (datatype instanceof IProductCmptType) {
             return modelService.getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class,
                     generatorModelContext).getQualifiedName(BuilderAspect.getValue(interfaces));
         } else {
@@ -561,13 +559,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
-            if (builder instanceof ProductCmptBuilder) {
-                builder = ((ProductCmptBuilder)builder).getGenerationBuilder();
+            IIpsArtefactBuilder builderTemp = builder;
+            if (builderTemp instanceof ProductCmptBuilder) {
+                builderTemp = ((ProductCmptBuilder)builder).getGenerationBuilder();
             }
-            if (!(builder instanceof JavaSourceFileBuilder)) {
+            if (!(builderTemp instanceof JavaSourceFileBuilder)) {
                 continue;
             }
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
+            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builderTemp;
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
             try {
                 if (javaBuilder.isBuilderFor(ipsSrcFile)) {
@@ -642,79 +641,26 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return generatorModelContext;
     }
 
-    private class StandardParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
-        private StandardParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
-            super(formula2, exprCompiler);
-        }
-
-        @Override
-        protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
-                EnumTypeDatatypeAdapter datatype,
-                ExprCompiler<JavaCodeFragment> exprCompiler,
-                String value) throws CoreException {
-            getEnumTypeBuilder().setExtendedExprCompiler((ExtendedExprCompiler)exprCompiler);
-            fragment.append(getEnumTypeBuilder().getNewInstanceCodeFragement(datatype, value));
-        }
-
-        @Override
-        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-            if (attribute instanceof IPolicyCmptTypeAttribute) {
-                XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
-                return xPolicyAttribute.getMethodNameGetter();
-            }
-            if (attribute instanceof IProductCmptTypeAttribute) {
-                XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
-                if (xProductAttribute.isChangingOverTime()) {
-                    return xProductAttribute.getMethodNameGetter();
-                } else {
-                    XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
-                    return xProductCmptClass.getMethodNameGetProductCmpt() + "()."
-                            + xProductAttribute.getMethodNameGetter();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
-            XPolicyCmptClass xPolicyCmptClass = getModelNode(attribute.getType(), XPolicyCmptClass.class);
-            XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
-            return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "()."
-                    + xPolicyAttribute.getMethodNameGetDefaultValue();
-        }
-
-        @Override
-        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-            return xPolicyAssociation.getMethodNameGetter();
-        }
-
-        @Override
-        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-            return xPolicyAssociation.getMethodNameGetSingle();
-        }
-
-        @Override
-        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-            XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
-            return xPolicyAssociation.getMethodNameGetter();
-        }
-
-        @Override
-        protected String getJavaClassName(IType type) {
-            return StandardBuilderSet.this.getJavaClassName(type);
-        }
+    private CachedPersistenceProvider createCachedPersistenceProvider(Class<? extends IPersistenceProvider> pPClass) {
+        CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
+        providerCache.persistenceProviderClass = pPClass;
+        return providerCache;
     }
 
     private static class CachedPersistenceProvider {
-        Class<? extends IPersistenceProvider> persistenceProviderClass;
-        IPersistenceProvider cachedProvider = null;
+        private Class<? extends IPersistenceProvider> persistenceProviderClass;
+        private IPersistenceProvider cachedProvider = null;
 
-        private static CachedPersistenceProvider create(Class<? extends IPersistenceProvider> pPClass) {
-            CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
-            providerCache.persistenceProviderClass = pPClass;
-            return providerCache;
+        private Class<? extends IPersistenceProvider> getPersistenceProviderClass() {
+            return persistenceProviderClass;
+        }
+
+        private IPersistenceProvider getCachedProvider() {
+            return cachedProvider;
+        }
+
+        private void setCachedProvider(IPersistenceProvider cachedProvider) {
+            this.cachedProvider = cachedProvider;
         }
     }
 

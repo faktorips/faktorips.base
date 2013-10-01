@@ -98,8 +98,6 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         CompilationResultImpl result = new CompilationResultImpl(fragment, functionDatatype);
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
-        addIdentifier(argResults[0].getResolvedIdentifiers(), result);
-        addIdentifier(argResults[1].getResolvedIdentifiers(), result);
         return result;
     }
 
@@ -131,9 +129,4 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         return argResult;
     }
 
-    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {
-        for (String identifier : identifiers) {
-            compilationResult.addIdentifierUsed(identifier);
-        }
-    }
 }

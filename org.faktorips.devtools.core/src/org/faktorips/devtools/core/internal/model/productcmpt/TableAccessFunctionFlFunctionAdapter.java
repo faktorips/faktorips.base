@@ -60,7 +60,6 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
             if (!builderSet.isSupportTableAccess()) {
                 CompilationResultImpl result = new CompilationResultImpl(Message.newError(
                         "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
-                result.addAllIdentifierUsed(argResults);
                 return result;
             }
             return builderSet.getTableAccessCode(tableContentsQualifiedName, fct, argResults);

@@ -49,14 +49,7 @@ public class MinMaxDecimal extends AbstractFlFunction {
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.DECIMAL);
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
-        addIdentifier(argResults[0].getResolvedIdentifiers(), result);
-        addIdentifier(argResults[1].getResolvedIdentifiers(), result);
         return result;
     }
 
-    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {
-        for (String identifier : identifiers) {
-            compilationResult.addIdentifierUsed(identifier);
-        }
-    }
 }

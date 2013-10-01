@@ -13,22 +13,16 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -45,9 +39,6 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class Formula extends Expression implements IFormula {
-
-    private IpsObjectPartCollection<IFormulaTestCase> testcases = new IpsObjectPartCollection<IFormulaTestCase>(this,
-            FormulaTestCase.class, IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
 
     public Formula(IPropertyValueContainer parent, String id) {
         super(parent, id);
@@ -107,31 +98,6 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
-    public IFormulaTestCase newFormulaTestCase() {
-        return testcases.newPart();
-    }
-
-    @Override
-    public IFormulaTestCase getFormulaTestCase(String name) {
-        return testcases.getPartByName(name);
-    }
-
-    @Override
-    public IFormulaTestCase[] getFormulaTestCases() {
-        return testcases.toArray(new IFormulaTestCase[testcases.size()]);
-    }
-
-    @Override
-    public int[] moveFormulaTestCases(int[] indexes, boolean up) {
-        return testcases.moveParts(indexes, up);
-    }
-
-    @Override
-    public void removeFormulaTestCase(IFormulaTestCase formulaTest) {
-        testcases.removePart(formulaTest);
-    }
-
-    @Override
     protected ITableContentUsage[] getTableContentUsages() {
         IProductCmptGeneration gen = getProductCmptGeneration();
         return gen.getTableContentUsages();
@@ -154,35 +120,6 @@ public class Formula extends Expression implements IFormula {
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject) {
-        String[] parameterIdentifiersUsedInFormula = super.getParameterIdentifiersUsedInFormula(ipsProject);
-
-        List<IAttribute> attributes = Collections.emptyList();
-        try {
-
-            IProductCmptTypeMethod findFormulaSignature = findFormulaSignature(ipsProject);
-            if (findFormulaSignature != null) {
-                attributes = findFormulaSignature.getProductCmptType().findAllAttributes(ipsProject);
-            }
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
-        Set<String> attributeNames = new HashSet<String>(attributes.size());
-        for (IAttribute attribute : attributes) {
-            attributeNames.add(attribute.getName());
-        }
-
-        List<String> filteredIdentifiers = new ArrayList<String>();
-        for (String identifier : parameterIdentifiersUsedInFormula) {
-            if (!attributeNames.contains(identifier)) {
-                filteredIdentifiers.add(identifier);
-            }
-        }
-
-        return filteredIdentifiers.toArray(new String[filteredIdentifiers.size()]);
     }
 
     @Override

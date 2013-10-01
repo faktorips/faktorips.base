@@ -30,6 +30,7 @@ import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.parser.FlParser;
@@ -127,15 +128,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * association.
      */
     public static final String NO_INDEX_FOR_1TO1_ASSOCIATION = PREFIX + "NoIndexFor1to1Association"; //$NON-NLS-1$
-
-    /**
-     * An identifier is resolved to an association with index and qualifier.
-     * <p>
-     * Example: a.b[0]["pack.MyB"]
-     * <p>
-     * In the expression a and b are identifiers. The identifier b is resolved to an association.
-     */
-    public static final String INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED = PREFIX + "IndexAndQualifierCanNotBeCombined"; //$NON-NLS-1$
 
     /**
      * The expression contains a call to an undefined function.
@@ -472,6 +464,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
+            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         } catch (TokenMgrError e) {
@@ -504,7 +497,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             T converted = convertPrimitiveToWrapper(resultType, result.getCodeFragment());
             AbstractCompilationResult<T> finalResult = newCompilationResultImpl(converted,
                     ((ValueDatatype)resultType).getWrapperType());
-            finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
             return finalResult;
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
@@ -591,6 +583,169 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         return LOCALIZED_STRINGS;
     }
 
+    public CompilationResult<T> getMatchingFunctionUsingConversion(AbstractCompilationResult<T>[] argResults,
+            Datatype[] argTypes,
+            String fctName) {
+        FlFunction<T> function = null;
+        boolean functionFoundByName = false;
+        FlFunction<T>[] functions = getFunctions();
+        LinkedHashSet<FlFunction<T>> ambiguousFunctions = getAmbiguousFunctions(functions);
+
+        for (FlFunction<T> function2 : functions) {
+            if (function2.match(fctName, argTypes)) {
+                if (isAmbiguousFunction(function2, ambiguousFunctions)) {
+                    return createAmbiguousFunctionCompilationResultImpl(function2);
+                }
+                return function2.compile(argResults);
+            } else if (function2.matchUsingConversion(fctName, argTypes, getConversionCodeGenerator())) {
+                function = function2;
+            } else if (!functionFoundByName && function2.getName().equals(fctName)) {
+                functionFoundByName = true;
+            }
+        }
+
+        if (function != null) {
+            if (isAmbiguousFunction(function, ambiguousFunctions)) {
+                return createAmbiguousFunctionCompilationResultImpl(function);
+            }
+            return function.compile(convert(function, argResults));
+        }
+
+        return createErrorCompilationResult(argResults, fctName, functionFoundByName);
+    }
+
+    public CompilationResult<T> getMatchingFunctionUsingConversionSingleArgument(AbstractCompilationResult<T> argResult,
+            Datatype argTypes,
+            String fctName) {
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T>[] argResults = new AbstractCompilationResult[] { argResult };
+        return getMatchingFunctionUsingConversion(argResults, new Datatype[] { argTypes }, fctName);
+    }
+
+    private CompilationResult<T> createErrorCompilationResult(AbstractCompilationResult<T>[] argResults,
+            String fctName,
+            boolean functionFoundByName) {
+        // if the function name is defined but the argument types are wrong
+        // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
+        if (functionFoundByName) {
+            Object[] replacements = new String[] { fctName, argTypesToString(argResults) };
+            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.WRONG_ARGUMENT_TYPES, getLocale(),
+                    replacements);
+            return newCompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
+        }
+
+        // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_FUNCTION, getLocale(),
+                fctName);
+        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
+    }
+
+    private AbstractCompilationResult<T> createAmbiguousFunctionCompilationResultImpl(FlFunction<T> flFunction) {
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, getLocale(),
+                flFunction.getName());
+
+        return newCompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
+    }
+
+    private boolean isAmbiguousFunction(FlFunction<T> flFunction, LinkedHashSet<FlFunction<T>> ambiguousFunctions) {
+        for (FlFunction<T> ambiguousFlFunction : ambiguousFunctions) {
+            if (flFunction.isSame(ambiguousFlFunction)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String argTypesToString(CompilationResult<T>[] results) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < results.length; i++) {
+            if (i > 0) {
+                buffer.append(", "); //$NON-NLS-1$
+            }
+            buffer.append(results[i].getDatatype().getName());
+        }
+        return buffer.toString();
+    }
+
+    private CompilationResult<T>[] convert(FlFunction<T> flFunction, CompilationResult<T>[] argResults) {
+        ConversionCodeGenerator<T> conversionCodeGenerator = getConversionCodeGenerator();
+        @SuppressWarnings("unchecked")
+        AbstractCompilationResult<T>[] convertedArgs = new AbstractCompilationResult[argResults.length];
+        for (int i = 0; i < argResults.length; i++) {
+
+            Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0] : flFunction
+                    .getArgTypes()[i];
+            if (functionDatatype instanceof AnyDatatype) {
+                convertedArgs[i] = (AbstractCompilationResult<T>)argResults[i];
+            } else {
+                T fragment = conversionCodeGenerator.getConversionCode(argResults[i].getDatatype(), functionDatatype,
+                        argResults[i].getCodeFragment());
+                convertedArgs[i] = newCompilationResultImpl(fragment, functionDatatype);
+                convertedArgs[i].addMessages(argResults[i].getMessages());
+            }
+        }
+        return convertedArgs;
+    }
+
+    public CompilationResult<T> getBinaryOperation(String operator,
+            AbstractCompilationResult<T> lhsResult,
+            AbstractCompilationResult<T> rhsResult) {
+        BinaryOperation<T> operation = null;
+        BinaryOperation<T>[] operations = getBinaryOperations(operator);
+        for (BinaryOperation<T> operation2 : operations) {
+            // exact match?
+            if (operation2.getLhsDatatype().equals(lhsResult.getDatatype())
+                    && operation2.getRhsDatatype().equals(rhsResult.getDatatype())) {
+                CompilationResult<T> compilationResult = operation2.generate(lhsResult, rhsResult);
+                return compilationResult;
+            }
+            // match with implicit casting
+            if (isConversionPossibleAndOperationIsNull(lhsResult, rhsResult, operation, operation2)) {
+                // we use the
+                // operation
+                // that matches
+                // with code
+                // conversion
+                operation = operation2;
+            }
+        }
+        if (operation != null) {
+            // use operation with implicit casting
+            AbstractCompilationResult<T> convertedLhsResult = lhsResult;
+            if (!lhsResult.getDatatype().equals(operation.getLhsDatatype())
+                    && (!(operation.getLhsDatatype() instanceof AnyDatatype))) {
+                T convertedLhs = getConversionCodeGenerator().getConversionCode(lhsResult.getDatatype(),
+                        operation.getLhsDatatype(), lhsResult.getCodeFragment());
+                convertedLhsResult = newCompilationResultImpl(convertedLhs, operation.getLhsDatatype());
+                convertedLhsResult.addMessages(lhsResult.getMessages());
+            }
+            AbstractCompilationResult<T> convertedRhsResult = rhsResult;
+            if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
+                    && (!(operation.getRhsDatatype() instanceof AnyDatatype))) {
+                T convertedRhs = getConversionCodeGenerator().getConversionCode(rhsResult.getDatatype(),
+                        operation.getRhsDatatype(), rhsResult.getCodeFragment());
+                convertedRhsResult = newCompilationResultImpl(convertedRhs, operation.getRhsDatatype());
+                convertedRhsResult.addMessages(rhsResult.getMessages());
+            }
+            CompilationResult<T> result = operation.generate(convertedLhsResult, convertedRhsResult);
+            return result;
+        }
+        Object[] replacements = new Object[] { operator,
+                lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
+        String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, getLocale(),
+                replacements);
+        return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+    }
+
+    private boolean isConversionPossibleAndOperationIsNull(AbstractCompilationResult<T> lhsResult,
+            AbstractCompilationResult<T> rhsResult,
+            BinaryOperation<T> operation,
+            BinaryOperation<T> operation2) {
+        return operation == null
+                && getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
+                && getConversionCodeGenerator().canConvert(rhsResult.getDatatype(), operation2.getRhsDatatype());
+    }
+
     private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
 
         /**
@@ -602,5 +757,4 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             return o1.getName().compareTo(o2.getName());
         }
     }
-
 }
