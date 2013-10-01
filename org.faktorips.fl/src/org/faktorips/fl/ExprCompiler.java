@@ -700,9 +700,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
                 return compilationResult;
             }
             // match with implicit casting
-            if (getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
-                    && getConversionCodeGenerator().canConvert(rhsResult.getDatatype(), operation2.getRhsDatatype())
-                    && operation == null) {
+            if (isConversionPossibleAndOperationIsNull(lhsResult, rhsResult, operation, operation2)) {
                 // we use the
                 // operation
                 // that matches
@@ -737,6 +735,15 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, getLocale(),
                 replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
+    }
+
+    private boolean isConversionPossibleAndOperationIsNull(AbstractCompilationResult<T> lhsResult,
+            AbstractCompilationResult<T> rhsResult,
+            BinaryOperation<T> operation,
+            BinaryOperation<T> operation2) {
+        return operation == null
+                && getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
+                && getConversionCodeGenerator().canConvert(rhsResult.getDatatype(), operation2.getRhsDatatype());
     }
 
     private static class FunctionComparator implements Comparator<FlFunction<?>>, Serializable {
