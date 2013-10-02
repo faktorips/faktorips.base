@@ -42,6 +42,7 @@ public interface IAssociation extends ITypePart {
     public static final String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
+    public static final String PROPERTY_CONSTRAINS = "constrains"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -310,6 +311,16 @@ public interface IAssociation extends ITypePart {
      * the UML specification.
      */
     public void setDerivedUnion(boolean flag);
+
+    /**
+     * Returns <code>true</code> if this constrains an super association.
+     */
+    public boolean isConstrains();
+
+    /**
+     * Sets the information if this association constrains an super association.
+     */
+    public void setConstrains(boolean flag);
 
     /**
      * Sets the derived union association that is subsetted by this association.

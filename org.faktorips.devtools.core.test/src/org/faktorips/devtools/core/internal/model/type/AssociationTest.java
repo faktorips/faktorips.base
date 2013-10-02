@@ -478,6 +478,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(4);
         association.setDerivedUnion(true);
         association.setSubsettedDerivedUnion("BaseCoverageType");
+        association.setConstrains(true);
 
         Element el = association.toXml(newDocument());
         association = productType.newAssociation();
@@ -491,6 +492,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(4, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
+        assertTrue(association.isConstrains());
     }
 
     @Test
@@ -505,6 +507,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(1, association.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
+        assertTrue(association.isConstrains());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals("blabla", association.getDescriptionText(Locale.US));
     }
@@ -554,6 +557,12 @@ public class AssociationTest extends AbstractIpsPluginTest {
     public void testSetDerivedUnion() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION,
                 association, "SomeUnion");
+    }
+
+    @Test
+    public void testSetConstrains() {
+        super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_CONSTRAINS, association,
+                Boolean.valueOf(!association.isConstrains()));
     }
 
     @Test

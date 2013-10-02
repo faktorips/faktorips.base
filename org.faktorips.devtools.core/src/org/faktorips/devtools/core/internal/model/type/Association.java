@@ -41,16 +41,17 @@ import org.w3c.dom.Element;
  */
 public abstract class Association extends TypePart implements IAssociation {
 
-    final static String TAG_NAME = "Association"; //$NON-NLS-1$
+    public static final String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    protected AssociationType type = IAssociation.DEFAULT_RELATION_TYPE;
-    protected String target = ""; //$NON-NLS-1$
-    protected String targetRoleSingular = ""; //$NON-NLS-1$
-    protected String targetRolePlural = ""; //$NON-NLS-1$
-    protected int minCardinality = 0;
-    protected int maxCardinality = Integer.MAX_VALUE;
-    protected String subsettedDerivedUnion = ""; //$NON-NLS-1$
-    protected boolean derivedUnion = false;
+    private AssociationType type = IAssociation.DEFAULT_RELATION_TYPE;
+    private String target = ""; //$NON-NLS-1$
+    private String targetRoleSingular = ""; //$NON-NLS-1$
+    private String targetRolePlural = ""; //$NON-NLS-1$
+    private int minCardinality = 0;
+    private int maxCardinality = Integer.MAX_VALUE;
+    private String subsettedDerivedUnion = ""; //$NON-NLS-1$
+    private boolean derivedUnion = false;
+    private boolean constrains = false;
 
     protected Association(IType parent, String id) {
         super(parent, id);
@@ -66,11 +67,15 @@ public abstract class Association extends TypePart implements IAssociation {
         return type;
     }
 
+    protected void setAssociationTypeInternal(AssociationType newType) {
+        type = newType;
+    }
+
     @Override
     public void setAssociationType(AssociationType newType) {
         ArgumentCheck.notNull(newType);
         AssociationType oldType = type;
-        type = newType;
+        setAssociationTypeInternal(newType);
         valueChanged(oldType, newType);
     }
 
@@ -94,10 +99,14 @@ public abstract class Association extends TypePart implements IAssociation {
         return derivedUnion;
     }
 
+    protected void setDerivedUnionInternal(boolean flag) {
+        derivedUnion = flag;
+    }
+
     @Override
     public void setDerivedUnion(boolean flag) {
         boolean oldValue = derivedUnion;
-        derivedUnion = flag;
+        setDerivedUnionInternal(flag);
         valueChanged(oldValue, derivedUnion);
     }
 
@@ -162,10 +171,14 @@ public abstract class Association extends TypePart implements IAssociation {
         return minCardinality;
     }
 
+    protected void setMinCardinalityInternal(int newValue) {
+        minCardinality = newValue;
+    }
+
     @Override
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
-        minCardinality = newValue;
+        setMinCardinalityInternal(newValue);
         valueChanged(oldValue, newValue);
     }
 
@@ -189,17 +202,25 @@ public abstract class Association extends TypePart implements IAssociation {
         return maxCardinality == 1 && !isQualified();
     }
 
+    public void setMaxCardinalityInternal(int newValue) {
+        maxCardinality = newValue;
+    }
+
     @Override
     public void setMaxCardinality(int newValue) {
         int oldValue = maxCardinality;
-        maxCardinality = newValue;
+        setMaxCardinalityInternal(newValue);
         valueChanged(oldValue, newValue);
+    }
+
+    protected void setSubsettedDerivedUnionInternal(String newRelation) {
+        subsettedDerivedUnion = newRelation;
     }
 
     @Override
     public void setSubsettedDerivedUnion(String newRelation) {
         String oldValue = subsettedDerivedUnion;
-        subsettedDerivedUnion = newRelation;
+        setSubsettedDerivedUnionInternal(newRelation);
         valueChanged(oldValue, newRelation);
     }
 
@@ -211,6 +232,18 @@ public abstract class Association extends TypePart implements IAssociation {
     @Override
     public boolean isSubsetOfADerivedUnion() {
         return StringUtils.isNotEmpty(subsettedDerivedUnion);
+    }
+
+    @Override
+    public boolean isConstrains() {
+        return constrains;
+    }
+
+    @Override
+    public void setConstrains(boolean flag) {
+        boolean oldValue = constrains;
+        constrains = flag;
+        valueChanged(oldValue, constrains);
     }
 
     @Override
@@ -258,7 +291,7 @@ public abstract class Association extends TypePart implements IAssociation {
             minCardinality = 0;
         }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
-        if (max.equals("*")) { //$NON-NLS-1$
+        if ("*".equals(max)) { //$NON-NLS-1$
             maxCardinality = CARDINALITY_MANY;
         } else {
             try {
@@ -269,6 +302,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
+        constrains = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAINS)).booleanValue();
     }
 
     @Override
@@ -288,6 +322,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
+        newElement.setAttribute(PROPERTY_CONSTRAINS, String.valueOf(isConstrains()));
     }
 
     @Override
@@ -395,6 +430,12 @@ public abstract class Association extends TypePart implements IAssociation {
                         PROPERTY_MAX_CARDINALITY));
             }
         }
+        validateDerivedUnionsTarget(list, ipsProject, unionAss);
+
+    }
+
+    private void validateDerivedUnionsTarget(MessageList list, IIpsProject ipsProject, IAssociation unionAss)
+            throws CoreException {
         IType unionTarget = unionAss.findTarget(ipsProject);
         if (unionTarget == null) {
             String text = Messages.Association_msg_TargetOfDerivedUnionDoesNotExist;
@@ -409,7 +450,6 @@ public abstract class Association extends TypePart implements IAssociation {
                     PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
         }
-
     }
 
     @Override

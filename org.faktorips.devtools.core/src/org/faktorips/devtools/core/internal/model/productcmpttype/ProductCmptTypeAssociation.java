@@ -46,8 +46,6 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeAssociation extends Association implements IProductCmptTypeAssociation {
 
-    final static String TAG_NAME = "Association"; //$NON-NLS-1$
-
     private String matchingAssociationSource = StringUtils.EMPTY;
 
     private String matchingAssociationName = StringUtils.EMPTY;
@@ -56,7 +54,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     public ProductCmptTypeAssociation(IProductCmptType parent, String id) {
         super(parent, id);
-        type = AssociationType.AGGREGATION;
+        setAssociationTypeInternal(AssociationType.AGGREGATION);
     }
 
     @Override
@@ -116,7 +114,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * @return true if there was at least one match
      * @throws CoreException in case of a CoreException accessing the objects or resources
      */
-    boolean collectPossibleMatchingAssociations(IPolicyCmptType sourcePolicyCmptType,
+    private boolean collectPossibleMatchingAssociations(IPolicyCmptType sourcePolicyCmptType,
             String targetQName,
             Set<IPolicyCmptTypeAssociation> foundAssociations,
             IIpsProject ipsProject,
