@@ -151,6 +151,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                 IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
 
+        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
+        final Checkbox cb = new Checkbox(workArea, getToolkit());
+        cb.setText(Messages.AssociationEditDialog_constrains);
+        getBindingContext().bindContent(cb, association, IAssociation.PROPERTY_CONSTRAINS);
+        getBindingContext().bindEnabled(cb, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINS_ENABLED);
+
         // Changing over time checkbox
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_changeOverTimeLabel);
         Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
@@ -349,6 +355,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     public class PmoAssociation extends IpsObjectPartPmo {
 
+        public static final String PROPERTY_CONSTRAINS_ENABLED = "constrainsEnabled"; //$NON-NLS-1$
+
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
 
         public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
@@ -460,6 +468,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             return Messages.AssociationEditDialog_label_none;
         }
 
+        public boolean isConstrainsEnabled() {
+            return true;
+        }
     }
 
     private final class MatchingAssociationLabelProvider extends DefaultLabelProvider {

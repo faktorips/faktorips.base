@@ -157,6 +157,8 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_title;
 
+    public static String AssociationEditDialog_constrains;
+
     public static String PolicyCmptTypeAssociationsSection_menuOpenTargetInNewEditor;
 
     public static String PolicyCmptTypeAssociationsSection_newButton;

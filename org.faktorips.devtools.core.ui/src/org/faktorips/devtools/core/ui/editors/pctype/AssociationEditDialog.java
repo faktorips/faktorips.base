@@ -278,6 +278,13 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
             typeCombo.setFocus();
 
+            getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
+            final Checkbox cb = new Checkbox(workArea, getToolkit());
+            cb.setText(Messages.AssociationEditDialog_constrains);
+            getBindingContext().bindContent(cb, association, IAssociation.PROPERTY_CONSTRAINS);
+            getBindingContext().bindEnabled(cb, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CONSTRAINS_ENABLED);
+
             // role singular
             getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetRoleSingularLabel);
             final Text targetRoleSingularText = getToolkit().createText(workArea);
@@ -478,6 +485,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
         public static final String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
+        public static final String PROPERTY_CONSTRAINS_ENABLED = "constrainsEnabled"; //$NON-NLS-1$
 
         private boolean matchingExplicitly;
 
@@ -691,6 +699,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             configuringAssociationField.setInput(input);
         }
 
+        public boolean isConstrainsEnabled() {
+            return true;
+        }
     }
 
     private class PersistenceTabItem {
