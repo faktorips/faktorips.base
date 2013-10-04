@@ -76,36 +76,16 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
      */
     protected boolean ignoreDuplicatedInverseAssociationsForDerivedUnions(ObjectProperty[] objectProperties)
             throws CoreException {
-        IType typeToValidate = null;
-        int index = 0;
-        // check that only IPolicyCmptTypeAssociations are in the array and that no other object but
-        // the first one is in the same type
-        // these are fast validations in the first iteration, for less performant validations we
-        // have a second iteration
-        for (ObjectProperty property : objectProperties) {
-            // only ignore if every object property is an IPolicyCmptTypeAssociation
-            if (!(property.getObject() instanceof IPolicyCmptTypeAssociation)) {
-                return false;
-            }
-            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)property.getObject();
-            // every association have to be a Detail-To-Master association
-            if (!association.getAssociationType().isCompositionDetailToMaster()) {
-                return false;
-            }
-            if (typeToValidate == null) {
-                // first get the type of the first association. This is the type we want to validate
-                typeToValidate = association.getType();
-                if (typeToValidate == null) {
-                    return false;
-                }
-            } else {
-                // if there is another property with the same name in this type, do not ignore
-                if (typeToValidate.equals(association.getType())) {
-                    return false;
-                }
-            }
+
+        if (!checkType(objectProperties)) {
+            return false;
         }
 
+        return checkNotInverseofDerivedUnion(objectProperties);
+    }
+
+    private boolean checkNotInverseofDerivedUnion(ObjectProperty[] objectProperties) {
+        int index = 0;
         boolean foundNotInverseOfDerivedUnion = false;
 
         for (ObjectProperty property : objectProperties) {
@@ -116,8 +96,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
                     return false;
                 }
                 // shared associations must have the same name
-                boolean isNotInverseOfDerivedUnion = !association.isInverseOfDerivedUnion()
-                        && !association.isSharedAssociation();
+                boolean isNotInverseOfDerivedUnion = checkNotInverseOfDerivedUnion(association);
                 if (isNotInverseOfDerivedUnion && foundNotInverseOfDerivedUnion) {
                     // there could be only one association that is no inverse of a derived union in
                     // type hierarchy! (FIPS-459)
@@ -147,6 +126,42 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
         return true;
     }
 
+    private boolean checkNotInverseOfDerivedUnion(IPolicyCmptTypeAssociation association) throws CoreException {
+        return !association.isInverseOfDerivedUnion() && !association.isSharedAssociation();
+    }
+
+    private boolean checkType(ObjectProperty[] objectProperties) {
+        IType typeToValidate = null;
+        // check that only IPolicyCmptTypeAssociations are in the array and that no other object but
+        // the first one is in the same type
+        // these are fast validations in the first iteration, for less performant validations we
+        // have a second iteration
+        for (ObjectProperty property : objectProperties) {
+            // only ignore if every object property is an IPolicyCmptTypeAssociation
+            if (!(property.getObject() instanceof IPolicyCmptTypeAssociation)) {
+                return false;
+            }
+            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)property.getObject();
+            // every association have to be a Detail-To-Master association
+            if (!association.getAssociationType().isCompositionDetailToMaster()) {
+                return false;
+            }
+            if (typeToValidate == null) {
+                // first get the type of the first association. This is the type we want to validate
+                typeToValidate = association.getType();
+                if (typeToValidate == null) {
+                    return false;
+                }
+            } else {
+                // if there is another property with the same name in this type, do not ignore
+                if (typeToValidate.equals(association.getType())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     protected boolean visit(IType currentType) throws CoreException {
         Type currType = (Type)currentType;
@@ -156,14 +171,16 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
             }
         }
         for (IAssociation ass : currType.getAssociationPartCollection()) {
-            if (ass.is1ToMany()) {
-                // target role plural only check if is many association
-                add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,
-                        IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
+            if (!ass.isConstrains()) {
+                if (ass.is1ToMany()) {
+                    // target role plural only check if is many association
+                    add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,
+                            IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
+                }
+                // always check target role singular
+                add(ass.getTargetRoleSingular().toLowerCase(), new ObjectProperty(ass,
+                        IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
             }
-            // always check target role singular
-            add(ass.getTargetRoleSingular().toLowerCase(), new ObjectProperty(ass,
-                    IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
         }
         return true;
     }

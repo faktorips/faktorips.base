@@ -37,8 +37,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -180,13 +180,37 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
 
         // association (plural) in supertype
-        association1.setTargetRolePlural("property");
-        association1.setMaxCardinality(10);
+        association2.setTargetRolePlural("property");
+        association2.setMaxCardinality(10);
         result = type.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        association1.setTargetRolePlural("rolePlural2");
+        association2.setTargetRolePlural("rolePlural2");
         result = type.validate(ipsProject);
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+
+    }
+
+    @Test
+    public void testValidate_DuplicateAssociationName() throws CoreException {
+        type = newPolicyCmptType(ipsProject, "Policy");
+        IType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        type.setSupertype(supertype.getQualifiedName());
+
+        // association (singular) in supertype
+        IAssociation association2 = supertype.newAssociation();
+        association2.setTargetRoleSingular("property");
+        association2.setMaxCardinality(1);
+
+        // association (singular) in same type
+        IAssociation association1 = type.newAssociation();
+        association1.setTargetRoleSingular("property");
+        association1.setMaxCardinality(1);
+        MessageList result = type.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        association1.setConstrains(true);
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+
     }
 
     @Test

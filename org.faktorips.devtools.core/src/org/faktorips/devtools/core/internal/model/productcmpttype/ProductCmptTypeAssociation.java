@@ -371,7 +371,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
          */
         List<IAssociation> allAssociations = getProductCmptType().findAllAssociations(ipsProject);
         for (IAssociation otherAssociation : allAssociations) {
-            if (otherAssociation.equals(this)) {
+            if (this.equals(otherAssociation)) {
                 continue;
             }
             IPolicyCmptTypeAssociation otherMatchingAssociation = ((IProductCmptTypeAssociation)otherAssociation)
@@ -379,7 +379,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             if (otherMatchingAssociation == null) {
                 continue;
             }
-            if (otherMatchingAssociation.getName().equals(matchingPolicyCmptTypeAssociation.getName())) {
+            if (!matchingPolicyCmptTypeAssociation.isConstrains()
+                    && otherMatchingAssociation.getName().equals(matchingPolicyCmptTypeAssociation.getName())) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME, NLS.bind(
                         Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName, otherAssociation,
                         getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
@@ -398,7 +399,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         super.initPropertiesFromXml(element, id);
         matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
         matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
-        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) { // use default value in case null
+        // use default value in case null
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             isChangingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
     }
