@@ -75,7 +75,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testAssociationTo1Helper() {
         when(tree.getBranch()).thenReturn(branch);
-        List<IBranch> targets = new AssociationTo1Helper<ITree, IBranch>() {
+        List<? extends IBranch> targets = new AssociationTo1Helper<ITree, IBranch>() {
 
             @Override
             protected IBranch getTargetInternal(ITree sourceObject) {
@@ -98,7 +98,7 @@ public class FormulaEvaluatorUtilTest {
     public void testAssociationToManyHelper() {
         IBranch branch2 = mock(IBranch.class);
         when(tree.getBranches()).thenReturn(Arrays.asList(branch, branch2));
-        List<IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
+        List<? extends IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
 
             @Override
             protected List<IBranch> getTargetsInternal(ITree sourceObject) {
@@ -126,7 +126,7 @@ public class FormulaEvaluatorUtilTest {
         IBranch branch3 = mock(IBranch.class);
         when(tree.getBranches()).thenReturn(Arrays.asList(branch, branch2));
         when(tree2.getBranches()).thenReturn(Arrays.asList(branch2, branch3));
-        List<IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
+        List<? extends IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
 
             @Override
             protected List<IBranch> getTargetsInternal(ITree sourceObject) {
@@ -331,7 +331,7 @@ public class FormulaEvaluatorUtilTest {
         when(tree3.getProductComponent()).thenReturn(treePC3);
         when(treePC3.getId()).thenReturn("id3");
 
-        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(
+        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(
                 Arrays.asList(tree, tree2, tree22, tree3), "id2");
         assertFalse(modelObjectList.isEmpty());
         assertEquals(2, modelObjectList.size());
@@ -346,7 +346,8 @@ public class FormulaEvaluatorUtilTest {
      */
     @Test
     public void testGetListModelObjectByIdListOfTString_emptyList() {
-        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(new ArrayList<ITree>(), "id1");
+        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(new ArrayList<ITree>(),
+                "id1");
         assertTrue(modelObjectList.isEmpty());
     }
 
@@ -360,7 +361,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testGetListModelObjectByIdListOfTString_notInList() {
         when(treePC.getId()).thenReturn("id1");
-        List<ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(tree), "id2");
+        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(tree), "id2");
         assertTrue(modelObjectList.isEmpty());
     }
 
@@ -373,7 +374,8 @@ public class FormulaEvaluatorUtilTest {
      */
     @Test
     public void testGetListModelObjectByIdListOfTString_notConfigurable() {
-        List<IBranch> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(branch), "id1");
+        List<? extends IBranch> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(branch),
+                "id1");
         assertTrue(modelObjectList.isEmpty());
     }
 
