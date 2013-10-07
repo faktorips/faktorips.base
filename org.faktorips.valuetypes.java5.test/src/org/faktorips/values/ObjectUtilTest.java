@@ -23,11 +23,35 @@ import org.junit.Test;
  * @author Jan Ortmann
  */
 public class ObjectUtilTest {
+
     @Test
     public void testIsNull() {
         assertTrue(ObjectUtil.isNull(null));
         assertTrue(ObjectUtil.isNull(Money.NULL));
         assertFalse(ObjectUtil.isNull(Money.euro(42, 0)));
+    }
+
+    @Test
+    public void testEqualsObject() {
+        assertTrue(ObjectUtil.equals(null, null));
+
+        Object o1 = new Object();
+        assertTrue(ObjectUtil.equals(o1, o1));
+        assertFalse(ObjectUtil.equals(null, o1));
+        assertFalse(ObjectUtil.equals(o1, null));
+
+        Object o2 = new Object();
+        assertFalse(ObjectUtil.equals(o1, o2));
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void testCheckInstanceOf_fail() throws Exception {
+        ObjectUtil.checkInstanceOf("", Integer.class);
+    }
+
+    @Test
+    public void testCheckInstanceOf() throws Exception {
+        ObjectUtil.checkInstanceOf(12, Number.class);
     }
 
 }
