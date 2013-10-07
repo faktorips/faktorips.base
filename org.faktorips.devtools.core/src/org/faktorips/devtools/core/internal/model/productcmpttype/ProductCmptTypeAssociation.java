@@ -136,24 +136,29 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 continue;
             }
             IPolicyCmptType actualAssociationTarget = policyCmptTypeAssociation.findTargetPolicyCmptType(ipsProject);
-            if (actualAssociationTarget != null && actualAssociationTarget.isConfigurableByProductCmptType()) {
+            if (isTargetConfigurableByProductCmptType(actualAssociationTarget)) {
                 // the actualAssociationTarget seems to be configured by another ProductCmptType
                 continue;
             }
             IPolicyCmptType nextSource = policyCmptTypeAssociation.findTargetPolicyCmptType(ipsProject);
-            boolean notVisitedYet = alreadyVisit.add(nextSource);
-            if (notVisitedYet
-                    && nextSource != null
-                    && collectPossibleMatchingAssociations(nextSource, targetQName, foundAssociations, ipsProject,
-                            alreadyVisit)) {
-                if (!foundAssociations.add(policyCmptTypeAssociation)) {
-                    // already visited this component -- return to avoid cycles
-                    return true;
+            if (nextSource != null) {
+                boolean notVisitedYet = alreadyVisit.add(nextSource);
+                if (notVisitedYet
+                        && collectPossibleMatchingAssociations(nextSource, targetQName, foundAssociations, ipsProject,
+                                alreadyVisit)) {
+                    if (!foundAssociations.add(policyCmptTypeAssociation)) {
+                        // already visited this component -- return to avoid cycles
+                        return true;
+                    }
+                    result = true;
                 }
-                result = true;
             }
         }
         return result;
+    }
+
+    private boolean isTargetConfigurableByProductCmptType(IPolicyCmptType actualAssociationTarget) {
+        return actualAssociationTarget != null && actualAssociationTarget.isConfigurableByProductCmptType();
     }
 
     @Override
@@ -174,13 +179,13 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             IIpsProject ipsProject,
             boolean stopAfterFirst) throws CoreException {
         List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
+
         for (IAssociation association : policyCmptType.getAssociations()) {
             if (association.getAssociationType().isCompositionDetailToMaster()) {
                 continue;
             }
             IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
-            if (productCmptType.getQualifiedName().equals(policyCmptTypeAssociation.getMatchingAssociationSource())
-                    && getName().equals(policyCmptTypeAssociation.getMatchingAssociationName())) {
+            if (isMatchingPolicyCmptTypeAssociation(productCmptType, policyCmptTypeAssociation)) {
                 result.add(policyCmptTypeAssociation);
                 if (stopAfterFirst) {
                     return result;
@@ -193,7 +198,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 continue;
             }
             IPolicyCmptType target = (IPolicyCmptType)association.findTarget(ipsProject);
-            if (target == null || target.isConfigurableByProductCmptType()) {
+            if (isTargetNullOrConfigurableByProductCmptType(target)) {
                 continue;
             }
             List<IPolicyCmptTypeAssociation> matching = findMatchingPolicyCmptTypAssociationInternal(productCmptType,
@@ -204,6 +209,16 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             }
         }
         return result;
+    }
+
+    private boolean isTargetNullOrConfigurableByProductCmptType(IPolicyCmptType target) {
+        return target == null || target.isConfigurableByProductCmptType();
+    }
+
+    private boolean isMatchingPolicyCmptTypeAssociation(IProductCmptType productCmptType,
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
+        return productCmptType.getQualifiedName().equals(policyCmptTypeAssociation.getMatchingAssociationSource())
+                && getName().equals(policyCmptTypeAssociation.getMatchingAssociationName());
     }
 
     @Override
@@ -341,7 +356,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = findMatchingPolicyCmptTypeAssociation(ipsProject);
         if (matchingPolicyCmptTypeAssociation == null) {
-            if (StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName)) {
+            if (isMatchingAssociationSourceAndNameNotEmpty()) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND, NLS.bind(
                         Messages.ProductCmptTypeAssociation_error_matchingAssociationNotFound,
                         getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
@@ -387,6 +402,10 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                         PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
         }
+    }
+
+    private boolean isMatchingAssociationSourceAndNameNotEmpty() {
+        return StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName);
     }
 
     @Override
