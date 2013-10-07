@@ -13,16 +13,10 @@
 
 package org.faktorips.runtime.internal;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
@@ -30,7 +24,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Helper class to read {@link InternationalString international strings} from XML and write them
@@ -140,28 +133,4 @@ public class InternationalStringXmlReaderWriter {
         return fromXml(internationalStringElement);
     }
 
-    /**
-     * Reads an {@link InternationalString} from an XML snippet represented by the String parameter.
-     * 
-     * @param xmlSnippet The XML representation of the {@link InternationalString}
-     * @return An {@link InternationalString} loaded from the XML snippet
-     */
-    public static InternationalString fromXml(String xmlSnippet) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new ByteArrayInputStream(xmlSnippet.getBytes()));
-            Element rootElement = document.getDocumentElement();
-            Collection<LocalizedString> collection = fromXml(rootElement);
-            return new InternationalString(collection);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
