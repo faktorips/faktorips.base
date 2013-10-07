@@ -164,13 +164,13 @@ public class AssociationWorkbenchAdapterTest extends AbstractIpsPluginTest {
             boolean noChangeOverTime) {
         String[] overlays = new String[4];
         if (isOverride) {
-            overlays[0] = OverlayIcons.OVERRIDE_OVR;
+            overlays[3] = OverlayIcons.OVERRIDE_OVR;
         }
         if (isProductRelevant) {
             overlays[1] = OverlayIcons.PRODUCT_OVR;
         }
         if (noChangeOverTime) {
-            overlays[3] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+            overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
         }
         return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseName, overlays);
     }

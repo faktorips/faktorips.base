@@ -74,12 +74,12 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
         if (association instanceof IProductCmptTypeAssociation) {
             IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
             if (!productAssociation.isChangingOverTime()) {
-                overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                overlays[IDecoration.TOP_LEFT] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
             }
         }
 
         if (association.isConstrains()) {
-            overlays[IDecoration.TOP_LEFT] = OverlayIcons.OVERRIDE_OVR;
+            overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE_OVR;
         }
         return overlays;
     }
