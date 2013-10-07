@@ -107,6 +107,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().isDerived();
     }
 
+    public boolean isConstrains() {
+        return getAssociation().isConstrains();
+    }
+
     public boolean isMasterToDetail() {
         return getAssociation().getAssociationType().isMasterToDetail();
     }

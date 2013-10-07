@@ -173,6 +173,11 @@ public class XPolicyAssociation extends XAssociation {
         return getAssociation().isQualified();
     }
 
+    @Override
+    public boolean isConstrains() {
+        return false;
+    }
+
     /**
      * This method returns true if the maximum cardinality is greater than one also if it is a
      * qualified association.

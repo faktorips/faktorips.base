@@ -87,14 +87,15 @@
 
 «DEFINE getters FOR XPolicyAssociation-»
 	«IF generateGetter-»
-		«IF oneToMany-»
+		«IF !constrains-»
+			«IF oneToMany-»
 		    /**
 		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
 		     * 
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «List_(targetInterfaceName)» «method(methodNameGetter)»
+		    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
 		    {
 		        return «Collections()».unmodifiableList(«fieldName»);
@@ -127,6 +128,9 @@
 		    }
 		    «ENDIF»
 	    «ENDIF-»
+		«ELSE»
+			
+		«ENDIF»
     «ENDIF»
     «IF generateQualifiedGetter»
 	    /**
