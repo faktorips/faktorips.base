@@ -87,33 +87,39 @@
 
 «DEFINE getters FOR XPolicyAssociation-»
 	«IF generateGetter-»
-		«IF !constrains-»
-			«IF oneToMany-»
-		    /**
-		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
-		    «IF genInterface()-»;«ELSE-»
-		    {
-		        return «Collections()».unmodifiableList(«fieldName»);
-		    }
-		    «ENDIF»
-
-		    /**
-		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
-		    «IF genInterface()-»;«ELSE-»
-		    {
-		        return «fieldName».get(index);
-		    }
-		    «ENDIF»
+		«IF oneToMany-»
+	    /**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
+	    «IF genInterface()-»;«ELSE-»
+	    	{
+	    	«IF constrains-»
+	    		return «ListUtil()».«convert("super."+method(methodNameGetter), targetInterfaceName+".class")»;
+	    	«ELSE-»
+	        	return «Collections()».unmodifiableList(«fieldName»);
+	    	«ENDIF»
+	    	}
+	    «ENDIF»
+		/**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
+	     * 
+	     * @generated
+         */
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
+		 «IF genInterface()-»;«ELSE-»
+		 	{
+	    	«IF constrains-»
+	    		return («targetInterfaceName»)super.«methodNameGetSingle»(index);
+		    «ELSE-»
+		    	return «fieldName».get(index);
+		   	«ENDIF»
+		   	}
+		 «ENDIF»
 	    «ELSE-»
 		    /**
 		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name)»
@@ -123,14 +129,15 @@
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
-		    {
-		        return «fieldName»;
-		    }
+		    	{
+		    	«IF constrains-»
+		    		return («targetInterfaceName»)super.«method(methodNameGetter)»;
+		    	«ELSE-»
+			        return «fieldName»;
+			    «ENDIF»
+			    }
 		    «ENDIF»
 	    «ENDIF-»
-		«ELSE»
-			
-		«ENDIF»
     «ENDIF»
     «IF generateQualifiedGetter»
 	    /**

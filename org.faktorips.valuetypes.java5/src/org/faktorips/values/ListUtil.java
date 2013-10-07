@@ -22,16 +22,29 @@ import java.util.List;
  * @author Jan Ortmann
  */
 public class ListUtil {
+
+    private ListUtil() {
+        // Prevent initialization.
+    }
+
     /**
      * Initializes a list with a given value.
      */
-    public final static <T> List<T> newList(T defaultValue) {
+    public static final <T> List<T> newList(T defaultValue) {
         List<T> newList = new ArrayList<T>();
         newList.add(defaultValue);
         return newList;
     }
 
-    private ListUtil() {
-        // Prevent initialization.
+    public static final <T, R extends T> List<? extends R> convert(List<? extends T> list, Class<R> newType) {
+        for (T member : list) {
+            if (!(member.getClass().isInstance(newType))) {
+                throw new ClassCastException(member + " not instance of " + newType);
+            }
+        }
+        @SuppressWarnings("unchecked")
+        List<? extends R> convertList = (List<? extends R>)list;
+        return convertList;
     }
+
 }
