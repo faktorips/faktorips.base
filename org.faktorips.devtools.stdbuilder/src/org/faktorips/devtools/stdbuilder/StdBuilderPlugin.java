@@ -35,12 +35,12 @@ public class StdBuilderPlugin extends Plugin {
     /**
      * The plugin id like it is defined in the plugin.xml file
      */
-    public final static String PLUGIN_ID = "org.faktorips.devtools.stdbuilder"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.faktorips.devtools.stdbuilder"; //$NON-NLS-1$
 
     /**
      * The id of the standard builder set extension like it is defined in the plugin.xml file
      */
-    public final static String STANDARD_BUILDER_EXTENSION_ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset"; //$NON-NLS-1$
+    public static final String STANDARD_BUILDER_EXTENSION_ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset"; //$NON-NLS-1$
 
     // The shared instance.
     private static StdBuilderPlugin plugin;
@@ -49,12 +49,7 @@ public class StdBuilderPlugin extends Plugin {
 
     private List<ITocEntryFactory<?>> tocEntryFactories;
 
-    /**
-     * Returns the shared instance.
-     */
-    public static StdBuilderPlugin getDefault() {
-        return plugin;
-    }
+    private ClassLoader contextFinder;
 
     /**
      * The constructor.
@@ -64,25 +59,19 @@ public class StdBuilderPlugin extends Plugin {
         plugin = this;
     }
 
+    /**
+     * Returns the shared instance.
+     */
+    public static StdBuilderPlugin getDefault() {
+        return plugin;
+    }
+
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         loadTocEntryBuilders();
         loadTocEntryFactories();
-    }
-
-    /**
-     * Logs the core exception
-     */
-    public final static void log(CoreException e) {
-        log(e.getStatus());
-    }
-
-    /**
-     * Logs the status.
-     */
-    public final static void log(IStatus status) {
-        plugin.getLog().log(status);
+        initContextFinder();
     }
 
     private void loadTocEntryBuilders() {
@@ -115,6 +104,32 @@ public class StdBuilderPlugin extends Plugin {
                 }
             }
         }
+    }
+
+    /**
+     * When starting the plug-In, the current context classloader should be the eclipse context
+     * finder which is able to find all needed resources independent of the current bundle.
+     */
+    private void initContextFinder() {
+        contextFinder = Thread.currentThread().getContextClassLoader();
+    }
+
+    public ClassLoader getContextFinder() {
+        return contextFinder;
+    }
+
+    /**
+     * Logs the core exception
+     */
+    public static final void log(CoreException e) {
+        log(e.getStatus());
+    }
+
+    /**
+     * Logs the status.
+     */
+    public static final void log(IStatus status) {
+        plugin.getLog().log(status);
     }
 
     /**

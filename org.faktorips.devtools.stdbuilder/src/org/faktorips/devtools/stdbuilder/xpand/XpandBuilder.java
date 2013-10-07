@@ -129,13 +129,24 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
     private void setCorrectClassLoader() {
         Thread current = Thread.currentThread();
         setOldClassLoader(current.getContextClassLoader());
-        current.setContextClassLoader(getClass().getClassLoader());
+        current.setContextClassLoader(StdBuilderPlugin.getDefault().getContextFinder());
     }
 
     @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
-        super.afterBuildProcess(project, buildKind);
-        resetOldClassLoader();
+        try {
+            super.afterBuildProcess(project, buildKind);
+        } finally {
+            resetOldClassLoader();
+        }
+    }
+
+    private ClassLoader getOldClassLoader() {
+        return threadLocalOldClassLoader.get();
+    }
+
+    private void setOldClassLoader(ClassLoader classLoader) {
+        threadLocalOldClassLoader.set(classLoader);
     }
 
     private void resetOldClassLoader() {
@@ -279,14 +290,6 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
 
     public void setTemplateDefinition(XpandDefinition templateDefinition) {
         threadLocalTemplateDefinition.set(templateDefinition);
-    }
-
-    public ClassLoader getOldClassLoader() {
-        return threadLocalOldClassLoader.get();
-    }
-
-    public void setOldClassLoader(ClassLoader classLoader) {
-        threadLocalOldClassLoader.set(classLoader);
     }
 
     @Override
