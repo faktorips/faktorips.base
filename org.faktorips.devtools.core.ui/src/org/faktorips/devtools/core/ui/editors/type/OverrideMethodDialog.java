@@ -98,7 +98,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IM
             }
 
             @Override
-            protected boolean visit(IType currentType) throws CoreException {
+            protected boolean visit(IType currentType) {
                 supertypes.add(currentType);
                 return true;
             }

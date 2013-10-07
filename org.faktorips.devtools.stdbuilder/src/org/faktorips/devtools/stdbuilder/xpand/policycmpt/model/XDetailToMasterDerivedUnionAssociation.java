@@ -131,26 +131,31 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
-            for (IPolicyCmptTypeAssociation asso : associations) {
-                if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
-                    if (asso.isSharedAssociation()) {
-                        IPolicyCmptTypeAssociation sharedAssociationHost = asso.findSharedAssociationHost(ipsProject);
-                        if (sharedAssociationHost.equals(detailToMasterDU)) {
-                            foundSubset = true;
-                            return false;
-                        }
-                    } else {
-                        IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
-                        if (!masterToDetail.isDerivedUnion()
-                                && masterToDetail.getSubsettedDerivedUnion().equals(
-                                        detailToMasterDU.getInverseAssociation())) {
-                            foundSubset = true;
-                            return false;
+            try {
+                for (IPolicyCmptTypeAssociation asso : associations) {
+                    if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
+                        if (asso.isSharedAssociation()) {
+                            IPolicyCmptTypeAssociation sharedAssociationHost = asso
+                                    .findSharedAssociationHost(ipsProject);
+                            if (sharedAssociationHost.equals(detailToMasterDU)) {
+                                foundSubset = true;
+                                return false;
+                            }
+                        } else {
+                            IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
+                            if (!masterToDetail.isDerivedUnion()
+                                    && masterToDetail.getSubsettedDerivedUnion().equals(
+                                            detailToMasterDU.getInverseAssociation())) {
+                                foundSubset = true;
+                                return false;
+                            }
                         }
                     }
                 }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
             if (currentType.equals(detailToMasterDU.getType())) {
                 return false;

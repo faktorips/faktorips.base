@@ -135,16 +135,12 @@ public class XPolicyAssociation extends XAssociation {
      * 
      */
     protected XPolicyAssociation getSuperAssociationWithSameName() {
-        try {
-            IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
-                    .findSuperAssociationWithSameName(getIpsProject());
-            if (superAssociationWithSameName != null) {
-                return getModelNode(superAssociationWithSameName, XPolicyAssociation.class);
-            } else {
-                return null;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IPolicyCmptTypeAssociation superAssociationWithSameName = (IPolicyCmptTypeAssociation)getAssociation()
+                .findSuperAssociationWithSameName(getIpsProject());
+        if (superAssociationWithSameName != null) {
+            return getModelNode(superAssociationWithSameName, XPolicyAssociation.class);
+        } else {
+            return null;
         }
     }
 

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -36,8 +37,12 @@ public abstract class EnumTypeHierarchyVisitor extends HierarchyVisitor<IEnumTyp
     }
 
     @Override
-    protected IEnumType findSupertype(IEnumType currentType, IIpsProject ipsProject) throws CoreException {
-        return currentType.findSuperEnumType(ipsProject);
+    protected IEnumType findSupertype(IEnumType currentType, IIpsProject ipsProject) {
+        try {
+            return currentType.findSuperEnumType(ipsProject);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }

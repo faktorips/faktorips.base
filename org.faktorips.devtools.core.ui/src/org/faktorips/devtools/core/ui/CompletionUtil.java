@@ -87,7 +87,7 @@ public class CompletionUtil {
 
     /**
      * Encapsulate the deprecated call to
-     * {@link ContentAssistHandler#createHandlerForCombo(Combo, SubjectControlContentAssistant)
+     * {@link ContentAssistHandler#createHandlerForCombo(Combo, SubjectControlContentAssistant)}
      * avoid the deprecated warning in a lot of source sections.
      */
     public static ContentAssistHandler createHandlerForCombo(Combo combo, IContentAssistProcessor processor) {

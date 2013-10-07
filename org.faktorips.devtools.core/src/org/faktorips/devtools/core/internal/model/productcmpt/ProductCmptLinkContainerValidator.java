@@ -58,17 +58,13 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     }
 
     public void startAndAddMessagesToList(IProductCmptType type, MessageList parentList) {
-        try {
-            this.list = new MessageList();
-            start(type);
-            parentList.add(list);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        this.list = new MessageList();
+        start(type);
+        parentList.add(list);
     }
 
     @Override
-    protected boolean visit(IProductCmptType currentType) throws CoreException {
+    protected boolean visit(IProductCmptType currentType) {
         List<IProductCmptTypeAssociation> associations = currentType.getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation association : associations) {
             if (association.isDerivedUnion()) {

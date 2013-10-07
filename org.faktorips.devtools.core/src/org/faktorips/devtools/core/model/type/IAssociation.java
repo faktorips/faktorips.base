@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -387,5 +388,27 @@ public interface IAssociation extends ITypePart {
      * @throws CoreException If an error occurs while searching.
      */
     public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * This method looks for an association with the same name in the super type hierarchy. It
+     * starts with the supertype and returns the first association found with the same name.
+     * 
+     * @param ipsProject The project used to search from
+     * @return an association with the same name and target found in the super type hierarchy
+     * @throws CoreRuntimeException in case of a core exception in the finder methods
+     */
+    public IAssociation findSuperAssociationWithSameName(IIpsProject ipsProject);
+
+    /**
+     * This method searches in the super type hierarchy for an other association with the same name
+     * that is not marked as "constrains" (@see {@link #isConstrains()}. This method does not
+     * respect whether this association marked as "constrains" or not, hence if it not constrains
+     * another association this method returns the association that would be constrained by this
+     * method.
+     * 
+     * @param ipsProject The {@link IIpsProject} used to search in the type hierarchy
+     * @return The association that is constrained by this one
+     */
+    public IAssociation findConstrainedAssociation(IIpsProject ipsProject);
 
 }

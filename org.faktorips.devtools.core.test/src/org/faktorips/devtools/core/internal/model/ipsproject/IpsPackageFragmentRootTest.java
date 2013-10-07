@@ -57,7 +57,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsObjectPathEntry() throws CoreException {
+    public void testGetIpsObjectPathEntry() {
         IIpsObjectPathEntry entry = ipsRoot.getIpsObjectPathEntry();
         assertNotNull(entry);
     }

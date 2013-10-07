@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -160,37 +161,42 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             }
 
             @Override
-            protected boolean visit(IProductCmptType currentType) throws CoreException {
-                for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
-                    /*
-                     * First, check whether the property has been overwritten by a subtype - in this
-                     * case we do not add the property to the category.
-                     */
-                    if (overwritingProperties.contains(property.getPropertyName())) {
-                        continue;
-                    }
+            protected boolean visit(IProductCmptType currentType) {
+                try {
+                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
+                        /*
+                         * First, check whether the property has been overwritten by a subtype - in
+                         * this case we do not add the property to the category.
+                         */
+                        if (overwritingProperties.contains(property.getPropertyName())) {
+                            continue;
+                        }
 
-                    /*
-                     * Memorize the property if it is overwriting another property from the
-                     * supertype hierarchy.
-                     */
-                    if (isOverwriteProperty(property)) {
-                        overwritingProperties.add(property.getPropertyName());
-                    }
+                        /*
+                         * Memorize the property if it is overwriting another property from the
+                         * supertype hierarchy.
+                         */
+                        if (isOverwriteProperty(property)) {
+                            overwritingProperties.add(property.getPropertyName());
+                        }
 
-                    /*
-                     * Now, check if the property is visible. If not, the property will not be added
-                     * to the category. Note that it is still important to check if it is
-                     * overwritten, first, so that super attributes that are not hidden, will not be
-                     * displayed.
-                     */
-                    if (!isVisible(property)) {
-                        continue;
-                    }
+                        /*
+                         * Now, check if the property is visible. If not, the property will not be
+                         * added to the category. Note that it is still important to check if it is
+                         * overwritten, first, so that super attributes that are not hidden, will
+                         * not be displayed.
+                         */
+                        if (!isVisible(property)) {
+                            continue;
+                        }
 
-                    if (findIsContainingProperty(property, currentType, ipsProject) && !properties.contains(property)) {
-                        properties.add(property);
+                        if (findIsContainingProperty(property, currentType, ipsProject)
+                                && !properties.contains(property)) {
+                            properties.add(property);
+                        }
                     }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
 
                 return searchSupertypeHierarchy;
@@ -355,8 +361,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return true;
     }
 
-    private void validateDuplicateDefaultsForFormulaSignatureDefinitions(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateDuplicateDefaultsForFormulaSignatureDefinitions(MessageList list, IIpsProject ipsProject) {
 
         if (!defaultForFormulaSignatureDefinitions) {
             return;
@@ -371,8 +376,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
     }
 
-    private void validateDuplicateDefaultsForValidationRules(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateDuplicateDefaultsForValidationRules(MessageList list, IIpsProject ipsProject) {
 
         if (!defaultForValidationRules) {
             return;
@@ -387,8 +391,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                         PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
-    private void validateDuplicateDefaultsForTableStructureUsages(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateDuplicateDefaultsForTableStructureUsages(MessageList list, IIpsProject ipsProject) {
 
         if (!defaultForTableStructureUsages) {
             return;
@@ -403,8 +406,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
     }
 
-    private void validateDuplicateDefaultsForPolicyCmptTypeAttributes(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateDuplicateDefaultsForPolicyCmptTypeAttributes(MessageList list, IIpsProject ipsProject) {
 
         if (!defaultForPolicyCmptTypeAttributes) {
             return;
@@ -419,8 +421,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
     }
 
-    private void validateDuplicateDefaultsForProductCmptTypeAttributes(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateDuplicateDefaultsForProductCmptTypeAttributes(MessageList list, IIpsProject ipsProject) {
 
         if (!defaultForProductCmptTypeAttributes) {
             return;
@@ -700,7 +701,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             for (IProductCmptCategory category : currentType.getCategories()) {
                 if (category.isDefaultFor(propertyType) && !name.equals(category.getName())) {
                     duplicateDefaultFound = true;

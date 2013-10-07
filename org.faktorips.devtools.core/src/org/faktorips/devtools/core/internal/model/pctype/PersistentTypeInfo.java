@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -190,19 +189,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         ArgumentCheck.notNull(newStrategy);
         InheritanceStrategy oldValue = inheritanceStrategy;
 
-        try {
-            setInheritanceStrategyInternal(newStrategy);
-        } catch (CoreException e) {
-            // maybe there was an error searching the root entity
-            // this error should be reported before, thus just ignore it by throwing a new runtime
-            // exception
-            throw new RuntimeException(e);
-        }
+        setInheritanceStrategyInternal(newStrategy);
 
         valueChanged(oldValue, newStrategy);
     }
 
-    public void setInheritanceStrategyInternal(InheritanceStrategy newStrategy) throws CoreException {
+    public void setInheritanceStrategyInternal(InheritanceStrategy newStrategy) {
         if (InheritanceStrategy.SINGLE_TABLE.equals(newStrategy) && !isRootEntity()) {
             // initialize defaults for single table inheritance strategy if this is not the roor
             // entity
@@ -230,22 +222,18 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (persistentType == PersistentType.NONE) {
             return;
         }
-        try {
-            RooEntityFinder rootEntityFinder = new RooEntityFinder(ipsProject);
-            rootEntityFinder.start(getPolicyCmptType());
+        RooEntityFinder rootEntityFinder = new RooEntityFinder(ipsProject);
+        rootEntityFinder.start(getPolicyCmptType());
 
-            validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity, ipsProject);
-            validateTableName(msgList, rootEntityFinder.rooEntity);
-            validateDisriminator(msgList, rootEntityFinder.rooEntity);
-            validateUniqueColumnNameInHierarchy(msgList);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity, ipsProject);
+        validateTableName(msgList, rootEntityFinder.rooEntity);
+        validateDisriminator(msgList, rootEntityFinder.rooEntity);
+        validateUniqueColumnNameInHierarchy(msgList);
     }
 
     private void validateInheritanceStrategy(final MessageList msgList,
             IPolicyCmptType rooEntity,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         IPolicyCmptType pcType = getPolicyCmptType();
         if (!pcType.hasSupertype()) {
@@ -344,7 +332,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return rooEntityFinder.rooEntity;
     }
 
-    private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) throws CoreException {
+    private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) {
         if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
             if (isDefinesDiscriminatorColumn()) {
                 String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedBecauseMappedSuperclass;
@@ -509,7 +497,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return (IPolicyCmptType)getIpsObject();
     }
 
-    private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
+    private void validateUniqueColumnNameInHierarchy(MessageList msgList) {
         ColumnNameCollector columnNameCollector = new ColumnNameCollector(getIpsProject());
         columnNameCollector.start(getPolicyCmptType());
 
@@ -559,7 +547,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 Messages.PersistentTypeInfo_msgDuplicateColumnName, detailText), Message.ERROR, objectProperty));
     }
 
-    private boolean isRootEntity() throws CoreException {
+    private boolean isRootEntity() {
         RooEntityFinder rootEntityFinder = new RooEntityFinder(getIpsProject());
         rootEntityFinder.start(getPolicyCmptType());
         return isRootEntity(rootEntityFinder.rooEntity);
@@ -588,7 +576,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             InheritanceStrategy supertypeStrategy = currentType.getPersistenceTypeInfo().getInheritanceStrategy();
             if (supertypeStrategy == inheritanceStrategy
                     || (currentType.getPersistenceTypeInfo().getPersistentType() != PersistentType.ENTITY)) {
@@ -617,7 +605,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             IPersistentTypeInfo persistenceTypeInfo = currentType.getPersistenceTypeInfo();
 
             if (StringUtils.isEmpty(currentType.getSupertype())) {
@@ -693,7 +681,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             InheritanceStrategy currentInheritanceStrategy = currentType.getPersistenceTypeInfo()
                     .getInheritanceStrategy();
 

@@ -30,6 +30,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -157,12 +158,8 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             // The leaf of the tree is the container object of the input object part
             leafObject = ((IIpsObjectPart)inputElement).getIpsObject();
             RootHierarchyVisitor rootOfHierarchyVisitor = new RootHierarchyVisitor(leafObject.getIpsProject());
-            try {
-                // Beginning from the leaf we want to find the root object of the hierarchy
-                rootOfHierarchyVisitor.start(leafObject);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            // Beginning from the leaf we want to find the root object of the hierarchy
+            rootOfHierarchyVisitor.start(leafObject);
             List<IIpsObject> visitedIpsObjects = rootOfHierarchyVisitor.getVisited();
             // The root object of the hierarchy is the last visited object
             IIpsObject rootIpsObject = visitedIpsObjects.get(visitedIpsObjects.size() - 1);
@@ -205,7 +202,7 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             }
 
             @Override
-            protected boolean visit(IIpsObject currentObject) throws CoreException {
+            protected boolean visit(IIpsObject currentObject) {
                 if (previousObject != null) {
                     parentToChildInHierarchy.put(currentObject, previousObject);
                     childToParentInHierarchy.put(previousObject, currentObject);
@@ -215,14 +212,18 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             }
 
             @Override
-            protected IIpsObject findSupertype(IIpsObject currentObject, IIpsProject ipsProject) throws CoreException {
-                if (currentObject instanceof IType) {
-                    return ((IType)currentObject).findSupertype(ipsProject);
+            protected IIpsObject findSupertype(IIpsObject currentObject, IIpsProject ipsProject) {
+                try {
+                    if (currentObject instanceof IType) {
+                        return ((IType)currentObject).findSupertype(ipsProject);
+                    }
+                    if (currentObject instanceof IEnumType) {
+                        return ((IEnumType)currentObject).findSuperEnumType(ipsProject);
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
-                if (currentObject instanceof IEnumType) {
-                    return ((IEnumType)currentObject).findSuperEnumType(ipsProject);
-                }
-                throw new RuntimeException();
+                throw new RuntimeException("Illegal type, " + currentObject + " must be of type IType or IEnumType"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 

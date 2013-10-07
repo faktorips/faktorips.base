@@ -257,7 +257,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             if (StringUtils.isEmpty(getFormulaName()) || currentType == null) {
                 return false;
             }

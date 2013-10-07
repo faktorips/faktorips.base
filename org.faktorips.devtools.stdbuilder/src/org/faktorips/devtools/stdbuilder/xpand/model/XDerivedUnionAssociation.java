@@ -163,7 +163,7 @@ public class XDerivedUnionAssociation extends XAssociation {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             List<IAssociation> associations = currentType.getAssociations();
             for (IAssociation aAssociation : associations) {
                 if (aAssociation.getSubsettedDerivedUnion() != null

@@ -398,7 +398,7 @@ public class TestSelectionComposite extends Composite {
         viewer.refresh();
     }
 
-    public String getPackageFragmentRootText() throws CoreException {
+    public String getPackageFragmentRootText() {
         List<String> roots = new ArrayList<String>();
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;

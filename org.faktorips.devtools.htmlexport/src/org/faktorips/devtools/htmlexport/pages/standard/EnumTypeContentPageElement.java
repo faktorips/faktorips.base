@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -127,7 +128,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         @Override
-        protected boolean visit(IEnumType currentType) throws CoreException {
+        protected boolean visit(IEnumType currentType) {
             superTypes.add(currentType);
             return true;
         }
@@ -199,7 +200,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         SupertypeHierarchieVisitor hier = new SupertypeHierarchieVisitor(getDocumentedIpsObject().getIpsProject());
         try {
             hier.start(getDocumentedIpsObject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$

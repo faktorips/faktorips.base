@@ -19,10 +19,10 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MultilingualMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MultilingualMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
@@ -263,7 +263,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             List<ITableStructureUsage> tsu = currentType.getTableStructureUsages();
             for (ITableStructureUsage element : tsu) {
                 tableStructureUsages.add(element);

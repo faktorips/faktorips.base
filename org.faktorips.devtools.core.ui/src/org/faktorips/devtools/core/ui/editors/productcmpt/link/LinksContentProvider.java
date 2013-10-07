@@ -87,7 +87,7 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     private AssociationViewItem[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
-            IProductCmptGeneration generation) throws CoreException {
+            IProductCmptGeneration generation) {
         NonDerivedAssociationsCollector collector = new NonDerivedAssociationsCollector(ipsProject);
         collector.start(type);
         List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
@@ -144,7 +144,7 @@ public class LinksContentProvider implements ITreeContentProvider {
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             List<IProductCmptTypeAssociation> typeAssociations = currentType.getProductCmptTypeAssociations();
             int index = 0;
             for (IProductCmptTypeAssociation association : typeAssociations) {

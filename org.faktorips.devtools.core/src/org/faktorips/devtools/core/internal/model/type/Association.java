@@ -20,7 +20,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -247,6 +249,34 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
+    public IAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) {
+        try {
+            IType supertype = getType().findSupertype(ipsProject);
+            if (supertype == null) {
+                return null;
+            }
+            IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
+            return superAssociation;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
+    public IAssociation findConstrainedAssociation(IIpsProject ipsProject) {
+        AssociationHierarchyVisitor visitor = new AssociationHierarchyVisitor(ipsProject) {
+
+            @Override
+            protected boolean continueVisiting() {
+                return getSuperAssociation().isConstrains();
+            }
+
+        };
+        visitor.start(this);
+        return visitor.getSuperAssociation();
+    }
+
+    @Override
     public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
         return getType().findAssociation(subsettedDerivedUnion, project);
     }
@@ -457,6 +487,36 @@ public abstract class Association extends TypePart implements IAssociation {
         return true;
     }
 
+    protected abstract static class AssociationHierarchyVisitor extends HierarchyVisitor<IAssociation> {
+
+        private IAssociation superAssociation;
+
+        protected AssociationHierarchyVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected IAssociation findSupertype(IAssociation currentType, IIpsProject ipsProject) {
+            return currentType.findSuperAssociationWithSameName(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IAssociation currentType) {
+            setSuperAssociation(currentType);
+            return continueVisiting();
+        }
+
+        protected abstract boolean continueVisiting();
+
+        public IAssociation getSuperAssociation() {
+            return superAssociation;
+        }
+
+        public void setSuperAssociation(IAssociation superAssociation) {
+            this.superAssociation = superAssociation;
+        }
+    }
+
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IAssociation> candidates = new ArrayList<IAssociation>();
@@ -468,7 +528,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             List<IAssociation> associations = currentType.getAssociations();
             for (IAssociation association : associations) {
                 if (!association.isDerivedUnion()) {
@@ -477,13 +537,17 @@ public abstract class Association extends TypePart implements IAssociation {
                 if (association.equals(Association.this)) {
                     continue;
                 }
-                IType derivedUnionTarget = association.findTarget(ipsProject);
-                if (derivedUnionTarget == null) {
-                    continue;
-                }
+                try {
+                    IType derivedUnionTarget = association.findTarget(ipsProject);
+                    if (derivedUnionTarget == null) {
+                        continue;
+                    }
 
-                if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
-                    candidates.add(association);
+                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
+                        candidates.add(association);
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
             }
             return true;

@@ -178,7 +178,7 @@ public class EnumTypeValidations {
         }
 
         @Override
-        protected boolean visit(IEnumType currentType) throws CoreException {
+        protected boolean visit(IEnumType currentType) {
             superTypes.add(currentType);
             return true;
         }

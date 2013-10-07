@@ -206,7 +206,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
         }
 
         @Override
-        protected boolean visit(IEnumType currentType) throws CoreException {
+        protected boolean visit(IEnumType currentType) {
             if (currentType.containsEnumAttribute(getEnumAttribute().getName())) {
                 baseOfOverriddenAttributeFound = true;
                 return false;

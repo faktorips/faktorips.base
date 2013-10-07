@@ -163,7 +163,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
     }
 
     @Override
-    protected boolean visit(IType currentType) throws CoreException {
+    protected boolean visit(IType currentType) {
         Type currType = (Type)currentType;
         for (IAttribute attr : currType.getAttributesPartCollection()) {
             if (!attr.isOverwrite()) {

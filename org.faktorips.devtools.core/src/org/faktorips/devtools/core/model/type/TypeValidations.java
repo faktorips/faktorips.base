@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.type;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Messages;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -115,13 +116,17 @@ public class TypeValidations {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             if (StringUtils.isEmpty(currentType.getSupertype())) {
                 // there should be no more super type
                 result = true;
                 return false;
             }
-            return result = currentType.findSupertype(ipsProject) != null;
+            try {
+                return result = currentType.findSupertype(ipsProject) != null;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
     }

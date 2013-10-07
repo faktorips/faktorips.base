@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -336,16 +335,19 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptTypeAssociation associationHost = findSuperAssociationWithSameName(ipsProject);
-        if (associationHost != null && associationHost.getTarget().equals(getTarget())
-                && associationHost.getAssociationType().isCompositionDetailToMaster()) {
-            if (associationHost.isSharedAssociation()) {
-                // if the found association host is a shared association by itself we have to find
-                // its association host
-                return associationHost.findSharedAssociationHost(ipsProject);
-            } else {
-                return associationHost;
+        AssociationHierarchyVisitor visitor = new AssociationHierarchyVisitor(ipsProject) {
+
+            @Override
+            protected boolean continueVisiting() {
+                return ((IPolicyCmptTypeAssociation)getSuperAssociation()).isSharedAssociation();
             }
+
+        };
+        visitor.start(this);
+        IPolicyCmptTypeAssociation associationHostCandidate = (IPolicyCmptTypeAssociation)visitor.getSuperAssociation();
+        if (associationHostCandidate != null && associationHostCandidate.getTarget().equals(getTarget())
+                && associationHostCandidate.getAssociationType().isCompositionDetailToMaster()) {
+            return associationHostCandidate;
         } else {
             return null;
         }
@@ -395,18 +397,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     public boolean isConfigured() {
         return configured;
-    }
-
-    @Override
-    public IPolicyCmptTypeAssociation findSuperAssociationWithSameName(final IIpsProject ipsProject)
-            throws CoreException {
-        IType supertype = getType().findSupertype(ipsProject);
-        if (supertype == null) {
-            return null;
-        }
-        IPolicyCmptTypeAssociation associationHost = (IPolicyCmptTypeAssociation)supertype.findAssociation(getName(),
-                ipsProject);
-        return associationHost;
     }
 
     @Override

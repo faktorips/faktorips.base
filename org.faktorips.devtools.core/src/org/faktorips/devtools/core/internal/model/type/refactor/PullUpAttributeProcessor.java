@@ -169,7 +169,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             if (currentType.getAttribute(getAttribute().getName()) != null) {
                 baseOfOverriddenAttributeFound = true;
                 return false;

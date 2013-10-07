@@ -490,16 +490,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     String getMatchingAssociationName();
 
     /**
-     * This method looks for an association with the same name in the super type hierarchy. It
-     * starts with the supertype and returns the first association found with the same name.
-     * 
-     * @param ipsProject The project used to search from
-     * @return an association with the same name and target found in the super type hierarchy
-     * @throws CoreException in case of a core exception in the finder methods
-     */
-    IPolicyCmptTypeAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Setting whether this association is configured by product component or not.
      * 
      * @param configured True to mark this association to be configured by product component

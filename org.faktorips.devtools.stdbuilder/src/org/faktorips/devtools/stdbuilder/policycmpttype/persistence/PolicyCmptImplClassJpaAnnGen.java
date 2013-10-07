@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -131,11 +130,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     private String getTableNameFromSupertype(IPersistentTypeInfo persistenceTypeInfo) {
         SearchTableNameInSuperTypes searchTableNameInSuperTypes = new SearchTableNameInSuperTypes(
                 persistenceTypeInfo.getIpsProject());
-        try {
-            searchTableNameInSuperTypes.start(persistenceTypeInfo.getPolicyCmptType());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        searchTableNameInSuperTypes.start(persistenceTypeInfo.getPolicyCmptType());
         return searchTableNameInSuperTypes.tableName;
     }
 
@@ -177,7 +172,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             String tableName = currentType.getPersistenceTypeInfo().getTableName();
             if (StringUtils.isNotEmpty(tableName)) {
                 this.tableName = tableName;

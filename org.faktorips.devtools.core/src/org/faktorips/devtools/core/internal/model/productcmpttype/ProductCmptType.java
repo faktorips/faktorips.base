@@ -319,7 +319,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      *            <code>null</code> indicates that all properties should be included in the map.
      */
     public Map<String, IProductCmptProperty> findProductCmptPropertyMap(ProductCmptPropertyType propertyType,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType, true, ipsProject);
         collector.start(this);
@@ -333,13 +333,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipsProject) {
-        try {
-            NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(ipsProject);
-            collector.start(this);
-            return collector.getAssociations();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(ipsProject);
+        collector.start(this);
+        return collector.getAssociations();
     }
 
     @Override
@@ -890,7 +886,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<IProductCmptType, List<IProductCmptCategory>>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
             @Override
-            protected boolean visit(IProductCmptType currentType) throws CoreException {
+            protected boolean visit(IProductCmptType currentType) {
                 typesToOriginalCategories.put(currentType, currentType.getCategories());
                 return true;
             }
@@ -1020,7 +1016,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
 
             @Override
-            protected boolean visit(IProductCmptType currentType) throws CoreException {
+            protected boolean visit(IProductCmptType currentType) {
                 if (currentType.getCategory(categoryName) != null) {
                     category = currentType.getCategory(categoryName);
                     return false;
@@ -1221,7 +1217,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
 
             @Override
-            protected boolean visit(IProductCmptType currentType) throws CoreException {
+            protected boolean visit(IProductCmptType currentType) {
                 for (IProductCmptCategory category : currentType.getCategories()) {
                     if (categoryName.equals(category.getName())) {
                         categoriesFound++;
@@ -1316,7 +1312,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             for (IProductCmptCategory category : currentType.getCategories()) {
                 if (category.isDefaultFor(propertyType)) {
                     defaultCategory = category;
@@ -1373,12 +1369,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             collectProductCmptTypeAttributes(currentType);
             collectTableStructureUsages(currentType);
             collectFormulaSignatureDefinitions(currentType);
 
-            IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
+            IPolicyCmptType policyCmptType;
+            try {
+                policyCmptType = currentType.findPolicyCmptType(ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
             if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                 return searchSupertypeHierarchy;
             }
@@ -1533,7 +1534,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             super.visit(currentType);
             ProductCmptType productCmptType = (ProductCmptType)currentType;
             for (ITableStructureUsage tableStructureUsage : productCmptType.tableStructureUsages) {
@@ -1560,7 +1561,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         private List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             List<IProductCmptTypeAssociation> typeAssociations = currentType.getProductCmptTypeAssociations();
             int index = 0;
             for (IProductCmptTypeAssociation association : typeAssociations) {

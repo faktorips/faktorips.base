@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.model.productcmpttype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -50,7 +49,7 @@ public class FormulaSignatureFinder extends TypeHierarchyVisitor<IProductCmptTyp
     }
 
     @Override
-    protected boolean visit(IProductCmptType currentType) throws CoreException {
+    protected boolean visit(IProductCmptType currentType) {
         IProductCmptTypeMethod formulaSignature = currentType.getFormulaSignature(formulaName);
         if (formulaSignature != null) {
             methods.add(formulaSignature);

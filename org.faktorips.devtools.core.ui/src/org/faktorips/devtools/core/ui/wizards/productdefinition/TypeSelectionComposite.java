@@ -18,7 +18,6 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -206,13 +205,9 @@ public class TypeSelectionComposite extends Composite {
     }
 
     private String getDescription(IDescribedElement element) {
-        try {
-            DescriptionFinder descriptionFinder = new DescriptionFinder(element.getIpsProject());
-            descriptionFinder.start(element);
-            return descriptionFinder.localizedDescription;
-        } catch (CoreException e) {
-            return StringUtils.EMPTY;
-        }
+        DescriptionFinder descriptionFinder = new DescriptionFinder(element.getIpsProject());
+        descriptionFinder.start(element);
+        return descriptionFinder.localizedDescription;
     }
 
     /**
@@ -229,7 +224,7 @@ public class TypeSelectionComposite extends Composite {
             super(ipsProject);
         }
 
-        public void start(IDescribedElement element) throws CoreException {
+        public void start(IDescribedElement element) {
             if (element instanceof IType) {
                 IType type = (IType)element;
                 super.start(type);
@@ -239,7 +234,7 @@ public class TypeSelectionComposite extends Composite {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             setDescription(currentType);
             if (localizedDescription.isEmpty()) {
                 return true;

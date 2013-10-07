@@ -107,10 +107,6 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().isDerived();
     }
 
-    public boolean isConstrains() {
-        return getAssociation().isConstrains();
-    }
-
     public boolean isMasterToDetail() {
         return getAssociation().getAssociationType().isMasterToDetail();
     }
@@ -178,6 +174,15 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
+    public boolean isConstrains() {
+        return getAssociation().isConstrains();
+    }
+
+    private XAssociation getConstrainedAssociation() {
+        IAssociation constrainedAssociation = getAssociation().findConstrainedAssociation(getIpsProject());
+        return getModelNode(constrainedAssociation, getClass());
+    }
+
     public int getMinCardinality() {
         return getAssociation().getMinCardinality();
     }
@@ -220,6 +225,21 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     public String getTargetInterfaceName() {
         XClass xClass = getTargetModelNode();
         return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+    }
+
+    /**
+     * Returns the target interface name as {@link #getTargetInterfaceName()} but in case of an
+     * association constrains the interface name of the target of the constrained association (that
+     * one in the super class) is returned.
+     */
+    public String getTargetInterfaceNameBase() {
+        if (isConstrains()) {
+            XClass xClass = getConstrainedAssociation().getTargetModelNode();
+            return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+        } else {
+            XClass xClass = getTargetModelNode();
+            return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+        }
     }
 
     public String getTargetClassName() {
