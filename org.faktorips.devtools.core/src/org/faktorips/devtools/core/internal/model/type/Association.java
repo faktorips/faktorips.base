@@ -366,6 +366,8 @@ public abstract class Association extends TypePart implements IAssociation {
         validateMinCardinality(list);
 
         validateDerivedUnion(list, ipsProject);
+
+        validateConstrains(list, ipsProject);
     }
 
     private void validateTarget(MessageList list) throws CoreException {
@@ -460,6 +462,7 @@ public abstract class Association extends TypePart implements IAssociation {
                         PROPERTY_MAX_CARDINALITY));
             }
         }
+
         validateDerivedUnionsTarget(list, ipsProject, unionAss);
 
     }
@@ -479,6 +482,28 @@ public abstract class Association extends TypePart implements IAssociation {
             list.add(new Message(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE, text, Message.ERROR, this,
                     PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
+        }
+    }
+
+    private void validateConstrains(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (isConstrains()) {
+            IType supertype = getType().findSupertype(ipsProject);
+            if (supertype == null) {
+                return;
+            }
+
+            IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
+            checkConstrainsName(list, superAssociation, getName(), PROPERTY_TARGET_ROLE_SINGULAR);
+
+            superAssociation = supertype.findAssociationByRoleNamePlural(getTargetRolePlural(), ipsProject);
+            checkConstrainsName(list, superAssociation, getTargetRolePlural(), PROPERTY_TARGET_ROLE_PLURAL);
+        }
+    }
+
+    private void checkConstrainsName(MessageList list, IAssociation superTypeAssociation, String name, String property) {
+        if (superTypeAssociation == null) {
+            String text = NLS.bind(Messages.Association_msg_ConstrainsAssociationDoesNotExist, name);
+            list.newError(MSGCODE_CONSTRAINS_NOT_FOUND, text, this, property);
         }
     }
 
