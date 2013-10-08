@@ -174,3 +174,6 @@ FormulaExecutionException(AbstractGeneratorModelNode this):
 	
 RuntimeException(AbstractGeneratorModelNode this):
 	addImport(RuntimeException.name);
+	
+ObjectUtil(AbstractGeneratorModelNode this):
+	addImport(ObjectUtil.name);

@@ -174,9 +174,15 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetOrAdd, targetInterfaceName, "target")» {
+     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
+        «IF constrains-»
+        	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+        	super.«methodNameSetOrAdd»(target);
+		«ELSE-»
+	        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
+        «ENDIF-»
     }
     «ENDIF»
 «ENDDEFINE»
@@ -189,9 +195,15 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetOrAdd, targetInterfaceName, "target", CardinalityRange(), "cardinality")» {
+     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange(), "cardinality")» {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
+        «IF constrains-»
+        	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+        	super.«methodNameSetOrAdd»(target, cardinality);
+		«ELSE-»
+	        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
+	    «ENDIF-»
     }
     «ENDIF»
 «ENDDEFINE»
@@ -203,9 +215,15 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetOrAdd, targetInterfaceName, "target")» {
+     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
+        «IF constrains-»
+        	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+        	super.«methodNameSetOrAdd»((«targetInterfaceName»)target);
+		«ELSE-»
+	        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
+	    «ENDIF-»
     }
 	«ENDIF»
 «ENDDEFINE»
@@ -326,5 +344,3 @@
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
-
-        

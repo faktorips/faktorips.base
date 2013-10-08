@@ -236,3 +236,10 @@ copyAssociationsInternal(String arg1, String arg2):
 
 accept(String argument):
 	"accept("+argument+")";
+	
+// ---------------------------------
+// Methods in ObjectUtil
+// ---------------------------------
+
+checkInstanceOf(String objectArg, String expectedClassName):
+	"checkInstanceOf(" + objectArg + ", " + expectedClassName + ".class)";

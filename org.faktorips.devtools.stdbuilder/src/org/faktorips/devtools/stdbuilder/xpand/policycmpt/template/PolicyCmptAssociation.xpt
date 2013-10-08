@@ -208,17 +208,22 @@
 				/**
 			     * @generated
 			     */
-			    public void «method(methodNameSetOrAddInternal,targetInterfaceName, "newParent")» {
-			        if («methodNameGetter»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
-			            return;
-			        }
-			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
-			        if (newParent != null && «parentVar()» != null) {
-			            throw new «RuntimeException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
-			        }
-			        this.«fieldName» = «castToImplementation(targetClassName)» newParent;
-			        «IF typeConfigurableByProductCmptType-»
-			        	effectiveFromHasChanged();
+			    public void «method(methodNameSetOrAddInternal,targetInterfaceNameBase, "newParent")» {
+			        «IF constrains-»
+        				«ObjectUtil()».«checkInstanceOf("newParent", targetInterfaceName)»;
+			        	super.«methodNameSetOrAddInternal»(newParent);
+					«ELSE-»
+				        if («methodNameGetter»() == newParent) {
+				            return;
+				        }
+				        «IModelObject()» «parentVar()» = «getParentModelObject()»;
+				        if (newParent != null && «parentVar()» != null) {
+				            throw new «RuntimeException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
+				        }
+				        this.«fieldName» = «castToImplementation(targetClassName)» newParent;
+				        «IF typeConfigurableByProductCmptType-»
+				        	effectiveFromHasChanged();
+						«ENDIF-»
 					«ENDIF-»
 			    }
 			«ENDIF-»
@@ -229,15 +234,20 @@
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")»
+		    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "newObject")»
 		     «IF genInterface()-»;«ELSE-»
 		    {
-		    	«IF generateChangeSupport-»
-					«EXPAND PropertyChangeSupport::storeOldValue-»
-			        «methodNameSetOrAddInternal»(newObject);
-					«EXPAND PropertyChangeSupport::notify-»
+		        «IF constrains-»
+		        	«ObjectUtil()».«checkInstanceOf("newObject", targetInterfaceName)»;
+		        	super.«methodNameSetOrAdd»(newObject);
 				«ELSE-»
-					«EXPAND setterMethodCode-»
+			    	«IF generateChangeSupport-»
+						«EXPAND PropertyChangeSupport::storeOldValue-»
+				        «methodNameSetOrAddInternal»(newObject);
+						«EXPAND PropertyChangeSupport::notify-»
+					«ELSE-»
+						«EXPAND setterMethodCode-»
+					«ENDIF-»
 				«ENDIF-»
 		    }
 		    «ENDIF-»
