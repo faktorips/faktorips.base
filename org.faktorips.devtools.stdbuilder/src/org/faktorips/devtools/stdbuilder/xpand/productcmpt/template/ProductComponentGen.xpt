@@ -80,7 +80,7 @@
 	        	«EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 	    	}
 		
-			«IF containsNotDerivedAssociations»
+			«IF containsNotDerivedOrConstrainingAssociations»
 			    /**
 			     * @generated
 			     */
@@ -172,7 +172,7 @@
 	        «ENDIF-»
 	    }
 	   
-		«IF  containsNotDerivedAssociations»
+		«IF  containsNotDerivedOrConstrainingAssociations»
 		    /**
 		     * @generated
 		     */

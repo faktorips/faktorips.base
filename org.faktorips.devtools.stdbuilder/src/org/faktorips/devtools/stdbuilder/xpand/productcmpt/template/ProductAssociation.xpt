@@ -1,3 +1,4 @@
+«IMPORT  org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -7,7 +8,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE field FOR XProductAssociation-»
-	«IF !derivedUnion-»
+	«IF !derivedUnion && !constrains-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
 	     * 
@@ -22,7 +23,7 @@
 «ENDDEFINE»
 
 «DEFINE getterSetterAdder FOR XProductAssociation-»
-	«IF !derived»
+	«IF !derivedUnion»
 		«EXPAND getterProductCmpt»
 		«EXPAND getterProductCmptGen»
 		«EXPAND getterProductCmptPerIndex»
@@ -176,11 +177,11 @@
      */
      «overrideAnnotationForPublishedMethodAndIf(constrains)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
-        «EXPAND ProductCommons::checkRepositoryModifyable-»
         «IF constrains-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
         	super.«methodNameSetOrAdd»(target);
 		«ELSE-»
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
 	        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
         «ENDIF-»
     }
@@ -197,11 +198,11 @@
      */
      «overrideAnnotationForPublishedMethodAndIf(constrains)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange(), "cardinality")» {
-        «EXPAND ProductCommons::checkRepositoryModifyable-»
         «IF constrains-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
         	super.«methodNameSetOrAdd»(target, cardinality);
 		«ELSE-»
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
 	        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
 	    «ENDIF-»
     }
@@ -217,11 +218,11 @@
      */
      «overrideAnnotationForPublishedMethodAndIf(constrains)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
-        «EXPAND ProductCommons::checkRepositoryModifyable-»
         «IF constrains-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
         	super.«methodNameSetOrAdd»((«targetInterfaceName»)target);
 		«ELSE-»
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
 	        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
 	    «ENDIF-»
     }
@@ -268,7 +269,7 @@
 	    «overrideAnnotation(false)-»
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
-				«IF !derived-»
+				«IF !derivedUnion-»
 			        if ("«name»".equals(linkName)) {
 			            return «methodNameGetLinkFor»((«targetInterfaceName»)target);
 			        }
@@ -297,7 +298,7 @@
 			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
-			«IF !derived-»
+			«IF !derivedUnion-»
 		    	«IF oneToMany-»
 		    		list.addAll(«methodNameGetLinksFor»());
 		    	«ELSE-»
@@ -312,7 +313,7 @@
 «ENDDEFINE»
 
 «DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
-	«IF !derived-»
+	«IF !derivedUnion && !constrains-»
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
 			«IF oneToMany-»
@@ -332,7 +333,7 @@
 «ENDDEFINE»
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
-	«IF !derived-»
+	«IF !derivedUnion && !constrains-»
 		«IF oneToMany-»
 		    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);

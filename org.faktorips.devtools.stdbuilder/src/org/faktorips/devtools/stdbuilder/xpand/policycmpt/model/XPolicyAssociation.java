@@ -169,11 +169,6 @@ public class XPolicyAssociation extends XAssociation {
         return getAssociation().isQualified();
     }
 
-    @Override
-    public boolean isConstrains() {
-        return false;
-    }
-
     /**
      * This method returns true if the maximum cardinality is greater than one also if it is a
      * qualified association.
@@ -199,7 +194,7 @@ public class XPolicyAssociation extends XAssociation {
      * </ul>
      */
     public boolean isGenerateField() {
-        if (isDerived()) {
+        if (isDerived() || isConstrains()) {
             return false;
         } else {
             return !isSharedAssociationImplementedInSuperclass();
@@ -417,6 +412,14 @@ public class XPolicyAssociation extends XAssociation {
      */
     public boolean isGenerateCodeToSynchronizeInverseAssociation() {
         return isTypeAssociation() && hasInverseAssociation();
+    }
+
+    /**
+     * Returns <code>true</code> if we need to generate internal setter or adder methods.
+     * 
+     */
+    public boolean isGenerateInternalSetterOrAdder() {
+        return isGenerateChangeSupport();
     }
 
     public boolean isTypeConfigurableByProductCmptType() {

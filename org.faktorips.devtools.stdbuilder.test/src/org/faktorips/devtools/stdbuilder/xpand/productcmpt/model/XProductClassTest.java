@@ -216,13 +216,13 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testIsContainsNotDerivedAssociations_noAssociation() throws Exception {
+    public void testIsContainsNotDerivedOrConstrainingAssociations_noAssociation() throws Exception {
         doReturn(new HashSet<XProductAssociation>()).when(xProductClass).getAssociations();
-        assertFalse(xProductClass.isContainsNotDerivedAssociations());
+        assertFalse(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
     }
 
     @Test
-    public void testIsContainsNotDerivedAssociations_someAssociation() throws Exception {
+    public void testIsContainsNotDerivedOrConstrainingAssociations_someAssociationDerived() throws Exception {
         when(assocNode1.isDerived()).thenReturn(true);
         when(assocNode2.isOneToMany()).thenReturn(true);
 
@@ -230,7 +230,19 @@ public class XProductClassTest {
         associations.add(assocNode1);
         associations.add(assocNode2);
         doReturn(associations).when(xProductClass).getAssociations();
-        assertTrue(xProductClass.isContainsNotDerivedAssociations());
+        assertTrue(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
+    }
+
+    @Test
+    public void testIsContainsNotDerivedOrConstrainingAssociations_someAssociationConstrains() throws Exception {
+        when(assocNode1.isConstrains()).thenReturn(true);
+        when(assocNode2.isOneToMany()).thenReturn(true);
+
+        HashSet<XProductAssociation> associations = new HashSet<XProductAssociation>();
+        associations.add(assocNode1);
+        associations.add(assocNode2);
+        doReturn(associations).when(xProductClass).getAssociations();
+        assertTrue(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
     }
 
     @Test

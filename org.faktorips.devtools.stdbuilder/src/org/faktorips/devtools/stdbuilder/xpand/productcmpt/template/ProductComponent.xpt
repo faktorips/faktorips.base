@@ -65,7 +65,7 @@
 	        	«EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
 	    	}
 		    
-			«IF containsNotDerivedAssociations»
+			«IF containsNotDerivedOrConstrainingAssociations-»
 			    /**
 			     * @generated
 			     */
@@ -139,7 +139,7 @@
 	        «ENDIF-»
 	    }
 	    
-		«IF  containsNotDerivedAssociations»
+		«IF  containsNotDerivedOrConstrainingAssociations»
 		    /**
 		     * @generated
 		     */
