@@ -46,13 +46,13 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
    	«IF oneToMany-»
 	    public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()»;«ELSE-»
 	    {
 	    	«IF constrain-»
-	    		return «ListUtil()».«convert("super."+method(methodNameGetter), targetInterfaceName+".class")»;
+	    		return «ListUtil()».«convert("super."+methodNameGetter+"()", targetInterfaceName+".class")»;
 	    	«ELSE-»
         		«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
 				for («IProductComponentLink(targetInterfaceName)» «name.toFirstLower()» : «fieldName».values()) {
@@ -67,7 +67,7 @@
 	    «IF genInterface()»;«ELSE-»
 	    {
 	    	«IF constrain-»
-	    		return («targetInterfaceName»)super.«method(methodNameGetter)»;
+	    		return («targetInterfaceName»)super.«methodNameGetter»();
 	    	«ELSE»
 				return «fieldName» != null ? «fieldName».«getTarget()» : null;
 			«ENDIF-»
@@ -82,13 +82,13 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
    	«IF oneToMany-»
 	    public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	    «IF genInterface()»;«ELSE-»
 	    {
 	    	«IF constrain-»
-	    		return «ListUtil()».«convert("super."+method(methodNameGetter, Calendar(), "effectiveDate"), targetInterfaceName+".class")»;
+	    		return «ListUtil()».«convert("super."+methodNameGetter+"(effectiveDate)", targetClassGenerationName + ".class")»;
 	    	«ELSE-»
         		«List_("? extends " +targetInterfaceName)» targets = «methodNameGetter»();
         		«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
@@ -106,7 +106,11 @@
 	    public «targetClassGenerationName» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	   	«IF genInterface()»;«ELSE-»
 	    {
-			return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
+	    	«IF constrain-»
+	    		return («targetClassGenerationName»)super.«methodNameGetter»(effectiveDate);
+	    	«ELSE-»
+				return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
+			«ENDIF-»
     	}
     	«ENDIF-»
     «ENDIF-»
@@ -119,12 +123,12 @@
 	     * 
 	     * @generated
 	     */
-	     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
 		public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 	    «IF genInterface()»;«ELSE-»
 		{
 			«IF constrain-»
-				return («targetInterfaceName»)super.«method(methodNameGetSingle, "int", "index")»;
+				return («targetInterfaceName»)super.«methodNameGetSingle»(index);
 			«ELSE-»
 				«Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
 	        	try {

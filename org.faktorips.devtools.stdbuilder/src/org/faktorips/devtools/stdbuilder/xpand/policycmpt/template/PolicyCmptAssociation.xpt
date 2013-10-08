@@ -97,7 +97,7 @@
 	    «IF genInterface()-»;«ELSE-»
 	    	{
 	    	«IF constrain-»
-	    		return «ListUtil()».«convert("super."+method(methodNameGetter), targetInterfaceName+".class")»;
+	    		return «ListUtil()».«convert("super."+methodNameGetter+"()", targetInterfaceName+".class")»;
 	    	«ELSE-»
 	        	return «Collections()».unmodifiableList(«fieldName»);
 	    	«ENDIF»
@@ -130,7 +130,7 @@
 		    «IF genInterface()-»;«ELSE-»
 		    	{
 		    	«IF constrain-»
-		    		return («targetInterfaceName»)super.«method(methodNameGetter)»;
+		    		return («targetInterfaceName»)super.«methodNameGetter»;
 		    	«ELSE-»
 			        return «fieldName»;
 			    «ENDIF»
