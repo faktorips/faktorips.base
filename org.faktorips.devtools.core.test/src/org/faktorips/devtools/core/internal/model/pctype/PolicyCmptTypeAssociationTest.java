@@ -938,6 +938,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     @Test
     public void testFindSharedAssociationHost() throws Exception {
         // FIPS-85
+        association.setSharedAssociation(true);
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         setOptionalConstraintSharedAssociation(true);
 

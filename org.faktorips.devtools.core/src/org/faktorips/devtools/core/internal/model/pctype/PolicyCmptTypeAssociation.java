@@ -339,7 +339,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
             @Override
             protected boolean continueVisiting() {
-                return ((IPolicyCmptTypeAssociation)getSuperAssociation()).isSharedAssociation();
+                return ((IPolicyCmptTypeAssociation)getLastVisited()).isSharedAssociation();
             }
 
         };

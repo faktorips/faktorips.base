@@ -268,7 +268,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
             @Override
             protected boolean continueVisiting() {
-                return getSuperAssociation().isConstrain();
+                return getLastVisited().isConstrain();
             }
 
         };
@@ -523,8 +523,6 @@ public abstract class Association extends TypePart implements IAssociation {
 
     protected abstract static class AssociationHierarchyVisitor extends HierarchyVisitor<IAssociation> {
 
-        private IAssociation superAssociation;
-
         protected AssociationHierarchyVisitor(IIpsProject ipsProject) {
             super(ipsProject);
         }
@@ -536,19 +534,23 @@ public abstract class Association extends TypePart implements IAssociation {
 
         @Override
         protected boolean visit(IAssociation currentType) {
-            setSuperAssociation(currentType);
             return continueVisiting();
         }
 
         protected abstract boolean continueVisiting();
 
         public IAssociation getSuperAssociation() {
-            return superAssociation;
+            if (getVisited().size() > 1) {
+                return getLastVisited();
+            } else {
+                return null;
+            }
         }
 
-        public void setSuperAssociation(IAssociation superAssociation) {
-            this.superAssociation = superAssociation;
+        public IAssociation getLastVisited() {
+            return getVisited().get(getVisited().size() - 1);
         }
+
     }
 
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor<IType> {
