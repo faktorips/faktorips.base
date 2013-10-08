@@ -104,6 +104,10 @@ public interface IAssociation extends ITypePart {
      */
     public static final String MSGCODE_CONSTRAINS_NOT_FOUND = MSGCODE_PREFIX + "ConstrainsNotFound"; //$NON-NLS-1$
 
+    public static final String MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainSubsetDerivedUnion"; //$NON-NLS-1$
+
+    public static final String MSGCODE_CONSTRAIN_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainDerivedUnion"; //$NON-NLS-1$
+
     /**
      * Validation message code to indicate that an association specifies to subset another
      * association, but the other one is not marked as derived union.

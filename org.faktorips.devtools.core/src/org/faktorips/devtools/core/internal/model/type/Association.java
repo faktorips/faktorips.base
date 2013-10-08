@@ -497,6 +497,15 @@ public abstract class Association extends TypePart implements IAssociation {
 
             superAssociation = supertype.findAssociationByRoleNamePlural(getTargetRolePlural(), ipsProject);
             checkConstrainsName(list, superAssociation, getTargetRolePlural(), PROPERTY_TARGET_ROLE_PLURAL);
+
+            if (isDerivedUnion()) {
+                list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion, this,
+                        PROPERTY_CONSTRAINS);
+            }
+            if (isSubsetOfADerivedUnion()) {
+                list.newError(MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION,
+                        Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAINS);
+            }
         }
     }
 
