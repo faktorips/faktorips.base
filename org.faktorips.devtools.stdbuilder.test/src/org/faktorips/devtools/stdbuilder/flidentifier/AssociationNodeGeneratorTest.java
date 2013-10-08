@@ -186,7 +186,7 @@ public class AssociationNodeGeneratorTest {
                 contextCompilationResult);
 
         assertEquals(
-                "new AssociationToManyHelper<Policy, Coverage>(){@Override protected List<Coverage> getTargetsInternal(Policy sourceObject){return sourceObject.getCoverages();}}.getTargets(contextCode)",
+                "new AssociationToManyHelper<Policy, Coverage>(){@Override protected List<? extends Coverage> getTargetsInternal(Policy sourceObject){return sourceObject.getCoverages();}}.getTargets(contextCode)",
                 compilationResult.getCodeFragment().getSourcecode());
     }
 
