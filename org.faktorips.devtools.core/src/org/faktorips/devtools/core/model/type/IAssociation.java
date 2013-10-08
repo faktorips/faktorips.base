@@ -43,7 +43,7 @@ public interface IAssociation extends ITypePart {
     public static final String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
-    public static final String PROPERTY_CONSTRAINS = "constrains"; //$NON-NLS-1$
+    public static final String PROPERTY_CONSTRAINS = "constrain"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -102,7 +102,7 @@ public interface IAssociation extends ITypePart {
     /**
      * Validation message code to indicate that the association that is constrains can't be found.
      */
-    public static final String MSGCODE_CONSTRAINS_NOT_FOUND = MSGCODE_PREFIX + "ConstrainsNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_CONSTRAINED_NOT_FOUND = MSGCODE_PREFIX + "ConstrainedNotFound"; //$NON-NLS-1$
 
     public static final String MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainSubsetDerivedUnion"; //$NON-NLS-1$
 
@@ -323,14 +323,26 @@ public interface IAssociation extends ITypePart {
     public void setDerivedUnion(boolean flag);
 
     /**
-     * Returns <code>true</code> if this constrains an super association.
+     * Returns <code>true</code> if this association constrains another association in the super
+     * type. The corresponding super association needs to have the same singular and plural name as
+     * this association.
+     * <p>
+     * A constraining association is able to constrain the target type of an association to a
+     * subtype.
+     * 
+     * @return <code>true</code> if this association constrains another association of the super
+     *         type
      */
-    public boolean isConstrains();
+    public boolean isConstrain();
 
     /**
      * Sets the information if this association constrains an super association.
+     * 
+     * @param constrains <code>true</code> to set this association should constrain another
+     *            association of the super type
+     * @see #isConstrain()
      */
-    public void setConstrains(boolean flag);
+    public void setConstrain(boolean constrains);
 
     /**
      * Sets the derived union association that is subsetted by this association.
@@ -410,10 +422,9 @@ public interface IAssociation extends ITypePart {
 
     /**
      * This method searches in the super type hierarchy for an other association with the same name
-     * that is not marked as "constrains" (@see {@link #isConstrains()}. This method does not
-     * respect whether this association marked as "constrains" or not, hence if it not constrains
-     * another association this method returns the association that would be constrained by this
-     * method.
+     * that is not marked as "constrains" (@see {@link #isConstrain()}. This method does not respect
+     * whether this association marked as "constrains" or not, hence if it not constrains another
+     * association this method returns the association that would be constrained by this method.
      * 
      * @param ipsProject The {@link IIpsProject} used to search in the type hierarchy
      * @return The association that is constrained by this one

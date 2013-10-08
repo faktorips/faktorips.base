@@ -78,7 +78,7 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
             }
         }
 
-        if (association.isConstrains()) {
+        if (association.isConstrain()) {
             overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE_OVR;
         }
         return overlays;

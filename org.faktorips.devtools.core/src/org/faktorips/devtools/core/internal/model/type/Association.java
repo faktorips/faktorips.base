@@ -53,7 +53,7 @@ public abstract class Association extends TypePart implements IAssociation {
     private int maxCardinality = Integer.MAX_VALUE;
     private String subsettedDerivedUnion = ""; //$NON-NLS-1$
     private boolean derivedUnion = false;
-    private boolean constrains = false;
+    private boolean constrain = false;
 
     protected Association(IType parent, String id) {
         super(parent, id);
@@ -237,15 +237,15 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public boolean isConstrains() {
-        return constrains;
+    public boolean isConstrain() {
+        return constrain;
     }
 
     @Override
-    public void setConstrains(boolean flag) {
-        boolean oldValue = constrains;
-        constrains = flag;
-        valueChanged(oldValue, constrains);
+    public void setConstrain(boolean constrain) {
+        boolean oldValue = this.constrain;
+        this.constrain = constrain;
+        valueChanged(oldValue, constrain);
     }
 
     @Override
@@ -268,7 +268,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
             @Override
             protected boolean continueVisiting() {
-                return getSuperAssociation().isConstrains();
+                return getSuperAssociation().isConstrain();
             }
 
         };
@@ -332,7 +332,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
-        constrains = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAINS)).booleanValue();
+        constrain = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAINS)).booleanValue();
     }
 
     @Override
@@ -352,7 +352,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
-        newElement.setAttribute(PROPERTY_CONSTRAINS, String.valueOf(isConstrains()));
+        newElement.setAttribute(PROPERTY_CONSTRAINS, String.valueOf(isConstrain()));
     }
 
     @Override
@@ -367,7 +367,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
         validateDerivedUnion(list, ipsProject);
 
-        validateConstrains(list, ipsProject);
+        validateConstrain(list, ipsProject);
     }
 
     private void validateTarget(MessageList list) throws CoreException {
@@ -485,8 +485,8 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateConstrains(MessageList list, IIpsProject ipsProject) throws CoreException {
-        if (isConstrains()) {
+    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (isConstrain()) {
             IType supertype = getType().findSupertype(ipsProject);
             if (supertype == null) {
                 return;
@@ -511,8 +511,8 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void checkConstrainsName(MessageList list, IAssociation superTypeAssociation, String name, String property) {
         if (superTypeAssociation == null) {
-            String text = NLS.bind(Messages.Association_msg_ConstrainsAssociationDoesNotExist, name);
-            list.newError(MSGCODE_CONSTRAINS_NOT_FOUND, text, this, property);
+            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationDoesNotExist, name);
+            list.newError(MSGCODE_CONSTRAINED_NOT_FOUND, text, this, property);
         }
     }
 

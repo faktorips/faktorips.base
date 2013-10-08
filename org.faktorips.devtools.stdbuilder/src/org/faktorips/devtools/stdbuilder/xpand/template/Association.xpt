@@ -3,7 +3,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE getNumOf FOR XAssociation-»
-	«IF oneToMany && !derived && !constrains-»
+	«IF oneToMany && !derived && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
 	     * 

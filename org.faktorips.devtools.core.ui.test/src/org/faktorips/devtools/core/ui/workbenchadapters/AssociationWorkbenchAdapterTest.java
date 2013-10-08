@@ -56,7 +56,7 @@ public class AssociationWorkbenchAdapterTest extends AbstractIpsPluginTest {
         super.setUp();
         workbenchAdapter = new AssociationWorkbenchAdapter();
         when(aProductAssociation.isChangingOverTime()).thenReturn(true);
-        when(aProductAssociation.isConstrains()).thenReturn(false);
+        when(aProductAssociation.isConstrain()).thenReturn(false);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class AssociationWorkbenchAdapterTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImageDescriptor_OverlayConstrains() {
         when(aProductAssociation.getAssociationType()).thenReturn(AssociationType.ASSOCIATION);
-        when(aProductAssociation.isConstrains()).thenReturn(true);
+        when(aProductAssociation.isConstrain()).thenReturn(true);
 
         ImageDescriptor imageDescriptor = workbenchAdapter.getImageDescriptor(aProductAssociation);
 

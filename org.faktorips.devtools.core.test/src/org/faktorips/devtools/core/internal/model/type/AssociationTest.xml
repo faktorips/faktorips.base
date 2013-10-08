@@ -13,7 +13,7 @@
           minCardinality="1" 
           maxCardinality="*" 
           derivedUnion="true"
-          constrains="true"
+          constrain="true"
           subsettedDerivedUnion="BaseCoverageType">
 		<Description locale="en">blabla</Description>
 	</Association>

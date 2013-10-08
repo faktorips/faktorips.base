@@ -207,7 +207,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         association1.setMaxCardinality(1);
         MessageList result = type.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        association1.setConstrains(true);
+        association1.setConstrain(true);
         result = type.validate(ipsProject);
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
 

@@ -174,8 +174,8 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
-    public boolean isConstrains() {
-        return getAssociation().isConstrains();
+    public boolean isConstrain() {
+        return getAssociation().isConstrain();
     }
 
     private XAssociation getConstrainedAssociation() {
@@ -233,7 +233,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * one in the super class) is returned.
      */
     public String getTargetInterfaceNameBase() {
-        if (isConstrains()) {
+        if (isConstrain()) {
             XClass xClass = getConstrainedAssociation().getTargetModelNode();
             return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
         } else {

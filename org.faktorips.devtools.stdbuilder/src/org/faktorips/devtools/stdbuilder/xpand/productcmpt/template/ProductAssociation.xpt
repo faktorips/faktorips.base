@@ -8,7 +8,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE field FOR XProductAssociation-»
-	«IF !derivedUnion && !constrains-»
+	«IF !derivedUnion && !constrain-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
 	     * 
@@ -51,7 +51,7 @@
 	    public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()»;«ELSE-»
 	    {
-	    	«IF constrains-»
+	    	«IF constrain-»
 	    		return «ListUtil()».«convert("super."+method(methodNameGetter), targetInterfaceName+".class")»;
 	    	«ELSE-»
         		«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
@@ -66,7 +66,7 @@
 	    public «targetInterfaceName» «method(methodNameGetter)»
 	    «IF genInterface()»;«ELSE-»
 	    {
-	    	«IF constrains-»
+	    	«IF constrain-»
 	    		return («targetInterfaceName»)super.«method(methodNameGetter)»;
 	    	«ELSE»
 				return «fieldName» != null ? «fieldName».«getTarget()» : null;
@@ -87,7 +87,7 @@
 	    public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	    «IF genInterface()»;«ELSE-»
 	    {
-	    	«IF constrains-»
+	    	«IF constrain-»
 	    		return «ListUtil()».«convert("super."+method(methodNameGetter, Calendar(), "effectiveDate"), targetInterfaceName+".class")»;
 	    	«ELSE-»
         		«List_("? extends " +targetInterfaceName)» targets = «methodNameGetter»();
@@ -123,7 +123,7 @@
 		public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 	    «IF genInterface()»;«ELSE-»
 		{
-			«IF constrains-»
+			«IF constrain-»
 				return («targetInterfaceName»)super.«method(methodNameGetSingle, "int", "index")»;
 			«ELSE-»
 				«Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
@@ -191,9 +191,9 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+     «overrideAnnotationForPublishedMethodAndIf(constrain)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
-        «IF constrains-»
+        «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
         	super.«methodNameSetOrAdd»(target);
 		«ELSE-»
@@ -212,9 +212,9 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+     «overrideAnnotationForPublishedMethodAndIf(constrain)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange(), "cardinality")» {
-        «IF constrains-»
+        «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
         	super.«methodNameSetOrAdd»(target, cardinality);
 		«ELSE-»
@@ -232,9 +232,9 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+     «overrideAnnotationForPublishedMethodAndIf(constrain)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
-        «IF constrains-»
+        «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
         	super.«methodNameSetOrAdd»((«targetInterfaceName»)target);
 		«ELSE-»
@@ -329,7 +329,7 @@
 «ENDDEFINE»
 
 «DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
-	«IF !derivedUnion && !constrains-»
+	«IF !derivedUnion && !constrain-»
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
 			«IF oneToMany-»
@@ -349,7 +349,7 @@
 «ENDDEFINE»
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
-	«IF !derivedUnion && !constrains-»
+	«IF !derivedUnion && !constrain-»
 		«IF oneToMany-»
 		    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);

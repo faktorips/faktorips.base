@@ -487,19 +487,19 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
         subAssociation.setTargetRolePlural(targetCmpt.getQualifiedName() + "s");
-        subAssociation.setConstrains(true);
+        subAssociation.setConstrain(true);
 
         MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINS_NOT_FOUND));
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_NOT_FOUND));
 
         subAssociation.setTargetRoleSingular("BSub");
         msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINS_NOT_FOUND));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_NOT_FOUND));
 
         subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
         subAssociation.setTargetRolePlural("BSubs");
 
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINS_NOT_FOUND));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_NOT_FOUND));
     }
 
     @Test
@@ -543,7 +543,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(4);
         association.setDerivedUnion(true);
         association.setSubsettedDerivedUnion("BaseCoverageType");
-        association.setConstrains(true);
+        association.setConstrain(true);
 
         Element el = association.toXml(newDocument());
         association = productType.newAssociation();
@@ -557,7 +557,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(4, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
-        assertTrue(association.isConstrains());
+        assertTrue(association.isConstrain());
     }
 
     @Test
@@ -572,7 +572,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(1, association.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
-        assertTrue(association.isConstrains());
+        assertTrue(association.isConstrain());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals("blabla", association.getDescriptionText(Locale.US));
     }
@@ -625,9 +625,9 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetConstrains() {
+    public void testSetConstrain() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_CONSTRAINS, association,
-                Boolean.valueOf(!association.isConstrains()));
+                Boolean.valueOf(!association.isConstrain()));
     }
 
     @Test

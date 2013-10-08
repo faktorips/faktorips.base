@@ -171,7 +171,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
             }
         }
         for (IAssociation ass : currType.getAssociationPartCollection()) {
-            if (!ass.isConstrains()) {
+            if (!ass.isConstrain()) {
                 if (ass.is1ToMany()) {
                     // target role plural only check if is many association
                     add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,

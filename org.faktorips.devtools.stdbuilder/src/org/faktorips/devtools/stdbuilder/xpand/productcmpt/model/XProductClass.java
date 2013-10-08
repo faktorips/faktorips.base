@@ -250,7 +250,7 @@ public abstract class XProductClass extends XType {
      */
     public boolean isContainsNotDerivedOrConstrainingAssociations() {
         for (XAssociation association : getAssociations()) {
-            if (!association.isDerived() && !association.isConstrains()) {
+            if (!association.isDerived() && !association.isConstrain()) {
                 return true;
             }
         }

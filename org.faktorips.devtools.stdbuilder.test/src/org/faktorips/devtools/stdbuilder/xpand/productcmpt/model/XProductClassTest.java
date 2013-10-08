@@ -235,7 +235,7 @@ public class XProductClassTest {
 
     @Test
     public void testIsContainsNotDerivedOrConstrainingAssociations_someAssociationConstrains() throws Exception {
-        when(assocNode1.isConstrains()).thenReturn(true);
+        when(assocNode1.isConstrain()).thenReturn(true);
         when(assocNode2.isOneToMany()).thenReturn(true);
 
         HashSet<XProductAssociation> associations = new HashSet<XProductAssociation>();

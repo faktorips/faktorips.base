@@ -1,6 +1,5 @@
 «IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
-«IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductAttributeExtension»

@@ -394,7 +394,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             if (otherMatchingAssociation == null) {
                 continue;
             }
-            if (!matchingPolicyCmptTypeAssociation.isConstrains()
+            if (!matchingPolicyCmptTypeAssociation.isConstrain()
                     && otherMatchingAssociation.getName().equals(matchingPolicyCmptTypeAssociation.getName())) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME, NLS.bind(
                         Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName, otherAssociation,

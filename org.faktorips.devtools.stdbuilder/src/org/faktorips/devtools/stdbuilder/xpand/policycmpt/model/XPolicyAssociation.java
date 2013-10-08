@@ -194,7 +194,7 @@ public class XPolicyAssociation extends XAssociation {
      * </ul>
      */
     public boolean isGenerateField() {
-        if (isDerived() || isConstrains()) {
+        if (isDerived() || isConstrain()) {
             return false;
         } else {
             return !isSharedAssociationImplementedInSuperclass();

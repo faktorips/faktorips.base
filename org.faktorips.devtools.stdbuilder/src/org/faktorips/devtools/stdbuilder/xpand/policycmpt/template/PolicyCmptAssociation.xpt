@@ -2,12 +2,11 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 
 «DEFINE constants FOR XPolicyAssociation-»
-	«IF !compositionDetailToMaster && !derived && !constrains-»
+	«IF !compositionDetailToMaster && !derived && !constrain-»
 	    /**
 	     * «localizedJDoc("FIELD_MAX_CARDINALITY", name)»
 	     * 
@@ -65,7 +64,7 @@
 «ENDDEFINE»
 
 «DEFINE contains FOR XAssociation-»
-	«IF oneToMany && !constrains-»
+	«IF oneToMany && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CONTAINS_OBJECT")»
 	     * 
@@ -97,7 +96,7 @@
 	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()-»;«ELSE-»
 	    	{
-	    	«IF constrains-»
+	    	«IF constrain-»
 	    		return «ListUtil()».«convert("super."+method(methodNameGetter), targetInterfaceName+".class")»;
 	    	«ELSE-»
 	        	return «Collections()».unmodifiableList(«fieldName»);
@@ -113,7 +112,7 @@
 	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 		 «IF genInterface()-»;«ELSE-»
 		 	{
-	    	«IF constrains-»
+	    	«IF constrain-»
 	    		return («targetInterfaceName»)super.«methodNameGetSingle»(index);
 		    «ELSE-»
 		    	return «fieldName».get(index);
@@ -130,7 +129,7 @@
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
 		    	{
-		    	«IF constrains-»
+		    	«IF constrain-»
 		    		return («targetInterfaceName»)super.«method(methodNameGetter)»;
 		    	«ELSE-»
 			        return «fieldName»;
@@ -222,9 +221,9 @@
 			/**
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(constrains)-»
+		    «overrideAnnotationForPublishedMethodAndIf(constrain)-»
 		    public void «method(methodNameSetOrAddInternal,targetInterfaceNameBase, "newParent")» {
-		        «IF constrains-»
+		        «IF constrain-»
 		        	«ObjectUtil()».«checkInstanceOf("newParent", targetInterfaceName)»;
 		        	super.«methodNameSetOrAddInternal»(newParent);
 				«ELSE-»
@@ -243,7 +242,7 @@
 		    }
 		«ENDIF-»
 	«ELSE-»
-		«IF !constrains || !generateInternalSetterOrAdder-»
+		«IF !constrain || !generateInternalSetterOrAdder-»
 		    /**
 	 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_OBJECT", name)»
 		     * 
@@ -272,7 +271,7 @@
 		     «ENDIF-»
 		     * @generated
 		     */
-		     «overrideAnnotationForPublishedMethodAndIf(!constrains)-»
+		     «overrideAnnotationForPublishedMethodAndIf(!constrain)-»
 		    public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "newObject")»{
 				«EXPAND setterMethodCode(methodNameSetOrAddInternal)-»
 	    	}	
@@ -281,7 +280,7 @@
 «ENDDEFINE»
 
 «DEFINE setterMethodCode(String methodName) FOR XPolicyAssociation-»
-    «IF constrains-»
+    «IF constrain-»
     	«ObjectUtil()».«checkInstanceOf("newObject", targetInterfaceName)»;
     	super.«methodName»(newObject);
 	«ELSEIF masterToDetail-»
@@ -311,7 +310,7 @@
 «ENDDEFINE»
 
 «DEFINE generateAdder FOR XPolicyAssociation-»
-	«IF !constrains || !generateInternalSetterOrAdder-»
+	«IF !constrain || !generateInternalSetterOrAdder-»
 		/**
 	 	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
 	     * 
@@ -337,7 +336,7 @@
 	     * 
 	     * @generated
 	     */
-	     «overrideAnnotationForPublishedMethodAndIf(constrains)»
+	     «overrideAnnotationForPublishedMethodAndIf(constrain)»
 	    public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "objectToAdd")»{
 		    «EXPAND addMethodCode(methodNameSetOrAddInternal)-»
 	    }
@@ -345,7 +344,7 @@
 «ENDDEFINE»
 
 «DEFINE addMethodCode(String methodName) FOR XPolicyAssociation-»
-    «IF constrains-»
+    «IF constrain-»
     	«ObjectUtil()».«checkInstanceOf("objectToAdd", targetInterfaceName)»;
     	super.«methodName»(objectToAdd);
     «ELSE-»
@@ -479,7 +478,7 @@
 «ENDDEFINE»
 
 «DEFINE remove FOR XPolicyAssociation-»
-	«IF generateAddAndRemoveMethod && !constrains-»
+	«IF generateAddAndRemoveMethod && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_REMOVE_OBJECT", name)»
 	     * 
