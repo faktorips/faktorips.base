@@ -92,15 +92,15 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
 	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()-»;«ELSE-»
 	    	{
 	    	«IF constrain-»
-	    		return «ListUtil()».«convert("super."+methodNameGetter+"()", targetInterfaceName+".class")»;
+	    		return «ListUtil()».«convert("super." + methodNameGetter + "()", targetInterfaceName+".class")»;
 	    	«ELSE-»
 	        	return «Collections()».unmodifiableList(«fieldName»);
-	    	«ENDIF»
+	    	«ENDIF-»
 	    	}
 	    «ENDIF»
 		/**
@@ -108,7 +108,7 @@
 	     * 
 	     * @generated
          */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
 	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 		 «IF genInterface()-»;«ELSE-»
 		 	{
@@ -116,7 +116,7 @@
 	    		return («targetInterfaceName»)super.«methodNameGetSingle»(index);
 		    «ELSE-»
 		    	return «fieldName».get(index);
-		   	«ENDIF»
+		   	«ENDIF-»
 		   	}
 		 «ENDIF»
 	    «ELSE-»
@@ -125,15 +125,15 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
 		    	{
 		    	«IF constrain-»
-		    		return («targetInterfaceName»)super.«methodNameGetter»;
+		    		return («targetInterfaceName»)super.«methodNameGetter»();
 		    	«ELSE-»
 			        return «fieldName»;
-			    «ENDIF»
+			    «ENDIF-»
 			    }
 		    «ENDIF»
 	    «ENDIF-»
@@ -221,7 +221,7 @@
 			/**
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(constrain)-»
+		    «overrideAnnotationIf(constrain)-»
 		    public void «method(methodNameSetOrAddInternal,targetInterfaceNameBase, "newParent")» {
 		        «IF constrain-»
 		        	«ObjectUtil()».«checkInstanceOf("newParent", targetInterfaceName)»;
@@ -271,7 +271,7 @@
 		     «ENDIF-»
 		     * @generated
 		     */
-		     «overrideAnnotationForPublishedMethodAndIf(!constrain)-»
+		     «overrideAnnotationIf(constrain)-»
 		    public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "newObject")»{
 				«EXPAND setterMethodCode(methodNameSetOrAddInternal)-»
 	    	}	
@@ -336,7 +336,7 @@
 	     * 
 	     * @generated
 	     */
-	     «overrideAnnotationForPublishedMethodAndIf(constrain)»
+	     «overrideAnnotationIf(constrain)»
 	    public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "objectToAdd")»{
 		    «EXPAND addMethodCode(methodNameSetOrAddInternal)-»
 	    }

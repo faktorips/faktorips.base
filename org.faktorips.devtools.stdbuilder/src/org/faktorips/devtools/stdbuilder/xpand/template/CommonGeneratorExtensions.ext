@@ -8,6 +8,11 @@ boolean genInterface() : GLOBALVAR generateInterface;
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 
+// Use this function for methods that overrides another method (no interface method) in given condition.
+// The override is generated iff the given condition is true. 
+overrideAnnotationIf(AbstractGeneratorModelNode this, boolean condition) :
+	if condition then "@Override";
+
 // Use this function for methods that implement a base-interface method (a base interface from the1 
 // FIPS runtime, e.g. IConfigurableModelObject) or already existing base methods (e.g. doInitPropertiesFromXml).
 // Returns the @Override annotation if the compliance level is Java 6 or higher or if interfaceMethodImplementation is false

@@ -36,6 +36,15 @@ public class ListUtil {
         return newList;
     }
 
+    /**
+     * Converts a list with generic type T to a list of subtypes R. If there is any element in the
+     * list that is not of type R the method throws a {@link ClassCastException}.
+     * 
+     * @param list The list that should be converted
+     * @param newType The new subclass type
+     * @return The converted list
+     * @throws ClassCastException in case of there is any element in the list that is not of type R
+     */
     public static final <T, R extends T> List<? extends R> convert(List<? extends T> list, Class<R> newType) {
         for (T member : list) {
             if (!(member.getClass().isInstance(newType))) {
