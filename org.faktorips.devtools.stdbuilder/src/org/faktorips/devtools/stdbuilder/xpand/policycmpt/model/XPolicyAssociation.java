@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -291,15 +293,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isGenerateNewChildMethods() {
-        return isNewChildMethodExpected() && !isConstrain();
-    }
-
-    private boolean isNewChildMethodExpected() {
         return isMasterToDetail() && !getTargetPolicyCmptClass().isAbstract() && !isDerivedUnion();
-    }
-
-    public boolean isGenerateOverriddenNewChildMethods() {
-        return isNewChildMethodExpected() && isConstrain();
     }
 
     public boolean isGenerateNewChildWithArgumentsMethod() {
@@ -364,7 +358,7 @@ public class XPolicyAssociation extends XAssociation {
             if (inverseAssoc != null) {
                 return getModelNode(inverseAssoc, XPolicyAssociation.class);
             } else {
-                throw new NullPointerException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
+                throw new RuntimeException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
                         getAssociation()));
             }
         } catch (CoreException e) {
@@ -441,8 +435,27 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getTargetProductCmptInterfaceName() {
-        XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
-        return xPolicyCmptClass.getProductCmptClassName();
+        return getTargetProductCmptInterfaceNameBase();
+    }
+
+    public String getTargetProductCmptInterfaceNameBase() {
+        XProductAssociation productAssociation = getMatchingProductAssociation();
+        return productAssociation.getTargetInterfaceNameBase();
+    }
+
+    /**
+     * @return the product association matching this policy association
+     */
+    private XProductAssociation getMatchingProductAssociation() {
+        try {
+            IProductCmptTypeAssociation productCmptTypeAssociation;
+            productCmptTypeAssociation = getAssociation().findMatchingProductCmptTypeAssociation(getIpsProject());
+            XProductAssociation productAssociation = getModelNode(productCmptTypeAssociation, XProductAssociation.class);
+            return productAssociation;
+        } catch (CoreException e) {
+            throw new RuntimeException(NLS.bind("PolicyCmptTypeAssociation {0} has no matching association.",
+                    getAssociation()));
+        }
     }
 
     public String getMethodNameCreatePolicyCmptForTargetProductCmpt() {
@@ -560,4 +573,8 @@ public class XPolicyAssociation extends XAssociation {
         return "copy" + getTargetClassName();
     }
 
+    @Override
+    public XPolicyAssociation getConstrainedAssociation() {
+        return (XPolicyAssociation)super.getConstrainedAssociation();
+    }
 }

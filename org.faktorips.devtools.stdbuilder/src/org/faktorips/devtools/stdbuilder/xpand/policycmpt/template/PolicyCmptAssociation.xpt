@@ -399,7 +399,7 @@
 «ENDDEFINE»
 
 «DEFINE newChildMethods FOR XPolicyAssociation-»
-	«IF generateNewChildMethods-»
+	«IF generateNewChildMethods -»
 	    /**
  	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD", targetName, name)»
 	     * 
@@ -409,11 +409,13 @@
 	    public «targetInterfaceName» «method(methodNameNew)»
 	    «IF genInterface()-»;«ELSE-»
 	    {
-	        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
-			«EXPAND addOrSetNewInstance-»
-	        «variableNameNewInstance».«initialize()»;
-	        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
-	        return «variableNameNewInstance»;
+		    «IF !constrain-»
+		        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
+				«EXPAND initializeChildInstanceAndReturn-»
+			«ELSE»
+		    	«targetInterfaceNameBase» «variableNameNewInstance» = super.«methodNameNew»();
+		    	«EXPAND checkInstanceOfAndReturnCastedObject-»
+	    	«ENDIF-»				
 	    }
 	    «ENDIF-»
 	
@@ -424,21 +426,35 @@
 		     * @generated
 		     */
 			«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)»
+		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceNameBase, targetProductCmptVariableName)»
 		     «IF genInterface()-»;«ELSE-»
-		    {
-		        if («targetProductCmptVariableName» == null) {
-		            return «methodNameNew»();
-		        }
-		        «targetInterfaceName» «variableNameNewInstance» = «targetProductCmptVariableName».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
-				«EXPAND addOrSetNewInstance-»
-		        «variableNameNewInstance».«initialize()»;
-		        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
-		        return «variableNameNewInstance»;
+		    {		
+		    	«IF !constrain-»
+			        if («targetProductCmptVariableName» == null) {
+			            return «methodNameNew»();
+			        }
+			        «targetInterfaceName» «variableNameNewInstance» = «targetProductCmptVariableName».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
+					«EXPAND initializeChildInstanceAndReturn-»
+				«ELSE»
+				    «targetInterfaceNameBase» «variableNameNewInstance» = super.«methodNameNew»(«targetProductCmptVariableName»);
+		    		«EXPAND checkInstanceOfAndReturnCastedObject-»
+		    	«ENDIF-»				
 		    }
 		    «ENDIF-»
 	    «ENDIF-»
     «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initializeChildInstanceAndReturn FOR XPolicyAssociation-»
+	«EXPAND addOrSetNewInstance-»
+	«variableNameNewInstance».«initialize()»;
+	«EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
+	return «variableNameNewInstance»;
+«ENDDEFINE»
+
+«DEFINE checkInstanceOfAndReturnCastedObject FOR XPolicyAssociation-»
+	«ObjectUtil()».«checkInstanceOf(variableNameNewInstance, targetInterfaceName)»;
+	return «castToImplementation(targetInterfaceName, variableNameNewInstance)»;
 «ENDDEFINE»
 
 «DEFINE synchronizeInverseCompositionIfNecessaryForAdd FOR XPolicyAssociation-»
