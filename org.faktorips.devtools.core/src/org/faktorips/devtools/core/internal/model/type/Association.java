@@ -485,7 +485,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateConstrain(MessageList list, IIpsProject ipsProject) {
+    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (isConstrain()) {
 
             validateConstrainNames(list, ipsProject);
@@ -501,12 +501,16 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateConstrainNames(MessageList list, IIpsProject ipsProject) {
+    private void validateConstrainNames(MessageList list, IIpsProject ipsProject) throws CoreException {
         IAssociation superAssociation = findSuperAssociationWithSameName(ipsProject);
         if (superAssociation == null) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
             list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_SINGULAR);
         } else {
+            if (isNoConvenientAssociation(superAssociation)) {
+                String text = NLS.bind(Messages.Association_msg_ConstraintedTargetNoSuperclass, getName());
+                list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT, text, this, PROPERTY_CONSTRAINS);
+            }
             if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
                 String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
                         getTargetRolePlural());
@@ -514,6 +518,17 @@ public abstract class Association extends TypePart implements IAssociation {
             }
             validateConstrainSupertype(list, superAssociation);
         }
+    }
+
+    private boolean isNoConvenientAssociation(IAssociation superAssociation) throws CoreException {
+        boolean hasSourceSupertype = getType().hasSupertype();
+        boolean hasTargetSupertype = findTarget(getIpsProject()).hasSupertype();
+        return (hasSourceSupertype && isSuperNotInAssociation(superAssociation))
+                || (hasTargetSupertype && isSuperNotInAssociation(superAssociation));
+    }
+
+    private boolean isSuperNotInAssociation(IAssociation superAssociation) throws CoreException {
+        return !superAssociation.getTarget().equals(findTarget(getIpsProject()).getSupertype());
     }
 
     private void validateConstrainSupertype(MessageList list, IAssociation superAssociation) {

@@ -107,6 +107,12 @@ public interface IAssociation extends ITypePart {
             + "ConstrainedwithSingularNotFound"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the target supertype is not in association with the
+     * supertype in question.
+     */
+    public static final String MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT = MSGCODE_PREFIX
+            + "ConstrainedwithTargetSupertypeNotConvenient"; //$NON-NLS-1$ 
+    /**
      * Validation message code to indicate that the association that is constrained with target role
      * plural can't be found.
      */
