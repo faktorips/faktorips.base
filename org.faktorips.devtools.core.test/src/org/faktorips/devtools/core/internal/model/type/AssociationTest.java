@@ -490,16 +490,18 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setConstrain(true);
 
         MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_NOT_FOUND));
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND));
 
         subAssociation.setTargetRoleSingular("BSub");
+
         msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_NOT_FOUND));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND));
 
         subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
         subAssociation.setTargetRolePlural("BSubs");
 
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_NOT_FOUND));
+        msgList = subAssociation.validate(ipsProject);
+        assertNotNull(msgList.toString(), msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND));
     }
 
     @Test
@@ -519,7 +521,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setTarget(subTargetCmpt.getQualifiedName());
         subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
-        subAssociation.setConstrains(true);
+        subAssociation.setConstrain(true);
 
         MessageList msgList = subAssociation.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_DERIVED_UNION));

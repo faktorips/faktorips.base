@@ -485,18 +485,10 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateConstrain(MessageList list, IIpsProject ipsProject) {
         if (isConstrain()) {
-            IType supertype = getType().findSupertype(ipsProject);
-            if (supertype == null) {
-                return;
-            }
 
-            IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
-            checkConstrainsName(list, superAssociation, getName(), PROPERTY_TARGET_ROLE_SINGULAR);
-
-            superAssociation = supertype.findAssociationByRoleNamePlural(getTargetRolePlural(), ipsProject);
-            checkConstrainsName(list, superAssociation, getTargetRolePlural(), PROPERTY_TARGET_ROLE_PLURAL);
+            validateConstrainNames(list, ipsProject);
 
             if (isDerivedUnion()) {
                 list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion, this,
@@ -509,10 +501,17 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void checkConstrainsName(MessageList list, IAssociation superTypeAssociation, String name, String property) {
-        if (superTypeAssociation == null) {
-            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationDoesNotExist, name);
-            list.newError(MSGCODE_CONSTRAINED_NOT_FOUND, text, this, property);
+    private void validateConstrainNames(MessageList list, IIpsProject ipsProject) {
+        IAssociation superAssociation = findSuperAssociationWithSameName(ipsProject);
+        if (superAssociation == null) {
+            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
+            list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_SINGULAR);
+        } else {
+            if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
+                String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
+                        getTargetRolePlural());
+                list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
+            }
         }
     }
 

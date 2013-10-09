@@ -41,7 +41,8 @@ public class Messages extends NLS {
     public static String Association_msg_TargetNotSubclass;
     public static String Association_msgDerivedUnionNotSubset;
     public static String Association_msgSubsetOfDerivedUnionSameMaxCardinality;
-    public static String Association_msg_ConstrainedAssociationDoesNotExist;
+    public static String Association_msg_ConstrainedAssociationSingularDoesNotExist;
+    public static String Association_msg_ConstrainedAssociationPluralDoesNotExist;
     public static String Association_msg_ConstraintIsSubsetOfDerivedUnion;
     public static String Association_msg_ConstraintIsDerivedUnion;
 

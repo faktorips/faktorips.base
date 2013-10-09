@@ -100,12 +100,27 @@ public interface IAssociation extends ITypePart {
     public static final String MSGCODE_DERIVED_UNION_NOT_FOUND = MSGCODE_PREFIX + "DerivedUnionNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the association that is constrains can't be found.
+     * Validation message code to indicate that the association that is constrained with target role
+     * singular can't be found.
      */
-    public static final String MSGCODE_CONSTRAINED_NOT_FOUND = MSGCODE_PREFIX + "ConstrainedNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND = MSGCODE_PREFIX
+            + "ConstrainedwithSingularNotFound"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that the association that is constrained with target role
+     * plural can't be found.
+     */
+    public static final String MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND = MSGCODE_PREFIX + "ConstrainedwithPluralNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this association is marked as subset of a derived
+     * union.
+     */
     public static final String MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainSubsetDerivedUnion"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that this association is marked as a derived union.
+     */
     public static final String MSGCODE_CONSTRAIN_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainDerivedUnion"; //$NON-NLS-1$
 
     /**
