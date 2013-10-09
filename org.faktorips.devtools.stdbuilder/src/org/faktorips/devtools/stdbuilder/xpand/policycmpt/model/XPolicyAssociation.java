@@ -291,7 +291,15 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isGenerateNewChildMethods() {
+        return isNewChildMethodExpected() && !isConstrain();
+    }
+
+    private boolean isNewChildMethodExpected() {
         return isMasterToDetail() && !getTargetPolicyCmptClass().isAbstract() && !isDerivedUnion();
+    }
+
+    public boolean isGenerateOverriddenNewChildMethods() {
+        return isNewChildMethodExpected() && isConstrain();
     }
 
     public boolean isGenerateNewChildWithArgumentsMethod() {
@@ -349,6 +357,9 @@ public class XPolicyAssociation extends XAssociation {
         return getMethodNameSetOrAdd() + "Internal";
     }
 
+    /**
+     * Returns "new" plus the capitalized association name.
+     */
     public String getMethodNameNew() {
         return "new" + StringUtils.capitalize(getName(false));
     }
@@ -432,15 +443,12 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns the name of the variable used in new child methods. The old implementation does not
-     * capitalize the role name until now erroneously. e.g. newpolicyPart instead of newPolicyPart
-     * (if the role name is policyPart).
+     * /** Returns "new" plus the capitalized association name.
      * 
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
+     * @See {@link #getMethodNameNew()}
      */
     public String getVariableNameNewInstance() {
-        // should be return getMethodNameNew();
-        return "new" + getName(false);
+        return getMethodNameNew();
     }
 
     public String getTargetProductCmptVariableName() {
