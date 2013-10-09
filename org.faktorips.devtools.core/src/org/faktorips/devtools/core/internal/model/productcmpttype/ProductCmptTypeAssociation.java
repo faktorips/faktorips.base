@@ -334,8 +334,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
 
         /*
-         * No other association should configure an association with the same name because we would
-         * generate duplicated methods
+         * No other association should configure the same association because we would generate
+         * duplicated methods
          */
         List<IAssociation> allAssociations = getProductCmptType().findAllAssociations(ipsProject);
         for (IAssociation otherAssociation : allAssociations) {
@@ -347,8 +347,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             if (otherMatchingAssociation == null) {
                 continue;
             }
-            if (!matchingPolicyCmptTypeAssociation.isConstrain()
-                    && otherMatchingAssociation.getName().equals(matchingPolicyCmptTypeAssociation.getName())) {
+            if (otherMatchingAssociation.equals(matchingPolicyCmptTypeAssociation)) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME, NLS.bind(
                         Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName, otherAssociation,
                         getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
