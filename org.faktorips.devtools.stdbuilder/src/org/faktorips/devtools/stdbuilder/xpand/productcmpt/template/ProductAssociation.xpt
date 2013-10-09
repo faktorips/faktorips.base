@@ -70,7 +70,7 @@
 	    {
 	    	«IF constrain-»
 	    		return («targetInterfaceName»)super.«methodNameGetter»();
-	    	«ELSE»
+	    	«ELSE-»
 				return «fieldName» != null ? «fieldName».«getTarget()» : null;
 			«ENDIF-»
 	    }
@@ -197,7 +197,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(constrain)»
+     «overrideAnnotationIf(constrain)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
         «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
@@ -218,7 +218,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(constrain)»
+     «overrideAnnotationIf(constrain)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange(), "cardinality")» {
         «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
@@ -238,7 +238,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(constrain)»
+     «overrideAnnotationIf(constrain)»
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
         «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
