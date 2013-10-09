@@ -54,6 +54,8 @@ public class AssociationDerivedUnionGroup extends Composite {
 
     private PmoAssociation pmoAssociation;
 
+    private Checkbox constrainCheckBox;
+
     public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
 
@@ -77,6 +79,9 @@ public class AssociationDerivedUnionGroup extends Composite {
             BindingContext bindingContext,
             Composite parent,
             IAssociation association) {
+
+        // constrain checkbox
+        constrainCheckBox = uiToolkit.createCheckbox(parent, Messages.AssociationEditDialog_constrains);
 
         // derived union checkbox
         containerCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelIsDerivedUnion);
@@ -108,6 +113,9 @@ public class AssociationDerivedUnionGroup extends Composite {
             return;
         }
         pmoAssociation = new PmoAssociation(association);
+
+        bindingContext.bindContent(constrainCheckBox, association, IAssociation.PROPERTY_CONSTRAINS);
+        bindingContext.bindEnabled(constrainCheckBox, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINS_ENABLED);
 
         addCompletionProcessor(association);
 
@@ -159,6 +167,7 @@ public class AssociationDerivedUnionGroup extends Composite {
     public class PmoAssociation extends IpsObjectPartPmo {
 
         public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+        public static final String PROPERTY_CONSTRAINS_ENABLED = "constrainsEnabled"; //$NON-NLS-1$
 
         private String previousTarget;
 
@@ -260,6 +269,20 @@ public class AssociationDerivedUnionGroup extends Composite {
             }
         }
 
+        public boolean isConstrainsEnabled() {
+            if (StringUtils.isEmpty(association.getType().getSupertype())) {
+                // only disable the checkbox when it's not checked
+                // because there is no way to remove the mark.
+                if (!association.isConstrain()) {
+                    return false;
+                }
+            }
+            if (association.isDerived() || isSubset()) {
+                return false;
+            }
+
+            return true;
+        }
     }
 
 }

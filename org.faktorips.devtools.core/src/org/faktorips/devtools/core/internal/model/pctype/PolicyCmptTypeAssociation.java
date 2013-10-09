@@ -109,7 +109,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public boolean isDerivedUnionApplicable() {
-        return isAssoziation() || isCompositionMasterToDetail();
+        return (isAssoziation() || isCompositionMasterToDetail()) && !isConstrain();
     }
 
     @Override

@@ -151,12 +151,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                 IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
 
-        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
-        final Checkbox cb = new Checkbox(workArea, getToolkit());
-        cb.setText(Messages.AssociationEditDialog_constrains);
-        getBindingContext().bindContent(cb, association, IAssociation.PROPERTY_CONSTRAINS);
-        getBindingContext().bindEnabled(cb, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINS_ENABLED);
-
         // Changing over time checkbox
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_changeOverTimeLabel);
         Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
@@ -211,12 +205,22 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
-        Checkbox derivedUnion = getToolkit().createCheckbox(workArea,
+
+        Checkbox cb = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_constrains);
+        getBindingContext().bindContent(cb, association, IAssociation.PROPERTY_CONSTRAINS);
+        getBindingContext().bindEnabled(cb, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINS_ENABLED);
+
+        Checkbox derivedUnionCheckbox = getToolkit().createCheckbox(workArea,
                 Messages.AssociationEditDialog_derivedUnionCheckbox);
-        getBindingContext().bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+        getBindingContext().bindContent(derivedUnionCheckbox, association,
+                IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+        getBindingContext().bindEnabled(derivedUnionCheckbox, pmoAssociation,
+                PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
 
         Checkbox subsetCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
         getBindingContext().bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        getBindingContext().bindEnabled(subsetCheckbox, pmoAssociation,
+                PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
 
         Composite temp = getToolkit().createLabelEditColumnComposite(workArea);
         temp.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -371,6 +375,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         public static final String PROPERTY_MATCHING_ASSOCIATION = "matchingAssociation"; //$NON-NLS-1$
 
+        public static final String PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED = "derivedUnionOrSubSetEnabled"; //$NON-NLS-1$
+
         private boolean subset;
 
         private boolean matchingExplicitly;
@@ -486,7 +492,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     return false;
                 }
             }
+            if (getAssociation().isDerived() || isSubset()) {
+                return false;
+            }
             return true;
+        }
+
+        public boolean isDerivedUnionOrSubSetEnabled() {
+            return !getAssociation().isConstrain();
         }
     }
 
