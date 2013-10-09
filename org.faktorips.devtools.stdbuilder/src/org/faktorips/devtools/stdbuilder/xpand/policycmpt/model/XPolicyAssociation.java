@@ -269,7 +269,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInCreateChildFromXML() {
-        return isMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion() && !isConstrain();
     }
 
     public boolean isConsiderInVisitorSupport() {
@@ -277,7 +277,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInCreateCreateUnresolvedReference() {
-        return isTypeAssociation();
+        return isTypeAssociation() && !isConstrain();
     }
 
     public boolean isSetInverseAssociationInCopySupport() {
