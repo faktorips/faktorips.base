@@ -560,29 +560,4 @@ public class XPolicyAssociation extends XAssociation {
         return "copy" + getTargetClassName();
     }
 
-    /**
-     * TODO Workaround for old code generator FIPS-1143. @see {@link #getMethodNameGetter()}
-     */
-    @Override
-    public String getMethodNameGetSingle() {
-        if (isOneToMany()) {
-            return super.getMethodNameGetSingle();
-        } else {
-            return getMethodNameGetter();
-        }
-    }
-
-    /**
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143. One-To-One Getters are
-     * generated without capitalized names.
-     */
-    @Override
-    public String getMethodNameGetter() {
-        if (!isOneToMany()) {
-            return "get" + getName(false);
-        } else {
-            return super.getMethodNameGetter();
-        }
-    }
-
 }
