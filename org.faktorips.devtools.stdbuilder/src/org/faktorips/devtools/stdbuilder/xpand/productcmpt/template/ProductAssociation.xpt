@@ -32,11 +32,13 @@
 			«EXPAND addMethod»
 			«EXPAND addMethodWithCardinality»
 		«ENDIF-»
-		«EXPAND getterLinksFor»
-		«EXPAND getterSingleLinkFor»
-		«EXPAND getCardinalityFor»
+		«IF !constrain-»
+			«EXPAND getterLinksFor»
+			«EXPAND getterSingleLinkFor»
+			«EXPAND getCardinalityFor»
+		«ENDIF-»
 		«EXPAND Association::getNumOf»
-    «ENDIF»
+    «ENDIF-»
 	«EXPAND Association::abstractMethods»
 «ENDDEFINE»
 
@@ -276,8 +278,8 @@
 «ENDDEFINE»
 
 «DEFINE getLinkMethods FOR XProductClass»
-	«EXPAND getLinkMethod»
-	«EXPAND getLinksMethod»
+		«EXPAND getLinkMethod»
+		«EXPAND getLinksMethod»
 «ENDDEFINE»
 
 «DEFINE getLinkMethod FOR XProductClass-»
@@ -289,7 +291,7 @@
 	    «overrideAnnotation(false)-»
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
-				«IF !derivedUnion-»
+				«IF !derivedUnion && !constrain-»
 			        if ("«name»".equals(linkName)) {
 			            return «methodNameGetLinkFor»((«targetInterfaceName»)target);
 			        }
@@ -318,7 +320,7 @@
 			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
-			«IF !derivedUnion-»
+			«IF !derivedUnion && !constrain-»
 		    	«IF oneToMany-»
 		    		list.addAll(«methodNameGetLinksFor»());
 		    	«ELSE-»
