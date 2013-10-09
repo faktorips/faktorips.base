@@ -336,21 +336,6 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns the name of the setter method.
-     * 
-     * TODO Just delete this method and use the implementation of the super class. At the moment it
-     * reproduces Bug in old code generator for compatibility. see FIPS-1143.
-     */
-    @Override
-    public String getMethodNameSetOrAdd() {
-        if (isCompositionDetailToMaster() && !isOneToMany()) {
-            return "set" + getName(false);
-        } else {
-            return super.getMethodNameSetOrAdd();
-        }
-    }
-
-    /**
      * Returns the method name for internal setters.
      */
     public String getMethodNameSetOrAddInternal() {
