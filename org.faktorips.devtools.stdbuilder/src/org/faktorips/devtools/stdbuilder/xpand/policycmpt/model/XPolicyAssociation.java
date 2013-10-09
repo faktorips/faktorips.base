@@ -23,7 +23,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -31,7 +30,6 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -435,27 +433,26 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getTargetProductCmptInterfaceName() {
-        return getTargetProductCmptInterfaceNameBase();
-    }
-
-    public String getTargetProductCmptInterfaceNameBase() {
-        XProductAssociation productAssociation = getMatchingProductAssociation();
-        return productAssociation.getTargetInterfaceNameBase();
+        return getTargetProductCmptInterfaceName(this);
     }
 
     /**
-     * @return the product association matching this policy association
+     * Returns the interface name of the target product component of the matching association and in
+     * case of this is a constraining association it searches for the constrained (base) association
+     * and returns the interface name of this target product component.
      */
-    private XProductAssociation getMatchingProductAssociation() {
-        try {
-            IProductCmptTypeAssociation productCmptTypeAssociation;
-            productCmptTypeAssociation = getAssociation().findMatchingProductCmptTypeAssociation(getIpsProject());
-            XProductAssociation productAssociation = getModelNode(productCmptTypeAssociation, XProductAssociation.class);
-            return productAssociation;
-        } catch (CoreException e) {
-            throw new RuntimeException(NLS.bind("PolicyCmptTypeAssociation {0} has no matching association.",
-                    getAssociation()));
+    public String getTargetProductCmptInterfaceNameBase() {
+        if (isConstrain()) {
+            XPolicyAssociation constrainedAssociation = getConstrainedAssociation();
+            return getTargetProductCmptInterfaceName(constrainedAssociation);
+        } else {
+            return getTargetProductCmptInterfaceName();
         }
+    }
+
+    private String getTargetProductCmptInterfaceName(XPolicyAssociation xAssociation) {
+        XPolicyCmptClass xPolicyCmptClass = xAssociation.getTargetPolicyCmptClass();
+        return xPolicyCmptClass.getProductCmptClassName();
     }
 
     public String getMethodNameCreatePolicyCmptForTargetProductCmpt() {
