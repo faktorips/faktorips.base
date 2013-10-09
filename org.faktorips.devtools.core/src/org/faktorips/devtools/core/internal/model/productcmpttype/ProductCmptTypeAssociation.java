@@ -174,53 +174,6 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return (IPolicyCmptTypeAssociation)policyCmptType.getAssociation(matchingAssociationName);
     }
 
-    List<IPolicyCmptTypeAssociation> findMatchingPolicyCmptTypAssociationInternal(IProductCmptType productCmptType,
-            IPolicyCmptType policyCmptType,
-            IIpsProject ipsProject,
-            boolean stopAfterFirst) throws CoreException {
-        List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
-
-        for (IAssociation association : policyCmptType.getAssociations()) {
-            if (association.getAssociationType().isCompositionDetailToMaster()) {
-                continue;
-            }
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
-            if (isMatchingPolicyCmptTypeAssociation(productCmptType, policyCmptTypeAssociation)) {
-                result.add(policyCmptTypeAssociation);
-                if (stopAfterFirst) {
-                    return result;
-                }
-            }
-        }
-
-        for (IAssociation association : policyCmptType.getAssociations()) {
-            if (!association.getAssociationType().isCompositionMasterToDetail()) {
-                continue;
-            }
-            IPolicyCmptType target = (IPolicyCmptType)association.findTarget(ipsProject);
-            if (isTargetNullOrConfigurableByProductCmptType(target)) {
-                continue;
-            }
-            List<IPolicyCmptTypeAssociation> matching = findMatchingPolicyCmptTypAssociationInternal(productCmptType,
-                    target, ipsProject, stopAfterFirst);
-            result.addAll(matching);
-            if (stopAfterFirst && result.size() > 0) {
-                return result;
-            }
-        }
-        return result;
-    }
-
-    private boolean isTargetNullOrConfigurableByProductCmptType(IPolicyCmptType target) {
-        return target == null || target.isConfigurableByProductCmptType();
-    }
-
-    private boolean isMatchingPolicyCmptTypeAssociation(IProductCmptType productCmptType,
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
-        return productCmptType.getQualifiedName().equals(policyCmptTypeAssociation.getMatchingAssociationSource())
-                && getName().equals(policyCmptTypeAssociation.getMatchingAssociationName());
-    }
-
     @Override
     public void setMatchingAssociationSource(String matchingAssociationSource) {
         String oldValue = this.matchingAssociationSource;
