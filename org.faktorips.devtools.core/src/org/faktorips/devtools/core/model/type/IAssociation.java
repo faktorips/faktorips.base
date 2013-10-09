@@ -124,6 +124,19 @@ public interface IAssociation extends ITypePart {
     public static final String MSGCODE_CONSTRAIN_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainDerivedUnion"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that overwritten association is marked as subset of a
+     * derived union.
+     */
+    public static final String MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION = MSGCODE_PREFIX
+            + "ConstraintedSubsetDerivedUnion"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that overwritten association is marked as a derived
+     * union.
+     */
+    public static final String MSGCODE_CONSTRAINTED_DERIVED_UNION = MSGCODE_PREFIX + "ConstraintedDerivedUnion"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that an association specifies to subset another
      * association, but the other one is not marked as derived union.
      */

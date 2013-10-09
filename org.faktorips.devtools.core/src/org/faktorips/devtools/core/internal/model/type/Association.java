@@ -512,6 +512,18 @@ public abstract class Association extends TypePart implements IAssociation {
                         getTargetRolePlural());
                 list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
             }
+            validateConstrainSupertype(list, superAssociation);
+        }
+    }
+
+    private void validateConstrainSupertype(MessageList list, IAssociation superAssociation) {
+        if (superAssociation.isDerived()) {
+            list.newError(MSGCODE_CONSTRAINTED_DERIVED_UNION, Messages.Association_msg_ConstraintedIsDerivedUnion,
+                    this, PROPERTY_CONSTRAINS);
+        }
+        if (superAssociation.isSubsetOfADerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION,
+                    Messages.Association_msg_ConstraintedIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAINS);
         }
     }
 
