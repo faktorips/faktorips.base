@@ -258,11 +258,12 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInDeltaComputation() {
-        return isMasterToDetail() && !isDerived();
+        return isMasterToDetail() && !isDerived() && !isConstrain();
     }
 
     public boolean isConsiderInEffectiveFromHasChanged() {
-        return isMasterToDetail() && !isDerived() && ((XPolicyCmptClass)getTargetModelNode()).isConfigured();
+        return isMasterToDetail() && !isDerived() && ((XPolicyCmptClass)getTargetModelNode()).isConfigured()
+                && !isConstrain();
     }
 
     public boolean isConsiderInCreateChildFromXML() {
@@ -270,7 +271,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInVisitorSupport() {
-        return isMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion() && !isConstrain();
     }
 
     public boolean isConsiderInCreateCreateUnresolvedReference() {
@@ -282,11 +283,11 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInCopySupport() {
-        return !isCompositionDetailToMaster() && !isDerived();
+        return !isCompositionDetailToMaster() && !isDerived() && !isConstrain();
     }
 
     public boolean isConsiderInValidateDependents() {
-        return isMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion();
+        return isMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion() && !isConstrain();
     }
 
     public boolean isGenerateNewChildMethods() {
