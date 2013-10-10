@@ -178,7 +178,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().isConstrain();
     }
 
-    public XAssociation getConstrainedAssociation() {
+    protected XAssociation getConstrainedAssociation() {
         IAssociation constrainedAssociation = getAssociation().findConstrainedAssociation(getIpsProject());
         return getModelNode(constrainedAssociation, getClass());
     }

@@ -571,7 +571,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     @Override
-    public XPolicyAssociation getConstrainedAssociation() {
+    protected XPolicyAssociation getConstrainedAssociation() {
         return (XPolicyAssociation)super.getConstrainedAssociation();
     }
 }
