@@ -43,7 +43,7 @@ public interface IAssociation extends ITypePart {
     public static final String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
-    public static final String PROPERTY_CONSTRAINS = "constrain"; //$NON-NLS-1$
+    public static final String PROPERTY_CONSTRAIN = "constrain"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.

@@ -260,6 +260,17 @@ public class Message {
     }
 
     /**
+     * Constructs and returns a new error message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObjectProperty The invalid object properties to refer to.
+     */
+    public static final Message newError(String code, String text, ObjectProperty... invalidObjectProperty) {
+        return new Message(code, text, ERROR, invalidObjectProperty);
+    }
+
+    /**
      * Creates and returns a copy of the given message and replaces all references to the old object
      * with the new object.
      * 

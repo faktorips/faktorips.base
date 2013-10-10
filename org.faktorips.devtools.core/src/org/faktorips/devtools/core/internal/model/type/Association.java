@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -332,7 +333,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
-        constrain = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAINS)).booleanValue();
+        constrain = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAIN)).booleanValue();
     }
 
     @Override
@@ -352,7 +353,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
-        newElement.setAttribute(PROPERTY_CONSTRAINS, String.valueOf(isConstrain()));
+        newElement.setAttribute(PROPERTY_CONSTRAIN, String.valueOf(isConstrain()));
     }
 
     @Override
@@ -491,12 +492,13 @@ public abstract class Association extends TypePart implements IAssociation {
             validateConstrainNames(list, ipsProject);
 
             if (isDerivedUnion()) {
-                list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion, this,
-                        PROPERTY_CONSTRAINS);
+                list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion,
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_DERIVED_UNION));
             }
             if (isSubsetOfADerivedUnion()) {
                 list.newError(MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION,
-                        Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAINS);
+                        Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, new ObjectProperty(this,
+                                PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_SUBSETTED_DERIVED_UNION));
             }
         }
     }
@@ -505,15 +507,17 @@ public abstract class Association extends TypePart implements IAssociation {
         IAssociation superAssociation = findSuperAssociationWithSameName(ipsProject);
         if (superAssociation == null) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
-            list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_SINGULAR);
+            list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text, new ObjectProperty(this, PROPERTY_CONSTRAIN),
+                    new ObjectProperty(this, PROPERTY_TARGET_ROLE_SINGULAR));
         } else {
             if (isNoConvenientAssociation(superAssociation)) {
                 String text = NLS.bind(Messages.Association_msg_ConstraintedTargetNoSuperclass, getName());
-                list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT, text, this, PROPERTY_CONSTRAINS);
+                list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT, text, new ObjectProperty(this,
+                        PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
             }
             if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
                 String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
-                        getTargetRolePlural());
+                        superAssociation.getTargetRolePlural());
                 list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
             }
             validateConstrainSupertype(list, superAssociation);
@@ -534,11 +538,11 @@ public abstract class Association extends TypePart implements IAssociation {
     private void validateConstrainSupertype(MessageList list, IAssociation superAssociation) {
         if (superAssociation.isDerived()) {
             list.newError(MSGCODE_CONSTRAINTED_DERIVED_UNION, Messages.Association_msg_ConstraintedIsDerivedUnion,
-                    this, PROPERTY_CONSTRAINS);
+                    this, PROPERTY_CONSTRAIN);
         }
         if (superAssociation.isSubsetOfADerivedUnion()) {
             list.newError(MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION,
-                    Messages.Association_msg_ConstraintedIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAINS);
+                    Messages.Association_msg_ConstraintedIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAIN);
         }
     }
 

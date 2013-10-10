@@ -694,7 +694,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetConstrain() {
-        super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_CONSTRAINS, association,
+        super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_CONSTRAIN, association,
                 Boolean.valueOf(!association.isConstrain()));
     }
 
