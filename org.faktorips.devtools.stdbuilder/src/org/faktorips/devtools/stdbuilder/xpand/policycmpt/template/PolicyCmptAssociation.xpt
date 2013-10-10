@@ -405,7 +405,7 @@
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		«overrideAnnotationForPublishedMethodAndIf(!genInterface()||constrain)-»
 	    public «targetInterfaceName» «method(methodNameNew)»
 	    «IF genInterface()-»;«ELSE-»
 	    {
@@ -420,7 +420,7 @@
 		     * 
 		     * @generated
 		     */
-			«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+			«overrideAnnotationForPublishedMethodAndIf(!genInterface()||constrain)-»
 		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceNameBase, targetProductCmptVariableName)»
 		     «IF genInterface()-»;«ELSE-»
 		    {
