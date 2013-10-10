@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.type;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -120,29 +119,53 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIgnoreDuplicatedInverseAssociationsForDerivedUnions() throws CoreException {
+    public void testIgnore() {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
         // both are not inverse of derived union - only one is valid
-        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertFalse(validatorTest.ignore(objectProperties));
         toA.setDerivedUnion(true);
-        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertTrue(validatorTest.ignore(objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVC, opToVB, opToVA };
         // both toVC and toVB are no inverse of derived unions!
-        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertFalse(validatorTest.ignore(objectProperties));
         toB.setDerivedUnion(true);
-        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertTrue(validatorTest.ignore(objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVB, opToVA };
-        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertFalse(validatorTest.ignore(objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVA, opToVO };
-        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertFalse(validatorTest.ignore(objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVA };
-        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertFalse(validatorTest.ignore(objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVO };
-        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        assertFalse(validatorTest.ignore(objectProperties));
     }
+
+    @Test
+    public void testIgnore_notIgnored() {
+        ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
+        // both are not inverse of derived union - only one is valid
+        assertFalse(validatorTest.ignore(objectProperties));
+    }
+
+    @Test
+    public void testIgnore_constrain() {
+        ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
+        toVB.setConstrain(true);
+
+        assertTrue(validatorTest.ignore(objectProperties));
+    }
+
+    @Test
+    public void testIgnore_wrongConstrain() {
+        ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
+        toVA.setConstrain(true);
+
+        assertFalse(validatorTest.ignore(objectProperties));
+    }
+
 }
