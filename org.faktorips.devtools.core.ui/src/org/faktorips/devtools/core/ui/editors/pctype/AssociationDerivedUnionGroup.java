@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -269,7 +270,7 @@ public class AssociationDerivedUnionGroup extends Composite {
             }
         }
 
-        public boolean isConstrainsEnabled() {
+        public boolean isConstrainsEnabled() throws CoreException {
             if (StringUtils.isEmpty(association.getType().getSupertype())) {
                 // only disable the checkbox when it's not checked
                 // because there is no way to remove the mark.
@@ -281,6 +282,11 @@ public class AssociationDerivedUnionGroup extends Composite {
                 return false;
             }
 
+            PolicyCmptTypeAssociation policyCmptTypeAssociation = (PolicyCmptTypeAssociation)association;
+            if (policyCmptTypeAssociation.isCompositionDetailToMaster()
+                    && policyCmptTypeAssociation.hasInverseAssociation()) {
+                return false;
+            }
             return true;
         }
     }

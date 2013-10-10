@@ -71,6 +71,23 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsConstrain() throws CoreException {
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        IPolicyCmptTypeAssociation inverseAssociation = association.newInverseAssociation();
+        inverseAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        assertTrue(association.hasInverseAssociation());
+
+        inverseAssociation.setConstrain(false);
+
+        assertFalse(association.isConstrain());
+
+        inverseAssociation.setConstrain(true);
+
+        assertTrue(association.isConstrain());
+    }
+
+    @Test
     public void testIsQualificationPossible() throws CoreException {
         association.setTarget("UnknownTarget");
         assertFalse(association.isQualificationPossible(ipsProject));
@@ -1072,4 +1089,9 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         assertFalse(result);
     }
+
+    // @Test
+    // public void testIsConstrain(){
+    //
+    // }
 }

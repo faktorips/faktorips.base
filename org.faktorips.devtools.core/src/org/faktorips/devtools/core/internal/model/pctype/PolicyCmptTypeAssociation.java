@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -79,6 +80,29 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     public IPolicyCmptType getPolicyCmptType() {
         return (PolicyCmptType)getIpsObject();
+    }
+
+    @Override
+    public boolean isConstrain() {
+        AssociationType associationType = getAssociationType();
+        if (associationType.isCompositionDetailToMaster()) {
+            try {
+                IPolicyCmptTypeAssociation inverseAssociation = findInverseAssociation(getIpsProject());
+                if (isInverseMasterToDetailWithConstrain(inverseAssociation)) {
+                    super.setConstrain(true);
+                } else {
+                    super.setConstrain(false);
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return super.isConstrain();
+    }
+
+    private boolean isInverseMasterToDetailWithConstrain(IPolicyCmptTypeAssociation inverseAssociation) {
+        return inverseAssociation != null && inverseAssociation.isCompositionMasterToDetail()
+                && inverseAssociation.isConstrain();
     }
 
     @Override
