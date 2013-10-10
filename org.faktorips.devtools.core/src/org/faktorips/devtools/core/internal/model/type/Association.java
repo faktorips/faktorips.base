@@ -488,55 +488,57 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (isConstrain()) {
-
-            validateConstrainNames(list, ipsProject);
-
-            if (isDerivedUnion()) {
-                list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion,
-                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_DERIVED_UNION));
-            }
-            if (isSubsetOfADerivedUnion()) {
-                list.newError(MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION,
-                        Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, new ObjectProperty(this,
-                                PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_SUBSETTED_DERIVED_UNION));
+            IAssociation superAssociation = findSuperAssociationWithSameName(ipsProject);
+            if (superAssociation == null) {
+                String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
+                list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text,
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this,
+                                PROPERTY_TARGET_ROLE_SINGULAR));
+            } else {
+                validateConstrainedAssociation(list, superAssociation);
             }
         }
     }
 
-    private void validateConstrainNames(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IAssociation superAssociation = findSuperAssociationWithSameName(ipsProject);
-        if (superAssociation == null) {
-            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
-            list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text, new ObjectProperty(this, PROPERTY_CONSTRAIN),
-                    new ObjectProperty(this, PROPERTY_TARGET_ROLE_SINGULAR));
+    private void validateConstrainedAssociation(MessageList list, IAssociation superAssociation) throws CoreException {
+        if (!isCovariantTargetType(superAssociation)) {
+            String text = NLS.bind(Messages.Association_msg_ConstraintedTargetNoSuperclass, getName());
+            list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
+        }
+        if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
+            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
+                    superAssociation.getTargetRolePlural());
+            list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
+        }
+        validateConstrainingNotDerivedUnion(list);
+        validateConstrainedAssociationNotDerivedUnion(list, superAssociation);
+    }
+
+    private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {
+        IType targetType = findTarget(getIpsProject());
+        IType superTargetType = superAssociation.findTarget(getIpsProject());
+        if (targetType != null && superTargetType != null) {
+            return targetType.isSubtypeOrSameType(superTargetType, getIpsProject());
         } else {
-            if (isNoConvenientAssociation(superAssociation)) {
-                String text = NLS.bind(Messages.Association_msg_ConstraintedTargetNoSuperclass, getName());
-                list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT, text, new ObjectProperty(this,
-                        PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
-            }
-            if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
-                String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
-                        superAssociation.getTargetRolePlural());
-                list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
-            }
-            validateConstrainSupertype(list, superAssociation);
+            return false;
         }
     }
 
-    private boolean isNoConvenientAssociation(IAssociation superAssociation) throws CoreException {
-        boolean hasSourceSupertype = getType().hasSupertype();
-        boolean hasTargetSupertype = findTarget(getIpsProject()).hasSupertype();
-        return (hasSourceSupertype && isSuperNotInAssociation(superAssociation))
-                || (hasTargetSupertype && isSuperNotInAssociation(superAssociation));
+    private void validateConstrainingNotDerivedUnion(MessageList list) {
+        if (isDerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_DERIVED_UNION));
+        }
+        if (isSubsetOfADerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION,
+                    Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, new ObjectProperty(this,
+                            PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_SUBSETTED_DERIVED_UNION));
+        }
     }
 
-    private boolean isSuperNotInAssociation(IAssociation superAssociation) throws CoreException {
-        return !superAssociation.getTarget().equals(findTarget(getIpsProject()).getSupertype());
-    }
-
-    private void validateConstrainSupertype(MessageList list, IAssociation superAssociation) {
-        if (superAssociation.isDerived()) {
+    private void validateConstrainedAssociationNotDerivedUnion(MessageList list, IAssociation superAssociation) {
+        if (superAssociation.isDerivedUnion()) {
             list.newError(MSGCODE_CONSTRAINTED_DERIVED_UNION, Messages.Association_msg_ConstraintedIsDerivedUnion,
                     this, PROPERTY_CONSTRAIN);
         }
