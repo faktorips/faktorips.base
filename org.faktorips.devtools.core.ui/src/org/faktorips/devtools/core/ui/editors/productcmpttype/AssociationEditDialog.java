@@ -206,18 +206,21 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     private void createDerivedUnionGroup(Composite workArea) {
 
-        Checkbox cb = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_constrains);
-        getBindingContext().bindContent(cb, association, IAssociation.PROPERTY_CONSTRAINS);
-        getBindingContext().bindEnabled(cb, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINS_ENABLED);
+        Checkbox constrainCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_constrain);
+        constrainCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipOverride);
+        getBindingContext().bindContent(constrainCheckbox, association, IAssociation.PROPERTY_CONSTRAIN);
+        getBindingContext().bindEnabled(constrainCheckbox, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAIN_ENABLED);
 
         Checkbox derivedUnionCheckbox = getToolkit().createCheckbox(workArea,
                 Messages.AssociationEditDialog_derivedUnionCheckbox);
+        derivedUnionCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipDerivedUnion);
         getBindingContext().bindContent(derivedUnionCheckbox, association,
                 IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
         getBindingContext().bindEnabled(derivedUnionCheckbox, pmoAssociation,
                 PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
 
         Checkbox subsetCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
+        subsetCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipDerivedUnion);
         getBindingContext().bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         getBindingContext().bindEnabled(subsetCheckbox, pmoAssociation,
                 PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
@@ -365,7 +368,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     public class PmoAssociation extends IpsObjectPartPmo {
 
-        public static final String PROPERTY_CONSTRAINS_ENABLED = "constrainsEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_CONSTRAIN_ENABLED = "constrainEnabled"; //$NON-NLS-1$
 
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
 
@@ -484,7 +487,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             return Messages.AssociationEditDialog_label_none;
         }
 
-        public boolean isConstrainsEnabled() {
+        public boolean isConstrainEnabled() {
             if (StringUtils.isEmpty(getAssociation().getProductCmptType().getSupertype())) {
                 // only disable the checkbox when it's not checked
                 // because there is no way to remove the mark.
@@ -492,7 +495,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     return false;
                 }
             }
-            if (getAssociation().isDerived() || isSubset()) {
+            if (getAssociation().isDerivedUnion() || isSubset()) {
                 return false;
             }
             return true;

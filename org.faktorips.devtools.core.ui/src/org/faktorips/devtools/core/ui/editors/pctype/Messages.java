@@ -35,6 +35,10 @@ public class Messages extends NLS {
 
     public static String AssociationDerivedUnionGroup_labelSubsetTextField;
 
+    public static String AssociationDerivedUnionGroup_toolTipDerivedUnion;
+
+    public static String AssociationDerivedUnionGroup_toolTipOverride;
+
     public static String AssociationQualificationGroup_groupQualification;
 
     public static String AssociationQualificationGroup_labelIsQualified;
@@ -157,7 +161,7 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_title;
 
-    public static String AssociationEditDialog_constrains;
+    public static String AssociationEditDialog_constrain;
 
     public static String PolicyCmptTypeAssociationsSection_menuOpenTargetInNewEditor;
 
