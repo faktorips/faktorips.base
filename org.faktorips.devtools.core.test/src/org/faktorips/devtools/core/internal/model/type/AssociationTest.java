@@ -602,6 +602,39 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateConstrain_CardinalityNotEqualToSuperAssosiation() throws CoreException {
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
+        association.setTarget(targetCmpt.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setMaxCardinality(1);
+        association.setMinCardinality(30);
+        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
+
+        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
+        subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
+        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
+        subTargetCmpt.setSupertype(targetCmpt.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
+        subAssociation.setTarget(subTargetCmpt.getQualifiedName());
+        subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subAssociation.setMaxCardinality(1);
+        subAssociation.setMinCardinality(30);
+        subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
+        subAssociation.setConstrain(true);
+
+        MessageList msgList = subAssociation.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION));
+
+        subAssociation.setMaxCardinality(5);
+        subAssociation.setMinCardinality(25);
+        msgList = subAssociation.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION));
+    }
+
+    @Test
     public void testToXml() {
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTarget("pack1.CoverageType");

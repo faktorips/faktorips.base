@@ -48,6 +48,8 @@ public class Messages extends NLS {
     public static String Association_msg_ConstrainedIsSubsetOfDerivedUnion;
     public static String Association_msg_ConstrainedIsDerivedUnion;
     public static String Association_msg_ConstrainedTargetNoSuperclass;
+    public static String Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation;
+    public static String Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation;
 
     public static String Attribute_msg_InvalidAttributeName;
     public static String Attribute_msg_DefaultNotParsable_UnknownDatatype;
