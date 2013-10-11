@@ -86,23 +86,22 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     public boolean isConstrain() {
         AssociationType associationType = getAssociationType();
         if (associationType.isCompositionDetailToMaster()) {
-            try {
-                IPolicyCmptTypeAssociation inverseAssociation = findInverseAssociation(getIpsProject());
-                if (isInverseMasterToDetailWithConstrain(inverseAssociation)) {
-                    super.setConstrain(true);
-                } else {
-                    super.setConstrain(false);
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (isConstrainedInverse()) {
+                return true;
+            } else {
+                return false;
             }
         }
         return super.isConstrain();
     }
 
-    private boolean isInverseMasterToDetailWithConstrain(IPolicyCmptTypeAssociation inverseAssociation) {
-        return inverseAssociation != null && inverseAssociation.isCompositionMasterToDetail()
-                && inverseAssociation.isConstrain();
+    private boolean isConstrainedInverse() {
+        try {
+            IPolicyCmptTypeAssociation inverseAssociation = findInverseAssociation(getIpsProject());
+            return inverseAssociation != null && inverseAssociation.isConstrain();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -285,10 +285,7 @@ public class AssociationDerivedUnionGroup extends Composite {
             if (association.isDerived() || isSubset()) {
                 return false;
             }
-
-            PolicyCmptTypeAssociation policyCmptTypeAssociation = (PolicyCmptTypeAssociation)association;
-            if (policyCmptTypeAssociation.isCompositionDetailToMaster()
-                    && policyCmptTypeAssociation.hasInverseAssociation()) {
+            if (AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType())) {
                 return false;
             }
             return true;
