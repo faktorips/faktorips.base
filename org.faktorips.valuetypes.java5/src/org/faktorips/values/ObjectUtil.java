@@ -52,35 +52,23 @@ public class ObjectUtil {
 
     /**
      * This method checks whether the given object is an instance of the specified class. A
-     * {@link ClassCastException} is thrown if:
-     * <ul>
-     * <li>the object is not an instance of the given class</li>
-     * <li>the object is <code>null</code></li>
-     * </ul>
-     * This method does nothing otherwise.
-     * 
-     * @param object The object that should be tested
-     * @param expectedClass The class against which the given object is tested
-     */
-    public static final void checkInstanceOf(Object object, Class<?> expectedClass) {
-        if (!(expectedClass.isInstance(object))) {
-            throw new ClassCastException("The object " + object + " is not an instance of " + expectedClass);
-        }
-    }
-
-    /**
-     * This method checks whether the given object is an instance of the specified class. A
      * {@link ClassCastException} is thrown if the object is not an instance of the given class.
      * This method does nothing otherwise, especially if the given object is <code>null</code> .
      * 
      * @param object The object that should be tested
      * @param expectedClass The class against which the given object is tested
      */
-    public static final void checkInstanceOfOrNull(Object object, Class<?> expectedClass) {
+    public static final void checkInstanceOf(Object object, Class<?> expectedClass) {
         if (object == null) {
             return;
         }
-        checkInstanceOf(object, expectedClass);
+        strictCheckInstanceOf(object, expectedClass);
+    }
+
+    private static final void strictCheckInstanceOf(Object object, Class<?> expectedClass) {
+        if (!(expectedClass.isInstance(object))) {
+            throw new ClassCastException("The object " + object + " is not an instance of " + expectedClass);
+        }
     }
 
 }

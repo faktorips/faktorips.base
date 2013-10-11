@@ -49,7 +49,7 @@ public class ObjectUtilTest {
         ObjectUtil.checkInstanceOf("", Integer.class);
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void testCheckInstanceOf_failOnNull() throws Exception {
         ObjectUtil.checkInstanceOf(null, Integer.class);
     }
@@ -59,23 +59,6 @@ public class ObjectUtilTest {
         ObjectUtil.checkInstanceOf(12, Number.class);
         ObjectUtil.checkInstanceOf(12, Integer.class);
         ObjectUtil.checkInstanceOf(new Long(12), Number.class);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void testCheckInstanceOfOrNull_fail() throws Exception {
-        ObjectUtil.checkInstanceOfOrNull("", Integer.class);
-    }
-
-    @Test
-    public void testCheckInstanceOfOrNull_doesNothingForNull() throws Exception {
-        ObjectUtil.checkInstanceOfOrNull(null, Number.class);
-    }
-
-    @Test
-    public void testCheckInstanceOfOrNull() throws Exception {
-        ObjectUtil.checkInstanceOfOrNull(12, Number.class);
-        ObjectUtil.checkInstanceOfOrNull(12, Integer.class);
-        ObjectUtil.checkInstanceOfOrNull(new Long(12), Number.class);
     }
 
 }
