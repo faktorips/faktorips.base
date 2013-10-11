@@ -13,19 +13,18 @@
 
 package org.faktorips.values;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class ListUtilTest extends TestCase {
+public class ListUtilTest {
 
     private List<Object> objectList;
 
-    @Override
     @Before
     public void setUp() {
         objectList = new ArrayList<Object>();
@@ -56,16 +55,10 @@ public class ListUtilTest extends TestCase {
         assertEquals(15, numberList.get(3).intValue());
     }
 
-    @Test
+    @Test(expected = ClassCastException.class)
     public void testConvert_classCastException() {
         objectList.add(new Long(15));
-        try {
-            ListUtil.convert(objectList, Integer.class);
-            fail();
-        } catch (ClassCastException e) {
-            // expected
-            // WTF? Why doesn't (expected=ClassCastException) work?
-        }
+        ListUtil.convert(objectList, Integer.class);
     }
 
     private void assertListContent(List<? extends Number> integerList) {
