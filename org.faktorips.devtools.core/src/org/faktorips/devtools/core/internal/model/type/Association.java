@@ -502,9 +502,10 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrainedAssociation(MessageList list, IAssociation superAssociation) throws CoreException {
         if (!isCovariantTargetType(superAssociation)) {
-            String text = NLS.bind(Messages.Association_msg_ConstraintedTargetNoSuperclass, getName());
-            list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT, text, new ObjectProperty(this,
+            String text = NLS.bind(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
+            list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text, new ObjectProperty(this,
                     PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
+
         }
         if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
@@ -539,12 +540,13 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrainedAssociationNotDerivedUnion(MessageList list, IAssociation superAssociation) {
         if (superAssociation.isDerivedUnion()) {
-            list.newError(MSGCODE_CONSTRAINTED_DERIVED_UNION, Messages.Association_msg_ConstraintedIsDerivedUnion,
-                    this, PROPERTY_CONSTRAIN);
+            list.newError(MSGCODE_CONSTRAINED_DERIVED_UNION, Messages.Association_msg_ConstrainedIsDerivedUnion, this,
+                    PROPERTY_CONSTRAIN);
         }
         if (superAssociation.isSubsetOfADerivedUnion()) {
-            list.newError(MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION,
-                    Messages.Association_msg_ConstraintedIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAIN);
+            list.newError(MSGCODE_CONSTRAINED_SUBSET_DERIVED_UNION,
+                    Messages.Association_msg_ConstrainedIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAIN);
+
         }
     }
 

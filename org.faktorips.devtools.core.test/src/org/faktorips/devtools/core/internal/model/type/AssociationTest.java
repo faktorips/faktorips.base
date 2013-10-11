@@ -555,15 +555,15 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setConstrain(true);
 
         MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINTED_DERIVED_UNION));
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION));
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_DERIVED_UNION));
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_SUBSET_DERIVED_UNION));
 
         association.setDerivedUnion(true);
         association.setSubsettedDerivedUnion(association.getName());
 
         msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINTED_DERIVED_UNION));
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_DERIVED_UNION));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_SUBSET_DERIVED_UNION));
     }
 
     @Test
@@ -586,7 +586,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setConstrain(true);
 
         MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT));
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT));
 
         subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype2");
         subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
@@ -598,7 +598,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setConstrain(true);
 
         msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT));
     }
 
     @Test

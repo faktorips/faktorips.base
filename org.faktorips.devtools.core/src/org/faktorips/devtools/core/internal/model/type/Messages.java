@@ -45,9 +45,9 @@ public class Messages extends NLS {
     public static String Association_msg_ConstrainedAssociationPluralDoesNotExist;
     public static String Association_msg_ConstraintIsSubsetOfDerivedUnion;
     public static String Association_msg_ConstraintIsDerivedUnion;
-    public static String Association_msg_ConstraintedIsSubsetOfDerivedUnion;
-    public static String Association_msg_ConstraintedIsDerivedUnion;
-    public static String Association_msg_ConstraintedTargetNoSuperclass;
+    public static String Association_msg_ConstrainedIsSubsetOfDerivedUnion;
+    public static String Association_msg_ConstrainedIsDerivedUnion;
+    public static String Association_msg_ConstrainedTargetNoSuperclass;
 
     public static String Attribute_msg_InvalidAttributeName;
     public static String Attribute_msg_DefaultNotParsable_UnknownDatatype;

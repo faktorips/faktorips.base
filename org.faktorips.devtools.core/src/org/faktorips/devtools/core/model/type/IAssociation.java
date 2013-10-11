@@ -110,7 +110,7 @@ public interface IAssociation extends ITypePart {
      * Validation message code to indicate that the target supertype is not in association with the
      * supertype in question.
      */
-    public static final String MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_CONVENIENT = MSGCODE_PREFIX
+    public static final String MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT = MSGCODE_PREFIX
             + "ConstrainedwithTargetSupertypeNotConvenient"; //$NON-NLS-1$ 
     /**
      * Validation message code to indicate that the association that is constrained with target role
@@ -133,14 +133,14 @@ public interface IAssociation extends ITypePart {
      * Validation message code to indicate that overwritten association is marked as subset of a
      * derived union.
      */
-    public static final String MSGCODE_CONSTRAINTED_SUBSET_DERIVED_UNION = MSGCODE_PREFIX
+    public static final String MSGCODE_CONSTRAINED_SUBSET_DERIVED_UNION = MSGCODE_PREFIX
             + "ConstraintedSubsetDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that overwritten association is marked as a derived
      * union.
      */
-    public static final String MSGCODE_CONSTRAINTED_DERIVED_UNION = MSGCODE_PREFIX + "ConstraintedDerivedUnion"; //$NON-NLS-1$
+    public static final String MSGCODE_CONSTRAINED_DERIVED_UNION = MSGCODE_PREFIX + "ConstraintedDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association specifies to subset another
