@@ -294,6 +294,18 @@ public class XPolicyAssociation extends XAssociation {
         return isMasterToDetail() && !getTargetPolicyCmptClass().isAbstract() && !isDerivedUnion();
     }
 
+    public boolean isNeedOverrideForConstrainNewChildMethod() {
+        if (isConstrain()) {
+            if (getSuperAssociationWithSameName().isGenerateNewChildMethods()) {
+                return true;
+            } else {
+                return getSuperAssociationWithSameName().isNeedOverrideForConstrainNewChildMethod();
+            }
+        } else {
+            return false;
+        }
+    }
+
     public boolean isGenerateNewChildWithArgumentsMethod() {
         return getTargetPolicyCmptClass().isConfigured();
     }
