@@ -236,11 +236,7 @@ public class TypeSelectionComposite extends Composite {
         @Override
         protected boolean visit(IType currentType) {
             setDescription(currentType);
-            if (localizedDescription.isEmpty()) {
-                return true;
-            } else {
-                return false;
-            }
+            return localizedDescription.isEmpty();
         }
 
         protected void setDescription(IDescribedElement currentType) {

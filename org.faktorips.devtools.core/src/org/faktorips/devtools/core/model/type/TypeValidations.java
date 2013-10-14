@@ -33,6 +33,10 @@ import org.faktorips.util.message.ObjectProperty;
 
 public class TypeValidations {
 
+    private TypeValidations() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Validates if there exists already a policy component type or product component type with the
      * same name in the IPS object path. The method checks when a product component type is
@@ -123,16 +127,17 @@ public class TypeValidations {
                 return false;
             }
             try {
-                return result = currentType.findSupertype(ipsProject) != null;
+                result = isNull(currentType);
+                return result;
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
         }
 
-    }
+        private boolean isNull(IType currentType) throws CoreException {
+            return currentType.findSupertype(ipsProject) != null;
+        }
 
-    private TypeValidations() {
-        // Utility class not to be instantiated.
     }
 
 }

@@ -26,8 +26,8 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
  */
 public abstract class PolicyCmptTypeHierarchyCodeGenerator extends TypeHierarchyVisitor<IPolicyCmptType> {
 
-    protected JavaCodeFragmentBuilder fieldsBuilder;
-    protected JavaCodeFragmentBuilder methodsBuilder;
+    private JavaCodeFragmentBuilder fieldsBuilder;
+    private JavaCodeFragmentBuilder methodsBuilder;
 
     public PolicyCmptTypeHierarchyCodeGenerator(IIpsProject ipsProject, JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) {
@@ -37,4 +37,11 @@ public abstract class PolicyCmptTypeHierarchyCodeGenerator extends TypeHierarchy
         this.methodsBuilder = methodsBuilder;
     }
 
+    public JavaCodeFragmentBuilder getFieldsBuilder() {
+        return fieldsBuilder;
+    }
+
+    public JavaCodeFragmentBuilder getMethodsBuilder() {
+        return methodsBuilder;
+    }
 }

@@ -53,93 +53,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectP
  */
 public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElement<IEnumType> {
 
-    private List<IEnumAttribute> findAllEnumAttributes() throws CoreException {
-        return getDocumentedIpsObject().findAllEnumAttributesIncludeSupertypeOriginals(true,
-                getDocumentedIpsObject().getIpsProject());
-    }
-
-    /**
-     * a table representing {@link IEnumAttribute}s of a given {@link IEnumType}
-     * 
-     * @author dicker
-     * 
-     */
-    private class EnumAttributesTablePageElement extends
-            AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
-
-        public EnumAttributesTablePageElement(List<IEnumAttribute> enumAttributes, DocumentationContext context) {
-            super(enumAttributes, context);
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
-            List<String> attributeData1 = new ArrayList<String>();
-
-            attributeData1.add(getContext().getLabel(enumAttribute));
-            attributeData1.add(enumAttribute.getDatatype());
-            attributeData1.add(enumAttribute.isIdentifier() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData1.add(enumAttribute.isUsedAsNameInFaktorIpsUi() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData1.add(enumAttribute.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData1.add(isInheritedEnumAttribute(enumAttribute) ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData1.add(getContext().getDescription(enumAttribute));
-            List<String> attributeData = attributeData1;
-            return Arrays.asList(new PageElementUtils().createTextPageElements(attributeData));
-        }
-
-        protected boolean isInheritedEnumAttribute(IEnumAttribute rowData) {
-            return !getDocumentedIpsObject().containsEnumAttribute(rowData.getName());
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
-
-            headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineName));
-            headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDatatype));
-            addHeadlineAndColumnLayout(headline,
-                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineIdentifier),
-                    Style.CENTER);
-            addHeadlineAndColumnLayout(
-                    headline,
-                    getContext().getMessage(
-                            HtmlExportMessages.EnumTypeContentPageElement_headlineUsedAsNameInFaktorIpsUi),
-                    Style.CENTER);
-            addHeadlineAndColumnLayout(headline,
-                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique), Style.CENTER);
-            addHeadlineAndColumnLayout(headline, getContext()
-                    .getMessage("EnumTypeContentPageElement_headlineInherited"), Style.CENTER); //$NON-NLS-1$
-            headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDescription));
-
-            return headline;
-        }
-    }
-
-    /**
-     * A visitor to get the supertypes of the given enumType
-     * 
-     * @author dicker
-     * 
-     */
-    private static class SupertypeHierarchieVisitor extends EnumTypeHierarchyVisitor {
-        List<IEnumType> superTypes = new ArrayList<IEnumType>();
-
-        public SupertypeHierarchieVisitor(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        @Override
-        protected boolean visit(IEnumType currentType) {
-            superTypes.add(currentType);
-            return true;
-        }
-
-        public List<IEnumType> getSuperTypes() {
-            ArrayList<IEnumType> revertedList = new ArrayList<IEnumType>(superTypes);
-            Collections.reverse(revertedList);
-            return revertedList;
-        }
-    }
-
     /**
      * 
      * creates a page, which represents the given enumType according to the given context
@@ -147,6 +60,11 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      */
     protected EnumTypeContentPageElement(IEnumType object, DocumentationContext context) {
         super(object, context);
+    }
+
+    private List<IEnumAttribute> findAllEnumAttributes() throws CoreException {
+        return getDocumentedIpsObject().findAllEnumAttributesIncludeSupertypeOriginals(true,
+                getDocumentedIpsObject().getIpsProject());
     }
 
     @Override
@@ -319,6 +237,88 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                 getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_noValues)));
 
         addPageElements(wrapper);
+    }
+
+    /**
+     * a table representing {@link IEnumAttribute}s of a given {@link IEnumType}
+     * 
+     * @author dicker
+     * 
+     */
+    private class EnumAttributesTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
+
+        public EnumAttributesTablePageElement(List<IEnumAttribute> enumAttributes, DocumentationContext context) {
+            super(enumAttributes, context);
+        }
+
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
+            List<String> attributeData1 = new ArrayList<String>();
+
+            attributeData1.add(getContext().getLabel(enumAttribute));
+            attributeData1.add(enumAttribute.getDatatype());
+            attributeData1.add(enumAttribute.isIdentifier() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(enumAttribute.isUsedAsNameInFaktorIpsUi() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(enumAttribute.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(isInheritedEnumAttribute(enumAttribute) ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(getContext().getDescription(enumAttribute));
+            List<String> attributeData = attributeData1;
+            return Arrays.asList(new PageElementUtils().createTextPageElements(attributeData));
+        }
+
+        protected boolean isInheritedEnumAttribute(IEnumAttribute rowData) {
+            return !getDocumentedIpsObject().containsEnumAttribute(rowData.getName());
+        }
+
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = new ArrayList<String>();
+
+            headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineName));
+            headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDatatype));
+            addHeadlineAndColumnLayout(headline,
+                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineIdentifier),
+                    Style.CENTER);
+            addHeadlineAndColumnLayout(
+                    headline,
+                    getContext().getMessage(
+                            HtmlExportMessages.EnumTypeContentPageElement_headlineUsedAsNameInFaktorIpsUi),
+                    Style.CENTER);
+            addHeadlineAndColumnLayout(headline,
+                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique), Style.CENTER);
+            addHeadlineAndColumnLayout(headline, getContext()
+                    .getMessage("EnumTypeContentPageElement_headlineInherited"), Style.CENTER); //$NON-NLS-1$
+            headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDescription));
+
+            return headline;
+        }
+    }
+
+    /**
+     * A visitor to get the supertypes of the given enumType
+     * 
+     * @author dicker
+     * 
+     */
+    private static class SupertypeHierarchieVisitor extends EnumTypeHierarchyVisitor {
+        private List<IEnumType> superTypes = new ArrayList<IEnumType>();
+
+        public SupertypeHierarchieVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IEnumType currentType) {
+            superTypes.add(currentType);
+            return true;
+        }
+
+        public List<IEnumType> getSuperTypes() {
+            ArrayList<IEnumType> revertedList = new ArrayList<IEnumType>(superTypes);
+            Collections.reverse(revertedList);
+            return revertedList;
+        }
     }
 
 }

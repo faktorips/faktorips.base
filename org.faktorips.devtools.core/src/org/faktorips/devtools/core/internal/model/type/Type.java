@@ -766,7 +766,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    protected static abstract class AbstractAssociationFinder<T extends IAssociation> extends
+    protected abstract static class AbstractAssociationFinder<T extends IAssociation> extends
             TypeHierarchyVisitor<IType> {
 
         private List<T> associationsFound = new ArrayList<T>();

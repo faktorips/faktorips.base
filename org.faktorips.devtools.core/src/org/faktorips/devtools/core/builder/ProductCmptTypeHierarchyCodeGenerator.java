@@ -26,8 +26,8 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
  */
 public abstract class ProductCmptTypeHierarchyCodeGenerator extends TypeHierarchyVisitor<IProductCmptType> {
 
-    protected JavaCodeFragmentBuilder fieldsBuilder;
-    protected JavaCodeFragmentBuilder methodsBuilder;
+    private JavaCodeFragmentBuilder fieldsBuilder;
+    private JavaCodeFragmentBuilder methodsBuilder;
 
     public ProductCmptTypeHierarchyCodeGenerator(IIpsProject ipsProject, JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) {
@@ -35,6 +35,14 @@ public abstract class ProductCmptTypeHierarchyCodeGenerator extends TypeHierarch
         super(ipsProject);
         this.fieldsBuilder = fieldsBuilder;
         this.methodsBuilder = methodsBuilder;
+    }
+
+    public JavaCodeFragmentBuilder getMethodsBuilder() {
+        return methodsBuilder;
+    }
+
+    public JavaCodeFragmentBuilder getFieldsBuilder() {
+        return fieldsBuilder;
     }
 
 }

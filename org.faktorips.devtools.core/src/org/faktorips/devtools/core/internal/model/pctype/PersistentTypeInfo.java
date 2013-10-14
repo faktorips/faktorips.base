@@ -279,13 +279,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         // validate max table name length
-        int maxTableNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
-                .getMaxTableNameLength();
-        if (StringUtils.isNotBlank(tableName) && tableName.length() > maxTableNameLenght) {
-            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, NLS.bind(
-                    Messages.PersistentTypeInfo_msgTableNameExceedsMaximumLength, tableName.length(),
-                    maxTableNameLenght), Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
-        }
+        validateMaxTableNameLength(msgList);
 
         // validate none single table strategy
         if (inheritanceStrategy != InheritanceStrategy.SINGLE_TABLE) {
@@ -305,11 +299,25 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         // in single table inheritance all not root entity table names must be empty
+        validateTableNameSingleInheritance(msgList);
+    }
+
+    private void validateTableNameSingleInheritance(MessageList msgList) {
         if (!StringUtils.isEmpty(tableName)) {
             String text = NLS.bind(Messages.PersistentTypeInfo_msgTableNameMustBeEmptyNotRootEntityAndInhStrategyIs,
                     inheritanceStrategy.toString());
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+        }
+    }
+
+    private void validateMaxTableNameLength(MessageList msgList) {
+        int maxTableNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
+                .getMaxTableNameLength();
+        if (StringUtils.isNotBlank(tableName) && tableName.length() > maxTableNameLenght) {
+            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, NLS.bind(
+                    Messages.PersistentTypeInfo_msgTableNameExceedsMaximumLength, tableName.length(),
+                    maxTableNameLenght), Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
         }
     }
 
@@ -333,44 +341,18 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) {
-        if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
-            if (isDefinesDiscriminatorColumn()) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedBecauseMappedSuperclass;
-                msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-            }
-            if (StringUtils.isNotEmpty(discriminatorValue)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustBeEmptyBecauseMappedSuperclass;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-            }
-        }
+        validatePersistentType(msgList);
 
         // check if this type not defines the discriminator column
         // but the discriminator details are not empty
-        if (!isDefinesDiscriminatorColumn()) {
-            if (StringUtils.isNotEmpty(discriminatorColumnName)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedTypeNotDefDiscrColumn;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
-            }
-        } else {
-            if (isDefinesDiscriminatorColumn() && !PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorColumnNameIsInvalid;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
-            }
-        }
+        validateDefinesDiscriminatorColumn(msgList);
 
         if (rootEntity == null) {
             // there must always be a root entity, maybe an error
             return;
         }
 
-        if (rootEntity != getPolicyCmptType()
-                && !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
-                && (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)
-                && getPolicyCmptType().getAttributes().size() > 0) {
+        if (checkIsRootEntityNotDefined(rootEntity)) {
             // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
             // zus. noch transiente attribute ausschliessen
             String text = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorMustBeDefinedInTheRootEntity,
@@ -431,6 +413,37 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             return;
         }
 
+        validatePolicyCmptType(msgList);
+    }
+
+    private boolean checkIsRootEntityNotDefined(IPolicyCmptType rootEntity) {
+        return rootEntity != getPolicyCmptType()
+                && !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
+                && isInheritanceStrategySingleTableOrJoinedSubclass()
+                && getPolicyCmptType().getAttributes().size() > 0;
+    }
+
+    private boolean isInheritanceStrategySingleTableOrJoinedSubclass() {
+        return inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS;
+    }
+
+    private void validateDefinesDiscriminatorColumn(MessageList msgList) {
+        if (!isDefinesDiscriminatorColumn()) {
+            if (StringUtils.isNotEmpty(discriminatorColumnName)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedTypeNotDefDiscrColumn;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
+            }
+        } else {
+            if (isDefinesDiscriminatorColumn() && !PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorColumnNameIsInvalid;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
+            }
+        }
+    }
+
+    private void validatePolicyCmptType(MessageList msgList) {
         IPolicyCmptType pcType = getPolicyCmptType();
         if (!pcType.isAbstract()) {
             DiscriminatorValidator dValidator = new DiscriminatorValidator(getIpsProject(), this);
@@ -438,6 +451,21 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             if (dValidator.conflictingTypeInfo != null) {
                 msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, dValidator.errorMessage,
                         Message.ERROR, this, dValidator.errorProperty));
+            }
+        }
+    }
+
+    private void validatePersistentType(MessageList msgList) {
+        if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
+            if (isDefinesDiscriminatorColumn()) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedBecauseMappedSuperclass;
+                msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+            }
+            if (StringUtils.isNotEmpty(discriminatorValue)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustBeEmptyBecauseMappedSuperclass;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             }
         }
     }

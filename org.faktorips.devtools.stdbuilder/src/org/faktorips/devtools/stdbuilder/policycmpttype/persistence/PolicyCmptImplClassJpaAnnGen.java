@@ -40,9 +40,9 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
  */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
-    private final static String ANNOTATION_ENTITY = "@Entity";
-    private final static String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
-    private final static String ANNOTATION_TABLE = "@Table";
+    private static final String ANNOTATION_ENTITY = "@Entity";
+    private static final String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
+    private static final String ANNOTATION_TABLE = "@Table";
     private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
     private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
     private static final String ANNOTATION_INHERITANCE = "@Inheritance";
@@ -173,9 +173,9 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
-            String tableName = currentType.getPersistenceTypeInfo().getTableName();
-            if (StringUtils.isNotEmpty(tableName)) {
-                this.tableName = tableName;
+            String tableNameTemp = currentType.getPersistenceTypeInfo().getTableName();
+            if (StringUtils.isNotEmpty(tableNameTemp)) {
+                this.tableName = tableNameTemp;
                 return false;
             }
             return true;
