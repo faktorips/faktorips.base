@@ -86,19 +86,20 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     public boolean isConstrain() {
         AssociationType associationType = getAssociationType();
         if (associationType.isCompositionDetailToMaster()) {
-            if (isConstrainedInverse()) {
-                return true;
-            } else {
-                return false;
-            }
+            return isConstrainedInverse();
         }
         return super.isConstrain();
     }
 
     private boolean isConstrainedInverse() {
         try {
-            IPolicyCmptTypeAssociation inverseAssociation = findInverseAssociation(getIpsProject());
-            return inverseAssociation != null && inverseAssociation.isConstrain();
+            IPolicyCmptTypeAssociation foundInverseAssociation = findInverseAssociation(getIpsProject());
+            // Need to check master to detail to avoid stack overflow
+            if (foundInverseAssociation != null && foundInverseAssociation.isCompositionMasterToDetail()) {
+                return foundInverseAssociation.isConstrain();
+            } else {
+                return false;
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -770,7 +771,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.log(e);
-            // CSOFF: IllegalCatch
+            // CSON: IllegalCatch
         }
         return null;
     }

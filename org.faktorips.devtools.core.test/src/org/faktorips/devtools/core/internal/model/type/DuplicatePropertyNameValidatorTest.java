@@ -152,10 +152,28 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         assertFalse(validatorTest.ignore(objectProperties));
     }
 
+    /**
+     * The constrain is set correct but both associations are in the same type.
+     */
+    @Test
+    public void testIgnore_constrainSameType() {
+        ObjectProperty[] objectProperties = new ObjectProperty[] { new ObjectProperty(toB, "toB"),
+                new ObjectProperty(toA, "toA") };
+        toB.setConstrain(true);
+        toB.setTargetRoleSingular("toA");
+        toB.setTargetRolePlural("toAs");
+
+        assertFalse(validatorTest.ignore(objectProperties));
+    }
+
+    /**
+     * The constrain is set correct but both associations are in the same type.
+     */
     @Test
     public void testIgnore_constrain() {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
         toVB.setConstrain(true);
+        toVB.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         assertTrue(validatorTest.ignore(objectProperties));
     }

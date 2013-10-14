@@ -75,11 +75,8 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         IPolicyCmptTypeAssociation inverseAssociation = association.newInverseAssociation();
         inverseAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        assertFalse(inverseAssociation.isConstrain());
-        assertFalse(association.isConstrain());
-
         inverseAssociation.setConstrain(true);
+
         assertTrue(inverseAssociation.isConstrain());
         assertTrue(association.isConstrain());
     }
@@ -89,11 +86,9 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         IPolicyCmptTypeAssociation inverseAssociation = association.newInverseAssociation();
         inverseAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        inverseAssociation.setConstrain(false);
+        association.setConfigured(true);
 
-        assertFalse(inverseAssociation.isConstrain());
-        assertFalse(association.isConstrain());
-
-        association.setConstrain(true);
         assertFalse(inverseAssociation.isConstrain());
         assertFalse(association.isConstrain());
     }
