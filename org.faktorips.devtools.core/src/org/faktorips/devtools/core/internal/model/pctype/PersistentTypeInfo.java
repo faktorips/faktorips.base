@@ -364,23 +364,14 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         // discriminator necessary if single table or joined table inheritance strategy
         // and the root entity defines a discriminator
-        if (isDefinesDiscriminatorColumn() && rootEntity != getPolicyCmptType()) {
+        if (isDefinesDiscriminatorColumnAndRootEntryNotNull(rootEntity)) {
             String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedNotRootEntity;
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             return;
         }
 
-        boolean discrValueMustBeEmpty = false;
-        if (getPolicyCmptType().isAbstract()) {
-            discrValueMustBeEmpty = true;
-        } else {
-            if (rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
-                discrValueMustBeEmpty = false;
-            } else {
-                discrValueMustBeEmpty = true;
-            }
-        }
+        boolean discrValueMustBeEmpty = isDiscrValueEmpty(rootEntity);
 
         if (!discrValueMustBeEmpty) {
             if (StringUtils.isEmpty(discriminatorValue)) {
@@ -416,15 +407,32 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         validatePolicyCmptType(msgList);
     }
 
+    private boolean isDefinesDiscriminatorColumnAndRootEntryNotNull(IPolicyCmptType rootEntity) {
+        return isDefinesDiscriminatorColumn() && rootEntity != getPolicyCmptType();
+    }
+
+    private boolean isDiscrValueEmpty(IPolicyCmptType rootEntity) {
+        boolean discrValueMustBeEmpty = false;
+        if (getPolicyCmptType().isAbstract()) {
+            discrValueMustBeEmpty = true;
+        } else {
+            if (rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+                discrValueMustBeEmpty = false;
+            } else {
+                discrValueMustBeEmpty = true;
+            }
+        }
+        return discrValueMustBeEmpty;
+    }
+
     private boolean checkIsRootEntityNotDefined(IPolicyCmptType rootEntity) {
-        return rootEntity != getPolicyCmptType()
-                && !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
-                && isInheritanceStrategySingleTableOrJoinedSubclass()
-                && getPolicyCmptType().getAttributes().size() > 0;
+        return rootEntity != getPolicyCmptType() && !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
+                && isInheritanceStrategySingleTableOrJoinedSubclass() && getPolicyCmptType().getAttributes().size() > 0;
     }
 
     private boolean isInheritanceStrategySingleTableOrJoinedSubclass() {
-        return inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS;
+        return inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE
+                || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS;
     }
 
     private void validateDefinesDiscriminatorColumn(MessageList msgList) {
@@ -650,7 +658,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    private final static class DiscriminatorValidator extends TypeHierarchyVisitor<IPolicyCmptType> {
+    private static final class DiscriminatorValidator extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private final InheritanceStrategy inheritanceStrategy;
         private final List<String> discriminatorValues = new ArrayList<String>();
@@ -658,7 +666,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         // If these fields are not null errors exist in the naming of the tables
         private IPersistentTypeInfo conflictingTypeInfo;
         private String errorMessage;
-        public String errorProperty;
+        private String errorProperty;
 
         public DiscriminatorValidator(IIpsProject ipsProject, IPersistentTypeInfo typeInfo) {
             super(ipsProject);
