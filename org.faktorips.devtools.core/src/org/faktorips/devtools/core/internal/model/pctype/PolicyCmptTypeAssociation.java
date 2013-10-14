@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -435,6 +436,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         validateDerivedUnion(list, ipsProject);
         validateInverseRelation(list, ipsProject);
         validateMatchingAssociation(list, ipsProject);
+        validateConstrainedAssociation(list, ipsProject);
     }
 
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -681,6 +683,17 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                         Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid,
                         getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
                         PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+            }
+        }
+    }
+
+    private void validateConstrainedAssociation(MessageList list, IIpsProject ipsProject) {
+        if (isConstrain()) {
+            IAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
+            if (constrainedAssociation != null && isQualified() != constrainedAssociation.isQualified()) {
+                list.newError(MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH,
+                        Messages.PolicyCmptTypeAssociation_errorMsg_constrainedPropertyQualifiedMismatch, new ObjectProperty(this,
+                                PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_QUALIFIED));
             }
         }
     }

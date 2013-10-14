@@ -87,6 +87,7 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForConfiguredType;
     public static String PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForNotConfiguredType;
     public static String PolicyCmptTypeAssociation_error_matchingAssociatonNotFound;
+    public static String PolicyCmptTypeAssociation_errorMsg_constrainedPropertyQualifiedMismatch;
     public static String PolicyCmptTypeAssociation_InverseOfDetailToMasterMustBeAMasterToDetail;
     public static String PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost;
     public static String PolicyCmptTypeAssociation_sharedAssociation_noAssociationHost;

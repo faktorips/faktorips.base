@@ -152,6 +152,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public final static String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationIsInvalid"; //$NON-NLS-1$
 
+    public static final String MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH = MSGCODE_PREFIX + "ConstrainQualifierNotMatch"; //$NON-NLS-1$
+
     /**
      * Returns the policy component type this relation belongs to.
      */
