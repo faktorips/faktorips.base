@@ -73,6 +73,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
+    public IProductCmptTypeAssociation findConstrainedAssociation(IIpsProject ipsProject) {
+        return (IProductCmptTypeAssociation)super.findConstrainedAssociation(ipsProject);
+    }
+
+    @Override
     public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
         return findMatchingPolicyCmptTypeAssociation(ipsProject) != null;
     }
@@ -271,6 +276,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         super.validateThis(list, ipsProject);
         validateMatchingAsoociation(list, ipsProject);
         validateDerivedUnionChangingOverTimeProperty(list, ipsProject);
+        validateConstrainedChangeOverTime(list, ipsProject);
     }
 
     /**
@@ -358,6 +364,18 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private boolean isMatchingAssociationSourceAndNameNotEmpty() {
         return StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName);
+    }
+
+    private void validateConstrainedChangeOverTime(MessageList list, IIpsProject ipsProject) {
+        if (isConstrain()) {
+            IProductCmptTypeAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
+            if (constrainedAssociation != null && isChangingOverTime() != constrainedAssociation.isChangingOverTime()) {
+                list.newError(MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH,
+                        Messages.ProductCmptTypeAssociation_errorMsg_constrained_changeOverTime_missmatch,
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this,
+                                PROPERTY_CHANGING_OVER_TIME));
+            }
+        }
     }
 
     @Override

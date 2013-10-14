@@ -76,6 +76,13 @@ public interface IProductCmptTypeAssociation extends IAssociation {
             + "MatchingAssociationDuplicateName"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the property change over time mismatch with the
+     * constrained association
+     */
+    public static final String MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH = MSGCODE_PREFIX
+            + "ConstrainedChangeOverTimeMismatch"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
      */
     public IProductCmptType getProductCmptType();
