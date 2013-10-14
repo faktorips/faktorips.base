@@ -423,17 +423,6 @@ public abstract class Association extends TypePart implements IAssociation {
             list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this,
                     new String[] { PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY }));
         }
-        if (isConstrain()) {
-            IAssociation superAssociationWithSameName = findSuperAssociationWithSameName(getIpsProject());
-            if (superAssociationWithSameName != null) {
-                int maxCardinalitySuperAssociation = superAssociationWithSameName.getMaxCardinality();
-                if (maxCardinalitySuperAssociation != getMaxCardinality()) {
-                    String text = Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation;
-                    list.add(new Message(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, Message.ERROR,
-                            this, PROPERTY_CONSTRAIN));
-                }
-            }
-        }
     }
 
     private void validateMinCardinality(MessageList list) {
@@ -441,17 +430,6 @@ public abstract class Association extends TypePart implements IAssociation {
             String text = Messages.Association_msg_MinCardinalityGreaterThanMaxCardinality;
             list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
                     PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
-        }
-        if (isConstrain()) {
-            IAssociation superAssociationWithSameName = findSuperAssociationWithSameName(getIpsProject());
-            if (superAssociationWithSameName != null) {
-                int minCardinalitySuperAssociation = superAssociationWithSameName.getMinCardinality();
-                if (minCardinalitySuperAssociation != getMinCardinality()) {
-                    String text = Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation;
-                    list.add(new Message(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, Message.ERROR,
-                            this, PROPERTY_CONSTRAIN));
-                }
-            }
         }
     }
 
@@ -534,8 +512,20 @@ public abstract class Association extends TypePart implements IAssociation {
                     superAssociation.getTargetRolePlural());
             list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
         }
+        validateConstrainedCardinality(list, superAssociation);
         validateConstrainingNotDerivedUnion(list);
         validateConstrainedAssociationNotDerivedUnion(list, superAssociation);
+    }
+
+    private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
+        if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
+            String text = Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation;
+            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
+        }
+        if (superAssociation.getMinCardinality() != getMinCardinality()) {
+            String text = Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation;
+            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
+        }
     }
 
     private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {
