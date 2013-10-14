@@ -518,13 +518,15 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
-        if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
-            String text = Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation;
-            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
-        }
         if (superAssociation.getMinCardinality() != getMinCardinality()) {
             String text = Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation;
-            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
+            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
+        }
+        if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
+            String text = Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation;
+            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
         }
     }
 
