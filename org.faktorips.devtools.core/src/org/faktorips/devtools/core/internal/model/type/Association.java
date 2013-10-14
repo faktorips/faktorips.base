@@ -512,22 +512,41 @@ public abstract class Association extends TypePart implements IAssociation {
                     superAssociation.getTargetRolePlural());
             list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
         }
+        validateConstrainedAssociationType(list, superAssociation);
         validateConstrainedCardinality(list, superAssociation);
         validateConstrainingNotDerivedUnion(list);
         validateConstrainedAssociationNotDerivedUnion(list, superAssociation);
     }
 
+    private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
+        if (!superAssociation.getAssociationType().equals(getAssociationType())) {
+            String text = NLS.bind(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation, superAssociation
+                    .getAssociationType().getName());
+            list.newError(MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_ASSOCIATION_TYPE));
+        }
+    }
+
     private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
         if (superAssociation.getMinCardinality() != getMinCardinality()) {
-            String text = Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation;
+            String text = NLS.bind(Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation,
+                    getStringCardinality(superAssociation.getMinCardinality()));
             list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
                     PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
         }
         if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
-            String text = Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation;
+            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation,
+                    getStringCardinality(superAssociation.getMaxCardinality()));
             list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
                     PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
         }
+    }
+
+    private String getStringCardinality(int cardinality) {
+        if (cardinality == Integer.MAX_VALUE) {
+            return "*"; //$NON-NLS-1$
+        }
+        return String.valueOf(cardinality);
     }
 
     private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {

@@ -151,6 +151,13 @@ public interface IAssociation extends ITypePart {
             + "MinCardinalityNotEqualSuperAssociation"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that maximum cardinality is not equal to maximum
+     * cardinality of super association.
+     */
+    public static final String MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION = MSGCODE_PREFIX
+            + "AssociationTypeNotEqualSuperAssociation"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that overwritten association is marked as a derived
      * union.
      */
