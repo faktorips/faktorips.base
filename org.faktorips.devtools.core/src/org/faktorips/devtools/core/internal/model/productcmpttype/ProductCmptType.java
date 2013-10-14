@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -327,15 +326,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException {
-        return new CopyOnWriteArrayList<IAssociation>(findAllNotDerivedAssociations(getIpsProject()));
-    }
-
-    @Override
     public List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipsProject) {
         NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(ipsProject);
         collector.start(this);
-        return collector.getAssociations();
+        return collector.getAssociationsFound();
     }
 
     @Override
@@ -1552,34 +1546,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private static class NotDerivedAssociationCollector extends TypeHierarchyVisitor<IProductCmptType> {
+    private static class NotDerivedAssociationCollector extends AbstractAssociationFinder<IProductCmptTypeAssociation> {
 
         public NotDerivedAssociationCollector(IIpsProject ipsProject) {
-            super(ipsProject);
+            super(true, ipsProject);
         }
-
-        private List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
 
         @Override
-        protected boolean visit(IProductCmptType currentType) {
-            List<IProductCmptTypeAssociation> typeAssociations = currentType.getProductCmptTypeAssociations();
-            int index = 0;
-            for (IProductCmptTypeAssociation association : typeAssociations) {
-                /*
-                 * To get the associations of the root type of the supertype hierarchy first, put in
-                 * the list at first, but with unchanged order for all associations found in one
-                 * type ...
-                 */
-                if (!association.isDerived()) {
-                    getAssociations().add(index, association);
-                    index++;
-                }
-            }
-            return true;
+        protected boolean addAssociation(IAssociation association) {
+            return !association.isDerived() && super.addAssociation(association);
         }
 
-        public List<IProductCmptTypeAssociation> getAssociations() {
-            return associations;
+        @Override
+        protected List<IProductCmptTypeAssociation> findAssociations(IType currentType) {
+            return ((IProductCmptType)currentType).getProductCmptTypeAssociations();
         }
 
     }

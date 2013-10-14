@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 /**
@@ -88,10 +87,8 @@ public class LinksContentProvider implements ITreeContentProvider {
     private AssociationViewItem[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
             IProductCmptGeneration generation) {
-        NonDerivedAssociationsCollector collector = new NonDerivedAssociationsCollector(ipsProject);
-        collector.start(type);
         List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
-        List<IProductCmptTypeAssociation> associations = collector.getAssociations();
+        List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
         for (IProductCmptTypeAssociation association : associations) {
             IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
             AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
@@ -135,33 +132,4 @@ public class LinksContentProvider implements ITreeContentProvider {
         return getChildren(element).length > 0;
     }
 
-    class NonDerivedAssociationsCollector extends TypeHierarchyVisitor<IProductCmptType> {
-
-        private List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
-
-        public NonDerivedAssociationsCollector(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) {
-            List<IProductCmptTypeAssociation> typeAssociations = currentType.getProductCmptTypeAssociations();
-            int index = 0;
-            for (IProductCmptTypeAssociation association : typeAssociations) {
-                // to get the associations of the root type of the supertype hierarchy first,
-                // put in the list at first, but with unchanged order for all associations
-                // found in one type...
-                if (!association.isDerived()) {
-                    associations.add(index, association);
-                    index++;
-                }
-            }
-            return true;
-        }
-
-        public List<IProductCmptTypeAssociation> getAssociations() {
-            return associations;
-        }
-
-    }
 }

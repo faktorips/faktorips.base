@@ -163,7 +163,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws CoreException {
         AllAssociationFinder finder = new AllAssociationFinder(ipsProject, true);
         finder.start(this);
-        return finder.associations;
+        return finder.getAssociationsFound();
     }
 
     @Override
@@ -766,42 +766,97 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    /**
-     * Finds all associations with the given target and association type in the type hierarchy.
-     * 
-     * @author Joerg Ortmann
-     */
-    private static class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor<IType> {
+    protected static abstract class AbstractAssociationFinder<T extends IAssociation> extends
+            TypeHierarchyVisitor<IType> {
 
-        private String associationTarget;
+        private List<T> associationsFound = new ArrayList<T>();
+        private final boolean superTypeFirst;
 
-        private AssociationType associationType;
-
-        private List<IAssociation> associationsFound = new ArrayList<IAssociation>();
-
-        public AssociationTargetAndTypeFinder(IIpsProject project, String associationTarget,
-                AssociationType associationType) {
-
-            super(project);
-            this.associationTarget = associationTarget;
-            this.associationType = associationType;
+        public AbstractAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.superTypeFirst = superTypeFirst;
         }
 
         @Override
         protected boolean visit(IType currentType) {
-            try {
-                associationsFound.addAll(((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(
-                        associationTarget, associationType, ipsProject));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            List<T> associations = findAssociations(currentType);
+            int index;
+            if (superTypeFirst) {
+                index = 0;
+            } else {
+                index = associationsFound.size();
+            }
+            for (T association : associations) {
+                if (addAssociation(association)) {
+                    associationsFound.add(index, association);
+                    index++;
+                }
             }
             // Always continue because we search for all matching association.
             return true;
         }
 
+        protected boolean addAssociation(IAssociation association) {
+            return !isConstrainAlreadyAdded(association);
+        }
+
+        protected abstract List<T> findAssociations(IType currentType);
+
+        private boolean isConstrainAlreadyAdded(IAssociation association) {
+            for (IAssociation alreadyAdded : getAssociationsFound()) {
+                if (alreadyAdded.isConstrain() && alreadyAdded.getName().equals(association.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /** Returns the associations which matches the given target and association type. */
-        public List<IAssociation> getAssociationsFound() {
+        public List<T> getAssociationsFound() {
             return associationsFound;
+        }
+
+    }
+
+    /**
+     * Finds all associations with the given target and association type in the type hierarchy.
+     * 
+     * @author Joerg Ortmann
+     */
+    private static class AssociationTargetAndTypeFinder extends AbstractAssociationFinder<IAssociation> {
+
+        private String associationTarget;
+
+        private AssociationType associationType;
+
+        public AssociationTargetAndTypeFinder(IIpsProject project, String associationTarget,
+                AssociationType associationType) {
+            super(false, project);
+            this.associationTarget = associationTarget;
+            this.associationType = associationType;
+        }
+
+        @Override
+        protected List<IAssociation> findAssociations(IType currentType) {
+            try {
+                return ((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(associationTarget,
+                        associationType, ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+
+    }
+
+    private static class AllAssociationFinder extends AbstractAssociationFinder<IAssociation> {
+
+        public AllAssociationFinder(IIpsProject ipsProject, boolean superTypeFirst) {
+            super(superTypeFirst, ipsProject);
+        }
+
+        @Override
+        protected List<IAssociation> findAssociations(IType currentType) {
+            return currentType.getAssociations();
         }
 
     }
@@ -921,32 +976,6 @@ public abstract class Type extends BaseIpsObject implements IType {
             }
             // Place supertype attributes before subtype attributes.
             attributes.addAll(0, attributesToAdd);
-            return true;
-        }
-
-    }
-
-    private static class AllAssociationFinder extends TypeHierarchyVisitor<IType> {
-
-        private final List<IAssociation> associations;
-        private final boolean superTypeFirst;
-
-        public AllAssociationFinder(IIpsProject ipsProject, boolean superTypeFirst) {
-            super(ipsProject);
-            this.superTypeFirst = superTypeFirst;
-            associations = new ArrayList<IAssociation>();
-        }
-
-        @Override
-        protected boolean visit(IType currentType) {
-            List<? extends IAssociation> lassociations = currentType.getAssociations();
-            if (superTypeFirst) {
-                // Place supertype associations before subtype associations.
-                associations.addAll(0, lassociations);
-            } else {
-                associations.addAll(lassociations);
-            }
-
             return true;
         }
 
