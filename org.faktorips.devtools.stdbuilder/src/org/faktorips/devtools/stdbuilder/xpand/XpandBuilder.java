@@ -67,7 +67,7 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
     /*
      * If this debug switch is set to true we reload the template with every build!
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
