@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -41,9 +40,9 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
  */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
-    private final static String ANNOTATION_ENTITY = "@Entity";
-    private final static String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
-    private final static String ANNOTATION_TABLE = "@Table";
+    private static final String ANNOTATION_ENTITY = "@Entity";
+    private static final String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
+    private static final String ANNOTATION_TABLE = "@Table";
     private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
     private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
     private static final String ANNOTATION_INHERITANCE = "@Inheritance";
@@ -131,11 +130,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     private String getTableNameFromSupertype(IPersistentTypeInfo persistenceTypeInfo) {
         SearchTableNameInSuperTypes searchTableNameInSuperTypes = new SearchTableNameInSuperTypes(
                 persistenceTypeInfo.getIpsProject());
-        try {
-            searchTableNameInSuperTypes.start(persistenceTypeInfo.getPolicyCmptType());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        searchTableNameInSuperTypes.start(persistenceTypeInfo.getPolicyCmptType());
         return searchTableNameInSuperTypes.tableName;
     }
 
@@ -177,10 +172,10 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            String tableName = currentType.getPersistenceTypeInfo().getTableName();
-            if (StringUtils.isNotEmpty(tableName)) {
-                this.tableName = tableName;
+        protected boolean visit(IPolicyCmptType currentType) {
+            String tableNameTemp = currentType.getPersistenceTypeInfo().getTableName();
+            if (StringUtils.isNotEmpty(tableNameTemp)) {
+                this.tableName = tableNameTemp;
                 return false;
             }
             return true;

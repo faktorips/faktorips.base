@@ -27,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
@@ -420,7 +419,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         final List<IEnumAttribute> result = new ArrayList<IEnumAttribute>(1);
         EnumTypeHierarchyVisitor visitor = new EnumTypeHierarchyVisitor(ipsProject) {
             @Override
-            protected boolean visit(IEnumType currentType) throws CoreException {
+            protected boolean visit(IEnumType currentType) {
                 IEnumAttribute enumAttribute = currentType.getEnumAttribute(name);
                 if (enumAttribute != null) {
                     result.add(enumAttribute);
@@ -429,11 +428,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 return true;
             }
         };
-        try {
-            visitor.start(this);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        visitor.start(this);
 
         return result.isEmpty() ? null : result.get(0);
     }
@@ -748,7 +743,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (directSuperEnumType != null) {
             EnumTypeHierarchyVisitor collector = new EnumTypeHierarchyVisitor(getIpsProject()) {
                 @Override
-                protected boolean visit(IEnumType currentType) throws CoreException {
+                protected boolean visit(IEnumType currentType) {
                     superEnumTypes.add(currentType);
                     return true;
                 }
@@ -955,7 +950,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         @Override
-        protected boolean visit(IEnumType currentEnumType) throws CoreException {
+        protected boolean visit(IEnumType currentEnumType) {
             if (currentEnumType == superEnumTypeCandidate) {
                 subEnumType = true;
                 return false;

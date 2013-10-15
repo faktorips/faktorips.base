@@ -305,7 +305,7 @@ public abstract class Method extends TypePart implements IMethod {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             IMethod match = currentType.getMatchingMethod(Method.this);
             if (match != null && match != Method.this) {
                 overridingMethod = match;

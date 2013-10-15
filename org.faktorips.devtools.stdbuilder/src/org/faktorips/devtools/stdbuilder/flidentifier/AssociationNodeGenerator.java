@@ -96,7 +96,7 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         getTargetCode.append(">(){@Override protected "); //$NON-NLS-1$
         if (is1ToManyIgnoringQualifier) {
             getTargetCode.appendClassName(List.class);
-            getTargetCode.append("<"); //$NON-NLS-1$
+            getTargetCode.append("<? extends "); //$NON-NLS-1$
         }
         getTargetCode.appendClassName(targetClassName);
         if (is1ToManyIgnoringQualifier) {

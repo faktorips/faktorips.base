@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
@@ -70,7 +69,7 @@ public abstract class HierarchyVisitor<T> {
     /**
      * Starts the visit on the given type. Does nothing if base type is <code>null</code>.
      */
-    public final void start(T basetype) throws CoreException {
+    public final void start(T basetype) {
         cycleDetected = false;
         visitedTypes = new ArrayList<T>();
         if (basetype == null) {
@@ -79,7 +78,7 @@ public abstract class HierarchyVisitor<T> {
         visitInternal(basetype);
     }
 
-    private void visitInternal(T currentType) throws CoreException {
+    private void visitInternal(T currentType) {
         if (visitedTypes.contains(currentType)) {
             cycleDetected = true;
             return;
@@ -95,7 +94,7 @@ public abstract class HierarchyVisitor<T> {
         }
     }
 
-    protected abstract T findSupertype(T currentType, IIpsProject ipsProject) throws CoreException;
+    protected abstract T findSupertype(T currentType, IIpsProject ipsProject);
 
     /**
      * Template method in that subclasses realize the function for the given type.
@@ -103,6 +102,6 @@ public abstract class HierarchyVisitor<T> {
      * @return <code>true</code> if the visitor should continue to navigate up the hierarchy.
      *         <code>false</code> if not.
      */
-    protected abstract boolean visit(T currentType) throws CoreException;
+    protected abstract boolean visit(T currentType);
 
 }

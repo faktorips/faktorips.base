@@ -79,24 +79,6 @@ public class TestSelectionComposite extends Composite {
 
     private Button newSuiteButton;
 
-    private class TestSuiteLabelProvider extends DefaultLabelProvider {
-        @Override
-        public String getText(Object element) {
-            String text = ""; //$NON-NLS-1$
-            String pckFrgmtRootName = ""; //$NON-NLS-1$
-            if (element instanceof IIpsObject) {
-                text = ((IIpsObject)element).getQualifiedName();
-                pckFrgmtRootName = ((IIpsObject)element).getIpsPackageFragment().getRoot().getName();
-            } else {
-                text = super.getText(element);
-                if (element instanceof IIpsPackageFragment) {
-                    pckFrgmtRootName = ((IIpsPackageFragment)element).getRoot().getName();
-                }
-            }
-            return text + (pckFrgmtRootName.length() > 0 ? " (" + pckFrgmtRootName + ")" : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-    }
-
     public TestSelectionComposite(Composite parent) {
         super(parent, SWT.NONE);
         toolkit = new UIToolkit(null);
@@ -398,7 +380,7 @@ public class TestSelectionComposite extends Composite {
         viewer.refresh();
     }
 
-    public String getPackageFragmentRootText() throws CoreException {
+    public String getPackageFragmentRootText() {
         List<String> roots = new ArrayList<String>();
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;
@@ -449,5 +431,23 @@ public class TestSelectionComposite extends Composite {
         deleteButton.setEnabled(enabled);
         upButton.setEnabled(enabled);
         downButton.setEnabled(enabled);
+    }
+
+    private class TestSuiteLabelProvider extends DefaultLabelProvider {
+        @Override
+        public String getText(Object element) {
+            String text = ""; //$NON-NLS-1$
+            String pckFrgmtRootName = ""; //$NON-NLS-1$
+            if (element instanceof IIpsObject) {
+                text = ((IIpsObject)element).getQualifiedName();
+                pckFrgmtRootName = ((IIpsObject)element).getIpsPackageFragment().getRoot().getName();
+            } else {
+                text = super.getText(element);
+                if (element instanceof IIpsPackageFragment) {
+                    pckFrgmtRootName = ((IIpsPackageFragment)element).getRoot().getName();
+                }
+            }
+            return text + (pckFrgmtRootName.length() > 0 ? " (" + pckFrgmtRootName + ")" : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
     }
 }

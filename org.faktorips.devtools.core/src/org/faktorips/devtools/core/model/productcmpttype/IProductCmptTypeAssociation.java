@@ -40,14 +40,14 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * The list of applicable types. For product component types only aggregations and associations
      * are supported.
      */
-    public final static AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
+    public static final AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
             AssociationType.AGGREGATION, AssociationType.ASSOCIATION };
 
-    public final static String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
+    public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
+    public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     /**
      * Message code for validation messages when the matching association was not found
@@ -72,8 +72,15 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * name. Although these associations could be two different ones we would generate duplicated
      * methods.
      */
-    public final static String MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME = MSGCODE_PREFIX
+    public static final String MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME = MSGCODE_PREFIX
             + "MatchingAssociationDuplicateName"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the property change over time mismatch with the
+     * constrained association
+     */
+    public static final String MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH = MSGCODE_PREFIX
+            + "ConstrainedChangeOverTimeMismatch"; //$NON-NLS-1$
 
     /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.

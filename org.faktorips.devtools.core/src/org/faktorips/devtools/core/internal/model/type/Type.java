@@ -40,9 +40,9 @@ import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
@@ -163,7 +163,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws CoreException {
         AllAssociationFinder finder = new AllAssociationFinder(ipsProject, true);
         finder.start(this);
-        return finder.associations;
+        return finder.getAssociationsFound();
     }
 
     @Override
@@ -374,8 +374,8 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods,
-            IIpsProject ipsProject) throws CoreException {
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+            throws CoreException {
 
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
                 onlyNotImplementedAbstractMethods);
@@ -623,7 +623,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     protected void checkDerivedUnionIsImplemented(IAssociation association,
             List<IAssociation> candidateSubsets,
-            MessageList msgList) throws CoreException {
+            MessageList msgList) {
         if (association.isDerivedUnion()) {
             if (!isSubsetted(association, candidateSubsets)) {
                 String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(), association
@@ -634,10 +634,14 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    private boolean isSubsetted(IAssociation derivedUnion, List<IAssociation> candidateSubsets) throws CoreException {
+    private boolean isSubsetted(IAssociation derivedUnion, List<IAssociation> candidateSubsets) {
         for (IAssociation candidate : candidateSubsets) {
-            if (derivedUnion == candidate.findSubsettedDerivedUnion(getIpsProject())) {
-                return true;
+            try {
+                if (derivedUnion == candidate.findSubsettedDerivedUnion(getIpsProject())) {
+                    return true;
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
         return false;
@@ -688,13 +692,18 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             List<IMethod> typeMethods = currentType.getMethods();
             for (IMethod method : typeMethods) {
                 if (onlyNotImplementedAbstractMethods && !method.isAbstract()) {
                     continue;
                 }
-                IMethod overridingMethod = method.findOverridingMethod(Type.this, ipsProject);
+                IMethod overridingMethod;
+                try {
+                    overridingMethod = method.findOverridingMethod(Type.this, ipsProject);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
                 if (overridingMethod != null && overridingMethod.getType() == Type.this) {
                     continue;
                 }
@@ -757,38 +766,97 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
+    protected abstract static class AbstractAssociationFinder<T extends IAssociation> extends
+            TypeHierarchyVisitor<IType> {
+
+        private List<T> associationsFound = new ArrayList<T>();
+        private final boolean superTypeFirst;
+
+        public AbstractAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.superTypeFirst = superTypeFirst;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) {
+            List<T> associations = findAssociations(currentType);
+            int index;
+            if (superTypeFirst) {
+                index = 0;
+            } else {
+                index = associationsFound.size();
+            }
+            for (T association : associations) {
+                if (addAssociation(association)) {
+                    associationsFound.add(index, association);
+                    index++;
+                }
+            }
+            // Always continue because we search for all matching association.
+            return true;
+        }
+
+        protected boolean addAssociation(IAssociation association) {
+            return !isConstrainAlreadyAdded(association);
+        }
+
+        protected abstract List<T> findAssociations(IType currentType);
+
+        private boolean isConstrainAlreadyAdded(IAssociation association) {
+            for (IAssociation alreadyAdded : getAssociationsFound()) {
+                if (alreadyAdded.isConstrain() && alreadyAdded.getName().equals(association.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /** Returns the associations which matches the given target and association type. */
+        public List<T> getAssociationsFound() {
+            return associationsFound;
+        }
+
+    }
+
     /**
      * Finds all associations with the given target and association type in the type hierarchy.
      * 
      * @author Joerg Ortmann
      */
-    private static class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor<IType> {
+    private static class AssociationTargetAndTypeFinder extends AbstractAssociationFinder<IAssociation> {
 
         private String associationTarget;
 
         private AssociationType associationType;
 
-        private List<IAssociation> associationsFound = new ArrayList<IAssociation>();
-
         public AssociationTargetAndTypeFinder(IIpsProject project, String associationTarget,
                 AssociationType associationType) {
-
-            super(project);
+            super(false, project);
             this.associationTarget = associationTarget;
             this.associationType = associationType;
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            associationsFound.addAll(((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(
-                    associationTarget, associationType, ipsProject));
-            // Always continue because we search for all matching association.
-            return true;
+        protected List<IAssociation> findAssociations(IType currentType) {
+            try {
+                return ((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(associationTarget,
+                        associationType, ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
-        /** Returns the associations which matches the given target and association type. */
-        public List<IAssociation> getAssociationsFound() {
-            return associationsFound;
+    }
+
+    private static class AllAssociationFinder extends AbstractAssociationFinder<IAssociation> {
+
+        public AllAssociationFinder(IIpsProject ipsProject, boolean superTypeFirst) {
+            super(superTypeFirst, ipsProject);
+        }
+
+        @Override
+        protected List<IAssociation> findAssociations(IType currentType) {
+            return currentType.getAssociations();
         }
 
     }
@@ -805,7 +873,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             attribute = currentType.getAttribute(attributeName);
             return attribute == null;
         }
@@ -827,7 +895,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             method = currentType.getMethod(methodName, datatypes);
             return method == null;
         }
@@ -846,7 +914,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             method = currentType.getMethod(signature);
             return method == null;
         }
@@ -866,7 +934,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             // Considers overridden methods.
             for (IMethod method : currentType.getMethods()) {
                 if (!methodSignatures.contains(method.getSignatureString())) {
@@ -896,7 +964,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             List<? extends IAttribute> lattributes = currentType.getAttributes();
             List<IAttribute> attributesToAdd = new ArrayList<IAttribute>();
             // Considers overridden attributes.
@@ -908,32 +976,6 @@ public abstract class Type extends BaseIpsObject implements IType {
             }
             // Place supertype attributes before subtype attributes.
             attributes.addAll(0, attributesToAdd);
-            return true;
-        }
-
-    }
-
-    private static class AllAssociationFinder extends TypeHierarchyVisitor<IType> {
-
-        private final List<IAssociation> associations;
-        private final boolean superTypeFirst;
-
-        public AllAssociationFinder(IIpsProject ipsProject, boolean superTypeFirst) {
-            super(ipsProject);
-            this.superTypeFirst = superTypeFirst;
-            associations = new ArrayList<IAssociation>();
-        }
-
-        @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            List<? extends IAssociation> lassociations = currentType.getAssociations();
-            if (superTypeFirst) {
-                // Place supertype associations before subtype associations.
-                associations.addAll(0, lassociations);
-            } else {
-                associations.addAll(lassociations);
-            }
-
             return true;
         }
 
@@ -951,7 +993,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             List<? extends IAssociation> associations = currentType.getAssociations();
             for (IAssociation association : associations) {
                 candidateSubsets.add(association);
@@ -981,7 +1023,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             if (currentType == supertypeCandidate) {
                 subtype = true;
                 return false;

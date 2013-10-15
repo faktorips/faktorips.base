@@ -75,6 +75,14 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
+     * Creates a new message with severity {@link Message#ERROR} with the given code, text and
+     * invalid object properties and adds the message to the list.
+     */
+    public void newError(String code, String text, ObjectProperty... invalidObjectProperty) {
+        add(Message.newError(code, text, invalidObjectProperty));
+    }
+
+    /**
      * Creates a new message with severity {@link Message#WARNING} with the given code, text and
      * object properties and adds the message to the list.
      */
@@ -102,14 +110,14 @@ public class MessageList implements Iterable<Message> {
 
     /**
      * Adds the messages in the given list to this list.
-     * 
-     * @throws IllegalArgumentException if msgList is null.
+     * <p>
+     * <code>null</code> will be ignored as a parameter value.
      */
     public void add(MessageList msgList) {
         if (msgList == null) {
             return;
         }
-        int max = msgList.getNoOfMessages();
+        int max = msgList.size();
         for (int i = 0; i < max; i++) {
             add(msgList.getMessage(i));
         }
@@ -119,7 +127,8 @@ public class MessageList implements Iterable<Message> {
      * Copies the messages from the given list to this list and sets the message's invalid object
      * properties.
      * 
-     * @param msgList the list to copy the messages from.
+     * @param msgList the list to copy the messages from. If msgList is <code>null</code> this
+     *            method does nothing.
      * @param invalidObjectProperty the object and it's property that the messages refer to.
      * @param override <code>true</code> if the invalidObjectProperty should be set in all messages.
      *            <code>false</code> if the invalidObjectProperty is set only for messages that do
@@ -129,7 +138,7 @@ public class MessageList implements Iterable<Message> {
         if (msgList == null) {
             return;
         }
-        int max = msgList.getNoOfMessages();
+        int max = msgList.size();
         for (int i = 0; i < max; i++) {
             Message msg = msgList.getMessage(i);
             if (override || msg.getInvalidObjectProperties().length == 0) {

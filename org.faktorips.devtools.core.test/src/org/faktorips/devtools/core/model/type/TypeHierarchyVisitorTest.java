@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -48,7 +47,7 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void test_NoCycle() throws CoreException {
+    public void test_NoCycle() {
         MyVisitor visitor = new MyVisitor(ipsProject);
         visitor.start(type);
         IType[] types = visitor.getVisitedTypes();
@@ -80,7 +79,7 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void test_WithCycle() throws CoreException {
+    public void test_WithCycle() {
         superSupertype.setSupertype("Type");
         MyVisitor visitor = new MyVisitor(ipsProject);
         visitor.start(type);
@@ -106,7 +105,7 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             if (stopVisitingAfterThisType == null) {
                 return true;
             }

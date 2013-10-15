@@ -51,7 +51,7 @@ public class FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, {@code null} if no such object is found
      *         in the list
      */
-    public static <T extends IModelObject, R extends T> R getModelObjectById(List<T> modelObjects, String id) {
+    public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects, String id) {
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
@@ -77,7 +77,8 @@ public class FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, the list is empty if no such object is
      *         found in the list
      */
-    public static <T extends IModelObject, R extends T> List<R> getListModelObjectById(List<T> modelObjects, String id) {
+    public static <T extends IModelObject, R extends T> List<? extends R> getListModelObjectById(List<? extends T> modelObjects,
+            String id) {
         List<R> returnList = new ArrayList<R>();
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
@@ -153,10 +154,10 @@ public class FormulaEvaluatorUtil {
          *            {@link #getTargetsInternal(IModelObject)} will be called
          * @return a {@link List} of target {@link IModelObject model objects}
          */
-        public List<T> getTargets(List<S> sourceObjects) {
+        public List<? extends T> getTargets(List<? extends S> sourceObjects) {
             List<T> targets = new ArrayList<T>();
             for (S sourceObject : sourceObjects) {
-                List<T> foundTargets = getTargetsInternal(sourceObject);
+                List<? extends T> foundTargets = getTargetsInternal(sourceObject);
                 for (T target : foundTargets) {
                     if (!targets.contains(target)) {
                         targets.add(target);
@@ -173,7 +174,7 @@ public class FormulaEvaluatorUtil {
          * @param sourceObject the {@link IModelObject} source for the association
          * @return a {@link List} of target {@link IModelObject model objects}
          */
-        protected abstract List<T> getTargetsInternal(S sourceObject);
+        protected abstract List<? extends T> getTargetsInternal(S sourceObject);
     }
 
     /**
@@ -193,7 +194,7 @@ public class FormulaEvaluatorUtil {
          *            {@link #getTargetInternal(IModelObject)} will be called
          * @return a {@link List} of target {@link IModelObject model objects}
          */
-        public List<T> getTargets(List<S> sourceObjects) {
+        public List<? extends T> getTargets(List<? extends S> sourceObjects) {
             List<T> targets = new ArrayList<T>();
             for (S sourceObject : sourceObjects) {
                 T target = getTargetInternal(sourceObject);
@@ -232,7 +233,7 @@ public class FormulaEvaluatorUtil {
          * 
          * @return a {@link List} of Values
          */
-        public List<E> getAttributeValues(List<S> objectList) {
+        public List<E> getAttributeValues(List<? extends S> objectList) {
             List<E> values = new ArrayList<E>();
             for (S object : objectList) {
                 values.add(getValueInternal(object));

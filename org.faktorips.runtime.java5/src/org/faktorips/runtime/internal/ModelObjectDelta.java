@@ -25,6 +25,7 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * IModelObjectDelta implementation.

@@ -113,13 +113,9 @@ public abstract class XType extends XClass {
     }
 
     public <T extends XType> Set<T> getClassHierarchy(Class<T> concreteClass) {
-        try {
-            SuperclassCollector<T> superclassCollector = new SuperclassCollector<T>(this, concreteClass);
-            superclassCollector.start(getType());
-            return superclassCollector.getSuperclasses();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        SuperclassCollector<T> superclassCollector = new SuperclassCollector<T>(this, concreteClass);
+        superclassCollector.start(getType());
+        return superclassCollector.getSuperclasses();
     }
 
     public abstract Set<? extends XType> getClassHierarchy();
@@ -232,7 +228,7 @@ public abstract class XType extends XClass {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             getSuperclasses().add(currentNode.getModelNode(currentType, nodeClass));
             return true;
         }
@@ -255,7 +251,7 @@ public abstract class XType extends XClass {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             hasNonAbstractSupertype |= !currentType.isAbstract();
             if (hasNonAbstractSupertype) {
                 return false;

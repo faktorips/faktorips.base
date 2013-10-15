@@ -364,12 +364,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private void initDefaultType(IProductCmptType cmptType, IIpsProject ipsProject) {
         SelectedBaseTypeVisitor selectedBaseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(), ipsProject);
-        try {
-            selectedBaseTypeVisitor.start(cmptType);
-            setSelectedBaseType(selectedBaseTypeVisitor.selectedBaseType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        selectedBaseTypeVisitor.start(cmptType);
+        setSelectedBaseType(selectedBaseTypeVisitor.selectedBaseType);
         setSelectedType(cmptType);
     }
 
@@ -564,7 +560,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             if (baseTypes.contains(currentType)) {
                 selectedBaseType = currentType;
                 return false;

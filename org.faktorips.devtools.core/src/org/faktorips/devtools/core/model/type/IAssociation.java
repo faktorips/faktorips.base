@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -42,6 +43,7 @@ public interface IAssociation extends ITypePart {
     public static final String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
     public static final String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
+    public static final String PROPERTY_CONSTRAIN = "constrain"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -96,6 +98,76 @@ public interface IAssociation extends ITypePart {
      * derived union can't be found in the type's hierarchy.
      */
     public static final String MSGCODE_DERIVED_UNION_NOT_FOUND = MSGCODE_PREFIX + "DerivedUnionNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the association that is constrained with target role
+     * singular can't be found.
+     */
+    public static final String MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND = MSGCODE_PREFIX
+            + "ConstrainedwithSingularNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the target supertype is not in association with the
+     * supertype in question.
+     */
+    public static final String MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT = MSGCODE_PREFIX
+            + "ConstrainedwithTargetSupertypeNotConvenient"; //$NON-NLS-1$ 
+    /**
+     * Validation message code to indicate that the association that is constrained with target role
+     * plural can't be found.
+     */
+    public static final String MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND = MSGCODE_PREFIX + "ConstrainedwithPluralNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this association is marked as subset of a derived
+     * union.
+     */
+    public static final String MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainSubsetDerivedUnion"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this association is marked as a derived union.
+     */
+    public static final String MSGCODE_CONSTRAIN_DERIVED_UNION = MSGCODE_PREFIX + "ConstrainDerivedUnion"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that overwritten association is marked as subset of a
+     * derived union.
+     */
+    public static final String MSGCODE_CONSTRAINED_SUBSET_DERIVED_UNION = MSGCODE_PREFIX
+            + "ConstraintedSubsetDerivedUnion"; //$NON-NLS-1$
+
+    /**
+     * 
+     */
+    public static final String MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION = MSGCODE_PREFIX
+            + "ConstrainInvalidMatchingAssociation"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that maximum cardinality is not equal to maximum
+     * cardinality of super association.
+     */
+    public static final String MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION = MSGCODE_PREFIX
+            + "MaxCardinalityNotEqualSuperAssociation"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that minimum cardinality is not equal to minimum
+     * cardinality of super association.
+     */
+    public static final String MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION = MSGCODE_PREFIX
+            + "MinCardinalityNotEqualSuperAssociation"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that maximum cardinality is not equal to maximum
+     * cardinality of super association.
+     */
+    public static final String MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION = MSGCODE_PREFIX
+            + "AssociationTypeNotEqualSuperAssociation"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that overwritten association is marked as a derived
+     * union.
+     */
+    public static final String MSGCODE_CONSTRAINED_DERIVED_UNION = MSGCODE_PREFIX + "ConstraintedDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association specifies to subset another
@@ -312,6 +384,28 @@ public interface IAssociation extends ITypePart {
     public void setDerivedUnion(boolean flag);
 
     /**
+     * Returns <code>true</code> if this association constrains another association in the super
+     * type. The corresponding super association needs to have the same singular and plural name as
+     * this association.
+     * <p>
+     * A constraining association is able to constrain the target type of an association to a
+     * subtype.
+     * 
+     * @return <code>true</code> if this association constrains another association of the super
+     *         type
+     */
+    public boolean isConstrain();
+
+    /**
+     * Sets the information if this association constrains an super association.
+     * 
+     * @param constrains <code>true</code> to set this association should constrain another
+     *            association of the super type
+     * @see #isConstrain()
+     */
+    public void setConstrain(boolean constrains);
+
+    /**
      * Sets the derived union association that is subsetted by this association.
      */
     public void setSubsettedDerivedUnion(String newDerivedUnion);
@@ -376,5 +470,34 @@ public interface IAssociation extends ITypePart {
      * @throws CoreException If an error occurs while searching.
      */
     public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * This method looks for an association with the same name in the super type hierarchy. It
+     * starts with the supertype and returns the first association found with the same name.
+     * 
+     * @param ipsProject The project used to search from
+     * @return an association with the same name and target found in the super type hierarchy
+     * @throws CoreRuntimeException in case of a core exception in the finder methods
+     */
+    public IAssociation findSuperAssociationWithSameName(IIpsProject ipsProject);
+
+    /**
+     * This method searches in the super type hierarchy for an other association with the same name
+     * that is not marked as "constrains" (@see {@link #isConstrain()}. This method does not respect
+     * whether this association marked as "constrains" or not, hence if it not constrains another
+     * association this method returns the association that would be constrained by this method.
+     * 
+     * @param ipsProject The {@link IIpsProject} used to search in the type hierarchy
+     * @return The association that is constrained by this one
+     */
+    public IAssociation findConstrainedAssociation(IIpsProject ipsProject);
+
+    /**
+     * Searches for a matching association on the other side of the model.
+     * 
+     * @return The association that is matching by this one
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public IAssociation findMatchingAssociation() throws CoreException;
 
 }

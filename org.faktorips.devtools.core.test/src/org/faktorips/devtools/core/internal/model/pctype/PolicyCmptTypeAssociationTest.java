@@ -71,6 +71,29 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsContrainTrueWhenInverseAssociationIsConstrained() throws CoreException {
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        IPolicyCmptTypeAssociation inverseAssociation = association.newInverseAssociation();
+        inverseAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        inverseAssociation.setConstrain(true);
+
+        assertTrue(inverseAssociation.isConstrain());
+        assertTrue(association.isConstrain());
+    }
+
+    @Test
+    public void testIsContrainFalseWhenInverseAssociationIsNotConstrained() throws CoreException {
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        IPolicyCmptTypeAssociation inverseAssociation = association.newInverseAssociation();
+        inverseAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        inverseAssociation.setConstrain(false);
+        association.setConfigured(true);
+
+        assertFalse(inverseAssociation.isConstrain());
+        assertFalse(association.isConstrain());
+    }
+
+    @Test
     public void testIsQualificationPossible() throws CoreException {
         association.setTarget("UnknownTarget");
         assertFalse(association.isQualificationPossible(ipsProject));
@@ -938,6 +961,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     @Test
     public void testFindSharedAssociationHost() throws Exception {
         // FIPS-85
+        association.setSharedAssociation(true);
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         setOptionalConstraintSharedAssociation(true);
 
@@ -1071,4 +1095,69 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         assertFalse(result);
     }
+
+    @Test
+    public void testValidate_constrainedNotQualified() throws Exception {
+        PolicyCmptType subType = newPolicyCmptType(ipsProject, "SubType");
+        subType.setSupertype(pcType.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = subType.newPolicyCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setQualified(true);
+        association.setQualified(false);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_constrainedQualified() throws Exception {
+        PolicyCmptType subType = newPolicyCmptType(ipsProject, "SubType");
+        subType.setSupertype(pcType.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = subType.newPolicyCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setQualified(false);
+        association.setQualified(true);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_constrainedMatchQualified() throws Exception {
+        PolicyCmptType subType = newPolicyCmptType(ipsProject, "SubType");
+        subType.setSupertype(pcType.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = subType.newPolicyCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setQualified(true);
+        association.setQualified(true);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_constrainedMatchNotQualified() throws Exception {
+        PolicyCmptType subType = newPolicyCmptType(ipsProject, "SubType");
+        subType.setSupertype(pcType.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = subType.newPolicyCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setQualified(false);
+        association.setQualified(false);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH));
+    }
+
 }

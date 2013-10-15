@@ -45,6 +45,7 @@ public class Messages extends NLS {
     public static String ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName;
     public static String ProductCmptTypeAssociation_error_MatchingAssociationInvalid;
     public static String ProductCmptTypeAssociation_error_matchingAssociationNotFound;
+    public static String ProductCmptTypeAssociation_errorMsg_constrained_changeOverTime_missmatch;
     public static String ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetChanging;
     public static String ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetStatic;
 

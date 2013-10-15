@@ -55,43 +55,59 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
 
     public void addMessagesForDuplicates(MessageList messages) {
         for (String propertyName : duplicateProperties) {
-            ObjectProperty[] invalidObjProperties = properties.get(propertyName);
-            try {
-                if (!ignoreDuplicatedInverseAssociationsForDerivedUnions(invalidObjProperties)) {
-                    messages.add(createMessage(propertyName, invalidObjProperties));
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+            ObjectProperty[] duplicateObjProperties = properties.get(propertyName);
+            if (!ignore(duplicateObjProperties)) {
+                messages.add(createMessage(propertyName, duplicateObjProperties));
             }
         }
     }
 
     /**
-     * The detail-to-master association that is a subset of a derived union association could have
-     * the same name as the corresponding derived union association
+     * In some cases there are duplicate object properties that are valid, for example in case of
+     * constraining associations or detail-to-master associations. This method checks if the
+     * duplicate properties can be ignored.
      * 
-     * @param objectProperties the ObjectProperties to check
-     * @return true to ignore this property
-     * @throws CoreException in casae of a core exception while finding other associations
+     * @param duplicateObjectProperties The array of duplicated properties
+     * @return <code>true</code> if the duplication could be ignored, <code>false</code> to not
+     *         ignore.
      */
-    protected boolean ignoreDuplicatedInverseAssociationsForDerivedUnions(ObjectProperty[] objectProperties)
-            throws CoreException {
+    protected boolean ignore(ObjectProperty[] duplicateObjectProperties) {
+        if (!checkAssociationAndType(duplicateObjectProperties)) {
+            return false;
+        }
+        if (ignoreConstrainingAssociation(duplicateObjectProperties)) {
+            return true;
+        }
+        return ignoreDuplicateDetailToMasterAssociations(duplicateObjectProperties);
+    }
+
+    /**
+     * We can ignore the duplicateObjectProperties, if the first association is a constraining
+     * association because we already checked that this is the only association in the current type.
+     * The other associations are checked in supertype.
+     * 
+     * @return <code>true</code> to ignore the the duplicated properties, <code>false</code> to not
+     *         ignore (move on)
+     */
+    private boolean ignoreConstrainingAssociation(ObjectProperty[] duplicateObjectProperties) {
+        return ((IAssociation)duplicateObjectProperties[0].getObject()).isConstrain();
+    }
+
+    /**
+     * Check that only IAssociations are in the array and that no other object but the first one is
+     * in the same type. These are fast validations in the first iteration, for poor performance
+     * validations we have a second iteration
+     * 
+     * @return <code>true</code> if these objectProperties may be ignored (depending on further
+     *         testing), false if we cannot ignore
+     */
+    private boolean checkAssociationAndType(ObjectProperty[] objectProperties) {
         IType typeToValidate = null;
-        int index = 0;
-        // check that only IPolicyCmptTypeAssociations are in the array and that no other object but
-        // the first one is in the same type
-        // these are fast validations in the first iteration, for less performant validations we
-        // have a second iteration
         for (ObjectProperty property : objectProperties) {
-            // only ignore if every object property is an IPolicyCmptTypeAssociation
-            if (!(property.getObject() instanceof IPolicyCmptTypeAssociation)) {
+            if (!(property.getObject() instanceof IAssociation)) {
                 return false;
             }
-            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)property.getObject();
-            // every association have to be a Detail-To-Master association
-            if (!association.getAssociationType().isCompositionDetailToMaster()) {
-                return false;
-            }
+            IAssociation association = (IAssociation)property.getObject();
             if (typeToValidate == null) {
                 // first get the type of the first association. This is the type we want to validate
                 typeToValidate = association.getType();
@@ -105,7 +121,31 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
                 }
             }
         }
+        return true;
+    }
 
+    /**
+     * The detail-to-master association that is a subset of a derived union association could have
+     * the same name as the corresponding derived union association
+     * 
+     * @param duplicateObjectProperties the ObjectProperties to check
+     * @return true to ignore this property
+     */
+    private boolean ignoreDuplicateDetailToMasterAssociations(ObjectProperty[] duplicateObjectProperties) {
+        for (ObjectProperty objectProperty : duplicateObjectProperties) {
+            if (!(objectProperty.getObject() instanceof IPolicyCmptTypeAssociation)) {
+                return false;
+            }
+            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)objectProperty.getObject();
+            if (!association.getAssociationType().isCompositionDetailToMaster()) {
+                return false;
+            }
+        }
+        return checkNotInverseofDerivedUnion(duplicateObjectProperties);
+    }
+
+    private boolean checkNotInverseofDerivedUnion(ObjectProperty[] objectProperties) {
+        int index = 0;
         boolean foundNotInverseOfDerivedUnion = false;
 
         for (ObjectProperty property : objectProperties) {
@@ -116,17 +156,16 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
                     return false;
                 }
                 // shared associations must have the same name
-                boolean isNotInverseOfDerivedUnion = !association.isInverseOfDerivedUnion()
-                        && !association.isSharedAssociation();
+                boolean isNotInverseOfDerivedUnion = checkNotInverseOfDerivedUnion(association);
                 if (isNotInverseOfDerivedUnion && foundNotInverseOfDerivedUnion) {
-                    // there could be only one association that is no inverse of a derived union in
-                    // type hierarchy! (FIPS-459)
+                    // there could be only one association that is no inverse of a derived union
+                    // in type hierarchy! (FIPS-459)
                     return false;
                 } else {
                     foundNotInverseOfDerivedUnion = foundNotInverseOfDerivedUnion || isNotInverseOfDerivedUnion;
                 }
-                // the target of the association have to be covariant with the other associations
-                // and the
+                // the target of the association have to be covariant with the other
+                // associations
                 for (int i = index; i < objectProperties.length; i++) {
                     IPolicyCmptTypeAssociation nextAssociation = (IPolicyCmptTypeAssociation)objectProperties[i]
                             .getObject();
@@ -144,11 +183,16 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
             }
             index++;
         }
+
         return true;
     }
 
+    private boolean checkNotInverseOfDerivedUnion(IPolicyCmptTypeAssociation association) throws CoreException {
+        return !association.isInverseOfDerivedUnion() && !association.isSharedAssociation();
+    }
+
     @Override
-    protected boolean visit(IType currentType) throws CoreException {
+    protected boolean visit(IType currentType) {
         Type currType = (Type)currentType;
         for (IAttribute attr : currType.getAttributesPartCollection()) {
             if (!attr.isOverwrite()) {

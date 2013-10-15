@@ -135,16 +135,12 @@ public class XPolicyAssociation extends XAssociation {
      * 
      */
     protected XPolicyAssociation getSuperAssociationWithSameName() {
-        try {
-            IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
-                    .findSuperAssociationWithSameName(getIpsProject());
-            if (superAssociationWithSameName != null) {
-                return getModelNode(superAssociationWithSameName, XPolicyAssociation.class);
-            } else {
-                return null;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IPolicyCmptTypeAssociation superAssociationWithSameName = (IPolicyCmptTypeAssociation)getAssociation()
+                .findSuperAssociationWithSameName(getIpsProject());
+        if (superAssociationWithSameName != null) {
+            return getModelNode(superAssociationWithSameName, XPolicyAssociation.class);
+        } else {
+            return null;
         }
     }
 
@@ -198,7 +194,7 @@ public class XPolicyAssociation extends XAssociation {
      * </ul>
      */
     public boolean isGenerateField() {
-        if (isDerived()) {
+        if (isDerived() || isConstrain()) {
             return false;
         } else {
             return !isSharedAssociationImplementedInSuperclass();
@@ -262,23 +258,24 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInDeltaComputation() {
-        return isMasterToDetail() && !isDerived();
+        return isMasterToDetail() && !isDerived() && !isConstrain();
     }
 
     public boolean isConsiderInEffectiveFromHasChanged() {
-        return isMasterToDetail() && !isDerived() && ((XPolicyCmptClass)getTargetModelNode()).isConfigured();
+        return isMasterToDetail() && !isDerived() && ((XPolicyCmptClass)getTargetModelNode()).isConfigured()
+                && !isConstrain();
     }
 
     public boolean isConsiderInCreateChildFromXML() {
-        return isMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion() && !isConstrain();
     }
 
     public boolean isConsiderInVisitorSupport() {
-        return isMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion() && !isConstrain();
     }
 
     public boolean isConsiderInCreateCreateUnresolvedReference() {
-        return isTypeAssociation();
+        return isTypeAssociation() && !isConstrain();
     }
 
     public boolean isSetInverseAssociationInCopySupport() {
@@ -286,15 +283,27 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInCopySupport() {
-        return !isCompositionDetailToMaster() && !isDerived();
+        return !isCompositionDetailToMaster() && !isDerived() && !isConstrain();
     }
 
     public boolean isConsiderInValidateDependents() {
-        return isMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion();
+        return isMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion() && !isConstrain();
     }
 
     public boolean isGenerateNewChildMethods() {
         return isMasterToDetail() && !getTargetPolicyCmptClass().isAbstract() && !isDerivedUnion();
+    }
+
+    public boolean isNeedOverrideForConstrainNewChildMethod() {
+        if (isConstrain()) {
+            if (getSuperAssociationWithSameName().isGenerateNewChildMethods()) {
+                return true;
+            } else {
+                return getSuperAssociationWithSameName().isNeedOverrideForConstrainNewChildMethod();
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean isGenerateNewChildWithArgumentsMethod() {
@@ -331,27 +340,15 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns the name of the setter method.
-     * 
-     * TODO Just delete this method and use the implementation of the super class. At the moment it
-     * reproduces Bug in old code generator for compatibility. see FIPS-1143.
-     */
-    @Override
-    public String getMethodNameSetOrAdd() {
-        if (isCompositionDetailToMaster() && !isOneToMany()) {
-            return "set" + getName(false);
-        } else {
-            return super.getMethodNameSetOrAdd();
-        }
-    }
-
-    /**
      * Returns the method name for internal setters.
      */
     public String getMethodNameSetOrAddInternal() {
         return getMethodNameSetOrAdd() + "Internal";
     }
 
+    /**
+     * Returns "new" plus the capitalized association name.
+     */
     public String getMethodNameNew() {
         return "new" + StringUtils.capitalize(getName(false));
     }
@@ -371,7 +368,7 @@ public class XPolicyAssociation extends XAssociation {
             if (inverseAssoc != null) {
                 return getModelNode(inverseAssoc, XPolicyAssociation.class);
             } else {
-                throw new NullPointerException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
+                throw new RuntimeException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
                         getAssociation()));
             }
         } catch (CoreException e) {
@@ -418,6 +415,14 @@ public class XPolicyAssociation extends XAssociation {
         return isTypeAssociation() && hasInverseAssociation();
     }
 
+    /**
+     * Returns <code>true</code> if we need to generate internal setter or adder methods.
+     * 
+     */
+    public boolean isGenerateInternalSetterOrAdder() {
+        return isGenerateChangeSupport();
+    }
+
     public boolean isTypeConfigurableByProductCmptType() {
         return getPolicyCmptType().isConfigurableByProductCmptType();
     }
@@ -427,15 +432,12 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns the name of the variable used in new child methods. The old implementation does not
-     * capitalize the role name until now erroneously. e.g. newpolicyPart instead of newPolicyPart
-     * (if the role name is policyPart).
+     * /** Returns "new" plus the capitalized association name.
      * 
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
+     * @See {@link #getMethodNameNew()}
      */
     public String getVariableNameNewInstance() {
-        // should be return getMethodNameNew();
-        return "new" + getName(false);
+        return getMethodNameNew();
     }
 
     public String getTargetProductCmptVariableName() {
@@ -443,7 +445,25 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getTargetProductCmptInterfaceName() {
-        XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
+        return getTargetProductCmptInterfaceName(this);
+    }
+
+    /**
+     * Returns the interface name of the target product component of the matching association and in
+     * case of this is a constraining association it searches for the constrained (base) association
+     * and returns the interface name of this target product component.
+     */
+    public String getTargetProductCmptInterfaceNameBase() {
+        if (isConstrain()) {
+            XPolicyAssociation constrainedAssociation = getConstrainedAssociation();
+            return getTargetProductCmptInterfaceName(constrainedAssociation);
+        } else {
+            return getTargetProductCmptInterfaceName();
+        }
+    }
+
+    private String getTargetProductCmptInterfaceName(XPolicyAssociation xAssociation) {
+        XPolicyCmptClass xPolicyCmptClass = xAssociation.getTargetPolicyCmptClass();
         return xPolicyCmptClass.getProductCmptClassName();
     }
 
@@ -560,6 +580,11 @@ public class XPolicyAssociation extends XAssociation {
      */
     public String getCopySupportCopyVarName() {
         return "copy" + getTargetClassName();
+    }
+
+    @Override
+    protected XPolicyAssociation getConstrainedAssociation() {
+        return (XPolicyAssociation)super.getConstrainedAssociation();
     }
 
     /**

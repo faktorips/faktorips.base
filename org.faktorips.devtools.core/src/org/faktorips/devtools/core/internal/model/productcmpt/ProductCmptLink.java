@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
@@ -445,13 +446,16 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
 
         @Override
-        protected IAssociation findSupertype(IAssociation currentAssociation, IIpsProject ipsProject)
-                throws CoreException {
-            return currentAssociation.findSubsettedDerivedUnion(ipsProject);
+        protected IAssociation findSupertype(IAssociation currentAssociation, IIpsProject ipsProject) {
+            try {
+                return currentAssociation.findSubsettedDerivedUnion(ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
         @Override
-        protected boolean visit(IAssociation currentAssociation) throws CoreException {
+        protected boolean visit(IAssociation currentAssociation) {
             if (currentAssociation.equals(association)) {
                 found = true;
                 return false;

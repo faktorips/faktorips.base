@@ -22,16 +22,41 @@ import java.util.List;
  * @author Jan Ortmann
  */
 public class ListUtil {
+
+    private ListUtil() {
+        // Prevent initialization.
+    }
+
     /**
-     * Initializes a list with a given value.
+     * Initializes a list with a given value. Uses the default value's type as the list's (generic)
+     * element type.
      */
-    public final static <T> List<T> newList(T defaultValue) {
+    public static final <T> List<T> newList(T defaultValue) {
         List<T> newList = new ArrayList<T>();
         newList.add(defaultValue);
         return newList;
     }
 
-    private ListUtil() {
-        // Prevent initialization.
+    /**
+     * Converts a list with generic type T to a list of a sub-type of T (R). If there is any element
+     * not of type R in the list, a {@link ClassCastException} is thrown.
+     * 
+     * @param list The list that should be converted
+     * @param newType The subclass (R) this method should try to cast all list elements to. Also the
+     *            element type of the returned list (if possible).
+     * @return The converted list with the given subclass element type (R).
+     * @throws ClassCastException in case of there is any element in the list that is not of the
+     *             given subclass (R).
+     */
+    public static final <T, R extends T> List<? extends R> convert(List<? extends T> list, Class<R> newType) {
+        for (T member : list) {
+            if (!(newType.isAssignableFrom(member.getClass()))) {
+                throw new ClassCastException(member + " not instance of " + newType);
+            }
+        }
+        @SuppressWarnings("unchecked")
+        List<? extends R> convertList = (List<? extends R>)list;
+        return convertList;
     }
+
 }

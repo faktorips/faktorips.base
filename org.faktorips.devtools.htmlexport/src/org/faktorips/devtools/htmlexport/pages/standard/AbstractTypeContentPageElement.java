@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
@@ -188,7 +189,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getDocumentedIpsObject().getIpsProject());
         try {
             hier.start(getDocumentedIpsObject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
@@ -292,7 +293,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             hierSuperTypes.add(currentType);
             return true;
         }

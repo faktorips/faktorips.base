@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -46,13 +47,15 @@ import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcess
  */
 public class AssociationDerivedUnionGroup extends Composite {
 
-    private Checkbox containerCheckbox;
+    private Checkbox derivedUnionCheckbox;
 
     private Checkbox subsetCheckbox;
 
     private Combo derivedUnionCombo;
 
     private PmoAssociation pmoAssociation;
+
+    private Checkbox constrainCheckBox;
 
     public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
@@ -78,12 +81,19 @@ public class AssociationDerivedUnionGroup extends Composite {
             Composite parent,
             IAssociation association) {
 
+        // constrain checkbox
+        constrainCheckBox = uiToolkit.createCheckbox(parent, Messages.AssociationEditDialog_constrain);
+        constrainCheckBox.setToolTipText(Messages.AssociationDerivedUnionGroup_toolTipOverride);
+
         // derived union checkbox
-        containerCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelIsDerivedUnion);
+        derivedUnionCheckbox = uiToolkit.createCheckbox(parent,
+                Messages.AssociationDerivedUnionGroup_labelIsDerivedUnion);
+        derivedUnionCheckbox.setToolTipText(Messages.AssociationDerivedUnionGroup_toolTipDerivedUnion);
 
         // is subset checkbox
         subsetCheckbox = uiToolkit.createCheckbox(parent,
                 Messages.AssociationDerivedUnionGroup_labelDefinesSubsetOfDerivedUnion);
+        subsetCheckbox.setToolTipText(Messages.AssociationDerivedUnionGroup_toolTipDerivedUnion);
 
         // subset combo field
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
@@ -109,9 +119,12 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
         pmoAssociation = new PmoAssociation(association);
 
+        bindingContext.bindContent(constrainCheckBox, association, IAssociation.PROPERTY_CONSTRAIN);
+        bindingContext.bindEnabled(constrainCheckBox, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAIN_ENABLED);
+
         addCompletionProcessor(association);
 
-        bindingContext.bindContent(containerCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
+        bindingContext.bindContent(derivedUnionCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
 
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
 
@@ -123,7 +136,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         // derived union is only enabled if @see
         // IPolicyCmptTypeAssociation.isContainerRelationApplicable()
         if (association instanceof IPolicyCmptTypeAssociation) {
-            bindingContext.bindEnabled(containerCheckbox, association,
+            bindingContext.bindEnabled(derivedUnionCheckbox, association,
                     IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
             bindingContext.bindEnabled(subsetCheckbox, association,
                     IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
@@ -159,6 +172,7 @@ public class AssociationDerivedUnionGroup extends Composite {
     public class PmoAssociation extends IpsObjectPartPmo {
 
         public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+        public static final String PROPERTY_CONSTRAIN_ENABLED = "constrainEnabled"; //$NON-NLS-1$
 
         private String previousTarget;
 
@@ -260,6 +274,22 @@ public class AssociationDerivedUnionGroup extends Composite {
             }
         }
 
+        public boolean isConstrainEnabled() {
+            if (StringUtils.isEmpty(association.getType().getSupertype())) {
+                // only disable the checkbox when it's not checked
+                // because there is no way to remove the mark.
+                if (!association.isConstrain()) {
+                    return false;
+                }
+            }
+            if (association.isDerived() || isSubset()) {
+                return false;
+            }
+            if (AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType())) {
+                return false;
+            }
+            return true;
+        }
     }
 
 }

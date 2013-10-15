@@ -76,7 +76,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         this.association = association;
         initialName = association.getName();
         initialPluralName = association.getTargetRolePlural();
-        this.pmoAssociation = new PmoAssociation();
+        this.pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association);
         try {
             oldMatchingAssociation = association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
@@ -205,12 +205,25 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
-        Checkbox derivedUnion = getToolkit().createCheckbox(workArea,
+
+        Checkbox constrainCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_constrain);
+        constrainCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipOverride);
+        getBindingContext().bindContent(constrainCheckbox, association, IAssociation.PROPERTY_CONSTRAIN);
+        getBindingContext().bindEnabled(constrainCheckbox, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAIN_ENABLED);
+
+        Checkbox derivedUnionCheckbox = getToolkit().createCheckbox(workArea,
                 Messages.AssociationEditDialog_derivedUnionCheckbox);
-        getBindingContext().bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+        derivedUnionCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipDerivedUnion);
+        getBindingContext().bindContent(derivedUnionCheckbox, association,
+                IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+        getBindingContext().bindEnabled(derivedUnionCheckbox, pmoAssociation,
+                PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
 
         Checkbox subsetCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
+        subsetCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipDerivedUnion);
         getBindingContext().bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        getBindingContext().bindEnabled(subsetCheckbox, pmoAssociation,
+                PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
 
         Composite temp = getToolkit().createLabelEditColumnComposite(workArea);
         temp.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -241,8 +254,27 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     void updateMatchingPolicyCmptTypeAssociation() {
         IPolicyCmptTypeAssociation newConstrainedAssociation = pmoAssociation.matchingAssociation;
-        if (oldMatchingAssociation != null
-                && (!pmoAssociation.matchingExplicitly || !oldMatchingAssociation.equals(newConstrainedAssociation))
+
+        if (oldMatchingAssociation != null) {
+            needToSaveOldMatchingAssociation(newConstrainedAssociation);
+        }
+        if (pmoAssociation.matchingExplicitly && newConstrainedAssociation != null) {
+            boolean needToSave = !newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile().isDirty();
+            newConstrainedAssociation.setMatchingAssociationName(association.getName());
+            newConstrainedAssociation.setMatchingAssociationSource(association.getProductCmptType().getQualifiedName());
+            if (needToSave) {
+                try {
+                    newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile()
+                            .save(false, new NullProgressMonitor());
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        }
+    }
+
+    private void needToSaveOldMatchingAssociation(IPolicyCmptTypeAssociation newConstrainedAssociation) {
+        if ((!pmoAssociation.matchingExplicitly || !oldMatchingAssociation.equals(newConstrainedAssociation))
                 && association.getProductCmptType().getQualifiedName()
                         .equals(oldMatchingAssociation.getMatchingAssociationSource())
                 && association.getName().equals(oldMatchingAssociation.getMatchingAssociationName())) {
@@ -253,19 +285,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (needToSave) {
                 try {
                     oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().save(false, new NullProgressMonitor());
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-        }
-        if (pmoAssociation.matchingExplicitly && newConstrainedAssociation != null) {
-            boolean needToSave = !newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile().isDirty();
-            newConstrainedAssociation.setMatchingAssociationName(association.getName());
-            newConstrainedAssociation.setMatchingAssociationSource(association.getProductCmptType().getQualifiedName());
-            if (needToSave) {
-                try {
-                    newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile()
-                            .save(false, new NullProgressMonitor());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -349,6 +368,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     public class PmoAssociation extends IpsObjectPartPmo {
 
+        public static final String PROPERTY_CONSTRAIN_ENABLED = "constrainEnabled"; //$NON-NLS-1$
+
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
 
         public static final String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
@@ -357,13 +378,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         public static final String PROPERTY_MATCHING_ASSOCIATION = "matchingAssociation"; //$NON-NLS-1$
 
+        public static final String PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED = "derivedUnionOrSubSetEnabled"; //$NON-NLS-1$
+
         private boolean subset;
 
         private boolean matchingExplicitly;
 
         private IPolicyCmptTypeAssociation matchingAssociation;
 
-        public PmoAssociation() {
+        public PmoAssociation(IProductCmptTypeAssociation association) {
             super(association);
             subset = association.isSubsetOfADerivedUnion();
             try {
@@ -375,6 +398,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
         }
 
+        private IProductCmptTypeAssociation getAssociation() {
+            return (IProductCmptTypeAssociation)super.getIpsObjectPartContainer();
+        }
+
         public boolean isSubset() {
             return subset;
         }
@@ -382,13 +409,13 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
-                association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
+                getAssociation().setSubsettedDerivedUnion(""); //$NON-NLS-1$
             } else {
                 IAssociation[] derivedUnionCandidates;
                 try {
-                    derivedUnionCandidates = association.findDerivedUnionCandidates(association.getIpsProject());
+                    derivedUnionCandidates = getAssociation().findDerivedUnionCandidates(association.getIpsProject());
                     if (derivedUnionCandidates != null && derivedUnionCandidates.length > 0) {
-                        association.setSubsettedDerivedUnion(derivedUnionCandidates[0].getName());
+                        getAssociation().setSubsettedDerivedUnion(derivedUnionCandidates[0].getName());
                     }
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
@@ -404,16 +431,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             this.matchingExplicitly = matchingExplicitly;
             if (matchingExplicitly) {
                 if (matchingAssociation != null) {
-                    association.setMatchingAssociationName(matchingAssociation.getName());
-                    association
-                            .setMatchingAssociationSource(matchingAssociation.getPolicyCmptType().getQualifiedName());
+                    getAssociation().setMatchingAssociationName(matchingAssociation.getName());
+                    getAssociation().setMatchingAssociationSource(
+                            matchingAssociation.getPolicyCmptType().getQualifiedName());
                 }
             } else {
-                association.setMatchingAssociationName(StringUtils.EMPTY);
-                association.setMatchingAssociationSource(StringUtils.EMPTY);
+                getAssociation().setMatchingAssociationName(StringUtils.EMPTY);
+                getAssociation().setMatchingAssociationSource(StringUtils.EMPTY);
                 try {
-                    matchingAssociation = association
-                            .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
+                    matchingAssociation = getAssociation().findMatchingPolicyCmptTypeAssociation(
+                            getAssociation().getIpsProject());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -433,8 +460,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
          */
         public void setMatchingAssociation(IPolicyCmptTypeAssociation matchingAssociation) {
             this.matchingAssociation = matchingAssociation;
-            association.setMatchingAssociationSource(matchingAssociation.getPolicyCmptType().getQualifiedName());
-            association.setMatchingAssociationName(matchingAssociation.getName());
+            getAssociation().setMatchingAssociationSource(matchingAssociation.getPolicyCmptType().getQualifiedName());
+            getAssociation().setMatchingAssociationName(matchingAssociation.getName());
             notifyListeners();
         }
 
@@ -448,8 +475,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public String getInfoLabel() {
             IPolicyCmptTypeAssociation defaultPolicyCmptTypeAssociation;
             try {
-                defaultPolicyCmptTypeAssociation = association.findDefaultPolicyCmptTypeAssociation(association
-                        .getIpsProject());
+                defaultPolicyCmptTypeAssociation = getAssociation().findDefaultPolicyCmptTypeAssociation(
+                        getAssociation().getIpsProject());
                 if (defaultPolicyCmptTypeAssociation != null) {
                     return defaultPolicyCmptTypeAssociation.getPolicyCmptType().getName() + "." //$NON-NLS-1$
                             + defaultPolicyCmptTypeAssociation.getName();
@@ -460,6 +487,23 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             return Messages.AssociationEditDialog_label_none;
         }
 
+        public boolean isConstrainEnabled() {
+            if (StringUtils.isEmpty(getAssociation().getProductCmptType().getSupertype())) {
+                // only disable the checkbox when it's not checked
+                // because there is no way to remove the mark.
+                if (!getAssociation().isConstrain()) {
+                    return false;
+                }
+            }
+            if (getAssociation().isDerivedUnion() || isSubset()) {
+                return false;
+            }
+            return true;
+        }
+
+        public boolean isDerivedUnionOrSubSetEnabled() {
+            return !getAssociation().isConstrain();
+        }
     }
 
     private final class MatchingAssociationLabelProvider extends DefaultLabelProvider {
@@ -480,7 +524,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                                 matchingProductCmptTypeAssociation.getName()));
                     }
                 } catch (CoreException e) {
-                    // do nothing - it is only a hint
+                    IpsPlugin.log(e);
                 }
             }
             return result.toString();

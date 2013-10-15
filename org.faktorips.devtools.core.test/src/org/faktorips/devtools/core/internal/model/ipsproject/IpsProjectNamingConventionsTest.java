@@ -291,8 +291,6 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testValidateNameWithIpsObjects() throws Exception {
-        int testTypesCount = 0;
-
         // Policy cmpt type
         IPolicyCmptType pct = newPolicyCmptType(ipsProject, "1test");
         pct.setConfigurableByProductCmptType(false);
@@ -302,7 +300,6 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         pct.setConfigurableByProductCmptType(false);
         ml = pct.validate(ipsProject);
         assertNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        testTypesCount++;
 
         // Product cmpt type
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "test.1Product");
@@ -316,40 +313,30 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         IProductCmpt pc = newProductCmpt(ipsProject, "/test");
         ml = pc.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
-        testTypesCount++;
 
         // Test case type
         ITestCaseType tct = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "1test");
         ml = tct.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        testTypesCount++;
 
         // Test case
         ITestCase tc = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "/test");
         ml = tc.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        testTypesCount++;
 
         // Business function
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, IpsObjectType.BUSINESS_FUNCTION, "1test");
         ml = bf.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        testTypesCount++;
 
         // Table structure
         ITableStructure ts = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "1test");
         ml = ts.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        testTypesCount++;
 
         // Table contents
         ITableContents tco = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "/test");
         ml = tco.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        testTypesCount++;
-
-        // assert that all types are tested in this test method
-        // TODO einkommentieren nach umstellung metamodell.
-        // assertEquals(IpsObjectType.ALL_TYPES.length, testTypesCount);
     }
 }

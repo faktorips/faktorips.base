@@ -444,7 +444,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public boolean isGenerateMethodCreateUnresolvedReference() {
-        return hasAssociationsWithTypeAssociation();
+        return hasNotConstrainedAssociationsWithTypeAssociation();
     }
 
     public boolean isGenerateNotifyChangeListeners() {
@@ -457,7 +457,7 @@ public class XPolicyCmptClass extends XType {
      */
     private boolean hasCompositionDetailToMaster() {
         for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isCompositionDetailToMaster() && !assoc.isDerived()
+            if (assoc.isCompositionDetailToMaster() && !assoc.isDerived() && !assoc.isConstrain()
                     && !assoc.isSharedAssociationImplementedInSuperclass()) {
                 return true;
             }
@@ -494,16 +494,16 @@ public class XPolicyCmptClass extends XType {
      * {@link AssociationType#ASSOCIATION}, <code>false</code> else.
      */
     public boolean isRequiresLocalVariableInCopyAssocsInternal() {
-        return hasAssociationsWithTypeAssociation();
+        return hasNotConstrainedAssociationsWithTypeAssociation();
     }
 
     /**
      * Returns <code>true</code> if this class contains at least on association with type
      * {@link AssociationType#ASSOCIATION}, <code>false</code> else.
      */
-    private boolean hasAssociationsWithTypeAssociation() {
+    private boolean hasNotConstrainedAssociationsWithTypeAssociation() {
         for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isTypeAssociation()) {
+            if (assoc.isTypeAssociation() && !assoc.isConstrain()) {
                 return true;
             }
         }

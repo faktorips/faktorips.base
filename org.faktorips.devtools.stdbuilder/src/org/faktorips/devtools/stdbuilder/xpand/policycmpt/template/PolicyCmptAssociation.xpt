@@ -2,12 +2,11 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 
 «DEFINE constants FOR XPolicyAssociation-»
-	«IF !compositionDetailToMaster && !derived-»
+	«IF !compositionDetailToMaster && !derived && !constrain-»
 	    /**
 	     * «localizedJDoc("FIELD_MAX_CARDINALITY", name)»
 	     * 
@@ -65,7 +64,7 @@
 «ENDDEFINE»
 
 «DEFINE contains FOR XAssociation-»
-	«IF oneToMany-»
+	«IF oneToMany && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CONTAINS_OBJECT")»
 	     * 
@@ -88,43 +87,54 @@
 «DEFINE getters FOR XPolicyAssociation-»
 	«IF generateGetter-»
 		«IF oneToMany-»
-		    /**
-		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «List_(targetInterfaceName)» «method(methodNameGetter)»
-		    «IF genInterface()-»;«ELSE-»
-		    {
-		        return «Collections()».unmodifiableList(«fieldName»);
-		    }
-		    «ENDIF»
-
-		    /**
-		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
-		    «IF genInterface()-»;«ELSE-»
-		    {
-		        return «fieldName».get(index);
-		    }
-		    «ENDIF»
+	    /**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
+	    «IF genInterface()-»;«ELSE-»
+	    	{
+	    	«IF constrain-»
+	    		return «ListUtil()».«convert("super." + methodNameGetter + "()", targetInterfaceName+".class")»;
+	    	«ELSE-»
+	        	return «Collections()».unmodifiableList(«fieldName»);
+	    	«ENDIF-»
+	    	}
+	    «ENDIF»
+		/**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
+	     * 
+	     * @generated
+         */
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
+		 «IF genInterface()-»;«ELSE-»
+		 	{
+	    	«IF constrain-»
+	    		return («targetInterfaceName»)super.«methodNameGetSingle»(index);
+		    «ELSE-»
+		    	return «fieldName».get(index);
+		   	«ENDIF-»
+		   	}
+		 «ENDIF»
 	    «ELSE-»
 		    /**
 		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
-		    {
-		        return «fieldName»;
-		    }
+		    	{
+		    	«IF constrain-»
+		    		return («targetInterfaceName»)super.«methodNameGetter»();
+		    	«ELSE-»
+			        return «fieldName»;
+			    «ENDIF-»
+			    }
 		    «ENDIF»
 	    «ENDIF-»
     «ENDIF»
@@ -199,13 +209,25 @@
 
 «DEFINE setterOrAdder FOR XPolicyAssociation-»
 	«IF generateSetter-»
-		«IF compositionDetailToMaster-»
-			«IF !sharedAssociationImplementedInSuperclass && !genInterface()-»
-				/**
-			     * @generated
-			     */
-			    public void «method(methodNameSetOrAddInternal,targetInterfaceName, "newParent")» {
-			        if («methodNameGetter»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
+		«EXPAND generateSetter-»
+	«ELSEIF generateAddAndRemoveMethod-»
+		«EXPAND generateAdder-»
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE generateSetter FOR XPolicyAssociation-»
+	«IF compositionDetailToMaster-»
+		«IF !sharedAssociationImplementedInSuperclass && !genInterface()-»
+			/**
+		     * @generated
+		     */
+		    «overrideAnnotationIf(constrain)-»
+		    public void «method(methodNameSetOrAddInternal,targetInterfaceNameBase, "newParent")» {
+		        «IF constrain-»
+		        	«ObjectUtil()».«checkInstanceOf("newParent", targetInterfaceName)»;
+		        	super.«methodNameSetOrAddInternal»(newParent);
+				«ELSE-»
+			        if («methodNameGetter»() == newParent) {
 			            return;
 			        }
 			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
@@ -216,16 +238,18 @@
 			        «IF typeConfigurableByProductCmptType-»
 			        	effectiveFromHasChanged();
 					«ENDIF-»
-			    }
-			«ENDIF-»
-		«ELSE-»
+				«ENDIF-»
+		    }
+		«ENDIF-»
+	«ELSE-»
+		«IF !constrain || !generateInternalSetterOrAdder-»
 		    /**
 	 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_OBJECT", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+		    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "newObject")»
 		     «IF genInterface()-»;«ELSE-»
 		    {
 		    	«IF generateChangeSupport-»
@@ -233,58 +257,33 @@
 			        «methodNameSetOrAddInternal»(newObject);
 					«EXPAND PropertyChangeSupport::notify-»
 				«ELSE-»
-					«EXPAND setterMethodCode-»
+					«EXPAND setterMethodCode(methodNameSetOrAdd)-»
 				«ENDIF-»
 		    }
 		    «ENDIF-»
-	
-	    	«IF generateChangeSupport && !genInterface()-»
-			    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
-			     «IF !typeAssociation-» 
-			     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
-			     * 
-			     «ENDIF-»
-			     * @generated
-			     */
-			    public void «method(methodNameSetOrAddInternal, targetInterfaceName, "newObject")»{
-					«EXPAND setterMethodCode-»
-		    	}	
-			«ENDIF-»
 		«ENDIF-»
-	«ELSEIF generateAddAndRemoveMethod-»
-	    /**
- 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
-	     * 
-	     * @generated
-	     */
-	   	«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-	    public void «method(methodNameSetOrAdd, targetInterfaceName, "objectToAdd")»
-	    «IF genInterface()-»;«ELSE-»
-	    {
-	    	«IF generateChangeSupport-»
-		        «methodNameSetOrAddInternal»(objectToAdd);
-		        «EXPAND PropertyChangeSupport::notifyNewAssociation("objectToAdd")-»
-		    «ELSE-»
-		    	«EXPAND addMethodCode»
-		    «ENDIF-»
-	    }
-	    «ENDIF-»
-	
-    	«IF generateChangeSupport && !genInterface()-»
-		    /**
-		     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
+
+    	«IF generateInternalSetterOrAdder && !genInterface()-»
+		    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
+		     «IF !typeAssociation-» 
+		     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
 		     * 
+		     «ENDIF-»
 		     * @generated
 		     */
-		    public void «method(methodNameSetOrAddInternal, targetInterfaceName, "objectToAdd")»{
-		    	«EXPAND addMethodCode-»
-		    }
-		«ENDIF»
-    «ENDIF-»
+		     «overrideAnnotationIf(constrain)-»
+		    public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "newObject")»{
+				«EXPAND setterMethodCode(methodNameSetOrAddInternal)-»
+	    	}	
+		«ENDIF-»
+	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE setterMethodCode FOR XPolicyAssociation-»
-	«IF masterToDetail-»
+«DEFINE setterMethodCode(String methodName) FOR XPolicyAssociation-»
+    «IF constrain-»
+    	«ObjectUtil()».«checkInstanceOf("newObject", targetInterfaceName)»;
+    	super.«methodName»(newObject);
+	«ELSEIF masterToDetail-»
 		«IF generateCodeToSynchronizeInverseCompositionForSet-»
 	        if («fieldName» != null) {
 	            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
@@ -310,16 +309,55 @@
     «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE addMethodCode FOR XPolicyAssociation-»
-	        if (objectToAdd == null) {
-	            throw new NullPointerException("Can't add null to association «name» of " + this);
-	        }
-	        if («fieldName».contains(objectToAdd)) {
-	            return;
-	        }
-	        «EXPAND synchronizeInverseCompositionIfNecessaryForAdd-»
-			«fieldName».add(objectToAdd);
-	        «EXPAND synchronizeInverseAssociationIfNecessary("objectToAdd")-»
+«DEFINE generateAdder FOR XPolicyAssociation-»
+	«IF !constrain || !generateInternalSetterOrAdder-»
+		/**
+	 	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
+	     * 
+	     * @generated
+	     */
+	   	«overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "objectToAdd")»
+	    «IF genInterface()-»;«ELSE-»
+	    {
+	    	«IF generateInternalSetterOrAdder-»
+		        «methodNameSetOrAddInternal»(objectToAdd);
+		        «EXPAND PropertyChangeSupport::notifyNewAssociation("objectToAdd")-»
+		    «ELSE-»
+		    	«EXPAND addMethodCode(methodNameSetOrAdd)»
+		    «ENDIF-»
+	    }
+	    «ENDIF-»
+	«ENDIF-»
+
+	«IF generateInternalSetterOrAdder && !genInterface()-»
+	    /**
+	     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
+	     * 
+	     * @generated
+	     */
+	     «overrideAnnotationIf(constrain)»
+	    public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "objectToAdd")»{
+		    «EXPAND addMethodCode(methodNameSetOrAddInternal)-»
+	    }
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE addMethodCode(String methodName) FOR XPolicyAssociation-»
+    «IF constrain-»
+    	«ObjectUtil()».«checkInstanceOf("objectToAdd", targetInterfaceName)»;
+    	super.«methodName»(objectToAdd);
+    «ELSE-»
+        if (objectToAdd == null) {
+            throw new NullPointerException("Can't add null to association «name» of " + this);
+        }
+        if («fieldName».contains(objectToAdd)) {
+            return;
+        }
+        «EXPAND synchronizeInverseCompositionIfNecessaryForAdd-»
+		«fieldName».add(objectToAdd);
+        «EXPAND synchronizeInverseAssociationIfNecessary("objectToAdd")-»
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE addOrSetNewInstance FOR XPolicyAssociation-»
@@ -367,15 +405,12 @@
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		«overrideAnnotationForPublishedMethodAndIf(!genInterface() || needOverrideForConstrainNewChildMethod)-»
 	    public «targetInterfaceName» «method(methodNameNew)»
 	    «IF genInterface()-»;«ELSE-»
 	    {
 	        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
-			«EXPAND addOrSetNewInstance-»
-	        «variableNameNewInstance».«initialize()»;
-	        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
-	        return «variableNameNewInstance»;
+			«EXPAND initializeChildInstanceAndReturn-»
 	    }
 	    «ENDIF-»
 	
@@ -385,22 +420,26 @@
 		     * 
 		     * @generated
 		     */
-			«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)»
+			«overrideAnnotationForPublishedMethodAndIf(!genInterface() || needOverrideForConstrainNewChildMethod)-»
+		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceNameBase, targetProductCmptVariableName)»
 		     «IF genInterface()-»;«ELSE-»
 		    {
 		        if («targetProductCmptVariableName» == null) {
 		            return «methodNameNew»();
 		        }
-		        «targetInterfaceName» «variableNameNewInstance» = «targetProductCmptVariableName».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
-				«EXPAND addOrSetNewInstance-»
-		        «variableNameNewInstance».«initialize()»;
-		        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
-		        return «variableNameNewInstance»;
+		        «targetInterfaceName» «variableNameNewInstance» = «castFromTo(targetProductCmptInterfaceNameBase, targetProductCmptInterfaceName, targetProductCmptVariableName)».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
+				«EXPAND initializeChildInstanceAndReturn-»
 		    }
 		    «ENDIF-»
 	    «ENDIF-»
     «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initializeChildInstanceAndReturn FOR XPolicyAssociation-»
+	«EXPAND addOrSetNewInstance-»
+	«variableNameNewInstance».«initialize()»;
+	«EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
+	return «variableNameNewInstance»;
 «ENDDEFINE»
 
 «DEFINE synchronizeInverseCompositionIfNecessaryForAdd FOR XPolicyAssociation-»
@@ -440,7 +479,7 @@
 «ENDDEFINE»
 
 «DEFINE remove FOR XPolicyAssociation-»
-	«IF generateAddAndRemoveMethod-»
+	«IF generateAddAndRemoveMethod && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_REMOVE_OBJECT", name)»
 	     * 

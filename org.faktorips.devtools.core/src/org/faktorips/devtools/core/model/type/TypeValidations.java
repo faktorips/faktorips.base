@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.type;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Messages;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -31,6 +32,10 @@ import org.faktorips.util.message.ObjectProperty;
  */
 
 public class TypeValidations {
+
+    private TypeValidations() {
+        // Utility class not to be instantiated.
+    }
 
     /**
      * Validates if there exists already a policy component type or product component type with the
@@ -115,19 +120,24 @@ public class TypeValidations {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             if (StringUtils.isEmpty(currentType.getSupertype())) {
                 // there should be no more super type
                 result = true;
                 return false;
             }
-            return result = currentType.findSupertype(ipsProject) != null;
+            try {
+                result = isNull(currentType);
+                return result;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
-    }
+        private boolean isNull(IType currentType) throws CoreException {
+            return currentType.findSupertype(ipsProject) != null;
+        }
 
-    private TypeValidations() {
-        // Utility class not to be instantiated.
     }
 
 }

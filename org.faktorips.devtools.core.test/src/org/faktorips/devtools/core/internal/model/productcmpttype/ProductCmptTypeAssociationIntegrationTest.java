@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -446,6 +448,74 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     public void testSetSubsettedDerivedUnion() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION, association, "SomeUnion");
+    }
+
+    @Test
+    public void testValidate_constrainedNotChangeOverTime() throws Exception {
+        ProductCmptType subType = newProductCmptType(ipsProject, "SubType");
+        subType.setSupertype(productType.getQualifiedName());
+        IProductCmptTypeAssociation subAssociation = subType.newProductCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setChangingOverTime(true);
+        association.setChangingOverTime(false);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNotNull(messageList
+                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_constrainedChangeOverTime() throws Exception {
+        ProductCmptType subType = newProductCmptType(ipsProject, "SubType");
+        subType.setSupertype(productType.getQualifiedName());
+        IProductCmptTypeAssociation subAssociation = subType.newProductCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setChangingOverTime(false);
+        association.setChangingOverTime(true);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNotNull(messageList
+                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_constrainedMatchChangeOverTime() throws Exception {
+        ProductCmptType subType = newProductCmptType(ipsProject, "SubType");
+        subType.setSupertype(productType.getQualifiedName());
+        IProductCmptTypeAssociation subAssociation = subType.newProductCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setChangingOverTime(true);
+        association.setChangingOverTime(true);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNull(messageList
+                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_constrainedMatchNotChangeOverTime() throws Exception {
+        ProductCmptType subType = newProductCmptType(ipsProject, "SubType");
+        subType.setSupertype(productType.getQualifiedName());
+        IProductCmptTypeAssociation subAssociation = subType.newProductCmptTypeAssociation();
+        subAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+        subAssociation.setTargetRolePlural(association.getTargetRolePlural());
+        subAssociation.setConstrain(true);
+        subAssociation.setChangingOverTime(false);
+        association.setChangingOverTime(false);
+
+        MessageList messageList = subAssociation.validate(ipsProject);
+
+        assertNull(messageList
+                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
 }

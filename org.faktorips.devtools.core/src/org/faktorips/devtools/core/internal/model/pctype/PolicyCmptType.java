@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
@@ -372,7 +373,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
-    public void validateDuplicateRulesNames(MessageList msgList) throws CoreException {
+    public void validateDuplicateRulesNames(MessageList msgList) {
         for (IValidationRule rule : getValidationRules()) {
             CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(getIpsProject(), rule, msgList);
             visitor.start(this);
@@ -556,7 +557,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected void checkDerivedUnionIsImplemented(IAssociation association,
             List<IAssociation> candidateSubsets,
-            MessageList msgList) throws CoreException {
+            MessageList msgList) {
         super.checkDerivedUnionIsImplemented(association, candidateSubsets, msgList);
         if (!association.isDerivedUnion()) {
             /*
@@ -565,19 +566,23 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
              * class is abstract or an inverse implementation of the derived union exists
              */
             IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
-            if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
-                return;
-            }
+            try {
+                if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
+                    return;
+                }
 
-            /*
-             * now check if there is another detail to master which is the inverse of a subset
-             * derived union
-             */
-            if (!isInverseSubsetted(policyCmptTypeAssociation, candidateSubsets)) {
-                String text = NLS.bind(Messages.PolicyCmptType_msgInverseDerivedUnionNotSepcified,
-                        association.getName(), association.getType().getQualifiedName());
-                msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text, Message.ERROR, this,
-                        IType.PROPERTY_ABSTRACT));
+                /*
+                 * now check if there is another detail to master which is the inverse of a subset
+                 * derived union
+                 */
+                if (!isInverseSubsetted(policyCmptTypeAssociation, candidateSubsets)) {
+                    String text = NLS.bind(Messages.PolicyCmptType_msgInverseDerivedUnionNotSepcified,
+                            association.getName(), association.getType().getQualifiedName());
+                    msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text, Message.ERROR,
+                            this, IType.PROPERTY_ABSTRACT));
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
     }
@@ -717,7 +722,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             List<IValidationRule> definedRules = currentType.getValidationRules();
             if (superTypeFirst) {
                 // Place supertype rules before subtype rules.
@@ -745,7 +750,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+        protected boolean visit(IPolicyCmptType currentType) {
             List<IValidationRule> definedRules = currentType.getValidationRules();
             for (IValidationRule rule : definedRules) {
                 if (rule.getName().equals(ruleName)) {

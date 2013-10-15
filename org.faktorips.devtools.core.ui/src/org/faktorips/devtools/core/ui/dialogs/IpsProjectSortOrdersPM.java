@@ -181,7 +181,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * @note IpsArchives are ignored!
      * @return IpsDefaultPackageFragments of the selected IpsProject.
      */
-    private Object[] getDefaultPackageFragments() throws CoreException {
+    private Object[] getDefaultPackageFragments() {
 
         // roots are not sorted
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
@@ -408,12 +408,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof IpsProjectSortOrdersPM) {
             IpsProjectSortOrdersPM sortOrderPO = (IpsProjectSortOrdersPM)inputElement;
-
-            try {
-                return sortOrderPO.getDefaultPackageFragments();
-            } catch (CoreException e) {
-                return EMPTY_ARRAY;
-            }
+            return sortOrderPO.getDefaultPackageFragments();
         }
 
         return EMPTY_ARRAY;

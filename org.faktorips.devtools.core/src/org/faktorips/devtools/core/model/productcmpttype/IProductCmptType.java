@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -240,15 +239,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptType findSuperProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns all not derived associations from this type and its super types.
-     * 
-     * @deprecated As of 3.8. Use {@link #findAllNotDerivedAssociations(IIpsProject)} instead.
-     */
-    @Deprecated
-    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
-
-    /**
      * Returns all non-derived associations from this type and its super types.
+     * <p>
+     * Constrained associations are not added to the result if a constraining association is already
+     * added.
      * 
      * @since 3.8
      */

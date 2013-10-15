@@ -36,6 +36,10 @@ Message(AbstractGeneratorModelNode this):
 MessageList(AbstractGeneratorModelNode this):
 	addImport(MessageList.name);
 	
+//test
+ListUtil(AbstractGeneratorModelNode this):
+	addImport(ListUtil.name);
+	
 MsgReplacementParameter(AbstractGeneratorModelNode this):
 	addImport(MsgReplacementParameter.name);
 	
@@ -174,3 +178,6 @@ FormulaExecutionException(AbstractGeneratorModelNode this):
 	
 RuntimeException(AbstractGeneratorModelNode this):
 	addImport(RuntimeException.name);
+	
+ObjectUtil(AbstractGeneratorModelNode this):
+	addImport(ObjectUtil.name);

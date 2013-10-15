@@ -39,45 +39,45 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * The list of applicable types. For policy component types, aggregations are not supported.
      */
-    public final static AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
+    public static final AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
             AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.COMPOSITION_DETAIL_TO_MASTER,
             AssociationType.ASSOCIATION };
 
-    public final static String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
+    public static final String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
 
-    public final static String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
+    public static final String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
 
-    public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
+    public static final String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
+    public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
+    public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
+    public static final String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a reverse composition's max cardinality is not 1.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX
+    public static final String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX
             + "MaxCardinalityMustBe1ForReverseCombosition"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate the inverse relation definition is inconsistent with the
      * container relation.
      */
-    public final static String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX
             + "InverseAssociationInconsistentWithDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association and it's inverse association must be
      * marked as container relations (or not).
      */
-    public final static String MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX
             + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
 
     /**
@@ -86,71 +86,73 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * relation. This applies to associations only, as detail-to-master composition don't specify a
      * reverse relation.
      */
-    public final static String MSGCODE_INVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "InverseRelationMismatch"; //$NON-NLS-1$
+    public static final String MSGCODE_INVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "InverseRelationMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation does not specify this relation
      * as its reverse one.
      */
-    public final static String MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET = MSGCODE_PREFIX
             + "ReverseRelationNotInTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation of an association must be an
      * association.
      */
-    public final static String MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseAssociationTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the inverse master to detail composition must be a
      * detail to master composition.
      */
-    public final static String MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseMasterToDetailTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the inverse detail to mater composition must be a
      * master to detail composition.
      */
-    public final static String MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseDetailToMasterTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of detail to master associations the inverse
      * is always given.
      */
-    public final static String MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER = MSGCODE_PREFIX
+    public static final String MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER = MSGCODE_PREFIX
             + "InverseAssociationMustBeSetIfTypeIsDetailToMaster"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of detail to master associations the inverse
      * is always given.
      */
-    public final static String MSGCODE_SHARED_ASSOCIATION_INVALID = MSGCODE_PREFIX + "invalidSharedAssociation"; //$NON-NLS-1$
+    public static final String MSGCODE_SHARED_ASSOCIATION_INVALID = MSGCODE_PREFIX + "invalidSharedAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that if the inverse of a derived union exists then the
      * inverse of all subsetted derived union must be specified
      */
-    public final static String MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS = MSGCODE_PREFIX
+    public static final String MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS = MSGCODE_PREFIX
             + "SubsettedDerivedUnionInverseMustBeExistsIfInverseDerivedUnionExists"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified matching association was not found
      */
-    public final static String MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE = MSGCODE_PREFIX
+    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE = MSGCODE_PREFIX
             + "MatchingAssociationInvalidSource"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified matching association was not found
      */
-    public final static String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = MSGCODE_PREFIX + "MatchingAssociationNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = MSGCODE_PREFIX + "MatchingAssociationNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified matching association is invalid
      */
-    public final static String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationIsInvalid"; //$NON-NLS-1$
+    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationIsInvalid"; //$NON-NLS-1$
+
+    public static final String MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH = MSGCODE_PREFIX + "ConstrainQualifierNotMatch"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.
@@ -488,16 +490,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @return The name of the association that constrains this one
      */
     String getMatchingAssociationName();
-
-    /**
-     * This method looks for an association with the same name in the super type hierarchy. It
-     * starts with the supertype and returns the first association found with the same name.
-     * 
-     * @param ipsProject The project used to search from
-     * @return an association with the same name and target found in the super type hierarchy
-     * @throws CoreException in case of a core exception in the finder methods
-     */
-    IPolicyCmptTypeAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Setting whether this association is configured by product component or not.

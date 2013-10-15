@@ -187,6 +187,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
 
     /**
      * Returns this type's associations within the supertype hierarchy.
+     * <p>
+     * Constrained associations are not added to the result if a constraining association is already
+     * added.
      * 
      * @throws CoreException If an exception occurs while collecting the associations.
      */
@@ -292,6 +295,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * Returns all associations that have the indicated target and association type in the current
      * type and optional it's supertype hierarchy. Returns an empty array if no such association
      * exists or target or <tt>associationType</tt> is <code>null</code>.
+     * <p>
+     * Constrained associations are not added to the result if a constraining association is already
+     * added.
      * 
      * @param target The qualified name of the target type.
      * @param associationType The association type.
@@ -447,8 +453,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods,
-            IIpsProject ipsProject) throws CoreException;
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+            throws CoreException;
 
     /**
      * Creates new methods in this type that override the given methods. Note that it is not checked

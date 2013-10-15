@@ -20,7 +20,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -31,6 +33,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,20 +44,24 @@ import org.w3c.dom.Element;
  */
 public abstract class Association extends TypePart implements IAssociation {
 
-    final static String TAG_NAME = "Association"; //$NON-NLS-1$
+    public static final String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    protected AssociationType type = IAssociation.DEFAULT_RELATION_TYPE;
-    protected String target = ""; //$NON-NLS-1$
-    protected String targetRoleSingular = ""; //$NON-NLS-1$
-    protected String targetRolePlural = ""; //$NON-NLS-1$
-    protected int minCardinality = 0;
-    protected int maxCardinality = Integer.MAX_VALUE;
-    protected String subsettedDerivedUnion = ""; //$NON-NLS-1$
-    protected boolean derivedUnion = false;
+    private AssociationType type = IAssociation.DEFAULT_RELATION_TYPE;
+    private String target = ""; //$NON-NLS-1$
+    private String targetRoleSingular = ""; //$NON-NLS-1$
+    private String targetRolePlural = ""; //$NON-NLS-1$
+    private int minCardinality = 0;
+    private int maxCardinality = Integer.MAX_VALUE;
+    private String subsettedDerivedUnion = ""; //$NON-NLS-1$
+    private boolean derivedUnion = false;
+    private boolean constrain = false;
 
     protected Association(IType parent, String id) {
         super(parent, id);
     }
+
+    @Override
+    public abstract IAssociation findMatchingAssociation() throws CoreException;
 
     @Override
     public AggregationKind getAggregationKind() {
@@ -66,11 +73,15 @@ public abstract class Association extends TypePart implements IAssociation {
         return type;
     }
 
+    protected void setAssociationTypeInternal(AssociationType newType) {
+        type = newType;
+    }
+
     @Override
     public void setAssociationType(AssociationType newType) {
         ArgumentCheck.notNull(newType);
         AssociationType oldType = type;
-        type = newType;
+        setAssociationTypeInternal(newType);
         valueChanged(oldType, newType);
     }
 
@@ -94,10 +105,14 @@ public abstract class Association extends TypePart implements IAssociation {
         return derivedUnion;
     }
 
+    protected void setDerivedUnionInternal(boolean flag) {
+        derivedUnion = flag;
+    }
+
     @Override
     public void setDerivedUnion(boolean flag) {
         boolean oldValue = derivedUnion;
-        derivedUnion = flag;
+        setDerivedUnionInternal(flag);
         valueChanged(oldValue, derivedUnion);
     }
 
@@ -162,10 +177,14 @@ public abstract class Association extends TypePart implements IAssociation {
         return minCardinality;
     }
 
+    protected void setMinCardinalityInternal(int newValue) {
+        minCardinality = newValue;
+    }
+
     @Override
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
-        minCardinality = newValue;
+        setMinCardinalityInternal(newValue);
         valueChanged(oldValue, newValue);
     }
 
@@ -189,17 +208,25 @@ public abstract class Association extends TypePart implements IAssociation {
         return maxCardinality == 1 && !isQualified();
     }
 
+    public void setMaxCardinalityInternal(int newValue) {
+        maxCardinality = newValue;
+    }
+
     @Override
     public void setMaxCardinality(int newValue) {
         int oldValue = maxCardinality;
-        maxCardinality = newValue;
+        setMaxCardinalityInternal(newValue);
         valueChanged(oldValue, newValue);
+    }
+
+    protected void setSubsettedDerivedUnionInternal(String newRelation) {
+        subsettedDerivedUnion = newRelation;
     }
 
     @Override
     public void setSubsettedDerivedUnion(String newRelation) {
         String oldValue = subsettedDerivedUnion;
-        subsettedDerivedUnion = newRelation;
+        setSubsettedDerivedUnionInternal(newRelation);
         valueChanged(oldValue, newRelation);
     }
 
@@ -211,6 +238,46 @@ public abstract class Association extends TypePart implements IAssociation {
     @Override
     public boolean isSubsetOfADerivedUnion() {
         return StringUtils.isNotEmpty(subsettedDerivedUnion);
+    }
+
+    @Override
+    public boolean isConstrain() {
+        return constrain;
+    }
+
+    @Override
+    public void setConstrain(boolean constrain) {
+        boolean oldValue = this.constrain;
+        this.constrain = constrain;
+        valueChanged(oldValue, constrain);
+    }
+
+    @Override
+    public IAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) {
+        try {
+            IType supertype = getType().findSupertype(ipsProject);
+            if (supertype == null) {
+                return null;
+            }
+            IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
+            return superAssociation;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
+    public IAssociation findConstrainedAssociation(IIpsProject ipsProject) {
+        AssociationHierarchyVisitor visitor = new AssociationHierarchyVisitor(ipsProject) {
+
+            @Override
+            protected boolean continueVisiting() {
+                return getLastVisited().isConstrain();
+            }
+
+        };
+        visitor.start(this);
+        return visitor.getSuperAssociation();
     }
 
     @Override
@@ -258,7 +325,7 @@ public abstract class Association extends TypePart implements IAssociation {
             minCardinality = 0;
         }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
-        if (max.equals("*")) { //$NON-NLS-1$
+        if ("*".equals(max)) { //$NON-NLS-1$
             maxCardinality = CARDINALITY_MANY;
         } else {
             try {
@@ -269,6 +336,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
+        constrain = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAIN)).booleanValue();
     }
 
     @Override
@@ -288,6 +356,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
+        newElement.setAttribute(PROPERTY_CONSTRAIN, String.valueOf(isConstrain()));
     }
 
     @Override
@@ -301,6 +370,8 @@ public abstract class Association extends TypePart implements IAssociation {
         validateMinCardinality(list);
 
         validateDerivedUnion(list, ipsProject);
+
+        validateConstrain(list, ipsProject);
     }
 
     private void validateTarget(MessageList list) throws CoreException {
@@ -395,6 +466,13 @@ public abstract class Association extends TypePart implements IAssociation {
                         PROPERTY_MAX_CARDINALITY));
             }
         }
+
+        validateDerivedUnionsTarget(list, ipsProject, unionAss);
+
+    }
+
+    private void validateDerivedUnionsTarget(MessageList list, IIpsProject ipsProject, IAssociation unionAss)
+            throws CoreException {
         IType unionTarget = unionAss.findTarget(ipsProject);
         if (unionTarget == null) {
             String text = Messages.Association_msg_TargetOfDerivedUnionDoesNotExist;
@@ -409,12 +487,174 @@ public abstract class Association extends TypePart implements IAssociation {
                     PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
         }
+    }
 
+    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (isConstrain()) {
+            IAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
+            if (constrainedAssociation == null) {
+                String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
+                list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text,
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this,
+                                PROPERTY_TARGET_ROLE_SINGULAR));
+            } else {
+                validateConstrainedAssociation(list, constrainedAssociation);
+            }
+        }
+    }
+
+    private void validateConstrainedAssociation(MessageList list, IAssociation constrainedAssociation)
+            throws CoreException {
+        if (!isCovariantTargetType(constrainedAssociation)) {
+            String text = NLS.bind(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
+            list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
+
+        }
+        if (!constrainedAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
+            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
+                    constrainedAssociation.getTargetRolePlural());
+            list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
+        }
+        validateConstrainedAssociationType(list, constrainedAssociation);
+        validateConstrainedCardinality(list, constrainedAssociation);
+        validateConstrainingNotDerivedUnion(list);
+        validateConstrainedAssociationNotDerivedUnion(list, constrainedAssociation);
+        validateConstrainedIsMatchingAssociationParallel(list, constrainedAssociation);
+    }
+
+    private void validateConstrainedIsMatchingAssociationParallel(MessageList list, IAssociation constrainedAssociation)
+            throws CoreException {
+        if (!isMatchingAssociationParallel(constrainedAssociation)) {
+            String text = Messages.Association_msg_ConstrainedInvalidMatchingAssociation;
+            list.newError(MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
+        }
+    }
+
+    private boolean isMatchingAssociationParallel(IAssociation constrainedAssociation) throws CoreException {
+        IAssociation matchingAssociation = findMatchingAssociation();
+        IAssociation constrainedMatchingAssociation = constrainedAssociation.findMatchingAssociation();
+
+        if (isNoMatchingAssociationsDefined(matchingAssociation, constrainedMatchingAssociation)) {
+            return true;
+        } else if (matchingAssociation != null && constrainedMatchingAssociation != null) {
+            IAssociation matchingConstrainedAssociation = matchingAssociation
+                    .findConstrainedAssociation(getIpsProject());
+            return constrainedMatchingAssociation.equals(matchingConstrainedAssociation);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isNoMatchingAssociationsDefined(IAssociation matchingAssociation,
+            IAssociation constrainedMatchingAssociation) {
+        return matchingAssociation == null && constrainedMatchingAssociation == null;
+    }
+
+    private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
+        if (!isSameAssociationTypeAs(superAssociation)) {
+            String text = NLS.bind(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation, superAssociation
+                    .getAssociationType().getName());
+            list.newError(MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_ASSOCIATION_TYPE));
+        }
+    }
+
+    private boolean isSameAssociationTypeAs(IAssociation otherAssociation) {
+        return otherAssociation.getAssociationType().equals(getAssociationType());
+    }
+
+    private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
+        if (superAssociation.getMinCardinality() != getMinCardinality()) {
+            String text = NLS.bind(Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation,
+                    getStringCardinality(superAssociation.getMinCardinality()));
+            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
+        }
+        if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
+            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation,
+                    getStringCardinality(superAssociation.getMaxCardinality()));
+            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
+                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
+        }
+    }
+
+    private String getStringCardinality(int cardinality) {
+        if (cardinality == Integer.MAX_VALUE) {
+            return "*"; //$NON-NLS-1$
+        }
+        return String.valueOf(cardinality);
+    }
+
+    private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {
+        IType targetType = findTarget(getIpsProject());
+        IType superTargetType = superAssociation.findTarget(getIpsProject());
+        if (targetType != null && superTargetType != null) {
+            return targetType.isSubtypeOrSameType(superTargetType, getIpsProject());
+        } else {
+            return false;
+        }
+    }
+
+    private void validateConstrainingNotDerivedUnion(MessageList list) {
+        if (isDerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAIN_DERIVED_UNION, Messages.Association_msg_ConstraintIsDerivedUnion,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_DERIVED_UNION));
+        }
+        if (isSubsetOfADerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION,
+                    Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, new ObjectProperty(this,
+                            PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_SUBSETTED_DERIVED_UNION));
+        }
+    }
+
+    private void validateConstrainedAssociationNotDerivedUnion(MessageList list, IAssociation superAssociation) {
+        if (superAssociation.isDerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAINED_DERIVED_UNION, Messages.Association_msg_ConstrainedIsDerivedUnion, this,
+                    PROPERTY_CONSTRAIN);
+        }
+        if (superAssociation.isSubsetOfADerivedUnion()) {
+            list.newError(MSGCODE_CONSTRAINED_SUBSET_DERIVED_UNION,
+                    Messages.Association_msg_ConstrainedIsSubsetOfDerivedUnion, this, PROPERTY_CONSTRAIN);
+
+        }
     }
 
     @Override
     public boolean isPluralLabelSupported() {
         return true;
+    }
+
+    protected abstract static class AssociationHierarchyVisitor extends HierarchyVisitor<IAssociation> {
+
+        protected AssociationHierarchyVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected IAssociation findSupertype(IAssociation currentType, IIpsProject ipsProject) {
+            return currentType.findSuperAssociationWithSameName(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IAssociation currentType) {
+            return continueVisiting();
+        }
+
+        protected abstract boolean continueVisiting();
+
+        public IAssociation getSuperAssociation() {
+            if (getVisited().size() > 1) {
+                return getLastVisited();
+            } else {
+                return null;
+            }
+        }
+
+        public IAssociation getLastVisited() {
+            return getVisited().get(getVisited().size() - 1);
+        }
+
     }
 
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor<IType> {
@@ -428,7 +668,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
+        protected boolean visit(IType currentType) {
             List<IAssociation> associations = currentType.getAssociations();
             for (IAssociation association : associations) {
                 if (!association.isDerivedUnion()) {
@@ -437,13 +677,17 @@ public abstract class Association extends TypePart implements IAssociation {
                 if (association.equals(Association.this)) {
                     continue;
                 }
-                IType derivedUnionTarget = association.findTarget(ipsProject);
-                if (derivedUnionTarget == null) {
-                    continue;
-                }
+                try {
+                    IType derivedUnionTarget = association.findTarget(ipsProject);
+                    if (derivedUnionTarget == null) {
+                        continue;
+                    }
 
-                if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
-                    candidates.add(association);
+                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
+                        candidates.add(association);
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
             }
             return true;

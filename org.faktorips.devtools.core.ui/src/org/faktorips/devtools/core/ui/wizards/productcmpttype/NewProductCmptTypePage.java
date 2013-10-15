@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -117,9 +119,9 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
-            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProject(root.getIpsProject());
+            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProjects(Arrays.asList(root.getIpsProject()));
         } else {
-            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProject(null);
+            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProjects(new ArrayList<IIpsProject>());
         }
     }
 
@@ -300,7 +302,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         }
 
         @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
+        protected boolean visit(IProductCmptType currentType) {
             if (!StringUtils.isEmpty(currentType.getPolicyCmptType())) {
                 qualifiedNameOfConfiguredType = currentType.getPolicyCmptType();
                 return false;

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -63,11 +62,7 @@ public class ProductCmptLinkContainerValidatorTest {
 
     private MessageList callValidator() {
         MessageList list = new MessageList();
-        try {
-            validator.visit(prodCmptType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        validator.start(prodCmptType);
         return list;
     }
 

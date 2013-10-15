@@ -248,9 +248,9 @@ public abstract class XProductClass extends XType {
      * of a derived union.
      * 
      */
-    public boolean isContainsNotDerivedAssociations() {
+    public boolean isContainsNotDerivedOrConstrainingAssociations() {
         for (XAssociation association : getAssociations()) {
-            if (!association.isDerived()) {
+            if (!association.isDerived() && !association.isConstrain()) {
                 return true;
             }
         }

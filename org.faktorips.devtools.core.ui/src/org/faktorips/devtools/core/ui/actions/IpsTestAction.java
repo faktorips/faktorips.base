@@ -126,7 +126,7 @@ public class IpsTestAction extends IpsAction {
         return root;
     }
 
-    private void addElement(List<String> pathElements, IIpsPackageFragmentRoot root, String name) throws CoreException {
+    private void addElement(List<String> pathElements, IIpsPackageFragmentRoot root, String name) {
         if (root.exists()) {
             IIpsProject project = root.getIpsProject();
             pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + name);
@@ -198,8 +198,7 @@ public class IpsTestAction extends IpsAction {
      * Add all package fragment roots of the selected IpsProject - including the project name - to
      * the given list.
      */
-    private IIpsPackageFragmentRoot ipsProjectSelected(IIpsProject ipsProject, List<String> selectedPathElements)
-            throws CoreException {
+    private IIpsPackageFragmentRoot ipsProjectSelected(IIpsProject ipsProject, List<String> selectedPathElements) {
         IIpsPackageFragmentRoot root = null;
         IIpsPackageFragmentRoot[] rootsFromProject = ipsProject.getIpsPackageFragmentRoots();
         List<IIpsPackageFragmentRoot> ipsPckFrgmtRootList = Arrays.asList(rootsFromProject);
@@ -268,7 +267,7 @@ public class IpsTestAction extends IpsAction {
     /**
      * Gets the package name from the given ips package fragment root.
      */
-    public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
+    public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) {
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         return builderSet.getRuntimeRepositoryTocResourceName(root);
     }

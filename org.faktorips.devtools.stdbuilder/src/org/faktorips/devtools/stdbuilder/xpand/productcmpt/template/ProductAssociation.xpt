@@ -1,3 +1,4 @@
+«IMPORT  org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -7,7 +8,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE field FOR XProductAssociation-»
-	«IF !derivedUnion-»
+	«IF !derivedUnion && !constrain-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
 	     * 
@@ -22,7 +23,7 @@
 «ENDDEFINE»
 
 «DEFINE getterSetterAdder FOR XProductAssociation-»
-	«IF !derived»
+	«IF !derivedUnion»
 		«EXPAND getterProductCmpt»
 		«EXPAND getterProductCmptGen»
 		«EXPAND getterProductCmptPerIndex»
@@ -31,11 +32,13 @@
 			«EXPAND addMethod»
 			«EXPAND addMethodWithCardinality»
 		«ENDIF-»
-		«EXPAND getterLinksFor»
-		«EXPAND getterSingleLinkFor»
-		«EXPAND getCardinalityFor»
+		«IF !constrain-»
+			«EXPAND getterLinksFor»
+			«EXPAND getterSingleLinkFor»
+			«EXPAND getCardinalityFor»
+		«ENDIF-»
 		«EXPAND Association::getNumOf»
-    «ENDIF»
+    «ENDIF-»
 	«EXPAND Association::abstractMethods»
 «ENDDEFINE»
 
@@ -45,23 +48,31 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
    	«IF oneToMany-»
-	    public «List_(targetInterfaceName)» «method(methodNameGetter)»
+	    public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()»;«ELSE-»
 	    {
-        	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
-			for («IProductComponentLink(targetInterfaceName)» «name.toFirstLower()» : «fieldName».values()) {
-	            result.add(«name.toFirstLower()».«getTarget()»);
-    	    }
-        	return result;
+	    	«IF constrain-»
+	    		return «ListUtil()».«convert("super."+methodNameGetter+"()", targetInterfaceName+".class")»;
+	    	«ELSE-»
+        		«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
+				for («IProductComponentLink(targetInterfaceName)» «name.toFirstLower()» : «fieldName».values()) {
+	            	result.add(«name.toFirstLower()».«getTarget()»);
+    	    	}
+        		return result;
+        «ENDIF-»
 	    }
 	    «ENDIF-»
     «ELSE-»
 	    public «targetInterfaceName» «method(methodNameGetter)»
 	    «IF genInterface()»;«ELSE-»
 	    {
-			return «fieldName» != null ? «fieldName».«getTarget()» : null;
+	    	«IF constrain-»
+	    		return («targetInterfaceName»)super.«methodNameGetter»();
+	    	«ELSE-»
+				return «fieldName» != null ? «fieldName».«getTarget()» : null;
+			«ENDIF-»
 	    }
 	    «ENDIF-»
     «ENDIF-»
@@ -73,27 +84,35 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
    	«IF oneToMany-»
-	    public «List_(targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
+	    public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	    «IF genInterface()»;«ELSE-»
 	    {
-        	«List_(targetInterfaceName)» targets = «methodNameGetter»();
-        	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
-			for («targetInterfaceName» target : targets) {
-				«targetClassGenerationName» gen = target.«methodNameGetTargetGeneration»(effectiveDate);
-				if (gen != null) {
-	                result.add(gen);
-	            }
-			}
-        	return result;
+	    	«IF constrain-»
+	    		return «ListUtil()».«convert("super."+methodNameGetter+"(effectiveDate)", targetClassGenerationName + ".class")»;
+	    	«ELSE-»
+        		«List_("? extends " +targetInterfaceName)» targets = «methodNameGetter»();
+        		«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
+				for («targetInterfaceName» target : targets) {
+					«targetClassGenerationName» gen = target.«methodNameGetTargetGeneration»(effectiveDate);
+					if (gen != null) {
+	                	result.add(gen);
+	            	}
+				}
+        		return result;
+        	«ENDIF-»
 	    }
 	    «ENDIF-»
     «ELSE-»
 	    public «targetClassGenerationName» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	   	«IF genInterface()»;«ELSE-»
 	    {
-			return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
+	    	«IF constrain-»
+	    		return («targetClassGenerationName»)super.«methodNameGetter»(effectiveDate);
+	    	«ELSE-»
+				return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
+			«ENDIF-»
     	}
     	«ENDIF-»
     «ENDIF-»
@@ -106,19 +125,23 @@
 	     * 
 	     * @generated
 	     */
-	     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
 		public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 	    «IF genInterface()»;«ELSE-»
 		{
-			«Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
-	        try {
-	            for (int i = 0; i < index; i++) {
-	                it.next();
-	            }
-	            return it.next().«getTarget()»;
-	        } catch («NoSuchElementException()» e) {
-	            throw new IndexOutOfBoundsException(e.getLocalizedMessage());
-	        }
+			«IF constrain-»
+				return («targetInterfaceName»)super.«methodNameGetSingle»(index);
+			«ELSE-»
+				«Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
+	        	try {
+	            	for (int i = 0; i < index; i++) {
+	                	it.next();
+	            	}
+	            	return it.next().«getTarget()»;
+	        	} catch («NoSuchElementException()» e) {
+	            	throw new IndexOutOfBoundsException(e.getLocalizedMessage());
+	        	}
+	        «ENDIF-»
 		}
 		«ENDIF-»
 	«ENDIF»
@@ -174,9 +197,15 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetOrAdd, targetInterfaceName, "target")» {
-        «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
+     «overrideAnnotationIf(constrain)»
+    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
+        «IF constrain-»
+        	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+        	super.«methodNameSetOrAdd»(target);
+		«ELSE-»
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
+	        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
+        «ENDIF-»
     }
     «ENDIF»
 «ENDDEFINE»
@@ -189,9 +218,15 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetOrAdd, targetInterfaceName, "target", CardinalityRange(), "cardinality")» {
-        «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
+     «overrideAnnotationIf(constrain)»
+    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange(), "cardinality")» {
+        «IF constrain-»
+        	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+        	super.«methodNameSetOrAdd»(target, cardinality);
+		«ELSE-»
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
+	        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
+	    «ENDIF-»
     }
     «ENDIF»
 «ENDDEFINE»
@@ -203,9 +238,15 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetOrAdd, targetInterfaceName, "target")» {
-        «EXPAND ProductCommons::checkRepositoryModifyable-»
-        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
+     «overrideAnnotationIf(constrain)»
+    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
+        «IF constrain-»
+        	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+        	super.«methodNameSetOrAdd»((«targetInterfaceName»)target);
+		«ELSE-»
+			«EXPAND ProductCommons::checkRepositoryModifyable-»
+	        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
+	    «ENDIF-»
     }
 	«ENDIF»
 «ENDDEFINE»
@@ -237,8 +278,8 @@
 «ENDDEFINE»
 
 «DEFINE getLinkMethods FOR XProductClass»
-	«EXPAND getLinkMethod»
-	«EXPAND getLinksMethod»
+		«EXPAND getLinkMethod»
+		«EXPAND getLinksMethod»
 «ENDDEFINE»
 
 «DEFINE getLinkMethod FOR XProductClass-»
@@ -250,7 +291,7 @@
 	    «overrideAnnotation(false)-»
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
-				«IF !derived-»
+				«IF !derivedUnion && !constrain-»
 			        if ("«name»".equals(linkName)) {
 			            return «methodNameGetLinkFor»((«targetInterfaceName»)target);
 			        }
@@ -279,7 +320,7 @@
 			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
-			«IF !derived-»
+			«IF !derivedUnion && !constrain-»
 		    	«IF oneToMany-»
 		    		list.addAll(«methodNameGetLinksFor»());
 		    	«ELSE-»
@@ -294,7 +335,7 @@
 «ENDDEFINE»
 
 «DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
-	«IF !derived-»
+	«IF !derivedUnion && !constrain-»
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
 			«IF oneToMany-»
@@ -314,7 +355,7 @@
 «ENDDEFINE»
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
-	«IF !derived-»
+	«IF !derivedUnion && !constrain-»
 		«IF oneToMany-»
 		    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
@@ -326,5 +367,3 @@
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
-
-        
