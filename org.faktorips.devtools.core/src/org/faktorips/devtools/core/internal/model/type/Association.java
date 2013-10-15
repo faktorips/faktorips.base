@@ -491,43 +491,64 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (isConstrain()) {
-            IAssociation superAssociation = findSuperAssociationWithSameName(ipsProject);
-            if (superAssociation == null) {
+            IAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
+            if (constrainedAssociation == null) {
                 String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
                 list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text,
                         new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this,
                                 PROPERTY_TARGET_ROLE_SINGULAR));
             } else {
-                validateConstrainedAssociation(list, superAssociation);
+                validateConstrainedAssociation(list, constrainedAssociation);
             }
         }
     }
 
-    private void validateConstrainedAssociation(MessageList list, IAssociation superAssociation) throws CoreException {
-        if (!isCovariantTargetType(superAssociation)) {
+    private void validateConstrainedAssociation(MessageList list, IAssociation constrainedAssociation)
+            throws CoreException {
+        if (!isCovariantTargetType(constrainedAssociation)) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
             list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text, new ObjectProperty(this,
                     PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
 
         }
-        if (!superAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
+        if (!constrainedAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
-                    superAssociation.getTargetRolePlural());
+                    constrainedAssociation.getTargetRolePlural());
             list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
         }
-        validateConstrainedAssociationType(list, superAssociation);
-        validateConstrainedCardinality(list, superAssociation);
-        IAssociation matchingAssociation = findMatchingAssociation();
-        if (matchingAssociation != null) {
-            IAssociation matchingSuperAssociationWithSameName = matchingAssociation
-                    .findSuperAssociationWithSameName(getIpsProject());
-            if (isMatchingAssociationNotConstrain(matchingAssociation)
-                    || matchingSuperAssociationHasNotTheRightMatch(superAssociation,
-                            matchingSuperAssociationWithSameName)) {
-                String text = Messages.Association_msg_ConstrainedInvalidMatchingAssociation;
-                list.newError(MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
-            }
+        validateConstrainedAssociationType(list, constrainedAssociation);
+        validateConstrainedCardinality(list, constrainedAssociation);
+        validateConstrainingNotDerivedUnion(list);
+        validateConstrainedAssociationNotDerivedUnion(list, constrainedAssociation);
+        validateConstrainedIsMatchingAssociationParallel(list, constrainedAssociation);
+    }
+
+    private void validateConstrainedIsMatchingAssociationParallel(MessageList list, IAssociation constrainedAssociation)
+            throws CoreException {
+        if (!isMatchingAssociationParallel(constrainedAssociation)) {
+            String text = Messages.Association_msg_ConstrainedInvalidMatchingAssociation;
+            list.newError(MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
         }
+    }
+
+    private boolean isMatchingAssociationParallel(IAssociation constrainedAssociation) throws CoreException {
+        IAssociation matchingAssociation = findMatchingAssociation();
+        IAssociation constrainedMatchingAssociation = constrainedAssociation.findMatchingAssociation();
+
+        if (isNoMatchingAssociationsDefined(matchingAssociation, constrainedMatchingAssociation)) {
+            return true;
+        } else if (matchingAssociation != null && constrainedMatchingAssociation != null) {
+            IAssociation matchingConstrainedAssociation = matchingAssociation
+                    .findConstrainedAssociation(getIpsProject());
+            return constrainedMatchingAssociation.equals(matchingConstrainedAssociation);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isNoMatchingAssociationsDefined(IAssociation matchingAssociation,
+            IAssociation constrainedMatchingAssociation) {
+        return matchingAssociation == null && constrainedMatchingAssociation == null;
     }
 
     private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
@@ -563,15 +584,6 @@ public abstract class Association extends TypePart implements IAssociation {
             return "*"; //$NON-NLS-1$
         }
         return String.valueOf(cardinality);
-    }
-
-    private boolean matchingSuperAssociationHasNotTheRightMatch(IAssociation superAssociation,
-            IAssociation matchingSuperAssociationWithSameName) throws CoreException {
-        return !(superAssociation.equals(matchingSuperAssociationWithSameName.findMatchingAssociation()));
-    }
-
-    private boolean isMatchingAssociationNotConstrain(IAssociation matchingAssociation) {
-        return !matchingAssociation.isConstrain();
     }
 
     private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {

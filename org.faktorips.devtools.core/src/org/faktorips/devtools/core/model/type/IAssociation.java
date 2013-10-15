@@ -492,6 +492,12 @@ public interface IAssociation extends ITypePart {
      */
     public IAssociation findConstrainedAssociation(IIpsProject ipsProject);
 
-    IAssociation findMatchingAssociation() throws CoreException;
+    /**
+     * Searches for a matching association on the other side of the model.
+     * 
+     * @return The association that is matching by this one
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public IAssociation findMatchingAssociation() throws CoreException;
 
 }
