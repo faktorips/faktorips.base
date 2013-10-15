@@ -414,4 +414,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         valueChanged(oldValue, isChangingOverTime);
     }
 
+    @Override
+    public IAssociation findMatchingAssociation() throws CoreException {
+        return findMatchingPolicyCmptTypeAssociation(getIpsProject());
+    }
+
 }

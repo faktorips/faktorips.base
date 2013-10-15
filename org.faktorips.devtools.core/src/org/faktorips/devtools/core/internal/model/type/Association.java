@@ -61,6 +61,9 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
+    public abstract IAssociation findMatchingAssociation() throws CoreException;
+
+    @Override
     public AggregationKind getAggregationKind() {
         return getAssociationType().getAggregationKind();
     }
@@ -514,8 +517,17 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         validateConstrainedAssociationType(list, superAssociation);
         validateConstrainedCardinality(list, superAssociation);
-        validateConstrainingNotDerivedUnion(list);
-        validateConstrainedAssociationNotDerivedUnion(list, superAssociation);
+        IAssociation matchingAssociation = findMatchingAssociation();
+        if (matchingAssociation != null) {
+            IAssociation matchingSuperAssociationWithSameName = matchingAssociation
+                    .findSuperAssociationWithSameName(getIpsProject());
+            if (isMatchingAssociationNotConstrain(matchingAssociation)
+                    || matchingSuperAssociationHasNotTheRightMatch(superAssociation,
+                            matchingSuperAssociationWithSameName)) {
+                String text = Messages.Association_msg_ConstrainedInvalidMatchingAssociation;
+                list.newError(MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
+            }
+        }
     }
 
     private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
@@ -551,6 +563,15 @@ public abstract class Association extends TypePart implements IAssociation {
             return "*"; //$NON-NLS-1$
         }
         return String.valueOf(cardinality);
+    }
+
+    private boolean matchingSuperAssociationHasNotTheRightMatch(IAssociation superAssociation,
+            IAssociation matchingSuperAssociationWithSameName) throws CoreException {
+        return !(superAssociation.equals(matchingSuperAssociationWithSameName.findMatchingAssociation()));
+    }
+
+    private boolean isMatchingAssociationNotConstrain(IAssociation matchingAssociation) {
+        return !matchingAssociation.isConstrain();
     }
 
     private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {

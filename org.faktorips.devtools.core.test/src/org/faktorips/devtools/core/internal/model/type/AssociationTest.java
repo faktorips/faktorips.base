@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -599,6 +601,59 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         msgList = subAssociation.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT));
+    }
+
+    @Test
+    public void testValidateConstrain_TheHierarchyOfOverriddenAssociationsIsNotParallel() throws CoreException {
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
+        association.setTarget(targetCmpt.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
+
+        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
+        subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
+        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
+        subTargetCmpt.setSupertype(targetCmpt.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
+        subAssociation.setTarget(subTargetCmpt.getQualifiedName());
+        subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
+        subAssociation.setConstrain(true);
+
+        MessageList msgList = subAssociation.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
+
+        IProductCmptType sourceProduct = newProductCmptType(ipsProject, "ProductA");
+        IProductCmptType targetProduct = newProductCmptType(ipsProject, "ProductB");
+        IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)sourceProduct.newAssociation();
+        productAssociation.setAssociationType(AssociationType.AGGREGATION);
+        productAssociation.setTarget(targetProduct.getQualifiedName());
+
+        sourceCmpt.setProductCmptType(sourceProduct.getQualifiedName());
+        sourceProduct.setPolicyCmptType(sourceCmpt.getQualifiedName());
+        targetCmpt.setProductCmptType(targetProduct.getQualifiedName());
+        targetProduct.setPolicyCmptType(targetCmpt.getQualifiedName());
+
+        IProductCmptType subSourceProduct = newProductCmptType(ipsProject, "SubProductA");
+        IProductCmptType subTargetProduct = newProductCmptType(ipsProject, "SubProductB");
+        IProductCmptTypeAssociation subProductAssociation = (IProductCmptTypeAssociation)subSourceProduct
+                .newAssociation();
+        subProductAssociation.setAssociationType(AssociationType.AGGREGATION);
+        subProductAssociation.setTarget(subTargetProduct.getQualifiedName());
+        subProductAssociation.setConstrain(false);
+
+        subSourceCmpt.setProductCmptType(subSourceProduct.getQualifiedName());
+        subSourceProduct.setPolicyCmptType(subSourceCmpt.getQualifiedName());
+        subTargetCmpt.setProductCmptType(subTargetProduct.getQualifiedName());
+        subTargetProduct.setPolicyCmptType(subTargetCmpt.getQualifiedName());
+
+        msgList = subAssociation.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
+
+        MessageList msgListProduct = subProductAssociation.validate(ipsProject);
+        assertNull(msgListProduct.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
     }
 
     @Test

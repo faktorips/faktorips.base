@@ -807,4 +807,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return false;
     }
 
+    @Override
+    public IAssociation findMatchingAssociation() throws CoreException {
+        return findMatchingProductCmptTypeAssociation(getIpsProject());
+    }
+
 }

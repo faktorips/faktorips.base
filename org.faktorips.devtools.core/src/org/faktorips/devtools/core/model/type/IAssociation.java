@@ -137,6 +137,12 @@ public interface IAssociation extends ITypePart {
             + "ConstraintedSubsetDerivedUnion"; //$NON-NLS-1$
 
     /**
+     * 
+     */
+    public static final String MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION = MSGCODE_PREFIX
+            + "ConstrainInvalidMatchingAssociation"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that maximum cardinality is not equal to maximum
      * cardinality of super association.
      */
@@ -485,5 +491,7 @@ public interface IAssociation extends ITypePart {
      * @return The association that is constrained by this one
      */
     public IAssociation findConstrainedAssociation(IIpsProject ipsProject);
+
+    IAssociation findMatchingAssociation() throws CoreException;
 
 }
