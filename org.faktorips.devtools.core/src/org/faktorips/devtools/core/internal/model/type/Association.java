@@ -519,12 +519,16 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
-        if (!superAssociation.getAssociationType().equals(getAssociationType())) {
+        if (!isSameAssociationTypeAs(superAssociation)) {
             String text = NLS.bind(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation, superAssociation
                     .getAssociationType().getName());
             list.newError(MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
                     PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_ASSOCIATION_TYPE));
         }
+    }
+
+    private boolean isSameAssociationTypeAs(IAssociation otherAssociation) {
+        return otherAssociation.getAssociationType().equals(getAssociationType());
     }
 
     private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
