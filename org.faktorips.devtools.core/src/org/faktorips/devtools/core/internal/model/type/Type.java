@@ -681,8 +681,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IAssociation> constrainAssociation(IAssociation association, IType targetType) {
-        List<IAssociation> newAssociations = new ArrayList<IAssociation>();
+    public IAssociation constrainAssociation(IAssociation association, IType targetType) {
 
         IAssociation newAssociation = getAssociation(association.getName());
 
@@ -692,9 +691,8 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         newAssociation.setTarget(targetType.getQualifiedName());
         newAssociation.setConstrain(true);
-        newAssociations.add(newAssociation);
 
-        return newAssociations;
+        return newAssociation;
     }
 
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {

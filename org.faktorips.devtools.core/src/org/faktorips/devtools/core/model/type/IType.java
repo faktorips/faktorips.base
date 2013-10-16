@@ -535,10 +535,10 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
     public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Creates new associations in this type that override the given association with type.
+     * Creates new association in this type that override the given association with type.
      * 
      * @param association that will be constrain
-     * @return a List with all new created associations
+     * @return new created associations
      */
-    public List<IAssociation> constrainAssociation(IAssociation association, IType targetType);
+    public IAssociation constrainAssociation(IAssociation association, IType targetType);
 }

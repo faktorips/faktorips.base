@@ -1103,15 +1103,12 @@ public class TypeTest extends AbstractIpsPluginTest {
         IPolicyCmptType subTargetPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
         subTargetPolicy.setSupertype(targetPolicy.getQualifiedName());
 
-        List<IAssociation> constrainingAssociations = subSourcePolicy
-                .constrainAssociation(association, subTargetPolicy);
-        assertTrue(constrainingAssociations.size() == 1);
-        for (IAssociation constrainingAssociation : constrainingAssociations) {
-            assertTrue(constrainingAssociation.isConstrain());
-            assertEquals(subTargetPolicy.getQualifiedName(), constrainingAssociation.getTarget());
-            MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
-            assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
-        }
+        IAssociation constrainingAssociation = subSourcePolicy.constrainAssociation(association, subTargetPolicy);
+        assertNotNull(constrainingAssociation);
+        assertTrue(constrainingAssociation.isConstrain());
+        assertEquals(subTargetPolicy.getQualifiedName(), constrainingAssociation.getTarget());
+        MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
+        assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
     }
 
     @Test
@@ -1129,14 +1126,11 @@ public class TypeTest extends AbstractIpsPluginTest {
         IProductCmptType subTargetProduct = newProductCmptType(ipsProject, "SubProductB");
         subTargetProduct.setSupertype(targetProduct.getQualifiedName());
 
-        List<IAssociation> constrainingAssociations = subSourceProduct.constrainAssociation(association,
-                subTargetProduct);
-        assertTrue(constrainingAssociations.size() == 1);
-        for (IAssociation constrainingAssociation : constrainingAssociations) {
-            assertTrue(constrainingAssociation.isConstrain());
-            assertEquals(subTargetProduct.getQualifiedName(), constrainingAssociation.getTarget());
-            MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
-            assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
-        }
+        IAssociation constrainingAssociation = subSourceProduct.constrainAssociation(association, subTargetProduct);
+        assertNotNull(constrainingAssociation);
+        assertTrue(constrainingAssociation.isConstrain());
+        assertEquals(subTargetProduct.getQualifiedName(), constrainingAssociation.getTarget());
+        MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
+        assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
     }
 }
