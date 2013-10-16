@@ -59,11 +59,11 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         private IpsAction openEnumTypeAction;
 
         protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), EnumSet.of(BooleanAttributes.CAN_CREATE, BooleanAttributes.CAN_DELETE,
-                    BooleanAttributes.CAN_EDIT, BooleanAttributes.CAN_MOVE, BooleanAttributes.CAN_OVERRIDE,
-                    BooleanAttributes.JUMP_TO_SOURCE_CODE_SUPPORTED, BooleanAttributes.PULL_UP_REFACTORING_SUPPORTED,
-                    BooleanAttributes.RENAME_REFACTORING_SUPPORTED, BooleanAttributes.SHOW_EDIT_BUTTON,
-                    BooleanAttributes.SHOW_OVERRIDE_BUTTON), toolkit);
+            super(type, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_DELETE,
+                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_MOVE, AttributesForButtons.CAN_OVERRIDE,
+                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED,
+                    AttributesForButtons.PULL_UP_REFACTORING_SUPPORTED,
+                    AttributesForButtons.RENAME_REFACTORING_SUPPORTED, AttributesForButtons.SHOW_EDIT_BUTTON), toolkit);
             openEnumTypeAction = new OpenEnumerationTypeInNewEditor(getViewer());
         }
 

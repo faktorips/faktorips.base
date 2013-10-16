@@ -55,11 +55,10 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         private IpsAction openTargetAction;
 
         protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), EnumSet.of(BooleanAttributes.CAN_CREATE, BooleanAttributes.CAN_EDIT,
-                    BooleanAttributes.CAN_OVERRIDE, BooleanAttributes.CAN_DELETE, BooleanAttributes.CAN_MOVE,
-                    BooleanAttributes.SHOW_EDIT_BUTTON, BooleanAttributes.SHOW_OVERRIDE_BUTTON,
-                    BooleanAttributes.RENAME_REFACTORING_SUPPORTED, BooleanAttributes.JUMP_TO_SOURCE_CODE_SUPPORTED),
-                    toolkit);
+            super(type, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
+                    AttributesForButtons.CAN_OVERRIDE, AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
+                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
+                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
             openTargetAction = createOpenTargetAction();
         }
 
@@ -99,6 +98,11 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         @Override
         public void overrideClicked() {
             // waiting for FIPS-2309 & FIPS-2310
+            // ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard();
+            // WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
+            // if (wizardDialog.open() == Window.OK) {
+            //
+            // }
         }
 
         private class AssociationContentProvider implements IStructuredContentProvider {

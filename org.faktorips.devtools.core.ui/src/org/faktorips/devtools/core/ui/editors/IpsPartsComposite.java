@@ -127,9 +127,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /** Flag that controls if a part can override. */
     private boolean canOverride;
 
-    protected enum BooleanAttributes {
+    protected enum AttributesForButtons {
         SHOW_EDIT_BUTTON,
-        SHOW_OVERRIDE_BUTTON,
         RENAME_REFACTORING_SUPPORTED,
         PULL_UP_REFACTORING_SUPPORTED,
         JUMP_TO_SOURCE_CODE_SUPPORTED,
@@ -168,51 +167,58 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected IpsPartsComposite(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site,
-            EnumSet<BooleanAttributes> booleanAttributes, UIToolkit uiToolkit) {
+            EnumSet<AttributesForButtons> attributesForButtons, UIToolkit uiToolkit) {
 
         super(parent);
 
         this.ipsObject = ipsObject;
         this.site = site;
 
-        if (booleanAttributes.contains(BooleanAttributes.CAN_CREATE)) {
-            canCreate = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.CAN_DELETE)) {
-            canDelete = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.CAN_EDIT)) {
-            canEdit = true;
-        }
-        if (booleanAttributes.contains(BooleanAttributes.CAN_MOVE)) {
-            canMove = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.CAN_OVERRIDE)) {
-            canOverride = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.JUMP_TO_SOURCE_CODE_SUPPORTED)) {
-            jumpToSourceCodeSupported = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.PULL_UP_REFACTORING_SUPPORTED)) {
-            pullUpRefactoringSupported = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.RENAME_REFACTORING_SUPPORTED)) {
-            renameRefactoringSupported = true;
-        }
-
-        if (booleanAttributes.contains(BooleanAttributes.SHOW_EDIT_BUTTON)) {
-            showEditButton = true;
-        }
+        buttonVariety(attributesForButtons);
+        supportVariety(attributesForButtons);
 
         this.uiToolkit = uiToolkit;
         initControls(uiToolkit);
         uiToolkit.getFormToolkit().adapt(this);
+    }
+
+    private void supportVariety(EnumSet<AttributesForButtons> attributesForButtons) {
+        if (attributesForButtons.contains(AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED)) {
+            jumpToSourceCodeSupported = true;
+        }
+
+        if (attributesForButtons.contains(AttributesForButtons.PULL_UP_REFACTORING_SUPPORTED)) {
+            pullUpRefactoringSupported = true;
+        }
+
+        if (attributesForButtons.contains(AttributesForButtons.RENAME_REFACTORING_SUPPORTED)) {
+            renameRefactoringSupported = true;
+        }
+    }
+
+    private void buttonVariety(EnumSet<AttributesForButtons> attributesForButtons) {
+        if (attributesForButtons.contains(AttributesForButtons.CAN_CREATE)) {
+            canCreate = true;
+        }
+
+        if (attributesForButtons.contains(AttributesForButtons.CAN_DELETE)) {
+            canDelete = true;
+        }
+
+        if (attributesForButtons.contains(AttributesForButtons.CAN_EDIT)) {
+            canEdit = true;
+        }
+        if (attributesForButtons.contains(AttributesForButtons.CAN_MOVE)) {
+            canMove = true;
+        }
+
+        if (attributesForButtons.contains(AttributesForButtons.CAN_OVERRIDE)) {
+            canOverride = true;
+        }
+
+        if (attributesForButtons.contains(AttributesForButtons.SHOW_EDIT_BUTTON)) {
+            showEditButton = true;
+        }
     }
 
     void createContextMenu() {
