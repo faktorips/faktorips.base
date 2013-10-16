@@ -680,6 +680,23 @@ public abstract class Type extends BaseIpsObject implements IType {
         return result;
     }
 
+    @Override
+    public List<IAssociation> constrainAssociation(IAssociation association, IType targetType) {
+        List<IAssociation> newAssociations = new ArrayList<IAssociation>();
+
+        IAssociation newAssociation = getAssociation(association.getName());
+
+        if (newAssociation == null) {
+            newAssociation = newAssociation();
+            newAssociation.copyFrom(association);
+        }
+        newAssociation.setTarget(targetType.getQualifiedName());
+        newAssociation.setConstrain(true);
+        newAssociations.add(newAssociation);
+
+        return newAssociations;
+    }
+
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IMethod> candidates = new ArrayList<IMethod>();

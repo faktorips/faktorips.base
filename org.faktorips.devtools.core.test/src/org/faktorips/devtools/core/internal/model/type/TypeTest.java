@@ -33,7 +33,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -1085,4 +1087,56 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(type.hasExistingSupertype(ipsProject));
     }
 
+    @Test
+    public void testConstrainPolicyAssociation() throws CoreException {
+        IPolicyCmptType sourcePolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType targetPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourcePolicy.newAssociation();
+        association.setTarget(targetPolicy.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setTargetRoleSingular(targetPolicy.getQualifiedName());
+        association.setTargetRolePlural(targetPolicy.getQualifiedName() + "s");
+
+        IPolicyCmptType subSourcePolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
+        subSourcePolicy.setSupertype(sourcePolicy.getQualifiedName());
+        IPolicyCmptType subTargetPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
+        subTargetPolicy.setSupertype(targetPolicy.getQualifiedName());
+
+        List<IAssociation> constrainingAssociations = subSourcePolicy
+                .constrainAssociation(association, subTargetPolicy);
+        assertTrue(constrainingAssociations.size() == 1);
+        for (IAssociation constrainingAssociation : constrainingAssociations) {
+            assertTrue(constrainingAssociation.isConstrain());
+            assertEquals(subTargetPolicy.getQualifiedName(), constrainingAssociation.getTarget());
+            MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
+            assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
+        }
+    }
+
+    @Test
+    public void testConstrainProductAssociation() throws CoreException {
+        IProductCmptType sourceProduct = newProductCmptType(ipsProject, "ProductA");
+        IProductCmptType targetProduct = newProductCmptType(ipsProject, "ProductB");
+        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)sourceProduct.newAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTarget(targetProduct.getQualifiedName());
+        association.setTargetRoleSingular(targetProduct.getQualifiedName());
+        association.setTargetRolePlural(targetProduct.getQualifiedName() + "s");
+
+        IProductCmptType subSourceProduct = newProductCmptType(ipsProject, "SubProductA");
+        subSourceProduct.setSupertype(sourceProduct.getQualifiedName());
+        IProductCmptType subTargetProduct = newProductCmptType(ipsProject, "SubProductB");
+        subTargetProduct.setSupertype(targetProduct.getQualifiedName());
+
+        List<IAssociation> constrainingAssociations = subSourceProduct.constrainAssociation(association,
+                subTargetProduct);
+        assertTrue(constrainingAssociations.size() == 1);
+        for (IAssociation constrainingAssociation : constrainingAssociations) {
+            assertTrue(constrainingAssociation.isConstrain());
+            assertEquals(subTargetProduct.getQualifiedName(), constrainingAssociation.getTarget());
+            MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
+            assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
+        }
+    }
 }
