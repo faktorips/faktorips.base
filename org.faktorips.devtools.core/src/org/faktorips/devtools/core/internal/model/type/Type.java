@@ -1087,11 +1087,15 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean addAssociation(IAssociation association) {
-            return !isDerivedUnionOrSubset(association) && !association.isConstrain();
+            return !isDerivedUnionOrSubset(association) && !isDetailToMaster(association) && !association.isConstrain();
         }
 
         private boolean isDerivedUnionOrSubset(IAssociation association) {
             return association.isDerivedUnion() || association.isSubsetOfADerivedUnion();
+        }
+
+        private boolean isDetailToMaster(IAssociation association) {
+            return AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType());
         }
 
         @Override

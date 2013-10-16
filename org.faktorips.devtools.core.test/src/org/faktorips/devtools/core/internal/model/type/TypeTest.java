@@ -1141,7 +1141,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindConstrainableAssociation_ignoreDderivedUnionAndSubset() throws CoreException {
+    public void testFindConstrainableAssociation_ignoreDerivedUnionAndSubset() throws CoreException {
         setUpConstrainableAssociations();
         constrains_association1.setDerivedUnion(true);
         constrains_association2.setSubsettedDerivedUnion(constrains_association1.getName());
@@ -1163,6 +1163,18 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         assertEquals(1, candidates.size());
         assertEquals(constrains_association1, candidates.get(0));
+    }
+
+    @Test
+    public void testFindConstrainableAssociation_ignoreDetailToMaster() throws CoreException {
+        setUpConstrainableAssociations();
+        constrains_association1.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        constrains_association2.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+
+        List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
+
+        assertEquals(1, candidates.size());
+        assertEquals("assoc1", candidates.get(0).getName());
     }
 
     private void setUpConstrainableAssociations() throws CoreException {
