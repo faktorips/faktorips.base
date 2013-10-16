@@ -546,5 +546,5 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * Returns an array of all associations of all super types not yet overwritten by this component
      * type.
      */
-    public List<IAssociation> findOverrideAssociationCandidates(IIpsProject ipsProject) throws CoreException;
+    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws CoreException;
 }

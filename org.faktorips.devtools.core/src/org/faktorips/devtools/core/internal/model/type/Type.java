@@ -433,20 +433,10 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IAssociation> findOverrideAssociationCandidates(IIpsProject ipsProject) throws CoreException {
-        IType foundSupertype = findSupertype(ipsProject);
-
-        if (foundSupertype == null) {
-            return new ArrayList<IAssociation>();
-        }
-
-        List<IAssociation> associationCandidates = new ArrayList<IAssociation>();
-        for (IAssociation association : getAssociationPartCollection()) {
-            if (!association.isDerivedUnion() || !association.isSubsetOfADerivedUnion()) {
-                associationCandidates.add(association);
-            }
-        }
-        return associationCandidates;
+    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws CoreException {
+        ConstrainableAssociationFinder finder = new ConstrainableAssociationFinder(false, ipsProject);
+        finder.start(this);
+        return finder.getAssociationsFound();
     }
 
     @Override
@@ -834,6 +824,13 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         protected abstract List<T> findAssociations(IType currentType);
 
+        /**
+         * Prevent more general associations from being added, which also applies to the constrained
+         * association itself (as it is the most general). The goal actually is to only find/add the
+         * most specific association of a hierarchy of constrained and constraining associations.
+         * Finding the original constrained association of a constraining association is easy, in
+         * contrast to the other way round.
+         */
         private boolean isConstrainAlreadyAdded(IAssociation association) {
             for (IAssociation alreadyAdded : getAssociationsFound()) {
                 if (alreadyAdded.isConstrain() && alreadyAdded.getName().equals(association.getName())) {
@@ -1061,6 +1058,28 @@ public abstract class Type extends BaseIpsObject implements IType {
                 return false;
             }
             return true;
+        }
+
+    }
+
+    private static class ConstrainableAssociationFinder extends AbstractAssociationFinder<IAssociation> {
+
+        public ConstrainableAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
+            super(superTypeFirst, ipsProject);
+        }
+
+        @Override
+        protected boolean addAssociation(IAssociation association) {
+            return !isDerivedUnionOrSubset(association) && !association.isConstrain();
+        }
+
+        private boolean isDerivedUnionOrSubset(IAssociation association) {
+            return association.isDerivedUnion() || association.isSubsetOfADerivedUnion();
+        }
+
+        @Override
+        protected List<IAssociation> findAssociations(IType currentType) {
+            return currentType.getAssociations();
         }
 
     }
