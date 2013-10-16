@@ -13,14 +13,11 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
-import org.eclipse.core.runtime.CoreException;
+import java.util.EnumSet;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -53,7 +50,6 @@ public class MethodsSection extends SimpleIpsPartsSection {
     @Override
     protected void performRefresh() {
         super.performRefresh();
-        methodsComposite.updateOverrideButtonEnabledState();
     }
 
     protected EditDialog createEditDialog(IMethod part, Shell shell) {
@@ -70,45 +66,16 @@ public class MethodsSection extends SimpleIpsPartsSection {
      */
     private class MethodsComposite extends IpsPartsComposite {
 
-        private Button overrideButton;
-
         private MethodsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), true, true, true, true, true, false, false, true, toolkit);
+            super(type, parent, getSite(), EnumSet.of(BooleanAttributes.CAN_CREATE, BooleanAttributes.CAN_DELETE,
+                    BooleanAttributes.CAN_EDIT, BooleanAttributes.CAN_MOVE, BooleanAttributes.CAN_OVERRIDE,
+                    BooleanAttributes.JUMP_TO_SOURCE_CODE_SUPPORTED, BooleanAttributes.SHOW_EDIT_BUTTON,
+                    BooleanAttributes.SHOW_OVERRIDE_BUTTON), toolkit);
+
         }
 
         @Override
-        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
-            super.createButtons(buttons, toolkit);
-            createButtonSpace(buttons, toolkit);
-
-            overrideButton = toolkit.createButton(buttons, Messages.MethodsSection_button);
-            overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                    | GridData.VERTICAL_ALIGN_BEGINNING));
-            overrideButton.addSelectionListener(new SelectionListener() {
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    overrideClicked();
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // Nothing to do
-                }
-            });
-            updateOverrideButtonEnabledState();
-            return true;
-        }
-
-        private void updateOverrideButtonEnabledState() {
-            try {
-                boolean supertypeExisting = getType().hasExistingSupertype(getType().getIpsProject());
-                overrideButton.setEnabled(supertypeExisting);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void overrideClicked() {
+        public void overrideClicked() {
             OverrideMethodDialog dialog = new OverrideMethodDialog(getType(), getShell());
             if (dialog.open() == Window.OK) {
                 getType().overrideMethods(dialog.getSelectedParts());
@@ -133,7 +100,6 @@ public class MethodsSection extends SimpleIpsPartsSection {
         @Override
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
-            overrideButton.setEnabled(flag);
         }
 
         @Override

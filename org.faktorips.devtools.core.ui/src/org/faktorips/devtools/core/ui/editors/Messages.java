@@ -47,6 +47,7 @@ public class Messages extends NLS {
     public static String IpsPartsComposite_buttonDelete;
     public static String IpsPartsComposite_buttonUp;
     public static String IpsPartsComposite_buttonDown;
+    public static String IpsPartsComposite_override;
 
     public static String UnparsableFilePage_fileContentIsNotParsable;
 

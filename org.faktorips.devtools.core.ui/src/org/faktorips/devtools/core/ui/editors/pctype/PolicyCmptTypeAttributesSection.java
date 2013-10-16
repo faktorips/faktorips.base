@@ -48,7 +48,7 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
     @Override
     protected void performRefresh() {
         super.performRefresh();
-        attributesComposite.updateOverrideButtonEnabledState();
+        // attributesComposite.updateOverrideButtonEnabledState();
     }
 
     private IPolicyCmptType getPolicyCmptType() {
@@ -104,10 +104,10 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
             });
         }
 
-        @Override
-        protected void updateOverrideButtonEnabledState() {
-            super.updateOverrideButtonEnabledState();
-        }
+        // @Override
+        // protected void updateOverrideButtonEnabledState() {
+        // super.updateOverrideButtonEnabledState();
+        // }
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
+import java.util.EnumSet;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -21,10 +23,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -59,10 +57,13 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
     protected abstract class AttributesComposite extends IpsPartsComposite {
 
         private IpsAction openEnumTypeAction;
-        private Button overrideButton;
 
         protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), true, true, true, true, true, true, true, true, toolkit);
+            super(type, parent, getSite(), EnumSet.of(BooleanAttributes.CAN_CREATE, BooleanAttributes.CAN_DELETE,
+                    BooleanAttributes.CAN_EDIT, BooleanAttributes.CAN_MOVE, BooleanAttributes.CAN_OVERRIDE,
+                    BooleanAttributes.JUMP_TO_SOURCE_CODE_SUPPORTED, BooleanAttributes.PULL_UP_REFACTORING_SUPPORTED,
+                    BooleanAttributes.RENAME_REFACTORING_SUPPORTED, BooleanAttributes.SHOW_EDIT_BUTTON,
+                    BooleanAttributes.SHOW_OVERRIDE_BUTTON), toolkit);
             openEnumTypeAction = new OpenEnumerationTypeInNewEditor(getViewer());
         }
 
@@ -95,43 +96,10 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         @Override
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
-            overrideButton.setEnabled(flag);
         }
 
         @Override
-        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
-            super.createButtons(buttons, toolkit);
-            createButtonSpace(buttons, toolkit);
-
-            overrideButton = toolkit.createButton(buttons, Messages.AttributesSection_OverrideButton);
-            overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                    | GridData.VERTICAL_ALIGN_BEGINNING));
-            overrideButton.addSelectionListener(new SelectionListener() {
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    overrideClicked();
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // Nothing to do
-                }
-            });
-            updateOverrideButtonEnabledState();
-
-            return true;
-        }
-
-        protected void updateOverrideButtonEnabledState() {
-            try {
-                boolean supertypeExisting = getType().hasExistingSupertype(getType().getIpsProject());
-                overrideButton.setEnabled(supertypeExisting);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void overrideClicked() {
+        public void overrideClicked() {
             OverrideAttributeDialog dialog = new OverrideAttributeDialog(getType(), getShell());
             if (dialog.open() == Window.OK) {
                 getType().overrideAttributes(dialog.getSelectedParts());
@@ -203,5 +171,4 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         }
 
     }
-
 }

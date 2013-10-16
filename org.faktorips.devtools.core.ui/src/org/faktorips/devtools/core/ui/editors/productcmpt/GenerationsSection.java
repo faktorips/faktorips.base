@@ -145,7 +145,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         @Override
         public boolean aboutToDelete(IIpsObjectPart part) {
             if (page.getProductCmpt().getGenerationsOrderedByValidDate().length == 2) {
-                super.deleteButton.setEnabled(false);
+                super.getDeleteButton().setEnabled(false);
             }
             return true;
         }
@@ -168,7 +168,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             super.updateButtonEnabledStates();
             boolean moreThenOneGeneration = page.getProductCmpt().getGenerationsOrderedByValidDate().length > 1;
             boolean editable = IpsUIPlugin.isEditable(page.getProductCmpt().getIpsSrcFile());
-            deleteButton.setEnabled(moreThenOneGeneration && editable);
+            getDeleteButton().setEnabled(moreThenOneGeneration && editable);
         }
 
         private class ContentProvider implements IStructuredContentProvider {

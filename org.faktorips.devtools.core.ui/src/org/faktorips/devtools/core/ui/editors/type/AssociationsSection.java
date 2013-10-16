@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
+import java.util.EnumSet;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -53,13 +55,10 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         private IpsAction openTargetAction;
 
         protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            this(type, parent, true, true, true, true, true, toolkit);
-        }
-
-        protected AssociationsComposite(IType type, Composite parent, boolean canCreate, boolean canEdit,
-                boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
-
-            super(type, parent, getSite(), canCreate, canEdit, canDelete, canMove, showEditButton, true, false, true,
+            super(type, parent, getSite(), EnumSet.of(BooleanAttributes.CAN_CREATE, BooleanAttributes.CAN_EDIT,
+                    BooleanAttributes.CAN_OVERRIDE, BooleanAttributes.CAN_DELETE, BooleanAttributes.CAN_MOVE,
+                    BooleanAttributes.SHOW_EDIT_BUTTON, BooleanAttributes.SHOW_OVERRIDE_BUTTON,
+                    BooleanAttributes.RENAME_REFACTORING_SUPPORTED, BooleanAttributes.JUMP_TO_SOURCE_CODE_SUPPORTED),
                     toolkit);
             openTargetAction = createOpenTargetAction();
         }
@@ -95,6 +94,11 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new AssociationContentProvider();
+        }
+
+        @Override
+        public void overrideClicked() {
+            // waiting for FIPS-2309 & FIPS-2310
         }
 
         private class AssociationContentProvider implements IStructuredContentProvider {

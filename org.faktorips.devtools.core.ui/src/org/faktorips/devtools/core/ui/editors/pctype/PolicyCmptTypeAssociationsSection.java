@@ -65,7 +65,7 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
              * Create default buttons without the 'New' button, because the 'New' button will be
              * overridden with wizard functionality.
              */
-            super(policyCmptType, parent, false, true, true, true, true, toolkit);
+            super(policyCmptType, parent, toolkit);
         }
 
         @Override
