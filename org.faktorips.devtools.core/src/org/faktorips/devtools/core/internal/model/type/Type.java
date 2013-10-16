@@ -443,16 +443,25 @@ public abstract class Type extends BaseIpsObject implements IType {
     public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes) {
         List<IAttribute> newAttributes = new ArrayList<IAttribute>(attributes.size());
         for (IAttribute attribute : attributes) {
-            IAttribute override = getAttribute(attribute.getName());
-
-            if (override == null) {
-                override = newAttribute();
-                override.copyFrom(attribute);
-            }
+            IAttribute override = createAttributeIfNeccessary(attribute);
             override.setOverwrite(true);
             newAttributes.add(override);
         }
         return newAttributes;
+    }
+
+    /**
+     * Checks whether an attribute with the given attribute's name already exists in this type and
+     * creates a new one otherwise. Returns the existent or newly created attribute. Copies all
+     * properties of the overridden attribute to the new one, if a new one needs to be created.
+     */
+    private IAttribute createAttributeIfNeccessary(IAttribute attribute) {
+        IAttribute override = getAttribute(attribute.getName());
+        if (override == null) {
+            override = newAttribute();
+            override.copyFrom(attribute);
+        }
+        return override;
     }
 
     @Override
@@ -688,18 +697,26 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAssociation constrainAssociation(IAssociation association, IType targetType) {
+    public IAssociation constrainAssociation(IAssociation associationToConstrain, IType targetType) {
+        IAssociation association = createAssociationIfNeccessary(associationToConstrain);
+        association.setTarget(targetType.getQualifiedName());
+        association.setConstrain(true);
+        return association;
+    }
 
-        IAssociation newAssociation = getAssociation(association.getName());
-
-        if (newAssociation == null) {
-            newAssociation = newAssociation();
-            newAssociation.copyFrom(association);
+    /**
+     * Checks whether an association with the given association's name already exists in this type
+     * and creates a new one otherwise. Returns the existent or newly created association. Copies
+     * all properties of the overridden association to the new one, if a new one needs to be
+     * created.
+     */
+    private IAssociation createAssociationIfNeccessary(IAssociation associationToConstrain) {
+        IAssociation association = getAssociation(associationToConstrain.getName());
+        if (association == null) {
+            association = newAssociation();
+            association.copyFrom(associationToConstrain);
         }
-        newAssociation.setTarget(targetType.getQualifiedName());
-        newAssociation.setConstrain(true);
-
-        return newAssociation;
+        return association;
     }
 
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {
