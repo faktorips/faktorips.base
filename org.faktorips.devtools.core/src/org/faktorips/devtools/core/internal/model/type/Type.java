@@ -433,6 +433,23 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
+    public List<IAssociation> findOverrideAssociationCandidates(IIpsProject ipsProject) throws CoreException {
+        IType foundSupertype = findSupertype(ipsProject);
+
+        if (foundSupertype == null) {
+            return new ArrayList<IAssociation>();
+        }
+
+        List<IAssociation> associationCandidates = new ArrayList<IAssociation>();
+        for (IAssociation association : getAssociationPartCollection()) {
+            if (!association.isDerivedUnion() || !association.isSubsetOfADerivedUnion()) {
+                associationCandidates.add(association);
+            }
+        }
+        return associationCandidates;
+    }
+
+    @Override
     public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes) {
         List<IAttribute> newAttributes = new ArrayList<IAttribute>(attributes.size());
         for (IAttribute attribute : attributes) {
