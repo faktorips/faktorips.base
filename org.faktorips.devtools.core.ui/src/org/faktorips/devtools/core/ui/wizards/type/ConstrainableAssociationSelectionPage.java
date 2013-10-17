@@ -23,12 +23,12 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 
-public class ConstrainableAssociationWizardPageOne extends WizardPage {
+public class ConstrainableAssociationSelectionPage extends WizardPage {
     private Composite container;
     private Label label;
     private TreeViewer viewer;
 
-    protected ConstrainableAssociationWizardPageOne(String pageName) {
+    protected ConstrainableAssociationSelectionPage(String pageName) {
         super(pageName);
         setTitle("First Page");
     }

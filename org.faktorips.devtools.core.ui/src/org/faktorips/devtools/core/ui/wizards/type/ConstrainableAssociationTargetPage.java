@@ -55,6 +55,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
             gd.horizontalSpan = 2;
             messageLabel.setLayoutData(gd);
         }
+        setControl(composite);
     }
 
     private Label createMessageArea(Composite composite) {

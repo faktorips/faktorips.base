@@ -15,22 +15,27 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 public class ConstrainableAssociationWizard extends Wizard {
-    private ConstrainableAssociationWizardPageOne firstPage;
-    private ConstrainableAssociationWizardPageTwo secondPage;
+    private ConstrainableAssociationSelectionPage firstPage;
+    private ConstrainableAssociationTargetPage secondPage;
+    private ConstrainableAssociationPmo pmo;
+    private BindingContext bindingContext;
 
     public ConstrainableAssociationWizard() {
         super();
         this.setWindowTitle(Messages.ConstrainableAssociationWizard_title);
+        pmo = new ConstrainableAssociationPmo();
+        bindingContext = new BindingContext();
     }
 
     @Override
     public void addPages() {
-        firstPage = new ConstrainableAssociationWizardPageOne("firstPage");
+        firstPage = new ConstrainableAssociationSelectionPage("firstPage");
         addPage(firstPage);
 
-        secondPage = new ConstrainableAssociationWizardPageTwo("secondPage");
+        secondPage = new ConstrainableAssociationTargetPage(this, null, bindingContext, pmo);
         addPage(secondPage);
     }
 
