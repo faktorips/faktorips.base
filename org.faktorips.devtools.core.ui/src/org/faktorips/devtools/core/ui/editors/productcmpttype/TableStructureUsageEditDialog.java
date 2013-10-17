@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -82,9 +84,12 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
 
     private CategoryPmo categoryPmo;
 
+    private ExtensionPropertyControlFactory extFactory;
+
     public TableStructureUsageEditDialog(ITableStructureUsage tblStructureUsage, Shell parentShell) {
         super(tblStructureUsage, parentShell, Messages.TblsStructureUsageEditDialog_title, true);
         this.tableStructureUsage = tblStructureUsage;
+        extFactory = new ExtensionPropertyControlFactory(tblStructureUsage);
     }
 
     @Override
@@ -291,6 +296,8 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         getToolkit().createFormLabel(workArea, Messages.TableStructureUsageEditDialog_categoryLabel);
         createCategoryCombo(workArea);
 
+        createExtPropertyDefinition(workArea);
+
         getToolkit().createVerticalSpacer(c, 10);
 
         Group grp = getToolkit()
@@ -298,6 +305,14 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         createTableStructureComposite(grp);
 
         return c;
+    }
+
+    private void createExtPropertyDefinition(Composite workArea) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+            extFactory.createControls(workArea, getToolkit(), tableStructureUsage,
+                    IExtensionPropertyDefinition.POSITION_BOTTOM);
+        }
+        extFactory.connectToModel(uiController);
     }
 
     private void createCategoryCombo(Composite workArea) {
