@@ -21,6 +21,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -30,6 +32,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationWizard;
 
 /**
  * A section to display and edit a type's associations.
@@ -97,12 +100,11 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         public void overrideClicked() {
-            // waiting for FIPS-2309 & FIPS-2310
-            // ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard();
-            // WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
-            // if (wizardDialog.open() == Window.OK) {
-            //
-            // }
+            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(getType());
+            WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
+            if (wizardDialog.open() == Window.OK) {
+                // waiting for operator
+            }
         }
 
         private class AssociationContentProvider implements IStructuredContentProvider {
