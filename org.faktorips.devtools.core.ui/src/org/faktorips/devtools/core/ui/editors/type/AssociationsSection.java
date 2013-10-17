@@ -56,6 +56,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
     protected abstract class AssociationsComposite extends IpsPartsComposite {
 
         private IpsAction openTargetAction;
+        private IType type;
 
         protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
             this(type, parent, EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
@@ -67,6 +68,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         protected AssociationsComposite(IType type, Composite parent,
                 EnumSet<AttributesForButtons> attributesForButtons, UIToolkit toolkit) {
             super(type, parent, getSite(), attributesForButtons, toolkit);
+            this.type = type;
             openTargetAction = createOpenTargetAction();
         }
 
@@ -105,7 +107,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         public void overrideClicked() {
-            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard();
+            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(type);
             WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
             if (wizardDialog.open() == Window.OK) {
                 // waiting for operator

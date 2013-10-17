@@ -39,7 +39,7 @@ public class ConstrainableAssociationWizard extends Wizard {
         firstPage = new ConstrainableAssociationSelectionPage(pmo, cmptType);
         addPage(firstPage);
 
-        secondPage = new ConstrainableAssociationTargetPage(this, null, bindingContext, pmo, cmptType);
+        secondPage = new ConstrainableAssociationTargetPage(pmo, cmptType);
         addPage(secondPage);
     }
 
