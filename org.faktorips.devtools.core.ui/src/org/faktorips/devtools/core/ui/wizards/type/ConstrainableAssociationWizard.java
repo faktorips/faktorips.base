@@ -59,7 +59,6 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     public ISelection getAssociationSelection() {
         ISelection selection = firstPage.getTreeViewerSelection();
-        secondPage.setSelection(selection);
         return selection;
     }
 

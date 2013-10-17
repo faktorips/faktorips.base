@@ -17,6 +17,8 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 public class ConstrainableAssociationPmo extends PresentationModelObject {
 
+    public static final String PROPERTY_SELECTED_ASSOCIATION_TEXT = "SelectedAssociationText";
+
     public ConstrainableAssociationPmo() {
         // TODO Auto-generated constructor stub
     }

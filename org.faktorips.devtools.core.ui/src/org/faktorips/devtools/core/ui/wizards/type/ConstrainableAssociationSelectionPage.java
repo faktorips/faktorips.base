@@ -27,36 +27,38 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
 public class ConstrainableAssociationSelectionPage extends WizardPage {
-    private Composite container;
+    private Composite composite;
     private Label label;
     private TreeViewer viewer;
     private final CandidatesContentProvider contentProvider;
     private IType cmptType;
+    private BindingContext bindingContext;
+    private StructuredViewerField<IIpsObject> listViewerField;
 
     protected ConstrainableAssociationSelectionPage(String pageName, IType cmptType) {
         super(pageName);
         setTitle("First Page");
         this.cmptType = cmptType;
         contentProvider = new CandidatesContentProvider(cmptType);
+        bindingContext = new BindingContext();
     }
 
     @Override
     public void createControl(Composite parent) {
-        container = new Composite(parent, SWT.NONE);
-
+        composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
-        container.setLayout(layout);
+        composite.setLayout(layout);
 
-        label = new Label(container, SWT.NONE);
-
+        label = new Label(composite, SWT.NONE);
         label.setText(Messages.ConstrainableAssociationWizard_labelSelectAssociation);
 
-        viewer = new TreeViewer(container, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        viewer = new TreeViewer(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new AssociationsLabelProvider());
@@ -65,12 +67,12 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         listLayoutData.heightHint = 200;
         listLayoutData.widthHint = 300;
         viewer.getControl().setLayoutData(listLayoutData);
-        StructuredViewerField<IIpsObject> listViewerField = new StructuredViewerField<IIpsObject>(viewer,
-                IIpsObject.class);
-
         viewer.setInput(contentProvider);
+        Object input = viewer.getInput();
+        listViewerField = new StructuredViewerField<IIpsObject>(viewer, IIpsObject.class);
+
         // Required to avoid an error in the system
-        setControl(container);
+        setControl(composite);
         setPageComplete(false);
 
     }
@@ -84,9 +86,22 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         return viewer.getSelection();
     }
 
+    public void bindContext() {
+        bindingContext.bindContent(listViewerField, new ConstrainableAssociationPmo(),
+                ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION_TEXT);
+        /*
+         * ConstrainableAssociationPmo pmo.addPropertyChangeListener(new PropertyChangeListener() {
+         * 
+         * @Override public void propertyChange(PropertyChangeEvent evt) { if
+         * (property.equals(evt.getPropertyName())) {
+         * updateDescription((IIpsObject)evt.getNewValue()); }
+         * 
+         * } });
+         */
+    }
+
     /** Provides the <tt>IAttribute</tt>s available for selection. */
     protected static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
-
         /**
          * @param cmptType The <tt>cmptType</tt> the <tt>IAttribute</tt>s available for selection
          *            belong to.
