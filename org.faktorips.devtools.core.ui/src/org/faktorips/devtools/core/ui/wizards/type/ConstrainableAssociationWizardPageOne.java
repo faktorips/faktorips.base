@@ -42,7 +42,7 @@ public class ConstrainableAssociationWizardPageOne extends WizardPage {
 
         label = new Label(container, SWT.NONE);
 
-        label.setText("Eine Assoziation zum Überschreiben auswählen");
+        label.setText(Messages.ConstrainableAssociationWizard_labelSelectAttribute);
 
         viewer = new TreeViewer(container, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
