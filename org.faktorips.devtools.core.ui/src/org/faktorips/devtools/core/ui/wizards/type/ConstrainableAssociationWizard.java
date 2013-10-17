@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 public class ConstrainableAssociationWizard extends Wizard {
@@ -22,20 +24,22 @@ public class ConstrainableAssociationWizard extends Wizard {
     private ConstrainableAssociationTargetPage secondPage;
     private ConstrainableAssociationPmo pmo;
     private BindingContext bindingContext;
+    private IType cmptType;
 
-    public ConstrainableAssociationWizard() {
+    public ConstrainableAssociationWizard(IType cmptType) {
         super();
         this.setWindowTitle(Messages.ConstrainableAssociationWizard_title);
         pmo = new ConstrainableAssociationPmo();
         bindingContext = new BindingContext();
+        this.cmptType = cmptType;
     }
 
     @Override
     public void addPages() {
-        firstPage = new ConstrainableAssociationSelectionPage("firstPage");
+        firstPage = new ConstrainableAssociationSelectionPage("firstPage", cmptType);
         addPage(firstPage);
 
-        secondPage = new ConstrainableAssociationTargetPage(this, null, bindingContext, pmo);
+        secondPage = new ConstrainableAssociationTargetPage(this, null, bindingContext, pmo, cmptType);
         addPage(secondPage);
     }
 
@@ -52,4 +56,15 @@ public class ConstrainableAssociationWizard extends Wizard {
         // TODO Auto-generated method stub
         return false;
     }
+
+    public ISelection getAssociationSelection() {
+        ISelection selection = firstPage.getTreeViewerSelection();
+        secondPage.setSelection(selection);
+        return selection;
+    }
+
+    public ISelection getTargetSelection() {
+        return secondPage.getTreeViewerSelection();
+    }
+
 }
