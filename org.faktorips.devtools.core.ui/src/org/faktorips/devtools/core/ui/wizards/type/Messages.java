@@ -32,8 +32,8 @@ public class Messages extends NLS {
     public static String NewTypePage_msgSupertypeDoesNotExist;
     public static String NewTypePage_superclass;
     public static String ConstrainableAssociationWizard_title;
-    public static String ConstrainableAssociationWizard_labelNoAttributes;
-    public static String ConstrainableAssociationWizard_labelSelectAttribute;
+    public static String ConstrainableAssociationWizard_labelNoAssociation;
+    public static String ConstrainableAssociationWizard_labelSelectAssociation;
     public static String ConstrainableAssociationWizard_labelSelectionTarget;
 
 }

@@ -22,7 +22,7 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     public ConstrainableAssociationWizard() {
         super();
-        this.setWindowTitle("BeziehungenAuswählen");
+        this.setWindowTitle(Messages.ConstrainableAssociationWizard_title);
     }
 
     @Override
