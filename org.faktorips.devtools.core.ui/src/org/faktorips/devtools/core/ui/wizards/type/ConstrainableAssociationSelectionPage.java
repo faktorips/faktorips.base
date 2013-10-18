@@ -58,7 +58,15 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         label = new Label(composite, SWT.NONE);
         label.setText(Messages.ConstrainableAssociationWizard_labelSelectAssociation);
 
-        viewer = new TreeViewer(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        generateTreeViewer();
+        bindContext();
+
+        setControl(composite);
+        setPageComplete(false);
+    }
+
+    private void generateTreeViewer() {
+        viewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new AssociationsLabelProvider());
@@ -68,10 +76,6 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         listLayoutData.widthHint = 300;
         viewer.getControl().setLayoutData(listLayoutData);
         viewer.setInput(contentProvider);
-        bindContext();
-
-        setControl(composite);
-        setPageComplete(false);
     }
 
     @Override

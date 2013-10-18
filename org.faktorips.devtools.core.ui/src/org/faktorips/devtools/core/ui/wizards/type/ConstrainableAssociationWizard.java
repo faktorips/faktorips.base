@@ -48,7 +48,7 @@ public class ConstrainableAssociationWizard extends Wizard {
         if (currentPage == firstPage) {
             return secondPage;
         }
-        return null; // TODO currentPage = secondPage }
+        return null;
     }
 
     @Override
