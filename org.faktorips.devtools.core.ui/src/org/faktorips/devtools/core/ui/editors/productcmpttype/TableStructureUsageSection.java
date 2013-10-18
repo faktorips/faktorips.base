@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import java.util.EnumSet;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -156,7 +158,9 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         private OpenTableStructuresInEditorAction openAction;
 
         public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, getSite(), true, true, true, true, true, false, false, true, toolkit);
+            super(productCmptType, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE,
+                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
+                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
         }
 
         @Override

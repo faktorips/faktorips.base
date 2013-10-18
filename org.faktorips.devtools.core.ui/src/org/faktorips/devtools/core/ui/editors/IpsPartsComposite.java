@@ -92,7 +92,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     private ArrayList<IDeleteListener> deleteListeners = new ArrayList<IDeleteListener>();
 
     /** The table view of this composite */
-    private TableViewer viewer;
+    private TableViewer tableViewer;
 
     private Button newButton;
 
@@ -140,9 +140,15 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected IpsPartsComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
-        this(pdObject, parent, site, true, true, false, true, true, false, false, false, toolkit);
+        this(pdObject, parent, site, EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
+                AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE, AttributesForButtons.SHOW_EDIT_BUTTON),
+                toolkit);
     }
 
+    /**
+     * @deprecated use constructor with EnumSet
+     */
+    @Deprecated
     protected IpsPartsComposite(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site, boolean canCreate,
             boolean canEdit, boolean canDelete, boolean canMove, boolean showEditButton,
             boolean renameRefactoringSupported, boolean pullUpRefactoringSupported, boolean jumpToSourceCodeSupported,
@@ -310,7 +316,11 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     @Override
     public boolean isDataChangeable() {
-        return canCreate || canEdit || canMove || canDelete || canOverride;
+        return canCreateOrCanEdit() || canMove || canDelete || canOverride;
+    }
+
+    private boolean canCreateOrCanEdit() {
+        return canCreate || canEdit;
     }
 
     @Override
@@ -363,14 +373,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         setEditDoubleClickListenerEnabled(true);
         registerOpenLinkListener();
 
-        viewer = new TableViewer(table);
-        viewer.setContentProvider(createContentProvider());
+        tableViewer = new TableViewer(table);
+        tableViewer.setContentProvider(createContentProvider());
         ILabelProvider lp = createLabelProvider();
         final MessageCueLabelProvider messageCueLabelProvider = new MessageCueLabelProvider(lp,
                 ipsObject.getIpsProject());
-        viewer.setLabelProvider(messageCueLabelProvider);
+        tableViewer.setLabelProvider(messageCueLabelProvider);
 
-        new TableMessageHoverService(viewer) {
+        new TableMessageHoverService(tableViewer) {
 
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
@@ -379,7 +389,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
         };
 
-        return viewer;
+        return tableViewer;
     }
 
     /**
@@ -502,7 +512,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newPart();
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -522,7 +534,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             public void widgetSelected(SelectionEvent e) {
                 try {
                     editPart();
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -542,7 +556,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             public void widgetSelected(SelectionEvent e) {
                 try {
                     deletePart();
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -562,7 +578,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(true);
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -579,7 +597,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(false);
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -616,32 +636,55 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     protected void updateButtonEnabledStates() {
         boolean itemSelected = false;
 
-        if (getViewer().getSelection() != null && !getViewer().getSelection().isEmpty()) {
+        if (isItemSelected()) {
             itemSelected = true;
         }
 
+        updateStateNewButton();
+        updateStateEditButton(itemSelected);
+        updateStateDeleteButton(itemSelected);
+        updateStateUpButton(itemSelected);
+        updateStateDownButton(itemSelected);
+        updateStateOverrideButton();
+    }
+
+    private boolean isItemSelected() {
+        return getViewer().getSelection() != null && !getViewer().getSelection().isEmpty();
+    }
+
+    private void updateStateNewButton() {
         if (newButton != null) {
             newButton.setEnabled(canCreate);
         }
+    }
 
+    private void updateStateEditButton(boolean itemSelected) {
         if (editButton != null) {
             editButton.setEnabled(itemSelected);
             editButton
                     .setText((canEdit ? Messages.IpsPartsComposite_buttonEdit : Messages.IpsPartsComposite_buttonShow));
         }
+    }
 
+    private void updateStateDeleteButton(boolean itemSelected) {
         if (deleteButton != null) {
             deleteButton.setEnabled(itemSelected && canDelete);
         }
+    }
 
+    private void updateStateUpButton(boolean itemSelected) {
         if (upButton != null) {
             upButton.setEnabled(itemSelected && canMove && !isFirstElementSelected());
         }
+    }
 
+    private void updateStateDownButton(boolean itemSelected) {
         if (downButton != null) {
             downButton.setEnabled(itemSelected && canMove && !isLastElementSelected());
         }
+    }
 
+    private void updateStateOverrideButton() {
         if (overrideButton != null) {
             try {
                 overrideButton.setEnabled(getType().hasExistingSupertype(getType().getIpsProject()));
@@ -690,8 +733,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
                 newPartConfirmed(newPart);
             }
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            // CSOFF: IllegalCatch
+        } catch (Exception ex) {
+            // CSON: IllegalCatch
+            IpsPlugin.logAndShowErrorDialog(ex);
         }
 
         refresh();
@@ -754,20 +799,23 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
 
         try {
-            Table table = (Table)getViewer().getControl();
-            int selectedIndexAfterDeletion = Math.min(table.getSelectionIndex(), table.getItemCount() - 2);
+            Table tableControl = (Table)getViewer().getControl();
+            int selectedIndexAfterDeletion = Math
+                    .min(tableControl.getSelectionIndex(), tableControl.getItemCount() - 2);
             IIpsObjectPart part = getSelectedPart();
             if (!fireAboutToDelete(part)) {
                 return;
             }
             deleteIpsPart(part);
             if (selectedIndexAfterDeletion >= 0) {
-                Object selected = viewer.getElementAt(selectedIndexAfterDeletion);
-                viewer.setSelection(new StructuredSelection(selected), true);
+                Object selected = tableViewer.getElementAt(selectedIndexAfterDeletion);
+                tableViewer.setSelection(new StructuredSelection(selected), true);
             }
             fireDeleted(part);
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            // CSOFF: IllegalCatch
+        } catch (Exception ex) {
+            // CSON: IllegalCatch
+            IpsPlugin.logAndShowErrorDialog(ex);
         }
 
         refresh();
@@ -790,16 +838,16 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     private void moveParts(boolean up) {
-        TableViewer viewer = (TableViewer)getViewer();
-        if (viewer.getSelection().isEmpty()) {
+        TableViewer viewerControl = (TableViewer)getViewer();
+        if (viewerControl.getSelection().isEmpty()) {
             return;
         }
 
-        Table table = viewer.getTable();
-        int[] newSelection = moveParts(table.getSelectionIndices(), up);
-        viewer.refresh();
-        table.setSelection(newSelection);
-        viewer.getControl().setFocus();
+        Table tableControl = viewerControl.getTable();
+        int[] newSelection = moveParts(tableControl.getSelectionIndices(), up);
+        viewerControl.refresh();
+        tableControl.setSelection(newSelection);
+        viewerControl.getControl().setFocus();
 
         refresh();
     }

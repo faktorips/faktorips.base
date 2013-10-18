@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -134,7 +135,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private Button inheritButton;
 
         public EnumAttributesComposite(IEnumType enumType, IWorkbenchPartSite site, Composite parent, UIToolkit toolkit) {
-            super(enumType, parent, site, true, true, true, true, true, true, true, true, toolkit);
+            super(enumType, parent, site, EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
+                    AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
+                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
+                    AttributesForButtons.PULL_UP_REFACTORING_SUPPORTED,
+                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
             this.enumType = enumType;
             addSelectionChangedListener(this);
         }

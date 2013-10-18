@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.EnumSet;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -80,7 +82,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, getSite(), true, true, true, false, true, false, false, false, toolkit);
+            super(ipsObject, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE,
+                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_DELETE,
+                    AttributesForButtons.SHOW_EDIT_BUTTON), toolkit);
 
             super.setEditDoubleClickListenerEnabled(false);
 

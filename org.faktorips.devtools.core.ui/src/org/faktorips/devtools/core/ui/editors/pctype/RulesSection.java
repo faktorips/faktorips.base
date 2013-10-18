@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.EnumSet;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -56,7 +58,10 @@ public class RulesSection extends SimpleIpsPartsSection {
     private class RulesComposite extends IpsPartsComposite {
 
         RulesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, getSite(), true, true, true, true, true, false, false, true, toolkit);
+            super(pdObject, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE,
+                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
+                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+
         }
 
         @Override
