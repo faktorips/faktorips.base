@@ -58,10 +58,15 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         private IpsAction openTargetAction;
 
         protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
+            this(type, parent, EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
                     AttributesForButtons.CAN_OVERRIDE, AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
                     AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
                     AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+        }
+
+        protected AssociationsComposite(IType type, Composite parent,
+                EnumSet<AttributesForButtons> attributesForButtons, UIToolkit toolkit) {
+            super(type, parent, getSite(), attributesForButtons, toolkit);
             openTargetAction = createOpenTargetAction();
         }
 
@@ -100,7 +105,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         public void overrideClicked() {
-            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(getType());
+            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard();
             WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
             if (wizardDialog.open() == Window.OK) {
                 // waiting for operator

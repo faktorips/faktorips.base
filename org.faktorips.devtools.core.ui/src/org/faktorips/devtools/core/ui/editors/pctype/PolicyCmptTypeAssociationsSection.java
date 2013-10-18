@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.EnumSet;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -65,7 +67,10 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
              * Create default buttons without the 'New' button, because the 'New' button will be
              * overridden with wizard functionality.
              */
-            super(policyCmptType, parent, toolkit);
+            super(policyCmptType, parent, EnumSet.of(AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_OVERRIDE,
+                    AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
+                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
+                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
         }
 
         @Override
