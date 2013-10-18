@@ -36,7 +36,7 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     @Override
     public void addPages() {
-        firstPage = new ConstrainableAssociationSelectionPage("firstPage", cmptType);
+        firstPage = new ConstrainableAssociationSelectionPage(pmo, cmptType);
         addPage(firstPage);
 
         secondPage = new ConstrainableAssociationTargetPage(this, null, bindingContext, pmo, cmptType);

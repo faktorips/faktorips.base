@@ -25,10 +25,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
@@ -39,14 +38,15 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
     private final CandidatesContentProvider contentProvider;
     private IType cmptType;
     private BindingContext bindingContext;
-    private StructuredViewerField<IIpsObject> listViewerField;
+    private ConstrainableAssociationPmo pmo;
 
-    protected ConstrainableAssociationSelectionPage(String pageName, IType cmptType) {
-        super(pageName);
-        setTitle("First Page");
+    protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo, IType cmptType) {
+        super("");
+        setTitle(cmptType.getName());
         this.cmptType = cmptType;
         contentProvider = new CandidatesContentProvider(cmptType);
         bindingContext = new BindingContext();
+        this.pmo = pmo;
     }
 
     @Override
@@ -68,13 +68,10 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         listLayoutData.widthHint = 300;
         viewer.getControl().setLayoutData(listLayoutData);
         viewer.setInput(contentProvider);
-        Object input = viewer.getInput();
-        listViewerField = new StructuredViewerField<IIpsObject>(viewer, IIpsObject.class);
+        bindContext();
 
-        // Required to avoid an error in the system
         setControl(composite);
         setPageComplete(false);
-
     }
 
     @Override
@@ -87,32 +84,24 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
     }
 
     public void bindContext() {
-        bindingContext.bindContent(listViewerField, new ConstrainableAssociationPmo(),
-                ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION_TEXT);
-        /*
-         * ConstrainableAssociationPmo pmo.addPropertyChangeListener(new PropertyChangeListener() {
-         * 
-         * @Override public void propertyChange(PropertyChangeEvent evt) { if
-         * (property.equals(evt.getPropertyName())) {
-         * updateDescription((IIpsObject)evt.getNewValue()); }
-         * 
-         * } });
-         */
+        bindingContext.bindContent(viewer, IAssociation.class, pmo,
+                ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION);
     }
 
-    /** Provides the <tt>IAttribute</tt>s available for selection. */
+    @Override
+    public void dispose() {
+        super.dispose();
+        bindingContext.dispose();
+    }
+
     protected static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
-        /**
-         * @param cmptType The <tt>cmptType</tt> the <tt>IAttribute</tt>s available for selection
-         *            belong to.
-         */
 
         public CandidatesContentProvider(IType cmptType) {
             super(cmptType);
         }
 
         @Override
-        public List<? extends IIpsObjectPart> getAvailableParts(IIpsObject ipsObject) {
+        public List<? extends IAssociation> getAvailableParts(IIpsObject ipsObject) {
             IType cmptType = (IType)ipsObject;
             try {
                 return cmptType.findConstrainableAssociationCandidates(cmptType.getIpsProject());

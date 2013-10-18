@@ -13,17 +13,35 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 public class ConstrainableAssociationPmo extends PresentationModelObject {
 
-    public static final String PROPERTY_SELECTED_ASSOCIATION_TEXT = "SelectedAssociationText";
+    public static final String PROPERTY_SELECTED_ASSOCIATION = "selectedAssociation";
+    public static final String PROPERTY_SELECTED_TARGET_TEXT = "selectedTargetText";
+
+    private IAssociation selectedAssociation;
 
     public ConstrainableAssociationPmo() {
-        // TODO Auto-generated constructor stub
+        super();
     }
 
-    public String getSelectedAssociationText() {
+    public String getSelectedTargetText() {
         return "";
     }
+
+    public void setSelectedTargetText(IType target) {
+
+    }
+
+    public IAssociation getSelectedAssociation() {
+        return selectedAssociation;
+    }
+
+    public void setSelectedAssociation(IAssociation selectedAssociation) {
+        this.selectedAssociation = selectedAssociation;
+    }
+
 }
