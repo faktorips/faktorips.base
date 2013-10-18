@@ -58,7 +58,8 @@ public class CreateConstrainingAssociationOperation {
      *            sub-type or the same type as the constrained association's target. Must be the
      *            same class as the sourceType (both {@link IPolicyCmptType} or both
      *            {@link IProductCmptType}.
-     * @throws IllegalArgumentException if the argument's classes do not match as described above
+     * @throws IllegalArgumentException if the argument's classes do not match as described above or
+     *             if the arguments are <code>null</code>
      */
     public CreateConstrainingAssociationOperation(IType sourceType, IAssociation constrainedAssociation,
             IType targetType) {
@@ -69,27 +70,38 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private void assertValidity() {
+        assertNotNull();
         assertSameType();
         assertAssociationMatchesType();
         assertTargetSubtype();
     }
 
+    private void assertNotNull() {
+        assertNotNull(getSourceType());
+        assertNotNull(getConstrainedAssociation());
+        assertNotNull(getTargetType());
+    }
+
+    private void assertNotNull(Object object) {
+        if (object == null) {
+            throw new IllegalArgumentException(Messages.CreateConstrainingAssociationOperation_argumentsMustNotBeNull);
+        }
+    }
+
     private void assertSameType() {
         if (!getSourceType().getClass().equals(getTargetType().getClass())) {
-            throw new IllegalArgumentException(
-                    NLS.bind(
-                            "The source type ({0}) and target type ({1}) must either be both IPolicyCmptTypes or both IProductCmptTypes", //$NON-NLS-1$
-                            getSourceType().getClass(), getTargetType().getClass()));
+            throw new IllegalArgumentException(NLS.bind(
+                    Messages.CreateConstrainingAssociationOperation_sourceAndTargetTypeMustBeOfSameClass,
+                    getSourceType().getClass(), getTargetType().getClass()));
         }
     }
 
     private void assertAssociationMatchesType() {
         IType typeContainingTheAssociation = getConstrainedAssociation().getType();
         if (!getSourceType().getClass().equals(typeContainingTheAssociation.getClass())) {
-            throw new IllegalArgumentException(
-                    NLS.bind(
-                            "The source type ({0}) and association's type ({1}) must match (either IPolicyCmptType and IPolicyCmptTypeAssociation or IProductCmptType and IProductCmptTypeAssociation)", //$NON-NLS-1$
-                            getSourceType().getClass(), typeContainingTheAssociation.getClass()));
+            throw new IllegalArgumentException(NLS.bind(
+                    Messages.CreateConstrainingAssociationOperation_sourceTypeAndAssociationClassMustMatch,
+                    getSourceType().getClass(), typeContainingTheAssociation.getClass()));
         }
     }
 
@@ -97,8 +109,8 @@ public class CreateConstrainingAssociationOperation {
         if (!isTargetTypeValid()) {
             throw new IllegalArgumentException(
                     NLS.bind(
-                            "The given target type ({0}) must be a subtype of (or same type as) the constrained association's target type ({1})", //$NON-NLS-1$
-                            getTargetType(), getConstrainedTargetType()));
+                            Messages.CreateConstrainingAssociationOperation_targetTypeMustBeSubclassOfTheConstrainedAssociationTarget,
+                            getTargetType().getName(), getConstrainedTargetType().getName()));
         }
     }
 
@@ -157,8 +169,8 @@ public class CreateConstrainingAssociationOperation {
         try {
             IPolicyCmptTypeAssociation templateInverseAssociation = constrainedAssoc
                     .findInverseAssociation(getIpsProject());
-            IPolicyCmptType targetType = (IPolicyCmptType)assoc.findTarget(getIpsProject());
-            targetType.constrainAssociation(templateInverseAssociation, assoc.getType());
+            IPolicyCmptType inverseAssocSourceType = (IPolicyCmptType)assoc.findTarget(getIpsProject());
+            inverseAssocSourceType.constrainAssociation(templateInverseAssociation, assoc.getType());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

@@ -252,6 +252,21 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, otherProductClass);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateConstrainingAssociation_illegalArgument_null1() {
+        new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateConstrainingAssociation_illegalArgument_null2() {
+        new CreateConstrainingAssociationOperation(subSourceProduct, null, subTargetProduct);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateConstrainingAssociation_illegalArgument_null3() {
+        new CreateConstrainingAssociationOperation(null, productAssociation, subTargetProduct);
+    }
+
     private void assertErrorFreeness() throws CoreException {
         assertNoErrorsIn(subSourcePolicy);
         assertNoErrorsIn(subTargetPolicy);
