@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -23,7 +24,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -34,18 +34,15 @@ import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
 public class ConstrainableAssociationSelectionPage extends WizardPage {
     private Composite composite;
-    private Label label;
     private TreeViewer viewer;
-    private final CandidatesContentProvider contentProvider;
-    private IType cmptType;
+    private IType type;
     private BindingContext bindingContext;
     private ConstrainableAssociationPmo pmo;
 
-    protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo, IType cmptType) {
-        super("");
-        setTitle(cmptType.getName());
-        this.cmptType = cmptType;
-        contentProvider = new CandidatesContentProvider(cmptType);
+    protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo, IType type) {
+        super(StringUtils.EMPTY);
+        setTitle(Messages.ConstrainableAssociationWizard_labelSelectAssociation);
+        this.type = type;
         bindingContext = new BindingContext();
         this.pmo = pmo;
     }
@@ -56,27 +53,24 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         GridLayout layout = new GridLayout();
         composite.setLayout(layout);
 
-        label = new Label(composite, SWT.NONE);
-        label.setText(Messages.ConstrainableAssociationWizard_labelSelectAssociation);
-
-        generateTreeViewer();
+        createTreeViewer();
         bindContext();
 
         setControl(composite);
         setPageComplete(false);
     }
 
-    private void generateTreeViewer() {
-        viewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL);
-        viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-        viewer.setContentProvider(contentProvider);
-        viewer.setLabelProvider(new AssociationsLabelProvider());
-
+    private void createTreeViewer() {
+        viewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         listLayoutData.heightHint = 200;
         listLayoutData.widthHint = 300;
-        viewer.getControl().setLayoutData(listLayoutData);
-        viewer.setInput(contentProvider);
+        viewer.getTree().setLayoutData(listLayoutData);
+
+        viewer.setContentProvider(new CandidatesContentProvider(type));
+        viewer.setLabelProvider(new AssociationsLabelProvider());
+        viewer.setInput(type);
+        viewer.expandAll();
     }
 
     public ISelection getTreeViewerSelection() {

@@ -17,20 +17,17 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 public class ConstrainableAssociationWizard extends Wizard {
     private ConstrainableAssociationSelectionPage firstPage;
     private ConstrainableAssociationTargetPage secondPage;
     private ConstrainableAssociationPmo pmo;
-    private BindingContext bindingContext;
     private IType cmptType;
 
     public ConstrainableAssociationWizard(IType cmptType) {
         super();
         this.setWindowTitle(Messages.ConstrainableAssociationWizard_title);
         pmo = new ConstrainableAssociationPmo();
-        bindingContext = new BindingContext();
         this.cmptType = cmptType;
     }
 
