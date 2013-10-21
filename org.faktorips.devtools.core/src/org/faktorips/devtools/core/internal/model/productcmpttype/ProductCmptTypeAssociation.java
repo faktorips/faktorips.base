@@ -52,6 +52,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private boolean isChangingOverTime = true;
 
+    private boolean isVisible = true;
+
     public ProductCmptTypeAssociation(IProductCmptType parent, String id) {
         super(parent, id);
         setAssociationTypeInternal(AssociationType.AGGREGATION);
@@ -392,6 +394,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             isChangingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
+        if (element.hasAttribute(PROPERTY_VISIBLE)) {
+            isVisible = Boolean.parseBoolean(element.getAttribute(PROPERTY_VISIBLE));
+        }
     }
 
     @Override
@@ -400,6 +405,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, matchingAssociationSource);
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
         newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, Boolean.toString(isChangingOverTime));
+        newElement.setAttribute(PROPERTY_VISIBLE, Boolean.toString(isVisible));
     }
 
     @Override
@@ -412,6 +418,18 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         boolean oldValue = isChangingOverTime;
         isChangingOverTime = changingOverTime;
         valueChanged(oldValue, isChangingOverTime);
+    }
+
+    @Override
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        boolean oldValue = isVisible;
+        isVisible = visible;
+        valueChanged(oldValue, isVisible);
     }
 
     @Override

@@ -49,6 +49,8 @@ public interface IProductCmptTypeAssociation extends IAssociation {
 
     public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
+    public static final String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
+
     /**
      * Message code for validation messages when the matching association was not found
      */
@@ -227,5 +229,32 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      *            <code>false</code> if they are static.
      */
     void setChangingOverTime(boolean changingOverTime);
+
+    /**
+     * Returns whether this association is visible or not.
+     * <p>
+     * If this method returns false, the association will not be displayed in the component editor
+     * and its value cannot be modified in the editor. If the method returns true, the association
+     * will be displayed in the editor and can be edited by the user.
+     * <p>
+     * The default value is true.
+     * 
+     * @return true if the association is visible, false otherwise
+     */
+    boolean isVisible();
+
+    /**
+     * Setting the property <code>visible</code> for this association.
+     * <p>
+     * If this association is marked as visible, the association will be displayed in the component
+     * editor. If not marked as visible, the association will not be displayed in the component
+     * editor.
+     * <p>
+     * This flag is useful in combination with overwritten attributes when an insurance class needs
+     * the association but does not need to modify its value.
+     * 
+     * @param visible true to mark the association as visible, false to mark it as invisible
+     */
+    void setVisible(boolean visible);
 
 }
