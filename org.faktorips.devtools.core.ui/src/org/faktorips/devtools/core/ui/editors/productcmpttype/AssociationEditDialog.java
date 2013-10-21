@@ -118,6 +118,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
         createGeneralGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_generalGroup));
 
+        Group displayGroup = getToolkit().createGroup(panel, Messages.AttributeEditDialog_displayGroup);
+        createDisplayGroupContent(displayGroup);
+
         createDerivedUnionGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
 
@@ -202,6 +205,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         cardinalityField = new CardinalityField(maxCardinalityText);
         getBindingContext().bindContent(cardinalityField, association,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+    }
+
+    private void createDisplayGroupContent(Composite c) {
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
+
+        final Checkbox cb = getToolkit().createCheckbox(workArea, true);
+        cb.setText(Messages.AttributeEditDialog_visibilityNote);
+        getBindingContext().bindContent(cb, association, IProductCmptTypeAssociation.PROPERTY_VISIBLE);
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
