@@ -391,9 +391,17 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
         matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
         // use default value in case null
+        initPropertyChangingOverTime(element);
+        initPropertyVisible(element);
+    }
+
+    private void initPropertyChangingOverTime(Element element) {
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             isChangingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
+    }
+
+    private void initPropertyVisible(Element element) {
         if (element.hasAttribute(PROPERTY_VISIBLE)) {
             isVisible = Boolean.parseBoolean(element.getAttribute(PROPERTY_VISIBLE));
         }
