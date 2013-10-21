@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.binding;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.util.BeanUtil;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.util.BeanUtil;
 public abstract class ControlPropertyBinding {
 
     private Control control;
+
     private Object object;
 
     private PropertyDescriptor property;
@@ -37,9 +39,9 @@ public abstract class ControlPropertyBinding {
      * @param control the control to be bound to
      * @param object the model object containing the property that is bound to the given control
      * @param propertyName the name of the property that is bound to the given control
-     * @param expectedType the data type (class) of the model object's property. This information
-     *            is used to check the validity of a binding. <code>null</code> can be given to
-     *            bypass this type-check e.g. for primitive types.
+     * @param expectedType the data type (class) of the model object's property. This information is
+     *            used to check the validity of a binding. <code>null</code> can be given to bypass
+     *            this type-check e.g. for primitive types.
      * @throws IllegalArgumentException if the bound property's type/class does not match the
      *             expectedType.
      */
@@ -102,5 +104,17 @@ public abstract class ControlPropertyBinding {
     @Override
     public String toString() {
         return "Binding " + object.toString() + "#" + property.getName() + " to control " + control; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    protected Object readProperty() {
+        try {
+            return getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

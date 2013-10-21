@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.EnableBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -745,10 +746,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             // persistence is enabled initialize enable / disable bindings
             // disable all persistent controls if attribute is marked as transient
             getBindingContext().add(
-                    new NotificationPropertyBinding(allPersistentProps, association.getPersistenceAssociatonInfo(),
-                            IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+                    new PropertyChangeBinding<Boolean>(allPersistentProps, association
+                            .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_TRANSIENT,
+                            Boolean.TYPE) {
                         @Override
-                        public void propertyChanged() {
+                        public void propertyChanged(Boolean old, Boolean newValue) {
                             IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                             boolean persistEnabled = isPersistEnabled(associationInfo);
                             if (!persistEnabled) {
@@ -761,10 +763,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     });
             // disable join table
             getBindingContext().add(
-                    new NotificationPropertyBinding(joinTableComposite, association.getPersistenceAssociatonInfo(),
+                    new PropertyChangeBinding<Boolean>(joinTableComposite, association
+                            .getPersistenceAssociatonInfo(),
                             IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.TYPE) {
                         @Override
-                        public void propertyChanged() {
+                        public void propertyChanged(Boolean old, Boolean newValue) {
                             IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                             boolean persistEnabled = isPersistEnabled(associationInfo);
                             if (!persistEnabled) {
@@ -786,10 +789,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     });
             // disable cascade type checkboxes
             getBindingContext().add(
-                    new NotificationPropertyBinding(cascadeTypesComposite, association.getPersistenceAssociatonInfo(),
+                    new PropertyChangeBinding<Boolean>(cascadeTypesComposite, association
+                            .getPersistenceAssociatonInfo(),
                             IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.TYPE) {
                         @Override
-                        public void propertyChanged() {
+                        public void propertyChanged(Boolean old, Boolean newValue) {
                             IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                             boolean persistEnabled = isPersistEnabled(associationInfo);
                             if (!persistEnabled) {
@@ -952,31 +956,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH);
 
             return group;
-        }
-
-        private abstract class NotificationPropertyBinding extends ControlPropertyBinding {
-            private Object oldValue;
-
-            public NotificationPropertyBinding(Control control, Object object, String propertyName,
-                    Class<?> exptectedType) {
-                super(control, object, propertyName, exptectedType);
-            }
-
-            @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                try {
-                    Object newValue = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-                    if (oldValue == null || !oldValue.equals(newValue)) {
-                        oldValue = newValue;
-                        propertyChanged();
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            protected abstract void propertyChanged();
-
         }
 
     }
