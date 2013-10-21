@@ -1081,13 +1081,40 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private static class ConstrainableAssociationFinder extends AbstractAssociationFinder<IAssociation> {
 
+        private List<String> constrainsNames = new ArrayList<String>();
+
         public ConstrainableAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
             super(superTypeFirst, ipsProject);
         }
 
         @Override
+        protected boolean visit(IType currentType) {
+            List<? extends IAssociation> associations = findAssociations(currentType);
+            addConstrainingAssociations(associations);
+            int index;
+            index = getAssociationsFound().size();
+            for (IAssociation association : associations) {
+                if (addAssociation(association)) {
+                    getAssociationsFound().add(index, association);
+                    index++;
+                }
+            }
+            // Always continue because we search for all matching association.
+            return true;
+        }
+
+        private void addConstrainingAssociations(List<? extends IAssociation> associations) {
+            for (IAssociation association : associations) {
+                if (association.isConstrain()) {
+                    constrainsNames.add(association.getName());
+                }
+            }
+        }
+
+        @Override
         protected boolean addAssociation(IAssociation association) {
-            return !isDerivedUnionOrSubset(association) && !isDetailToMaster(association) && !association.isConstrain();
+            return !isDerivedUnionOrSubset(association) && !isDetailToMaster(association) && !association.isConstrain()
+                    && !isConstrained(association);
         }
 
         private boolean isDerivedUnionOrSubset(IAssociation association) {
@@ -1096,6 +1123,10 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         private boolean isDetailToMaster(IAssociation association) {
             return AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType());
+        }
+
+        private boolean isConstrained(IAssociation association) {
+            return constrainsNames.contains(association.getName());
         }
 
         @Override

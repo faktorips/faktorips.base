@@ -1152,17 +1152,16 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindConstrainableAssociation_ignoreConstrainingAssociations() throws CoreException {
+    public void testFindConstrainableAssociation_ignoreConstrainingAndConstrainedAssociations() throws CoreException {
         setUpConstrainableAssociations();
         IPolicyCmptTypeAssociation assoc3 = createAssociation(constrains_subSourcePolicy, constrains_subTargetPolicy,
                 constrains_association1.getTargetRoleSingular());
         assoc3.setConstrain(true);
-        constrains_association2.setDerivedUnion(true);
 
         List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
 
         assertEquals(1, candidates.size());
-        assertEquals(constrains_association1, candidates.get(0));
+        assertEquals(constrains_association2, candidates.get(0));
     }
 
     @Test
