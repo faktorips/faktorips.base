@@ -318,29 +318,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             List<IProductCmptLink> links = activeGeneration.getLinksIncludingProductCmpt();
             putLinksToMap(links, mapping);
 
-            List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
-            try {
-                IProductCmptType cmptType = cmpt.findProductCmptType(ipsProject);
-                if (cmptType != null) {
-                    // get again all associations. in the previous constructed list there are only
-                    // not empty relations
-                    associations = cmptType.findAllNotDerivedAssociations(ipsProject);
-                }
-                for (IAssociation iAssociation : associations) {
-                    IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
-                    ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent,
-                            association);
-                    List<IProductCmptLink> linksList = mapping.get(association.getName());
-                    if (linksList == null) {
-                        linksList = new ArrayList<IProductCmptLink>();
-                    }
-                    node.setChildren(buildChildNodes(linksList.toArray(new IProductCmptLink[linksList.size()]), node,
-                            association));
-                    children.add(node);
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            addAssociationsAsChildren(parent, children, cmpt, mapping);
 
             List<IValidationRuleConfig> rules = activeGeneration.getValidationRuleConfigs();
             for (IValidationRuleConfig rule : rules) {
@@ -356,6 +334,37 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
         ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
         return children.toArray(result);
+    }
+
+    private void addAssociationsAsChildren(ProductCmptStructureReference parent,
+            List<IProductCmptStructureReference> children,
+            IProductCmpt cmpt,
+            Hashtable<String, List<IProductCmptLink>> mapping) throws CycleInProductStructureException {
+        List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
+        try {
+            IProductCmptType cmptType = cmpt.findProductCmptType(ipsProject);
+            if (cmptType != null) {
+                // get again all associations. in the previous constructed list there are only
+                // not empty relations
+                associations = cmptType.findAllNotDerivedAssociations(ipsProject);
+            }
+            for (IAssociation iAssociation : associations) {
+                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
+                if (association.isVisible()) {
+                    ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent,
+                            association);
+                    List<IProductCmptLink> linksList = mapping.get(association.getName());
+                    if (linksList == null) {
+                        linksList = new ArrayList<IProductCmptLink>();
+                    }
+                    node.setChildren(buildChildNodes(linksList.toArray(new IProductCmptLink[linksList.size()]), node,
+                            association));
+                    children.add(node);
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
     }
 
     private void putLinksToMap(List<IProductCmptLink> links, Hashtable<String, List<IProductCmptLink>> mapping) {
