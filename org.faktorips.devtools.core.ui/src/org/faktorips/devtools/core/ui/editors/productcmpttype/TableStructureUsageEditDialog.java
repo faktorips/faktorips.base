@@ -59,7 +59,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -67,7 +67,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Edit dialog to edit the table structure usages.
  */
-public class TableStructureUsageEditDialog extends IpsPartEditDialog {
+public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
 
     private TextField nameField;
     private CheckboxField mandatoryTableContentField;
@@ -286,17 +286,20 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
 
         getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_rolenameLabel);
         Text nameText = getToolkit().createText(workArea);
+        nameField = new TextField(nameText);
+        getBindingContext().bindContent(nameField, tableStructureUsage, ITableStructureUsage.PROPERTY_ROLENAME);
 
         getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_contentRequiredLabel);
         Checkbox mandatoryTableContent = getToolkit().createCheckbox(workArea);
-
-        nameField = new TextField(nameText);
         mandatoryTableContentField = new CheckboxField(mandatoryTableContent);
+        getBindingContext().bindContent(mandatoryTableContentField, tableStructureUsage,
+                ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT);
 
         getToolkit().createFormLabel(workArea, Messages.TableStructureUsageEditDialog_categoryLabel);
         createCategoryCombo(workArea);
+        getBindingContext().bindContent(categoryField, categoryPmo, IProductCmptProperty.PROPERTY_CATEGORY);
 
-        createExtPropertyDefinition(workArea);
+        createExtFactoryControls(workArea);
 
         getToolkit().createVerticalSpacer(c, 10);
 
@@ -307,12 +310,12 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         return c;
     }
 
-    private void createExtPropertyDefinition(Composite workArea) {
+    private void createExtFactoryControls(Composite workArea) {
         if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             extFactory.createControls(workArea, getToolkit(), tableStructureUsage,
                     IExtensionPropertyDefinition.POSITION_BOTTOM);
         }
-        extFactory.connectToModel(uiController);
+        extFactory.bind(getBindingContext());
     }
 
     private void createCategoryCombo(Composite workArea) {
@@ -330,14 +333,6 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
             }
         });
 
-    }
-
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(nameField, ITableStructureUsage.PROPERTY_ROLENAME);
-        uiController.add(mandatoryTableContentField, ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT);
-        uiController.add(categoryField, categoryPmo, IProductCmptProperty.PROPERTY_CATEGORY);
     }
 
     /**
