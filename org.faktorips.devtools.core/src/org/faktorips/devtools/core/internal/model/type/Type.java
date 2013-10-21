@@ -818,7 +818,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean visit(IType currentType) {
-            List<T> associations = findAssociations(currentType);
+            List<T> associations = getAssociations(currentType);
             int index;
             if (superTypeFirst) {
                 index = 0;
@@ -826,7 +826,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                 index = associationsFound.size();
             }
             for (T association : associations) {
-                if (addAssociation(association)) {
+                if (isAssociationWanted(association)) {
                     associationsFound.add(index, association);
                     index++;
                 }
@@ -835,11 +835,28 @@ public abstract class Type extends BaseIpsObject implements IType {
             return true;
         }
 
-        protected boolean addAssociation(IAssociation association) {
+        /**
+         * This method returns <code>true</code> if the association specified by the parameter
+         * should be added to the list of found associations.
+         * <p>
+         * Subclasses may implement this method to include or exclude some associations.
+         * 
+         * @param association The association that should currently be added
+         * @return <code>true</code> to add the association, <code>false</code> to ignore.
+         */
+        protected boolean isAssociationWanted(IAssociation association) {
             return !isConstrainAlreadyAdded(association);
         }
 
-        protected abstract List<T> findAssociations(IType currentType);
+        /**
+         * Returns the list of associations that from the current type. For example if you want to
+         * have all associations of the current type, your implementation calls
+         * {@link IType#getAssociations()}.
+         * 
+         * @param currentType The type of which you have to return the associations from.
+         * @return The list of associations of the current type
+         */
+        protected abstract List<T> getAssociations(IType currentType);
 
         /**
          * Prevent more general associations from being added, which also applies to the constrained
@@ -883,7 +900,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected List<IAssociation> findAssociations(IType currentType) {
+        protected List<IAssociation> getAssociations(IType currentType) {
             try {
                 return ((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(associationTarget,
                         associationType, ipsProject);
@@ -901,7 +918,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected List<IAssociation> findAssociations(IType currentType) {
+        protected List<IAssociation> getAssociations(IType currentType) {
             return currentType.getAssociations();
         }
 
@@ -1079,42 +1096,36 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
+    /**
+     * Finds all associations that could be constrained by this type.
+     * 
+     */
     private static class ConstrainableAssociationFinder extends AbstractAssociationFinder<IAssociation> {
 
-        private List<String> constrainsNames = new ArrayList<String>();
+        private Set<String> alreadyConstrained = new HashSet<String>();
 
         public ConstrainableAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
             super(superTypeFirst, ipsProject);
         }
 
         @Override
-        protected boolean visit(IType currentType) {
-            List<? extends IAssociation> associations = findAssociations(currentType);
-            addConstrainingAssociations(associations);
-            int index;
-            index = getAssociationsFound().size();
-            for (IAssociation association : associations) {
-                if (addAssociation(association)) {
-                    getAssociationsFound().add(index, association);
-                    index++;
-                }
-            }
-            // Always continue because we search for all matching association.
-            return true;
+        public void start(IType basetype) {
+            addConstrainingAssociations(basetype.getAssociations());
+            super.start(basetype);
         }
 
         private void addConstrainingAssociations(List<? extends IAssociation> associations) {
             for (IAssociation association : associations) {
                 if (association.isConstrain()) {
-                    constrainsNames.add(association.getName());
+                    alreadyConstrained.add(association.getName());
                 }
             }
         }
 
         @Override
-        protected boolean addAssociation(IAssociation association) {
-            return !isDerivedUnionOrSubset(association) && !isDetailToMaster(association) && !association.isConstrain()
-                    && !isConstrained(association);
+        protected boolean isAssociationWanted(IAssociation association) {
+            return super.isAssociationWanted(association) && !isDerivedUnionOrSubset(association)
+                    && !isDetailToMaster(association) && !isAlreadyConstrained(association);
         }
 
         private boolean isDerivedUnionOrSubset(IAssociation association) {
@@ -1125,12 +1136,12 @@ public abstract class Type extends BaseIpsObject implements IType {
             return AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType());
         }
 
-        private boolean isConstrained(IAssociation association) {
-            return constrainsNames.contains(association.getName());
+        private boolean isAlreadyConstrained(IAssociation association) {
+            return alreadyConstrained.contains(association.getName());
         }
 
         @Override
-        protected List<IAssociation> findAssociations(IType currentType) {
+        protected List<IAssociation> getAssociations(IType currentType) {
             return currentType.getAssociations();
         }
 

@@ -620,49 +620,49 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAssociationsForTargetAndAssociationType() throws CoreException {
-        IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
-        IProductCmptType motor = (IProductCmptType)type;
-        IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
-
-        List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
-                injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(0, associations.size());
-
-        // Association: motor -> injection
-        IAssociation association = motor.newAssociation();
-        association.setTarget(injection.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        // Association: baseMotor -> injection
-        IAssociation associationInBase = baseMotor.newAssociation();
-        associationInBase.setTarget(injection.getQualifiedName());
-        associationInBase.setAssociationType(AssociationType.ASSOCIATION);
-
-        // result = 1, because super not set
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.size());
-
-        motor.setSupertype(baseMotor.getQualifiedName());
-
-        // result = 1, because association type of super type association not equal
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.size());
-
-        // result = 1 using search without supertype
-        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.size());
-
-        // result = 1 using search with supertype included
-        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
-        assertEquals(2, associations.size());
-    }
+        public void testGetAssociationsForTargetAndAssociationType() throws CoreException {
+            IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
+            IProductCmptType motor = (IProductCmptType)type;
+            IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
+    
+            List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
+                    injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(0, associations.size());
+    
+            // Association: motor -> injection
+            IAssociation association = motor.newAssociation();
+            association.setTarget(injection.getQualifiedName());
+            association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+    
+            // Association: baseMotor -> injection
+            IAssociation associationInBase = baseMotor.newAssociation();
+            associationInBase.setTarget(injection.getQualifiedName());
+            associationInBase.setAssociationType(AssociationType.ASSOCIATION);
+    
+            // result = 1, because super not set
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(1, associations.size());
+    
+            motor.setSupertype(baseMotor.getQualifiedName());
+    
+            // result = 1, because association type of super type association not equal
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(1, associations.size());
+    
+            // result = 1 using search without supertype
+            associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(1, associations.size());
+    
+            // result = 1 using search with supertype included
+            associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
+            assertEquals(2, associations.size());
+        }
 
     @Test
     public void testFindAllAttributes() throws Exception {
