@@ -43,6 +43,8 @@ public class ConstrainableAssociationWizard extends Wizard {
     @Override
     public IWizardPage getNextPage(IWizardPage currentPage) {
         if (currentPage == firstPage) {
+            secondPage.setLabel();
+            secondPage.initContentLabelProvider();
             return secondPage;
         }
         return null;
@@ -65,6 +67,10 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     public ISelection getTargetSelection() {
         return secondPage.getTreeViewerSelection();
+    }
+
+    public ConstrainableAssociationPmo getPmo() {
+        return pmo;
     }
 
 }

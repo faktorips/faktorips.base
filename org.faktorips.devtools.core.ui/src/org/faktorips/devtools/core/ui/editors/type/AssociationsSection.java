@@ -110,7 +110,8 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
             ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(type);
             WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
             if (wizardDialog.open() == Window.OK) {
-                // waiting for operator
+                getType().constrainAssociation(wizard.getPmo().getSelectedAssociation(),
+                        wizard.getPmo().getSelectedTarget());
             }
         }
 

@@ -470,6 +470,11 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
+    public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
+        return TypeHierarchy.getSubtypeHierarchy(this);
+    }
+
+    @Override
     public boolean hasSameMethod(IMethod method) {
         return getMatchingMethod(method) != null;
     }

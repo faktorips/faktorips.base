@@ -547,4 +547,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * type.
      */
     public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Creates a new sub type hierarchy for the type and returns it.
+     */
+    public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
 }
