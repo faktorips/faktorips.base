@@ -53,8 +53,12 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
-        // TODO Auto-generated method stub
-        return false;
+        return firstPage.isPageComplete() && secondPage.isPageComplete();
+    }
+
+    @Override
+    public boolean canFinish() {
+        return super.canFinish();
     }
 
     public ISelection getAssociationSelection() {

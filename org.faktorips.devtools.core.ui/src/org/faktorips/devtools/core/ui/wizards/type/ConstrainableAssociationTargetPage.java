@@ -23,13 +23,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
 public class ConstrainableAssociationTargetPage extends WizardPage {
 
     private ConstrainableAssociationPmo constrainableAssociationPmo;
     private TreeViewer viewer;
+    private BindingContext bindingContext;
+    private Composite composite;
 
     public ConstrainableAssociationTargetPage(ConstrainableAssociationPmo pmo, IType cmptType) {
         super(StringUtils.EMPTY);
@@ -39,7 +44,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
 
     @Override
     public void createControl(Composite parent) {
-        Composite composite = createComposite(parent);
+        composite = createComposite(parent);
 
         setLabel(composite);
 
@@ -61,6 +66,21 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         String text = NLS.bind(Messages.ConstrainableAssociationWizard_labelSelectionTarget,
                 constrainableAssociationPmo.getSelectedAssociation());
         label.setText(text);
+    }
+
+    public void bindContext() {
+        bindingContext.bindContent(viewer, IAssociation.class, constrainableAssociationPmo,
+                ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET);
+        bindingContext.add(new ControlPropertyBinding(composite, constrainableAssociationPmo,
+                ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET, IAssociation.class) {
+
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                if (ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET.equals(nameOfChangedProperty)) {
+                    setPageComplete(constrainableAssociationPmo.getSelectedTarget() != null);
+                }
+            }
+        });
     }
 
     private void createTreeViewer(Composite composite) {

@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
@@ -78,11 +79,6 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         viewer.setInput(contentProvider);
     }
 
-    @Override
-    public boolean canFlipToNextPage() {
-        return true;
-    }
-
     public ISelection getTreeViewerSelection() {
         return viewer.getSelection();
     }
@@ -90,6 +86,16 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
     public void bindContext() {
         bindingContext.bindContent(viewer, IAssociation.class, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION);
+        bindingContext.add(new ControlPropertyBinding(composite, pmo,
+                ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION, IAssociation.class) {
+
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                if (ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION.equals(nameOfChangedProperty)) {
+                    setPageComplete(pmo.getSelectedAssociation() != null);
+                }
+            }
+        });
     }
 
     @Override

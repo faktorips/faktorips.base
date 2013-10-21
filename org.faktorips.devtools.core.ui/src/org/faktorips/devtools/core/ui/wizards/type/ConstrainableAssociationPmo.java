@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import java.beans.PropertyChangeEvent;
+
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
@@ -34,7 +36,9 @@ public class ConstrainableAssociationPmo extends PresentationModelObject {
     }
 
     public void setSelectedTarget(IType selectedTarget) {
+        IType oldValue = this.selectedTarget;
         this.selectedTarget = selectedTarget;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_TARGET, oldValue, this.selectedTarget));
     }
 
     public IAssociation getSelectedAssociation() {
@@ -42,7 +46,9 @@ public class ConstrainableAssociationPmo extends PresentationModelObject {
     }
 
     public void setSelectedAssociation(IAssociation selectedAssociation) {
+        IAssociation oldValue = this.selectedAssociation;
         this.selectedAssociation = selectedAssociation;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_ASSOCIATION, oldValue, this.selectedAssociation));
     }
 
 }
