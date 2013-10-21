@@ -19,21 +19,22 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 public class ConstrainableAssociationPmo extends PresentationModelObject {
 
-    public static final String PROPERTY_SELECTED_ASSOCIATION = "selectedAssociation";
-    public static final String PROPERTY_SELECTED_TARGET_TEXT = "selectedTargetText";
+    public static final String PROPERTY_SELECTED_ASSOCIATION = "selectedAssociation"; //$NON-NLS-1$
+    public static final String PROPERTY_SELECTED_TARGET = "selectedTarget"; //$NON-NLS-1$
 
     private IAssociation selectedAssociation;
+    private IType selectedTarget;
 
     public ConstrainableAssociationPmo() {
         super();
     }
 
-    public String getSelectedTargetText() {
-        return "";
+    public IType getSelectedTarget() {
+        return selectedTarget;
     }
 
-    public void setSelectedTargetText(IType target) {
-
+    public void setSelectedTarget(IType selectedTarget) {
+        this.selectedTarget = selectedTarget;
     }
 
     public IAssociation getSelectedAssociation() {
