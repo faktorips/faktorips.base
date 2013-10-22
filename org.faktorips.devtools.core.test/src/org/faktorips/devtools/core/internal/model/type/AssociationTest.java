@@ -57,6 +57,12 @@ public class AssociationTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation constrains_subAssociation;
     private IPolicyCmptType constrains_sourceClass;
     private IPolicyCmptType constrains_targetClass;
+    private IProductCmptType constrains_sourceProductClass;
+    private IProductCmptType constrains_targetProductClass;
+    private IPolicyCmptType constrains_subSourceClass;
+    private IPolicyCmptType constrains_subTargetClass;
+    private IProductCmptType constrains_subSourceProductClass;
+    private IProductCmptType constrains_subTargetProductClass;
 
     @Override
     @Before
@@ -608,51 +614,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_NoMatchingProductAssociation() throws CoreException {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
-        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
-        association.setTarget(targetCmpt.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
-
-        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
-        subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
-        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
-        subTargetCmpt.setSupertype(targetCmpt.getQualifiedName());
-        IPolicyCmptTypeAssociation subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
-        subAssociation.setTarget(subTargetCmpt.getQualifiedName());
-        subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
-        subAssociation.setConstrain(true);
-
-        MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
-    }
-
-    @Test
-    public void testValidateConstrain_NoMatchingPolicyAssociation() throws CoreException {
-        IProductCmptType sourceProduct = newProductCmptType(ipsProject, "ProductA");
-        IProductCmptType targetProduct = newProductCmptType(ipsProject, "ProductB");
-        IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)sourceProduct.newAssociation();
-        productAssociation.setAssociationType(AssociationType.AGGREGATION);
-        productAssociation.setTarget(targetProduct.getQualifiedName());
-
-        IProductCmptType subSourceProduct = newProductCmptType(ipsProject, "SubProductA");
-        subSourceProduct.setSupertype(sourceProduct.getQualifiedName());
-        IProductCmptType subTargetProduct = newProductCmptType(ipsProject, "SubProductB");
-        subTargetProduct.setSupertype(targetProduct.getQualifiedName());
-        IProductCmptTypeAssociation subProductAssociation = (IProductCmptTypeAssociation)subSourceProduct
-                .newAssociation();
-        subProductAssociation.setAssociationType(AssociationType.AGGREGATION);
-        subProductAssociation.setTarget(subTargetProduct.getQualifiedName());
-        subProductAssociation.setConstrain(true);
-
-        MessageList msgList = subProductAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
-    }
-
-    @Test
     public void testValidateConstrain_MatchingAssociationProductNotContrained() throws CoreException {
         setUpConstrainedMatchingAssociations();
         constrains_subProductAssociation.setConstrain(false);
@@ -693,6 +654,38 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateConstrain_noMatchingAssociationsAtAll() throws CoreException {
+        setUpConstrainedMatchingAssociations();
+        constrains_sourceClass.setConfigurableByProductCmptType(false);
+        constrains_targetClass.setConfigurableByProductCmptType(false);
+        constrains_sourceProductClass.setConfigurationForPolicyCmptType(false);
+        constrains_targetProductClass.setConfigurationForPolicyCmptType(false);
+        constrains_subSourceClass.setConfigurableByProductCmptType(false);
+        constrains_subTargetClass.setConfigurableByProductCmptType(false);
+        constrains_subSourceProductClass.setConfigurationForPolicyCmptType(false);
+        constrains_subTargetProductClass.setConfigurationForPolicyCmptType(false);
+
+        MessageList msgList = constrains_subProductAssociation.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
+        msgList = constrains_subAssociation.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
+    }
+
+    @Test
+    public void testValidateConstrain_noMatchingAssociationInSubclasses() throws CoreException {
+        setUpConstrainedMatchingAssociations();
+        constrains_subSourceClass.setConfigurableByProductCmptType(false);
+        constrains_subTargetClass.setConfigurableByProductCmptType(false);
+        constrains_subSourceProductClass.setConfigurationForPolicyCmptType(false);
+        constrains_subTargetProductClass.setConfigurationForPolicyCmptType(false);
+
+        MessageList msgList = constrains_subProductAssociation.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
+        msgList = constrains_subAssociation.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
+    }
+
+    @Test
     public void testValidateConstrain_matchingAssociationsValid() throws CoreException {
         setUpConstrainedMatchingAssociations();
 
@@ -710,40 +703,42 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         association.setTargetRoleSingular(constrains_targetClass.getQualifiedName());
 
-        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
-        subSourceCmpt.setSupertype(constrains_sourceClass.getQualifiedName());
-        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
-        subTargetCmpt.setSupertype(constrains_targetClass.getQualifiedName());
-        constrains_subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
-        constrains_subAssociation.setTarget(subTargetCmpt.getQualifiedName());
+        constrains_subSourceClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
+        constrains_subSourceClass.setSupertype(constrains_sourceClass.getQualifiedName());
+        constrains_subTargetClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
+        constrains_subTargetClass.setSupertype(constrains_targetClass.getQualifiedName());
+        constrains_subAssociation = (IPolicyCmptTypeAssociation)constrains_subSourceClass.newAssociation();
+        constrains_subAssociation.setTarget(constrains_subTargetClass.getQualifiedName());
         constrains_subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         constrains_subAssociation.setTargetRoleSingular(constrains_targetClass.getQualifiedName());
         constrains_subAssociation.setConstrain(true);
 
-        IProductCmptType sourceProduct = newProductCmptType(ipsProject, "ProductA");
-        IProductCmptType targetProduct = newProductCmptType(ipsProject, "ProductB");
-        IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)sourceProduct.newAssociation();
+        constrains_sourceProductClass = newProductCmptType(ipsProject, "ProductA");
+        constrains_targetProductClass = newProductCmptType(ipsProject, "ProductB");
+        IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)constrains_sourceProductClass
+                .newAssociation();
         productAssociation.setAssociationType(AssociationType.AGGREGATION);
-        productAssociation.setTarget(targetProduct.getQualifiedName());
+        productAssociation.setTarget(constrains_targetProductClass.getQualifiedName());
 
-        constrains_sourceClass.setProductCmptType(sourceProduct.getQualifiedName());
-        sourceProduct.setPolicyCmptType(constrains_sourceClass.getQualifiedName());
-        constrains_targetClass.setProductCmptType(targetProduct.getQualifiedName());
-        targetProduct.setPolicyCmptType(constrains_targetClass.getQualifiedName());
+        constrains_sourceClass.setProductCmptType(constrains_sourceProductClass.getQualifiedName());
+        constrains_sourceProductClass.setPolicyCmptType(constrains_sourceClass.getQualifiedName());
+        constrains_targetClass.setProductCmptType(constrains_targetProductClass.getQualifiedName());
+        constrains_targetProductClass.setPolicyCmptType(constrains_targetClass.getQualifiedName());
 
-        IProductCmptType subSourceProduct = newProductCmptType(ipsProject, "SubProductA");
-        subSourceProduct.setSupertype(sourceProduct.getQualifiedName());
-        IProductCmptType subTargetProduct = newProductCmptType(ipsProject, "SubProductB");
-        subTargetProduct.setSupertype(targetProduct.getQualifiedName());
-        constrains_subProductAssociation = (IProductCmptTypeAssociation)subSourceProduct.newAssociation();
+        constrains_subSourceProductClass = newProductCmptType(ipsProject, "SubProductA");
+        constrains_subSourceProductClass.setSupertype(constrains_sourceProductClass.getQualifiedName());
+        constrains_subTargetProductClass = newProductCmptType(ipsProject, "SubProductB");
+        constrains_subTargetProductClass.setSupertype(constrains_targetProductClass.getQualifiedName());
+        constrains_subProductAssociation = (IProductCmptTypeAssociation)constrains_subSourceProductClass
+                .newAssociation();
         constrains_subProductAssociation.setAssociationType(AssociationType.AGGREGATION);
-        constrains_subProductAssociation.setTarget(subTargetProduct.getQualifiedName());
+        constrains_subProductAssociation.setTarget(constrains_subTargetProductClass.getQualifiedName());
         constrains_subProductAssociation.setConstrain(true);
 
-        subSourceCmpt.setProductCmptType(subSourceProduct.getQualifiedName());
-        subSourceProduct.setPolicyCmptType(subSourceCmpt.getQualifiedName());
-        subTargetCmpt.setProductCmptType(subTargetProduct.getQualifiedName());
-        subTargetProduct.setPolicyCmptType(subTargetCmpt.getQualifiedName());
+        constrains_subSourceClass.setProductCmptType(constrains_subSourceProductClass.getQualifiedName());
+        constrains_subSourceProductClass.setPolicyCmptType(constrains_subSourceClass.getQualifiedName());
+        constrains_subTargetClass.setProductCmptType(constrains_subTargetProductClass.getQualifiedName());
+        constrains_subTargetProductClass.setPolicyCmptType(constrains_subTargetClass.getQualifiedName());
     }
 
     @Test
