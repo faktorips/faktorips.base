@@ -21,6 +21,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -30,6 +32,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationPmo;
+import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationWizard;
+import org.faktorips.devtools.core.ui.wizards.type.CreateConstrainingAssociationOperation;
 
 /**
  * A section to display and edit a type's associations.
@@ -104,10 +109,15 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         public void overrideClicked() {
-            // ConstrainableAssociationPmo pmo = new ConstrainableAssociationPmo(type);
-            // ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(pmo);
-            // WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
-            // wizardDialog.open();
+            ConstrainableAssociationPmo pmo = new ConstrainableAssociationPmo(type);
+            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(pmo);
+            WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
+            if (wizardDialog.open() == Window.OK) {
+                CreateConstrainingAssociationOperation constrainingAssociationOperation = new CreateConstrainingAssociationOperation(
+                        type, pmo.getSelectedAssociation(), pmo.getSelectedTarget());
+                constrainingAssociationOperation.execute();
+                refresh();
+            }
         }
 
         private class AssociationContentProvider implements IStructuredContentProvider {
