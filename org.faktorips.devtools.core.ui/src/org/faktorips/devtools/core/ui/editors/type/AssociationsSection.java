@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 
 import java.util.EnumSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -61,14 +60,13 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         private IType type;
 
         protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            this(type, parent, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT,
-                    Option.CAN_OVERRIDE, Option.CAN_DELETE, Option.CAN_MOVE,
-                    Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+            this(type, parent, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_OVERRIDE, Option.CAN_DELETE,
+                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
                     Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
         }
 
-        protected AssociationsComposite(IType type, Composite parent,
-                EnumSet<Option> attributesForButtons, UIToolkit toolkit) {
+        protected AssociationsComposite(IType type, Composite parent, EnumSet<Option> attributesForButtons,
+                UIToolkit toolkit) {
             super(type, parent, getSite(), attributesForButtons, toolkit);
             this.type = type;
             openTargetAction = createOpenTargetAction();
@@ -77,7 +75,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         protected abstract IpsAction createOpenTargetAction();
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
+        protected IIpsObjectPart newIpsPart() {
             return getType().newAssociation();
         }
 

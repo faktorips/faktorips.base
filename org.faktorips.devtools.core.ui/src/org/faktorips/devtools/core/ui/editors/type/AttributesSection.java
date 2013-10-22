@@ -59,16 +59,16 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         private IpsAction openEnumTypeAction;
 
         protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), EnumSet.of(Option.CAN_CREATE, Option.CAN_DELETE,
-                    Option.CAN_EDIT, Option.CAN_MOVE, Option.CAN_OVERRIDE,
-                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
-                    Option.PULL_UP_REFACTORING_SUPPORTED,
-                    Option.RENAME_REFACTORING_SUPPORTED, Option.SHOW_EDIT_BUTTON), toolkit);
+            super(type, parent, getSite(),
+                    EnumSet.of(Option.CAN_CREATE, Option.CAN_DELETE, Option.CAN_EDIT, Option.CAN_MOVE,
+                            Option.CAN_OVERRIDE, Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
+                            Option.PULL_UP_REFACTORING_SUPPORTED, Option.RENAME_REFACTORING_SUPPORTED,
+                            Option.SHOW_EDIT_BUTTON), toolkit);
             openEnumTypeAction = new OpenEnumerationTypeInNewEditor(getViewer());
         }
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
+        protected IIpsObjectPart newIpsPart() {
             return getType().newAttribute();
         }
 

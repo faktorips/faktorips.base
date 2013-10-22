@@ -746,9 +746,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             // persistence is enabled initialize enable / disable bindings
             // disable all persistent controls if attribute is marked as transient
             getBindingContext().add(
-                    new PropertyChangeBinding<Boolean>(allPersistentProps, association
-                            .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_TRANSIENT,
-                            Boolean.TYPE) {
+                    new PropertyChangeBinding<Boolean>(allPersistentProps, association.getPersistenceAssociatonInfo(),
+                            IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
                         @Override
                         public void propertyChanged(Boolean old, Boolean newValue) {
                             IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
@@ -763,24 +762,20 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     });
             // disable join table
             getBindingContext().add(
-                    new PropertyChangeBinding<Boolean>(joinTableComposite, association
-                            .getPersistenceAssociatonInfo(),
+                    new PropertyChangeBinding<Boolean>(joinTableComposite, association.getPersistenceAssociatonInfo(),
                             IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.TYPE) {
                         @Override
                         public void propertyChanged(Boolean old, Boolean newValue) {
                             IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                             boolean persistEnabled = isPersistEnabled(associationInfo);
-                            if (!persistEnabled) {
-                                getToolkit().setDataChangeable(getControl(), false);
-                                return;
-                            }
                             if (associationInfo.isTransient()) {
                                 return;
                             }
-                            getToolkit().setDataChangeable(getControl(),
-                                    associationInfo.isOwnerOfManyToManyAssociation());
+                            boolean ownerOfManyToManyAssociation = associationInfo.isOwnerOfManyToManyAssociation();
                             try {
-                                getToolkit().setDataChangeable(groupForeignKey, !associationInfo.isJoinTableRequired());
+                                boolean joinTableRequired = associationInfo.isJoinTableRequired();
+                                getToolkit().setDataChangeable(groupForeignKey,
+                                        persistEnabled && ownerOfManyToManyAssociation && !joinTableRequired);
                                 enableOrDisableForeignKeyColumn();
                             } catch (CoreException e) {
                                 IpsPlugin.logAndShowErrorDialog(e);

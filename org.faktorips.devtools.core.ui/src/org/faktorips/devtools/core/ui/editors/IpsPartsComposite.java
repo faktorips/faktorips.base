@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -501,13 +502,31 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createEditButton(Composite buttons, UIToolkit toolkit) {
-        editButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonEdit,
-                new SelectionListenerEditPart());
+        editButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonEdit, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                deletePart();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     protected final void createDeleteButton(Composite buttons, UIToolkit toolkit) {
-        deleteButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDelete,
-                new SelectionListenerDeletePart());
+        deleteButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDelete, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                editPart();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     protected final void createMoveButtons(Composite buttons, UIToolkit toolkit) {
@@ -634,9 +653,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
                 newPartConfirmed(newPart);
             }
-            // CSOFF: IllegalCatch
-        } catch (Exception ex) {
-            // CSON: IllegalCatch
+        } catch (CoreRuntimeException ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
         }
 
@@ -713,9 +730,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 tableViewer.setSelection(new StructuredSelection(selected), true);
             }
             fireDeleted(part);
-            // CSOFF: IllegalCatch
-        } catch (Exception ex) {
-            // CSON: IllegalCatch
+        } catch (CoreRuntimeException ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
         }
 
@@ -755,18 +770,15 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     /**
      * Creates a new part.
-     * 
-     * @throws CoreException May throw this exception at any time.
      */
-    protected abstract IIpsObjectPart newIpsPart() throws CoreException;
+    protected abstract IIpsObjectPart newIpsPart();
 
     /**
      * Subclasses may overwrite this operation to perform additional tasks to be done when deleting
-     * the given ips part.
+     * the given IPS part.
      * 
-     * @throws CoreException May throw this exception at any time.
      */
-    protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
+    protected void deleteIpsPart(IIpsObjectPart partToDelete) {
         partToDelete.delete();
     }
 
@@ -829,13 +841,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     private final class SelectionListenerNewPart implements SelectionListener {
         @Override
         public void widgetSelected(SelectionEvent e) {
-            try {
-                newPart();
-                // CSOFF: IllegalCatch
-            } catch (Exception ex) {
-                // CSON: IllegalCatch
-                IpsPlugin.logAndShowErrorDialog(ex);
-            }
+            newPart();
         }
 
         @Override
@@ -866,13 +872,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            try {
-                moveParts(stateFlag);
-                // CSOFF: IllegalCatch
-            } catch (Exception ex) {
-                // CSON: IllegalCatch
-                IpsPlugin.logAndShowErrorDialog(ex);
-            }
+            moveParts(stateFlag);
         }
 
         @Override
@@ -881,39 +881,4 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
     }
 
-    private final class SelectionListenerDeletePart implements SelectionListener {
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            try {
-                deletePart();
-                // CSOFF: IllegalCatch
-            } catch (Exception ex) {
-                // CSON: IllegalCatch
-                IpsPlugin.logAndShowErrorDialog(ex);
-            }
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // Nothing to do
-        }
-    }
-
-    private final class SelectionListenerEditPart implements SelectionListener {
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            try {
-                editPart();
-                // CSOFF: IllegalCatch
-            } catch (Exception ex) {
-                // CSON: IllegalCatch
-                IpsPlugin.logAndShowErrorDialog(ex);
-            }
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // Nothing to do
-        }
-    }
 }
