@@ -26,9 +26,11 @@ public class ConstrainableAssociationPmo extends PresentationModelObject {
 
     private IAssociation selectedAssociation;
     private IType selectedTarget;
+    private IType type;
 
-    public ConstrainableAssociationPmo() {
+    public ConstrainableAssociationPmo(IType type) {
         super();
+        this.type = type;
     }
 
     public IType getSelectedTarget() {
@@ -51,4 +53,7 @@ public class ConstrainableAssociationPmo extends PresentationModelObject {
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_ASSOCIATION, oldValue, this.selectedAssociation));
     }
 
+    public IType getType() {
+        return type;
+    }
 }

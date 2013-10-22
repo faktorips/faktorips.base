@@ -13,30 +13,28 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 public class ConstrainableAssociationWizard extends Wizard {
     private ConstrainableAssociationSelectionPage firstPage;
     private ConstrainableAssociationTargetPage secondPage;
     private ConstrainableAssociationPmo pmo;
-    private IType cmptType;
 
-    public ConstrainableAssociationWizard(IType cmptType) {
+    public ConstrainableAssociationWizard(ConstrainableAssociationPmo pmo) {
         super();
         this.setWindowTitle(Messages.ConstrainableAssociationWizard_title);
-        pmo = new ConstrainableAssociationPmo();
-        this.cmptType = cmptType;
+        this.pmo = pmo;
     }
 
     @Override
     public void addPages() {
-        firstPage = new ConstrainableAssociationSelectionPage(pmo, cmptType);
+        firstPage = new ConstrainableAssociationSelectionPage(pmo);
         addPage(firstPage);
 
-        secondPage = new ConstrainableAssociationTargetPage(pmo, cmptType);
+        secondPage = new ConstrainableAssociationTargetPage(pmo);
         addPage(secondPage);
     }
 
@@ -52,25 +50,11 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
-        return firstPage.isPageComplete() && secondPage.isPageComplete();
+        IAssociation selectedAssociation = pmo.getSelectedAssociation();
+        IType selectedTarget = pmo.getSelectedTarget();
+        CreateConstrainingAssociationOperation createConstrainingAssociation = new CreateConstrainingAssociationOperation(
+                pmo.getType(), selectedAssociation, selectedTarget);
+        createConstrainingAssociation.execute();
+        return true;
     }
-
-    @Override
-    public boolean canFinish() {
-        return super.canFinish();
-    }
-
-    public ISelection getAssociationSelection() {
-        ISelection selection = firstPage.getTreeViewerSelection();
-        return selection;
-    }
-
-    public ISelection getTargetSelection() {
-        return secondPage.getTreeViewerSelection();
-    }
-
-    public ConstrainableAssociationPmo getPmo() {
-        return pmo;
-    }
-
 }

@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -27,7 +26,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.views.ipshierarchy.HierarchyContentProvider;
 
 public class ConstrainableAssociationTargetPage extends WizardPage {
@@ -37,11 +36,9 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
     private BindingContext bindingContext;
     private Composite composite;
     private HierarchyContentProvider contentProvider;
-    private IType type;
 
-    public ConstrainableAssociationTargetPage(ConstrainableAssociationPmo pmo, IType cmptType) {
+    public ConstrainableAssociationTargetPage(ConstrainableAssociationPmo pmo) {
         super(StringUtils.EMPTY);
-        this.type = cmptType;
         contentProvider = new HierarchyContentProvider();
         bindingContext = new BindingContext();
         this.pmo = pmo;
@@ -67,14 +64,12 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
 
     public void bindContext() {
         bindingContext.bindContent(viewer, IType.class, pmo, ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET);
-        bindingContext.add(new ControlPropertyBinding(composite, pmo,
+        bindingContext.add(new PropertyChangeBinding<IType>(composite, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET, IType.class) {
 
             @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET.equals(nameOfChangedProperty)) {
-                    setPageComplete(pmo.getSelectedTarget() != null);
-                }
+            protected void propertyChanged(IType oldValue, IType newValue) {
+                setPageComplete(pmo.getSelectedTarget() != null);
             }
         });
     }
@@ -88,15 +83,6 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         viewer.expandAll();
     }
 
-    @Override
-    public boolean canFlipToNextPage() {
-        return false;
-    }
-
-    public ISelection getTreeViewerSelection() {
-        return viewer.getSelection();
-    }
-
     public void setLabel() {
         String text = NLS.bind(Messages.ConstrainableAssociationWizard_labelSelectionTarget, pmo
                 .getSelectedAssociation().getName());
@@ -107,7 +93,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new DefaultLabelProvider());
         try {
-            viewer.setInput(pmo.getSelectedAssociation().findTarget(type.getIpsProject()));
+            viewer.setInput(pmo.getSelectedAssociation().findTarget(pmo.getType().getIpsProject()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

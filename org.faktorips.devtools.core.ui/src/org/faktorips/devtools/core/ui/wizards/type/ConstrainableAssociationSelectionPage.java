@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -28,21 +27,19 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
 public class ConstrainableAssociationSelectionPage extends WizardPage {
     private Composite composite;
     private TreeViewer viewer;
-    private IType type;
     private BindingContext bindingContext;
     private ConstrainableAssociationPmo pmo;
 
-    protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo, IType type) {
+    protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo) {
         super(StringUtils.EMPTY);
         setTitle(Messages.ConstrainableAssociationWizard_labelSelectAssociation);
-        this.type = type;
         bindingContext = new BindingContext();
         this.pmo = pmo;
     }
@@ -67,27 +64,21 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         listLayoutData.widthHint = 300;
         viewer.getTree().setLayoutData(listLayoutData);
 
-        viewer.setContentProvider(new CandidatesContentProvider(type));
+        viewer.setContentProvider(new CandidatesContentProvider(pmo.getType()));
         viewer.setLabelProvider(new AssociationsLabelProvider());
-        viewer.setInput(type);
+        viewer.setInput(pmo.getType());
         viewer.expandAll();
-    }
-
-    public ISelection getTreeViewerSelection() {
-        return viewer.getSelection();
     }
 
     public void bindContext() {
         bindingContext.bindContent(viewer, IAssociation.class, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION);
-        bindingContext.add(new ControlPropertyBinding(composite, pmo,
+        bindingContext.add(new PropertyChangeBinding<IAssociation>(composite, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION, IAssociation.class) {
 
             @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION.equals(nameOfChangedProperty)) {
-                    setPageComplete(pmo.getSelectedAssociation() != null);
-                }
+            protected void propertyChanged(IAssociation oldValue, IAssociation newValue) {
+                setPageComplete(pmo.getSelectedAssociation() != null);
             }
         });
     }
