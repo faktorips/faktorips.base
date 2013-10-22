@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -54,8 +53,6 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         createTreeViewer(composite);
         bindContext();
 
-        setLabel();
-
         setControl(composite);
         setPageComplete(false);
     }
@@ -66,7 +63,23 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         composite.setLayout(layout);
     }
 
-    public void bindContext() {
+    private void createTreeViewer(Composite composite) {
+        viewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        listLayoutData.heightHint = 200;
+        listLayoutData.widthHint = 300;
+        viewer.getTree().setLayoutData(listLayoutData);
+
+        initContentLabelProvider();
+        viewer.expandAll();
+    }
+
+    private void initContentLabelProvider() {
+        viewer.setContentProvider(new HierarchyContentProvider());
+        viewer.setLabelProvider(new DefaultLabelProvider());
+    }
+
+    private void bindContext() {
         bindingContext.bindContent(viewer, IType.class, pmo, ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET);
         bindingContext.add(new PropertyChangeBinding<IType>(composite, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET, IType.class) {
@@ -95,27 +108,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         });
     }
 
-    private void createTreeViewer(Composite composite) {
-        viewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        listLayoutData.heightHint = 200;
-        listLayoutData.widthHint = 300;
-        viewer.getTree().setLayoutData(listLayoutData);
-
-        initContentLabelProvider();
-        viewer.expandAll();
-    }
-
-    public void initContentLabelProvider() {
-        viewer.setContentProvider(new HierarchyContentProvider());
-        viewer.setLabelProvider(new DefaultLabelProvider());
-    }
-
-    public ISelection getTreeViewerSelection() {
-        return viewer.getSelection();
-    }
-
-    public void setLabel() {
+    private void setLabel() {
         label = new Label(composite, SWT.NONE);
         String labelText = label.getText();
         if (pmo.getSelectedAssociation() != null) {
