@@ -13,14 +13,11 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 public class ConstrainableAssociationWizard extends Wizard {
-    private ConstrainableAssociationSelectionPage firstPage;
-    private ConstrainableAssociationTargetPage secondPage;
     private ConstrainableAssociationPmo pmo;
 
     public ConstrainableAssociationWizard(ConstrainableAssociationPmo pmo) {
@@ -31,21 +28,8 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     @Override
     public void addPages() {
-        firstPage = new ConstrainableAssociationSelectionPage(pmo);
-        addPage(firstPage);
-
-        secondPage = new ConstrainableAssociationTargetPage(pmo);
-        addPage(secondPage);
-    }
-
-    @Override
-    public IWizardPage getNextPage(IWizardPage currentPage) {
-        if (currentPage == firstPage) {
-            secondPage.setLabel();
-            secondPage.initContentLabelProvider();
-            return secondPage;
-        }
-        return null;
+        addPage(new ConstrainableAssociationSelectionPage(pmo));
+        addPage(new ConstrainableAssociationTargetPage(pmo));
     }
 
     @Override
