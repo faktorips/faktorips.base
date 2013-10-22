@@ -71,7 +71,6 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
         viewer.getTree().setLayoutData(listLayoutData);
 
         initContentLabelProvider();
-        viewer.expandAll();
     }
 
     private void initContentLabelProvider() {
@@ -99,6 +98,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
                         IType targetType = pmo.getSelectedAssociation().findTarget(pmo.getType().getIpsProject());
                         ITypeHierarchy subtypeHierarchy = targetType.getSubtypeHierarchy();
                         viewer.setInput(subtypeHierarchy);
+                        viewer.expandAll();
                         setLabel();
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);
