@@ -233,27 +233,22 @@ public interface IProductCmptTypeAssociation extends IAssociation {
     /**
      * Returns whether this association is relevant or not.
      * <p>
-     * If this method returns false, the association will not be displayed in the component editor
-     * and its value cannot be modified in the editor. The association will also be ignored in the
-     * product structure. If the method returns true, the association will be displayed in the
-     * editor and can be edited by the user.
+     * If this method returns <code>true</code>, the association will be displayed in the product
+     * component editor and can be edited by the user. If this method returns <code>false</code>,
+     * the association will not be displayed in the editor and its value cannot be modified. This
+     * property also affects the product structure explorer.
      * <p>
-     * The default value is true.
-     * 
-     * @return true if the association is relevant, false otherwise
+     * The default value is <code>true</code>.
      */
     boolean isRelevant();
 
     /**
-     * Setting the property <code>relevant</code> for this association.
+     * Sets the property <code>relevant</code> for this association.
      * <p>
-     * If this association is marked as relevant, the association will be displayed in the component
-     * editor and will be taken into account in product structure. If marked as not relevant, the
-     * association will not be displayed in the component editor and will be ignored in product
-     * structure.
-     * <p>
-     * This flag is useful in combination with overwritten attributes when an insurance class needs
-     * the association but does not need to modify its value.
+     * If this association is marked as relevant (<code>true</code>), the association will be
+     * displayed in the component editor and will be taken into account in the product structure. If
+     * marked as not relevant, the association will not be displayed in the component editor and
+     * will be ignored in product structure.
      * 
      * @param relevant true to mark the association as relevant, false to mark it as not relevant
      */
