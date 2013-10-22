@@ -20,12 +20,20 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 
 public abstract class AbstractCheckbox extends ControlComposite {
 
     private Button button;
     private boolean invertValue = false;
 
+    /**
+     * Use {@link Button} and {@link ButtonField} instead. {@link ButtonField} also allows inverting
+     * the checked state of a check box.
+     * 
+     * @deprecated as of FIPS 3.11
+     */
+    @Deprecated
     protected AbstractCheckbox(Composite parent, UIToolkit toolkit, int checkboxStyle, boolean invertValue) {
         this(parent, toolkit, checkboxStyle);
         this.invertValue = invertValue;

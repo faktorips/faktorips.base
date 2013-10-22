@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -481,13 +482,20 @@ public class UIToolkit {
     /**
      * Creates a new checkbox.
      */
+    @Deprecated
     public Checkbox createCheckbox(Composite parent) {
         return new Checkbox(parent, this);
     }
 
     /**
      * Creates a new checkbox.
+     * 
+     * Use {@link Button} and {@link ButtonField} instead. {@link ButtonField} also allows inverting
+     * the checked state of a check box.
+     * 
+     * @deprecated as of FIPS 3.11
      */
+    @Deprecated
     public Checkbox createCheckbox(Composite parent, boolean invertValue) {
         return new Checkbox(parent, this, invertValue);
     }

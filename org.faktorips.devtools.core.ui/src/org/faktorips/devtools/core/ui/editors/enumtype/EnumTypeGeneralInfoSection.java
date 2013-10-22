@@ -14,8 +14,10 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -29,8 +31,8 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
@@ -61,7 +63,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     private ExtensionPropertyControlFactory extFactory;
 
     /** The UI check box for the <tt>valuesArePartOfModelCheckbox</tt> property. */
-    private Checkbox valuesArePartOfModelCheckbox;
+    private Button valuesArePartOfModelCheckbox;
 
     /** The UI control for the <tt>enumContentPackageFragment</tt> property */
     private TextField enumContentNameControl;
@@ -114,14 +116,15 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         // Abstract
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
-        Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
-        getBindingContext().bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
+        Button isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
         // Values are part of model
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
-        valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
+        valuesArePartOfModelCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-        getBindingContext().bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
+        ButtonField buttonField = new ButtonField(valuesArePartOfModelCheckbox, false);
+        getBindingContext().bindContent(buttonField, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
         // EnumContent specification
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
@@ -133,7 +136,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         // Register controls for focus handling
         addFocusControl(supertypeRefControl);
-        addFocusControl(abstractCheckbox);
+        addFocusControl(isAbstractCheckbox);
         addFocusControl(valuesArePartOfModelCheckbox);
         addFocusControl(enumContentNameControl.getTextControl());
 

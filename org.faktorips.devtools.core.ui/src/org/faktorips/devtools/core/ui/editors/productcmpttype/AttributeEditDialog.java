@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -51,7 +52,6 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -141,9 +141,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
         getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
-        final Checkbox cb = new Checkbox(workArea, getToolkit());
-        cb.setText(Messages.AttributeEditDialog_overwritesNote);
-        getBindingContext().bindContent(cb, attribute, IAttribute.PROPERTY_OVERWRITES);
+        final Button checkbox = getToolkit().createButton(workArea, Messages.AttributeEditDialog_overwritesNote,
+                SWT.CHECK);
+        getBindingContext().bindContent(checkbox, attribute, IAttribute.PROPERTY_OVERWRITES);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
@@ -163,8 +163,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IProductCmptTypeAttribute.PROPERTY_MULTI_VALUE_ATTRIBUTE);
 
         getToolkit().createVerticalSpacer(workArea, 0);
-        Checkbox multilingualCheckbox = getToolkit().createCheckbox(workArea,
-                Messages.AttributeEditDialog_multiLingualCheckbox);
+        Button multilingualCheckbox = getToolkit().createButton(workArea,
+                Messages.AttributeEditDialog_multiLingualCheckbox, SWT.CHECK);
         getBindingContext().bindContent(multilingualCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_MULTILINGUAL);
         getBindingContext().bindEnabled(multilingualCheckbox, attribute,
@@ -176,10 +176,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
 
         getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
-        Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
+        Button changeOverTimeCheckbox = getToolkit().createButton(
                 workArea,
                 NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
+                SWT.CHECK);
         getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
@@ -193,9 +194,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
         getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
-        final Checkbox cb = getToolkit().createCheckbox(workArea, true);
-        cb.setText(Messages.AttributeEditDialog_visibilityNote);
-        getBindingContext().bindContent(cb, attribute, IProductCmptTypeAttribute.PROPERTY_VISIBLE);
+        final Button checkbox = getToolkit().createButton(workArea, Messages.AttributeEditDialog_visibilityNote,
+                SWT.CHECK);
+        ButtonField buttonField = new ButtonField(checkbox, false);
+        getBindingContext().bindContent(buttonField, attribute, IProductCmptTypeAttribute.PROPERTY_VISIBLE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_categoryLabel);
         createCategoryCombo(workArea);
