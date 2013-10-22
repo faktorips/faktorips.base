@@ -118,7 +118,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
         createGeneralGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_generalGroup));
 
-        Group displayGroup = getToolkit().createGroup(panel, Messages.AttributeEditDialog_displayGroup);
+        Group displayGroup = getToolkit().createGroup(panel, Messages.EditDialog_displayGroup);
         createDisplayGroupContent(displayGroup);
 
         createDerivedUnionGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));

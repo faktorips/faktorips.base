@@ -242,7 +242,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Group generalPropertiesGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_generalGroup);
         createGeneralGroupContent(generalPropertiesGroup);
 
-        Group displayGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_displayGroup);
+        Group displayGroup = getToolkit().createGroup(c, Messages.EditDialog_displayGroup);
         createDisplayGroupContent(displayGroup);
         return c;
     }
