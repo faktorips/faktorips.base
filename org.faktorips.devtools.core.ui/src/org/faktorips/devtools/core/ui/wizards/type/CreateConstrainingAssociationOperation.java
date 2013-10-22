@@ -151,7 +151,7 @@ public class CreateConstrainingAssociationOperation {
             IPolicyCmptTypeAssociation assoc = (IPolicyCmptTypeAssociation)constrainingAssociation;
             IPolicyCmptTypeAssociation constrainedAssoc = (IPolicyCmptTypeAssociation)assoc
                     .findConstrainedAssociation(getIpsProject());
-            if (isInverseReqired(constrainedAssoc)) {
+            if (isInverseRequired(constrainedAssoc)) {
                 createInverseAssociation(assoc, constrainedAssoc);
             }
         }
@@ -161,7 +161,7 @@ public class CreateConstrainingAssociationOperation {
         return constrainingAssociation instanceof IPolicyCmptTypeAssociation;
     }
 
-    private boolean isInverseReqired(IPolicyCmptTypeAssociation constrainedAssoc) {
+    private boolean isInverseRequired(IPolicyCmptTypeAssociation constrainedAssoc) {
         return constrainedAssoc.hasInverseAssociation();
     }
 
@@ -170,7 +170,13 @@ public class CreateConstrainingAssociationOperation {
             IPolicyCmptTypeAssociation templateInverseAssociation = constrainedAssoc
                     .findInverseAssociation(getIpsProject());
             IPolicyCmptType inverseAssocSourceType = (IPolicyCmptType)assoc.findTarget(getIpsProject());
+            boolean isTargetSrcFileNotDirty = !inverseAssocSourceType.getIpsSrcFile().isDirty();
             inverseAssocSourceType.constrainAssociation(templateInverseAssociation, assoc.getType());
+            if (isTargetSrcFileNotDirty) {
+                inverseAssocSourceType.getIpsSrcFile().save(true, null);
+            } else {
+                inverseAssocSourceType.getIpsSrcFile().markAsDirty();
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -188,7 +194,19 @@ public class CreateConstrainingAssociationOperation {
     private IAssociation createMatchingAssociation(IType matchingSourceType, IType matchingTargetType) {
         if (isMatchingAssociationRequired()) {
             IAssociation constrainedMatchingAssociation = getConstrainedMatchingAssociation();
-            return matchingSourceType.constrainAssociation(constrainedMatchingAssociation, matchingTargetType);
+            boolean isMatchingSourceSrcFileNotDirty = !matchingSourceType.getIpsSrcFile().isDirty();
+            IAssociation createdConstrainAssociation = matchingSourceType.constrainAssociation(
+                    constrainedMatchingAssociation, matchingTargetType);
+            try {
+                if (isMatchingSourceSrcFileNotDirty) {
+                    matchingSourceType.getIpsSrcFile().save(true, null);
+                } else {
+                    matchingSourceType.getIpsSrcFile().markAsDirty();
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+            return createdConstrainAssociation;
         }
         return null;
     }
