@@ -59,14 +59,14 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         private IType type;
 
         protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            this(type, parent, EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
-                    AttributesForButtons.CAN_OVERRIDE, AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
-                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
-                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+            this(type, parent, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT,
+                    Option.CAN_OVERRIDE, Option.CAN_DELETE, Option.CAN_MOVE,
+                    Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
         }
 
         protected AssociationsComposite(IType type, Composite parent,
-                EnumSet<AttributesForButtons> attributesForButtons, UIToolkit toolkit) {
+                EnumSet<Option> attributesForButtons, UIToolkit toolkit) {
             super(type, parent, getSite(), attributesForButtons, toolkit);
             this.type = type;
             openTargetAction = createOpenTargetAction();

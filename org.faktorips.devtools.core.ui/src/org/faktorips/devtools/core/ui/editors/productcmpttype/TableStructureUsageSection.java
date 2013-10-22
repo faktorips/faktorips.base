@@ -158,9 +158,9 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         private OpenTableStructuresInEditorAction openAction;
 
         public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE,
-                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
-                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+            super(productCmptType, parent, getSite(), EnumSet.of(Option.CAN_CREATE,
+                    Option.CAN_EDIT, Option.CAN_DELETE, Option.CAN_MOVE,
+                    Option.SHOW_EDIT_BUTTON, Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
         }
 
         @Override

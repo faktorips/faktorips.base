@@ -82,9 +82,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE,
-                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_DELETE,
-                    AttributesForButtons.SHOW_EDIT_BUTTON), toolkit);
+            super(ipsObject, parent, getSite(), EnumSet.of(Option.CAN_CREATE,
+                    Option.CAN_EDIT, Option.CAN_DELETE,
+                    Option.SHOW_EDIT_BUTTON), toolkit);
 
             super.setEditDoubleClickListenerEnabled(false);
 

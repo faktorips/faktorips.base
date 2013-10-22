@@ -67,10 +67,10 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
              * Create default buttons without the 'New' button, because the 'New' button will be
              * overridden with wizard functionality.
              */
-            super(policyCmptType, parent, EnumSet.of(AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_OVERRIDE,
-                    AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
-                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
-                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+            super(policyCmptType, parent, EnumSet.of(Option.CAN_EDIT, Option.CAN_OVERRIDE,
+                    Option.CAN_DELETE, Option.CAN_MOVE,
+                    Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
         }
 
         @Override

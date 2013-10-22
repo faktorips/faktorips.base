@@ -135,11 +135,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private Button inheritButton;
 
         public EnumAttributesComposite(IEnumType enumType, IWorkbenchPartSite site, Composite parent, UIToolkit toolkit) {
-            super(enumType, parent, site, EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_EDIT,
-                    AttributesForButtons.CAN_DELETE, AttributesForButtons.CAN_MOVE,
-                    AttributesForButtons.SHOW_EDIT_BUTTON, AttributesForButtons.RENAME_REFACTORING_SUPPORTED,
-                    AttributesForButtons.PULL_UP_REFACTORING_SUPPORTED,
-                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+            super(enumType, parent, site, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT,
+                    Option.CAN_DELETE, Option.CAN_MOVE,
+                    Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                    Option.PULL_UP_REFACTORING_SUPPORTED,
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
             this.enumType = enumType;
             addSelectionChangedListener(this);
         }

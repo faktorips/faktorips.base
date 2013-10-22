@@ -67,9 +67,9 @@ public class MethodsSection extends SimpleIpsPartsSection {
     private class MethodsComposite extends IpsPartsComposite {
 
         private MethodsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), EnumSet.of(AttributesForButtons.CAN_CREATE, AttributesForButtons.CAN_DELETE,
-                    AttributesForButtons.CAN_EDIT, AttributesForButtons.CAN_MOVE, AttributesForButtons.CAN_OVERRIDE,
-                    AttributesForButtons.JUMP_TO_SOURCE_CODE_SUPPORTED, AttributesForButtons.SHOW_EDIT_BUTTON), toolkit);
+            super(type, parent, getSite(), EnumSet.of(Option.CAN_CREATE, Option.CAN_DELETE,
+                    Option.CAN_EDIT, Option.CAN_MOVE, Option.CAN_OVERRIDE,
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED, Option.SHOW_EDIT_BUTTON), toolkit);
 
         }
 
