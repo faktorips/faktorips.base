@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +45,7 @@ import org.faktorips.util.message.MessageList;
 public abstract class NewTypePage extends IpsObjectPage {
 
     /** The checkbox field to set the abstract property. */
-    protected CheckboxField abstractField;
+    private CheckboxField abstractField;
 
     /** The wizard type page of the associated (product or policy) type. */
     private NewTypePage pageOfAssociatedType;
@@ -60,6 +62,10 @@ public abstract class NewTypePage extends IpsObjectPage {
         setTitle(pageName);
     }
 
+    protected CheckboxField getAbstractField() {
+        return abstractField;
+    }
+
     @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
@@ -73,7 +79,7 @@ public abstract class NewTypePage extends IpsObjectPage {
     protected void addAbstractField(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
         abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.NewTypePage_check_abstract));
-        abstractField.addChangeListener(this);
+        getAbstractField().addChangeListener(this);
     }
 
     /**
@@ -109,9 +115,9 @@ public abstract class NewTypePage extends IpsObjectPage {
 
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
-            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProject(root.getIpsProject());
+            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(Arrays.asList(root.getIpsProject()));
         } else {
-            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProject(null);
+            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(new ArrayList<IIpsProject>());
         }
     }
 
@@ -121,8 +127,8 @@ public abstract class NewTypePage extends IpsObjectPage {
      * @return A flag indicating whether the abstract checkbox field is checked (<code>true</code>)
      *         or not ( <code>false</code>).
      */
-    public boolean getAbstract() {
-        return (abstractField.getValue()).booleanValue();
+    public boolean isAbstract() {
+        return (getAbstractField().getValue()).booleanValue();
     }
 
     /**
@@ -132,7 +138,7 @@ public abstract class NewTypePage extends IpsObjectPage {
      *            <code>false</code> it won't be checked.
      */
     public void setAbstract(boolean value) {
-        abstractField.setValue(new Boolean(value));
+        getAbstractField().setValue(new Boolean(value));
     }
 
     /**
@@ -161,7 +167,7 @@ public abstract class NewTypePage extends IpsObjectPage {
         IType type = (IType)newIpsObject;
         String supertypeName = getSuperType();
         type.setSupertype(supertypeName);
-        type.setAbstract(getAbstract());
+        type.setAbstract(isAbstract());
     }
 
     @Override
@@ -220,9 +226,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
         @Override
         public Message execute(IIpsProject ipsProject) throws CoreException {
-            if (pageOfAssociatedType != null && getIpsObjectName() != null
-                    && pageOfAssociatedType.getIpsObjectName() != null && !StringUtils.isEmpty(getIpsObjectName())
-                    && !StringUtils.isEmpty(pageOfAssociatedType.getIpsObjectName())
+            if (pageOfAssociatedType != null && !StringUtils.isEmpty(getIpsObjectName())
                     && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
                 return new Message("", Messages.NewTypePage_msgNameConflicts, Message.ERROR); //$NON-NLS-1$
             }
