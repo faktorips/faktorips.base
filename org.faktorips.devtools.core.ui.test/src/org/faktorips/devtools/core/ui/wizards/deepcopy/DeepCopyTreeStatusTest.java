@@ -63,7 +63,7 @@ public class DeepCopyTreeStatusTest {
         for (int i = 0; i < associations.length; i++) {
             associations[i] = mock(IProductCmptTypeAssociation.class);
             when(associations[i].getName()).thenReturn("association" + i);
-            when(associations[i].isVisible()).thenReturn(true);
+            when(associations[i].isRelevant()).thenReturn(true);
         }
 
         when(associations[0].getType()).thenReturn(types[0]);

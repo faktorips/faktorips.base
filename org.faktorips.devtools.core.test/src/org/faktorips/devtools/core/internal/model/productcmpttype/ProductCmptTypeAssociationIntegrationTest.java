@@ -304,8 +304,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         assertTrue(association.isChangingOverTime());
         association.setChangingOverTime(false);
         // Default is true/visible
-        assertTrue(association.isVisible());
-        association.setVisible(false);
+        assertTrue(association.isRelevant());
+        association.setRelevant(false);
 
         Element el = association.toXml(newDocument());
         association = productType.newProductCmptTypeAssociation();
@@ -320,7 +320,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertFalse(association.isChangingOverTime());
-        assertFalse(association.isVisible());
+        assertFalse(association.isRelevant());
     }
 
     /**
@@ -343,7 +343,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals("blabla", association.getDescriptionText(Locale.US));
         assertFalse(association.isChangingOverTime());
-        assertFalse(association.isVisible());
+        assertFalse(association.isRelevant());
     }
 
     /**
@@ -433,13 +433,13 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
 
     /**
      * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setVisible(boolean)}
+     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setRelevant(boolean)}
      * .
      */
     @Test
-    public void testSetIsVisible() {
+    public void testSetRelevant() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
-                IProductCmptTypeAssociation.PROPERTY_VISIBLE, association, false);
+                IProductCmptTypeAssociation.PROPERTY_RELEVANT, association, false);
     }
 
     /**

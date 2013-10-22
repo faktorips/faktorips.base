@@ -212,7 +212,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         final Checkbox cb = getToolkit().createCheckbox(workArea, true);
         cb.setText(Messages.AttributeEditDialog_visibilityNote);
-        getBindingContext().bindContent(cb, association, IProductCmptTypeAssociation.PROPERTY_VISIBLE);
+        getBindingContext().bindContent(cb, association, IProductCmptTypeAssociation.PROPERTY_RELEVANT);
     }
 
     private void createDerivedUnionGroup(Composite workArea) {

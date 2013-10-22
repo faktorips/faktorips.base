@@ -148,9 +148,9 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAssociationNotVisible() throws Exception {
+    public void testAssociationNotRelevant() throws Exception {
         assertTrue(structure.getRoot().hasAssociationChildren());
-        association.setVisible(false);
+        association.setRelevant(false);
         structure.refresh();
         assertFalse(structure.getRoot().hasAssociationChildren());
     }

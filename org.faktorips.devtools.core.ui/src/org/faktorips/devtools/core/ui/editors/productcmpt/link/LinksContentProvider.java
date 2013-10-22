@@ -90,7 +90,7 @@ public class LinksContentProvider implements ITreeContentProvider {
         List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
         List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
         for (IProductCmptTypeAssociation association : associations) {
-            if (association.isVisible()) {
+            if (association.isRelevant()) {
                 IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
                 AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
                 items.add(associationViewItem);

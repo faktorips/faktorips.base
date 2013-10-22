@@ -350,7 +350,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             }
             for (IAssociation iAssociation : associations) {
                 IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
-                if (association.isVisible()) {
+                if (association.isRelevant()) {
                     ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent,
                             association);
                     List<IProductCmptLink> linksList = mapping.get(association.getName());

@@ -102,8 +102,8 @@ public class LinksContentProviderTest {
         List<IProductCmptTypeAssociation> listAssociations = new ArrayList<IProductCmptTypeAssociation>();
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation asso2 = mock(IProductCmptTypeAssociation.class);
-        when(asso1.isVisible()).thenReturn(false);
-        when(asso2.isVisible()).thenReturn(true);
+        when(asso1.isRelevant()).thenReturn(false);
+        when(asso2.isRelevant()).thenReturn(true);
         listAssociations.add(asso1);
         listAssociations.add(asso2);
         when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(listAssociations);

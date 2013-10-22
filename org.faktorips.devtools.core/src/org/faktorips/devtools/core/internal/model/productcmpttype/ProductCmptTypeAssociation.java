@@ -50,9 +50,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private String matchingAssociationName = StringUtils.EMPTY;
 
-    private boolean isChangingOverTime = true;
+    private boolean changingOverTime = true;
 
-    private boolean isVisible = true;
+    private boolean relevant = true;
 
     public ProductCmptTypeAssociation(IProductCmptType parent, String id) {
         super(parent, id);
@@ -397,13 +397,13 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private void initPropertyChangingOverTime(Element element) {
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            isChangingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+            changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
     }
 
     private void initPropertyVisible(Element element) {
-        if (element.hasAttribute(PROPERTY_VISIBLE)) {
-            isVisible = Boolean.parseBoolean(element.getAttribute(PROPERTY_VISIBLE));
+        if (element.hasAttribute(PROPERTY_RELEVANT)) {
+            relevant = Boolean.parseBoolean(element.getAttribute(PROPERTY_RELEVANT));
         }
     }
 
@@ -412,32 +412,32 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, matchingAssociationSource);
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
-        newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, Boolean.toString(isChangingOverTime));
-        newElement.setAttribute(PROPERTY_VISIBLE, Boolean.toString(isVisible));
+        newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, Boolean.toString(changingOverTime));
+        newElement.setAttribute(PROPERTY_RELEVANT, Boolean.toString(relevant));
     }
 
     @Override
     public boolean isChangingOverTime() {
-        return isChangingOverTime;
+        return changingOverTime;
     }
 
     @Override
     public void setChangingOverTime(boolean changingOverTime) {
-        boolean oldValue = isChangingOverTime;
-        isChangingOverTime = changingOverTime;
-        valueChanged(oldValue, isChangingOverTime);
+        boolean oldValue = this.changingOverTime;
+        this.changingOverTime = changingOverTime;
+        valueChanged(oldValue, this.changingOverTime);
     }
 
     @Override
-    public boolean isVisible() {
-        return isVisible;
+    public boolean isRelevant() {
+        return relevant;
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        boolean oldValue = isVisible;
-        isVisible = visible;
-        valueChanged(oldValue, isVisible);
+    public void setRelevant(boolean relevant) {
+        boolean oldValue = this.relevant;
+        this.relevant = relevant;
+        valueChanged(oldValue, this.relevant);
     }
 
     @Override

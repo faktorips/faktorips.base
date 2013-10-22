@@ -15,7 +15,7 @@
           derivedUnion="true"
           subsettedDerivedUnion="BaseCoverageType"
           changingOverTime="false"
-          visible="false">
+          relevant="false">
 		<Description locale="en">blabla</Description>
 	</Association>
 	
