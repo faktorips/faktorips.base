@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.EnumSet;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -49,28 +51,31 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new PolicyCmptTypeAssociationsComposite(getPolicyCmptType(), parent, toolkit);
+        return new PolicyCmptTypeAssociationsComposite(getPolicyCmptType(), parent, getSite(), toolkit);
     }
 
     private IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getType();
     }
 
-    private class PolicyCmptTypeAssociationsComposite extends AssociationsComposite {
+    private static class PolicyCmptTypeAssociationsComposite extends AssociationsComposite {
 
         private Button wizardNewButton;
 
-        private PolicyCmptTypeAssociationsComposite(IPolicyCmptType policyCmptType, Composite parent, UIToolkit toolkit) {
+        private PolicyCmptTypeAssociationsComposite(IPolicyCmptType policyCmptType, Composite parent,
+                IWorkbenchPartSite site, UIToolkit toolkit) {
             /*
              * Create default buttons without the 'New' button, because the 'New' button will be
              * overridden with wizard functionality.
              */
-            super(policyCmptType, parent, false, true, true, true, true, toolkit);
+            super(policyCmptType, parent, EnumSet.of(Option.CAN_EDIT, Option.CAN_OVERRIDE, Option.CAN_DELETE,
+                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), site, toolkit);
         }
 
         @Override
         protected IpsAction createOpenTargetAction() {
-            return new OpenTargetPcTypeInEditorAction(getViewer());
+            return new OpenTargetPcTypeInEditorAction(getViewer(), getType());
         }
 
         @Override
@@ -101,11 +106,7 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
             wizardNewButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent event) {
-                    try {
-                        newWizardClicked();
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+                    newWizardClicked();
                 }
 
                 @Override
@@ -118,7 +119,7 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
         /**
          * Opens up the new-association-wizard.
          */
-        private void newWizardClicked() throws CoreException {
+        private void newWizardClicked() {
             IIpsSrcFile file = getIpsObject().getIpsSrcFile();
             boolean dirty = file.isDirty();
             Memento memento = getIpsObject().newMemento();
@@ -137,10 +138,13 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
 
     }
 
-    private class OpenTargetPcTypeInEditorAction extends IpsAction {
+    private static class OpenTargetPcTypeInEditorAction extends IpsAction {
 
-        public OpenTargetPcTypeInEditorAction(ISelectionProvider selectionProvider) {
+        private final IType type;
+
+        public OpenTargetPcTypeInEditorAction(ISelectionProvider selectionProvider, IType type) {
             super(selectionProvider);
+            this.type = type;
             setText(Messages.PolicyCmptTypeAssociationsSection_menuOpenTargetInNewEditor);
         }
 
@@ -156,7 +160,7 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
             if (selected instanceof IPolicyCmptTypeAssociation) {
                 IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)selected;
                 try {
-                    IType target = policyCmptTypeAssociation.findTarget(getPolicyCmptType().getIpsProject());
+                    IType target = policyCmptTypeAssociation.findTarget(type.getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(target);
                 } catch (CoreException e) {
                     throw new RuntimeException(e);

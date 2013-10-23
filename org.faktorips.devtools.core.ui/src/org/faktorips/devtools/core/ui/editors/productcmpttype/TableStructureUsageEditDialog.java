@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -43,6 +42,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -50,22 +50,19 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Edit dialog to edit the table structure usages.
  */
-public class TableStructureUsageEditDialog extends IpsPartEditDialog {
+public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
 
     private TextField nameField;
     private CheckboxField mandatoryTableContentField;
@@ -82,9 +79,12 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
 
     private CategoryPmo categoryPmo;
 
+    private ExtensionPropertyControlFactory extFactory;
+
     public TableStructureUsageEditDialog(ITableStructureUsage tblStructureUsage, Shell parentShell) {
         super(tblStructureUsage, parentShell, Messages.TblsStructureUsageEditDialog_title, true);
         this.tableStructureUsage = tblStructureUsage;
+        extFactory = new ExtensionPropertyControlFactory(tblStructureUsage);
     }
 
     @Override
@@ -95,25 +95,60 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         page.setText(Messages.TblsStructureUsageEditDialog_propertiesPageTtitle);
         page.setControl(createGeneralPage(folder));
 
+        bindContent();
         nameField.getControl().setFocus();
-        nameField.addChangeListener(new ValueChangeListener() {
+        return folder;
+    }
+
+    private Control createGeneralPage(TabFolder folder) {
+        Composite c = createTabItemComposite(folder, 1, false);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
+
+        getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_rolenameLabel);
+        Text nameText = getToolkit().createText(workArea);
+        nameField = new TextField(nameText);
+
+        getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_contentRequiredLabel);
+        Checkbox mandatoryTableContent = getToolkit().createCheckbox(workArea);
+        mandatoryTableContentField = new CheckboxField(mandatoryTableContent);
+
+        getToolkit().createFormLabel(workArea, Messages.TableStructureUsageEditDialog_categoryLabel);
+        createCategoryCombo(workArea);
+
+        createExtFactoryControls(workArea);
+
+        getToolkit().createVerticalSpacer(c, 10);
+
+        Group grp = getToolkit()
+                .createGridGroup(c, Messages.TblsStructureUsageEditDialog_tableStructuresGroup, 1, true);
+        createTableStructureComposite(grp);
+
+        return c;
+    }
+
+    private void createCategoryCombo(Composite workArea) {
+        Combo categoryCombo = getToolkit().createCombo(workArea);
+        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
+
+        categoryPmo = new CategoryPmo(tableStructureUsage);
+        categoryField.setInput(categoryPmo.getCategories());
+        categoryField.setAllowEmptySelection(true);
+        categoryField.setLabelProvider(new LabelProvider() {
             @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                if (!getShell().isDisposed()) {
-                    getShell().getDisplay().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getShell().isDisposed()) {
-                                return;
-                            }
-                            updateTitleInTitleArea();
-                        }
-                    });
-                }
+            public String getText(Object element) {
+                IProductCmptCategory category = (IProductCmptCategory)element;
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
             }
         });
 
-        return folder;
+    }
+
+    private void createExtFactoryControls(Composite workArea) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+            extFactory.createControls(workArea, getToolkit(), tableStructureUsage,
+                    IExtensionPropertyDefinition.POSITION_BOTTOM);
+        }
+        extFactory.bind(getBindingContext());
     }
 
     private Control createTableStructureComposite(Composite cmp) {
@@ -160,6 +195,13 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         }
     }
 
+    private void bindContent() {
+        getBindingContext().bindContent(nameField, tableStructureUsage, ITableStructureUsage.PROPERTY_ROLENAME);
+        getBindingContext().bindContent(mandatoryTableContentField, tableStructureUsage,
+                ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT);
+        getBindingContext().bindContent(categoryField, categoryPmo, IProductCmptProperty.PROPERTY_CATEGORY);
+    }
+
     private void createButtons(Composite composite) {
         Composite buttonComposite = getToolkit().createGridComposite(composite, 1, true, false);
         buttonComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
@@ -176,41 +218,25 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         btnAdd.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    addClicked();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                addClicked();
             }
         });
         btnRemove.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    removedClicked();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                removedClicked();
             }
         });
         btnUp.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    moveClicked(true);
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                moveClicked(true);
             }
         });
         btnDown.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    moveClicked(false);
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                moveClicked(false);
             }
         });
     }
@@ -245,7 +271,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
     }
 
     private void moveClicked(boolean up) {
-        int newSelection[] = tableStructureUsage.moveTableStructure(viewer.getTable().getSelectionIndices(), up);
+        int[] newSelection = tableStructureUsage.moveTableStructure(viewer.getTable().getSelectionIndices(), up);
         refresh();
         viewer.getTable().setSelection(newSelection);
         viewer.getTable().setFocus();
@@ -275,56 +301,6 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         btnDown.setEnabled(enabled);
     }
 
-    private Control createGeneralPage(TabFolder folder) {
-        Composite c = createTabItemComposite(folder, 1, false);
-        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
-
-        getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_rolenameLabel);
-        Text nameText = getToolkit().createText(workArea);
-
-        getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_contentRequiredLabel);
-        Checkbox mandatoryTableContent = getToolkit().createCheckbox(workArea);
-
-        nameField = new TextField(nameText);
-        mandatoryTableContentField = new CheckboxField(mandatoryTableContent);
-
-        getToolkit().createFormLabel(workArea, Messages.TableStructureUsageEditDialog_categoryLabel);
-        createCategoryCombo(workArea);
-
-        getToolkit().createVerticalSpacer(c, 10);
-
-        Group grp = getToolkit()
-                .createGridGroup(c, Messages.TblsStructureUsageEditDialog_tableStructuresGroup, 1, true);
-        createTableStructureComposite(grp);
-
-        return c;
-    }
-
-    private void createCategoryCombo(Composite workArea) {
-        Combo categoryCombo = getToolkit().createCombo(workArea);
-        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
-
-        categoryPmo = new CategoryPmo(tableStructureUsage);
-        categoryField.setInput(categoryPmo.getCategories());
-        categoryField.setAllowEmptySelection(true);
-        categoryField.setLabelProvider(new LabelProvider() {
-            @Override
-            public String getText(Object element) {
-                IProductCmptCategory category = (IProductCmptCategory)element;
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
-            }
-        });
-
-    }
-
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(nameField, ITableStructureUsage.PROPERTY_ROLENAME);
-        uiController.add(mandatoryTableContentField, ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT);
-        uiController.add(categoryField, categoryPmo, IProductCmptProperty.PROPERTY_CATEGORY);
-    }
-
     /**
      * Displays a dialog to select a table structure. Returns the selected table structure or
      * <code>null</code> if the user select nothing.
@@ -350,20 +326,6 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
         repackTable(viewer);
         updateButtonsEnabledState();
         updateTitleInTitleArea();
-    }
-
-    @Override
-    protected void updateTitleInTitleArea() {
-        try {
-            MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-            if (ml.getFirstMessage(Message.ERROR) != null) {
-                setMessage(ml.getFirstMessage(Message.ERROR).getText(), IMessageProvider.ERROR);
-            } else {
-                setMessage(null);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
     }
 
     /**

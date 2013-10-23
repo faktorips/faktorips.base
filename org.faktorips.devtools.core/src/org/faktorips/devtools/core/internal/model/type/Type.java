@@ -433,24 +433,45 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
+    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws CoreException {
+        ConstrainableAssociationFinder finder = new ConstrainableAssociationFinder(false, ipsProject);
+        finder.start(this);
+        return finder.getAssociationsFound();
+    }
+
+    @Override
     public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes) {
         List<IAttribute> newAttributes = new ArrayList<IAttribute>(attributes.size());
         for (IAttribute attribute : attributes) {
-            IAttribute override = getAttribute(attribute.getName());
-
-            if (override == null) {
-                override = newAttribute();
-                override.copyFrom(attribute);
-            }
+            IAttribute override = createAttributeIfNeccessary(attribute);
             override.setOverwrite(true);
             newAttributes.add(override);
         }
         return newAttributes;
     }
 
+    /**
+     * Checks whether an attribute with the given attribute's name already exists in this type and
+     * creates a new one otherwise. Returns the existent or newly created attribute. Copies all
+     * properties of the overridden attribute to the new one, if a new one needs to be created.
+     */
+    private IAttribute createAttributeIfNeccessary(IAttribute attribute) {
+        IAttribute override = getAttribute(attribute.getName());
+        if (override == null) {
+            override = newAttribute();
+            override.copyFrom(attribute);
+        }
+        return override;
+    }
+
     @Override
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
         return TypeHierarchy.getSupertypeHierarchy(this);
+    }
+
+    @Override
+    public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
+        return TypeHierarchy.getSubtypeHierarchy(this);
     }
 
     @Override
@@ -680,6 +701,29 @@ public abstract class Type extends BaseIpsObject implements IType {
         return result;
     }
 
+    @Override
+    public IAssociation constrainAssociation(IAssociation associationToConstrain, IType targetType) {
+        IAssociation association = createAssociationIfNeccessary(associationToConstrain);
+        association.setTarget(targetType.getQualifiedName());
+        association.setConstrain(true);
+        return association;
+    }
+
+    /**
+     * Checks whether an association with the given association's name already exists in this type
+     * and creates a new one otherwise. Returns the existent or newly created association. Copies
+     * all properties of the overridden association to the new one, if a new one needs to be
+     * created.
+     */
+    private IAssociation createAssociationIfNeccessary(IAssociation associationToConstrain) {
+        IAssociation association = getAssociation(associationToConstrain.getName());
+        if (association == null) {
+            association = newAssociation();
+            association.copyFrom(associationToConstrain);
+        }
+        return association;
+    }
+
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IMethod> candidates = new ArrayList<IMethod>();
@@ -779,7 +823,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean visit(IType currentType) {
-            List<T> associations = findAssociations(currentType);
+            List<T> associations = getAssociations(currentType);
             int index;
             if (superTypeFirst) {
                 index = 0;
@@ -787,7 +831,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                 index = associationsFound.size();
             }
             for (T association : associations) {
-                if (addAssociation(association)) {
+                if (isAssociationWanted(association)) {
                     associationsFound.add(index, association);
                     index++;
                 }
@@ -796,12 +840,36 @@ public abstract class Type extends BaseIpsObject implements IType {
             return true;
         }
 
-        protected boolean addAssociation(IAssociation association) {
+        /**
+         * This method returns <code>true</code> if the association specified by the parameter
+         * should be added to the list of found associations.
+         * <p>
+         * Subclasses may implement this method to include or exclude some associations.
+         * 
+         * @param association The association that should currently be added
+         * @return <code>true</code> to add the association, <code>false</code> to ignore.
+         */
+        protected boolean isAssociationWanted(IAssociation association) {
             return !isConstrainAlreadyAdded(association);
         }
 
-        protected abstract List<T> findAssociations(IType currentType);
+        /**
+         * Returns the list of associations that from the current type. For example if you want to
+         * have all associations of the current type, your implementation calls
+         * {@link IType#getAssociations()}.
+         * 
+         * @param currentType The type of which you have to return the associations from.
+         * @return The list of associations of the current type
+         */
+        protected abstract List<T> getAssociations(IType currentType);
 
+        /**
+         * Prevent more general associations from being added, which also applies to the constrained
+         * association itself (as it is the most general). The goal actually is to only find/add the
+         * most specific association of a hierarchy of constrained and constraining associations.
+         * Finding the original constrained association of a constraining association is easy, in
+         * contrast to the other way round.
+         */
         private boolean isConstrainAlreadyAdded(IAssociation association) {
             for (IAssociation alreadyAdded : getAssociationsFound()) {
                 if (alreadyAdded.isConstrain() && alreadyAdded.getName().equals(association.getName())) {
@@ -837,7 +905,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected List<IAssociation> findAssociations(IType currentType) {
+        protected List<IAssociation> getAssociations(IType currentType) {
             try {
                 return ((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(associationTarget,
                         associationType, ipsProject);
@@ -855,7 +923,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected List<IAssociation> findAssociations(IType currentType) {
+        protected List<IAssociation> getAssociations(IType currentType) {
             return currentType.getAssociations();
         }
 
@@ -1029,6 +1097,57 @@ public abstract class Type extends BaseIpsObject implements IType {
                 return false;
             }
             return true;
+        }
+
+    }
+
+    /**
+     * Finds all associations that could be constrained by this type.
+     * 
+     */
+    private static class ConstrainableAssociationFinder extends AbstractAssociationFinder<IAssociation> {
+
+        private Set<String> alreadyConstrained = new HashSet<String>();
+
+        public ConstrainableAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
+            super(superTypeFirst, ipsProject);
+        }
+
+        @Override
+        public void start(IType basetype) {
+            addConstrainingAssociations(basetype.getAssociations());
+            super.start(basetype);
+        }
+
+        private void addConstrainingAssociations(List<? extends IAssociation> associations) {
+            for (IAssociation association : associations) {
+                if (association.isConstrain()) {
+                    alreadyConstrained.add(association.getName());
+                }
+            }
+        }
+
+        @Override
+        protected boolean isAssociationWanted(IAssociation association) {
+            return super.isAssociationWanted(association) && !isDerivedUnionOrSubset(association)
+                    && !isDetailToMaster(association) && !isAlreadyConstrained(association);
+        }
+
+        private boolean isDerivedUnionOrSubset(IAssociation association) {
+            return association.isDerivedUnion() || association.isSubsetOfADerivedUnion();
+        }
+
+        private boolean isDetailToMaster(IAssociation association) {
+            return AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType());
+        }
+
+        private boolean isAlreadyConstrained(IAssociation association) {
+            return alreadyConstrained.contains(association.getName());
+        }
+
+        @Override
+        protected List<IAssociation> getAssociations(IType currentType) {
+            return currentType.getAssociations();
         }
 
     }

@@ -41,7 +41,7 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
+        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, getSite(), toolkit);
         return attributesComposite;
     }
 
@@ -52,13 +52,13 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
     @Override
     protected void performRefresh() {
         super.performRefresh();
-        attributesComposite.updateOverrideButtonEnabledState();
     }
 
     private class ProductCmptTypeAttributesComposite extends AttributesComposite {
 
-        public ProductCmptTypeAttributesComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, toolkit);
+        public ProductCmptTypeAttributesComposite(IProductCmptType productCmptType, Composite parent,
+                IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(productCmptType, parent, site, toolkit);
         }
 
         @Override
@@ -71,10 +71,6 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
             return new AttributeEditDialog((IProductCmptTypeAttribute)part, shell);
         }
 
-        @Override
-        protected void updateOverrideButtonEnabledState() {
-            super.updateOverrideButtonEnabledState();
-        }
     }
 
 }

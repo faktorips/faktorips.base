@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.EnumSet;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -80,7 +82,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, getSite(), true, true, true, false, true, false, false, false, toolkit);
+            super(ipsObject, parent, getSite(), EnumSet.of(Option.CAN_CREATE,
+                    Option.CAN_EDIT, Option.CAN_DELETE,
+                    Option.SHOW_EDIT_BUTTON), toolkit);
 
             super.setEditDoubleClickListenerEnabled(false);
 
@@ -145,7 +149,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         @Override
         public boolean aboutToDelete(IIpsObjectPart part) {
             if (page.getProductCmpt().getGenerationsOrderedByValidDate().length == 2) {
-                super.deleteButton.setEnabled(false);
+                super.getDeleteButton().setEnabled(false);
             }
             return true;
         }
@@ -168,7 +172,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             super.updateButtonEnabledStates();
             boolean moreThenOneGeneration = page.getProductCmpt().getGenerationsOrderedByValidDate().length > 1;
             boolean editable = IpsUIPlugin.isEditable(page.getProductCmpt().getIpsSrcFile());
-            deleteButton.setEnabled(moreThenOneGeneration && editable);
+            getDeleteButton().setEnabled(moreThenOneGeneration && editable);
         }
 
         private class ContentProvider implements IStructuredContentProvider {
