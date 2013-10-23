@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -30,16 +29,15 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
 
 /**
- * A composite that consits of three textfields for lower bound, upper bound and step. if there is a
+ * A composite that consist of three textfields for lower bound, upper bound and step. if there is a
  * uicontroller supplied it is used to establish a mapping between the modell object and the control
  * which represents the object property.
  */
@@ -51,14 +49,14 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private EditField<String> lowerfield;
     private EditField<String> upperfield;
     private EditField<String> stepfield;
-    private IpsObjectUIController uiController;
+    private BindingContext uiController;
     private Checkbox containsNullCB;
     private CheckboxField containsNullField;
 
     private boolean dataChangeable;
 
     public RangeEditControl(Composite parent, UIToolkit toolkit, ValueDatatype valueDatatype, IRangeValueSet range,
-            UIController uiController) {
+            BindingContext uiController) {
         super(parent, SWT.NONE);
         this.range = range;
         uiToolkit = toolkit;
@@ -66,12 +64,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         setLayout();
         Composite workArea = createWorkArea(uiToolkit, this);
         createTextControls(uiToolkit, workArea, valueDatatype, range, range.getIpsProject());
-
-        if (uiController instanceof IpsObjectUIController) {
-            this.uiController = (IpsObjectUIController)uiController;
-        } else {
-            this.uiController = new IpsObjectUIController((IIpsObjectPart)range.getParent());
-        }
+        this.uiController = uiController;
         connectToModel();
     }
 
@@ -90,7 +83,8 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
             workArea = toolkit.createComposite(parent);
             layoutWorkArea.marginHeight = 0;
             layoutWorkArea.marginWidth = 0;
-            layoutWorkArea.horizontalSpacing = 12; // this is important for the diplayed icons !!
+            // this is important for the displayed icons !!
+            layoutWorkArea.horizontalSpacing = 12;
 
         } else {
             workArea = toolkit.getFormToolkit().createComposite(parent);
@@ -138,10 +132,10 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
     private void connectToModel() {
         containsNullField = new CheckboxField(containsNullCB);
-        uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.add(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
+        uiController.bindContent(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+        uiController.bindContent(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+        uiController.bindContent(stepfield, range, IRangeValueSet.PROPERTY_STEP);
+        uiController.bindContent(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
         uiController.updateUI();
     }
 
@@ -182,14 +176,14 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     @Override
     public void setValueSet(IValueSet valueSet, ValueDatatype valueDatatype) {
         range = (RangeValueSet)valueSet;
-        uiController.remove(upperfield);
-        uiController.remove(lowerfield);
-        uiController.remove(stepfield);
-        uiController.remove(containsNullField);
-        uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.add(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
+        uiController.removeBindings(upperfield.getControl());
+        uiController.removeBindings(lowerfield.getControl());
+        uiController.removeBindings(stepfield.getControl());
+        uiController.removeBindings(containsNullField.getControl());
+        uiController.bindContent(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+        uiController.bindContent(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+        uiController.bindContent(stepfield, range, IRangeValueSet.PROPERTY_STEP);
+        uiController.bindContent(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
         uiController.updateUI();
     }
 

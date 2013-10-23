@@ -48,7 +48,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
@@ -213,12 +212,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
 
-        IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         Composite temp = getToolkit().createGridComposite(c, 1, true, false);
         getToolkit().createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
         getToolkit().createVerticalSpacer(temp, 8);
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
-        valueSetEditControl = new ValueSetSpecificationControl(temp, getToolkit(), uiController, attribute,
+        valueSetEditControl = new ValueSetSpecificationControl(temp, getToolkit(), getBindingContext(), attribute,
                 valueSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         updateValueSetTypes();
 
