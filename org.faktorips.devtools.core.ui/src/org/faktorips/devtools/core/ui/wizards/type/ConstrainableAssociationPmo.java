@@ -19,6 +19,13 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
+/**
+ * 
+ * presentation model object for ConstrainableAssociationWizard to spot the selections made in the
+ * first and second Page
+ * 
+ * @since 3.11
+ */
 public class ConstrainableAssociationPmo extends PresentationModelObject {
 
     public static final String PROPERTY_SELECTED_ASSOCIATION = "selectedAssociation"; //$NON-NLS-1$
