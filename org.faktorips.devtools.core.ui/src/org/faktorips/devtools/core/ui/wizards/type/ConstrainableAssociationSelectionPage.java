@@ -31,6 +31,11 @@ import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
+/**
+ * The first page of the wizard, which is called when the override button is clicked
+ * 
+ * @since 3.11
+ */
 public class ConstrainableAssociationSelectionPage extends WizardPage {
     private Composite composite;
     private TreeViewer viewer;
@@ -70,7 +75,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         viewer.expandAll();
     }
 
-    public void bindContext() {
+    private void bindContext() {
         bindingContext.bindContent(viewer, IAssociation.class, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION);
         bindingContext.add(new PropertyChangeBinding<IAssociation>(composite, pmo,
