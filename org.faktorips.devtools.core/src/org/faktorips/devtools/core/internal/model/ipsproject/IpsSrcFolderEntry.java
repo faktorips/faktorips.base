@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -385,16 +386,23 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return validationMessagesBundle;
     }
 
+    @Override
+    public boolean containsResource(String path) {
+        IFile file = getSourceFolder().getFile(path);
+        return file.exists();
+    }
+
     /**
      * Interprets the given path as relative to the referenced sourcefolder.
      */
     @Override
-    public InputStream getRessourceAsStream(String pathAsString) throws CoreException {
+    public InputStream getResourceAsStream(String pathAsString) {
         IFile file = getSourceFolder().getFile(pathAsString);
-        if (file.exists()) {
+        try {
             return file.getContents();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
-        return null;
     }
 
 }

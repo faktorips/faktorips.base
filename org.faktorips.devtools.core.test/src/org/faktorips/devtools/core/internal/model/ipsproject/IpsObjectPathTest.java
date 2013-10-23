@@ -32,6 +32,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -55,6 +56,7 @@ import org.junit.Test;
  */
 public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
+    private static final String MY_RESOURCE_PATCH = "myResourcePatch";
     private IIpsProject ipsProject;
 
     @Override
@@ -519,6 +521,64 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsContainerEntry existingContainer = path.findExistingContainer(containerTypeId, optionalPath);
 
         assertEquals(containerEntry, existingContainer);
+    }
+
+    @Test
+    public void testContainsResource_true() throws Exception {
+        IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
+        IIpsProject mockProject = mock(IIpsProject.class);
+        IIpsProject mockProject2 = mock(IIpsProject.class);
+        ipsObjectPath.newIpsProjectRefEntry(mockProject);
+        ipsObjectPath.newIpsProjectRefEntry(mockProject2);
+        when(mockProject2.containsResource(MY_RESOURCE_PATCH)).thenReturn(true);
+
+        assertTrue(ipsObjectPath.containsResource(MY_RESOURCE_PATCH));
+    }
+
+    @Test
+    public void testContainsResource_flase() throws Exception {
+        IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
+        IIpsProject mockProject = mock(IIpsProject.class);
+        IIpsProject mockProject2 = mock(IIpsProject.class);
+        ipsObjectPath.newIpsProjectRefEntry(mockProject);
+        ipsObjectPath.newIpsProjectRefEntry(mockProject2);
+
+        assertFalse(ipsObjectPath.containsResource(MY_RESOURCE_PATCH));
+    }
+
+    @Test
+    public void testContainsResource_empty() throws Exception {
+        IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
+
+        assertFalse(ipsObjectPath.containsResource(MY_RESOURCE_PATCH));
+    }
+
+    @Test
+    public void testGetIndex() throws Exception {
+        IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
+        IIpsArchiveEntry newArchiveEntry = ipsObjectPath.newArchiveEntry(new Path("anyPath"));
+        IIpsContainerEntry newContainerEntry = ipsObjectPath.newContainerEntry("MyContainer", "myContainerPath");
+
+        assertEquals(0, ipsObjectPath.getIndex(newArchiveEntry));
+        assertEquals(1, ipsObjectPath.getIndex(newContainerEntry));
+    }
+
+    @Test
+    public void testGetIndex_inContainer() throws Exception {
+        IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
+        IIpsObjectPathEntry entry0 = mock(IIpsObjectPathEntry.class);
+        IIpsContainerEntry entry1 = mock(IIpsContainerEntry.class);
+        IIpsObjectPathEntry containerEntry2 = mock(IIpsObjectPathEntry.class);
+        IIpsObjectPathEntry containerEntry3 = mock(IIpsObjectPathEntry.class);
+        IIpsObjectPathEntry entry4 = mock(IIpsObjectPathEntry.class);
+        when(entry1.resolveEntries()).thenReturn(Arrays.asList(containerEntry2, containerEntry3));
+        ipsObjectPath.setEntries(new IIpsObjectPathEntry[] { entry0, entry1, entry4 });
+
+        assertEquals(0, ipsObjectPath.getIndex(entry0));
+        assertEquals(1, ipsObjectPath.getIndex(entry1));
+        assertEquals(2, ipsObjectPath.getIndex(containerEntry2));
+        assertEquals(3, ipsObjectPath.getIndex(containerEntry3));
+        assertEquals(4, ipsObjectPath.getIndex(entry4));
     }
 
 }

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -101,12 +102,27 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the index of the given entry.
      */
     public int getIndex(IIpsObjectPathEntry entry) {
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].equals(entry)) {
+        return getIndexIn(entry, Arrays.asList(entries));
+    }
+
+    private int getIndexIn(IIpsObjectPathEntry entry, List<IIpsObjectPathEntry> myEntries) {
+        int i = 0;
+        for (IIpsObjectPathEntry anEntry : myEntries) {
+            if (anEntry.equals(entry)) {
                 return i;
             }
+            i++;
+            if (anEntry instanceof IIpsContainerEntry) {
+                List<IIpsObjectPathEntry> resolvedEntries = ((IIpsContainerEntry)anEntry).resolveEntries();
+                int indexInContainer = getIndexIn(entry, resolvedEntries);
+                if (indexInContainer > -1) {
+                    return i + indexInContainer;
+                } else {
+                    i += resolvedEntries.size();
+                }
+            }
         }
-        throw new IllegalArgumentException("Can't find entry " + entry + " in path " + this); //$NON-NLS-1$  //$NON-NLS-2$
+        return -1;
     }
 
     @Override
@@ -651,16 +667,21 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
+    public boolean containsResource(String path) {
+        for (IIpsObjectPathEntry entry : entries) {
+            if (entry.containsResource(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public InputStream getResourceAsStream(String path) {
         for (IIpsObjectPathEntry entry : entries) {
-            try {
-                InputStream inputStream = entry.getRessourceAsStream(path);
-                if (inputStream != null) {
-                    return inputStream;
-                }
-            } catch (CoreException e) {
-                // may occur if the path does not exists in this entry
-                IpsPlugin.log(e);
+            if (entry.containsResource(path)) {
+                InputStream inputStream = entry.getResourceAsStream(path);
+                return inputStream;
             }
         }
         return null;

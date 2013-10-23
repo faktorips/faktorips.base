@@ -124,10 +124,6 @@ public class CustomIconSection extends IpsSection {
         iconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);
         iconBrowseButton.addSelectionListener(new BrowseIconsListener());
 
-        // update Text before binding it to the content, as it will not show up when initially
-        // opened otherwise
-        // TODO: SW 10.12.09 Why doesn't bindingContext update text field in the first place?
-        iconPathText.setText(((IProductCmptType)type).getInstancesIcon());
         getBindingContext().bindContent(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
 
         // Update Icon on path-change
@@ -139,6 +135,8 @@ public class CustomIconSection extends IpsSection {
                         refreshIcon();
                     }
                 });
+
+        getBindingContext().updateUI();
     }
 
     @Override
@@ -175,7 +173,8 @@ public class CustomIconSection extends IpsSection {
             dialog.setAllowMultiple(false);
             dialog.setTitle(Messages.CustomIconSection_SelectImageDialog_Title);
             dialog.setMessage(Messages.CustomIconSection_SelectImageDialog_Description);
-            dialog.addFilter(new FileExtensionFilter(new String[] { "gif", "png" })); //$NON-NLS-1$ //$NON-NLS-2$
+            dialog.addFilter(new FileExtensionFilter(IProductCmptType.SUPPORTED_ICON_EXTENSIONS
+                    .toArray(new String[IProductCmptType.SUPPORTED_ICON_EXTENSIONS.size()])));
             dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
 
             if (dialog.open() == Window.OK) {
@@ -232,6 +231,7 @@ public class CustomIconSection extends IpsSection {
                         }
                     }
                 } catch (CoreException e) {
+                    IpsPlugin.log(e);
                 }
             }
 

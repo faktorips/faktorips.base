@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchive;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -198,7 +199,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     private boolean coreExceptionThrownOnGetResourceAsStream(IIpsArchive archive) {
         try {
             archive.getResourceAsStream("test.gif");
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             return true;
         }
         return false;

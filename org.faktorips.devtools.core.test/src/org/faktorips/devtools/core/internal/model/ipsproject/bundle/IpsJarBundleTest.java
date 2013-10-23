@@ -39,9 +39,6 @@ import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundle;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundleContentIndex;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.JarFileFactory;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -123,7 +120,7 @@ public class IpsJarBundleTest {
         mockQualifiedNameTypes();
         mockJarFileWithResource();
 
-        InputStream ressourceAsStream = ipsJarBundle.getContent(qualifiedNameType);
+        InputStream ressourceAsStream = ipsJarBundle.getContent(qualifiedNameType.toPath());
 
         assertEquals(152, ressourceAsStream.read());
         assertEquals(-1, ressourceAsStream.read());
@@ -319,7 +316,7 @@ public class IpsJarBundleTest {
         HashSet<QualifiedNameType> qnameTypes = new HashSet<QualifiedNameType>();
         when(bundleContentIndex.getQualifiedNameTypes("anyPackageName")).thenReturn(qnameTypes);
 
-        boolean contained = ipsJarBundle.contains(qualifiedNameType);
+        boolean contained = ipsJarBundle.contains(qualifiedNameType.toPath());
 
         assertFalse(contained);
     }
@@ -328,7 +325,7 @@ public class IpsJarBundleTest {
     public void testContains_found() throws Exception {
         mockQualifiedNameTypes();
 
-        boolean contained = ipsJarBundle.contains(qualifiedNameType);
+        boolean contained = ipsJarBundle.contains(qualifiedNameType.toPath());
 
         assertTrue(contained);
     }
@@ -338,6 +335,7 @@ public class IpsJarBundleTest {
         HashSet<QualifiedNameType> qnameTypes = new HashSet<QualifiedNameType>();
         qnameTypes.add(qualifiedNameType);
         when(bundleContentIndex.getQualifiedNameTypes()).thenReturn(qnameTypes);
+        when(bundleContentIndex.getModelPath(qualifiedNameType.toPath())).thenReturn(new Path("modelPath"));
     }
 
     @Test

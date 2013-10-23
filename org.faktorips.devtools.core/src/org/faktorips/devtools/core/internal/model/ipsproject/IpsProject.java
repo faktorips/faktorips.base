@@ -1893,6 +1893,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
+    public boolean containsResource(String path) {
+        return getIpsObjectPathInternal().containsResource(path);
+    }
+
+    @Override
     public InputStream getResourceAsStream(String path) {
         return getIpsObjectPathInternal().getResourceAsStream(path);
     }
