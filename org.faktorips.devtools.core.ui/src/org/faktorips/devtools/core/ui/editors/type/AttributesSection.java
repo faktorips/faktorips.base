@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
+import java.util.EnumSet;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -21,10 +23,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -56,18 +54,21 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
      * A composite that shows a policy component's attributes in a viewer and allows to edit
      * attributes in a dialog, create new attributes and delete attributes.
      */
-    protected abstract class AttributesComposite extends IpsPartsComposite {
+    protected abstract static class AttributesComposite extends IpsPartsComposite {
 
         private IpsAction openEnumTypeAction;
-        private Button overrideButton;
 
-        protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), true, true, true, true, true, true, true, true, toolkit);
+        protected AttributesComposite(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(type, parent, site,
+                    EnumSet.of(Option.CAN_CREATE, Option.CAN_DELETE, Option.CAN_EDIT, Option.CAN_MOVE,
+                            Option.CAN_OVERRIDE, Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
+                            Option.PULL_UP_REFACTORING_SUPPORTED, Option.RENAME_REFACTORING_SUPPORTED,
+                            Option.SHOW_EDIT_BUTTON), toolkit);
             openEnumTypeAction = new OpenEnumerationTypeInNewEditor(getViewer());
         }
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
+        protected IIpsObjectPart newIpsPart() {
             return getType().newAttribute();
         }
 
@@ -78,7 +79,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new AttributeContentProvider();
+            return new AttributeContentProvider(getType());
         }
 
         @Override
@@ -95,43 +96,10 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         @Override
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
-            overrideButton.setEnabled(flag);
         }
 
         @Override
-        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
-            super.createButtons(buttons, toolkit);
-            createButtonSpace(buttons, toolkit);
-
-            overrideButton = toolkit.createButton(buttons, Messages.AttributesSection_OverrideButton);
-            overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                    | GridData.VERTICAL_ALIGN_BEGINNING));
-            overrideButton.addSelectionListener(new SelectionListener() {
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    overrideClicked();
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // Nothing to do
-                }
-            });
-            updateOverrideButtonEnabledState();
-
-            return true;
-        }
-
-        protected void updateOverrideButtonEnabledState() {
-            try {
-                boolean supertypeExisting = getType().hasExistingSupertype(getType().getIpsProject());
-                overrideButton.setEnabled(supertypeExisting);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void overrideClicked() {
+        public void overrideClicked() {
             OverrideAttributeDialog dialog = new OverrideAttributeDialog(getType(), getShell());
             if (dialog.open() == Window.OK) {
                 getType().overrideAttributes(dialog.getSelectedParts());
@@ -139,11 +107,17 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
             }
         }
 
-        private class AttributeContentProvider implements IStructuredContentProvider {
+        private static class AttributeContentProvider implements IStructuredContentProvider {
+
+            private final IType type;
+
+            public AttributeContentProvider(IType type) {
+                this.type = type;
+            }
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getAttributes().toArray();
+                return type.getAttributes().toArray();
             }
 
             @Override
@@ -158,7 +132,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
 
         }
 
-        private class OpenEnumerationTypeInNewEditor extends IpsAction {
+        private static class OpenEnumerationTypeInNewEditor extends IpsAction {
 
             public OpenEnumerationTypeInNewEditor(ISelectionProvider selectionProvider) {
                 super(selectionProvider);
@@ -203,5 +177,4 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         }
 
     }
-
 }

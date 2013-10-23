@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuListener;
@@ -45,9 +47,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -75,30 +79,22 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     private final UIToolkit uiToolkit;
 
-    /**
-     * Flag that controls whether the edit button is shown (edit is also possible via double click).
-     */
-    private final boolean showEditButton;
-
-    private final boolean renameRefactoringSupported;
-
-    private final boolean pullUpRefactoringSupported;
-
-    /** Flag that controls whether the jump to source code context menu will be provided. */
-    private final boolean jumpToSourceCodeSupported;
+    private ArrayList<IDeleteListener> deleteListeners = new ArrayList<IDeleteListener>();
 
     /** The table view of this composite */
-    private TableViewer viewer;
+    private TableViewer tableViewer;
 
-    protected Button newButton;
+    private Button newButton;
 
-    protected Button editButton;
+    private Button editButton;
 
-    protected Button deleteButton;
+    private Button deleteButton;
 
-    protected Button upButton;
+    private Button upButton;
 
-    protected Button downButton;
+    private Button downButton;
+
+    private Button overrideButton;
 
     /** Table to show the content */
     private Table table;
@@ -106,49 +102,90 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /** Listener to start editing on double click. */
     private MouseAdapter editDoubleClickListener;
 
-    /** Flag that controls if a new part can be created. */
-    private boolean canCreate;
-
-    /** Flag that controls if a part can be edited. */
-    private boolean canEdit;
-
-    /** Flag that controls if a part can be deleted. */
-    private boolean canDelete;
-
-    /** Flag that controls if parts can be moved. */
-    private boolean canMove;
-
-    protected IpsPartsComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
-        this(pdObject, parent, site, true, true, true, true, true, false, false, false, toolkit);
+    protected enum Option {
+        SHOW_EDIT_BUTTON,
+        RENAME_REFACTORING_SUPPORTED,
+        PULL_UP_REFACTORING_SUPPORTED,
+        JUMP_TO_SOURCE_CODE_SUPPORTED,
+        CAN_CREATE,
+        CAN_EDIT,
+        CAN_DELETE,
+        CAN_MOVE,
+        CAN_OVERRIDE,
+        NONE;
     }
 
+    private final EnumSet<Option> options;
+
+    protected IpsPartsComposite(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site,
+            EnumSet<Option> options, UIToolkit uiToolkit) {
+
+        super(parent);
+        this.options = options;
+        this.ipsObject = ipsObject;
+        this.site = site;
+        this.uiToolkit = uiToolkit;
+        initControls(uiToolkit);
+        uiToolkit.getFormToolkit().adapt(this);
+    }
+
+    protected IpsPartsComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+        this(pdObject, parent, site, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_DELETE, Option.CAN_MOVE,
+                Option.SHOW_EDIT_BUTTON), toolkit);
+    }
+
+    // CSOFF: ParameterNumberCheck
+    /**
+     * @deprecated use constructor with EnumSet
+     */
+    @Deprecated
     protected IpsPartsComposite(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site, boolean canCreate,
             boolean canEdit, boolean canDelete, boolean canMove, boolean showEditButton,
             boolean renameRefactoringSupported, boolean pullUpRefactoringSupported, boolean jumpToSourceCodeSupported,
             UIToolkit uiToolkit) {
 
         super(parent);
+        List<Option> optionList = new ArrayList<Option>();
+        addOptionToList(optionList, canCreate, Option.CAN_CREATE);
+        addOptionToList(optionList, canEdit, Option.CAN_EDIT);
+        addOptionToList(optionList, canDelete, Option.CAN_DELETE);
+        addOptionToList(optionList, canMove, Option.CAN_MOVE);
+        addOptionToList(optionList, showEditButton, Option.SHOW_EDIT_BUTTON);
+        addOptionToList(optionList, renameRefactoringSupported, Option.RENAME_REFACTORING_SUPPORTED);
+        addOptionToList(optionList, pullUpRefactoringSupported, Option.PULL_UP_REFACTORING_SUPPORTED);
+        addOptionToList(optionList, jumpToSourceCodeSupported, Option.JUMP_TO_SOURCE_CODE_SUPPORTED);
+        addNoneIfEmptyList(optionList);
+
+        this.options = EnumSet.copyOf(optionList);
 
         this.ipsObject = ipsObject;
         this.site = site;
-        this.canCreate = canCreate;
-        this.canEdit = canEdit;
-        this.canDelete = canDelete;
-        this.canMove = canMove;
-        this.showEditButton = showEditButton;
-        this.renameRefactoringSupported = renameRefactoringSupported;
-        this.pullUpRefactoringSupported = pullUpRefactoringSupported;
-        this.jumpToSourceCodeSupported = jumpToSourceCodeSupported;
         this.uiToolkit = uiToolkit;
-
         initControls(uiToolkit);
         uiToolkit.getFormToolkit().adapt(this);
+    }
+
+    // CSON: ParameterNumberCheck
+    public EnumSet<Option> getOptions() {
+        return options;
+    }
+
+    private void addNoneIfEmptyList(List<Option> optionList) {
+        if (optionList.isEmpty()) {
+            optionList.add(Option.NONE);
+        }
+    }
+
+    private void addOptionToList(List<Option> optionList, boolean value, Option enumValue) {
+        if (value) {
+            optionList.add(enumValue);
+        }
     }
 
     void createContextMenu() {
         MenuManager contextMenuManager = new MenuManager();
 
-        if (jumpToSourceCodeSupported) {
+        if (isOptionInclude(Option.JUMP_TO_SOURCE_CODE_SUPPORTED)) {
             contextMenuManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         }
 
@@ -179,18 +216,27 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
     }
 
+    private boolean isOptionInclude(Option option) {
+        return getOptions().contains(option);
+    }
+
+    private boolean isOptionExclude(Option option) {
+        return !getOptions().contains(option);
+    }
+
     private void createRefactoringSubContextMenu(MenuManager contextMenuManager) {
-        if (!renameRefactoringSupported && !pullUpRefactoringSupported) {
+        if (isOptionExclude(Option.RENAME_REFACTORING_SUPPORTED)
+                && isOptionExclude(Option.PULL_UP_REFACTORING_SUPPORTED)) {
             return;
         }
 
         MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
-        if (renameRefactoringSupported) {
+        if (isOptionInclude(Option.RENAME_REFACTORING_SUPPORTED)) {
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID,
                     Messages.IpsPartsComposite_labelRenameRefactoring));
             refactorSubmenu.add(new Separator());
         }
-        if (pullUpRefactoringSupported) {
+        if (isOptionInclude(Option.PULL_UP_REFACTORING_SUPPORTED)) {
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID,
                     Messages.IpsPartsComposite_labelPullUpRefactoring));
         }
@@ -220,56 +266,100 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return uiToolkit;
     }
 
-    public boolean isCanCreate() {
-        return canCreate;
+    public IType getType() {
+        return (IType)getIpsObject();
+    }
+
+    protected Button getDeleteButton() {
+        return deleteButton;
+    }
+
+    protected Button getCreateButton() {
+        return newButton;
+    }
+
+    protected Button getEditButton() {
+        return editButton;
+    }
+
+    protected Button getUpButton() {
+        return upButton;
+    }
+
+    protected Button getDownButton() {
+        return downButton;
+    }
+
+    protected Button getOverrideButton() {
+        return overrideButton;
     }
 
     @Override
     public boolean isDataChangeable() {
-        return canCreate || canEdit || canMove || canDelete;
+        return canCreateOrCanEdit() || isOptionInclude(Option.CAN_MOVE) || isOptionInclude(Option.CAN_DELETE)
+                || isOptionInclude(Option.CAN_OVERRIDE);
+    }
+
+    private boolean canCreateOrCanEdit() {
+        return isOptionInclude(Option.CAN_CREATE) || isOptionInclude(Option.CAN_EDIT);
     }
 
     @Override
     public void setDataChangeable(boolean flag) {
         table.setEnabled(true);
-        canCreate = flag;
-        canEdit = flag;
-        canDelete = flag;
-        canMove = flag;
+        addOptionIfNeeded(flag, Option.CAN_CREATE);
+        addOptionIfNeeded(flag, Option.CAN_EDIT);
+        addOptionIfNeeded(flag, Option.CAN_DELETE);
+        addOptionIfNeeded(flag, Option.CAN_MOVE);
+        addOptionIfNeeded(flag, Option.CAN_OVERRIDE);
         updateButtonEnabledStates();
     }
 
+    public boolean isCanCreate() {
+        return isOptionInclude(Option.CAN_CREATE);
+    }
+
     public void setCanCreate(boolean canCreate) {
-        this.canCreate = canCreate;
+        addOptionIfNeeded(canCreate, Option.CAN_CREATE);
         updateButtonEnabledStates();
     }
 
     public boolean isCanDelete() {
-        return canDelete;
+        return isOptionInclude(Option.CAN_DELETE);
     }
 
     public void setCanDelete(boolean canDelete) {
-        this.canDelete = canDelete;
+        addOptionIfNeeded(canDelete, Option.CAN_DELETE);
         updateButtonEnabledStates();
     }
 
     public boolean isCanEdit() {
-        return canEdit;
+        return isOptionInclude(Option.CAN_EDIT);
 
     }
 
     public void setCanEdit(boolean canEdit) {
-        this.canEdit = canEdit;
+        addOptionIfNeeded(canEdit, Option.CAN_EDIT);
         updateButtonEnabledStates();
     }
 
     public boolean isCanMove() {
-        return canMove;
+        return isOptionInclude(Option.CAN_MOVE);
     }
 
     public void setCanMove(boolean canMove) {
-        this.canMove = canMove;
+        addOptionIfNeeded(canMove, Option.CAN_MOVE);
         updateButtonEnabledStates();
+    }
+
+    private void addOptionIfNeeded(boolean state, Option option) {
+        if (state) {
+            if (isOptionExclude(option)) {
+                getOptions().add(option);
+            }
+        } else {
+            getOptions().remove(option);
+        }
     }
 
     @Override
@@ -278,14 +368,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         setEditDoubleClickListenerEnabled(true);
         registerOpenLinkListener();
 
-        viewer = new TableViewer(table);
-        viewer.setContentProvider(createContentProvider());
+        tableViewer = new TableViewer(table);
+        tableViewer.setContentProvider(createContentProvider());
         ILabelProvider lp = createLabelProvider();
         final MessageCueLabelProvider messageCueLabelProvider = new MessageCueLabelProvider(lp,
                 ipsObject.getIpsProject());
-        viewer.setLabelProvider(messageCueLabelProvider);
+        tableViewer.setLabelProvider(messageCueLabelProvider);
 
-        new TableMessageHoverService(viewer) {
+        new TableMessageHoverService(tableViewer) {
 
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
@@ -294,7 +384,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
         };
 
-        return viewer;
+        return tableViewer;
     }
 
     /**
@@ -329,7 +419,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * indent to overwrite this method if this functionality is available.
      */
     protected void openLink() {
-        // nothing do do
+        // nothing to do
     }
 
     /**
@@ -373,23 +463,30 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     @Override
     protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
         boolean buttonCreated = false;
-        if (canCreate) {
+        if (isOptionInclude(Option.CAN_CREATE)) {
             createNewButton(buttons, toolkit);
             buttonCreated = true;
         }
-        if (canEdit && showEditButton) {
+        if (isOptionInclude(Option.CAN_EDIT) && isOptionInclude(Option.SHOW_EDIT_BUTTON)) {
             createEditButton(buttons, toolkit);
             buttonCreated = true;
         }
-        if (canDelete) {
+        if (isOptionInclude(Option.CAN_DELETE)) {
             createDeleteButton(buttons, toolkit);
             buttonCreated = true;
         }
-        if (canMove) {
+        if (isOptionInclude(Option.CAN_MOVE)) {
             if (buttonCreated) {
                 createButtonSpace(buttons, toolkit);
             }
             createMoveButtons(buttons, toolkit);
+            buttonCreated = true;
+        }
+        if (isOptionInclude(Option.CAN_OVERRIDE)) {
+            if (buttonCreated) {
+                createButtonSpace(buttons, toolkit);
+            }
+            createOverrideButton(buttons, toolkit);
             buttonCreated = true;
         }
         return buttonCreated;
@@ -403,16 +500,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createNewButton(Composite buttons, UIToolkit toolkit) {
-        newButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonNew);
-        newButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        newButton.addSelectionListener(new SelectionListener() {
+        newButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonNew, new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    newPart();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                newPart();
             }
 
             @Override
@@ -423,16 +514,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createEditButton(Composite buttons, UIToolkit toolkit) {
-        editButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonEdit);
-        editButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        editButton.addSelectionListener(new SelectionListener() {
+        editButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonEdit, new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    editPart();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                editPart();
             }
 
             @Override
@@ -443,16 +528,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createDeleteButton(Composite buttons, UIToolkit toolkit) {
-        deleteButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDelete);
-        deleteButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        deleteButton.addSelectionListener(new SelectionListener() {
+        deleteButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDelete, new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    deletePart();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                deletePart();
             }
 
             @Override
@@ -463,33 +542,11 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createMoveButtons(Composite buttons, UIToolkit toolkit) {
-        upButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonUp);
-        upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        upButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    moveParts(true);
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
+        upButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonUp, new SelectionListener() {
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-        downButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDown);
-        downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        downButton.addSelectionListener(new SelectionListener() {
-            @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    moveParts(false);
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
+                moveParts(true);
             }
 
             @Override
@@ -498,36 +555,103 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             }
         });
 
+        downButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDown, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                moveParts(false);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    protected final void createOverrideButton(Composite buttons, UIToolkit toolkit) {
+        overrideButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_override, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                overrideClicked();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private Button createButton(Composite buttons, UIToolkit toolkit, String message, SelectionListener selectionLister) {
+        Button button = toolkit.createButton(buttons, message);
+        button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        button.addSelectionListener(selectionLister);
+        return button;
+    }
+
+    public void overrideClicked() {
+        // muss be implemented in subclass
     }
 
     @Override
     protected void updateButtonEnabledStates() {
         boolean itemSelected = false;
 
-        if (getViewer().getSelection() != null && !getViewer().getSelection().isEmpty()) {
+        if (isItemSelected()) {
             itemSelected = true;
         }
 
-        if (newButton != null) {
-            newButton.setEnabled(canCreate);
-        }
+        updateStateNewButton();
+        updateStateEditButton(itemSelected);
+        updateStateDeleteButton(itemSelected);
+        updateStateUpButton(itemSelected);
+        updateStateDownButton(itemSelected);
+        updateStateOverrideButton();
+    }
 
+    private boolean isItemSelected() {
+        return getViewer().getSelection() != null && !getViewer().getSelection().isEmpty();
+    }
+
+    private void updateStateNewButton() {
+        if (newButton != null) {
+            newButton.setEnabled(isOptionInclude(Option.CAN_CREATE));
+        }
+    }
+
+    private void updateStateEditButton(boolean itemSelected) {
         if (editButton != null) {
             editButton.setEnabled(itemSelected);
-            editButton
-                    .setText((canEdit ? Messages.IpsPartsComposite_buttonEdit : Messages.IpsPartsComposite_buttonShow));
+            editButton.setText((isOptionInclude(Option.CAN_EDIT) ? Messages.IpsPartsComposite_buttonEdit
+                    : Messages.IpsPartsComposite_buttonShow));
         }
+    }
 
+    private void updateStateDeleteButton(boolean itemSelected) {
         if (deleteButton != null) {
-            deleteButton.setEnabled(itemSelected && canDelete);
+            deleteButton.setEnabled(itemSelected && isOptionInclude(Option.CAN_DELETE));
         }
+    }
 
+    private void updateStateUpButton(boolean itemSelected) {
         if (upButton != null) {
-            upButton.setEnabled(itemSelected && canMove && !isFirstElementSelected());
+            upButton.setEnabled(itemSelected && isOptionInclude(Option.CAN_MOVE) && !isFirstElementSelected());
         }
+    }
 
+    private void updateStateDownButton(boolean itemSelected) {
         if (downButton != null) {
-            downButton.setEnabled(itemSelected && canMove && !isLastElementSelected());
+            downButton.setEnabled(itemSelected && isOptionInclude(Option.CAN_MOVE) && !isLastElementSelected());
+        }
+    }
+
+    private void updateStateOverrideButton() {
+        if (overrideButton != null) {
+            try {
+                overrideButton.setEnabled(getType().hasExistingSupertype(getType().getIpsProject()));
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -570,8 +694,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
                 newPartConfirmed(newPart);
             }
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        } catch (CoreRuntimeException ex) {
+            IpsPlugin.logAndShowErrorDialog(ex);
         }
 
         refresh();
@@ -634,20 +758,21 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
 
         try {
-            Table table = (Table)getViewer().getControl();
-            int selectedIndexAfterDeletion = Math.min(table.getSelectionIndex(), table.getItemCount() - 2);
+            Table tableControl = (Table)getViewer().getControl();
+            int selectedIndexAfterDeletion = Math
+                    .min(tableControl.getSelectionIndex(), tableControl.getItemCount() - 2);
             IIpsObjectPart part = getSelectedPart();
             if (!fireAboutToDelete(part)) {
                 return;
             }
             deleteIpsPart(part);
             if (selectedIndexAfterDeletion >= 0) {
-                Object selected = viewer.getElementAt(selectedIndexAfterDeletion);
-                viewer.setSelection(new StructuredSelection(selected), true);
+                Object selected = tableViewer.getElementAt(selectedIndexAfterDeletion);
+                tableViewer.setSelection(new StructuredSelection(selected), true);
             }
             fireDeleted(part);
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        } catch (CoreRuntimeException ex) {
+            IpsPlugin.logAndShowErrorDialog(ex);
         }
 
         refresh();
@@ -670,34 +795,31 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     private void moveParts(boolean up) {
-        TableViewer viewer = (TableViewer)getViewer();
-        if (viewer.getSelection().isEmpty()) {
+        TableViewer viewerControl = (TableViewer)getViewer();
+        if (viewerControl.getSelection().isEmpty()) {
             return;
         }
 
-        Table table = viewer.getTable();
-        int[] newSelection = moveParts(table.getSelectionIndices(), up);
-        viewer.refresh();
-        table.setSelection(newSelection);
-        viewer.getControl().setFocus();
+        Table tableControl = viewerControl.getTable();
+        int[] newSelection = moveParts(tableControl.getSelectionIndices(), up);
+        viewerControl.refresh();
+        tableControl.setSelection(newSelection);
+        viewerControl.getControl().setFocus();
 
         refresh();
     }
 
     /**
      * Creates a new part.
-     * 
-     * @throws CoreException May throw this exception at any time.
      */
-    protected abstract IIpsObjectPart newIpsPart() throws CoreException;
+    protected abstract IIpsObjectPart newIpsPart();
 
     /**
      * Subclasses may overwrite this operation to perform additional tasks to be done when deleting
-     * the given ips part.
+     * the given IPS part.
      * 
-     * @throws CoreException May throw this exception at any time.
      */
-    protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
+    protected void deleteIpsPart(IIpsObjectPart partToDelete) {
         partToDelete.delete();
     }
 
@@ -733,8 +855,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return indexes;
     }
 
-    private ArrayList<IDeleteListener> deleteListeners = new ArrayList<IDeleteListener>();
-
     protected void addDeleteListener(IDeleteListener listener) {
         deleteListeners.add(listener);
     }
@@ -758,5 +878,4 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             listener.deleted(part);
         }
     }
-
 }

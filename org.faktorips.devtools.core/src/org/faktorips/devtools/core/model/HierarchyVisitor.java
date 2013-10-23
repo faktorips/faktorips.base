@@ -68,8 +68,10 @@ public abstract class HierarchyVisitor<T> {
 
     /**
      * Starts the visit on the given type. Does nothing if base type is <code>null</code>.
+     * <p>
+     * If you need to override this method you have to call always this super implementation.
      */
-    public final void start(T basetype) {
+    public void start(T basetype) {
         cycleDetected = false;
         visitedTypes = new ArrayList<T>();
         if (basetype == null) {

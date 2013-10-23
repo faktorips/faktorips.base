@@ -123,7 +123,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
+        protected IIpsObjectPart newIpsPart() {
             return ((IPolicyCmptType)getIpsObject()).newPolicyCmptTypeAssociation();
         }
 

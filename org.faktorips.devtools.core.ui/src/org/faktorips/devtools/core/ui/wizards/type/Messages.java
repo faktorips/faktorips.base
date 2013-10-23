@@ -31,5 +31,14 @@ public class Messages extends NLS {
     public static String NewTypePage_msgNameConflicts;
     public static String NewTypePage_msgSupertypeDoesNotExist;
     public static String NewTypePage_superclass;
+    public static String ConstrainableAssociationSelectionPage_Message_NoOverridableAssociationsAvailable;
+    public static String ConstrainableAssociationWizard_title;
+    public static String ConstrainableAssociationWizard_labelNoAssociation;
+    public static String ConstrainableAssociationWizard_labelSelectAssociation;
+    public static String ConstrainableAssociationWizard_labelSelectionTarget;
+    public static String CreateConstrainingAssociationOperation_argumentsMustNotBeNull;
+    public static String CreateConstrainingAssociationOperation_sourceAndTargetTypeMustBeOfSameClass;
+    public static String CreateConstrainingAssociationOperation_sourceTypeAndAssociationClassMustMatch;
+    public static String CreateConstrainingAssociationOperation_targetTypeMustBeSubclassOfTheConstrainedAssociationTarget;
 
 }

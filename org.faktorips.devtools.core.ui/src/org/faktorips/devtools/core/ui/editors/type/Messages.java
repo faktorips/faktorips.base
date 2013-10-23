@@ -31,12 +31,10 @@ public class Messages extends NLS {
 
     public static String AttributesSection_title;
     public static String AttributesSection_openEnumContentInNewEditor;
-    public static String AttributesSection_OverrideButton;
 
     public static String AssociationsSection_title;
 
     public static String MethodsSection_title;
-    public static String MethodsSection_button;
 
     public static String MethodEditDialog_signatureGroup;
     public static String MethodEditDialog_title;

@@ -533,4 +533,23 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * type.
      */
     public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Creates new association in this type that override the given association with type.
+     * 
+     * @param association that will be constrain
+     * @return new created associations
+     */
+    public IAssociation constrainAssociation(IAssociation association, IType targetType);
+
+    /**
+     * Returns an array of all associations of all super types not yet overwritten by this component
+     * type.
+     */
+    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Creates a new sub type hierarchy for the type and returns it.
+     */
+    public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
 }

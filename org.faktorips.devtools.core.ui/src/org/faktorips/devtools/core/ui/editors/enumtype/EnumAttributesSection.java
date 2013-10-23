@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -134,7 +136,9 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private Button inheritButton;
 
         public EnumAttributesComposite(IEnumType enumType, IWorkbenchPartSite site, Composite parent, UIToolkit toolkit) {
-            super(enumType, parent, site, true, true, true, true, true, true, true, true, toolkit);
+            super(enumType, parent, site, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_DELETE,
+                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                    Option.PULL_UP_REFACTORING_SUPPORTED, Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
             this.enumType = enumType;
             addSelectionChangedListener(this);
         }
@@ -171,34 +175,43 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
-            IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
+        protected IIpsObjectPart newIpsPart() {
+            try {
+                IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
 
-            /*
-             * If this is the first attribute to be created and the values are being defined in the
-             * enum type then make sure that there will be one enum value available for editing.
-             */
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
-                if (enumType.isContainingValues() && !(enumType.isAbstract())) {
-                    if (enumType.getEnumValuesCount() == 0) {
-                        enumType.newEnumValue();
+                /*
+                 * If this is the first attribute to be created and the values are being defined in
+                 * the enum type then make sure that there will be one enum value available for
+                 * editing.
+                 */
+                if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
+                    if (enumType.isContainingValues() && !(enumType.isAbstract())) {
+                        if (enumType.getEnumValuesCount() == 0) {
+                            enumType.newEnumValue();
+                        }
                     }
                 }
+                return newEnumAttribute;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
 
-            return newEnumAttribute;
         }
 
         @Override
-        protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
+        protected void deleteIpsPart(IIpsObjectPart partToDelete) {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
-            enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
+            try {
+                enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
-            // Delete all enum values if there are no more enum attributes.
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isCapableOfContainingValues()) == 0) {
-                for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
-                    currentEnumValue.delete();
+                // Delete all enum values if there are no more enum attributes.
+                if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isCapableOfContainingValues()) == 0) {
+                    for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
+                        currentEnumValue.delete();
+                    }
                 }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
 
