@@ -648,7 +648,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     private void updateStateOverrideButton() {
         if (overrideButton != null) {
             try {
-                overrideButton.setEnabled(getType().hasExistingSupertype(getType().getIpsProject()));
+                overrideButton.setEnabled(getType().hasExistingSupertype(getType().getIpsProject())
+                        && isOptionInclude(Option.CAN_OVERRIDE));
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
