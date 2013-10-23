@@ -73,6 +73,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private static final String VARNAME_MESSAGE_HELPER = "messageHelper";
 
+    private static final String INDEX = "index";
+
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
     private static final String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
 
@@ -650,6 +652,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         IEnumType enumType = getEnumType();
         int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL;
 
+        // is there a condition for this field to appear?
+        attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
+        attributeBuilder.append("private final ").appendClassName(Integer.TYPE).append(" ").append(INDEX).append(";");
+        //
+
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
             String attributeName = currentEnumAttribute.getName();
             String codeName = getMemberVarName(attributeName);
@@ -772,12 +779,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         List<IEnumAttribute> enumAttributesIncludeSupertypeCopies = enumType
                 .getEnumAttributesIncludeSupertypeCopies(false);
-        Class<?>[] argClasses = new Class[enumAttributesIncludeSupertypeCopies.size() + 1];
+        Class<?>[] argClasses = new Class[enumAttributesIncludeSupertypeCopies.size() + 2];
         String[] argNames = new String[argClasses.length];
         fillArguments(enumAttributesIncludeSupertypeCopies, argClasses, argNames);
 
         JavaCodeFragment body = new JavaCodeFragment();
-        int i = 0;
+        body.append("this.").append(INDEX).append(" = ").append(INDEX).append(";");
+        int i = 1;
         for (IEnumAttribute currentEnumAttribute : enumAttributesIncludeSupertypeCopies) {
             appendFieldDeclaration(currentEnumAttribute, argNames[i++], body);
         }
@@ -792,13 +800,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void fillArguments(List<IEnumAttribute> enumAttributesIncludeSupertypeCopies,
             Class<?>[] argClasses,
             String[] argNames) {
-        for (int i = 0; i < argClasses.length - 1; i++) {
+        argNames[0] = INDEX;
+        argClasses[0] = Integer.TYPE;
+        for (int i = 0; i < argClasses.length - 2; i++) {
             final IEnumAttribute currentEnumAttribute = enumAttributesIncludeSupertypeCopies.get(i);
-            argNames[i] = currentEnumAttribute.getName() + "String";
+            argNames[i + 1] = currentEnumAttribute.getName() + "String";
             if (currentEnumAttribute.isMultilingual()) {
-                argClasses[i] = InternationalString.class;
+                argClasses[i + 1] = InternationalString.class;
             } else {
-                argClasses[i] = String.class;
+                argClasses[i + 1] = String.class;
             }
         }
         argNames[argNames.length - 1] = PRODUCT_REPOSITORY;
