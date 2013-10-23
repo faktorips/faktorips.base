@@ -54,12 +54,12 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
      * A composite that shows a policy component's attributes in a viewer and allows to edit
      * attributes in a dialog, create new attributes and delete attributes.
      */
-    protected abstract class AttributesComposite extends IpsPartsComposite {
+    protected abstract static class AttributesComposite extends IpsPartsComposite {
 
         private IpsAction openEnumTypeAction;
 
-        protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(),
+        protected AttributesComposite(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(type, parent, site,
                     EnumSet.of(Option.CAN_CREATE, Option.CAN_DELETE, Option.CAN_EDIT, Option.CAN_MOVE,
                             Option.CAN_OVERRIDE, Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
                             Option.PULL_UP_REFACTORING_SUPPORTED, Option.RENAME_REFACTORING_SUPPORTED,
@@ -79,7 +79,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new AttributeContentProvider();
+            return new AttributeContentProvider(getType());
         }
 
         @Override
@@ -107,11 +107,17 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
             }
         }
 
-        private class AttributeContentProvider implements IStructuredContentProvider {
+        private static class AttributeContentProvider implements IStructuredContentProvider {
+
+            private final IType type;
+
+            public AttributeContentProvider(IType type) {
+                this.type = type;
+            }
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getAttributes().toArray();
+                return type.getAttributes().toArray();
             }
 
             @Override
@@ -126,7 +132,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
 
         }
 
-        private class OpenEnumerationTypeInNewEditor extends IpsAction {
+        private static class OpenEnumerationTypeInNewEditor extends IpsAction {
 
             public OpenEnumerationTypeInNewEditor(ISelectionProvider selectionProvider) {
                 super(selectionProvider);

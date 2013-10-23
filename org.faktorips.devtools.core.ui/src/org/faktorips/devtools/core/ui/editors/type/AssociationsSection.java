@@ -53,20 +53,20 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
      * A composite that shows a type's associations in a viewer and allows to edit associations in a
      * dialog, create new associations and delete associations.
      */
-    protected abstract class AssociationsComposite extends IpsPartsComposite {
+    protected abstract static class AssociationsComposite extends IpsPartsComposite {
 
         private IpsAction openTargetAction;
         private IType type;
 
-        protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
+        protected AssociationsComposite(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
             this(type, parent, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_OVERRIDE, Option.CAN_DELETE,
                     Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
-                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), site, toolkit);
         }
 
         protected AssociationsComposite(IType type, Composite parent, EnumSet<Option> attributesForButtons,
-                UIToolkit toolkit) {
-            super(type, parent, getSite(), attributesForButtons, toolkit);
+                IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(type, parent, site, attributesForButtons, toolkit);
             this.type = type;
             openTargetAction = createOpenTargetAction();
         }
@@ -101,7 +101,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new AssociationContentProvider();
+            return new AssociationContentProvider(getType());
         }
 
         @Override
@@ -114,11 +114,17 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
             }
         }
 
-        private class AssociationContentProvider implements IStructuredContentProvider {
+        private static class AssociationContentProvider implements IStructuredContentProvider {
+
+            private IType type;
+
+            public AssociationContentProvider(IType type) {
+                this.type = type;
+            }
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getAssociations().toArray();
+                return type.getAssociations().toArray();
             }
 
             @Override

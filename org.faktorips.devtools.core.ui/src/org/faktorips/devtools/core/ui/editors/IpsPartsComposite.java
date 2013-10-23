@@ -134,6 +134,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 Option.SHOW_EDIT_BUTTON), toolkit);
     }
 
+    // CSOFF: ParameterNumberCheck
     /**
      * @deprecated use constructor with EnumSet
      */
@@ -164,6 +165,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         uiToolkit.getFormToolkit().adapt(this);
     }
 
+    // CSON: ParameterNumberCheck
     public EnumSet<Option> getOptions() {
         return options;
     }
@@ -498,14 +500,24 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createNewButton(Composite buttons, UIToolkit toolkit) {
-        newButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonNew, new SelectionListenerNewPart());
+        newButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonNew, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                newPart();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     protected final void createEditButton(Composite buttons, UIToolkit toolkit) {
         editButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonEdit, new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                deletePart();
+                editPart();
             }
 
             @Override
@@ -519,7 +531,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         deleteButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDelete, new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                editPart();
+                deletePart();
             }
 
             @Override
@@ -530,15 +542,44 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected final void createMoveButtons(Composite buttons, UIToolkit toolkit) {
-        upButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonUp, new SelectionListenerMovePart(
-                true));
-        downButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDown,
-                new SelectionListenerMovePart(false));
+        upButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonUp, new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                moveParts(true);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+
+        downButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_buttonDown, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                moveParts(false);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     protected final void createOverrideButton(Composite buttons, UIToolkit toolkit) {
-        overrideButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_override,
-                new SelectionListenerOverridePart());
+        overrideButton = createButton(buttons, toolkit, Messages.IpsPartsComposite_override, new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                overrideClicked();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     private Button createButton(Composite buttons, UIToolkit toolkit, String message, SelectionListener selectionLister) {
@@ -837,48 +878,4 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             listener.deleted(part);
         }
     }
-
-    private final class SelectionListenerNewPart implements SelectionListener {
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            newPart();
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // Nothing to do
-        }
-    }
-
-    private final class SelectionListenerOverridePart implements SelectionListener {
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            overrideClicked();
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // Nothing to do
-        }
-    }
-
-    private final class SelectionListenerMovePart implements SelectionListener {
-
-        private final boolean stateFlag;
-
-        public SelectionListenerMovePart(boolean stateFlag) {
-            this.stateFlag = stateFlag;
-        }
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            moveParts(stateFlag);
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // Nothing to do
-        }
-    }
-
 }

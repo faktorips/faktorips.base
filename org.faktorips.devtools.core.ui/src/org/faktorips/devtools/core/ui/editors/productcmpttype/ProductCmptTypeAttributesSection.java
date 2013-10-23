@@ -41,7 +41,7 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
+        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, getSite(), toolkit);
         return attributesComposite;
     }
 
@@ -56,8 +56,9 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
 
     private class ProductCmptTypeAttributesComposite extends AttributesComposite {
 
-        public ProductCmptTypeAttributesComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, toolkit);
+        public ProductCmptTypeAttributesComposite(IProductCmptType productCmptType, Composite parent,
+                IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(productCmptType, parent, site, toolkit);
         }
 
         @Override

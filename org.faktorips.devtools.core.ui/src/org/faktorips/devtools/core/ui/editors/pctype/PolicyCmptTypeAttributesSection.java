@@ -41,7 +41,7 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new PolicyCmptTypeAttributesComposite(getPolicyCmptType(), parent, toolkit);
+        attributesComposite = new PolicyCmptTypeAttributesComposite(getPolicyCmptType(), parent, getSite(), toolkit);
         return attributesComposite;
     }
 
@@ -56,8 +56,9 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
 
     private class PolicyCmptTypeAttributesComposite extends AttributesComposite {
 
-        public PolicyCmptTypeAttributesComposite(IPolicyCmptType policyCmptType, Composite parent, UIToolkit toolkit) {
-            super(policyCmptType, parent, toolkit);
+        public PolicyCmptTypeAttributesComposite(IPolicyCmptType policyCmptType, Composite parent,
+                IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(policyCmptType, parent, site, toolkit);
             addDeleteListener();
         }
 

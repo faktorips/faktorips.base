@@ -35,25 +35,18 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  */
 public class MethodsSection extends SimpleIpsPartsSection {
 
-    private MethodsComposite methodsComposite;
-
     public MethodsSection(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
         super(type, parent, site, ExpandableComposite.TITLE_BAR, Messages.MethodsSection_title, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        methodsComposite = new MethodsComposite(getType(), parent, toolkit);
-        return methodsComposite;
+        return new MethodsComposite(getType(), parent, getSite(), toolkit);
     }
 
     @Override
     protected void performRefresh() {
         super.performRefresh();
-    }
-
-    protected EditDialog createEditDialog(IMethod part, Shell shell) {
-        return new MethodEditDialog(part, shell);
     }
 
     protected IType getType() {
@@ -64,12 +57,12 @@ public class MethodsSection extends SimpleIpsPartsSection {
      * A composite that shows a type's methods in a viewer and allows to edit methods in a dialog,
      * create new methods and delete methods.
      */
-    private class MethodsComposite extends IpsPartsComposite {
+    protected static class MethodsComposite extends IpsPartsComposite {
 
-        private MethodsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), EnumSet.of(Option.CAN_CREATE, Option.CAN_DELETE,
-                    Option.CAN_EDIT, Option.CAN_MOVE, Option.CAN_OVERRIDE,
-                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED, Option.SHOW_EDIT_BUTTON), toolkit);
+        protected MethodsComposite(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(type, parent, site, EnumSet
+                    .of(Option.CAN_CREATE, Option.CAN_DELETE, Option.CAN_EDIT, Option.CAN_MOVE, Option.CAN_OVERRIDE,
+                            Option.JUMP_TO_SOURCE_CODE_SUPPORTED, Option.SHOW_EDIT_BUTTON), toolkit);
 
         }
 
@@ -88,7 +81,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return MethodsSection.this.createEditDialog((IMethod)part, shell);
+            return new MethodEditDialog((IMethod)part, shell);
         }
 
         @Override
@@ -103,14 +96,20 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new MethodContentProvider();
+            return new MethodContentProvider(getType());
         }
 
-        private class MethodContentProvider implements IStructuredContentProvider {
+        private static class MethodContentProvider implements IStructuredContentProvider {
+
+            private final IType type;
+
+            public MethodContentProvider(IType type) {
+                this.type = type;
+            }
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getMethods().toArray();
+                return type.getMethods().toArray();
             }
 
             @Override
