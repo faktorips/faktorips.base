@@ -312,6 +312,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.isContainingValues() && !(enumType.isAbstract()) && literalNameAttribute != null) {
             // Go over all model side defined enum values
             List<IEnumValue> enumValues = enumType.getEnumValues();
+
             for (int i = 0; i < enumValues.size(); i++) {
                 IEnumValue currentEnumValue = enumValues.get(i);
                 // Generate only for valid enum values
@@ -320,15 +321,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(enumType
                             .getIndexOfEnumAttribute(literalNameAttribute));
                     currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
+                    int indexCount = 0;
                     if (javaAtLeast5) {
                         lastEnumValueGenerated = (i == enumValues.size() - 1);
-                        createEnumValueAsEnumDefinition(currentEnumAttributeValues,
+                        createEnumValueAsEnumDefinition(++indexCount, currentEnumAttributeValues,
                                 currentLiteralNameEnumAttributeValue, lastEnumValueGenerated,
                                 mainSection.getEnumDefinitionBuilder());
                         appendSemicolon = false;
                     } else {
-                        createEnumValueAsConstant(currentEnumAttributeValues, currentLiteralNameEnumAttributeValue,
-                                mainSection.getConstantBuilder());
+                        createEnumValueAsConstant(++indexCount, currentEnumAttributeValues,
+                                currentLiteralNameEnumAttributeValue, mainSection.getConstantBuilder());
                     }
                 }
             }
@@ -559,6 +561,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates the Java source code for an enumeration value as enum definition (Java at least 5).
      * 
+     * @param indexCount The index for this enum value.
+     * 
      * @param enumAttributeValues The enumeration attribute values of the enumeration value to
      *            create.
      * @param literalEnumAttributeValue The enumeration attribute value that refers to the literal
@@ -567,7 +571,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @param enumDefinitionBuilder The java source code builder to use for creating enum
      *            definitions.
      */
-    private void createEnumValueAsEnumDefinition(List<IEnumAttributeValue> enumAttributeValues,
+    private void createEnumValueAsEnumDefinition(int indexCount,
+            List<IEnumAttributeValue> enumAttributeValues,
             IEnumAttributeValue literalEnumAttributeValue,
             boolean lastEnumDefinition,
             JavaCodeFragmentBuilder enumDefinitionBuilder) throws CoreException {
@@ -576,7 +581,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
         enumDefinitionBuilder.append(literalEnumAttributeValue.getValue().getLocalizedContent(
                 getLanguageUsedInGeneratedSourceCode()));
-        enumDefinitionBuilder.append(" ("); //$NON-NLS-1$
+        enumDefinitionBuilder.append(" (" + indexCount + ", "); //$NON-NLS-1$
         appendEnumValueParameters(enumAttributeValues, enumDefinitionBuilder.getFragment());
         enumDefinitionBuilder.append(')');
         if (!(lastEnumDefinition)) {
@@ -592,13 +597,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates the Java source code for an enumeration value as constant (Java less than 5).
      * 
+     * @param indexCount The index fot this enum value.
+     * 
      * @param enumAttributeValues The enumeration attribute values of the enumeration value to
      *            create.
      * @param literalEnumAttributeValue The enumeration attribute value that refers to the literal
      *            name enumeration attribute.
      * @param constantBuilder The Java source code builder to use for creating constants.
      */
-    private void createEnumValueAsConstant(List<IEnumAttributeValue> enumAttributeValues,
+    private void createEnumValueAsConstant(int indexCount,
+            List<IEnumAttributeValue> enumAttributeValues,
             IEnumAttributeValue literalEnumAttributeValue,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
 
@@ -609,7 +617,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment initExpression = new JavaCodeFragment();
         initExpression.append("new "); //$NON-NLS-1$
         initExpression.append(enumType.getName());
-        initExpression.append('(');
+        initExpression.append('(' + indexCount + ", ");
         appendEnumValueParameters(enumAttributeValues, initExpression);
         initExpression.append(')');
 
@@ -652,10 +660,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         IEnumType enumType = getEnumType();
         int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL;
 
-        // is there a condition for this field to appear?
         attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
         attributeBuilder.append("private final ").appendClassName(Integer.TYPE).append(" ").append(INDEX).append(";");
-        //
 
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
             String attributeName = currentEnumAttribute.getName();
@@ -676,11 +682,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     }
                 }
             }
-        }
-        if (isGenerateMethodeCompareTo()) {
-            attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
-            attributeBuilder.append("private final ").appendClassName(IRuntimeRepository.class).append(" ")
-                    .append(PRODUCT_REPOSITORY).append(";");
         }
     }
 
@@ -740,14 +741,19 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         // Build method arguments
-        String[] argumentNames = new String[validEnumAttributes.size()];
-        String[] argumentClasses = new String[validEnumAttributes.size()];
+        String[] argumentNames = new String[validEnumAttributes.size() + 1];
+        String[] argumentClasses = new String[validEnumAttributes.size() + 1];
+
+        // create constructor argument for index.
+        argumentNames[0] = INDEX;
+        argumentClasses[0] = Integer.TYPE.getName();
+
         IJavaNamingConvention javaNamingConvention = getJavaNamingConvention();
         for (int i = 0; i < validEnumAttributes.size(); i++) {
             IEnumAttribute currentEnumAttribute = validEnumAttributes.get(i);
             String attributeName = currentEnumAttribute.getName();
-            argumentNames[i] = javaNamingConvention.getMemberVarName(attributeName);
-            argumentClasses[i] = getDatatypeHelper(currentEnumAttribute, true).getJavaClassName();
+            argumentNames[i + 1] = javaNamingConvention.getMemberVarName(attributeName);
+            argumentClasses[i + 1] = getDatatypeHelper(currentEnumAttribute, true).getJavaClassName();
         }
 
         // Build method body
@@ -784,12 +790,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         fillArguments(enumAttributesIncludeSupertypeCopies, argClasses, argNames);
 
         JavaCodeFragment body = new JavaCodeFragment();
-        body.append("this.").append(INDEX).append(" = ").append(INDEX).append(";");
+        createIndexInitialization(body);
         int i = 1;
         for (IEnumAttribute currentEnumAttribute : enumAttributesIncludeSupertypeCopies) {
             appendFieldDeclaration(currentEnumAttribute, argNames[i++], body);
         }
-        body.append("this.").append(PRODUCT_REPOSITORY).append(" = ").append(PRODUCT_REPOSITORY).append(";");
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
         constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType), argNames, argClasses);
         constructorBuilder.append(body);
@@ -800,8 +805,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void fillArguments(List<IEnumAttribute> enumAttributesIncludeSupertypeCopies,
             Class<?>[] argClasses,
             String[] argNames) {
+
+        // create constructor argument for index.
         argNames[0] = INDEX;
         argClasses[0] = Integer.TYPE;
+
         for (int i = 0; i < argClasses.length - 2; i++) {
             final IEnumAttribute currentEnumAttribute = enumAttributesIncludeSupertypeCopies.get(i);
             argNames[i + 1] = currentEnumAttribute.getName() + "String";
@@ -811,6 +819,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 argClasses[i + 1] = String.class;
             }
         }
+
         argNames[argNames.length - 1] = PRODUCT_REPOSITORY;
         argClasses[argClasses.length - 1] = IRuntimeRepository.class;
     }
@@ -859,6 +868,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Creates the attribute initialization code for the constructor. */
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
+
+        createIndexInitialization(constructorMethodBody);
+
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
             if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
                 String currentName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
@@ -870,9 +882,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 constructorMethodBody.appendln();
             }
         }
-        if (isGenerateMethodeCompareTo()) {
-            constructorMethodBody.append("this.").append(PRODUCT_REPOSITORY).append(" = ").append("null").append(";");
-        }
+    }
+
+    private void createIndexInitialization(JavaCodeFragment constructorMethodBody) {
+        constructorMethodBody.append("this.").append(INDEX).append(" = ").append(INDEX).append(";");
     }
 
     private void generateCodeForMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
