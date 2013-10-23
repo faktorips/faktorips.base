@@ -42,6 +42,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
     private TreeViewer viewer;
     private BindingContext bindingContext;
     private ConstrainableAssociationPmo pmo;
+    private CandidatesContentProvider contentProvider;
 
     protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo) {
         super(StringUtils.EMPTY);
@@ -57,7 +58,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         composite.setLayout(layout);
 
         createTreeViewer();
-        bindContext();
+        bindContent();
 
         setControl(composite);
         setPageComplete(false);
@@ -70,13 +71,26 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         listLayoutData.widthHint = 300;
         viewer.getTree().setLayoutData(listLayoutData);
 
-        viewer.setContentProvider(new CandidatesContentProvider(pmo.getType()));
+        contentProvider = new CandidatesContentProvider(pmo.getType());
+        viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new AssociationsLabelProvider());
         viewer.setInput(pmo.getType());
         viewer.expandAll();
+        handleNoConstrainableAssociationsAvailable();
     }
 
-    private void bindContext() {
+    private void handleNoConstrainableAssociationsAvailable() {
+        if (isNoConstrainedAssociationAvailable()) {
+            setMessage(Messages.ConstrainableAssociationSelectionPage_Message_NoOverridableAssociationsAvailable,
+                    INFORMATION);
+        }
+    }
+
+    private boolean isNoConstrainedAssociationAvailable() {
+        return contentProvider.getElements(pmo.getType()).length == 0;
+    }
+
+    private void bindContent() {
         bindingContext.bindContent(viewer, IAssociation.class, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION);
         bindingContext.add(new PropertyChangeBinding<IAssociation>(composite, pmo,
