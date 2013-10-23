@@ -1318,11 +1318,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private JavaCodeFragment getCompareToMethodBody() {
         JavaCodeFragment body = new JavaCodeFragment();
-        body.append("if (").append(PRODUCT_REPOSITORY).append(" != ").append("null)"); //$NON-NLS-1$
-        body.appendOpenBracket();
-        body.append("return ").append(PRODUCT_REPOSITORY).append(".compareEnumValues(this, o);");
-        body.appendCloseBracket();
-        body.append("return 0;");
+        body.append("return index - o.index;");
         return body;
     }
 
