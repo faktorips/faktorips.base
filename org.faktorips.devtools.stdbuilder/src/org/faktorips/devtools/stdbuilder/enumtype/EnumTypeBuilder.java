@@ -321,7 +321,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(enumType
                             .getIndexOfEnumAttribute(literalNameAttribute));
                     currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
-                    int indexCount = 0;
+                    int indexCount = i;
                     if (javaAtLeast5) {
                         lastEnumValueGenerated = (i == enumValues.size() - 1);
                         createEnumValueAsEnumDefinition(++indexCount, currentEnumAttributeValues,
