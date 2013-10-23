@@ -32,6 +32,16 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.views.ipshierarchy.HierarchyContentProvider;
 
+/**
+ * Second page of <code>ConstrainableAssociationWizard</code>.
+ * <p>
+ * This page shows the target (and all its subclasses) of the previous chosen
+ * constrainable-association from the first page <code>ConstrainableAssociationSelectionPage</code>.
+ * </p>
+ * 
+ * @author hbaagil
+ */
+
 public class ConstrainableAssociationTargetPage extends WizardPage {
 
     private ConstrainableAssociationPmo pmo;
@@ -40,6 +50,11 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
     private Composite composite;
     private Label label;
 
+    /**
+     * Creates a new page with the given PMO <code>ConstrainableAssociationPmo</code>.
+     * 
+     * @param pmo The presentation model object.
+     */
     public ConstrainableAssociationTargetPage(ConstrainableAssociationPmo pmo) {
         super(StringUtils.EMPTY);
         bindingContext = new BindingContext();
@@ -106,6 +121,12 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
                 }
             }
         });
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        bindingContext.dispose();
     }
 
     private void setLabel() {

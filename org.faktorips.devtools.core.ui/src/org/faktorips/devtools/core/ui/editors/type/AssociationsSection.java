@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationPmo;
 import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationWizard;
-import org.faktorips.devtools.core.ui.wizards.type.CreateConstrainingAssociationOperation;
 
 /**
  * A section to display and edit a type's associations.
@@ -111,9 +110,6 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
             ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(pmo);
             WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
             if (wizardDialog.open() == Window.OK) {
-                CreateConstrainingAssociationOperation constrainingAssociationOperation = new CreateConstrainingAssociationOperation(
-                        type, pmo.getSelectedAssociation(), pmo.getSelectedTarget());
-                constrainingAssociationOperation.execute();
                 refresh();
             }
         }
