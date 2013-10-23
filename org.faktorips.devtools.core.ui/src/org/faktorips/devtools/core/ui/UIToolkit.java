@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
@@ -47,8 +48,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.enums.EnumType;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -79,6 +78,7 @@ import org.faktorips.util.message.Message;
  */
 public class UIToolkit {
 
+    public static final int DEFAULT_WIDTH = 100;
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
     private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$
 
@@ -89,7 +89,12 @@ public class UIToolkit {
 
     private FormToolkit formToolkit;
 
-    public static final int DEFAULT_WIDTH = 100;
+    /**
+     * Creates a new toolkit.
+     */
+    public UIToolkit(FormToolkit formToolkit) {
+        this.formToolkit = formToolkit;
+    }
 
     /**
      * Adjusts the control so that the data shown in it can be either edited or not according to the
@@ -120,23 +125,34 @@ public class UIToolkit {
             }
             return;
         }
+        if (c instanceof Group) {
+            setForegroundColor(c, changeable);
+        }
+        if (!setControlEnabled(c, changeable)) {
+            return;
+        }
+        // note: this has to be the last if statement as other controls might derive from
+        // composite
+        setDataChangeableChildren(c, changeable);
+    }
+
+    /**
+     * Setting the control's enable state if it should be changed (depends on the kind of control).
+     * Returns <code>true</code> if {@link #setDataChangeable(Control, boolean)} should continue,
+     * <code>false</code> to return after this call.
+     */
+    private boolean setControlEnabled(Control c, boolean changeable) {
         if (c instanceof Checkbox) {
             ((Checkbox)c).setEnabled(changeable);
-            return;
+            return false;
         }
         if (c instanceof Combo) {
             ((Combo)c).setEnabled(changeable);
-            return;
+            return false;
         }
         if (c instanceof Button) {
             ((Button)c).setEnabled(changeable);
-            return;
-        }
-        if (c instanceof Group) {
-            // if (formToolkit == null) {
-            // grayed group text only in dialogs
-            setForegroundColor(c, changeable);
-            // }
+            return false;
         }
         if (c instanceof Tree) {
             ((Tree)c).setEnabled(changeable);
@@ -145,8 +161,10 @@ public class UIToolkit {
         if (c instanceof Table) {
             ((Table)c).setEnabled(changeable);
         }
-        // note: this has to be the last if statement as other controls might derive from
-        // composite
+        return true;
+    }
+
+    private void setDataChangeableChildren(Control c, boolean changeable) {
         if (c instanceof Composite) {
             Control[] children = ((Composite)c).getChildren();
             for (Control element : children) {
@@ -197,13 +215,6 @@ public class UIToolkit {
             // color will be disposed by the FormColors#colorRegistry
         }
         return formToolkit.getColors().getColor(key);
-    }
-
-    /**
-     * Creates a new toolkit.
-     */
-    public UIToolkit(FormToolkit formToolkit) {
-        this.formToolkit = formToolkit;
     }
 
     /**
@@ -699,11 +710,21 @@ public class UIToolkit {
         return newCombo;
     }
 
-    public Combo createCombo(Composite parent, EnumType type) {
+    /**
+     * @deprecated Do not use org.faktorips.devtools.core.enums.EnumType hence also do not use this
+     *             method.
+     */
+    @Deprecated
+    public Combo createCombo(Composite parent, org.faktorips.devtools.core.enums.EnumType type) {
         return createCombo(parent, type.getValues());
     }
 
-    public Combo createCombo(Composite parent, EnumValue[] values) {
+    /**
+     * @deprecated Do not use org.faktorips.devtools.core.enums.EnumType hence also do not use this
+     *             method.
+     */
+    @Deprecated
+    public Combo createCombo(Composite parent, org.faktorips.devtools.core.enums.EnumValue[] values) {
         Combo newCombo = createCombo(parent);
         String[] names = new String[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -816,13 +837,10 @@ public class UIToolkit {
      * representation. The result is set as items to the given combo.
      * 
      * @param combo The combo to set the values.
-     * @param values The values to set.
+     * @param comboValues The values to set.
      */
-    /*
-     * TODO pk 26-05-2009: this code needs to be refactored. the provided parameter array mustn't
-     * not be modified within this method.
-     */
-    private void setComboValues(Combo combo, String[] values) {
+    private void setComboValues(Combo combo, String[] comboValues) {
+        String[] values = Arrays.copyOf(comboValues, comboValues.length);
         for (int i = 0; i < values.length; i++) {
             if (values[i] == null) {
                 values[i] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
@@ -873,11 +891,12 @@ public class UIToolkit {
     }
 
     /**
-     * @deprecated use {@link #createRadioButtonGroup(Composite, String, int)} instead
+     * @deprecated use {@link #createRadioButtonGroup(Composite, String, int, LinkedHashMap)}
+     *             instead
      */
     @Deprecated
-    public RadioButtonGroup createRadiobuttonGroup(Composite parent, int style, String text) {
-        return new RadioButtonGroup(parent, style, text, this);
+    public RadioButtonGroup<?> createRadiobuttonGroup(Composite parent, int style, String text) {
+        return new RadioButtonGroup<Object>(parent, style, text, this);
     }
 
     /**
@@ -951,7 +970,6 @@ public class UIToolkit {
      * Converts the severity constant from <code>{@link Message}</code> to the constant of
      * <code>{@link IMessageProvider}</code>.
      */
-    // TODO move to Message when the class is moved to the core project
     public static int convertToJFaceSeverity(int severity) {
         switch (severity) {
             case Message.ERROR:
