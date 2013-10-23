@@ -482,7 +482,6 @@ public class UIToolkit {
     /**
      * Creates a new checkbox.
      */
-    @Deprecated
     public Checkbox createCheckbox(Composite parent) {
         return new Checkbox(parent, this);
     }
