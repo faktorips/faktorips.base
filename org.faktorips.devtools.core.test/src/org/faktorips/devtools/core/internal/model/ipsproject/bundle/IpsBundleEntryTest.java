@@ -34,10 +34,6 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsFolderBundle;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundle;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.JarFileFactory;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry.IpsStrorageFactory;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -104,9 +100,9 @@ public class IpsBundleEntryTest {
     }
 
     @Test
-    public void testGetRessourceAsStream() throws Exception {
+    public void testGetResourceAsStream() throws Exception {
         initStorage();
-        ipsBundleEntry.getRessourceAsStream("testAnyPath");
+        ipsBundleEntry.getResourceAsStream("testAnyPath");
 
         verify(ipsJarBundle).getResourceAsStream("testAnyPath");
     }
@@ -125,7 +121,8 @@ public class IpsBundleEntryTest {
     public void testExists_existing() throws Exception {
         initStorage();
         QualifiedNameType qnt = mock(QualifiedNameType.class);
-        when(ipsJarBundle.contains(qnt)).thenReturn(true);
+        when(qnt.toPath()).thenReturn(new Path("myObjectPath"));
+        when(ipsJarBundle.contains(qnt.toPath())).thenReturn(true);
 
         boolean exists = ipsBundleEntry.exists(qnt);
 
@@ -205,6 +202,27 @@ public class IpsBundleEntryTest {
         File file = mock(File.class);
         when(bundlePath.toFile()).thenReturn(file);
         when(file.isDirectory()).thenReturn(directory);
+    }
+
+    @Test
+    public void testContainsResource_true() throws Exception {
+        initStorage();
+        String path = "myResourcePath";
+        when(ipsJarBundle.contains(new Path(path))).thenReturn(true);
+
+        boolean exists = ipsBundleEntry.containsResource(path);
+
+        assertTrue(exists);
+    }
+
+    @Test
+    public void testContainsResource_false() throws Exception {
+        initStorage();
+        String path = "myResourcePath";
+
+        boolean exists = ipsBundleEntry.containsResource(path);
+
+        assertFalse(exists);
     }
 
 }

@@ -18,7 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,6 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.JarEntry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -75,10 +77,16 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("ArchiveProject");
-        motorPolicyType = newPolicyCmptTypeWithoutProductCmptType(project, "motor.MotorPolicy");
+        motorPolicyType = newPolicyCmptType(project, "motor.MotorPolicy");
         newPolicyCmptTypeWithoutProductCmptType(project, "motor.collision.SimpleCollisionCoverage");
         newPolicyCmptTypeWithoutProductCmptType(project, "motor.collision.ExtendedCollisionCoverage");
         newPolicyCmptTypeWithoutProductCmptType(project, "home.base.HomePolicy");
+        IFile iconFile = ((IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource())
+                .getFile("myTest.gif");
+        iconFile.create(new ByteArrayInputStream("imageContent".getBytes()), true, new NullProgressMonitor());
+        IProductCmptType prodType = motorPolicyType.findProductCmptType(project);
+        prodType.setInstancesIcon("myTest.gif");
+        prodType.getIpsSrcFile().save(true, new NullProgressMonitor());
 
         archiveFile = project.getProject().getFile("test124.ipsar");
         archivePath = archiveFile.getFullPath();
@@ -98,13 +106,13 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     @Test
     public void testModificationToUnderlyingFile() throws Exception {
         QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertTrue(archive.contains(qnt));
+        assertTrue(archive.contains(qnt.toPath()));
 
         motorPolicyType.getIpsSrcFile().getCorrespondingFile().delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
         createArchive(project, archiveFile);
-        assertFalse(archive.contains(qnt));
+        assertFalse(archive.contains(qnt.toPath()));
     }
 
     @Test
@@ -130,9 +138,17 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContains() throws CoreException {
-        assertTrue(archive.contains(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertFalse(archive.contains(new QualifiedNameType("Unknown", IpsObjectType.POLICY_CMPT_TYPE)));
+    public void testContains() {
+        assertTrue(archive
+                .contains(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE).toPath()));
+        assertFalse(archive.contains(new QualifiedNameType("Unknown", IpsObjectType.POLICY_CMPT_TYPE).toPath()));
+    }
+
+    @Test
+    public void testContains_icon() {
+        assertTrue(archive.contains(new Path("myTest.gif")));
+
+        assertFalse(archive.contains(new Path("test.png")));
     }
 
     @Test
@@ -262,17 +278,19 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     @Test
     public void testGetQNameTypes_FileInWorkspace() throws CoreException {
         Set<QualifiedNameType> qnt = archive.getQNameTypes();
-        assertEquals(4, qnt.size());
+        assertEquals(5, qnt.size());
         QualifiedNameType[] qntArray = new QualifiedNameType[qnt.size()];
         qnt.toArray(qntArray);
 
         assertEquals(new QualifiedNameType("home.base.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[0]);
         assertEquals(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[1]);
+        assertEquals(new QualifiedNameType("motor.MotorPolicyProductCmpt", IpsObjectType.PRODUCT_CMPT_TYPE),
+                qntArray[2]);
         assertEquals(
                 new QualifiedNameType("motor.collision.ExtendedCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE),
-                qntArray[2]);
-        assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE),
                 qntArray[3]);
+        assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE),
+                qntArray[4]);
     }
 
     @Test
@@ -283,17 +301,19 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         Set<QualifiedNameType> qnt = archiveOutsideWorkspace.getQNameTypes();
 
         // same as in testGetQNameTypes_FileInWorkspace()
-        assertEquals(4, qnt.size());
+        assertEquals(5, qnt.size());
         QualifiedNameType[] qntArray = new QualifiedNameType[qnt.size()];
         qnt.toArray(qntArray);
 
         assertEquals(new QualifiedNameType("home.base.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[0]);
         assertEquals(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[1]);
+        assertEquals(new QualifiedNameType("motor.MotorPolicyProductCmpt", IpsObjectType.PRODUCT_CMPT_TYPE),
+                qntArray[2]);
         assertEquals(
                 new QualifiedNameType("motor.collision.ExtendedCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE),
-                qntArray[2]);
-        assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE),
                 qntArray[3]);
+        assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE),
+                qntArray[4]);
     }
 
     @Test
@@ -302,7 +322,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(0, qnt.size());
 
         qnt = archive.getQNameTypes("motor");
-        assertEquals(1, qnt.size());
+        assertEquals(2, qnt.size());
         assertTrue(qnt.contains(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
 
         qnt = archive.getQNameTypes("motor.collision");
@@ -320,17 +340,17 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContent() throws CoreException {
+    public void testGetContent() {
         assertNull(archive.getContent(null));
 
         QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertNotNull(archive.getContent(qnt));
+        assertNotNull(archive.getContent(qnt.toPath()));
 
         qnt = new QualifiedNameType("Unknown", IpsObjectType.POLICY_CMPT_TYPE);
-        assertNull(archive.getContent(qnt));
+        assertNull(archive.getContent(qnt.toPath()));
 
         qnt = new QualifiedNameType("MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertNull(archive.getContent(qnt));
+        assertNull(archive.getContent(qnt.toPath()));
     }
 
     @Test
@@ -419,11 +439,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         // test files existence in the archive
         IpsArchive ipsArchive = new IpsArchive(project, path);
         ipsArchive.getQNameTypes();
-        try {
-            ipsArchive.getResourceAsStream("test.gif");
-        } catch (CoreException e) {
-            fail("Unexpected CoreException accessing file test.gif");
-        }
+        ipsArchive.getResourceAsStream("test.gif");
 
         // test the archived file's contents
         byte[] fileContent = new byte[4];
@@ -433,8 +449,58 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsValid()
-     throws Exception {
-    
+    public void testIsValid() throws Exception {
+
     }
+
+    @Test
+    public void testGetPath_ipsObject() throws Exception {
+        JarEntry jarEntry = mock(JarEntry.class);
+        when(jarEntry.getName()).thenReturn(IpsArchive.IPSOBJECTS_FOLDER + "/my/object/dings");
+
+        IPath path = archive.getPath(jarEntry);
+
+        assertEquals(new Path("my/object/dings"), path);
+    }
+
+    @Test
+    public void testGetPath_ipsObjectInvalid() throws Exception {
+        JarEntry jarEntry = mock(JarEntry.class);
+        when(jarEntry.getName()).thenReturn(IpsArchive.IPSOBJECTS_FOLDER + " 2" + "/my/object/dings");
+
+        IPath path = archive.getPath(jarEntry);
+
+        assertNull(path);
+    }
+
+    @Test
+    public void testGetPath_noRelevantEntry() throws Exception {
+        JarEntry jarEntry = mock(JarEntry.class);
+        when(jarEntry.getName()).thenReturn("not/relevant/dings");
+
+        IPath path = archive.getPath(jarEntry);
+
+        assertNull(path);
+    }
+
+    @Test
+    public void testGetPath_iconPng() throws Exception {
+        JarEntry jarEntry = mock(JarEntry.class);
+        when(jarEntry.getName()).thenReturn("my/object/dings.png");
+
+        IPath path = archive.getPath(jarEntry);
+
+        assertEquals(new Path("my/object/dings.png"), path);
+    }
+
+    @Test
+    public void testGetPath_iconGif() throws Exception {
+        JarEntry jarEntry = mock(JarEntry.class);
+        when(jarEntry.getName()).thenReturn("my/object/dings.gif");
+
+        IPath path = archive.getPath(jarEntry);
+
+        assertEquals(new Path("my/object/dings.gif"), path);
+    }
+
 }

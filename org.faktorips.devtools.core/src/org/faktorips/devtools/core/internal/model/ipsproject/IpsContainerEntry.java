@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -188,19 +189,30 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return null;
     }
 
+    @Override
+    public boolean containsResource(String path) {
+        List<IIpsObjectPathEntry> entries = resolveEntries();
+        for (IIpsObjectPathEntry entry : entries) {
+            if (entry.containsResource(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public InputStream getRessourceAsStream(String resourcePath) throws CoreException {
+    public InputStream getResourceAsStream(String resourcePath) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
-            InputStream stream = entry.getRessourceAsStream(resourcePath);
-            if (stream != null) {
+            if (entry.containsResource(resourcePath)) {
+                InputStream stream = entry.getResourceAsStream(resourcePath);
                 return stream;
             }
         }
-        return null;
+        throw new CoreRuntimeException("Resource " + resourcePath + " was not found in container " + getName()); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -243,10 +255,15 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     public IIpsObjectPathEntry getResolvedEntry(String rootName) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry.getIpsPackageFragmentRootName().equals(rootName)) {
+            if (rootName.equals(entry.getIpsPackageFragmentRootName())) {
                 return entry;
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "ContainerEntry[" + getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

@@ -221,6 +221,16 @@ public interface IIpsObjectPath {
     public int[] moveEntries(int[] indices, boolean up);
 
     /**
+     * This method checks whether this object path has a resource with the specified path. The path is
+     * relative to any entry's root.
+     * 
+     * @param path The path of the requested resource
+     * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
+     *         not
+     */
+    public boolean containsResource(String path);
+
+    /**
      * Retrieves the contents of a file in the {@link IpsObjectPath}. Returns <code>null</code> if
      * no resource is found at the given path. If the {@link IpsObjectPath} contains multiple
      * resources with the same path the first find will be returned.

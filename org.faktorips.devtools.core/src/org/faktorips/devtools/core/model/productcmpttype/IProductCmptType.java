@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -39,36 +41,39 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  */
 public interface IProductCmptType extends IType, IIpsMetaClass {
 
-    public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
+    public static final String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
 
-    public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
+    public static final String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
 
-    public String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
+    public static final String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
 
-    public String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
+    public static final String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
+
+    public static final List<String> SUPPORTED_ICON_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(
+            "gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "ProductCmptType-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ProductCmptType-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the references policy component type does not exist.
      */
-    public final static String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
+    public static final String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the referenced policy component type is not marked
      * as configurable.
      */
-    public final static String MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE = MSGCODE_PREFIX
+    public static final String MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE = MSGCODE_PREFIX
             + "PolicyCmptTypeNotMarkedAsConfigurable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the referenced policy component type does specify
      * this product component type or one if it's supertypes as configuration type.
      */
-    public final static String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE = MSGCODE_PREFIX
             + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
@@ -79,57 +84,57 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * even if it the same. If the supertype doesn't configure a policy component type, also this
      * one doesn't.
      */
-    public final static String MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE = MSGCODE_PREFIX
             + "MustHaveSameValueForPolicyCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists a mismatch between the product
      * component type and the policy component type hierarchy.
      */
-    public final static String MSGCODE_HIERARCHY_MISMATCH = MSGCODE_PREFIX + "HierarchyMismatch"; //$NON-NLS-1$
+    public static final String MSGCODE_HIERARCHY_MISMATCH = MSGCODE_PREFIX + "HierarchyMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two formula signatures have the same name.
      */
-    public final static String MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY = MSGCODE_PREFIX
             + "DuplicateFormulaNameInHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two formula signatures have the same name.
      */
-    public final static String MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT = MSGCODE_PREFIX
+    public static final String MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT = MSGCODE_PREFIX
             + "ProductCmptTypeAbstractWhenPolicyCmptTypeAbstract"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a formula name is only allowed once in a type
      * neglecting the inheritance hierarchy.
      */
-    public final static String MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE = MSGCODE_PREFIX
             + "DuplicateFormulasNotAllowedInSameType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the overloaded product component type formula method
      * cannot be overridden.
      */
-    public final static String MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN = MSGCODE_PREFIX
+    public static final String MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN = MSGCODE_PREFIX
             + "OverloadedFormulaCannotBeOverridden"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that the custom icon cannot be resolved.
      */
-    public final static String MSGCODE_ICON_PATH_INVALID = MSGCODE_PREFIX + "IconPathInvalid"; //$NON-NLS-1$
+    public static final String MSGCODE_ICON_PATH_INVALID = MSGCODE_PREFIX + "IconPathInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding policy component type is inherited
      * from a super type, but the product component type is not.
      */
-    public final static String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
+    public static final String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for formula
      * signature definitions exists, even though a formula signature definition exists in the
      * {@link IProductCmptType}.
      */
-    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "NoDefaultCategoryForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
@@ -137,7 +142,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * configurable validation rules exists, even though a configurable {@link IValidationRule}
      * exists in the {@link IProductCmptType}.
      */
-    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
+    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "NoDefaultCategoryForValidationRules"; //$NON-NLS-1$
 
     /**
@@ -145,7 +150,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * structure usages exists, even though an {@link ITableStructureUsage} exists in the
      * {@link IProductCmptType}.
      */
-    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "NoDefaultCategoryForTableStructureUsages"; //$NON-NLS-1$
 
     /**
@@ -153,7 +158,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * relevant policy component type attributes exists, even though a product relevant
      * {@link IPolicyCmptTypeAttribute} exists in the {@link IProductCmptType}.
      */
-    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
@@ -161,14 +166,14 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * component type attributes exists, even though an {@link IProductCmptTypeAttribute} exists in
      * the {@link IProductCmptType}.
      */
-    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this type is marked as layer supertype but the
      * supertype of this type ist no layer supertype.
      */
-    public final static String MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE = MSGCODE_PREFIX
             + "SupertypeNotMarkedAsLayerSupertype"; //$NON-NLS-1$
 
     /**

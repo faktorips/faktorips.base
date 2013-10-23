@@ -19,6 +19,7 @@ import java.io.InputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsLibraryEntry;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
@@ -113,13 +114,18 @@ public class IpsBundleEntry extends IpsLibraryEntry {
     }
 
     @Override
-    public InputStream getRessourceAsStream(String path) throws CoreException {
+    public boolean containsResource(String path) {
+        return ipsBundle.contains(new Path(path));
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String path) {
         return ipsBundle.getResourceAsStream(path);
     }
 
     @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
-        return ipsBundle.contains(qnt);
+        return ipsBundle.contains(qnt.toPath());
     }
 
     @Override

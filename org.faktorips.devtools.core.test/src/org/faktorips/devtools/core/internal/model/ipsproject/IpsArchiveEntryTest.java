@@ -14,19 +14,24 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -38,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -63,11 +69,17 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
-        qntMotorPolicy = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack1.MotorPolicy")
-                .getQualifiedNameType();
+        PolicyCmptType motorPolicyCmptType = newPolicyAndProductCmptType(archiveProject, "pack1.MotorPolicy",
+                "pack1.MotorProduct");
+        qntMotorPolicy = motorPolicyCmptType.getQualifiedNameType();
         qntMotorCollision = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack2.MotorCollision")
                 .getQualifiedNameType();
         newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack3.HomePolicy").getQualifiedNameType();
+        IFile iconFile = ((IFolder)archiveProject.getIpsPackageFragmentRoots()[0].getCorrespondingResource())
+                .getFile("myTest.gif");
+        iconFile.create(new ByteArrayInputStream("imageContent".getBytes()), true, new NullProgressMonitor());
+        IProductCmptType prodType = motorPolicyCmptType.findProductCmptType(archiveProject);
+        prodType.setInstancesIcon("myTest.gif");
 
         project = newIpsProject("TestProject");
         archiveFile = project.getProject().getFile("test.ipsar");
@@ -92,7 +104,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         entry.findIpsSrcFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result, visitedEntries);
-        assertEquals(2, result.size());
+        assertEquals(3, result.size());
         assertTrue(result.contains(motorPolFile));
         assertTrue(result.contains(motorColFile));
 
@@ -103,7 +115,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
         visitedEntries.clear();
         entry.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
-        assertEquals(2, result.size());
+        assertEquals(3, result.size());
         assertTrue(result.contains(motorPolFile));
         assertTrue(result.contains(motorColFile));
 
@@ -200,4 +212,26 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 
     }
+
+    @Test
+    public void testContainsResource_false() throws Exception {
+        boolean containsResource = entry.containsResource("asdasd");
+
+        assertFalse(containsResource);
+    }
+
+    @Test
+    public void testContainsResource_ipsObject() throws Exception {
+        boolean containsResource = entry.containsResource("pack1/MotorPolicy.ipspolicycmpttype");
+
+        assertTrue(containsResource);
+    }
+
+    @Test
+    public void testContainsResource_resource() throws Exception {
+        boolean containsResource = entry.containsResource("myTest.gif");
+
+        assertTrue(containsResource);
+    }
+
 }

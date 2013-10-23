@@ -887,6 +887,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public boolean isResourceExcludedFromProductDefinition(IResource resource);
 
     /**
+     * This method checks whether this project has a resource with the specified path. The path is
+     * relative to the project's object path entries.
+     * 
+     * @param path The path of the requested resource
+     * @return <code>true</code> if the resource could be found in this project's entries, <code>false</code> if
+     *         not
+     */
+    public boolean containsResource(String path);
+
+    /**
      * Retrieves the contents of a file in the {@link IpsObjectPath}. Returns <code>null</code> if
      * no resource is found at the given path.
      * <p>

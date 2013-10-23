@@ -17,6 +17,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,7 +46,10 @@ import org.w3c.dom.Element;
  */
 public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
+    private static final String MY_RESOURCE_PATH = "myResourcePath";
+
     private IIpsProject ipsProject;
+
     private IpsObjectPath path;
 
     @Override
@@ -162,4 +167,21 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
     }
+
+    @Test
+    public void testContainsResource_true() throws Exception {
+        IIpsProject referencedProject = mock(IIpsProject.class);
+        when(referencedProject.containsResource(MY_RESOURCE_PATH)).thenReturn(true);
+        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, referencedProject);
+
+        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH));
+    }
+
+    @Test
+    public void testContainsResource_false() throws Exception {
+        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, ipsProject);
+
+        assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH));
+    }
+
 }
