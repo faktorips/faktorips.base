@@ -32,7 +32,8 @@ import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProv
 import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 
 /**
- * The first page of the wizard, which is called when the override button is clicked
+ * The first page of the ConstrainableAssociationWizard. This Page makes it possible to select an
+ * Association.
  * 
  * @since 3.11
  */

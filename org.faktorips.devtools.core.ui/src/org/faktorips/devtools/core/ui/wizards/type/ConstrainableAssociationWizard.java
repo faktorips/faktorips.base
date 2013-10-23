@@ -17,6 +17,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * Wizard to create constrained Associations. This Wizard appears when user clicks on the button
+ * <quote>override</quote> The Wizard contains two pages.
+ * 
+ * @since 3.11
+ */
 public class ConstrainableAssociationWizard extends Wizard {
     private ConstrainableAssociationPmo pmo;
 
