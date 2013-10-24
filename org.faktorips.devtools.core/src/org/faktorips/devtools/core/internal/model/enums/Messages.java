@@ -60,7 +60,6 @@ public class Messages extends NLS {
 
     public static String EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist;
     public static String EnumLiteralNameAttribute_DefaultValueProviderAttributeNotOfDatatypeString;
-    public static String EnumLiteralNameAttribute_DefaultValueProviderAttributeNotUnique;
     public static String EnumLiteralNameAttribute_NotNeeded;
 
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
