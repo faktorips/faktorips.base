@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -98,8 +99,8 @@ public class UIToolkit {
 
     /**
      * Adjusts the control so that the data shown in it can be either edited or not according to the
-     * given changeable value. If this control is a composite all it's children (and recursively
-     * their children) are adjusted as well.
+     * given changeable value. If this control is a composite all its descendants (recursively) are
+     * adjusted as well.
      */
     public void setDataChangeable(Control c, boolean changeable) {
         if (c == null) {
@@ -157,7 +158,6 @@ public class UIToolkit {
         if (c instanceof Tree) {
             ((Tree)c).setEnabled(changeable);
         }
-
         if (c instanceof Table) {
             ((Table)c).setEnabled(changeable);
         }
@@ -711,8 +711,7 @@ public class UIToolkit {
     }
 
     /**
-     * @deprecated Do not use org.faktorips.devtools.core.enums.EnumType hence also do not use this
-     *             method.
+     * @deprecated since org.faktorips.devtools.core.enums.EnumType is deprecated
      */
     @Deprecated
     public Combo createCombo(Composite parent, org.faktorips.devtools.core.enums.EnumType type) {
@@ -720,8 +719,7 @@ public class UIToolkit {
     }
 
     /**
-     * @deprecated Do not use org.faktorips.devtools.core.enums.EnumType hence also do not use this
-     *             method.
+     * @deprecated since org.faktorips.devtools.core.enums.EnumType is deprecated
      */
     @Deprecated
     public Combo createCombo(Composite parent, org.faktorips.devtools.core.enums.EnumValue[] values) {
@@ -735,8 +733,9 @@ public class UIToolkit {
     }
 
     /**
-     * @deprecated The values have to be set by binding context use {@link #createCombo(Composite)}
-     *             only
+     * @deprecated use {@link #createCombo(Composite)} and
+     *             {@link BindingContext#bindContent(Combo, Object, String, Class)} to set the list
+     *             of valid values instead.
      */
     @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, Class<E> enumType) {
@@ -745,8 +744,9 @@ public class UIToolkit {
     }
 
     /**
-     * @deprecated The values have to be set by binding context use {@link #createCombo(Composite)}
-     *             only
+     * @deprecated use {@link #createCombo(Composite)} and
+     *             {@link BindingContext#bindContent(Combo, Object, String, Enum[])} to set the list
+     *             of valid values instead.
      */
     @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, E[] values) {
