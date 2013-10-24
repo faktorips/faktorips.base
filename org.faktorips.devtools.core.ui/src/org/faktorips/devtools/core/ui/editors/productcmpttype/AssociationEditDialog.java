@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -41,9 +42,9 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
@@ -118,6 +119,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
         createGeneralGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_generalGroup));
 
+        Group displayGroup = getToolkit().createGroup(panel, Messages.EditDialog_displayGroup);
+        createDisplayGroupContent(displayGroup);
+
         createDerivedUnionGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
 
@@ -153,10 +157,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // Changing over time checkbox
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_changeOverTimeLabel);
-        Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
+        Button changeOverTimeCheckbox = getToolkit().createButton(
                 workArea,
                 NLS.bind(Messages.AssociationEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
+                SWT.CHECK);
         getBindingContext().bindContent(changeOverTimeCheckbox, association,
                 IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME);
 
@@ -204,22 +209,32 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
     }
 
+    private void createDisplayGroupContent(Composite c) {
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
+        final Button checkbox = getToolkit().createButton(workArea, Messages.AttributeEditDialog_visibilityNote,
+                SWT.CHECK);
+        ButtonField buttonField = new ButtonField(checkbox, false);
+        getBindingContext().bindContent(buttonField, association, IProductCmptTypeAssociation.PROPERTY_RELEVANT);
+    }
+
     private void createDerivedUnionGroup(Composite workArea) {
 
-        Checkbox constrainCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_constrain);
+        Button constrainCheckbox = getToolkit().createButton(workArea, Messages.AssociationEditDialog_constrain,
+                SWT.CHECK);
         constrainCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipOverride);
         getBindingContext().bindContent(constrainCheckbox, association, IAssociation.PROPERTY_CONSTRAIN);
         getBindingContext().bindEnabled(constrainCheckbox, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAIN_ENABLED);
 
-        Checkbox derivedUnionCheckbox = getToolkit().createCheckbox(workArea,
-                Messages.AssociationEditDialog_derivedUnionCheckbox);
+        Button derivedUnionCheckbox = getToolkit().createButton(workArea,
+                Messages.AssociationEditDialog_derivedUnionCheckbox, SWT.CHECK);
         derivedUnionCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipDerivedUnion);
         getBindingContext().bindContent(derivedUnionCheckbox, association,
                 IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
         getBindingContext().bindEnabled(derivedUnionCheckbox, pmoAssociation,
                 PmoAssociation.PROPERTY_DERIVEDUNION_OR_SUBSET_ENABLED);
 
-        Checkbox subsetCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
+        Button subsetCheckbox = getToolkit().createButton(workArea, Messages.AssociationEditDialog_subsetCheckbox,
+                SWT.CHECK);
         subsetCheckbox.setToolTipText(Messages.AssociationEditDialog_toolTipDerivedUnion);
         getBindingContext().bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         getBindingContext().bindEnabled(subsetCheckbox, pmoAssociation,
@@ -338,11 +353,13 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         private void createMatchingAssociationGroup(Composite parent) {
             Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
-            Checkbox constrainedCheckbox = getToolkit().createCheckbox(workArea,
-                    Messages.AssociationEditDialog_check_selectExplicitly);
-            ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
+            Button constrainedCheckbox = getToolkit().createButton(workArea,
+                    Messages.AssociationEditDialog_check_selectExplicitly, SWT.CHECK);
             getBindingContext().bindContent(constrainedCheckbox, pmoAssociation,
                     PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
+            GridData constrainedGD = new GridData(SWT.CENTER | GridData.FILL_HORIZONTAL);
+            constrainedGD.horizontalSpan = 2;
+            constrainedCheckbox.setLayoutData(constrainedGD);
 
             getToolkit().createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
             Combo constrainedCombo = getToolkit().createCombo(workArea);

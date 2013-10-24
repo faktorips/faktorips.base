@@ -73,7 +73,7 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_generalGroup;
     public static String AttributeEditDialog_datatypeGroup;
-    public static String AttributeEditDialog_displayGroup;
+    public static String EditDialog_displayGroup;
     public static String AttributeEditDialog_defaultAndValuesGroup;
 
     public static String AttributeEditDialog_changeOverTimeCheckbox;

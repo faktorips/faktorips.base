@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -25,8 +26,11 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +52,10 @@ public class LinksContentProviderTest {
     private ProductCmptLink staticLink1;
     @Mock
     private ProductCmptLink staticLink2;
+    @Mock
+    private IProductCmptType type;
+    @Mock
+    private IIpsProject ipsProject;
 
     private LinksContentProvider provider;
     private List<ProductCmptLink> links;
@@ -87,5 +95,22 @@ public class LinksContentProviderTest {
         assertEquals(2, associationItems.length);
         assertEquals("staticDummyAssociation", associationItems[0].getAssociationName());
         assertEquals("dummyAssociation", associationItems[1].getAssociationName());
+    }
+
+    @Test
+    public void testGetAssociationItems() {
+        List<IProductCmptTypeAssociation> listAssociations = new ArrayList<IProductCmptTypeAssociation>();
+        IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
+        IProductCmptTypeAssociation asso2 = mock(IProductCmptTypeAssociation.class);
+        when(asso1.isRelevant()).thenReturn(false);
+        when(asso2.isRelevant()).thenReturn(true);
+        listAssociations.add(asso1);
+        listAssociations.add(asso2);
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(listAssociations);
+        when(gen.isContainerFor(asso2)).thenReturn(true);
+
+        AssociationViewItem[] associationItems = provider.getAssociationItems(type, ipsProject, gen);
+        assertTrue(associationItems.length == 1);
+        assertEquals(asso2, associationItems[0].getAssociation());
     }
 }

@@ -14,7 +14,8 @@
           maxCardinality="*" 
           derivedUnion="true"
           subsettedDerivedUnion="BaseCoverageType"
-          changingOverTime="false">
+          changingOverTime="false"
+          relevant="false">
 		<Description locale="en">blabla</Description>
 	</Association>
 	

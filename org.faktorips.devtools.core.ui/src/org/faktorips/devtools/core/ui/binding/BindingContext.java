@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.Validatable;
@@ -262,10 +261,14 @@ public class BindingContext {
      * 
      * @see DefaultEnumValue
      * 
-     * @deprecated This method is deprecated since the parameter type {@link EnumType} is deprecated
+     * @deprecated This method is deprecated since the parameter type
+     *             {@link org.faktorips.devtools.core.enums.EnumType} is deprecated
      */
     @Deprecated
-    public EnumValueField bindContent(Combo combo, Object object, String property, EnumType enumType) {
+    public EnumValueField bindContent(Combo combo,
+            Object object,
+            String property,
+            org.faktorips.devtools.core.enums.EnumType enumType) {
         checkPropertyType(object, property, DefaultEnumValue.class);
         EnumValueField field = new EnumValueField(combo, enumType);
         bindContent(field, object, property);

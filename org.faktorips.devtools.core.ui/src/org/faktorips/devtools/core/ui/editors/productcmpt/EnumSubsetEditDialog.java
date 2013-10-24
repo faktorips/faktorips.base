@@ -25,14 +25,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
  * A dialog that allows to specify a subset of values available in a given enum data type.
  * 
  * @author Jan Ortmann
  */
-public class EnumSubsetEditDialog extends IpsPartEditDialog {
+public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
     /**
      * Prefix to store the settings (size/position) of this dialog, used together with the
      * attribute.
@@ -57,7 +57,6 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         this.enumValueSetProvider = provider;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
-        setDescriptionEnabled(!(viewOnly));
         enableDialogSizePersistence(SETTINGS_KEY_PREFIX, datatype.getQualifiedName(), new Point(INITIAL_WIDTH,
                 INITIAL_HEIGHT), null);
     }

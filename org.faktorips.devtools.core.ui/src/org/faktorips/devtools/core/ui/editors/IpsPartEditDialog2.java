@@ -17,14 +17,19 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -52,24 +57,24 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsChangeListener {
 
+    private static final String SETTINGS_X = "XPos"; //$NON-NLS-1$
+    private static final String SETTINGS_Y = "YPos"; //$NON-NLS-1$
+    private static final String SETTINGS_WIDTH = "Width"; //$NON-NLS-1$
+    private static final String SETTINGS_HEIGHT = "Height"; //$NON-NLS-1$
+
     /**
      * The binding context to use to bind model object properties to ui controls.
      * 
      */
     private BindingContext bindingContext = new BindingContext();
 
-    /**
-     * Returns the binding context to use to bind model object properties to UI controls.
-     * 
-     * @return the binding context to use to bind model object properties to UI controls
-     */
-    protected BindingContext getBindingContext() {
-        return bindingContext;
-    }
-
     private IIpsObjectPart part;
     private Memento oldState;
     private boolean dirty = false;
+    private boolean dialogSizePersistence = false;
+    private String dialogSizeSettingsKey;
+    private Point initialDialogSize;
+    private Point initialDialogPosition;
 
     private LabelEditComposite labelEditComposite;
 
@@ -96,6 +101,15 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         oldState = part.getIpsObject().newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+    }
+
+    /**
+     * Returns the binding context to use to bind model object properties to UI controls.
+     * 
+     * @return the binding context to use to bind model object properties to UI controls
+     */
+    protected BindingContext getBindingContext() {
+        return bindingContext;
     }
 
     // Overwritten to be sure to get the cancel-button as soon as possible ...
@@ -232,11 +246,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      * object part belongs to and the name of the ips object part itself.
      */
     protected String buildTitle() {
-        IIpsObjectPart part = getIpsPart();
-        if (part.getParent() instanceof IIpsObjectGeneration) {
-            return part.getIpsObject().getName() + ' ' + part.getParent().getName() + '.' + part.getName();
+        IIpsObjectPart ipsPpart = getIpsPart();
+        if (ipsPpart.getParent() instanceof IIpsObjectGeneration) {
+            return ipsPpart.getIpsObject().getName() + ' ' + ipsPpart.getParent().getName() + '.' + ipsPpart.getName();
         }
-        return part.getIpsObject().getName() + '.' + part.getName();
+        return ipsPpart.getIpsObject().getName() + '.' + ipsPpart.getName();
     }
 
     @Override
@@ -340,4 +354,87 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         labelEditComposite.setEnabled(enabled);
     }
 
+    public boolean isDialogSizePersistent() {
+        return dialogSizePersistence;
+    }
+
+    protected void enableDialogSizePersistence(String settingsPrefix,
+            String settingsDisambiguator,
+            Point initialSize,
+            Point initialPosition) {
+        dialogSizePersistence = true;
+        dialogSizeSettingsKey = settingsPrefix + (settingsDisambiguator == null ? "" : settingsDisambiguator); //$NON-NLS-1$
+        initialDialogSize = initialSize;
+        initialDialogPosition = initialPosition;
+    }
+
+    private void storePosition(Shell shell) {
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(dialogSizeSettingsKey);
+        if (settings == null) {
+            settings = IpsPlugin.getDefault().getDialogSettings().addNewSection(dialogSizeSettingsKey);
+        }
+        settings.put(SETTINGS_X, shell.getLocation().x);
+        settings.put(SETTINGS_Y, shell.getLocation().y);
+        settings.put(SETTINGS_WIDTH, shell.getSize().x);
+        settings.put(SETTINGS_HEIGHT, shell.getSize().y);
+    }
+
+    protected void configurePosition(IDialogSettings settings, Shell shell) {
+        int posX;
+        int posY;
+        int width;
+        int height;
+
+        if (settings == null) {
+            Composite parent = shell.getParent();
+            Rectangle bounds = null;
+            if (parent == null) {
+                bounds = shell.getDisplay().getPrimaryMonitor().getBounds();
+            } else {
+                bounds = parent.getBounds();
+            }
+            width = initialDialogSize.x;
+            height = initialDialogSize.y;
+            if (initialDialogPosition == null) {
+                posX = bounds.x + (bounds.width - width) / 2;
+                posY = bounds.y + (bounds.height - height) / 2;
+            } else {
+                posX = initialDialogPosition.x;
+                posY = initialDialogPosition.y;
+            }
+            IDialogSettings newSection = IpsPlugin.getDefault().getDialogSettings()
+                    .addNewSection(dialogSizeSettingsKey);
+            newSection.put(SETTINGS_X, posX);
+            newSection.put(SETTINGS_Y, posY);
+            newSection.put(SETTINGS_WIDTH, width);
+            newSection.put(SETTINGS_HEIGHT, height);
+        } else {
+            posX = settings.getInt(SETTINGS_X);
+            posY = settings.getInt(SETTINGS_Y);
+            width = settings.getInt(SETTINGS_WIDTH);
+            height = settings.getInt(SETTINGS_HEIGHT);
+        }
+        shell.setBounds(posX, posY, width, height);
+    }
+
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        if (dialogSizePersistence) {
+            shell.addListener(SWT.Move, new Listener() {
+                @Override
+                public void handleEvent(Event event) {
+                    storePosition(shell);
+                }
+            });
+            shell.addListener(SWT.Resize, new Listener() {
+                @Override
+                public void handleEvent(Event event) {
+                    storePosition(shell);
+                }
+            });
+            IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(dialogSizeSettingsKey);
+            configurePosition(settings, shell);
+        }
+    }
 }

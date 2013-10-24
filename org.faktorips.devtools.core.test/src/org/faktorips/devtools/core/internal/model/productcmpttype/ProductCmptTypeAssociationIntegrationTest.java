@@ -303,6 +303,9 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         // Default is true/changing over time
         assertTrue(association.isChangingOverTime());
         association.setChangingOverTime(false);
+        // Default is true/visible
+        assertTrue(association.isRelevant());
+        association.setRelevant(false);
 
         Element el = association.toXml(newDocument());
         association = productType.newProductCmptTypeAssociation();
@@ -317,6 +320,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertFalse(association.isChangingOverTime());
+        assertFalse(association.isRelevant());
     }
 
     /**
@@ -339,6 +343,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals("blabla", association.getDescriptionText(Locale.US));
         assertFalse(association.isChangingOverTime());
+        assertFalse(association.isRelevant());
     }
 
     /**
@@ -424,6 +429,17 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     public void testSetMaxCardinality() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY, association, new Integer(42));
+    }
+
+    /**
+     * Test method for
+     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setRelevant(boolean)}
+     * .
+     */
+    @Test
+    public void testSetRelevant() {
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
+                IProductCmptTypeAssociation.PROPERTY_RELEVANT, association, false);
     }
 
     /**

@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
@@ -133,7 +132,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     /**
      * Manages a rule. Model is bound to above UI by the {@link BindingContext}.
      */
-    private RuleUIModel ruleModel = new RuleUIModel();
+    private RuleUIModel ruleModel;
 
     /**
      * Folder which contains the pages shown by this editor. Used to modify which page is shown.
@@ -175,6 +174,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         this.attribute = attribute;
         initialName = attribute.getName();
         ipsProject = attribute.getIpsProject();
+        ruleModel = new RuleUIModel(this.attribute);
         ruleModel.setValidationRule(attribute.findValueSetRule(ipsProject));
         try {
             currentDatatype = attribute.findDatatype(ipsProject);
@@ -553,9 +553,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         createDefaultValueEditField(valueSetWorkArea);
 
-        IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
-        valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, getToolkit(), uiController,
+        valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, getToolkit(), getBindingContext(),
                 attribute, valueSetTypes, ValueSetControlEditMode.ALL_KIND_OF_SETS);
         updateAllowedValueSetTypes();
 
@@ -615,8 +614,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 recreateConfigGroupContent();
             }
 
-            if (event.getPropertyChangeEvent() != null && event.getPart().equals(attribute) && attribute.isOverwrite()
-                    && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName())) {
+            if (isOverwriteEvent(event)) {
                 final IPolicyCmptTypeAttribute overwrittenAttribute = (IPolicyCmptTypeAttribute)attribute
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
@@ -643,15 +641,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
 
             boolean enabled = newDatatype != null;
-            if (defaultValueField != null) {
-                defaultValueField.getControl().setEnabled(enabled);
-            }
-            if (valueSetSpecificationControl != null) {
-                valueSetSpecificationControl
-                        .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                                : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
-                valueSetSpecificationControl.setDataChangeable(enabled);
-            }
+            setEnableValueFieldAndValueSetControl(enabled);
             if (newDatatype == null || newDatatype.equals(currentDatatype)) {
                 return;
             }
@@ -669,6 +659,23 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             throw new CoreRuntimeException(e);
         }
 
+    }
+
+    private void setEnableValueFieldAndValueSetControl(boolean enabled) {
+        if (defaultValueField != null) {
+            defaultValueField.getControl().setEnabled(enabled);
+        }
+        if (valueSetSpecificationControl != null) {
+            valueSetSpecificationControl
+                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+            valueSetSpecificationControl.setDataChangeable(enabled);
+        }
+    }
+
+    private boolean isOverwriteEvent(ContentChangeEvent event) {
+        return event.getPropertyChangeEvent() != null && event.getPart().equals(attribute) && attribute.isOverwrite()
+                && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName());
     }
 
     private void updateAllowedValueSetTypes() {
@@ -721,48 +728,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ruleModel.fireRuleChange();
 
         return workArea;
-    }
-
-    public class RuleUIModel extends PresentationModelObject {
-
-        public static final String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
-        public static final String PROPERTY_VALIDATION_RULE = "validationRule"; //$NON-NLS-1$
-
-        private IValidationRule rule;
-
-        public void setValidationRule(IValidationRule r) {
-            IValidationRule oldRule = rule;
-            boolean oldEnablement = isEnabled();
-            rule = r;
-            /*
-             * This notification order is crucial! First inform about enablement change, then about
-             * data change. This way controls whose enabled state is dependent on the data rather
-             * than the enablement will be activated/de-activated correctly.
-             */
-            notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldEnablement, isEnabled()));
-            notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, oldRule, rule));
-        }
-
-        public void fireRuleChange() {
-            notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, rule, rule));
-        }
-
-        public IValidationRule getValidationRule() {
-            return rule;
-        }
-
-        public void setEnabled(boolean enabled) {
-            if (enabled) {
-                setValidationRule(attribute.createValueSetRule());
-            } else {
-                rule.delete();
-                setValidationRule(null);
-            }
-        }
-
-        public boolean isEnabled() {
-            return rule != null;
-        }
     }
 
     private void bindEnablement() {
@@ -943,7 +908,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             getToolkit().setDataChangeable(sizeField.getControl(), hasLength);
             getToolkit().setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
         } catch (CoreException e) {
-            // validation error, displayed in dialog message area
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -1001,6 +966,53 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             result.add(proposal);
         }
 
+    }
+
+    public static class RuleUIModel extends PresentationModelObject {
+
+        public static final String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
+        public static final String PROPERTY_VALIDATION_RULE = "validationRule"; //$NON-NLS-1$
+
+        private IValidationRule rule;
+        private IPolicyCmptTypeAttribute attribute;
+
+        public RuleUIModel(IPolicyCmptTypeAttribute attribute) {
+            this.attribute = attribute;
+        }
+
+        public void setValidationRule(IValidationRule r) {
+            IValidationRule oldRule = rule;
+            boolean oldEnablement = isEnabled();
+            rule = r;
+            /*
+             * This notification order is crucial! First inform about enablement change, then about
+             * data change. This way controls whose enabled state is dependent on the data rather
+             * than the enablement will be activated/de-activated correctly.
+             */
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldEnablement, isEnabled()));
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, oldRule, rule));
+        }
+
+        public void fireRuleChange() {
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, rule, rule));
+        }
+
+        public IValidationRule getValidationRule() {
+            return rule;
+        }
+
+        public void setEnabled(boolean enabled) {
+            if (enabled) {
+                setValidationRule(attribute.createValueSetRule());
+            } else {
+                rule.delete();
+                setValidationRule(null);
+            }
+        }
+
+        public boolean isEnabled() {
+            return rule != null;
+        }
     }
 
 }

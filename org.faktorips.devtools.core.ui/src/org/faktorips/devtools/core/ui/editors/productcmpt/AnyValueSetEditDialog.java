@@ -25,17 +25,16 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
  * A dialog that allows to edit any kind of value set. If is also possible to switch the type of
  * value set! The value set types that are allowed are passed in the constructor. This dialog works
  * together with {@link AnyValueSetEditDialog}.
  */
-public class AnyValueSetEditDialog extends IpsPartEditDialog {
+public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
     /**
      * Prefix to store the settings (size/position) of this dialog, used together with the
      * attribute.
@@ -68,7 +67,6 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         this.configElement = configElement;
         this.viewOnly = viewOnly;
         allowedValuesSetTypes = allowedTypes;
-        setDescriptionEnabled(!(viewOnly));
         enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configElement.getId(),
                 new Point(INITIAL_WIDTH, INITIAL_HEIGHT), null);
     }
@@ -90,9 +88,9 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
     }
 
     private Composite createValueSetControl(Composite parent) {
-        IpsObjectUIController uiController = new IpsObjectUIController(configElement);
-        ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, getToolkit(), uiController,
-                configElement, allowedValuesSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+        ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, getToolkit(),
+                getBindingContext(), configElement, allowedValuesSetTypes,
+                ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
         vsEdit.setEnabled(!viewOnly);
         Object layoutData = vsEdit.getLayoutData();

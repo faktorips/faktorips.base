@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
@@ -62,16 +62,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Checkbox concreteValueSetCheckbox = null;
     private CheckboxField concreteValueSetField = null;
 
-    private IValueSetEditControl valueSetEditControl; // control showing the value set
+    // control showing the value set
+    private IValueSetEditControl valueSetEditControl;
     // can be safely casted to IValueSetEditControl
 
-    private Composite valueSetArea; // area around the value set, used to change the layout
+    // area around the value set, used to change the layout
+    private Composite valueSetArea;
 
     // The last selected value set that is not an unrestricted value set.
     private IValueSet lastRestrictedValueSet;
 
     private UIToolkit toolkit;
-    private DefaultUIController uiController;
+    private BindingContext uiController;
 
     private boolean dataChangeable;
     private Label concreteValueSetLabel;
@@ -83,7 +85,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * gridlayout is created. In the second row a stacklayout is used to swap the
      * EnumValueSetEditControl and RangeEditControl dynamically.
      */
-    public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController,
+    public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, BindingContext uiController,
             IValueSetOwner valueSetOwner, List<ValueSetType> allowedValueSetTypes, ValueSetControlEditMode editMode) {
         super(parent, SWT.NONE);
         this.valueSetOwner = valueSetOwner;
@@ -183,7 +185,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Control showControlForValueSet() {
         StackLayout layout = (StackLayout)valueSetArea.getLayout();
         layout.topControl = updateControlWithCurrentValueSetOrCreateNewIfNeccessary(valueSetArea);
-        setDataChangeable(isDataChangeable()); // set data changeable state of controls
+        setDataChangeable(isDataChangeable());
         return layout.topControl;
     }
 
@@ -197,10 +199,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (getValueSetEditControl() != null && getValueSetEditControl().canEdit(valueSet, valueDatatype)) {
             // the current composite can be reused to edit the current value set
             getValueSetEditControl().setValueSet(valueSet, valueDatatype);
-            return valueSetEditControl.getComposite().getParent(); // have to return the parent
-                                                                   // here, as there is a
+            // have to return the parent
+            // here, as there is a
             // group control (see below) around the edit control. There has to be a better way to do
             // this!
+            return valueSetEditControl.getComposite().getParent();
         }
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
@@ -213,7 +216,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     /**
-     * Returns the value set control casted to {@link IValueSetEditControl}. Neccessary as the SWT
+     * Returns the value set control casted to {@link IValueSetEditControl}. Necessary as the SWT
      * type Control is a class and not an interface.
      */
     private IValueSetEditControl getValueSetEditControl() {
@@ -266,14 +269,26 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetTypesCombo = toolkit.createCombo(parentArea);
         valueSetTypesCombo.setText(getValueSetType().getName());
         valueSetTypeField = new StringValueComboField(valueSetTypesCombo);
-        valueSetTypeField.addChangeListener(new ValueSetTypeModifyListener());
+        valueSetTypeField.addChangeListener(new ValueChangeListener() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void valueChanged(FieldValueChangedEvent e) {
+                String selectedText = e.field.getText();
+                ValueSetType newValueSetType = ValueSetType.getValueSetTypeByName(selectedText);
+                changeValueSetType(newValueSetType);
+            }
+
+        });
 
         toolkit.setDataChangeable(valueSetTypesCombo, isDataChangeable());
     }
 
     private void createConcreteValueSetCheckbox(UIToolkit toolkit, Composite parent) {
         if (!editMode.canDefineAbstractSets()) {
-            return; // the user has no choice, so need to create a checkbox
+            // the user has no choice, so need to create a checkbox
+            return;
         }
         concreteValueSetLabel = toolkit.createLabel(parent, Messages.ValueSetSpecificationControl_specifyBoundsValues);
         concreteValueSetCheckbox = toolkit.createCheckbox(parent);
@@ -325,26 +340,14 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         return types;
     }
 
-    private class ValueSetTypeModifyListener implements ValueChangeListener {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void valueChanged(FieldValueChangedEvent e) {
-            String selectedText = e.field.getText();
-            ValueSetType newValueSetType = ValueSetType.getValueSetTypeByName(selectedText);
-            changeValueSetType(newValueSetType);
-        }
-
-    }
-
     private void changeValueSetType(ValueSetType newValueSetType) {
         IValueSet oldValueSet = valueSetOwner.getValueSet();
         if (!oldValueSet.isUnrestricted()) {
             lastRestrictedValueSet = oldValueSet;
         }
         if (oldValueSet.getValueSetType().equals(newValueSetType)) {
-            return; // unchanged
+            // unchanged
+            return;
         }
         valueSetOwner.setValueSetType(newValueSetType);
         IValueSet newValueSet = valueSetOwner.getValueSet();
@@ -358,9 +361,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private void updateUI() {
         showControlForValueSet();
-        valueSetArea.layout(); // show the new top control
-        valueSetArea.getParent().layout(); // parent has to resize
-        valueSetArea.getParent().getParent().layout(); // parent has to resize
+        valueSetArea.layout();
+        valueSetArea.getParent().layout();
+        valueSetArea.getParent().getParent().layout();
 
         uiController.updateUI();
         updateConcreteValueSetCheckbox();
@@ -425,5 +428,4 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private boolean getDefaultForAbstractProperty() {
         return editMode.canDefineAbstractSets();
     }
-
 }

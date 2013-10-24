@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -91,7 +91,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     protected void buttonClicked() {
         preserveState();
         try {
-            IpsPartEditDialog dialog = createEnumSubsetDialogIfApplicable();
+            IpsPartEditDialog2 dialog = createEnumSubsetDialogIfApplicable();
             if (dialog == null) {
                 List<ValueSetType> valueSetTypes = configElement.getAllowedValueSetTypes(getIpsProject());
                 dialog = new AnyValueSetEditDialog(configElement, valueSetTypes, shell, !dataChangeable);
@@ -124,7 +124,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         return configElement.getIpsProject();
     }
 
-    private IpsPartEditDialog createEnumSubsetDialogIfApplicable() throws CoreException {
+    private IpsPartEditDialog2 createEnumSubsetDialogIfApplicable() throws CoreException {
         IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(getIpsProject());
         ValueDatatype datatype = getValueDatatype(attribute);
 

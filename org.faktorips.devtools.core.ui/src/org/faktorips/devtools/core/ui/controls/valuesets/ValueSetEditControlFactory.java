@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.UIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserEditControl;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
@@ -45,7 +45,7 @@ public class ValueSetEditControlFactory {
      * @param valueDatatype The datatype the values in the set are instances of.
      * @param parent The parent composite.
      * @param toolkit The ui toolkit to use.
-     * @param uiController The ui controller.
+     * @param uiController The bindingContext.
      * @param ipsProject the {@link IValueSetOwner}'s {@link IIpsProject}
      * 
      * @return The new composite.
@@ -54,7 +54,7 @@ public class ValueSetEditControlFactory {
             ValueDatatype valueDatatype,
             Composite parent,
             UIToolkit toolkit,
-            UIController uiController,
+            BindingContext uiController,
             IIpsProject ipsProject) {
 
         if (valueSet.isRange() && !valueSet.isAbstract()) {
