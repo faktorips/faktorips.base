@@ -14,9 +14,9 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -55,7 +55,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * Maps values of the identifier attribute to concrete {@link IEnumValue}s. Used for quick
      * {@link IEnumValue} access by identifier value.
      */
-    private final Map<String, IEnumValue> enumValuesByIdentifier = new HashMap<String, IEnumValue>();
+    private final Map<String, IEnumValue> enumValuesByIdentifier = new ConcurrentHashMap<String, IEnumValue>();
 
     /**
      * The {@link IEnumAttribute} that is marked as default identifier. Values for this attribute
@@ -370,7 +370,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public Map<String, ValueTypeMismatch> checkAllEnumAttributeValueTypeMismatch() {
-        Map<String, ValueTypeMismatch> map = new HashMap<String, ValueTypeMismatch>();
+        Map<String, ValueTypeMismatch> map = new ConcurrentHashMap<String, ValueTypeMismatch>();
         IEnumType enumType = findEnumType(getIpsProject());
         if (enumType != null) {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);
