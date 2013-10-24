@@ -717,26 +717,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
-    public <T> int compareEnumValues(T enumValueA, T enumValueB) {
-        if (enumValueA == null) {
-            return enumValueB == null ? 0 : 1;
-        } else {
-            if (enumValueB == null) {
-                return -1;
-            }
-        }
-        if (enumValueA.equals(enumValueB)) {
-            return 0;
-        }
-        List<? extends Object> enumValues = getEnumValues(enumValueA.getClass());
-        int indexA = enumValues.indexOf(enumValueA);
-        int indexB = enumValues.indexOf(enumValueB);
-        if (indexA >= 0 && indexB >= 0) {
-            return indexA - indexB;
-        }
-        throw new ClassCastException("Cannot compare " + enumValueA + " with " + enumValueB);
-    }
-
     private void throwUnableToCallMethodException(Exception e) throws IllegalStateException {
         throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e); //$NON-NLS-1$
     }
