@@ -127,7 +127,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
         EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
         List<List<Object>> enumValueList = saxhandler.getEnumValueList();
-        int parameterSize = enumValueList.get(0).size() + 1;
+        int parameterSize = enumValueList.get(0).size() + 2;
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
         Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
@@ -136,12 +136,14 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             throw new RuntimeException("No valid constructor found to create enumerations instances for the toc entry "
                     + tocEntry);
         }
+        int valueCounterForIndexParameter = 0;
         for (List<Object> enumValueAsStrings : enumValueList) {
             constructor.setAccessible(true);
             Object[] enumAttributeValues = enumValueAsStrings.toArray();
-            Object[] parameters = new Object[enumAttributeValues.length + 1];
-            System.arraycopy(enumAttributeValues, 0, parameters, 0, enumAttributeValues.length);
-            parameters[enumAttributeValues.length] = this;
+            Object[] parameters = new Object[enumAttributeValues.length + 2];
+            System.arraycopy(enumAttributeValues, 0, parameters, 1, enumAttributeValues.length);
+            parameters[0] = valueCounterForIndexParameter++;
+            parameters[enumAttributeValues.length + 1] = this;
             enumValue = createEnumValue(constructor, parameters, tocEntry);
             enumValues.add(enumValue);
         }
@@ -182,7 +184,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
                                 correct = false;
                                 break;
                             }
-                        } else if (parameterClass != String.class && parameterClass != InternationalString.class) {
+                        } else if (parameterClass != String.class && parameterClass != InternationalString.class
+                                && parameterClass != Integer.TYPE) {
                             correct = false;
                             break;
                         }
