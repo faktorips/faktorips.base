@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,6 +37,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -102,6 +104,7 @@ public class ClassLoaderProvider {
     public ClassLoader getClassLoader() throws CoreException {
         if (classLoader == null) {
             try {
+                setUpTempFileDir();
                 classLoader = getProjectClassloader(javaProject);
                 IWorkspace workspace = javaProject.getProject().getWorkspace();
                 if (resourceChangeListener != null) {
@@ -114,7 +117,7 @@ public class ClassLoaderProvider {
                         .addResourceChangeListener(resourceChangeListener,
                                 IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw new CoreException(new IpsStatus(e));
             }
         }
@@ -137,17 +140,16 @@ public class ClassLoaderProvider {
     }
 
     /**
-     * notifies the listeners and forces that a new classloader is constructed upon the next
-     * request. make a copy of the listener list, as a listener might decide to deregister (in that
-     * case we get a concurrent modification exception from the iterator!)
+     * Notifies the listeners and forces that a new classloader is constructed upon the next
+     * request.
      */
     private void classpathContentsChanged() {
+        classLoader = null;
         List<IClasspathContentsChangeListener> copy = new CopyOnWriteArrayList<IClasspathContentsChangeListener>(
                 classpathContentsChangeListeners);
         for (IClasspathContentsChangeListener listener : copy) {
             listener.classpathContentsChanges(javaProject);
         }
-        classLoader = null;
     }
 
     /**
@@ -161,14 +163,14 @@ public class ClassLoaderProvider {
     }
 
     private void accumulateClasspath(IJavaProject currentProject, List<URL> urlsList) throws IOException, CoreException {
-        if (currentProject == null || !currentProject.exists()) {
+        if (isExistingProject(currentProject)) {
             return;
         }
 
         IPath projectPath = currentProject.getProject().getLocation();
         IPath root = projectPath.removeLastSegments(currentProject.getProject().getFullPath().segmentCount());
 
-        if (currentProject != javaProject || includeProjectsOutputLocation) {
+        if (isIncludeOutputLocation(currentProject)) {
             IPath outLocation = currentProject.getOutputLocation();
             IPath output = root.append(outLocation);
             urlsList.add(output.toFile().toURI().toURL());
@@ -177,9 +179,43 @@ public class ClassLoaderProvider {
 
         Set<IPath> jreEntries = getJrePathEntries(currentProject);
         IClasspathEntry[] entry = currentProject.getResolvedClasspath(true);
+        accumulateClasspathEntry(urlsList, root, jreEntries, entry);
+
+        String[] requiredProjectNames = currentProject.getRequiredProjectNames();
+        if (requiredProjectNames != null && requiredProjectNames.length > 0) {
+            for (String requiredProjectName : requiredProjectNames) {
+                accumulateClasspath(currentProject.getJavaModel().getJavaProject(requiredProjectName), urlsList);
+            }
+        }
+    }
+
+    private boolean isExistingProject(IJavaProject currentProject) {
+        return currentProject == null || !currentProject.exists();
+    }
+
+    private boolean isIncludeOutputLocation(IJavaProject currentProject) {
+        return currentProject != javaProject || includeProjectsOutputLocation;
+    }
+
+    private void setUpTempFileDir() {
+        if (copyJars) {
+            if (tempFileDir == null) {
+                boolean tmpDirCreated = initTempDir(javaProject);
+                if (!tmpDirCreated) {
+                    copyJars = false;
+                }
+            } else {
+                cleanupTemp(tempFileDir);
+            }
+        }
+    }
+
+    private void accumulateClasspathEntry(List<URL> urlsList, IPath root, Set<IPath> jreEntries, IClasspathEntry[] entry)
+            throws IOException {
         for (IClasspathEntry element : entry) {
             if (jreEntries.contains(element.getPath())) {
-                continue; // assume that JRE libs are already available via the parent class loader
+                // assume that JRE libs are already available via the parent class loader
+                continue;
             }
             if (element.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                 IPath jarPath;
@@ -197,9 +233,6 @@ public class ClassLoaderProvider {
 
                 IPath currentPath;
                 if (copyJars) {
-                    if (tempFileDir == null) {
-                        tempFileDir = initTempDir(javaProject);
-                    }
                     currentPath = copyJar(jarPath, tempFileDir);
                 } else {
                     currentPath = jarPath;
@@ -208,13 +241,6 @@ public class ClassLoaderProvider {
                     urlsList.add(currentPath.toFile().toURI().toURL());
                     addClassfileContainer(jarPath);
                 }
-            }
-        }
-
-        String[] requiredProjectNames = currentProject.getRequiredProjectNames();
-        if (requiredProjectNames != null && requiredProjectNames.length > 0) {
-            for (String requiredProjectName : requiredProjectNames) {
-                accumulateClasspath(currentProject.getJavaModel().getJavaProject(requiredProjectName), urlsList);
             }
         }
     }
@@ -235,23 +261,26 @@ public class ClassLoaderProvider {
     }
 
     /**
-     * Creates a temporary directory to store temporary jars in the plugin state location. (The
-     * plug-in state area is a file directory within the platform's metadata area where a plug-in is
-     * free to create files (see Plugin#getStateLocation()). Each project gets its own temporary
-     * directory because each project gets its own classloader provider.) Cleanup the directory if
-     * it already exists. NOTE: this is necessary because the virtual machine doesn't delete all
-     * temporary jars correctly, the jars from which a class was instantiated by the classloader are
-     * not deleted automatically when the virtual machine terminates.
+     * Creates a temporary directory to store temporary jars in the plug-in state location. (The
+     * plug-in state area is a file directory within the platform's .metadata area where a plug-in
+     * is free to create files (see {@link Plugin#getStateLocation()}). Each project gets its own
+     * temporary directory because each project gets its own classloader provider.) Cleanup the
+     * directory if it already exists. NOTE: this is necessary because the virtual machine doesn't
+     * delete all temporary jars correctly, the jars from which a class was instantiated by the
+     * classloader are not deleted automatically when the virtual machine terminates.
+     * 
+     * @return <code>true</code> if the directory is now available, <code>false</code> if it cannot
+     *         be created
      */
-    private File initTempDir(IJavaProject project) {
-        File tempFileDir = IpsPlugin.getDefault().getStateLocation().append(project.getProject().getName()).toFile();
+    private boolean initTempDir(IJavaProject project) {
+        tempFileDir = IpsPlugin.getDefault().getStateLocation().append(project.getProject().getName()).toFile();
         if (tempFileDir.exists()) {
             cleanupTemp(tempFileDir);
         }
         if (!tempFileDir.exists()) {
-            tempFileDir.mkdirs();
+            return tempFileDir.mkdirs();
         }
-        return tempFileDir;
+        return true;
     }
 
     private void cleanupTemp(File root) {
@@ -260,8 +289,11 @@ public class ClassLoaderProvider {
             if (files[i].isDirectory()) {
                 cleanupTemp(files[i]);
             }
-            files[i].delete();
+            if (!files[i].delete()) {
+                files[i].deleteOnExit();
+            }
         }
+        classfileContainers.clear();
     }
 
     /**
@@ -287,19 +319,54 @@ public class ClassLoaderProvider {
             copy = File.createTempFile(name.substring(0, index), name.substring(index), tempFileDir);
         }
         copy.deleteOnExit();
-        InputStream is = new FileInputStream(jarFile);
-        FileOutputStream os = new FileOutputStream(copy);
-        byte[] buffer = new byte[16384];
-        int bytesRead = 0;
-        while (bytesRead > -1) {
-            bytesRead = is.read(buffer);
-            if (bytesRead > 0) {
-                os.write(buffer, 0, bytesRead);
+        InputStream is = null;
+        FileOutputStream os = null;
+        try {
+            is = new FileInputStream(jarFile);
+            os = new FileOutputStream(copy);
+            byte[] buffer = new byte[16384];
+            int bytesRead = 0;
+            while (bytesRead > -1) {
+                bytesRead = is.read(buffer);
+                if (bytesRead > 0) {
+                    os.write(buffer, 0, bytesRead);
+                }
+            }
+        } finally {
+            closeStream(is, os);
+        }
+        return new Path(copy.getPath());
+    }
+
+    private void closeStream(Closeable... closeables) {
+        Throwable pendingThrowable = closeAndReturnCaughtException(closeables);
+        throwIfNecessary(pendingThrowable);
+    }
+
+    private Throwable closeAndReturnCaughtException(Closeable... closeables) {
+        Throwable pending = null;
+        for (Closeable closeable : closeables) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (IOException throwable) {
+                    if (pending == null) {
+                        pending = throwable;
+                    }
+                }
             }
         }
-        is.close();
-        os.close();
-        return new Path(copy.getPath());
+        return pending;
+    }
+
+    private void throwIfNecessary(Throwable pendingThrowable) {
+        if (pendingThrowable != null) {
+            if (pendingThrowable instanceof RuntimeException) {
+                throw (RuntimeException)pendingThrowable;
+            } else {
+                throw new RuntimeException(pendingThrowable);
+            }
+        }
     }
 
     /**
@@ -319,9 +386,6 @@ public class ClassLoaderProvider {
                     && event.getBuildKind() == IncrementalProjectBuilder.CLEAN_BUILD) {
                 return;
             }
-
-            // check if one of the previous container have changed and notify that the classloader
-            // must re reconstructed next time
             for (IPath container : classfileContainers) {
                 IResourceDelta delta = event.getDelta().findMember(container);
                 if (delta != null) {
