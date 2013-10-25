@@ -657,7 +657,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * if enum type is without separate content or abstract, than the index field will be
          * generated.
          */
-        if (!getEnumType().isContainingValues() || isGenerateMethodCompareTo()) {
+        if (isEnumWithSeparatedValue()) {
             attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
             attributeBuilder.append("private final ").appendClassName(Integer.TYPE).append(" ").append(VARNAME_INDEX)
                     .append(";");
@@ -741,12 +741,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         // Build method arguments
-        String[] argumentNames = new String[getArrayLength(validEnumAttributes)];
-        String[] argumentClasses = new String[getArrayLength(validEnumAttributes)];
+        String[] argumentNames = new String[getNumberOfArguments(validEnumAttributes)];
+        String[] argumentClasses = new String[getNumberOfArguments(validEnumAttributes)];
         IJavaNamingConvention javaNamingConvention = getJavaNamingConvention();
 
         int arrayIndex = 0;
-        if (!getEnumType().isContainingValues() || isGenerateMethodCompareTo()) {
+        if (isEnumWithSeparatedValue()) {
             argumentNames[arrayIndex] = VARNAME_INDEX;
             argumentClasses[arrayIndex] = Integer.TYPE.getName();
             arrayIndex++;
@@ -770,8 +770,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     }
 
-    private int getArrayLength(List<IEnumAttribute> validEnumAttributes) {
-        if (!getEnumType().isContainingValues() || isGenerateMethodCompareTo()) {
+    private int getNumberOfArguments(List<IEnumAttribute> validEnumAttributes) {
+        if (isEnumWithSeparatedValue()) {
             return validEnumAttributes.size() + 1;
         }
         return validEnumAttributes.size();
@@ -880,7 +880,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Creates the attribute initialization code for the constructor. */
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
 
-        if (!getEnumType().isContainingValues() || isGenerateMethodCompareTo()) {
+        if (isEnumWithSeparatedValue()) {
             createIndexInitialization(constructorMethodBody);
         }
 
@@ -895,6 +895,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 constructorMethodBody.appendln();
             }
         }
+    }
+
+    private boolean isEnumWithSeparatedValue() {
+        return !getEnumType().isContainingValues() || isGenerateMethodCompareTo();
     }
 
     private void createIndexInitialization(JavaCodeFragment constructorMethodBody) {
