@@ -50,7 +50,7 @@ import org.junit.Test;
  * 
  * @author Thorsten Guenther
  */
-public class ProductCmptStructureTest extends AbstractIpsPluginTest {
+public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
 
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
@@ -145,6 +145,14 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         } catch (CycleInProductStructureException e) {
             // success
         }
+    }
+
+    @Test
+    public void testAssociationNotRelevant() throws Exception {
+        assertTrue(structure.getRoot().hasAssociationChildren());
+        association.setRelevant(false);
+        structure.refresh();
+        assertFalse(structure.getRoot().hasAssociationChildren());
     }
 
     @Test

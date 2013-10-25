@@ -144,7 +144,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
+        protected IIpsObjectPart newIpsPart() {
             return ((IPolicyCmptType)getIpsObject()).newPolicyCmptTypeAttribute();
         }
 

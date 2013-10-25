@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
-import org.eclipse.core.runtime.CoreException;
+import java.util.EnumSet;
+
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -28,6 +31,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationPmo;
+import org.faktorips.devtools.core.ui.wizards.type.ConstrainableAssociationWizard;
 
 /**
  * A section to display and edit a type's associations.
@@ -48,26 +53,28 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
      * A composite that shows a type's associations in a viewer and allows to edit associations in a
      * dialog, create new associations and delete associations.
      */
-    protected abstract class AssociationsComposite extends IpsPartsComposite {
+    protected abstract static class AssociationsComposite extends IpsPartsComposite {
 
         private IpsAction openTargetAction;
+        private IType type;
 
-        protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            this(type, parent, true, true, true, true, true, toolkit);
+        protected AssociationsComposite(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+            this(type, parent, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_OVERRIDE, Option.CAN_DELETE,
+                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), site, toolkit);
         }
 
-        protected AssociationsComposite(IType type, Composite parent, boolean canCreate, boolean canEdit,
-                boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
-
-            super(type, parent, getSite(), canCreate, canEdit, canDelete, canMove, showEditButton, true, false, true,
-                    toolkit);
+        protected AssociationsComposite(IType type, Composite parent, EnumSet<Option> attributesForButtons,
+                IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(type, parent, site, attributesForButtons, toolkit);
+            this.type = type;
             openTargetAction = createOpenTargetAction();
         }
 
         protected abstract IpsAction createOpenTargetAction();
 
         @Override
-        protected IIpsObjectPart newIpsPart() throws CoreException {
+        protected IIpsObjectPart newIpsPart() {
             return getType().newAssociation();
         }
 
@@ -94,14 +101,30 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new AssociationContentProvider();
+            return new AssociationContentProvider(getType());
         }
 
-        private class AssociationContentProvider implements IStructuredContentProvider {
+        @Override
+        public void overrideClicked() {
+            ConstrainableAssociationPmo pmo = new ConstrainableAssociationPmo(type);
+            ConstrainableAssociationWizard wizard = new ConstrainableAssociationWizard(pmo);
+            WizardDialog wizardDialog = new WizardDialog(getShell(), wizard);
+            if (wizardDialog.open() == Window.OK) {
+                refresh();
+            }
+        }
+
+        private static class AssociationContentProvider implements IStructuredContentProvider {
+
+            private IType type;
+
+            public AssociationContentProvider(IType type) {
+                this.type = type;
+            }
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getAssociations().toArray();
+                return type.getAssociations().toArray();
             }
 
             @Override

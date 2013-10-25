@@ -81,7 +81,7 @@ public class NewProductCmptTypePage extends NewTypePage {
                     setIpsObjectName(getPageOfAssociatedType().getIpsObjectName() + postfix);
                 }
             }
-            setAbstract(getPageOfAssociatedType().getAbstract());
+            setAbstract(getPageOfAssociatedType().isAbstract());
         }
         super.pageEntered();
     }
@@ -190,7 +190,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         @Override
         public Message execute(IIpsProject ipsProject) throws CoreException {
             return ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
-                    getPageOfAssociatedType().getAbstract(), getAbstract(), null);
+                    getPageOfAssociatedType().isAbstract(), isAbstract(), null);
         }
 
     }

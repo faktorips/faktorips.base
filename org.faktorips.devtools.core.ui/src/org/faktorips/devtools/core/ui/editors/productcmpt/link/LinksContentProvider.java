@@ -84,15 +84,17 @@ public class LinksContentProvider implements ITreeContentProvider {
         return items;
     }
 
-    private AssociationViewItem[] getAssociationItems(IProductCmptType type,
+    protected AssociationViewItem[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
             IProductCmptGeneration generation) {
         List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
         List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
         for (IProductCmptTypeAssociation association : associations) {
-            IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
-            AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
-            items.add(associationViewItem);
+            if (association.isRelevant()) {
+                IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
+                AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
+                items.add(associationViewItem);
+            }
         }
         return items.toArray(new AssociationViewItem[items.size()]);
     }

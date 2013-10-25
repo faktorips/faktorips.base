@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.Type;
-import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -56,7 +55,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -378,11 +376,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(getIpsProject(), rule, msgList);
             visitor.start(this);
         }
-    }
-
-    @Override
-    public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
-        return TypeHierarchy.getSubtypeHierarchy(this);
     }
 
     @Override

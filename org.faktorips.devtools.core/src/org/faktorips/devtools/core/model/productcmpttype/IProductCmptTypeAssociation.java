@@ -49,6 +49,8 @@ public interface IProductCmptTypeAssociation extends IAssociation {
 
     public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
+    public static final String PROPERTY_RELEVANT = "relevant"; //$NON-NLS-1$
+
     /**
      * Message code for validation messages when the matching association was not found
      */
@@ -227,5 +229,29 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      *            <code>false</code> if they are static.
      */
     void setChangingOverTime(boolean changingOverTime);
+
+    /**
+     * Returns whether this association is relevant or not.
+     * <p>
+     * If this method returns <code>true</code>, the association will be displayed in the product
+     * component editor and can be edited by the user. If this method returns <code>false</code>,
+     * the association will not be displayed in the editor and its value cannot be modified. This
+     * property also affects the product structure explorer.
+     * <p>
+     * The default value is <code>true</code>.
+     */
+    boolean isRelevant();
+
+    /**
+     * Sets the property <code>relevant</code> for this association.
+     * <p>
+     * If this association is marked as relevant (<code>true</code>), the association will be
+     * displayed in the component editor and will be taken into account in the product structure. If
+     * marked as not relevant, the association will not be displayed in the component editor and
+     * will be ignored in product structure.
+     * 
+     * @param relevant true to mark the association as relevant, false to mark it as not relevant
+     */
+    void setRelevant(boolean relevant);
 
 }

@@ -366,6 +366,7 @@ public interface IPolicyCmptType extends IType {
     /**
      * Creates a new sub type hierarchy for the type and returns it.
      */
+    @Override
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
 
     /**

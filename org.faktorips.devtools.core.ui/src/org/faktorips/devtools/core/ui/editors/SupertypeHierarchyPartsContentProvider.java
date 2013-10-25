@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -47,6 +48,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         try {
             supertypes = getSupertypes(ipsObject);
             providedObjectParts = getAvailableParts(ipsObject);
+            reverseSupertypes();
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -88,6 +90,10 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
     @Override
     public Object[] getElements(Object inputElement) {
         return isNoAvailableParts() ? new Object[0] : supertypes.toArray();
+    }
+
+    private void reverseSupertypes() {
+        Collections.reverse(supertypes);
     }
 
     private boolean isNoAvailableParts() {

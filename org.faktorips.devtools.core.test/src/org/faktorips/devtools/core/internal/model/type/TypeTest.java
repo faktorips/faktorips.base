@@ -33,7 +33,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -53,6 +55,12 @@ public class TypeTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IType type;
+    private IPolicyCmptType constrains_sourcePolicy;
+    private IPolicyCmptType constrains_subSourcePolicy;
+    private IPolicyCmptTypeAssociation constrains_association1;
+    private IPolicyCmptTypeAssociation constrains_association2;
+    private IPolicyCmptType constrains_targetPolicy;
+    private IPolicyCmptType constrains_subTargetPolicy;
 
     @Override
     @Before
@@ -612,49 +620,49 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAssociationsForTargetAndAssociationType() throws CoreException {
-        IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
-        IProductCmptType motor = (IProductCmptType)type;
-        IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
-
-        List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
-                injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(0, associations.size());
-
-        // Association: motor -> injection
-        IAssociation association = motor.newAssociation();
-        association.setTarget(injection.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        // Association: baseMotor -> injection
-        IAssociation associationInBase = baseMotor.newAssociation();
-        associationInBase.setTarget(injection.getQualifiedName());
-        associationInBase.setAssociationType(AssociationType.ASSOCIATION);
-
-        // result = 1, because super not set
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.size());
-
-        motor.setSupertype(baseMotor.getQualifiedName());
-
-        // result = 1, because association type of super type association not equal
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.size());
-
-        // result = 1 using search without supertype
-        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.size());
-
-        // result = 1 using search with supertype included
-        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
-        assertEquals(2, associations.size());
-    }
+        public void testGetAssociationsForTargetAndAssociationType() throws CoreException {
+            IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
+            IProductCmptType motor = (IProductCmptType)type;
+            IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
+    
+            List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
+                    injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(0, associations.size());
+    
+            // Association: motor -> injection
+            IAssociation association = motor.newAssociation();
+            association.setTarget(injection.getQualifiedName());
+            association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+    
+            // Association: baseMotor -> injection
+            IAssociation associationInBase = baseMotor.newAssociation();
+            associationInBase.setTarget(injection.getQualifiedName());
+            associationInBase.setAssociationType(AssociationType.ASSOCIATION);
+    
+            // result = 1, because super not set
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(1, associations.size());
+    
+            motor.setSupertype(baseMotor.getQualifiedName());
+    
+            // result = 1, because association type of super type association not equal
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(1, associations.size());
+    
+            // result = 1 using search without supertype
+            associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+            assertEquals(1, associations.size());
+    
+            // result = 1 using search with supertype included
+            associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
+            assertEquals(2, associations.size());
+        }
 
     @Test
     public void testFindAllAttributes() throws Exception {
@@ -1085,4 +1093,110 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(type.hasExistingSupertype(ipsProject));
     }
 
+    @Test
+    public void testConstrainPolicyAssociation() throws CoreException {
+        setUpConstrainableAssociations();
+
+        IAssociation constrainingAssociation = constrains_subSourcePolicy.constrainAssociation(constrains_association1,
+                constrains_subTargetPolicy);
+        assertNotNull(constrainingAssociation);
+        assertTrue(constrainingAssociation.isConstrain());
+        assertEquals(constrains_subTargetPolicy.getQualifiedName(), constrainingAssociation.getTarget());
+        MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
+        assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
+    }
+
+    @Test
+    public void testConstrainProductAssociation() throws CoreException {
+        IProductCmptType sourceProduct = newProductCmptType(ipsProject, "ProductA");
+        IProductCmptType targetProduct = newProductCmptType(ipsProject, "ProductB");
+        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)sourceProduct.newAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTarget(targetProduct.getQualifiedName());
+        association.setTargetRoleSingular(targetProduct.getQualifiedName());
+        association.setTargetRolePlural(targetProduct.getQualifiedName() + "s");
+
+        IProductCmptType subSourceProduct = newProductCmptType(ipsProject, "SubProductA");
+        subSourceProduct.setSupertype(sourceProduct.getQualifiedName());
+        IProductCmptType subTargetProduct = newProductCmptType(ipsProject, "SubProductB");
+        subTargetProduct.setSupertype(targetProduct.getQualifiedName());
+
+        IAssociation constrainingAssociation = subSourceProduct.constrainAssociation(association, subTargetProduct);
+        assertNotNull(constrainingAssociation);
+        assertTrue(constrainingAssociation.isConstrain());
+        assertEquals(subTargetProduct.getQualifiedName(), constrainingAssociation.getTarget());
+        MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
+        assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
+    }
+
+    @Test
+    public void testFindConstrainableAssociation() throws CoreException {
+        setUpConstrainableAssociations();
+
+        List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
+
+        assertEquals(2, candidates.size());
+        assertEquals(constrains_association1, candidates.get(0));
+        assertEquals(constrains_association2, candidates.get(1));
+    }
+
+    @Test
+    public void testFindConstrainableAssociation_ignoreDerivedUnionAndSubset() throws CoreException {
+        setUpConstrainableAssociations();
+        constrains_association1.setDerivedUnion(true);
+        constrains_association2.setSubsettedDerivedUnion(constrains_association1.getName());
+
+        List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
+
+        assertEquals(0, candidates.size());
+    }
+
+    @Test
+    public void testFindConstrainableAssociation_ignoreConstrainingAndConstrainedAssociations() throws CoreException {
+        setUpConstrainableAssociations();
+        IPolicyCmptTypeAssociation assoc3 = createAssociation(constrains_subSourcePolicy, constrains_subTargetPolicy,
+                constrains_association1.getTargetRoleSingular());
+        assoc3.setConstrain(true);
+
+        List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
+
+        assertEquals(1, candidates.size());
+        assertEquals(constrains_association2, candidates.get(0));
+    }
+
+    @Test
+    public void testFindConstrainableAssociation_ignoreDetailToMaster() throws CoreException {
+        setUpConstrainableAssociations();
+        constrains_association1.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        constrains_association2.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+
+        List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
+
+        assertEquals(1, candidates.size());
+        assertEquals("assoc1", candidates.get(0).getName());
+    }
+
+    private void setUpConstrainableAssociations() throws CoreException {
+        constrains_sourcePolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        constrains_targetPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        constrains_association1 = createAssociation(constrains_sourcePolicy, constrains_targetPolicy, "assoc1");
+        constrains_association2 = createAssociation(constrains_sourcePolicy, constrains_targetPolicy, "assoc2");
+
+        constrains_subSourcePolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
+        constrains_subSourcePolicy.setSupertype(constrains_sourcePolicy.getQualifiedName());
+        constrains_subTargetPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
+        constrains_subTargetPolicy.setSupertype(constrains_targetPolicy.getQualifiedName());
+    }
+
+    private IPolicyCmptTypeAssociation createAssociation(IPolicyCmptType sourcePolicy,
+            IPolicyCmptType targetPolicy,
+            String roleName) {
+        IPolicyCmptTypeAssociation assoc = sourcePolicy.newPolicyCmptTypeAssociation();
+        assoc.setTarget(targetPolicy.getQualifiedName());
+        assoc.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assoc.setMaxCardinality(Integer.MAX_VALUE);
+        assoc.setTargetRoleSingular(roleName);
+        assoc.setTargetRolePlural(roleName + "s");
+        return assoc;
+    }
 }

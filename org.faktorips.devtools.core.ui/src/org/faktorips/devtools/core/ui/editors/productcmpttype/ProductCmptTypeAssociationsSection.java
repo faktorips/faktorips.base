@@ -43,24 +43,24 @@ public class ProductCmptTypeAssociationsSection extends AssociationsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new ProductCmptTypeAssociationsComposite(getProductCmptType(), parent, toolkit);
+        return new ProductCmptTypeAssociationsComposite(getProductCmptType(), parent, getSite(), toolkit);
     }
 
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getIpsObject();
     }
 
-    private class ProductCmptTypeAssociationsComposite extends AssociationsComposite {
+    private static class ProductCmptTypeAssociationsComposite extends AssociationsComposite {
 
         private ProductCmptTypeAssociationsComposite(IProductCmptType productCmptType, Composite parent,
-                UIToolkit toolkit) {
+                IWorkbenchPartSite site, UIToolkit toolkit) {
 
-            super(productCmptType, parent, toolkit);
+            super(productCmptType, parent, site, toolkit);
         }
 
         @Override
         protected IpsAction createOpenTargetAction() {
-            return new OpenTargetProductCmptTypeInEditorAction(getViewer());
+            return new OpenTargetProductCmptTypeInEditorAction(getViewer(), getType());
         }
 
         @Override
@@ -70,10 +70,13 @@ public class ProductCmptTypeAssociationsSection extends AssociationsSection {
 
     }
 
-    private class OpenTargetProductCmptTypeInEditorAction extends IpsAction {
+    private static class OpenTargetProductCmptTypeInEditorAction extends IpsAction {
 
-        private OpenTargetProductCmptTypeInEditorAction(ISelectionProvider selectionProvider) {
+        private final IType type;
+
+        private OpenTargetProductCmptTypeInEditorAction(ISelectionProvider selectionProvider, IType type) {
             super(selectionProvider);
+            this.type = type;
             setText(Messages.ProductCmptTypeAssociationsSection_menuOpenTargetInNewEditor);
         }
 
@@ -89,7 +92,7 @@ public class ProductCmptTypeAssociationsSection extends AssociationsSection {
             if (selected instanceof IProductCmptTypeAssociation) {
                 IProductCmptTypeAssociation productCmptTypeAssociation = (IProductCmptTypeAssociation)selected;
                 try {
-                    IType target = productCmptTypeAssociation.findTarget(getProductCmptType().getIpsProject());
+                    IType target = productCmptTypeAssociation.findTarget(type.getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(target);
                 } catch (CoreException e) {
                     throw new RuntimeException(e);

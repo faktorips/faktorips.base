@@ -69,7 +69,7 @@ public class NewProductCmptTypePage extends NewTypePage {
             IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
             if (StringUtils.isEmpty(selectedPcType.getProductCmptType())) {
                 policyCmptTypeField.setValue(selectedPcType.getQualifiedName());
-                abstractField.setValue(new Boolean(selectedPcType.isAbstract()));
+                getAbstractField().setValue(new Boolean(selectedPcType.isAbstract()));
             }
         }
     }
@@ -288,7 +288,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
             IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
             return ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
-                    configuableType.isAbstract(), getAbstract(), null);
+                    configuableType.isAbstract(), isAbstract(), null);
         }
 
     }

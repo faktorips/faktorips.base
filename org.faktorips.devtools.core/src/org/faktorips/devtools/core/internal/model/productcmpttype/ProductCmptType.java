@@ -1553,12 +1553,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected boolean addAssociation(IAssociation association) {
-            return !association.isDerived() && super.addAssociation(association);
+        protected boolean isAssociationWanted(IAssociation association) {
+            return !association.isDerived() && super.isAssociationWanted(association);
         }
 
         @Override
-        protected List<IProductCmptTypeAssociation> findAssociations(IType currentType) {
+        protected List<IProductCmptTypeAssociation> getAssociations(IType currentType) {
             return ((IProductCmptType)currentType).getProductCmptTypeAssociations();
         }
 
