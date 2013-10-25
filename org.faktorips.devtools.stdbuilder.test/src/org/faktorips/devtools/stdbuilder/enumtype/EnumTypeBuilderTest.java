@@ -199,7 +199,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     public void testGenerateMethodeCompareToOtherEnum_withoutContentSeperatedEnum() throws Exception {
         builder.beforeBuild(enumType.getIpsSrcFile(), null);
 
-        assertFalse(builder.isGenerateMethodeCompareTo());
+        assertFalse(builder.isGenerateMethodCompareTo());
     }
 
     @Test
@@ -207,7 +207,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         enumType.setContainingValues(false);
         builder.beforeBuild(enumType.getIpsSrcFile(), null);
 
-        assertTrue(builder.isGenerateMethodeCompareTo());
+        assertTrue(builder.isGenerateMethodCompareTo());
     }
 
     private void expectMemberVar(IEnumAttribute enumAttribute, boolean shallExist) {
