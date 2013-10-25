@@ -657,7 +657,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * if enum type is without separate content or abstract, than the index field will be
          * generated.
          */
-        if (isEnumWithSeparatedValue()) {
+        if (isIndexFieldRequired()) {
             attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
             attributeBuilder.append("private final ").appendClassName(Integer.TYPE).append(" ").append(VARNAME_INDEX)
                     .append(";");
@@ -746,7 +746,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         IJavaNamingConvention javaNamingConvention = getJavaNamingConvention();
 
         int arrayIndex = 0;
-        if (isEnumWithSeparatedValue()) {
+        if (isIndexFieldRequired()) {
             argumentNames[arrayIndex] = VARNAME_INDEX;
             argumentClasses[arrayIndex] = Integer.TYPE.getName();
             arrayIndex++;
@@ -771,7 +771,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private int getNumberOfArguments(List<IEnumAttribute> validEnumAttributes) {
-        if (isEnumWithSeparatedValue()) {
+        if (isIndexFieldRequired()) {
             return validEnumAttributes.size() + 1;
         }
         return validEnumAttributes.size();
@@ -880,7 +880,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Creates the attribute initialization code for the constructor. */
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
 
-        if (isEnumWithSeparatedValue()) {
+        if (isIndexFieldRequired()) {
             createIndexInitialization(constructorMethodBody);
         }
 
@@ -897,7 +897,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private boolean isEnumWithSeparatedValue() {
+    private boolean isIndexFieldRequired() {
         return !getEnumType().isContainingValues() || isGenerateMethodCompareTo();
     }
 
