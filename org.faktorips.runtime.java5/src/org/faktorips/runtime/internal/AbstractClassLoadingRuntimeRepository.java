@@ -125,29 +125,58 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     @Override
     protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
-        EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
-        List<List<Object>> enumValueList = saxhandler.getEnumValueList();
-        int parameterSize = enumValueList.get(0).size() + 2;
+        List<List<Object>> enumValueList = getEnumValueListFromSaxHandler(tocEntry);
+        Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
+                getParameterSize(enumValueList));
+        return getCreatedEnumValueList(tocEntry, enumValueList, constructor);
+    }
+
+    private <T> List<T> getCreatedEnumValueList(EnumContentTocEntry tocEntry,
+            List<List<Object>> enumValueList,
+            Constructor<T> constructor) {
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
+        int valueCounterForIndexParameter = 0;
+        for (List<Object> enumValueAsStrings : enumValueList) {
+            constructor.setAccessible(true);
+            Object[] enumAttributeValues = enumValueAsStrings.toArray();
+            Object[] parameters = new Object[enumAttributeValues.length + 2];
+            setValuesForParamters(valueCounterForIndexParameter, enumAttributeValues, parameters);
+            enumValue = createEnumValue(constructor, parameters, tocEntry);
+            enumValues.add(enumValue);
+            valueCounterForIndexParameter++;
+        }
+        return enumValues;
+    }
+
+    private void setValuesForParamters(int valueCounterForIndexParameter,
+            Object[] enumAttributeValues,
+            Object[] parameters) {
+        parameters[0] = valueCounterForIndexParameter;
+        System.arraycopy(enumAttributeValues, 0, parameters, 1, enumAttributeValues.length);
+        parameters[enumAttributeValues.length + 1] = this;
+    }
+
+    private int getParameterSize(List<List<Object>> enumValueList) {
+        return enumValueList.get(0).size() + 2;
+    }
+
+    private <T> Constructor<T> getCandidateConstructorThrowRuntimeException(EnumContentTocEntry tocEntry,
+            Class<T> enumClass,
+            int parameterSize) {
         Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
         Constructor<T> constructor = getCorrectConstructor(parameterSize, runtimeRepoClass, enumClass);
         if (constructor == null) {
             throw new RuntimeException("No valid constructor found to create enumerations instances for the toc entry "
                     + tocEntry);
         }
-        int valueCounterForIndexParameter = 0;
-        for (List<Object> enumValueAsStrings : enumValueList) {
-            constructor.setAccessible(true);
-            Object[] enumAttributeValues = enumValueAsStrings.toArray();
-            Object[] parameters = new Object[enumAttributeValues.length + 2];
-            System.arraycopy(enumAttributeValues, 0, parameters, 1, enumAttributeValues.length);
-            parameters[0] = valueCounterForIndexParameter++;
-            parameters[enumAttributeValues.length + 1] = this;
-            enumValue = createEnumValue(constructor, parameters, tocEntry);
-            enumValues.add(enumValue);
-        }
-        return enumValues;
+        return constructor;
+    }
+
+    private List<List<Object>> getEnumValueListFromSaxHandler(EnumContentTocEntry tocEntry) {
+        EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
+        List<List<Object>> enumValueList = saxhandler.getEnumValueList();
+        return enumValueList;
     }
 
     private EnumSaxHandler parseEnumValues(EnumContentTocEntry tocEntry) {
