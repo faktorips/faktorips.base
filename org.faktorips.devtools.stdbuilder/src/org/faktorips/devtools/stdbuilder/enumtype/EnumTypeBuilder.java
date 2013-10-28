@@ -69,9 +69,11 @@ import org.faktorips.values.InternationalString;
  */
 public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
-    private static final String PRODUCT_REPOSITORY = "productRepository";
+    private static final String VARNAME_PRODUCT_REPOSITORY = "productRepository";
 
     private static final String VARNAME_MESSAGE_HELPER = "messageHelper";
+
+    private static final String VARNAME_INDEX = "index";
 
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
     private static final String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
@@ -204,7 +206,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
         }
-        if (isGenerateMethodeCompareTo()) {
+        if (isGenerateMethodCompareTo()) {
             implementedInterfaces.add(Comparable.class.getName() + "<" + typeName + ">");
         }
         mainSection.setExtendedInterfaces(implementedInterfaces.toArray(new String[implementedInterfaces.size()]));
@@ -310,6 +312,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.isContainingValues() && !(enumType.isAbstract()) && literalNameAttribute != null) {
             // Go over all model side defined enum values
             List<IEnumValue> enumValues = enumType.getEnumValues();
+
             for (int i = 0; i < enumValues.size(); i++) {
                 IEnumValue currentEnumValue = enumValues.get(i);
                 // Generate only for valid enum values
@@ -650,6 +653,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         IEnumType enumType = getEnumType();
         int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL;
 
+        /*
+         * if enum type is without separate content or abstract, than the index field will be
+         * generated.
+         */
+        if (isIndexFieldRequired()) {
+            attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
+            attributeBuilder.append("private final ").appendClassName(Integer.TYPE).append(" ").append(VARNAME_INDEX)
+                    .append(";");
+        }
+
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
             String attributeName = currentEnumAttribute.getName();
             String codeName = getMemberVarName(attributeName);
@@ -669,11 +682,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     }
                 }
             }
-        }
-        if (isGenerateMethodeCompareTo()) {
-            attributeBuilder.javaDoc("", ANNOTATION_GENERATED);
-            attributeBuilder.append("private final ").appendClassName(IRuntimeRepository.class).append(" ")
-                    .append(PRODUCT_REPOSITORY).append(";");
         }
     }
 
@@ -733,14 +741,22 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         // Build method arguments
-        String[] argumentNames = new String[validEnumAttributes.size()];
-        String[] argumentClasses = new String[validEnumAttributes.size()];
+        String[] argumentNames = new String[getNumberOfArguments(validEnumAttributes)];
+        String[] argumentClasses = new String[getNumberOfArguments(validEnumAttributes)];
         IJavaNamingConvention javaNamingConvention = getJavaNamingConvention();
-        for (int i = 0; i < validEnumAttributes.size(); i++) {
-            IEnumAttribute currentEnumAttribute = validEnumAttributes.get(i);
+
+        int arrayIndex = 0;
+        if (isIndexFieldRequired()) {
+            argumentNames[arrayIndex] = VARNAME_INDEX;
+            argumentClasses[arrayIndex] = Integer.TYPE.getName();
+            arrayIndex++;
+        }
+        for (IEnumAttribute enumAttribute : validEnumAttributes) {
+            IEnumAttribute currentEnumAttribute = enumAttribute;
             String attributeName = currentEnumAttribute.getName();
-            argumentNames[i] = javaNamingConvention.getMemberVarName(attributeName);
-            argumentClasses[i] = getDatatypeHelper(currentEnumAttribute, true).getJavaClassName();
+            argumentNames[arrayIndex] = javaNamingConvention.getMemberVarName(attributeName);
+            argumentClasses[arrayIndex] = getDatatypeHelper(currentEnumAttribute, true).getJavaClassName();
+            arrayIndex++;
         }
 
         // Build method body
@@ -752,6 +768,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         constructorBuilder.append(methodBody);
         constructorBuilder.methodEnd();
 
+    }
+
+    private int getNumberOfArguments(List<IEnumAttribute> validEnumAttributes) {
+        if (isIndexFieldRequired()) {
+            return validEnumAttributes.size() + 1;
+        }
+        return validEnumAttributes.size();
     }
 
     private void generatePublicConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
@@ -772,16 +795,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         List<IEnumAttribute> enumAttributesIncludeSupertypeCopies = enumType
                 .getEnumAttributesIncludeSupertypeCopies(false);
-        Class<?>[] argClasses = new Class[enumAttributesIncludeSupertypeCopies.size() + 1];
+        Class<?>[] argClasses = new Class[enumAttributesIncludeSupertypeCopies.size() + 2];
         String[] argNames = new String[argClasses.length];
         fillArguments(enumAttributesIncludeSupertypeCopies, argClasses, argNames);
 
         JavaCodeFragment body = new JavaCodeFragment();
-        int i = 0;
+        createIndexInitialization(body);
+        int i = 1;
         for (IEnumAttribute currentEnumAttribute : enumAttributesIncludeSupertypeCopies) {
             appendFieldDeclaration(currentEnumAttribute, argNames[i++], body);
         }
-        body.append("this.").append(PRODUCT_REPOSITORY).append(" = ").append(PRODUCT_REPOSITORY).append(";");
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
         constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType), argNames, argClasses);
         constructorBuilder.append(body);
@@ -792,16 +815,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void fillArguments(List<IEnumAttribute> enumAttributesIncludeSupertypeCopies,
             Class<?>[] argClasses,
             String[] argNames) {
-        for (int i = 0; i < argClasses.length - 1; i++) {
-            final IEnumAttribute currentEnumAttribute = enumAttributesIncludeSupertypeCopies.get(i);
-            argNames[i] = currentEnumAttribute.getName() + "String";
+
+        argNames[0] = VARNAME_INDEX;
+        argClasses[0] = Integer.TYPE;
+
+        int arrayIndex = 1;
+        for (IEnumAttribute enumAttribute : enumAttributesIncludeSupertypeCopies) {
+            final IEnumAttribute currentEnumAttribute = enumAttribute;
+            argNames[arrayIndex] = currentEnumAttribute.getName() + "String";
             if (currentEnumAttribute.isMultilingual()) {
-                argClasses[i] = InternationalString.class;
+                argClasses[arrayIndex] = InternationalString.class;
             } else {
-                argClasses[i] = String.class;
+                argClasses[arrayIndex] = String.class;
             }
+            arrayIndex++;
         }
-        argNames[argNames.length - 1] = PRODUCT_REPOSITORY;
+
+        argNames[argNames.length - 1] = VARNAME_PRODUCT_REPOSITORY;
         argClasses[argClasses.length - 1] = IRuntimeRepository.class;
     }
 
@@ -838,7 +868,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             EnumTypeDatatypeHelper enumHelper,
             String expression) throws CoreException {
         body.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(),
-                expression, new JavaCodeFragment(PRODUCT_REPOSITORY)));
+                expression, new JavaCodeFragment(VARNAME_PRODUCT_REPOSITORY)));
         body.append(';');
         body.appendln();
     }
@@ -849,6 +879,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Creates the attribute initialization code for the constructor. */
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
+
+        if (isIndexFieldRequired()) {
+            createIndexInitialization(constructorMethodBody);
+        }
+
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
             if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
                 String currentName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
@@ -860,9 +895,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 constructorMethodBody.appendln();
             }
         }
-        if (isGenerateMethodeCompareTo()) {
-            constructorMethodBody.append("this.").append(PRODUCT_REPOSITORY).append(" = ").append("null").append(";");
-        }
+    }
+
+    private boolean isIndexFieldRequired() {
+        return !getEnumType().isContainingValues() || isGenerateMethodCompareTo();
+    }
+
+    private void createIndexInitialization(JavaCodeFragment constructorMethodBody) {
+        constructorMethodBody.append("this.").append(VARNAME_INDEX).append(" = ").append(VARNAME_INDEX).append(";");
     }
 
     private void generateCodeForMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
@@ -1279,7 +1319,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMethodeCompareToForEnumsWithSeperateContent(JavaCodeFragmentBuilder methodBuilder) {
-        if (isGenerateMethodeCompareTo()) {
+        if (isGenerateMethodCompareTo()) {
             generateCompareToMethod(methodBuilder);
         }
     }
@@ -1295,15 +1335,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private JavaCodeFragment getCompareToMethodBody() {
         JavaCodeFragment body = new JavaCodeFragment();
-        body.append("if (").append(PRODUCT_REPOSITORY).append(" != ").append("null)"); //$NON-NLS-1$
-        body.appendOpenBracket();
-        body.append("return ").append(PRODUCT_REPOSITORY).append(".compareEnumValues(this, o);");
-        body.appendCloseBracket();
-        body.append("return 0;");
+        body.append("return index - o.index;");
         return body;
     }
 
-    boolean isGenerateMethodeCompareTo() {
+    boolean isGenerateMethodCompareTo() {
         return !getEnumType().isContainingValues() && !useInterfaceGeneration();
     }
 
