@@ -213,8 +213,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
                                 correct = false;
                                 break;
                             }
-                        } else if (parameterClass != String.class && parameterClass != InternationalString.class
-                                && parameterClass != Integer.TYPE) {
+                        } else if (isParameterClassValid(parameterClass)) {
                             correct = false;
                             break;
                         }
@@ -233,6 +232,11 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             }
         }
         return constructor;
+    }
+
+    private boolean isParameterClassValid(Class<?> parameterClass) {
+        return parameterClass != String.class && parameterClass != InternationalString.class
+                && parameterClass != Integer.TYPE;
     }
 
     private boolean isProtected(Constructor<?> currentConstructor) {
