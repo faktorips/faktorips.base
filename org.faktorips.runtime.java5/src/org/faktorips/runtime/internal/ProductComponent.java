@@ -105,7 +105,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.validTo = validTo;
     }
 
-    public final IRuntimeRepository getRepository() {
+    public IRuntimeRepository getRepository() {
         return repository;
     }
 
