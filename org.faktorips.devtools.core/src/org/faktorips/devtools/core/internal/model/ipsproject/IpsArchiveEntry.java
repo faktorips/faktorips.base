@@ -19,6 +19,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -88,10 +89,10 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
 
     @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
-        if (archive == null) {
+        if (archive == null || qnt == null) {
             return false;
         }
-        return archive.contains(qnt);
+        return archive.contains(qnt.toPath());
     }
 
     @Override
@@ -134,7 +135,12 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public InputStream getRessourceAsStream(String path) throws CoreException {
+    public boolean containsResource(String path) {
+        return archive.contains(new Path(path));
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String path) {
         return archive.getResourceAsStream(path);
     }
 

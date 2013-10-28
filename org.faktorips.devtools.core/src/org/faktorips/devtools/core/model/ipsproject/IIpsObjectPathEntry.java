@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.io.InputStream;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -150,11 +151,29 @@ public interface IIpsObjectPathEntry {
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
 
     /**
+     * This method checks whether this entry has a resource with the specified path. The path is
+     * relative to the entry's resource root.
+     * 
+     * @param path The path of the requested resource
+     * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
+     *         not
+     */
+    public boolean containsResource(String path);
+
+    /**
      * Returns an {@link InputStream} that provides a resource's/file's contents. The given path is
      * interpreted as a relative path in respect to the path-entry's resource.
      * <p>
      * Callers of this method are responsible for closing the stream after use.
+     * <p>
+     * This method may throw a {@link RuntimeException} or {@link CoreRuntimeException} if there
+     * occur any exception while searching the requested resource. To avoid exceptions first check
+     * whether the resource exists in this entry by calling {@link #containsResource(String)}
+     * 
+     * @param path The path of the requested resource
+     * @return The {@link InputStream} of the resource. Make sure to close the input stream after
+     *         reading.
      */
-    public InputStream getRessourceAsStream(String path) throws CoreException;
+    public InputStream getResourceAsStream(String path);
 
 }

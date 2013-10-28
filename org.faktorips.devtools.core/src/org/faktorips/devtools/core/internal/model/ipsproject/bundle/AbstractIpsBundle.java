@@ -60,9 +60,9 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     /**
      * {@inheritDoc}
      * <p>
-     * For {@link IpsBundleEntry} this method always return false. First the jar bundle normally
-     * is located outside of the workspace, second we assume there are no changes in existing
-     * bundles while running the platform.
+     * For {@link IpsBundleEntry} this method always return false. First the jar bundle normally is
+     * located outside of the workspace, second we assume there are no changes in existing bundles
+     * while running the platform.
      */
     @Override
     public boolean isAffectedBy(IResourceDelta delta) {
@@ -126,26 +126,22 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     }
 
     @Override
-    public boolean contains(QualifiedNameType qnt) throws CoreException {
-        return getQNameTypes().contains(qnt);
+    public boolean contains(IPath path) {
+        return bundleContentIndex.getModelPath(path) != null;
     }
 
     @Override
-    public InputStream getContent(QualifiedNameType qnt) throws CoreException {
-        if (qnt == null) {
+    public InputStream getContent(IPath path) {
+        if (path == null) {
             return null;
         }
-        if (!contains(qnt)) {
-            return null;
-        }
-        IPath qntPath = qnt.toPath();
-        IPath rootFolder = getRootFolder(qntPath);
-        IPath entryPath = rootFolder.append(qntPath);
+        IPath rootFolder = getRootFolder(path);
+        IPath entryPath = rootFolder.append(path);
         return getResourceAsStream(entryPath);
     }
 
     @Override
-    public InputStream getResourceAsStream(String pathName) throws CoreException {
+    public InputStream getResourceAsStream(String pathName) {
         Path path = new Path(pathName);
         IPath rootFolder = getRootFolder(path);
         return getResourceAsStream(rootFolder.append(path));

@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
@@ -81,27 +82,29 @@ public interface IIpsStorage {
     public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException;
 
     /**
-     * Returns <code>true</code> if the archive contains the IPS object identified by the given
-     * qualified name type, otherwise <code>false</code>.
+     * Returns <code>true</code> if the storage contains the IPS object or resource identified by the given
+     * path, otherwise <code>false</code>.
      */
-    public boolean contains(QualifiedNameType qnt) throws CoreException;
+    public boolean contains(IPath path);
 
     /**
-     * Returns the content for the qualified name type or <code>null</code> if the archive does not
-     * contain the given qualified name type. Returns <code>null</code> if qnt is <code>null</code>.
+     * Returns the content for the path or <code>null</code> if the archive does not contain the
+     * given path. Returns <code>null</code> if path is <code>null</code>.
+     * <p>
+     * The path is relative to the ips object root.
      */
-    public InputStream getContent(QualifiedNameType qnt) throws CoreException;
+    public InputStream getContent(IPath path);
 
     /**
      * Returns the content of a file with the given path. Returns <code>null</code> if path is
      * <code>null</code>. Throws a CoreException if no Entry with the given path is found within
      * this {@link IIpsArchive}.
      * 
-     * @throws CoreException if no Entry with the given path is found within this
-     *             {@link IIpsArchive}, or if problems are encountert opening, reading or writing
+     * @throws CoreRuntimeException if no Entry with the given path is found within this
+     *             {@link IIpsArchive}, or if problems are encountered opening, reading or writing
      *             this archive.
      */
-    public InputStream getResourceAsStream(String path) throws CoreException;
+    public InputStream getResourceAsStream(String path);
 
     /**
      * Returns the name of the base package for the mergable artifacts (XML-Files, Java source

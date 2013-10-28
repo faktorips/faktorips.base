@@ -72,7 +72,9 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
-        if (getIpsStorage().contains(nameType)) {
+        if (getIpsStorage() == null || nameType == null) {
+            return null;
+        } else if (getIpsStorage().contains(nameType.toPath())) {
             return getIpsPackageFragmentRoot().getIpsPackageFragment(nameType.getPackageName()).getIpsSrcFile(
                     nameType.getFileName());
         } else {
@@ -117,4 +119,5 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     protected void setIpsPackageFragmentRoot(LibraryIpsPackageFragmentRoot packageFragmentRoot) {
         this.packageFragmentRoot = packageFragmentRoot;
     }
+
 }

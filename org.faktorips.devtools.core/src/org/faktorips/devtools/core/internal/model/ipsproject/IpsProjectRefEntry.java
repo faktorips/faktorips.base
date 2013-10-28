@@ -260,11 +260,16 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         return "ProjectRefEntry[" + (referencedIpsProject == null ? "null" : referencedIpsProject.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    @Override
+    public boolean containsResource(String path) {
+        return getReferencedIpsProject().containsResource(path);
+    }
+
     /**
      * Interprets the given path as project-relative path.
      */
     @Override
-    public InputStream getRessourceAsStream(String path) throws CoreException {
+    public InputStream getResourceAsStream(String path) {
         return getReferencedIpsProject().getResourceAsStream(path);
     }
 

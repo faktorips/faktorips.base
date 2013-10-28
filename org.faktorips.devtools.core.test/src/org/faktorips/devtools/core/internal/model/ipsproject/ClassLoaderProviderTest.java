@@ -229,7 +229,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         ResourcesPlugin.getWorkspace().run(runnable, null);
     }
 
-    class Listener implements IClasspathContentsChangeListener {
+    static class Listener implements IClasspathContentsChangeListener {
 
         private IJavaProject project = null;
 

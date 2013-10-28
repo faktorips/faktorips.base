@@ -14,8 +14,10 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +45,7 @@ import org.w3c.dom.NodeList;
  */
 public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
+    private static final String MY_RESOURCE_PATH = "myResourcePath";
     private IIpsProject ipsProject;
     private IpsObjectPath path;
 
@@ -223,7 +226,23 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     private String getFileContent(String rootName, String fileName) throws CoreException, IOException {
-        InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName).getRessourceAsStream(fileName);
+        InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName).getResourceAsStream(fileName);
         return getFileContent(aStream);
     }
+
+    @Test
+    public void testContainsResource_true() throws Exception {
+        IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
+        createFileWithContent((IFolder)root.getCorrespondingResource(), MY_RESOURCE_PATH, "asdfasf");
+
+        assertTrue(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
+    }
+
+    @Test
+    public void testContainsResource_false() throws Exception {
+        IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
+
+        assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
+    }
+
 }

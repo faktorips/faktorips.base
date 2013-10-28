@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.exception;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * The {@link CoreRuntimeException} is intended to replace the {@link CoreException}. Checked
@@ -40,6 +41,14 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(CoreException cause) {
         super(cause);
+    }
+
+    /**
+     * Constructor that wraps a status in a {@link CoreRuntimeException} by creating a new
+     * {@link CoreException} internally.
+     */
+    public CoreRuntimeException(IStatus status) {
+        super(new CoreException(status));
     }
 
     public CoreRuntimeException(String message, CoreException cause) {

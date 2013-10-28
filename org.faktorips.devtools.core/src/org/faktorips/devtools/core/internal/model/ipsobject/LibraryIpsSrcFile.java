@@ -19,8 +19,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
+import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
@@ -87,13 +87,13 @@ public class LibraryIpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public InputStream getContentFromEnclosingResource() throws CoreException {
+    public InputStream getContentFromEnclosingResource() {
         LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getIpsPackageFragment().getRoot();
         IIpsStorage storage = root.getIpsStorage();
         if (storage == null) {
             return null;
         }
-        return storage.getContent(getQualifiedNameType());
+        return storage.getContent(getQualifiedNameType().toPath());
     }
 
     @Override
