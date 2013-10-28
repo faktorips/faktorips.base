@@ -83,7 +83,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.configElement = configElement;
         this.shell = shell;
-        getTextControl().setEditable(false);
+        getTextControl().setEditable(true);
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
     }
 

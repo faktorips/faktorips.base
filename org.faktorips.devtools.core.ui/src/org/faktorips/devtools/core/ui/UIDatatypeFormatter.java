@@ -78,7 +78,7 @@ public class UIDatatypeFormatter {
             EnumValueSet enumValueSet = (EnumValueSet)valueSet;
             ValueDatatype type = enumValueSet.getValueDatatype();
             StringBuffer buffer = new StringBuffer();
-            buffer.append("["); //$NON-NLS-1$
+            // buffer.append("["); //$NON-NLS-1$
             for (String id : enumValueSet.getValues()) {
                 String formatedEnumText = formatValue(type, id);
                 buffer.append(formatedEnumText);
@@ -90,7 +90,7 @@ public class UIDatatypeFormatter {
                  */
                 buffer.delete(buffer.length() - 3, buffer.length());
             }
-            buffer.append("]"); //$NON-NLS-1$
+            // buffer.append("]"); //$NON-NLS-1$
             return buffer.toString();
         } else if (valueSet instanceof IRangeValueSet) {
             RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
@@ -106,7 +106,7 @@ public class UIDatatypeFormatter {
             }
             return sb.toString();
         } else if (valueSet instanceof IUnrestrictedValueSet) {
-            return "[" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + ""; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return ""; //$NON-NLS-1$
     }

@@ -39,8 +39,9 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueSetField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueSetFormat;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -229,7 +230,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
-        PreviewTextButtonField editField = new PreviewTextButtonField(valueSetControl);
+        ValueSetField editField = new ValueSetField(valueSetControl, ValueSetFormat.newInstance(getPropertyValue()));
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
