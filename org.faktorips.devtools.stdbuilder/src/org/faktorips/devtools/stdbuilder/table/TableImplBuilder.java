@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -69,6 +70,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private final static String KEY_CLASS_CONSTRUCTOR_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_CONSTRUCTOR_JAVADOC";
     private final static String ADD_ROW_JAVADOC = "TABLE_IMPL_BUILDER_ADD_ROW_JAVADOC";
     private final static String INIT_KEY_MAPS_JAVADOC = "TABLE_IMPL_BUILDER_INIT_KEY_MAPS_JAVADOC";
+    private final static String FIND_EXISTING_ROW = "FIND_EXISTING_ROW_EXCEPTION_MESSAGE";
+    private final static String FIND_EXISTING_ROW_JAVADOC = "TABLE_IMPL_BUILDER_FIND_EXISTING_ROW_JAVADOC";
 
     private final static String INIT_KEY_MAPS = "initKeyMaps";
 
@@ -495,6 +498,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             createFindMethodWithNullValueRow(methodName.toString(), qualifiedTableRowName,
                     fAllItemParameterTypes.get(i), fAllItemNamesAsParameters.get(i), fKeyClassParameterNames.get(i),
                     fKeyVariableNames[i], fKeyClassNames[i], keys[i], codeBuilder);
+            createFindMethodWithIllegalArgumentException(methodName.toString(), qualifiedTableRowName,
+                    fAllItemParameterTypes.get(i), fAllItemNamesAsParameters.get(i), codeBuilder);
         }
     }
 
@@ -897,6 +902,66 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0]);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
+    }
+
+    private void createFindMethodWithIllegalArgumentException(String methodName,
+            String returnTypeName,
+            String[] parameterTypes,
+            String[] parameterNames,
+            JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+        JavaCodeFragment methodBody = new JavaCodeFragment();
+        methodName = "findExistingRow";
+
+        String exceptionMessage = NLS.bind(getLocalizedText(getIpsProject(), FIND_EXISTING_ROW),
+                getUnqualifiedClassName(), parameterNames[0]);
+        String javaDocMessage = NLS.bind(getLocalizedText(getIpsProject(), FIND_EXISTING_ROW_JAVADOC),
+                parameterNames[0], tableRowBuilder.getUnqualifiedClassName(getIpsSrcFile()));
+
+        methodBody.appendClassName(qualifiedTableRowName);
+        methodBody.append(" row = ");
+        methodBody.append("findRowNullRowReturnedForEmtpyResult( ");
+        for (int i = 0; i < parameterNames.length; i++) {
+            methodBody.append(parameterNames[i]);
+            if (i < parameterNames.length - 1) {
+                methodBody.append(", ");
+            }
+        }
+        methodBody.append(");");
+        methodBody.appendln();
+        methodBody.append("if(row ==");
+        methodBody.appendClassName(qualifiedTableRowName);
+        methodBody.append(".");
+        methodBody.append(tableRowBuilder.getFieldNameForNullRow());
+        methodBody.append(")");
+        methodBody.appendOpenBracket();
+        methodBody.append("throw new ");
+        methodBody.appendClassName(IllegalArgumentException.class);
+        methodBody.append("(\"");
+        methodBody.append(exceptionMessage);
+        methodBody.append(" ");
+        for (int i = 0; i < parameterNames.length; i++) {
+            methodBody.append(parameterNames[i]);
+            if (i < parameterNames.length - 1) {
+                methodBody.append(", ");
+            }
+        }
+        methodBody.append(" \" + ");
+        for (int i = 0; i < parameterNames.length; i++) {
+            methodBody.append(parameterNames[i]);
+            if (i < parameterNames.length - 1) {
+                methodBody.append(" + ");
+                methodBody.append("\", \"");
+                methodBody.append(" + ");
+            }
+        }
+        methodBody.append(");");
+        methodBody.appendCloseBracket();
+        methodBody.append("else");
+        methodBody.appendOpenBracket();
+        methodBody.appendln("return row;");
+        methodBody.appendCloseBracket();
+        codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName, parameterNames, parameterTypes, methodBody,
+                javaDocMessage, ANNOTATION_GENERATED);
     }
 
     private void createFindMethodWithNullValueRow(String methodName,
