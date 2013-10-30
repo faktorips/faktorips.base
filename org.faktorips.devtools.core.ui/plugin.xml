@@ -14,6 +14,7 @@
    <extension-point id="productCmptPropertyFilter" name="Product Component Property Filter" schema="schema/productCmptPropertyFilter.exsd"/>
    <extension-point id="deepCopyWizard" name="Deep Copy Wizard" schema="schema/deepCopyWizard.exsd"/>
    <extension-point id="modelStructureContentProvider" name="modelStructureContentProvider" schema="schema/modelStructureContentProvider.exsd"/>
+   <extension-point id="inputFormat" name="Input Format" schema="schema/inputFormat.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -3013,4 +3014,32 @@
           primary="true">
     </toc>
  </extension>
+ <extension
+         id="inputFormat"
+         name="Input Format"
+         point="org.faktorips.devtools.core.ui.inputFormat">
+         <inputformat
+               class="org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat">
+	        <datatype class="org.faktorips.datatype.classtypes.DecimalDatatype" />
+	        <datatype class="org.faktorips.datatype.classtypes.DoubleDatatype" />
+	        <datatype class="org.faktorips.datatype.classtypes.BigDecimalDatatype" />
+        </inputformat>
+        
+         <inputformat
+               class="org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat">
+	        <datatype class="org.faktorips.datatype.classtypes.IntegerDatatype" />
+	        <datatype class="org.faktorips.datatype.classtypes.LongDatatype" />
+        </inputformat>
+        
+         <inputformat
+               class="org.faktorips.devtools.core.ui.controller.fields.MoneyFormat">
+	        <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
+        </inputformat>       
+        
+        <inputformat
+               class="org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat">
+	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
+	        <datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
+        </inputformat>
+   </extension> 
 </plugin>

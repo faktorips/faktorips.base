@@ -118,6 +118,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
+import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
@@ -151,6 +152,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <tt>extensionPropertyEditFieldFactory</tt>.
      */
     public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
+
+    /**
+     * The simple extension point id of the extension point <tt>inputFormat</tt>.
+     */
+    public final static String EXTENSION_POINT_INPUT_FORMAT = "inputFormat"; //$NON-NLS-1$
 
     /**
      * The simple extension point id of the extension point <tt>extensionPropertySectionFactory</tt>
@@ -203,6 +209,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private static IpsUIPlugin plugin;
 
     private static IExtensionRegistry registry;
+
+    private List<IInputFormat<?>> inputFormatDatatypes;
 
     private static List<IWorkbenchAdapterProvider> workbenchAdapterProviders;
 
@@ -264,6 +272,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         productCmptDnDHandler = initProductCmptDnDHandler();
+        // inputFormatDatatypes = initInputFormatter();
         controlFactories = initValueDatatypeControlFactories();
         defaultControlFactory = new DefaultControlFactory();
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
@@ -325,6 +334,22 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
         return dndHandler;
     }
+
+    // private Map<String, ValueClassDatatype> initInputFormatter() {
+    // Map<String, ValueClassDatatype> map = new HashMap<String, ValueClassDatatype>();
+    // ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
+    //        IExtension[] extensions = extensionPoints.getExtension("inputFormat"); //$NON-NLS-1$
+    // for (IExtension extension : extensions) {
+    // IConfigurationElement[] configElements = extension.getConfigurationElements();
+    // for (IConfigurationElement configElement : configElements) {
+    // String inputFormater = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
+    // for (IConfigurationElement datatypeElement : configElement.getChildren()) {
+    // map.put(inputFormater, datatypeElement.getAttribute(CONFIG_PROPERTY_CLASS));
+    // }
+    // }
+    // }
+    // return map;
+    // }
 
     private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws InvalidRegistryObjectException,
             CoreException {
@@ -429,6 +454,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             }
         }
         return defaultControlFactory;
+    }
+
+    public List<IInputFormat<?>> getInputFormatDatatypes() {
+        return inputFormatDatatypes;
+
     }
 
     /**

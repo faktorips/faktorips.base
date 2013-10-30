@@ -50,24 +50,20 @@ import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
  * 
  * @author Stefan Widmaier
  */
-public abstract class AbstractInputFormat<T> implements VerifyListener {
+public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFormat<T> {
 
     /**
-     * Calls the initFormat with the input locale configured in the preferences.
+     * {@inheritDoc}
      */
+    @Override
     public void initFormat() {
         initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
     }
 
     /**
-     * Parses a string to a value object. Supports the FIPS null-Presentation mechanism.
-     * 
-     * @param stringToBeParsed the String typed by the user that will be parsed to a value of the
-     *            data type this format adheres to.
-     * @param supportNull whether or not this method should return <code>null</code> if the string
-     *            matches the null-presentation value.
-     * @return the value object that was parsed from the users input
+     * {@inheritDoc}
      */
+    @Override
     public T parse(String stringToBeParsed, boolean supportNull) {
         if (supportNull && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed)) {
             return null;
@@ -77,14 +73,9 @@ public abstract class AbstractInputFormat<T> implements VerifyListener {
     }
 
     /**
-     * Returns a formatted string for the given value object. Supports the FIPS null-Presentation
-     * mechanism.
-     * 
-     * @param objectValue the value to be formatted for display
-     * @param supportNull whether or not this method should return null-presentation value in case
-     *            the given object value is <code>null</code>.
-     * @return the formatted string representing the given value
+     * {@inheritDoc}
      */
+    @Override
     public String format(T objectValue, boolean supportNull) {
         if (objectValue == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
@@ -103,25 +94,17 @@ public abstract class AbstractInputFormat<T> implements VerifyListener {
     }
 
     /**
-     * Parses a string to a value object. Semantically equivalent to parse(String stringToBeparsed,
-     * true).
-     * 
-     * @param stringToBeparsed the String typed by the user that will be parsed to a value of the
-     *            data type this format adheres to.
-     * @return the value object that was parsed from the users input
+     * {@inheritDoc}
      */
+    @Override
     public T parse(String stringToBeparsed) {
         return parse(stringToBeparsed, true);
     }
 
     /**
-     * 
-     * Returns a formatted string for the given value object. Semantically equivalent to
-     * format(Object objectValue, true).
-     * 
-     * @param objectValue the value to be formatted for display
-     * @return the formatted string representing the given value
+     * {@inheritDoc}
      */
+    @Override
     public String format(T objectValue) {
         return format(objectValue, true);
     }
