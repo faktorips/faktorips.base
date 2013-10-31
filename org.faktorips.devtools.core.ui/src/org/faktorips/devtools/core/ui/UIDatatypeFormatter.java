@@ -47,6 +47,9 @@ public class UIDatatypeFormatter {
      * @param value The value as string
      */
     public String formatValue(ValueDatatype datatype, String value) {
+
+        // IpsUIPlugin.getDefault().getInputFormatter().getInputFormat(datatype).format(value);
+
         if (value == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }

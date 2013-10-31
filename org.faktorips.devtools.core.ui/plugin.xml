@@ -3019,12 +3019,12 @@
          name="Input Format"
          point="org.faktorips.devtools.core.ui.inputFormat">
          <inputformat
-               class="org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat">
+               class="org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.DecimalDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.DoubleDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.BigDecimalDatatype" />
         </inputformat>
-        
+        <!--
          <inputformat
                class="org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat">
 	        <datatype class="org.faktorips.datatype.classtypes.IntegerDatatype" />
@@ -3041,5 +3041,6 @@
 	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
         </inputformat>
+        -->
    </extension> 
 </plugin>
