@@ -24,6 +24,10 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
 
     private boolean timeInfoIncluded;
 
+    public GregorianCalendarDatatype() {
+        super(GregorianCalendarDatatype.class);
+    }
+
     public GregorianCalendarDatatype(String name, boolean timeInfoIncluded) {
         super(GregorianCalendar.class, name);
     }

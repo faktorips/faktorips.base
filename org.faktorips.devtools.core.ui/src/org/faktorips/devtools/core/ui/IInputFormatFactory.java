@@ -16,7 +16,16 @@ package org.faktorips.devtools.core.ui;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 
+/**
+ * IInputFormatFactory registered with the <i>inputFormat</i> extension point.
+ * 
+ */
+
 public interface IInputFormatFactory<T extends Object> {
 
+    /**
+     * Instantiate a specific Datatype with respect to the provided datatype. It is in the
+     * responsibility of the factory provider if the datatype is considered.
+     */
     public IInputFormat<T> newInputFormat(ValueDatatype datatype);
 }

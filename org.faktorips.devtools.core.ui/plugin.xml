@@ -3024,23 +3024,22 @@
 	        <datatype class="org.faktorips.datatype.classtypes.DoubleDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.BigDecimalDatatype" />
         </inputformat>
-        <!--
+        
          <inputformat
-               class="org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat">
+               class="org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.IntegerDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.LongDatatype" />
         </inputformat>
         
+        <inputformat
+               class="org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormatFactory">
+	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
+	       	<datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
+        </inputformat>
          <inputformat
-               class="org.faktorips.devtools.core.ui.controller.fields.MoneyFormat">
+               class="org.faktorips.devtools.core.ui.controller.fields.MoneyFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
         </inputformat>       
-        
-        <inputformat
-               class="org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat">
-	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
-	        <datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
-        </inputformat>
-        -->
+       
    </extension> 
 </plugin>

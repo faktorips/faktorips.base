@@ -17,14 +17,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.IInputFormatFactory;
 
 /**
- * Factory that creates a DecimalNumberFormat for a Datatype
+ * Factory that creates an IntegerNumberFormatFactory for a Datatype
  * 
  */
-public class DecimalNumberFormatFactory implements IInputFormatFactory<String> {
+public class IntegerNumberFormatFactory implements IInputFormatFactory<String> {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        return DecimalNumberFormat.newInstance(datatype);
+        return IntegerNumberFormat.newInstance(datatype);
     }
 
 }
