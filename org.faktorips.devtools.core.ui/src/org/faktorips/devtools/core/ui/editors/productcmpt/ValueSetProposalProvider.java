@@ -20,8 +20,10 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.ui.dialogs.SearchPattern;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class ValueSetProposalProvider implements IContentProposalProvider {
@@ -30,33 +32,57 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
 
     private final IConfigElement configElement;
 
+    private final IpsPreferences ipsPreferences;
+
     private SearchPattern searchPattern = new SearchPattern();
 
-    public ValueSetProposalProvider(IConfigElement propertyValue) {
+    public ValueSetProposalProvider(IConfigElement propertyValue, IpsPreferences ipsPreferences) {
         this.configElement = propertyValue;
+        this.ipsPreferences = ipsPreferences;
     }
 
-    private EnumValueSet getValueSet() {
-        return (EnumValueSet)this.configElement.getValueSet();
+    private IValueSet getValueSet() {
+        return this.configElement.getValueSet();
+    }
+
+    private EnumValueSet getEnumValueSet() {
+        return (EnumValueSet)getValueSet();
+    }
+
+    private boolean isEnumDatatype() {
+        return getEnumValueSet().getValueDatatype().isEnum();
+    }
+
+    private String getEnumDatatypeFormatValue(String value) {
+        return ipsPreferences.getDatatypeFormatter().formatValue(getEnumValueSet().getValueDatatype(), value);
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        String prefix = StringUtils.left(contents, position);
-        String identifier = getLastIdentifier(prefix);
-        boolean needSeparator = needSeparator(prefix, identifier);
-        List<String> splitList = getContentAsList(contents);
+        if (getValueSet() instanceof EnumValueSet) {
+            String prefix = StringUtils.left(contents, position);
+            String identifier = getLastIdentifier(prefix);
+            boolean needSeparator = needSeparator(prefix, identifier);
+            boolean isEnumDatatype = isEnumDatatype();
 
-        searchPattern.setPattern(identifier);
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
-        for (String value : getValueSet().getValuesAsList()) {
-            if (!splitList.contains(value) && searchPattern.matches(value)) {
-                ContentProposal contentProposal = new ContentProposal(addSeparatorIfNecessary(value, needSeparator),
-                        value, null, identifier);
-                result.add(contentProposal);
+            List<String> splitList = getContentAsList(contents);
+
+            searchPattern.setPattern(identifier);
+            List<IContentProposal> result = new ArrayList<IContentProposal>();
+            for (String value : getEnumValueSet().getValuesAsList()) {
+                String content = value;
+                if (isEnumDatatype) {
+                    content = getEnumDatatypeFormatValue(value);
+                }
+                if (!splitList.contains(content) && searchPattern.matches(content)) {
+                    ContentProposal contentProposal = new ContentProposal(addSeparatorIfNecessary(content,
+                            needSeparator), content, null, identifier);
+                    result.add(contentProposal);
+                }
             }
+            return result.toArray(new IContentProposal[result.size()]);
         }
-        return result.toArray(new IContentProposal[result.size()]);
+        return new IContentProposal[0];
     }
 
     private List<String> getContentAsList(String contents) {

@@ -244,8 +244,10 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
             } catch (final ParseException e) {
                 throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
             }
+            ValueSetProposalProvider proposalProvider = new ValueSetProposalProvider(getPropertyValue(), IpsPlugin
+                    .getDefault().getIpsPreferences());
             contentProposalAdapter = new ContentProposalAdapter(valueSetControl.getTextControl(),
-                    new TextContentAdapter(), new ValueSetProposalProvider(getPropertyValue()), keyStroke, null);
+                    new TextContentAdapter(), proposalProvider, keyStroke, null);
 
             contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
             contentProposalListener = new ContentProposalListener(contentProposalAdapter);
