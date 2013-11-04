@@ -918,11 +918,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 getExceptionMessage(parameterNames));
 
         codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName, parameterNames, parameterTypes, methodBody,
-                getJavaDocMessage(parameterNames), ANNOTATION_GENERATED);
+                getJavaDocMessage(), ANNOTATION_GENERATED);
     }
 
-    private String getJavaDocMessage(String[] parameterNames) throws CoreException {
-        return NLS.bind(getLocalizedText(getIpsProject(), FIND_EXISTING_ROW_JAVADOC), parameterNames[0],
+    private String getJavaDocMessage() throws CoreException {
+        return NLS.bind(getLocalizedText(getIpsProject(), FIND_EXISTING_ROW_JAVADOC),
                 tableRowBuilder.getUnqualifiedClassName(getIpsSrcFile()));
     }
 
@@ -962,17 +962,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(" ");
         for (int i = 0; i < parameterNames.length; i++) {
             methodBody.append(parameterNames[i]);
-            if (i < parameterNames.length - 1) {
-                methodBody.append(", ");
-            }
-        }
-        methodBody.append(" = \" + ");
-        for (int i = 0; i < parameterNames.length; i++) {
+            methodBody.append(" = \" + ");
             methodBody.append(parameterNames[i]);
             if (i < parameterNames.length - 1) {
                 methodBody.append(" + ");
-                methodBody.append("\", \"");
-                methodBody.append(" + ");
+                methodBody.append("\", ");
             }
         }
         methodBody.append(");");
