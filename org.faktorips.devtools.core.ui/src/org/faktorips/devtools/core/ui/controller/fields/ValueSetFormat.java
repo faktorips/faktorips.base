@@ -86,7 +86,7 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
             } else if (stringToBeParsed.contains("<unrestriced>")) { //$NON-NLS-1$
                 return createNewUnrestrictedValueSet();
             }
-            String[] split = stringToBeParsed.trim().split("\\" + UIDatatypeFormatter.VALUESET_SEPARATOR); //$NON-NLS-1$
+            String[] split = stringToBeParsed.split("\\" + UIDatatypeFormatter.VALUESET_SEPARATOR); //$NON-NLS-1$
             List<String> parseValues = parseAndFormatValues(split);
             if (!isEqualContent(parseValues)) {
                 // neues ValueSet anlegen
