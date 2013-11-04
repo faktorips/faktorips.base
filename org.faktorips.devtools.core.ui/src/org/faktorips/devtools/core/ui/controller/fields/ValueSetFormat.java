@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
@@ -27,10 +29,9 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
-
-    private static final String VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
 
     private final IConfigElement configElement;
 
@@ -46,6 +47,10 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private IValueSet getValueSet() {
         return this.configElement.getValueSet();
+    }
+
+    private List<String> getValuesAsList() {
+        return ((EnumValueSet)getValueSet()).getValuesAsList();
     }
 
     private ValueDatatype getDatatype() {
@@ -78,27 +83,47 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
             } else if (stringToBeParsed.contains("<unrestriced>")) { //$NON-NLS-1$
                 return createNewUnrestrictedValueSet();
             }
-            String[] split = stringToBeParsed.trim().split("\\" + VALUESET_SEPARATOR); //$NON-NLS-1$
-            // neues ValueSet anlegen
-            EnumValueSet enumValueSet = createNewEmptyEnumValueSet();
-            for (String value : split) {
-                // Formater holen und parse aufrufen
-                // rückgabewert ist neues Value
-                enumValueSet.addValueWithoutTriggeringChangeEvent(parseWithFormater(value));
+            String[] split = stringToBeParsed.trim().split("\\" + UIDatatypeFormatter.VALUESET_SEPARATOR); //$NON-NLS-1$
+            List<String> parseValues = parseAndFormatValues(split);
+            if (!isEqualContent(parseValues)) {
+                // neues ValueSet anlegen
+                EnumValueSet enumValueSet = createNewEmptyEnumValueSet();
+                for (String value : parseValues) {
+                    enumValueSet.addValueWithoutTriggeringChangeEvent(value);
+                }
+                return enumValueSet;
             }
-            return enumValueSet;
         }
         return getValueSet();
     }
 
+    private List<String> parseAndFormatValues(String[] split) {
+        List<String> parseValues = new ArrayList<String>();
+        for (String value : split) {
+            parseValues.add(parseWithFormater(value.trim()));
+        }
+        return parseValues;
+    }
+
+    /*
+     * Formater holen und parse aufrufen rückgabewert ist neues Value
+     */
     private String parseWithFormater(String value) {
         // Datatype and value an Formater
-        return value.trim();
+        return value;
+    }
+
+    private boolean isEqualContent(List<String> parseValues) {
+        return getValuesAsList().equals(parseValues);
     }
 
     private EnumValueSet createNewEmptyEnumValueSet() {
-        EnumValueSet valueSet = new EnumValueSet((IIpsObjectPart)getValueSet().getParent(), getValueSet().getId());
+        EnumValueSet valueSet = new EnumValueSet((IIpsObjectPart)getValueSet().getParent(), getNextPartId());
         return valueSet;
+    }
+
+    private String getNextPartId() {
+        return UUID.randomUUID().toString();
     }
 
     private UnrestrictedValueSet createNewUnrestrictedValueSet() {

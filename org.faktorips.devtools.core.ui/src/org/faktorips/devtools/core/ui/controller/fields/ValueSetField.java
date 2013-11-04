@@ -34,4 +34,9 @@ public class ValueSetField extends FormattingTextField<IValueSet> {
     public Control getControl() {
         return valueSetControl;
     }
+
+    @Override
+    public boolean isTextContentParsable() {
+        return true;
+    }
 }

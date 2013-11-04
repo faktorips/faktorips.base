@@ -37,6 +37,8 @@ import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
 
 public class UIDatatypeFormatter {
 
+    public static final String VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
+
     /**
      * Formats the given value according to the user preferences.
      * <p>
@@ -85,7 +87,7 @@ public class UIDatatypeFormatter {
             for (String id : enumValueSet.getValues()) {
                 String formatedEnumText = formatValue(type, id);
                 buffer.append(formatedEnumText);
-                buffer.append(" | "); //$NON-NLS-1$
+                buffer.append(" " + VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
             }
             if (buffer.length() > 3) {
                 /*

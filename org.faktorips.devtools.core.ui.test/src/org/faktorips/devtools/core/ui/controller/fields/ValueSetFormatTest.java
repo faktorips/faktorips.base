@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -80,7 +81,7 @@ public class ValueSetFormatTest {
         assertNotNull(parseInternal);
         assertTrue(parseInternal instanceof EnumValueSet);
         assertEquals(parent, parseInternal.getParent());
-        assertEquals("ID", parseInternal.getId());
+        assertFalse(parseInternal.getId().equals("ID"));
     }
 
     @Test
@@ -96,17 +97,34 @@ public class ValueSetFormatTest {
     }
 
     @Test
-    public void testParseInternalEnumValueSet() {
+    public void testParseInternalNewEnumValueSet() {
         IValueSet parseInternal = format.parseInternal("test | test2");
+        enumValueSet.addValueWithoutTriggeringChangeEvent("test | test1");
 
         assertNotNull(parseInternal);
         assertTrue(parseInternal instanceof EnumValueSet);
         EnumValueSet enumVS = (EnumValueSet)parseInternal;
         assertEquals(parent, enumVS.getParent());
-        assertEquals("ID", enumVS.getId());
+        assertFalse(parseInternal.getId().equals("ID"));
         assertEquals(2, enumVS.getValuesAsList().size());
         assertEquals("test", enumVS.getValue(0));
         assertEquals("test2", enumVS.getValue(1));
+    }
+
+    @Test
+    public void testParseInternalOldEnumValueSet() {
+        enumValueSet.addValueWithoutTriggeringChangeEvent("test");
+        enumValueSet.addValueWithoutTriggeringChangeEvent("test1");
+        IValueSet parseInternal = format.parseInternal("test | test1");
+
+        assertNotNull(parseInternal);
+        assertTrue(parseInternal instanceof EnumValueSet);
+        EnumValueSet enumVS = (EnumValueSet)parseInternal;
+        assertEquals(parent, enumVS.getParent());
+        assertTrue(parseInternal.getId().equals("ID"));
+        assertEquals(2, enumVS.getValuesAsList().size());
+        assertEquals("test", enumVS.getValue(0));
+        assertEquals("test1", enumVS.getValue(1));
     }
 
 }
