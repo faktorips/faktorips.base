@@ -56,7 +56,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         assertEquals(IStatus.WARNING, status.getSeverity());
 
-        verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
+        verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
     }
 
@@ -85,7 +85,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         assertTrue(result.isOK());
 
-        verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
+        verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
     }
 
@@ -101,7 +101,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
         srcFiles.add(ipsSrcFile);
-        when(root.findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
+        when(root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
 
         when(policyCmptType.getQualifiedName()).thenReturn("testPolicy");
         when(ipsSrcFile.getIpsObject()).thenReturn(policyCmptType);
@@ -123,7 +123,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         assertTrue(result.toString(), result.isOK());
         assertEquals(new LocalizedString(Locale.GERMAN, "TestMessage"), rule.getMessageText().get(Locale.GERMAN));
 
-        verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
+        verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
     }
 
@@ -136,7 +136,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         when(ipsSrcFile.isMutable()).thenReturn(true);
         List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
         srcFiles.add(ipsSrcFile);
-        when(root.findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
+        when(root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
 
         when(policyCmptType.getQualifiedName()).thenReturn("testPolicy");
         when(ipsSrcFile.getIpsObject()).thenReturn(policyCmptType);
@@ -157,7 +157,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         assertTrue(illegalMessageStatus.isMultiStatus());
         assertEquals(1, ((MultiStatus)illegalMessageStatus).getChildren().length);
 
-        verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
+        verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
     }
 
@@ -171,7 +171,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         when(ipsSrcFile.isMutable()).thenReturn(true);
         List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
         srcFiles.add(ipsSrcFile);
-        when(root.findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
+        when(root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
 
         when(policyCmptType.getQualifiedName()).thenReturn("testPolicy");
         when(ipsSrcFile.getIpsObject()).thenReturn(policyCmptType);
@@ -197,7 +197,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         assertTrue(missingMessageStatus.isMultiStatus());
         assertEquals(1, ((MultiStatus)missingMessageStatus).getChildren().length);
 
-        verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
+        verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
     }
 }
