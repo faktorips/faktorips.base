@@ -20,11 +20,12 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,13 +39,15 @@ public class ValueSetProposalProviderTest {
     @Mock
     private IConfigElement parent;
     @Mock
-    private IpsPreferences ipsPreferences;
+    private UIDatatypeFormatter uiDatatypeFormatter;
     @Mock
     private ValueDatatype enumValueDatatype;
     @Mock
     private UnrestrictedValueSet unrestrictedValueSet;
     @Mock
-    private DatatypeFormatter datatypeFormatter;
+    private IIpsProject ipsProject;
+    @Mock
+    private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
     private ValueSetProposalProvider valueSetProposalProvider;
 
@@ -52,11 +55,17 @@ public class ValueSetProposalProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        valueSetProposalProvider = new ValueSetProposalProvider(propertyValue, ipsPreferences);
+        valueSetProposalProvider = new ValueSetProposalProvider(propertyValue, uiDatatypeFormatter);
         enumValueSet = new EnumValueSet(parent, "ID");
         when(propertyValue.getValueSet()).thenReturn(enumValueSet);
         when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
         when(enumValueDatatype.isEnum()).thenReturn(false);
+        when(propertyValue.getIpsProject()).thenReturn(ipsProject);
+        when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
+        when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("aaaaa");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("bbbbb");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("ccccc");
     }
 
     @Test
@@ -147,10 +156,9 @@ public class ValueSetProposalProviderTest {
         enumValueSet.addValueWithoutTriggeringChangeEvent("a");
         enumValueSet.addValueWithoutTriggeringChangeEvent("b");
         enumValueSet.addValueWithoutTriggeringChangeEvent("c");
-        when(ipsPreferences.getDatatypeFormatter()).thenReturn(datatypeFormatter);
-        when(datatypeFormatter.formatValue(enumValueDatatype, "a")).thenReturn("aname (a)");
-        when(datatypeFormatter.formatValue(enumValueDatatype, "b")).thenReturn("bname (b)");
-        when(datatypeFormatter.formatValue(enumValueDatatype, "c")).thenReturn("cname (c)");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "a")).thenReturn("aname (a)");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "b")).thenReturn("bname (b)");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "c")).thenReturn("cname (c)");
 
         when(enumValueDatatype.isEnum()).thenReturn(true);
 
@@ -172,6 +180,7 @@ public class ValueSetProposalProviderTest {
         enumValueSet.addValueWithoutTriggeringChangeEvent("aaaaa");
         enumValueSet.addValueWithoutTriggeringChangeEvent("bbbbb");
         enumValueSet.addValueWithoutTriggeringChangeEvent("ccccc");
+
     }
 
 }

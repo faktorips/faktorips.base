@@ -16,6 +16,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -71,6 +75,10 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      */
     private IEnumValueSetProvider enumValueSetProvider;
 
+    private ContentProposalAdapter contentProposalAdapter;
+
+    private ContentProposalListener contentProposalListener;
+
     /**
      * Creates a new control to show and edit the value set owned by the config element.
      * 
@@ -85,6 +93,26 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         this.shell = shell;
         getTextControl().setEditable(true);
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
+        initContentAssistent();
+    }
+
+    private void initContentAssistent() {
+        if (this.configElement.getValueSet().isEnum()) {
+            KeyStroke keyStroke = null;
+            try {
+                keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+            } catch (final ParseException e) {
+                throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
+            }
+            ValueSetProposalProvider proposalProvider = new ValueSetProposalProvider(this.configElement, IpsUIPlugin
+                    .getDefault().getDatatypeFormatter());
+            contentProposalAdapter = new ContentProposalAdapter(this.getTextControl(), new TextContentAdapter(),
+                    proposalProvider, keyStroke, null);
+
+            contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
+            contentProposalListener = new ContentProposalListener(contentProposalAdapter);
+            contentProposalAdapter.addContentProposalListener(contentProposalListener);
+        }
     }
 
     @Override
@@ -186,4 +214,11 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         return enumValueSetProvider;
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (contentProposalAdapter != null) {
+            contentProposalAdapter.removeContentProposalListener(contentProposalListener);
+        }
+    }
 }

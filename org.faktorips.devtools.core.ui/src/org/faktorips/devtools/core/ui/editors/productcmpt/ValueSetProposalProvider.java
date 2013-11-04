@@ -14,66 +14,50 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.ui.dialogs.SearchPattern;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class ValueSetProposalProvider implements IContentProposalProvider {
 
-    private static final String SPLIT_SEPERATOR = "|"; //$NON-NLS-1$
-
     private final IConfigElement configElement;
 
-    private final IpsPreferences ipsPreferences;
+    private final UIDatatypeFormatter uiDatatypeFormatter;
 
     private SearchPattern searchPattern = new SearchPattern();
 
-    public ValueSetProposalProvider(IConfigElement propertyValue, IpsPreferences ipsPreferences) {
+    public ValueSetProposalProvider(IConfigElement propertyValue, UIDatatypeFormatter uiDatatypeFormatter) {
         this.configElement = propertyValue;
-        this.ipsPreferences = ipsPreferences;
-    }
-
-    private IValueSet getValueSet() {
-        return this.configElement.getValueSet();
-    }
-
-    private EnumValueSet getEnumValueSet() {
-        return (EnumValueSet)getValueSet();
-    }
-
-    private boolean isEnumDatatype() {
-        return getEnumValueSet().getValueDatatype().isEnum();
-    }
-
-    private String getEnumDatatypeFormatValue(String value) {
-        return ipsPreferences.getDatatypeFormatter().formatValue(getEnumValueSet().getValueDatatype(), value);
+        this.uiDatatypeFormatter = uiDatatypeFormatter;
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        if (getValueSet() instanceof EnumValueSet) {
+        if (getValueSet() instanceof IEnumValueSet) {
             String prefix = StringUtils.left(contents, position);
             String identifier = getLastIdentifier(prefix);
             boolean needSeparator = needSeparator(prefix, identifier);
-            boolean isEnumDatatype = isEnumDatatype();
 
             List<String> splitList = getContentAsList(contents);
 
             searchPattern.setPattern(identifier);
             List<IContentProposal> result = new ArrayList<IContentProposal>();
-            for (String value : getEnumValueSet().getValuesAsList()) {
-                String content = value;
-                if (isEnumDatatype) {
-                    content = getEnumDatatypeFormatValue(value);
-                }
+            for (String value : getAllowedValuesAsList()) {
+                String content = getFormatValue(value);
                 if (!splitList.contains(content) && searchPattern.matches(content)) {
                     ContentProposal contentProposal = new ContentProposal(addSeparatorIfNecessary(content,
                             needSeparator), content, null, identifier);
@@ -85,9 +69,46 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         return new IContentProposal[0];
     }
 
+    private IValueSet getAllowedValues() {
+        try {
+            return this.configElement.findPcTypeAttribute(configElement.getIpsProject()).getValueSet();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private ValueDatatype getDatatype() {
+        try {
+            return this.configElement.findValueDatatype(this.configElement.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private List<String> getAllowedValuesAsList() {
+        if (getAllowedValues().canBeUsedAsSupersetForAnotherEnumValueSet()) {
+            return ((IEnumValueSet)getAllowedValues()).getValuesAsList();
+        } else if (getDatatype().isEnum()) {
+            return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(false));
+        }
+        return new ArrayList<String>();
+    }
+
+    private IValueSet getValueSet() {
+        return this.configElement.getValueSet();
+    }
+
+    private EnumValueSet getEnumValueSet() {
+        return (EnumValueSet)getValueSet();
+    }
+
+    private String getFormatValue(String value) {
+        return uiDatatypeFormatter.formatValue(getEnumValueSet().getValueDatatype(), value);
+    }
+
     private List<String> getContentAsList(String contents) {
         List<String> contentsList = new ArrayList<String>();
-        String[] splitContent = contents.trim().split("\\" + SPLIT_SEPERATOR); //$NON-NLS-1$
+        String[] splitContent = contents.trim().split("\\" + UIDatatypeFormatter.VALUESET_SEPARATOR); //$NON-NLS-1$
         for (String content : splitContent) {
             contentsList.add(content.trim());
         }
@@ -96,7 +117,7 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
 
     private String addSeparatorIfNecessary(String value, boolean needSeparator) {
         if (needSeparator) {
-            return SPLIT_SEPERATOR + " " + value; //$NON-NLS-1$
+            return UIDatatypeFormatter.VALUESET_SEPARATOR + " " + value; //$NON-NLS-1$
         }
         return value;
     }
@@ -115,7 +136,7 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
     }
 
     private boolean endsWithSeparator(String s) {
-        return s.trim().endsWith(SPLIT_SEPERATOR);
+        return s.trim().endsWith(UIDatatypeFormatter.VALUESET_SEPARATOR);
     }
 
     /**

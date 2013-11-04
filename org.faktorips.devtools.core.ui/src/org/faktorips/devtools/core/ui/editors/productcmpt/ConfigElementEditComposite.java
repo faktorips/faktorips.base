@@ -16,10 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -64,9 +60,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     private ExtensionPropertyControlFactory extPropControlFactory;
 
     private AnyValueSetControl valueSetControl;
-
-    private ContentProposalAdapter contentProposalAdapter;
-    private ContentProposalListener contentProposalListener;
 
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -237,23 +230,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
-        if (getPropertyValue().getValueSet().isEnum()) {
-            KeyStroke keyStroke = null;
-            try {
-                keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-            } catch (final ParseException e) {
-                throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
-            }
-            ValueSetProposalProvider proposalProvider = new ValueSetProposalProvider(getPropertyValue(), IpsPlugin
-                    .getDefault().getIpsPreferences());
-            contentProposalAdapter = new ContentProposalAdapter(valueSetControl.getTextControl(),
-                    new TextContentAdapter(), proposalProvider, keyStroke, null);
-
-            contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
-            contentProposalListener = new ContentProposalListener(contentProposalAdapter);
-            contentProposalAdapter.addContentProposalListener(contentProposalListener);
-
-        }
         ValueSetField editField = new ValueSetField(valueSetControl, ValueSetFormat.newInstance(getPropertyValue()));
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
@@ -297,14 +273,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         // anyValueSetControl might be null in case of a Range ValueSet
         if (valueSetControl != null) {
             valueSetControl.setEnumValueSetProvider(enumValueSetProvider);
-        }
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (contentProposalAdapter != null) {
-            contentProposalAdapter.removeContentProposalListener(contentProposalListener);
         }
     }
 }
