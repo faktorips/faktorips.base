@@ -201,8 +201,16 @@ public interface IValueSet extends IIpsObjectPart {
 
     /**
      * Returns <tt>true</tt> if this value set contains the null-value, <tt>false</tt> if not.
+     * 
+     * @deprecated Use {@link #isContainingNull()} instead
      */
+    @Deprecated
     public boolean getContainsNull();
+
+    /**
+     * Returns <tt>true</tt> if this value set contains the null-value, <tt>false</tt> if not.
+     */
+    public boolean isContainingNull();
 
     /**
      * Marks this value set as abstract. An abstract value set does not define concrete values,

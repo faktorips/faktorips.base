@@ -720,14 +720,14 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContainsNull() {
-        EnumValueSet set = new EnumValueSet(ce, "50");
-
-        assertFalse(set.getContainsNull());
-
-        set.addValue(null);
-        assertTrue(set.getContainsNull());
-    }
+        public void testIsContainingNull() {
+            EnumValueSet set = new EnumValueSet(ce, "50");
+    
+            assertFalse(set.isContainingNull());
+    
+            set.addValue(null);
+            assertTrue(set.isContainingNull());
+        }
 
     @Test
     public void testAddValues() {

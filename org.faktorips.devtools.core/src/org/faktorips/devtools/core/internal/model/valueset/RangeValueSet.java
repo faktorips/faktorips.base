@@ -294,7 +294,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             isSubset = false;
         }
 
-        if (subRange.getContainsNull() && !getContainsNull()) {
+        if (subRange.isContainingNull() && !isContainingNull()) {
             String msg = NLS.bind(Messages.RangeValueSet_msgNullNotContained, IpsPlugin.getDefault()
                     .getIpsPreferences().getNullPresentation());
             addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_CONTAINS_NULL));
@@ -406,7 +406,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             return;
         }
         if (datatype.isPrimitive()) {
-            if (getContainsNull()) {
+            if (isContainingNull()) {
                 String text = Messages.RangeValueSet_msgNullNotSupported;
                 list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
             }
@@ -563,8 +563,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         objectHasChanged();
     }
 
+    /**
+     * @deprecated Use {@link #isContainingNull()} instead
+     */
     @Override
     public boolean getContainsNull() {
+        return isContainingNull();
+    }
+
+    @Override
+    public boolean isContainingNull() {
         return containsNull;
     }
 

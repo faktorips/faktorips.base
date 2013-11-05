@@ -145,8 +145,17 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         // Nothing to do.
     }
 
+    /**
+     * @deprecated Use {@link #isContainingNull()} instead
+     */
+    @Deprecated
     @Override
     public boolean getContainsNull() {
+        return isContainingNull();
+    }
+
+    @Override
+    public boolean isContainingNull() {
         ValueDatatype type = getValueDatatype();
         return type == null || !type.isPrimitive();
     }

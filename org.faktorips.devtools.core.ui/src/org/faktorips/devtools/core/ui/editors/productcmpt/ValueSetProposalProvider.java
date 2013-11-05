@@ -108,7 +108,7 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         if (allowedValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return ((IEnumValueSet)allowedValueSet).getValuesAsList();
         } else if (getDatatype().isEnum()) {
-            return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(allowedValueSet.getContainsNull()));
+            return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(allowedValueSet.isContainingNull()));
         }
         return new ArrayList<String>();
     }

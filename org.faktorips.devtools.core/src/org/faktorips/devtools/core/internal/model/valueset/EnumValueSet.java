@@ -123,13 +123,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown,
                     invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
             // if the value is null we can still decide if the value is part of the set
-            if (value == null && getContainsNull()) {
+            if (value == null && isContainingNull()) {
                 return true;
             }
             return false;
         }
 
-        if (value == null && getContainsNull()) {
+        if (value == null && isContainingNull()) {
             return true;
         }
         // An abstract value set is considered containing all values. See #isAbstract()
@@ -344,7 +344,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         checkForDuplicates(list);
 
-        if (datatype != null && datatype.isPrimitive() && getContainsNull()) {
+        if (datatype != null && datatype.isPrimitive() && isContainingNull()) {
             String text = Messages.EnumValueSet_msgNullNotSupported;
             list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
@@ -501,8 +501,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         addValues(Arrays.asList(valueIds));
     }
 
+    /**
+     * @deprecated Use {@link #isContainingNull()} instead
+     */
     @Override
+    @Deprecated
     public boolean getContainsNull() {
+        return isContainingNull();
+    }
+
+    @Override
+    public boolean isContainingNull() {
         return values.contains(null);
     }
 
