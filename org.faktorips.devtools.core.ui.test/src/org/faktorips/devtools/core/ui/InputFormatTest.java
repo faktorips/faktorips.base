@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.inputFormat;
 
 import static org.mockito.Mockito.when;
 
@@ -23,6 +23,8 @@ import junit.framework.Assert;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
+import org.faktorips.devtools.core.ui.inputFormat.IInputFormatFactory;
+import org.faktorips.devtools.core.ui.inputFormat.InputFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -11,12 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputFormat;
 
 import java.util.Currency;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.IInputFormatFactory;
+import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
+import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
 
 /**
  * Factory that creates a MoneyFormat for a Datatype
