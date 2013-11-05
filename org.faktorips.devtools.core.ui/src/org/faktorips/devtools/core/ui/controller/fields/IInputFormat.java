@@ -24,7 +24,7 @@ public interface IInputFormat<T> {
     /**
      * Calls the initFormat with the input locale configured in the preferences.
      */
-    public abstract void initFormat();
+    public void initFormat();
 
     /**
      * Parses a string to a value object. Supports the FIPS null-Presentation mechanism.
@@ -35,7 +35,7 @@ public interface IInputFormat<T> {
      *            matches the null-presentation value.
      * @return the value object that was parsed from the users input
      */
-    public abstract T parse(String stringToBeParsed, boolean supportNull);
+    public T parse(String stringToBeParsed, boolean supportNull);
 
     /**
      * Returns a formatted string for the given value object. Supports the FIPS null-Presentation
@@ -46,7 +46,7 @@ public interface IInputFormat<T> {
      *            the given object value is <code>null</code>.
      * @return the formatted string representing the given value
      */
-    public abstract String format(T objectValue, boolean supportNull);
+    public String format(T objectValue, boolean supportNull);
 
     /**
      * Parses a string to a value object. Semantically equivalent to parse(String stringToBeparsed,
@@ -56,7 +56,7 @@ public interface IInputFormat<T> {
      *            data type this format adheres to.
      * @return the value object that was parsed from the users input
      */
-    public abstract T parse(String stringToBeparsed);
+    public T parse(String stringToBeparsed);
 
     /**
      * 
@@ -66,6 +66,6 @@ public interface IInputFormat<T> {
      * @param objectValue the value to be formatted for display
      * @return the formatted string representing the given value
      */
-    public abstract String format(T objectValue);
+    public String format(T objectValue);
 
 }

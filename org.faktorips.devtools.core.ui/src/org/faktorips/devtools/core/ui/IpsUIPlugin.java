@@ -108,7 +108,6 @@ import org.faktorips.devtools.core.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -119,6 +118,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
+import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
@@ -129,8 +129,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.inputFormat.IInputFormatFactory;
-import org.faktorips.devtools.core.ui.inputFormat.InputFormat;
+import org.faktorips.devtools.core.ui.inputFormat.DatatypeInputFormatMap;
 import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
@@ -244,7 +243,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private GregorianCalendar defaultValidityDate;
 
-    private InputFormat inputFormat;
+    private DatatypeInputFormatMap datatypeInputFormat;
 
     /**
      * This method is for test purposes only.
@@ -280,7 +279,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
         initDefaultValidityDate();
-        getInputFormatter();
     }
 
     private void initDefaultValidityDate() {
@@ -337,41 +335,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return dndHandler;
     }
 
-    public InputFormat getInputFormatter() {
-        if (inputFormat == null) {
-            inputFormat = new InputFormat(getInputFormatFactories());
+    public IInputFormat<String> getInputFormat(ValueDatatype datatype) {
+        if (datatypeInputFormat == null) {
+            datatypeInputFormat = new DatatypeInputFormatMap();
+            datatypeInputFormat.initDatatypeInputFormatMap(registry);
         }
-        return inputFormat;
-    }
-
-    private Map<ValueDatatype, IInputFormatFactory<String>> getInputFormatFactories()
-            throws InvalidRegistryObjectException {
-        Map<ValueDatatype, IInputFormatFactory<String>> inputFormatFactories = new HashMap<ValueDatatype, IInputFormatFactory<String>>();
-        ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
-        IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_INPUT_FORMAT);
-        for (IExtension extension : extensions) {
-            IConfigurationElement[] configElements = extension.getConfigurationElements();
-            for (IConfigurationElement configElement : configElements) {
-                try {
-                    @SuppressWarnings("unchecked")
-                    IInputFormatFactory<String> inputFormatFactory = (IInputFormatFactory<String>)configElement
-                            .createExecutableExtension(CONFIG_PROPERTY_CLASS);
-
-                    for (IConfigurationElement datatypeElement : configElement.getChildren()) {
-                        ValueDatatype datatype = (ValueDatatype)datatypeElement
-                                .createExecutableExtension(CONFIG_PROPERTY_CLASS);
-
-                        inputFormatFactories.put(datatype, inputFormatFactory);
-                    }
-
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(new IpsStatus(
-                            "Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                                    + extension.getUniqueIdentifier(), e));
-                }
-            }
-        }
-        return inputFormatFactories;
+        return datatypeInputFormat.getDatatypeInputFormat(datatype);
     }
 
     private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws InvalidRegistryObjectException,

@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
  * Factory that creates a DecimalNumberFormat for a Datatype
  * 
  */
-public class DecimalNumberFormatFactory implements IInputFormatFactory<String> {
+public class DecimalNumberFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {

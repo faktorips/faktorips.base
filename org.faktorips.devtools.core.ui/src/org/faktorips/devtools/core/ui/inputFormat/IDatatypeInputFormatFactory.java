@@ -21,11 +21,12 @@ import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
  * 
  */
 
-public interface IInputFormatFactory<T extends Object> {
+public interface IDatatypeInputFormatFactory {
 
     /**
      * Instantiate a specific Datatype with respect to the provided datatype. It is in the
      * responsibility of the factory provider if the datatype is considered.
      */
-    public IInputFormat<T> newInputFormat(ValueDatatype datatype);
+    public IInputFormat<String> newInputFormat(ValueDatatype datatype);
+
 }

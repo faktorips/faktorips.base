@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
  * Factory that creates a DateISOStringFormat for a Datatype
  * 
  */
-public class DateISOStringFormatFactory implements IInputFormatFactory<String> {
+public class DateISOStringFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {

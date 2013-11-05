@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.inputFormat;
 
-import java.util.Currency;
-
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
@@ -23,11 +21,10 @@ import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
  * Factory that creates a MoneyFormat for a Datatype
  * 
  */
-public class MoneyFormatFactory implements IInputFormatFactory<String> {
+public class MoneyFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        Currency currency = Currency.getInstance(datatype.getDefaultValue());
-        return MoneyFormat.newInstance(currency);
+        return MoneyFormat.newInstance(null);
     }
 }
