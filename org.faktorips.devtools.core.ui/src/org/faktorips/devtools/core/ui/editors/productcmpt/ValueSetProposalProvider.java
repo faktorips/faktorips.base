@@ -25,11 +25,13 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
+import org.faktorips.devtools.core.ui.controller.fields.ValueSetFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class ValueSetProposalProvider implements IContentProposalProvider {
@@ -41,26 +43,25 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
     private SearchPattern searchPattern = new SearchPattern();
 
     public ValueSetProposalProvider(IConfigElement propertyValue, UIDatatypeFormatter uiDatatypeFormatter) {
-        this.configElement = propertyValue;
+        configElement = propertyValue;
         this.uiDatatypeFormatter = uiDatatypeFormatter;
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        if (getValueSet() instanceof IEnumValueSet) {
+        if (isEnumValueSetAllowed()) {
             String prefix = StringUtils.left(contents, position);
-            String identifier = getLastIdentifier(prefix);
-            boolean needSeparator = needSeparator(prefix, identifier);
+            String lastValue = getLastValue(prefix);
+            boolean needSeparator = needSeparator(prefix, lastValue);
 
-            List<String> splitList = getContentAsList(contents);
-
-            searchPattern.setPattern(identifier);
+            searchPattern.setPattern(lastValue);
             List<IContentProposal> result = new ArrayList<IContentProposal>();
-            for (String value : getAllowedValuesAsList()) {
+            List<String> allowedValuesAsList = getAllowedValuesAsList();
+            for (String value : allowedValuesAsList) {
                 String content = getFormatValue(value);
-                if (!splitList.contains(content) && searchPattern.matches(content)) {
+                if (!isAlreadyContained(value) && searchPattern.matches(content)) {
                     ContentProposal contentProposal = new ContentProposal(addSeparatorIfNecessary(content,
-                            needSeparator), content, null, identifier);
+                            needSeparator), content, null, lastValue);
                     result.add(contentProposal);
                 }
             }
@@ -69,9 +70,22 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         return new IContentProposal[0];
     }
 
-    private IValueSet getAllowedValues() {
+    private boolean isEnumValueSetAllowed() {
         try {
-            return this.configElement.findPcTypeAttribute(configElement.getIpsProject()).getValueSet();
+            return configElement.getAllowedValueSetTypes(getIpsProject()).contains(ValueSetType.ENUM);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private boolean isAlreadyContained(String value) {
+        try {
+            if (isCurrentEnumValueSet()) {
+                IEnumValueSet currentValueSet = getCurrentValueSet();
+                return currentValueSet.containsValue(value, getIpsProject());
+            } else {
+                return false;
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -79,45 +93,49 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
 
     private ValueDatatype getDatatype() {
         try {
-            return this.configElement.findValueDatatype(this.configElement.getIpsProject());
+            return configElement.findValueDatatype(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
+    private IIpsProject getIpsProject() {
+        return configElement.getIpsProject();
+    }
+
     private List<String> getAllowedValuesAsList() {
-        if (getAllowedValues().canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            return ((IEnumValueSet)getAllowedValues()).getValuesAsList();
+        final IValueSet allowedValueSet = getAllowedValueSet();
+        if (allowedValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
+            return ((IEnumValueSet)allowedValueSet).getValuesAsList();
         } else if (getDatatype().isEnum()) {
-            return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(false));
+            return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(allowedValueSet.getContainsNull()));
         }
         return new ArrayList<String>();
     }
 
-    private IValueSet getValueSet() {
-        return this.configElement.getValueSet();
+    private IValueSet getAllowedValueSet() {
+        try {
+            return configElement.findPcTypeAttribute(getIpsProject()).getValueSet();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
-    private EnumValueSet getEnumValueSet() {
-        return (EnumValueSet)getValueSet();
+    private boolean isCurrentEnumValueSet() {
+        return configElement.getValueSet().isEnum();
+    }
+
+    private IEnumValueSet getCurrentValueSet() {
+        return (IEnumValueSet)configElement.getValueSet();
     }
 
     private String getFormatValue(String value) {
-        return uiDatatypeFormatter.formatValue(getEnumValueSet().getValueDatatype(), value);
-    }
-
-    private List<String> getContentAsList(String contents) {
-        List<String> contentsList = new ArrayList<String>();
-        String[] splitContent = contents.trim().split("\\" + UIDatatypeFormatter.VALUESET_SEPARATOR); //$NON-NLS-1$
-        for (String content : splitContent) {
-            contentsList.add(content.trim());
-        }
-        return contentsList;
+        return uiDatatypeFormatter.formatValue(getDatatype(), value);
     }
 
     private String addSeparatorIfNecessary(String value, boolean needSeparator) {
         if (needSeparator) {
-            return UIDatatypeFormatter.VALUESET_SEPARATOR + " " + value; //$NON-NLS-1$
+            return ValueSetFormat.VALUESET_SEPARATOR + " " + value; //$NON-NLS-1$
         }
         return value;
     }
@@ -136,32 +154,25 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
     }
 
     private boolean endsWithSeparator(String s) {
-        return s.trim().endsWith(UIDatatypeFormatter.VALUESET_SEPARATOR);
+        return s.trim().endsWith(ValueSetFormat.VALUESET_SEPARATOR);
     }
 
-    /**
-     * The characters that are checked within this method have to be in synch with the identifier
-     * tokens defined in the ffl.jjt grammar
-     */
-    private String getLastIdentifier(String s) {
+    private String getLastValue(String s) {
         if (StringUtils.isEmpty(s)) {
             return StringUtils.EMPTY;
         }
         int i = s.length() - 1;
-        boolean isInQuotes = false;
         while (i >= 0) {
             char c = s.charAt(i);
-            if (c == '"') {
-                isInQuotes = !isInQuotes;
-            } else if (!isLegalChar(c, isInQuotes)) {
+            if (!isLegalChar(c)) {
                 break;
             }
             i--;
         }
-        return s.substring(i + 1);
+        return s.substring(i + 1).trim();
     }
 
-    private boolean isLegalChar(char c, boolean isInQuotes) {
-        return Character.isLetterOrDigit(c) || (isInQuotes && c == ' ');
+    private boolean isLegalChar(char c) {
+        return !ValueSetFormat.VALUESET_SEPARATOR.equals(String.valueOf(c));
     }
 }

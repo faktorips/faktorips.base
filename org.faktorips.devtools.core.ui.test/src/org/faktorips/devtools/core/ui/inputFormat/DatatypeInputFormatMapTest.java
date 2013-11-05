@@ -17,7 +17,6 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 import org.junit.Before;
@@ -29,9 +28,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatatypeInputFormatMapTest {
-
-    @Mock
-    private IExtensionRegistry registry;
 
     @Mock
     private IDatatypeInputFormatFactory factory1;

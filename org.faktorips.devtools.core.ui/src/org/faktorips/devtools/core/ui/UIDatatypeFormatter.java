@@ -34,10 +34,9 @@ import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
 import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
+import org.faktorips.devtools.core.ui.controller.fields.ValueSetFormat;
 
 public class UIDatatypeFormatter {
-
-    public static final String VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
 
     /**
      * Formats the given value according to the user preferences.
@@ -87,7 +86,7 @@ public class UIDatatypeFormatter {
             for (String id : enumValueSet.getValues()) {
                 String formatedEnumText = formatValue(type, id);
                 buffer.append(formatedEnumText);
-                buffer.append(" " + VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append(" " + ValueSetFormat.VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
             }
             if (buffer.length() > 3) {
                 /*

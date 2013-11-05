@@ -15,16 +15,19 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,17 +38,23 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ValueSetProposalProviderTest {
     @Mock
-    private IConfigElement propertyValue;
-    @Mock
-    private IConfigElement parent;
+    private ConfigElement propertyValue;
+
     @Mock
     private UIDatatypeFormatter uiDatatypeFormatter;
+
     @Mock
     private ValueDatatype enumValueDatatype;
+
     @Mock
     private UnrestrictedValueSet unrestrictedValueSet;
+
+    @Mock
+    private IIpsObject ipsObject;
+
     @Mock
     private IIpsProject ipsProject;
+
     @Mock
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
@@ -56,16 +65,26 @@ public class ValueSetProposalProviderTest {
     @Before
     public void setUp() throws Exception {
         valueSetProposalProvider = new ValueSetProposalProvider(propertyValue, uiDatatypeFormatter);
-        enumValueSet = new EnumValueSet(parent, "ID");
-        when(propertyValue.getValueSet()).thenReturn(enumValueSet);
+        enumValueSet = new EnumValueSet(propertyValue, "ID");
         when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
-        when(enumValueDatatype.isEnum()).thenReturn(false);
+        when(enumValueDatatype.isEnum()).thenReturn(true);
+        when(enumValueDatatype.isParsable("aaaaa")).thenReturn(true);
+        when(enumValueDatatype.isParsable("bbbbb")).thenReturn(true);
+        when(enumValueDatatype.isParsable("ccccc")).thenReturn(true);
+        when(enumValueDatatype.areValuesEqual("aaaaa", "aaaaa")).thenReturn(true);
+        when(enumValueDatatype.areValuesEqual("bbbbb", "bbbbb")).thenReturn(true);
+        when(enumValueDatatype.areValuesEqual("ccccc", "ccccc")).thenReturn(true);
         when(propertyValue.getIpsProject()).thenReturn(ipsProject);
+        when(propertyValue.getIpsObject()).thenReturn(ipsObject);
         when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
+        when(propertyValue.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
+        when(propertyValue.getValueSet()).thenReturn(new UnrestrictedValueSet(propertyValue, "123"));
+        when(propertyValue.getAllowedValueSetTypes(ipsProject)).thenReturn(
+                Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
         when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("aaaaa");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("bbbbb");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("ccccc");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("enumA aaaaa");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("enumB bbbbb");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("enumC ccccc");
     }
 
     @Test
@@ -73,8 +92,9 @@ public class ValueSetProposalProviderTest {
         when(propertyValue.getValueSet()).thenReturn(unrestrictedValueSet);
 
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("", 0);
+
         assertNotNull(proposals);
-        assertTrue(proposals.length == 0);
+        assertEquals(0, proposals.length);
     }
 
     @Test
@@ -82,19 +102,21 @@ public class ValueSetProposalProviderTest {
         setUpEnumValueSet();
 
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("", 0);
+
         assertNotNull(proposals);
-        assertTrue(proposals.length == 3);
-        assertEquals("aaaaa", proposals[0].getContent());
+        assertEquals(3, proposals.length);
+        assertEquals("enumA aaaaa", proposals[0].getContent());
     }
 
     @Test
     public void testGetProposalsOneContent() throws Exception {
         setUpEnumValueSet();
 
-        IContentProposal[] proposals = valueSetProposalProvider.getProposals("aa", 2);
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA", 5);
+
         assertNotNull(proposals);
-        assertTrue(proposals.length == 1);
-        assertEquals("aaaaa", proposals[0].getContent());
+        assertEquals(1, proposals.length);
+        assertEquals("enumA aaaaa", proposals[0].getContent());
     }
 
     @Test
@@ -102,8 +124,9 @@ public class ValueSetProposalProviderTest {
         setUpEnumValueSet();
 
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("aaaaa", 2);
+
         assertNotNull(proposals);
-        assertTrue(proposals.length == 0);
+        assertEquals(0, proposals.length);
     }
 
     @Test
@@ -111,76 +134,74 @@ public class ValueSetProposalProviderTest {
         setUpEnumValueSet();
 
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("dd", 2);
+
         assertNotNull(proposals);
-        assertTrue(proposals.length == 0);
+        assertEquals(0, proposals.length);
     }
 
     @Test
     public void testGetProposalsWithSeparator() throws Exception {
         setUpEnumValueSet();
 
-        IContentProposal[] proposals = valueSetProposalProvider.getProposals("aaaaa | bb", 10);
-        assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 1);
-        assertEquals("bbbbb", proposals[0].getContent());
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA aaaa | enumB", 18);
 
-        proposals = valueSetProposalProvider.getProposals("aaaaa | ", 8);
         assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 2);
-        assertEquals("bbbbb", proposals[0].getContent());
-
-        proposals = valueSetProposalProvider.getProposals("aaaaa |", 7);
-        assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 2);
-        assertEquals("bbbbb", proposals[0].getContent());
-
+        assertEquals(1, proposals.length);
+        assertEquals("enumB bbbbb", proposals[0].getContent());
     }
 
     @Test
-    public void testGetProposalsWithNecessarySeparator() throws Exception {
+    public void testGetProposals_alreadyContainingValue() throws Exception {
         setUpEnumValueSet();
+        when(propertyValue.getValueSet()).thenReturn(new EnumValueSet(propertyValue, Arrays.asList("aaaaa"), "123"));
 
-        IContentProposal[] proposals = valueSetProposalProvider.getProposals("aaaaa b", 10);
-        assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 1);
-        assertEquals("| bbbbb", proposals[0].getContent());
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA aaaaa | ", 14);
 
-        proposals = valueSetProposalProvider.getProposals("aaaaa ", 10);
         assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 2);
-        assertEquals("| bbbbb", proposals[0].getContent());
+        assertEquals(2, proposals.length);
+        assertEquals("enumB bbbbb", proposals[0].getContent());
     }
 
     @Test
-    public void testGetProposalsEnumDatatype() {
-        enumValueSet.addValueWithoutTriggeringChangeEvent("a");
-        enumValueSet.addValueWithoutTriggeringChangeEvent("b");
-        enumValueSet.addValueWithoutTriggeringChangeEvent("c");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "a")).thenReturn("aname (a)");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "b")).thenReturn("bname (b)");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "c")).thenReturn("cname (c)");
+    public void testGetProposals_alreadyContaining_noWhitespace() throws Exception {
+        setUpEnumValueSet();
+        when(propertyValue.getValueSet()).thenReturn(new EnumValueSet(propertyValue, Arrays.asList("aaaaa"), "123"));
 
-        when(enumValueDatatype.isEnum()).thenReturn(true);
-
-        IContentProposal[] proposals = valueSetProposalProvider.getProposals("aname (a) | bn", 14);
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA aaaaa |", 13);
 
         assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 1);
-        assertEquals("bname (b)", proposals[0].getContent());
+        assertEquals(2, proposals.length);
+        assertEquals("enumB bbbbb", proposals[0].getContent());
+    }
 
-        proposals = valueSetProposalProvider.getProposals("aname (a) | ", 12);
+    @Test
+    public void testGetProposals_alreadyContaining_editMiddleElement() throws Exception {
+        setUpEnumValueSet();
+        when(propertyValue.getValueSet()).thenReturn(new EnumValueSet(propertyValue, Arrays.asList("aaaaa"), "123"));
+
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA aaaaa | enumB | asfasdf", 20);
 
         assertNotNull(proposals);
-        assertTrue(String.valueOf(proposals.length), proposals.length == 2);
-        assertEquals("bname (b)", proposals[0].getContent());
-        assertEquals("cname (c)", proposals[1].getContent());
+        assertEquals(1, proposals.length);
+        assertEquals("enumB bbbbb", proposals[0].getContent());
+    }
+
+    @Test
+    public void testGetProposals_invalidPreviousValue() throws Exception {
+        setUpEnumValueSet();
+        when(propertyValue.getValueSet()).thenReturn(new EnumValueSet(propertyValue, "123"));
+
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("xasds |", 8);
+
+        assertNotNull(proposals);
+        assertEquals(3, proposals.length);
+        assertEquals("enumA aaaaa", proposals[0].getContent());
     }
 
     private void setUpEnumValueSet() {
-        enumValueSet.addValueWithoutTriggeringChangeEvent("aaaaa");
-        enumValueSet.addValueWithoutTriggeringChangeEvent("bbbbb");
-        enumValueSet.addValueWithoutTriggeringChangeEvent("ccccc");
-
+        enumValueSet.addValue("aaaaa");
+        enumValueSet.addValue("bbbbb");
+        enumValueSet.addValue("ccccc");
     }
 
 }

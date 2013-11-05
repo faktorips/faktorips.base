@@ -58,7 +58,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
     /** The values in the set as list */
-    private ArrayList<String> values = new ArrayList<String>();
+    private List<String> values = new ArrayList<String>();
 
     /**
      * A map with the values as keys and the index positions of the occurrences of a value as
@@ -68,6 +68,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     public EnumValueSet(IIpsObjectPart parent, String partId) {
         super(ValueSetType.ENUM, parent, partId);
+    }
+
+    public EnumValueSet(IIpsObjectPart parent, List<String> values, String partId) {
+        this(parent, partId);
+        this.values = values;
+        refillValuesToIndexMap();
     }
 
     @Override
@@ -232,7 +238,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
-    public void addValueWithoutTriggeringChangeEvent(String newValue) {
+    protected void addValueWithoutTriggeringChangeEvent(String newValue) {
         values.add(newValue);
         Integer newIndex = values.size() - 1;
         setValueWithoutTriggeringChangeEvent(newValue, newIndex);

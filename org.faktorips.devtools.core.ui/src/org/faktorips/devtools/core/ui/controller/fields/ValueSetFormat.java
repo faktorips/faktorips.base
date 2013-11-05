@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
@@ -24,18 +23,26 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
+import org.faktorips.devtools.core.ui.inputFormat.Messages;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
+
+    public static final String VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
 
     private final IConfigElement configElement;
 
     private final IpsUIPlugin uiPlugin;
+
+    public ValueSetFormat(IConfigElement configElement, IpsUIPlugin uiPlugin) {
+        this.configElement = configElement;
+        this.uiPlugin = uiPlugin;
+    }
 
     public static ValueSetFormat newInstance(IConfigElement configElement) {
         ValueSetFormat format = new ValueSetFormat(configElement, IpsUIPlugin.getDefault());
@@ -43,64 +50,66 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         return format;
     }
 
-    public ValueSetFormat(IConfigElement configElement, IpsUIPlugin uiPlugin) {
-        this.configElement = configElement;
-        this.uiPlugin = uiPlugin;
-    }
-
-    private IValueSet getValueSet() {
-        return this.configElement.getValueSet();
-    }
-
-    private List<String> getValuesAsList() {
-        return ((EnumValueSet)getValueSet()).getValuesAsList();
-    }
-
-    private ValueDatatype getDatatype() {
-        try {
-            return this.configElement.findValueDatatype(this.configElement.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    private boolean isValueSetUnrestricted() {
-        try {
-            List<ValueSetType> allowedValueSetTypes = this.configElement.getAllowedValueSetTypes(this.configElement
-                    .getIpsProject());
-            return allowedValueSetTypes.contains(ValueSetType.UNRESTRICTED);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
     @Override
     protected IValueSet parseInternal(String stringToBeParsed) {
-        if (getValueSet() instanceof EnumValueSet) {
+        if (isEnumValueSetAllowed()) {
             if (stringToBeParsed.isEmpty()) {
-                if (isValueSetUnrestricted()) {
-                    return createNewUnrestrictedValueSet();
+                if (isUnrestrictedAllowed()) {
+                    return getUnrestrictedValueSet();
                 } else {
-                    return createNewEmptyEnumValueSet();
+                    return getEmptyValueSet();
                 }
-            } else if (stringToBeParsed.contains("<unrestriced>")) { //$NON-NLS-1$
-                return createNewUnrestrictedValueSet();
+            } else if (stringToBeParsed.equals(Messages.ValueSetFormat_unrestricted)) {
+                return getUnrestrictedValueSet();
             }
-            String[] split = stringToBeParsed.split("\\" + UIDatatypeFormatter.VALUESET_SEPARATOR); //$NON-NLS-1$
-            List<String> parseValues = parseAndFormatValues(split);
-            if (!isEqualContent(parseValues)) {
-                // neues ValueSet anlegen
-                EnumValueSet enumValueSet = createNewEmptyEnumValueSet();
-                for (String value : parseValues) {
-                    enumValueSet.addValueWithoutTriggeringChangeEvent(value);
-                }
+            String[] split = stringToBeParsed.split("\\" + VALUESET_SEPARATOR); //$NON-NLS-1$
+            List<String> parsedValues = parseValues(split);
+            if (!isEqualContent(parsedValues)) {
+                EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
                 return enumValueSet;
             }
         }
         return getValueSet();
     }
 
-    private List<String> parseAndFormatValues(String[] split) {
+    private boolean isUnrestrictedAllowed() {
+        return isAllowedValueSetType(ValueSetType.UNRESTRICTED);
+    }
+
+    private boolean isEnumValueSetAllowed() {
+        return isAllowedValueSetType(ValueSetType.ENUM);
+    }
+
+    private boolean isAllowedValueSetType(ValueSetType valueSetType) {
+        try {
+            List<ValueSetType> allowedValueSetTypes = this.configElement.getAllowedValueSetTypes(this.configElement
+                    .getIpsProject());
+            return allowedValueSetTypes.contains(valueSetType);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private IValueSet getUnrestrictedValueSet() {
+        final IValueSet valueSet = getValueSet();
+        if (valueSet.isUnrestricted()) {
+            return valueSet;
+        } else {
+            UnrestrictedValueSet newValueSet = new UnrestrictedValueSet(configElement, getNextPartId(configElement));
+            return newValueSet;
+        }
+    }
+
+    private IValueSet getEmptyValueSet() {
+        IValueSet valueSet = getValueSet();
+        if (valueSet.isEnum() && ((IEnumValueSet)valueSet).getValuesAsList().isEmpty()) {
+            return valueSet;
+        } else {
+            return createNewEnumValueSet(new ArrayList<String>());
+        }
+    }
+
+    private List<String> parseValues(String[] split) {
         List<String> parseValues = new ArrayList<String>();
         for (String value : split) {
             parseValues.add(parseWithFormater(value.trim()));
@@ -116,23 +125,33 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         return inputFormat.parse(value);
     }
 
-    private boolean isEqualContent(List<String> parseValues) {
-        return getValuesAsList().equals(parseValues);
+    private ValueDatatype getDatatype() {
+        try {
+            return this.configElement.findValueDatatype(this.configElement.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
-    private EnumValueSet createNewEmptyEnumValueSet() {
-        EnumValueSet valueSet = new EnumValueSet((IIpsObjectPart)getValueSet().getParent(), getNextPartId());
+    private boolean isEqualContent(List<String> parsedValues) {
+        return getValuesAsList().equals(parsedValues);
+    }
+
+    private List<String> getValuesAsList() {
+        return ((IEnumValueSet)getValueSet()).getValuesAsList();
+    }
+
+    private IValueSet getValueSet() {
+        return this.configElement.getValueSet();
+    }
+
+    private EnumValueSet createNewEnumValueSet(List<String> values) {
+        EnumValueSet valueSet = new EnumValueSet(configElement, values, getNextPartId(configElement));
         return valueSet;
     }
 
-    private String getNextPartId() {
-        return UUID.randomUUID().toString();
-    }
-
-    private UnrestrictedValueSet createNewUnrestrictedValueSet() {
-        UnrestrictedValueSet newValueSet = new UnrestrictedValueSet((IIpsObjectPart)getValueSet().getParent(),
-                getValueSet().getId());
-        return newValueSet;
+    private String getNextPartId(IIpsObjectPartContainer parent) {
+        return parent.getIpsModel().getNextPartId(parent);
     }
 
     @Override
@@ -142,13 +161,12 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
-
+        // do nothing
     }
 
     @Override
     protected void initFormat(Locale locale) {
-        // TODO Auto-generated method stub
-
+        // do nothing
     }
 
 }

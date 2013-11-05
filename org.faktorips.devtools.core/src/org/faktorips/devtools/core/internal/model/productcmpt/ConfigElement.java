@@ -226,7 +226,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return valueDatatype;
     }
 
-    // TODO internationalize messages
     private void validateValueSetVsAttributeValueSet(IPolicyCmptTypeAttribute attribute,
             IIpsProject ipsProject,
             MessageList list) throws CoreException {

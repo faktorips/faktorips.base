@@ -352,11 +352,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof IValueSet) {
+        if (part == valueSet) {
             valueSet = new UnrestrictedValueSet(this, getNextPartId());
             return true;
+        } else if (part == persistenceAttributeInfo) {
+            persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
         }
-        // TODO AW: Isn't it necessary to reset the IPersistentAttributeInfo?
         return false;
     }
 

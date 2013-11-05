@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCach
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -36,8 +37,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 
 /**
  * The IPS model is the top of the IPS element hierarchy (like the Java model is the top of the Java
@@ -82,6 +85,17 @@ public interface IIpsModel extends IIpsElement {
             ISchedulingRule rule,
             int flags,
             IProgressMonitor monitor) throws CoreException;
+
+    /**
+     * Creates an ID for a new {@link IIpsObjectPart} in an {@link IIpsObjectPartContainer}. The
+     * given parentPart is the parent of the newly created part. For example, if you want to create
+     * a {@link IValueSet} as part of a {@link IConfigElement} you call this method with the
+     * {@link IConfigElement} as parameter to get the ID for the new {@link IValueSet}.
+     * 
+     * @param parentPart The parent part of the new part for which we need the ID
+     * @return the new unique ID that can be used for a new part
+     */
+    public String getNextPartId(IIpsObjectPartContainer parentPart);
 
     /**
      * Creates an IpsProject for the given Java project by adding the IPS nature and creating (an
