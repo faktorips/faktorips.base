@@ -17,7 +17,10 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,18 +33,24 @@ public class DatatypeInputFormatMapTest {
 
     @Mock
     private IDatatypeInputFormatFactory factory1;
-
     @Mock
     private IDatatypeInputFormatFactory factory2;
-
     @Mock
-    private ValueDatatype datatype1;
+    private IDatatypeInputFormatFactory subclassFactory;
 
+    private ValueDatatype datatype1 = new GregorianCalendarDatatype("Date", false);
+    private ValueDatatype subclassDatatype = Datatype.GREGORIAN_CALENDAR;
+    private ValueDatatype subsubclassDatatype = new GregoriacCalendarSubDatatype();
     @Mock
     private ValueDatatype datatype2;
+    private ValueDatatype unregisteredDatatype = Datatype.PRIMITIVE_INT;
 
     @Mock
-    private IInputFormat<String> result;
+    private IInputFormat<String> result1;
+    @Mock
+    private IInputFormat<String> result2;
+    @Mock
+    private IInputFormat<String> subclassResult;
 
     private Map<ValueDatatype, IDatatypeInputFormatFactory> map;
 
@@ -51,16 +60,46 @@ public class DatatypeInputFormatMapTest {
     public void initMap() {
         inputFormatMap = new DatatypeInputFormatMap();
         map = inputFormatMap.getInputFormatMap();
-        Mockito.when(factory1.newInputFormat(datatype1)).thenReturn(result);
-        Mockito.when(factory2.newInputFormat(datatype2)).thenReturn(result);
+        Mockito.when(factory1.newInputFormat(datatype1)).thenReturn(result1);
+        Mockito.when(factory2.newInputFormat(datatype2)).thenReturn(result2);
+        map.put(datatype1, factory1);
+        map.put(datatype2, factory2);
     }
 
     @Test
     public void test_getDatatypeInputFormat() {
-        map.put(datatype1, factory1);
-        map.put(datatype2, factory2);
-
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(datatype1);
-        Assert.assertEquals(result, actualResult);
+        Assert.assertEquals(result1, actualResult);
+        IInputFormat<String> actualResult2 = inputFormatMap.getDatatypeInputFormat(datatype2);
+        Assert.assertEquals(result2, actualResult2);
+    }
+
+    @Test
+    public void test_getDefaultInputFormat() {
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(unregisteredDatatype);
+        Assert.assertEquals(DefaultInputFormat.class, actualResult.getClass());
+    }
+
+    @Test
+    public void test_superclassInputFormat() {
+        Mockito.when(factory1.newInputFormat(subclassDatatype)).thenReturn(result1);
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subclassDatatype);
+        Assert.assertEquals(result1, actualResult);
+    }
+
+    @Test
+    public void test_useNearestSuperclassInputFormat() {
+        map.put(subclassDatatype, subclassFactory);
+        Mockito.when(subclassFactory.newInputFormat(subsubclassDatatype)).thenReturn(subclassResult);
+
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subsubclassDatatype);
+        Assert.assertEquals(subclassResult, actualResult);
+    }
+
+    private static class GregoriacCalendarSubDatatype extends GregorianCalendarAsDateDatatype {
+        @Override
+        public int hashCode() {
+            return super.hashCode() * 31 + 13;
+        }
     }
 }
