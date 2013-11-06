@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 
 public class DatatypeInputFormatMap {
 

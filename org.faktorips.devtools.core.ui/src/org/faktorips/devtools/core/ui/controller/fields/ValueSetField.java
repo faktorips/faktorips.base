@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
+import org.faktorips.devtools.core.ui.inputFormat.ValueSetFormat;
 
 public class ValueSetField extends FormattingTextField<IValueSet> {
 

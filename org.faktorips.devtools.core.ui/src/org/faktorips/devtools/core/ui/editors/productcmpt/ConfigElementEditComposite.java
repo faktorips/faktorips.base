@@ -41,8 +41,8 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueSetFormat;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.inputFormat.ValueSetFormat;
 
 /**
  * Provides controls that allow the user to edit the value set and the default value of an

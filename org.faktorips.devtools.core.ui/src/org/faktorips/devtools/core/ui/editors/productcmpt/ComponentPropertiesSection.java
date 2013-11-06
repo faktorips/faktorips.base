@@ -43,12 +43,12 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
-import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
 
 /**
  * Section to display and edit the product attributes

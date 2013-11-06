@@ -32,9 +32,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DateControl;
+import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
 
 /**
  * Allows creation of new {@linkplain IIpsObjectGeneration IPS Object Generations} to one or many

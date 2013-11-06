@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.inputFormat;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
-import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
 
 /**
  * Factory that creates a MoneyFormat for a Datatype

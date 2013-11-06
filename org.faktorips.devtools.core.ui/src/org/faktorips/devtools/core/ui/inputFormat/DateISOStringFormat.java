@@ -11,10 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputFormat;
 
 import java.util.Date;
 
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.values.DateUtil;
 
 /**

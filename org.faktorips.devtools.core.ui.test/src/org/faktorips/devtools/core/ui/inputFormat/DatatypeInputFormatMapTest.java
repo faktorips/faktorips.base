@@ -18,7 +18,6 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

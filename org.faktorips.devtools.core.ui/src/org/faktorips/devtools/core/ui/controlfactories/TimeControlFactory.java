@@ -17,10 +17,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.controller.fields.TimeISOStringFormat;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
 import org.faktorips.devtools.core.ui.controls.TimeControl;
+import org.faktorips.devtools.core.ui.inputFormat.AbstractInputFormat;
+import org.faktorips.devtools.core.ui.inputFormat.TimeISOStringFormat;
 
 /**
  * A factory for edit fields/controls for {@link LocalTimeDatatype}.

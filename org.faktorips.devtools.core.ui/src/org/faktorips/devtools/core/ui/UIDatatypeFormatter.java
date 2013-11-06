@@ -30,11 +30,11 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
-import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat;
-import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
-import org.faktorips.devtools.core.ui.controller.fields.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputFormat.DateISOStringFormat;
+import org.faktorips.devtools.core.ui.inputFormat.DecimalNumberFormat;
+import org.faktorips.devtools.core.ui.inputFormat.IntegerNumberFormat;
+import org.faktorips.devtools.core.ui.inputFormat.MoneyFormat;
+import org.faktorips.devtools.core.ui.inputFormat.ValueSetFormat;
 
 public class UIDatatypeFormatter {
 

@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.inputFormat;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat;
 
 /**
  * Factory that creates an IntegerNumberFormatFactory for a Datatype

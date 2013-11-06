@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.inputFormat;
 import java.util.Locale;
 
 import org.eclipse.swt.events.VerifyEvent;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractInputFormat;
 
 /**
  * Fallback inputformat. Simply passes through the given string in {@link #parse(String)} and

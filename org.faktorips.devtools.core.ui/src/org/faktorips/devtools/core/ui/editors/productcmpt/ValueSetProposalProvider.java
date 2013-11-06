@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
-import org.faktorips.devtools.core.ui.controller.fields.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputFormat.ValueSetFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class ValueSetProposalProvider implements IContentProposalProvider {

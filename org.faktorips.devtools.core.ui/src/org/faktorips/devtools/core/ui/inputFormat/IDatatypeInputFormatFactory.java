@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.inputFormat;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.controller.fields.IInputFormat;
 
 /**
  * IInputFormatFactory registered with the <i>inputFormat</i> extension point.

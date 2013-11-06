@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputFormat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.ui.controller.fields.ICurrencyHolder;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 

@@ -58,7 +58,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.controller.fields.IInputFormat"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.inputFormat.IInputFormat"/>
                </appInfo>
             </annotation>
          </attribute>
