@@ -35,14 +35,17 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private final IConfigElement configElement;
 
+    private final IpsUIPlugin uiPlugin;
+
     public static ValueSetFormat newInstance(IConfigElement configElement) {
-        ValueSetFormat format = new ValueSetFormat(configElement);
+        ValueSetFormat format = new ValueSetFormat(configElement, IpsUIPlugin.getDefault());
         format.initFormat();
         return format;
     }
 
-    public ValueSetFormat(IConfigElement configElement) {
+    public ValueSetFormat(IConfigElement configElement, IpsUIPlugin uiPlugin) {
         this.configElement = configElement;
+        this.uiPlugin = uiPlugin;
     }
 
     private IValueSet getValueSet() {
@@ -105,12 +108,12 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         return parseValues;
     }
 
-    /*
-     * Formater holen und parse aufrufen rückgabewert ist neues Value
-     */
-    private String parseWithFormater(String value) {
-        // Datatype and value an Formater
-        return value;
+    protected String parseWithFormater(String value) {
+        IInputFormat<String> inputFormat = uiPlugin.getInputFormat(getDatatype());
+        if (inputFormat == null) {
+            return value;
+        }
+        return inputFormat.parse(value);
     }
 
     private boolean isEqualContent(List<String> parseValues) {

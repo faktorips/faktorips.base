@@ -21,12 +21,15 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,9 @@ public class ValueSetFormatTest {
     private IConfigElement configElement;
 
     @Mock
+    private IpsUIPlugin uiPlugin;
+
+    @Mock
     private IIpsProject ipsProject;
 
     @Mock
@@ -47,6 +53,16 @@ public class ValueSetFormatTest {
 
     @Mock
     private IConfigElement parent;
+
+    @Mock
+    private ValueDatatype datatype;
+
+    @Mock
+    private IInputFormat<String> inputFormat;
+
+    private String INPUT_VALUE = "test.input";
+
+    private String OUTPUT_VALUE = "test.output";
 
     private EnumValueSet enumValueSet;
 
@@ -59,7 +75,7 @@ public class ValueSetFormatTest {
         when(configElement.getIpsProject()).thenReturn(ipsProject);
         when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(listAllowdValueTypes);
         when(listAllowdValueTypes.contains(ValueSetType.UNRESTRICTED)).thenReturn(false);
-        format = new ValueSetFormat(configElement);
+        format = new ValueSetFormat(configElement, uiPlugin);
     }
 
     @Test
@@ -109,6 +125,21 @@ public class ValueSetFormatTest {
         assertEquals(2, enumVS.getValuesAsList().size());
         assertEquals("test", enumVS.getValue(0));
         assertEquals("test2", enumVS.getValue(1));
+    }
+
+    @Test
+    public void testParseWithFormatter_InputFormatNotNull() throws CoreException {
+        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
+        when(uiPlugin.getInputFormat(datatype)).thenReturn(inputFormat);
+        when(inputFormat.parse(INPUT_VALUE)).thenReturn(OUTPUT_VALUE);
+        String result = format.parseWithFormater(INPUT_VALUE);
+        assertEquals(OUTPUT_VALUE, result);
+    }
+
+    @Test
+    public void testParseWithFormatter_InputFormatNull() {
+        String result = format.parseWithFormater(INPUT_VALUE);
+        assertEquals(INPUT_VALUE, result);
     }
 
     @Test
