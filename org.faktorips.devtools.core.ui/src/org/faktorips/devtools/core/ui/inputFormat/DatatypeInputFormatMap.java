@@ -13,8 +13,9 @@
 
 package org.faktorips.devtools.core.ui.inputFormat;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -28,7 +29,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class DatatypeInputFormatMap {
 
-    private Map<ValueDatatype, IDatatypeInputFormatFactory> inputFormatMap = new HashMap<ValueDatatype, IDatatypeInputFormatFactory>();
+    private Map<ValueDatatype, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<ValueDatatype, IDatatypeInputFormatFactory>();
 
     /**
      * This method retrieve and save the Datatypes and the related Formats that are registered at
@@ -64,8 +65,28 @@ public class DatatypeInputFormatMap {
     }
 
     public IInputFormat<String> getDatatypeInputFormat(ValueDatatype datatype) {
-        IDatatypeInputFormatFactory inputFormatFactory = getInputFormatMap().get(datatype);
-        return inputFormatFactory.newInputFormat(datatype);
+        Class<? extends ValueDatatype> datatypeClass = datatype.getClass();
+        IDatatypeInputFormatFactory inputformatFactory = getInputFormatMap().get(datatype);
+        if (inputformatFactory == null) {
+            IDatatypeInputFormatFactory supertypeOfDatatype = getAllowedSupertype(datatypeClass);
+            // if(supertypeOfDatatype== null){
+            // return new Default
+            // }
+            return supertypeOfDatatype.newInputFormat(datatype);
+        }
+        return inputformatFactory.newInputFormat(datatype);
+    }
+
+    private IDatatypeInputFormatFactory getAllowedSupertype(Class<? extends ValueDatatype> requiredClass) {
+        Map<ValueDatatype, IDatatypeInputFormatFactory> inputFormatMap = getInputFormatMap();
+        for (Entry<ValueDatatype, IDatatypeInputFormatFactory> entry : inputFormatMap.entrySet()) {
+            ValueDatatype registeredDatatype = entry.getKey();
+            Class<? extends ValueDatatype> registeredClass = registeredDatatype.getClass();
+            if (registeredClass.isAssignableFrom(requiredClass)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     protected Map<ValueDatatype, IDatatypeInputFormatFactory> getInputFormatMap() {
