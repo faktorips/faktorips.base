@@ -52,11 +52,11 @@ public interface IInputFormat<T> {
      * Parses a string to a value object. Semantically equivalent to parse(String stringToBeparsed,
      * true).
      * 
-     * @param stringToBeparsed the String typed by the user that will be parsed to a value of the
+     * @param stringToBeParsed the String typed by the user that will be parsed to a value of the
      *            data type this format adheres to.
      * @return the value object that was parsed from the users input
      */
-    public T parse(String stringToBeparsed);
+    public T parse(String stringToBeParsed);
 
     /**
      * 

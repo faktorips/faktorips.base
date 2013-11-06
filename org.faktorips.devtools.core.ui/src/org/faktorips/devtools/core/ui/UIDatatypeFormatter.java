@@ -14,26 +14,13 @@
 package org.faktorips.devtools.core.ui;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.BigDecimalDatatype;
-import org.faktorips.datatype.classtypes.DateDatatype;
-import org.faktorips.datatype.classtypes.DecimalDatatype;
-import org.faktorips.datatype.classtypes.DoubleDatatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
-import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.datatype.classtypes.LongDatatype;
-import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.Messages;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.inputFormat.DateISOStringFormat;
-import org.faktorips.devtools.core.ui.inputFormat.DecimalNumberFormat;
-import org.faktorips.devtools.core.ui.inputFormat.IntegerNumberFormat;
-import org.faktorips.devtools.core.ui.inputFormat.MoneyFormat;
 import org.faktorips.devtools.core.ui.inputFormat.ValueSetFormat;
 
 public class UIDatatypeFormatter {
@@ -41,42 +28,21 @@ public class UIDatatypeFormatter {
     /**
      * Formats the given value according to the user preferences.
      * <p>
-     * Note that this method delegates most calls to {@link DatatypeFormatter} in the core plugin.
+     * Note that this method delegates some calls to {@link DatatypeFormatter} in the core plugin.
      * Eventually the {@link DatatypeFormatter}-code should be moved to this class. See MTS#530
+     * <p>
+     * Supports the null-presentation mechanism.
      * 
      * @param datatype The data type the value is a value of.
      * @param value The value as string
      */
     public String formatValue(ValueDatatype datatype, String value) {
-
-        // IpsUIPlugin.getDefault().getInputFormatter().getInputFormat(datatype).format(value);
-
-        if (value == null) {
-            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        }
-        if (datatype == null) {
-            return value;
-        }
-        if (datatype instanceof DoubleDatatype || datatype instanceof DecimalDatatype
-                || datatype instanceof BigDecimalDatatype) {
-            return DecimalNumberFormat.newInstance(datatype).format(value);
-        }
-        if (datatype instanceof GregorianCalendarDatatype || datatype instanceof DateDatatype) {
-            return DateISOStringFormat.newInstance().format(value);
-        }
-        if (datatype instanceof IntegerDatatype || datatype instanceof LongDatatype
-                || datatype == ValueDatatype.PRIMITIVE_INT || datatype == ValueDatatype.PRIMITIVE_LONG) {
-            return IntegerNumberFormat.newInstance(datatype).format(value);
-        }
-        if (datatype instanceof MoneyDatatype) {
-            MoneyFormat moneyFormat = MoneyFormat.newInstance(null);
-            moneyFormat.setAddCurrencySymbol(true);
-            String result = moneyFormat.format(value);
-            return result;
-        }
-        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value);
+        return IpsUIPlugin.getDefault().getInputFormat(datatype).format(value);
     }
 
+    /**
+     * @see ValueSetFormat
+     */
     public String formatValueSet(IValueSet valueSet) {
         if (valueSet instanceof EnumValueSet) {
             EnumValueSet enumValueSet = (EnumValueSet)valueSet;

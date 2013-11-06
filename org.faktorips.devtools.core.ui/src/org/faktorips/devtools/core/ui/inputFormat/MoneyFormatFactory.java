@@ -23,6 +23,8 @@ public class MoneyFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        return MoneyFormat.newInstance(null);
+        MoneyFormat moneyFormat = MoneyFormat.newInstance(null);
+        moneyFormat.setAddCurrencySymbol(true);
+        return moneyFormat;
     }
 }
