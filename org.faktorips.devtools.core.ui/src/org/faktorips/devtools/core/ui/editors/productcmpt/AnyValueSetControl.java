@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -97,7 +98,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     }
 
     private void initContentAssistent() {
-        if (this.configElement.getValueSet().isEnum()) {
+        if (isEnumValueSetAllowed()) {
             KeyStroke keyStroke = null;
             try {
                 keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
@@ -112,6 +113,14 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
             contentProposalListener = new ContentProposalListener(contentProposalAdapter);
             contentProposalAdapter.addContentProposalListener(contentProposalListener);
+        }
+    }
+
+    private boolean isEnumValueSetAllowed() {
+        try {
+            return this.configElement.getAllowedValueSetTypes(getIpsProject()).contains(ValueSetType.ENUM);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 

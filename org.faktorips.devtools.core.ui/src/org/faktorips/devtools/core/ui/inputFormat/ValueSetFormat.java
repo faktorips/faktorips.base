@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -133,7 +134,7 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     }
 
     private boolean isEqualContent(List<String> parsedValues) {
-        return getValuesAsList().equals(parsedValues);
+        return getValueSet() instanceof IEnumValueSet && getValuesAsList().equals(parsedValues);
     }
 
     private List<String> getValuesAsList() {

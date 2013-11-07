@@ -51,9 +51,9 @@ import org.w3c.dom.NodeList;
  */
 public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
-    private static final String XML_DATA = "Data"; //$NON-NLS-1$
-
     public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
+
+    private static final String XML_DATA = "Data"; //$NON-NLS-1$
 
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
@@ -147,11 +147,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         for (String each : values) {
             try {
                 // for performance optimization we first check equality. If the value is not
-                // parsable, the equals check may throw an IllegalArgumentException
+                // parsable, the equals check may throw a IllegalArgumentException or
+                // NullPointerException
                 if (datatype.areValuesEqual(each, value) && datatype.isParsable(each)) {
                     return true;
                 }
             } catch (IllegalArgumentException e) {
+                continue;
+            } catch (NullPointerException e) {
                 continue;
             }
         }
@@ -199,7 +202,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return true;
         }
         if (subset.isAbstract()) {
-            return false; // this set is concrete
+            // this set is concrete
+            return false;
         }
         IEnumValueSet enumSubset = (IEnumValueSet)subset;
         String[] subsetValues = enumSubset.getValues();

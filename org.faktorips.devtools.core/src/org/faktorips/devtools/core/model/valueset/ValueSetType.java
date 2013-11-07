@@ -141,7 +141,7 @@ public class ValueSetType extends DefaultEnumValue {
             return new EnumValueSet(parent, id);
         } else if (tagName.equals(RangeValueSet.XML_TAG)) {
             return new RangeValueSet(parent, id);
-        } else if (tagName.equals(UnrestrictedValueSet.XML_TAG)) {
+        } else if (tagName.equals(UnrestrictedValueSet.XML_TAG_UNRESTRICTED)) {
             return new UnrestrictedValueSet(parent, id);
         }
         return null;

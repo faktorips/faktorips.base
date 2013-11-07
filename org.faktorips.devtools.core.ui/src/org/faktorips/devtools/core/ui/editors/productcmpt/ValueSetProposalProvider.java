@@ -53,7 +53,6 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
             String prefix = StringUtils.left(contents, position);
             String lastValue = getLastValue(prefix);
             boolean needSeparator = needSeparator(prefix, lastValue);
-
             searchPattern.setPattern(lastValue);
             List<IContentProposal> result = new ArrayList<IContentProposal>();
             List<String> allowedValuesAsList = getAllowedValuesAsList();
@@ -104,7 +103,7 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
     }
 
     private List<String> getAllowedValuesAsList() {
-        final IValueSet allowedValueSet = getAllowedValueSet();
+        IValueSet allowedValueSet = getAllowedValueSet();
         if (allowedValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return ((IEnumValueSet)allowedValueSet).getValuesAsList();
         } else if (getDatatype().isEnum()) {
