@@ -153,6 +153,6 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * @return A List of all {@link IIpsSrcFile}s found in this {@link IIpsPackageFragmentRoot}
      * @throws CoreException In case of a core exception finding the resources
      */
-    List<IIpsSrcFile> findAllIpsSrcFiled(IpsObjectType type) throws CoreException;
+    List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws CoreException;
 
 }
