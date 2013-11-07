@@ -76,7 +76,7 @@ public class UIDatatypeFormatter {
             }
             return sb.toString();
         } else if (valueSet instanceof IUnrestrictedValueSet) {
-            return "" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + ""; //$NON-NLS-1$ //$NON-NLS-2$
+            return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
         }
         return ""; //$NON-NLS-1$
     }

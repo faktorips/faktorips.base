@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  */
 public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
 
-    public final static String XML_TAG = "AllValues"; //$NON-NLS-1$
+    public final static String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
@@ -51,7 +51,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public String toShortString() {
-        return "[" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
-        Element tagElement = doc.createElement(XML_TAG);
+        Element tagElement = doc.createElement(XML_TAG_UNRESTRICTED);
         element.appendChild(tagElement);
     }
 
