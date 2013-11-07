@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class DatatypeInputFormatMap {
 
-    private Map<ValueDatatype, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<ValueDatatype, IDatatypeInputFormatFactory>();
+    private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory>();
 
     /**
      * This method retrieves the Datatypes and the related Formats that are registered at the
@@ -52,18 +52,31 @@ public class DatatypeInputFormatMap {
                             .createExecutableExtension(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
 
                     for (IConfigurationElement datatypeElement : configElement.getChildren()) {
-                        ValueDatatype datatype = (ValueDatatype)datatypeElement
-                                .createExecutableExtension(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
-
-                        getInputFormatMap().put(datatype, inputFormatFactory);
+                        Class<? extends ValueDatatype> datatypeClass = resolveDatatypeClass(extension, datatypeElement);
+                        getInputFormatMap().put(datatypeClass, inputFormatFactory);
                     }
-
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(new IpsStatus(
                             "Unable to create the InputFormatFactory identified by the extension unique identifier: " //$NON-NLS-1$
                                     + extension.getUniqueIdentifier(), e));
                 }
             }
+        }
+    }
+
+    private Class<? extends ValueDatatype> resolveDatatypeClass(IExtension extension,
+            IConfigurationElement datatypeElement) {
+        String classAttribute = datatypeElement.getAttribute(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
+        try {
+            @SuppressWarnings("unchecked")
+            // defined safe by extension definition
+            Class<? extends ValueDatatype> datatypeClass = (Class<? extends ValueDatatype>)Class
+                    .forName(classAttribute);
+            return datatypeClass;
+        } catch (ClassNotFoundException e) {
+            throw new CoreRuntimeException(new IpsStatus(
+                    "Cannot load class " + classAttribute + " while loading extension " //$NON-NLS-1$ //$NON-NLS-2$
+                            + extension.getUniqueIdentifier(), e));
         }
     }
 
@@ -77,13 +90,20 @@ public class DatatypeInputFormatMap {
      * <p>
      * If no format can be found regardlessly, a {@link DefaultInputFormat} is returned as a
      * fall-back. Thus this method never returns <code>null</code>.
+     * <p>
+     * If the parameter datatype is null, always the {@link DefaultInputFormat} is returned.
      * 
      * @param datatype the {@link ValueDatatype} to create an {@link IInputFormat} for.
      */
     public IInputFormat<String> getDatatypeInputFormat(ValueDatatype datatype) {
-        IDatatypeInputFormatFactory inputformatFactory = getInputFormatMap().get(datatype);
-        if (inputformatFactory == null) {
-            inputformatFactory = getNearestSupertypeFactory(datatype);
+        IDatatypeInputFormatFactory inputformatFactory;
+        if (datatype == null) {
+            inputformatFactory = null;
+        } else {
+            inputformatFactory = getInputFormatMap().get(datatype);
+            if (inputformatFactory == null) {
+                inputformatFactory = getNearestSupertypeFactory(datatype);
+            }
         }
         return createInputFormatOrReturnDefault(datatype, inputformatFactory);
     }
@@ -103,8 +123,9 @@ public class DatatypeInputFormatMap {
     }
 
     private IDatatypeInputFormatFactory getNearestSupertypeFactoryByClass(Class<? extends ValueDatatype> requiredClass) {
-        Entry<ValueDatatype, IDatatypeInputFormatFactory> previouslyFoundEntry = null;
-        for (Entry<ValueDatatype, IDatatypeInputFormatFactory> currentEntry : getInputFormatMap().entrySet()) {
+        Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> previouslyFoundEntry = null;
+        for (Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> currentEntry : getInputFormatMap()
+                .entrySet()) {
             if (qualifiesAsFactory(previouslyFoundEntry, currentEntry, requiredClass)) {
                 previouslyFoundEntry = currentEntry;
             }
@@ -112,10 +133,10 @@ public class DatatypeInputFormatMap {
         return previouslyFoundEntry == null ? null : previouslyFoundEntry.getValue();
     }
 
-    private boolean qualifiesAsFactory(Entry<ValueDatatype, IDatatypeInputFormatFactory> previousEntry,
-            Entry<ValueDatatype, IDatatypeInputFormatFactory> currentEntry,
+    private boolean qualifiesAsFactory(Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> previousEntry,
+            Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> currentEntry,
             Class<? extends ValueDatatype> requiredClass) {
-        Class<? extends ValueDatatype> registeredDatatypeClass = currentEntry.getKey().getClass();
+        Class<? extends ValueDatatype> registeredDatatypeClass = currentEntry.getKey();
         if (registeredDatatypeClass.isAssignableFrom(requiredClass)) {
             if (providesMoreSpecificFactoryThanPreviousEntry(previousEntry, currentEntry)) {
                 return true;
@@ -124,11 +145,11 @@ public class DatatypeInputFormatMap {
         return false;
     }
 
-    private boolean providesMoreSpecificFactoryThanPreviousEntry(Entry<ValueDatatype, IDatatypeInputFormatFactory> previousEntry,
-            Entry<ValueDatatype, IDatatypeInputFormatFactory> currentEntry) {
+    private boolean providesMoreSpecificFactoryThanPreviousEntry(Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> previousEntry,
+            Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> currentEntry) {
         if (previousEntry != null) {
-            Class<? extends ValueDatatype> previouslyFoundSuperDatatypeClass = previousEntry.getKey().getClass();
-            Class<? extends ValueDatatype> currentSuperDatatypeClass = currentEntry.getKey().getClass();
+            Class<? extends ValueDatatype> previouslyFoundSuperDatatypeClass = previousEntry.getKey();
+            Class<? extends ValueDatatype> currentSuperDatatypeClass = currentEntry.getKey();
             return previouslyFoundSuperDatatypeClass.isAssignableFrom(currentSuperDatatypeClass);
         }
         return true;
@@ -147,7 +168,7 @@ public class DatatypeInputFormatMap {
         }
     }
 
-    protected Map<ValueDatatype, IDatatypeInputFormatFactory> getInputFormatMap() {
+    protected Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> getInputFormatMap() {
         return inputFormatMap;
     }
 }

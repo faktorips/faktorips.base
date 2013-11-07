@@ -52,7 +52,7 @@ public class DatatypeInputFormatMapTest {
     @Mock
     private IInputFormat<String> subclassResult;
 
-    private Map<ValueDatatype, IDatatypeInputFormatFactory> map;
+    private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> map;
 
     private DatatypeInputFormatMap inputFormatMap;
 
@@ -62,8 +62,8 @@ public class DatatypeInputFormatMapTest {
         map = inputFormatMap.getInputFormatMap();
         Mockito.when(factory1.newInputFormat(datatype1)).thenReturn(result1);
         Mockito.when(factory2.newInputFormat(datatype2)).thenReturn(result2);
-        map.put(datatype1, factory1);
-        map.put(datatype2, factory2);
+        map.put(datatype1.getClass(), factory1);
+        map.put(datatype2.getClass(), factory2);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class DatatypeInputFormatMapTest {
 
     @Test
     public void test_useNearestSuperclassInputFormat() {
-        map.put(subclassDatatype, subclassFactory);
+        map.put(subclassDatatype.getClass(), subclassFactory);
         Mockito.when(subclassFactory.newInputFormat(subsubclassDatatype)).thenReturn(subclassResult);
 
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subsubclassDatatype);
