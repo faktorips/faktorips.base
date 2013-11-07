@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.inputFormat.Messages;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 

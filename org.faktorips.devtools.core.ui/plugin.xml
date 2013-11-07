@@ -3041,7 +3041,13 @@
          <inputformat
                class="org.faktorips.devtools.core.ui.inputFormat.MoneyFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
-        </inputformat>       
+        </inputformat>
+         <inputformat
+               class="org.faktorips.devtools.core.ui.inputFormat.EnumDatatypeInputFormatFactory">
+            <datatype
+                  class="org.faktorips.datatype.EnumDatatype">
+            </datatype>
+         </inputformat>       
        
    </extension> 
 </plugin>
