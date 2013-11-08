@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
-import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -40,8 +39,6 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
 
     private final UIDatatypeFormatter uiDatatypeFormatter;
 
-    private SearchPattern searchPattern = new SearchPattern();
-
     public ValueSetProposalProvider(IConfigElement propertyValue, UIDatatypeFormatter uiDatatypeFormatter) {
         configElement = propertyValue;
         this.uiDatatypeFormatter = uiDatatypeFormatter;
@@ -52,21 +49,24 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         if (isEnumValueSetAllowed()) {
             String prefix = StringUtils.left(contents, position);
             String lastValue = getLastValue(prefix);
-            boolean needSeparator = needSeparator(prefix, lastValue);
-            searchPattern.setPattern(lastValue);
-            List<IContentProposal> result = new ArrayList<IContentProposal>();
-            List<String> allowedValuesAsList = getAllowedValuesAsList();
-            for (String value : allowedValuesAsList) {
-                String content = getFormatValue(value);
-                if (!isAlreadyContained(value) && searchPattern.matches(content)) {
-                    ContentProposal contentProposal = new ContentProposal(addSeparatorIfNecessary(content,
-                            needSeparator), content, null, lastValue);
-                    result.add(contentProposal);
-                }
-            }
+            List<IContentProposal> result = createContentProposals(lastValue);
             return result.toArray(new IContentProposal[result.size()]);
         }
         return new IContentProposal[0];
+    }
+
+    private List<IContentProposal> createContentProposals(String lastValue) {
+        List<IContentProposal> result = new ArrayList<IContentProposal>();
+        List<String> allowedValuesAsList = getAllowedValuesAsList();
+        for (String value : allowedValuesAsList) {
+            String content = getFormatValue(value);
+            if (!isAlreadyContained(value) && content.startsWith(lastValue)) {
+                final String newContentPart = content.substring(lastValue.length());
+                ContentProposal contentProposal = new ContentProposal(newContentPart, content, null, lastValue);
+                result.add(contentProposal);
+            }
+        }
+        return result;
     }
 
     private boolean isEnumValueSetAllowed() {
@@ -132,30 +132,6 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         return uiDatatypeFormatter.formatValue(getDatatype(), value);
     }
 
-    private String addSeparatorIfNecessary(String value, boolean needSeparator) {
-        if (needSeparator) {
-            return ValueSetFormat.VALUESET_SEPARATOR + " " + value; //$NON-NLS-1$
-        }
-        return value;
-    }
-
-    private boolean needSeparator(String s, String identifier) {
-        if (StringUtils.isEmpty(s) || s.equals(identifier)) {
-            return false;
-        }
-        int pos = s.indexOf(identifier);
-        if (pos == 0) {
-            return !endsWithSeparator(s);
-        } else if (pos > 0) {
-            return !endsWithSeparator(s.substring(0, pos));
-        }
-        return true;
-    }
-
-    private boolean endsWithSeparator(String s) {
-        return s.trim().endsWith(ValueSetFormat.VALUESET_SEPARATOR);
-    }
-
     private String getLastValue(String s) {
         if (StringUtils.isEmpty(s)) {
             return StringUtils.EMPTY;
@@ -168,7 +144,8 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
             }
             i--;
         }
-        return s.substring(i + 1).trim();
+        // removes whitespace chars from beginning of the input string
+        return StringUtils.stripStart(s.substring(i + 1), null);
     }
 
     private boolean isLegalChar(char c) {
