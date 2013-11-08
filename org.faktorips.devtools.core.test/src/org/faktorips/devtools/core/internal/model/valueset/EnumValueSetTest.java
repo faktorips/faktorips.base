@@ -720,14 +720,14 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-        public void testIsContainingNull() {
-            EnumValueSet set = new EnumValueSet(ce, "50");
-    
-            assertFalse(set.isContainingNull());
-    
-            set.addValue(null);
-            assertTrue(set.isContainingNull());
-        }
+    public void testIsContainingNull() {
+        EnumValueSet set = new EnumValueSet(ce, "50");
+
+        assertFalse(set.isContainingNull());
+
+        set.addValue(null);
+        assertTrue(set.isContainingNull());
+    }
 
     @Test
     public void testAddValues() {
@@ -780,4 +780,32 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         set.getIpsModel().removeChangeListener(mockedListener);
     }
+
+    @Test
+    public void testFormatList_empty() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+
+        String shortString = enumValueSet.toShortString();
+
+        assertEquals("{}", shortString);
+    }
+
+    @Test
+    public void testFormatList_oneElement() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, Arrays.asList("a"), "id");
+
+        String shortString = enumValueSet.toShortString();
+
+        assertEquals("{a}", shortString);
+    }
+
+    @Test
+    public void testFormatList_twoElement() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, Arrays.asList("a", "b"), "id");
+
+        String shortString = enumValueSet.toShortString();
+
+        assertEquals("{a | b}", shortString);
+    }
+
 }

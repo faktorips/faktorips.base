@@ -37,10 +37,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
-    private static final String EMPTY_ENUM_VALUESET = "{}"; //$NON-NLS-1$
-
-    public static final String VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
-
     private final IValueSetOwner valueSetOwner;
 
     private final IpsUIPlugin uiPlugin;
@@ -70,10 +66,10 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
                 }
             } else if (Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed) && isUnrestrictedAllowed()) {
                 return getUnrestrictedValueSet();
-            } else if (EMPTY_ENUM_VALUESET.equals(stringToBeParsed)) {
+            } else if (EnumValueSet.ENUM_VALUESET_EMPTRY.equals(stringToBeParsed)) {
                 return getEmptyValueSet();
             }
-            String[] split = stringToBeParsed.split("\\" + VALUESET_SEPARATOR); //$NON-NLS-1$
+            String[] split = stringToBeParsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
             List<String> parsedValues = parseValues(split);
             if (!isEqualContent(parsedValues)) {
                 EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
@@ -187,12 +183,12 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         StringBuffer buffer = new StringBuffer();
         String[] values = enumValueSet.getValues();
         if (values.length == 0) {
-            return EMPTY_ENUM_VALUESET;
+            return EnumValueSet.ENUM_VALUESET_EMPTRY;
         }
         for (String id : values) {
             String formatedEnumText = IpsUIPlugin.getDefault().getInputFormat(type).format(id);
             buffer.append(formatedEnumText);
-            buffer.append(" " + ValueSetFormat.VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+            buffer.append(" " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (buffer.length() > 3) {
             // Remove the separator after the last value (" | ")

@@ -51,6 +51,16 @@ import org.w3c.dom.NodeList;
  */
 public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
+    public static final String ENUM_VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
+
+    public static final String ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE = " " + ENUM_VALUESET_SEPARATOR + " "; //$NON-NLS-1$ //$NON-NLS-2$
+
+    public static final String ENUM_VALUESET_START = "{"; //$NON-NLS-1$
+
+    public static final String ENUM_VALUESET_END = "}"; //$NON-NLS-1$
+
+    public static final String ENUM_VALUESET_EMPTRY = ENUM_VALUESET_START + ENUM_VALUESET_END;
+
     public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
 
     private static final String XML_DATA = "Data"; //$NON-NLS-1$
@@ -453,7 +463,20 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             }
             return result.toString();
         }
-        return values.toString();
+        return formatList(values);
+    }
+
+    private String formatList(List<String> stringValues) {
+        StringBuilder stringBuilder = new StringBuilder(ENUM_VALUESET_START);
+        for (Iterator<String> iterator = stringValues.iterator(); iterator.hasNext();) {
+            String value = iterator.next();
+            stringBuilder.append(value);
+            if (iterator.hasNext()) {
+                stringBuilder.append(ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE);
+            }
+        }
+        stringBuilder.append(ENUM_VALUESET_END);
+        return stringBuilder.toString();
     }
 
     @Override
