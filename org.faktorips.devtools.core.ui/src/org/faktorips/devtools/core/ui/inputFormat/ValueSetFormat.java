@@ -54,6 +54,9 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     @Override
     protected IValueSet parseInternal(String stringToBeParsed) {
         if (isEnumValueSetAllowed()) {
+            if (isRangeAllowed()) {
+                getValueSet();
+            }
             if (stringToBeParsed.isEmpty()) {
                 if (isUnrestrictedAllowed()) {
                     return getUnrestrictedValueSet();
@@ -71,6 +74,10 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
             }
         }
         return getValueSet();
+    }
+
+    private boolean isRangeAllowed() {
+        return isAllowedValueSetType(ValueSetType.RANGE);
     }
 
     private boolean isUnrestrictedAllowed() {

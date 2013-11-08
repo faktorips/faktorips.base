@@ -26,6 +26,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -69,6 +70,9 @@ public class ValueSetFormatTest {
     private String OUTPUT_VALUE = "test.output";
 
     private EnumValueSet enumValueSet;
+
+    @Mock
+    private ValueSet valueSet;
 
     private ValueSetFormat format;
 
@@ -181,6 +185,16 @@ public class ValueSetFormatTest {
         assertEquals(2, enumVS.getValuesAsList().size());
         assertEquals("test", enumVS.getValue(0));
         assertEquals("test1", enumVS.getValue(1));
+    }
+
+    @Test
+    public void testParseInternalRange() throws CoreException {
+        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.RANGE));
+        when(configElement.getValueSet()).thenReturn(valueSet);
+        IValueSet parseInternal = format.parseInternal("[10..100/2]");
+
+        assertNotNull(parseInternal);
+        assertEquals(valueSet, parseInternal);
     }
 
 }
