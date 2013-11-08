@@ -45,23 +45,7 @@ public class UIDatatypeFormatter {
      */
     public String formatValueSet(IValueSet valueSet) {
         if (valueSet instanceof EnumValueSet) {
-            EnumValueSet enumValueSet = (EnumValueSet)valueSet;
-            ValueDatatype type = enumValueSet.getValueDatatype();
-            StringBuffer buffer = new StringBuffer();
-            // buffer.append("["); //$NON-NLS-1$
-            for (String id : enumValueSet.getValues()) {
-                String formatedEnumText = formatValue(type, id);
-                buffer.append(formatedEnumText);
-                buffer.append(" " + ValueSetFormat.VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            if (buffer.length() > 3) {
-                /*
-                 * Remove the separator after the last value (" | ")
-                 */
-                buffer.delete(buffer.length() - 3, buffer.length());
-            }
-            // buffer.append("]"); //$NON-NLS-1$
-            return buffer.toString();
+            return ValueSetFormat.formatValueSet(valueSet);
         } else if (valueSet instanceof IRangeValueSet) {
             RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
             StringBuffer sb = new StringBuffer();

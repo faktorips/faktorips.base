@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
@@ -155,8 +156,36 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     }
 
     @Override
-    protected String formatInternal(IValueSet value) {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValueSet(value);
+    protected String formatInternal(IValueSet valueSet) {
+        return formatValueSet(valueSet);
+    }
+
+    /**
+     * Utility method for formatting value sets without the corresponding config-element. Made
+     * static so the {@link UIDatatypeFormatter} can use this method.
+     * 
+     * @param valueSet the valueset to format
+     * @return a string representation of the value set.
+     */
+    public static String formatValueSet(IValueSet valueSet) {
+        if (valueSet instanceof EnumValueSet) {
+            EnumValueSet enumValueSet = (EnumValueSet)valueSet;
+            ValueDatatype type = enumValueSet.getValueDatatype();
+            StringBuffer buffer = new StringBuffer();
+            for (String id : enumValueSet.getValues()) {
+                String formatedEnumText = IpsUIPlugin.getDefault().getInputFormat(type).format(id);
+                buffer.append(formatedEnumText);
+                buffer.append(" " + ValueSetFormat.VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            if (buffer.length() > 3) {
+                /*
+                 * Remove the separator after the last value (" | ")
+                 */
+                buffer.delete(buffer.length() - 3, buffer.length());
+            }
+            return buffer.toString();
+        }
+        return ""; //$NON-NLS-1$
     }
 
     @Override

@@ -89,13 +89,22 @@ public class UIDatatypeFormatterTest {
 
     @Test
     public void testFormatEnumValueSet() {
+        assertEnumValuesetFormatting(new String[] { "1", "two", "three" }, "1 | two | three");
+    }
+
+    @Test
+    public void testFormatEmptyEnumValueSet() {
+        assertEnumValuesetFormatting(new String[0], "");
+    }
+
+    private void assertEnumValuesetFormatting(String[] enumValues, String expectedFormat) {
         EnumValueSet enumValueSet = Mockito.mock(EnumValueSet.class);
-        Mockito.when(enumValueSet.getValues()).thenReturn(new String[] { "1", "two", "three" });
+        Mockito.when(enumValueSet.getValues()).thenReturn(enumValues);
         when(enumValueSet.getValueDatatype()).thenReturn(Datatype.STRING);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(enumValueSet);
-        Assert.assertEquals("1 | two | three", formatString);
+        Assert.assertEquals(expectedFormat, formatString);
     }
 
     @Test
