@@ -105,7 +105,7 @@ public class UIDatatypeFormatterTest {
 
     @Test
     public void testFormatEmptyEnumValueSet() throws Exception {
-        assertEnumValuesetFormatting(new String[0], "");
+        assertEnumValuesetFormatting(new String[0], "{}");
     }
 
     private void assertEnumValuesetFormatting(String[] enumValues, String expectedFormat) throws Exception {

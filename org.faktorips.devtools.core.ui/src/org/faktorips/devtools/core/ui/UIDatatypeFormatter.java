@@ -15,11 +15,6 @@ package org.faktorips.devtools.core.ui;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.internal.model.valueset.Messages;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
 
@@ -44,24 +39,7 @@ public class UIDatatypeFormatter {
      * @see ValueSetFormat
      */
     public String formatValueSet(IValueSet valueSet) {
-        if (valueSet instanceof IEnumValueSet) {
-            return ValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
-        } else if (valueSet instanceof IRangeValueSet) {
-            RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
-            StringBuffer sb = new StringBuffer();
-            sb.append('[');
-            sb.append((rangeValueSet.getLowerBound() == null ? "unlimited" : rangeValueSet.getLowerBound())); //$NON-NLS-1$
-            sb.append('-');
-            sb.append((rangeValueSet.getUpperBound() == null ? "unlimited" : rangeValueSet.getUpperBound())); //$NON-NLS-1$
-            sb.append(']');
-            if (rangeValueSet.getStep() != null) {
-                sb.append(Messages.RangeValueSet_0);
-                sb.append(rangeValueSet.getStep());
-            }
-            return sb.toString();
-        } else if (valueSet instanceof IUnrestrictedValueSet) {
-            return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
-        }
-        return ""; //$NON-NLS-1$
+        return ValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
     }
+
 }

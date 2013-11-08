@@ -17,14 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.Messages;
@@ -32,6 +36,8 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
+
+    private static final String EMPTY_ENUM_VALUESET = "{}"; //$NON-NLS-1$
 
     public static final String VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
 
@@ -62,8 +68,10 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
                 } else {
                     return getEmptyValueSet();
                 }
-            } else if (stringToBeParsed.equals(Messages.ValueSetFormat_unrestricted)) {
+            } else if (Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed) && isUnrestrictedAllowed()) {
                 return getUnrestrictedValueSet();
+            } else if (EMPTY_ENUM_VALUESET.equals(stringToBeParsed)) {
+                return getEmptyValueSet();
             }
             String[] split = stringToBeParsed.split("\\" + VALUESET_SEPARATOR); //$NON-NLS-1$
             List<String> parsedValues = parseValues(split);
@@ -164,23 +172,52 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     @Override
     protected String formatInternal(IValueSet valueSet) {
         if (valueSet instanceof IEnumValueSet) {
-            IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
-            ValueDatatype type = getValueDatatype();
-            StringBuffer buffer = new StringBuffer();
-            for (String id : enumValueSet.getValues()) {
-                String formatedEnumText = IpsUIPlugin.getDefault().getInputFormat(type).format(id);
-                buffer.append(formatedEnumText);
-                buffer.append(" " + ValueSetFormat.VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            if (buffer.length() > 3) {
-                /*
-                 * Remove the separator after the last value (" | ")
-                 */
-                buffer.delete(buffer.length() - 3, buffer.length());
-            }
-            return buffer.toString();
+            return formatEnumValueSet(valueSet);
+        } else if (valueSet instanceof IRangeValueSet) {
+            return formatRangeValueSet(valueSet);
+        } else if (valueSet instanceof IUnrestrictedValueSet) {
+            return formatUnrestrictedValueSet();
         }
-        return ""; //$NON-NLS-1$
+        return StringUtils.EMPTY;
+    }
+
+    private String formatEnumValueSet(IValueSet valueSet) {
+        IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
+        ValueDatatype type = getValueDatatype();
+        StringBuffer buffer = new StringBuffer();
+        String[] values = enumValueSet.getValues();
+        if (values.length == 0) {
+            return EMPTY_ENUM_VALUESET;
+        }
+        for (String id : values) {
+            String formatedEnumText = IpsUIPlugin.getDefault().getInputFormat(type).format(id);
+            buffer.append(formatedEnumText);
+            buffer.append(" " + ValueSetFormat.VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        if (buffer.length() > 3) {
+            // Remove the separator after the last value (" | ")
+            buffer.delete(buffer.length() - 3, buffer.length());
+        }
+        return buffer.toString();
+    }
+
+    private String formatRangeValueSet(IValueSet valueSet) {
+        RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
+        StringBuffer sb = new StringBuffer();
+        sb.append('[');
+        sb.append((rangeValueSet.getLowerBound() == null ? "unlimited" : rangeValueSet.getLowerBound())); //$NON-NLS-1$
+        sb.append('-');
+        sb.append((rangeValueSet.getUpperBound() == null ? "unlimited" : rangeValueSet.getUpperBound())); //$NON-NLS-1$
+        sb.append(']');
+        if (rangeValueSet.getStep() != null) {
+            sb.append(org.faktorips.devtools.core.internal.model.valueset.Messages.RangeValueSet_0);
+            sb.append(rangeValueSet.getStep());
+        }
+        return sb.toString();
+    }
+
+    private String formatUnrestrictedValueSet() {
+        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
     }
 
     private ValueDatatype getValueDatatype() {
