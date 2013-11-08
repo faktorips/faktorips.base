@@ -24,13 +24,13 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class ValueSetProposalProvider implements IContentProposalProvider {
@@ -149,6 +149,6 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
     }
 
     private boolean isLegalChar(char c) {
-        return !ValueSetFormat.VALUESET_SEPARATOR.equals(String.valueOf(c));
+        return EnumValueSet.ENUM_VALUESET_SEPARATOR.equals(String.valueOf(c));
     }
 }
