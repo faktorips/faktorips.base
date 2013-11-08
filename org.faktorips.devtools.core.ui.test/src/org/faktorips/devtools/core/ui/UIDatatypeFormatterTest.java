@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
@@ -24,15 +25,25 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UIDatatypeFormatterTest {
+
+    @Mock
+    private IIpsProject ipsProject;
+
     private static Locale savedFormattingLocale;
 
     @BeforeClass
@@ -88,19 +99,21 @@ public class UIDatatypeFormatterTest {
     }
 
     @Test
-    public void testFormatEnumValueSet() {
+    public void testFormatEnumValueSet() throws Exception {
         assertEnumValuesetFormatting(new String[] { "1", "two", "three" }, "1 | two | three");
     }
 
     @Test
-    public void testFormatEmptyEnumValueSet() {
+    public void testFormatEmptyEnumValueSet() throws Exception {
         assertEnumValuesetFormatting(new String[0], "");
     }
 
-    private void assertEnumValuesetFormatting(String[] enumValues, String expectedFormat) {
-        EnumValueSet enumValueSet = Mockito.mock(EnumValueSet.class);
-        Mockito.when(enumValueSet.getValues()).thenReturn(enumValues);
-        when(enumValueSet.getValueDatatype()).thenReturn(Datatype.STRING);
+    private void assertEnumValuesetFormatting(String[] enumValues, String expectedFormat) throws Exception {
+        IEnumValueSet enumValueSet = Mockito.mock(IEnumValueSet.class);
+        when(enumValueSet.getValues()).thenReturn(enumValues);
+        IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
+        when(enumValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
+        when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.STRING);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(enumValueSet);

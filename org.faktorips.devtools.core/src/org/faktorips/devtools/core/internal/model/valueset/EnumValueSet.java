@@ -28,11 +28,11 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -66,11 +66,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     private Map<String, List<Integer>> valuesToIndexMap = new HashMap<String, List<Integer>>();
 
-    public EnumValueSet(IIpsObjectPart parent, String partId) {
+    public EnumValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.ENUM, parent, partId);
     }
 
-    public EnumValueSet(IIpsObjectPart parent, List<String> values, String partId) {
+    public EnumValueSet(IValueSetOwner parent, List<String> values, String partId) {
         this(parent, partId);
         this.values = values;
         refillValuesToIndexMap();
@@ -484,7 +484,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public IValueSet copy(IIpsObjectPart parent, String id) {
+    public IValueSet copy(IValueSetOwner parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
         copy.refillValuesToIndexMap();

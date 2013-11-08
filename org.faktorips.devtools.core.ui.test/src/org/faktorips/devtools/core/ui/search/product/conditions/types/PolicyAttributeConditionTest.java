@@ -31,12 +31,12 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -88,7 +88,7 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
         attribut.setDatatype(integerDatatype.getName());
 
         IValueSet valueSet = mock(IValueSet.class);
-        when(valueSet.copy(any(IIpsObjectPart.class), any(String.class))).thenReturn(valueSet);
+        when(valueSet.copy(any(IValueSetOwner.class), any(String.class))).thenReturn(valueSet);
 
         attribut.setValueSetCopy(valueSet);
 

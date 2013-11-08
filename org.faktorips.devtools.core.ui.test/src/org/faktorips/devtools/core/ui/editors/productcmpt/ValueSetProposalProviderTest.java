@@ -84,7 +84,7 @@ public class ValueSetProposalProviderTest {
         when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
         when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("enumA aaaaa");
         when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("enumB bbbbb");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("enumC ccccc");
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("en um C ccccc");
     }
 
     @Test
@@ -116,7 +116,18 @@ public class ValueSetProposalProviderTest {
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals("enumA aaaaa", proposals[0].getContent());
+        assertEquals(" aaaaa", proposals[0].getContent());
+    }
+
+    @Test
+    public void testGetProposalsOneContent_withWhitespace() throws Exception {
+        setUpEnumValueSet();
+
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("en um ", 6);
+
+        assertNotNull(proposals);
+        assertEquals(1, proposals.length);
+        assertEquals("C ccccc", proposals[0].getContent());
     }
 
     @Test
@@ -147,7 +158,7 @@ public class ValueSetProposalProviderTest {
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals("enumB bbbbb", proposals[0].getContent());
+        assertEquals(" bbbbb", proposals[0].getContent());
     }
 
     @Test
@@ -179,11 +190,11 @@ public class ValueSetProposalProviderTest {
         setUpEnumValueSet();
         when(propertyValue.getValueSet()).thenReturn(new EnumValueSet(propertyValue, Arrays.asList("aaaaa"), "123"));
 
-        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA aaaaa | enumB | asfasdf", 20);
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("enumA aaaaa | enumB | asfasdf", 19);
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals("enumB bbbbb", proposals[0].getContent());
+        assertEquals(" bbbbb", proposals[0].getContent());
     }
 
     @Test

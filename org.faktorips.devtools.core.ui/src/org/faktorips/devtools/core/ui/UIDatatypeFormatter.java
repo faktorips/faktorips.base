@@ -15,9 +15,9 @@ package org.faktorips.devtools.core.ui;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.Messages;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -44,8 +44,8 @@ public class UIDatatypeFormatter {
      * @see ValueSetFormat
      */
     public String formatValueSet(IValueSet valueSet) {
-        if (valueSet instanceof EnumValueSet) {
-            return ValueSetFormat.formatValueSet(valueSet);
+        if (valueSet instanceof IEnumValueSet) {
+            return ValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
         } else if (valueSet instanceof IRangeValueSet) {
             RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
             StringBuffer sb = new StringBuffer();

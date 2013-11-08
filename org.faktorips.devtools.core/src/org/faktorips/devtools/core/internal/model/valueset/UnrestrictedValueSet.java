@@ -16,10 +16,10 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -45,7 +45,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
-    public UnrestrictedValueSet(IIpsObjectPart parent, String partId) {
+    public UnrestrictedValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
@@ -136,7 +136,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     }
 
     @Override
-    public IValueSet copy(IIpsObjectPart parent, String id) {
+    public IValueSet copy(IValueSetOwner parent, String id) {
         return new UnrestrictedValueSet(parent, id);
     }
 

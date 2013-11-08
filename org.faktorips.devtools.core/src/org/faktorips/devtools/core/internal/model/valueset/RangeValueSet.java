@@ -20,10 +20,10 @@ import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  */
 public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
-    public final static String XML_TAG = "Range"; //$NON-NLS-1$
+    public final static String XML_TAG_RANGE = "Range"; //$NON-NLS-1$
 
     private String lowerBound;
     private String upperBound;
@@ -56,14 +56,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Creates an unbounded range with no step.
      */
-    public RangeValueSet(IIpsObjectPart parent, String partId) {
+    public RangeValueSet(IValueSetOwner parent, String partId) {
         this(parent, partId, null, null, null);
     }
 
     /**
      * Creates a range with the given bounds and and step.
      */
-    public RangeValueSet(IIpsObjectPart parent, String partId, String lower, String upper, String step) {
+    public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step) {
         super(ValueSetType.RANGE, parent, partId);
         lowerBound = lower;
         upperBound = upper;
@@ -533,7 +533,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
-        Element tagElement = doc.createElement(XML_TAG);
+        Element tagElement = doc.createElement(XML_TAG_RANGE);
         tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
         ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
         ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
@@ -542,7 +542,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public IValueSet copy(IIpsObjectPart parent, String id) {
+    public IValueSet copy(IValueSetOwner parent, String id) {
         RangeValueSet retValue = new RangeValueSet(parent, id);
 
         retValue.lowerBound = lowerBound;
@@ -566,6 +566,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * @deprecated Use {@link #isContainingNull()} instead
      */
+    @Deprecated
     @Override
     public boolean getContainsNull() {
         return isContainingNull();

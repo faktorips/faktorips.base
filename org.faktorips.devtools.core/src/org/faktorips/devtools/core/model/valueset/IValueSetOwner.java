@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public interface IValueSetOwner extends IIpsElement {
+public interface IValueSetOwner extends IIpsObjectPart {
 
     public final static String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
 
