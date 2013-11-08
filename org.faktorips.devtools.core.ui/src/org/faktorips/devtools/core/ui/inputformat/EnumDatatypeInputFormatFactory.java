@@ -11,18 +11,16 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 
-/**
- * Factory that creates a DateISOStringFormat for a Datatype
- * 
- */
-public class DateISOStringFormatFactory implements IDatatypeInputFormatFactory {
+public class EnumDatatypeInputFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        return DateISOStringFormat.newInstance();
+        return EnumDatatypeInputFormat.newInstance((EnumDatatype)datatype);
     }
+
 }

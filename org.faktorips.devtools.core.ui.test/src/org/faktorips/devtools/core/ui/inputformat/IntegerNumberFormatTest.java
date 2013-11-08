@@ -11,14 +11,14 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.Locale;
 
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.inputFormat.IntegerNumberFormat;
+import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
 
 public class IntegerNumberFormatTest extends TestCase {
 

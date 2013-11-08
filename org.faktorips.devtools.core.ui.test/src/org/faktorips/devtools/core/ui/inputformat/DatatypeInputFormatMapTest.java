@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.Map;
 
@@ -21,6 +21,10 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatMap;
+import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.IDatatypeInputFormatFactory;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

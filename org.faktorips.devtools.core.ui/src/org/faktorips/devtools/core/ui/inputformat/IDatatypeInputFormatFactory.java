@@ -11,16 +11,21 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 
-public class EnumDatatypeInputFormatFactory implements IDatatypeInputFormatFactory {
+/**
+ * IInputFormatFactory registered with the <i>inputFormat</i> extension point.
+ * 
+ */
 
-    @Override
-    public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        return EnumDatatypeInputFormat.newInstance((EnumDatatype)datatype);
-    }
+public interface IDatatypeInputFormatFactory {
+
+    /**
+     * Instantiate a specific Datatype with respect to the provided datatype. It is in the
+     * responsibility of the factory provider if the datatype is considered.
+     */
+    public IInputFormat<String> newInputFormat(ValueDatatype datatype);
 
 }

@@ -17,7 +17,7 @@ import java.util.Currency;
 
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.inputFormat.MoneyFormat;
+import org.faktorips.devtools.core.ui.inputformat.MoneyFormat;
 
 /**
  * This class is a {@link EditField} for money values. The combo control is populated with the

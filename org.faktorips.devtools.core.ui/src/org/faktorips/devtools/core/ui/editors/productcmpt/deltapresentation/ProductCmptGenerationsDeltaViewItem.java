@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGenerationToTypeDelta;
-import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 
 /**
  * Helper class for the {@link DeltaContentProvider} and {@link DeltaLabelProvider}, to provide

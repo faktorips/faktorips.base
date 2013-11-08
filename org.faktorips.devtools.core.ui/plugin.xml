@@ -3019,14 +3019,14 @@
          name="Input Format"
          point="org.faktorips.devtools.core.ui.inputFormat">
          <inputformat
-               class="org.faktorips.devtools.core.ui.inputFormat.DecimalNumberFormatFactory">
+               class="org.faktorips.devtools.core.ui.inputformat.DecimalNumberFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.DecimalDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.DoubleDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.BigDecimalDatatype" />
         </inputformat>
         
          <inputformat
-               class="org.faktorips.devtools.core.ui.inputFormat.IntegerNumberFormatFactory">
+               class="org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.IntegerDatatype" />
 	        <datatype class="org.faktorips.datatype.classtypes.LongDatatype" />
 	        <datatype class="org.faktorips.datatype.PrimitiveIntegerDatatype" />
@@ -3034,16 +3034,16 @@
         </inputformat>
         
         <inputformat
-               class="org.faktorips.devtools.core.ui.inputFormat.DateISOStringFormatFactory">
+               class="org.faktorips.devtools.core.ui.inputformat.DateISOStringFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
 	       	<datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
         </inputformat>
          <inputformat
-               class="org.faktorips.devtools.core.ui.inputFormat.MoneyFormatFactory">
+               class="org.faktorips.devtools.core.ui.inputformat.MoneyFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
         </inputformat>
          <inputformat
-               class="org.faktorips.devtools.core.ui.inputFormat.EnumDatatypeInputFormatFactory">
+               class="org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormatFactory">
             <datatype
                   class="org.faktorips.datatype.EnumDatatype">
             </datatype>

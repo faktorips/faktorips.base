@@ -22,8 +22,8 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
 import org.faktorips.devtools.core.ui.controls.DateControl;
-import org.faktorips.devtools.core.ui.inputFormat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.inputFormat.DateISOStringFormat;
+import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormat;
 
 /**
  * A factory for edit fields/controls for {@link GregorianCalendarDatatype},

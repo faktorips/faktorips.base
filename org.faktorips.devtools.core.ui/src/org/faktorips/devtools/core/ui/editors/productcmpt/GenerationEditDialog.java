@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 

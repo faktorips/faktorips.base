@@ -128,8 +128,8 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.inputFormat.DatatypeInputFormatMap;
-import org.faktorips.devtools.core.ui.inputFormat.IInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatMap;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;

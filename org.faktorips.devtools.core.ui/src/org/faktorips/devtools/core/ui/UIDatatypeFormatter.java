@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.inputFormat.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
 
 public class UIDatatypeFormatter {
 

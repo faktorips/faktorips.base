@@ -48,7 +48,7 @@ import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 
 /**
  * Section to display and edit the product attributes

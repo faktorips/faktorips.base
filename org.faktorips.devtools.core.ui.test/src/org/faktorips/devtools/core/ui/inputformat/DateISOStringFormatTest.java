@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.inputFormat.DateISOStringFormat;
+import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormat;
 import org.junit.Test;
 
 public class DateISOStringFormatTest extends AbstractIpsPluginTest {

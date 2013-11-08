@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -19,8 +19,8 @@ import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
 import org.faktorips.devtools.core.ui.controls.TimeControl;
-import org.faktorips.devtools.core.ui.inputFormat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.inputFormat.TimeISOStringFormat;
+import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormat;
 
 /**
  * A factory for edit fields/controls for {@link LocalTimeDatatype}.

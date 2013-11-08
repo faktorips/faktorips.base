@@ -11,35 +11,31 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.values.Decimal;
 
 /**
- * Format for floating point number input. This formatter is valid for {@link Decimal},
- * {@link Double} and {@link BigDecimal}
+ * Format for integer number input.
  * 
  * @author Stefan Widmaier
  */
-public class DecimalNumberFormat extends AbstractNumberFormat {
+public class IntegerNumberFormat extends AbstractNumberFormat {
 
     private DecimalFormat numberFormat;
     private final ValueDatatype datatype;
 
-    public static DecimalNumberFormat newInstance(ValueDatatype datatype) {
-        DecimalNumberFormat bigDecimalFormat = new DecimalNumberFormat(datatype);
-        bigDecimalFormat.initFormat();
-        return bigDecimalFormat;
+    public static IntegerNumberFormat newInstance(ValueDatatype datatype) {
+        IntegerNumberFormat longFormat = new IntegerNumberFormat(datatype);
+        longFormat.initFormat();
+        return longFormat;
     }
 
-    protected DecimalNumberFormat(ValueDatatype datatype) {
+    protected IntegerNumberFormat(ValueDatatype datatype) {
         this.datatype = datatype;
     }
 
@@ -50,29 +46,18 @@ public class DecimalNumberFormat extends AbstractNumberFormat {
 
     @Override
     protected void initFormat(Locale locale) {
-        numberFormat = (DecimalFormat)NumberFormat.getNumberInstance(locale);
-        numberFormat.setGroupingUsed(true);
-        numberFormat.setGroupingSize(3);
-        numberFormat.setParseIntegerOnly(false);
-        numberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
-        numberFormat.setRoundingMode(RoundingMode.HALF_UP);
-        numberFormat.setParseBigDecimal(true);
-        exampleString = numberFormat.format(-1000.2);
+        numberFormat = (DecimalFormat)NumberFormat.getIntegerInstance(locale);
+        // setting grouping size to maximum value to avoid formatting group separators but allow
+        // input separators. A single group separator is forbidden (see verifyInternal) but
+        // separators with copy&paste should be allowed
+        numberFormat.setGroupingSize(Byte.MAX_VALUE);
+        exampleString = numberFormat.format(-100000000);
     }
 
     @Override
     protected String formatInternal(String value) {
         Object valueAsObject = datatype.getValue(value);
-        if (valueAsObject instanceof Decimal) {
-            Decimal decimalValue = (Decimal)valueAsObject;
-            if (decimalValue.isNull()) {
-                return null;
-            } else {
-                valueAsObject = decimalValue.bigDecimalValue();
-            }
-        }
-        String stringToBeDisplayed = numberFormat.format(valueAsObject);
-        return stringToBeDisplayed;
+        return numberFormat.format(valueAsObject);
     }
 
     @Override

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
-import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
 import org.faktorips.util.message.MessageList;

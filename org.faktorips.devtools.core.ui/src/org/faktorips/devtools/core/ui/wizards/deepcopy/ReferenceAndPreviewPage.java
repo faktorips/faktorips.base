@@ -37,8 +37,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.inputFormat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.inputFormat.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a

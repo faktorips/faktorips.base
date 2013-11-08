@@ -11,20 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.inputFormat;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import org.faktorips.datatype.ValueDatatype;
 
 /**
- * Factory that creates a MoneyFormat for a Datatype
+ * Factory that creates an IntegerNumberFormatFactory for a Datatype
  * 
  */
-public class MoneyFormatFactory implements IDatatypeInputFormatFactory {
+public class IntegerNumberFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
     public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        MoneyFormat moneyFormat = MoneyFormat.newInstance(null);
-        moneyFormat.setAddCurrencySymbol(true);
-        return moneyFormat;
+        return IntegerNumberFormat.newInstance(datatype);
     }
+
 }
