@@ -94,9 +94,16 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
-     * Checks if the provided ID is equal to one of the enumeration attribute values referencing to
-     * the display name attribute adapted enumeration type. If so the display name is returned,
-     * otherwise <tt>null</tt>.
+     * Searches for the {@link IEnumValue} with the specified id and returns its display name. The
+     * display name is the {@link IEnumAttributeValue value} of the {@link IEnumAttribute} that is
+     * marked as display name.
+     * <p>
+     * Returns <code>null</code> if:
+     * <ul>
+     * <li>the specified id is <code>null</code></li>
+     * <li>no {@link IEnumValue} was found for the specified id</li>
+     * <li>there is no attribute marked as display name</li>
+     * </ul>
      */
     @Override
     public String getValueName(String id) {
@@ -117,7 +124,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
             IEnumAttribute displayNameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
             IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(), ipsProject);
+            if (enumAttributeValue != null) {
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
+                        ipsProject);
+            } else {
+                return null;
+            }
 
         } catch (CoreException e) {
             throw new RuntimeException(e);
