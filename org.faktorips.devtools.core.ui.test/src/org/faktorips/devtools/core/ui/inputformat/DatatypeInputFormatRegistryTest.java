@@ -21,7 +21,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
-import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatMap;
+import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IDatatypeInputFormatFactory;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -33,7 +33,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DatatypeInputFormatMapTest {
+public class DatatypeInputFormatRegistryTest {
 
     @Mock
     private IDatatypeInputFormatFactory factory1;
@@ -58,11 +58,11 @@ public class DatatypeInputFormatMapTest {
 
     private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> map;
 
-    private DatatypeInputFormatMap inputFormatMap;
+    private DatatypeInputFormatRegistry inputFormatMap;
 
     @Before
     public void initMap() {
-        inputFormatMap = new DatatypeInputFormatMap();
+        inputFormatMap = new DatatypeInputFormatRegistry();
         map = inputFormatMap.getInputFormatMap();
         Mockito.when(factory1.newInputFormat(datatype1)).thenReturn(result1);
         Mockito.when(factory2.newInputFormat(datatype2)).thenReturn(result2);

@@ -128,7 +128,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatMap;
+import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
@@ -243,7 +243,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private GregorianCalendar defaultValidityDate;
 
-    private DatatypeInputFormatMap datatypeInputFormat;
+    private DatatypeInputFormatRegistry datatypeInputFormat;
 
     /**
      * This method is for test purposes only.
@@ -337,7 +337,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     public IInputFormat<String> getInputFormat(ValueDatatype datatype) {
         if (datatypeInputFormat == null) {
-            datatypeInputFormat = new DatatypeInputFormatMap();
+            datatypeInputFormat = new DatatypeInputFormatRegistry();
             datatypeInputFormat.initDatatypeInputFormatMap(registry);
         }
         return datatypeInputFormat.getDatatypeInputFormat(datatype);

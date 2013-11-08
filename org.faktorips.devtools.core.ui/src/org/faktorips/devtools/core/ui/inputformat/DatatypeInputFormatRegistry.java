@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class DatatypeInputFormatMap {
+public class DatatypeInputFormatRegistry {
 
     private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory>();
 
@@ -45,22 +45,29 @@ public class DatatypeInputFormatMap {
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(IpsUIPlugin.EXTENSION_POINT_INPUT_FORMAT);
         for (IExtension extension : extensions) {
-            IConfigurationElement[] configElements = extension.getConfigurationElements();
-            for (IConfigurationElement configElement : configElements) {
-                try {
-                    IDatatypeInputFormatFactory inputFormatFactory = (IDatatypeInputFormatFactory)configElement
-                            .createExecutableExtension(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
+            loadExtensions(extension);
+        }
+    }
 
-                    for (IConfigurationElement datatypeElement : configElement.getChildren()) {
-                        Class<? extends ValueDatatype> datatypeClass = resolveDatatypeClass(extension, datatypeElement);
-                        getInputFormatMap().put(datatypeClass, inputFormatFactory);
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(new IpsStatus(
-                            "Unable to create the InputFormatFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                                    + extension.getUniqueIdentifier(), e));
-                }
+    private void loadExtensions(IExtension extension) {
+        IConfigurationElement[] configElements = extension.getConfigurationElements();
+        for (IConfigurationElement configElement : configElements) {
+            loadConfigElement(extension, configElement);
+        }
+    }
+
+    private void loadConfigElement(IExtension extension, IConfigurationElement configElement) {
+        try {
+            IDatatypeInputFormatFactory inputFormatFactory = (IDatatypeInputFormatFactory)configElement
+                    .createExecutableExtension(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
+            for (IConfigurationElement datatypeElement : configElement.getChildren()) {
+                Class<? extends ValueDatatype> datatypeClass = resolveDatatypeClass(extension, datatypeElement);
+                getInputFormatMap().put(datatypeClass, inputFormatFactory);
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(new IpsStatus(
+                    "Unable to create the InputFormatFactory identified by the extension unique identifier: " //$NON-NLS-1$
+                            + extension.getUniqueIdentifier(), e));
         }
     }
 
@@ -69,7 +76,7 @@ public class DatatypeInputFormatMap {
         String classAttribute = datatypeElement.getAttribute(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
         try {
             @SuppressWarnings("unchecked")
-            // defined safe by extension definition
+            // class enforced by extension-point definition
             Class<? extends ValueDatatype> datatypeClass = (Class<? extends ValueDatatype>)Class
                     .forName(classAttribute);
             return datatypeClass;
@@ -85,13 +92,14 @@ public class DatatypeInputFormatMap {
      * registered via the extension point org.faktorips.devtools.core.ui.inputFormat.
      * <p>
      * If the requested datatype is not registered via extension point directly, the formatter for
-     * the datatype's super-class is returned. If there are registered multiple super-classes the
+     * the datatype's super-class is returned. If there are multiple registered super-classes the
      * nearest super-class is used.
      * <p>
      * If no format can be found regardlessly, a {@link DefaultInputFormat} is returned as a
-     * fall-back. Thus this method never returns <code>null</code>.
+     * fall-back.
      * <p>
-     * If the parameter datatype is null, always the {@link DefaultInputFormat} is returned.
+     * If the parameter datatype is <code>null</code>, the {@link DefaultInputFormat} is returned.
+     * Thus this method never returns <code>null</code>.
      * 
      * @param datatype the {@link ValueDatatype} to create an {@link IInputFormat} for.
      */
