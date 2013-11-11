@@ -39,6 +39,8 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
     public ConfigElementField(IConfigElement configElement, AnyValueSetControl valueSetControl,
             boolean formatOnFocusLost) {
         super(valueSetControl.getTextControl(), ValueSetFormat.newInstance(configElement), formatOnFocusLost);
+        // important: the whole value set must never be null but may contains null values
+        setSupportsNullStringRepresentation(false);
         this.valueSetControl = valueSetControl;
         this.configElement = configElement;
         initContentAssistent();
