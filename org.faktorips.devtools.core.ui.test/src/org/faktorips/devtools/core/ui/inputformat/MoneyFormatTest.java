@@ -243,4 +243,38 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     public void testUpdateCurrentCurrency_IAE() {
         moneyFormat.updateCurrentCurrency("illegalValue");
     }
+
+    @Test
+    public void test_getEnteredCurrency_CurrencyCode() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30EUR");
+
+        assertEquals("2,000,000.30", enteredCurrency[0]);
+        assertEquals("EUR", enteredCurrency[1]);
+    }
+
+    @Test
+    public void test_getEnteredCurrency_Symbol() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2.98€");
+
+        assertEquals("2.98", enteredCurrency[0]);
+        assertEquals("€", enteredCurrency[1]);
+    }
+
+    @Test
+    public void test_getEnteredCurrency_TestWhitespace() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30 EUR");
+
+        assertEquals("2,000,000.30", enteredCurrency[0]);
+        assertEquals("EUR", enteredCurrency[1]);
+    }
+
+    @Test
+    public void test_getEnteredCurrency_invalidRegextChar() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30EUR");
+
+        enteredCurrency = moneyFormat.splitStringToBeParsed("2(€");
+
+        assertEquals("2", enteredCurrency[0]);
+        assertEquals("(€", enteredCurrency[1]);
+    }
 }

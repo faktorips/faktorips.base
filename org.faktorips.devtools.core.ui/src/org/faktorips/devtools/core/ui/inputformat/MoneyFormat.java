@@ -19,7 +19,9 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.ICurrencyHolder;
@@ -44,6 +46,8 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     private boolean addCurrencySymbol = false;
 
     private Locale locale;
+
+    private final String LITERALS_TO_BE_REPLACED = "[-,.\\d]"; //$NON-NLS-1$
 
     protected MoneyFormat(Currency defaultCurrency) {
         currentCurrency = defaultCurrency;
@@ -94,12 +98,11 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         }
 
         String amount;
-        if (stringToBeParsed.contains(CURRENCY_SEPARATOR)) {
-            // text seems to contain currency
-            String[] split = stringToBeParsed.split(CURRENCY_SEPARATOR);
-            amount = amountFormat.parse(split[0]);
+        String[] splittedString = splitStringToBeParsed(stringToBeParsed);
+        if (!StringUtils.isEmpty(splittedString[0]) && !StringUtils.isEmpty(splittedString[1])) {
+            amount = amountFormat.parse(splittedString[0]);
             try {
-                updateCurrentCurrency(split[1]);
+                updateCurrentCurrency(splittedString[1]);
             } catch (IllegalArgumentException e) {
                 return null;
             }
@@ -117,6 +120,14 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         } catch (NumberFormatException e) {
             return stringToBeParsed;
         }
+    }
+
+    protected String[] splitStringToBeParsed(String value) {
+        String currency = value.replaceAll(LITERALS_TO_BE_REPLACED, StringUtils.EMPTY).trim();
+        String[] splittedString = new String[2];
+        splittedString[0] = value.replaceAll(Pattern.quote(currency), StringUtils.EMPTY).trim();
+        splittedString[1] = currency;
+        return splittedString;
     }
 
     protected void updateCurrentCurrency(String currencyString) {
