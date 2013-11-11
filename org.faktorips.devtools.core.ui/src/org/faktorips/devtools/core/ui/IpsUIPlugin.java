@@ -1035,7 +1035,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return false;
         }
 
-        class IpsSrcFileFilter implements ISaveableFilter {
+        ISaveableFilter fileFilter = new ISaveableFilter() {
             @Override
             public boolean select(Saveable saveable, IWorkbenchPart[] containingParts) {
                 for (IWorkbenchPart part : containingParts) {
@@ -1045,13 +1045,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
                 return false;
             }
-        }
+        };
 
         // No need to confirm because we already ask the user
         boolean confirm = false;
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        return PlatformUI.getWorkbench().saveAll(activeWorkbenchWindow, activeWorkbenchWindow, new IpsSrcFileFilter(),
-                confirm);
+        return PlatformUI.getWorkbench().saveAll(activeWorkbenchWindow, activeWorkbenchWindow, fileFilter, confirm);
     }
 
     private boolean saveEditorsInternalOnePart(List<IEditorPart> editorParts) {
