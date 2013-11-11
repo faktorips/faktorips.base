@@ -47,7 +47,9 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     protected MoneyFormat(Currency defaultCurrency) {
         currentCurrency = defaultCurrency;
-        updateCurrencySumbols(defaultCurrency);
+        if (currentCurrency != null) {
+            updateCurrencySumbols();
+        }
     }
 
     public static MoneyFormat newInstance(Currency defaultCurrency) {
@@ -72,7 +74,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
             String formattedAmount = amountFormat.getNumberFormat().format(money.getAmount());
             if (addCurrencySymbol && currentCurrency != null) {
                 formattedAmount += ' ' + currentCurrency.getSymbol(locale);
-                updateCurrencySumbols(currentCurrency);
+                updateCurrencySumbols();
             }
             return formattedAmount;
         } else {
@@ -80,8 +82,8 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         }
     }
 
-    private void updateCurrencySumbols(Currency currency) {
-        currencySymbols.put(currency.getSymbol(), currency);
+    private void updateCurrencySumbols() {
+        currencySymbols.put(currentCurrency.getSymbol(), currentCurrency);
     }
 
     @Override
