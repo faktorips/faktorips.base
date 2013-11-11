@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
@@ -152,51 +151,51 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * The simple extension point id of the extension point
      * <tt>extensionPropertyEditFieldFactory</tt>.
      */
-    public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
+    public static final String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
 
     /**
      * The simple extension point id of the extension point <tt>inputFormat</tt>.
      */
-    public final static String EXTENSION_POINT_INPUT_FORMAT = "inputFormat"; //$NON-NLS-1$
+    public static final String EXTENSION_POINT_INPUT_FORMAT = "inputFormat"; //$NON-NLS-1$
 
     /**
      * The simple extension point id of the extension point <tt>extensionPropertySectionFactory</tt>
      * .
      */
-    public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY = "extensionPropertySectionFactory"; //$NON-NLS-1$
+    public static final String EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY = "extensionPropertySectionFactory"; //$NON-NLS-1$
 
     /**
      * The extension point id of the extension point <tt>adapterprovider</tt>.
      */
-    public final static String EXTENSION_POINT_ID_ADAPTER_PROVIDER = "adapterprovider"; //$NON-NLS-1$
+    public static final String EXTENSION_POINT_ID_ADAPTER_PROVIDER = "adapterprovider"; //$NON-NLS-1$
 
     /**
      * Extension point id for adding external drop support (see {@link IIpsDropAdapterProvider}
      */
-    public final static String EXTENSION_POINT_ID_IPS_DROP_ADAPTER_PROVIDER = "ipsDropAdapterProvider"; //$NON-NLS-1$
+    public static final String EXTENSION_POINT_ID_IPS_DROP_ADAPTER_PROVIDER = "ipsDropAdapterProvider"; //$NON-NLS-1$
 
     /**
      * The extension point id of the extension point property <tt>workbenchadapter</tt> in the
      * extension point adapterprovider.
      */
-    public final static String CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER = "workbenchadapter"; //$NON-NLS-1$
+    public static final String CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER = "workbenchadapter"; //$NON-NLS-1$
 
     /**
      * Class property in extension point config elements
      */
-    public final static String CONFIG_PROPERTY_CLASS = "class"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_CLASS = "class"; //$NON-NLS-1$
 
     /**
      * The suffix that is used for the expanded state preference of {@link IpsSection}s. The full ID
      * is constructed using the section ID plus this suffix.
      */
-    public final static String PREFERENCE_ID_SUFFIX_SECTION_EXPANDED = "_expanded"; //$NON-NLS-1$
+    public static final String PREFERENCE_ID_SUFFIX_SECTION_EXPANDED = "_expanded"; //$NON-NLS-1$
 
     /**
      * Preference key for the current working date, stored as milliseconds since start of the Unix
      * epoch.
      */
-    public final static String PREFERENCE_ID_DEFAULT_VALIDITY_DATE = "defaultValidityDate"; //$NON-NLS-1$
+    public static final String PREFERENCE_ID_DEFAULT_VALIDITY_DATE = "defaultValidityDate"; //$NON-NLS-1$
 
     /**
      * Setting key for the open ips object history
@@ -245,6 +244,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private DatatypeInputFormatRegistry datatypeInputFormat;
 
+    private final ImageHandling images = new ImageHandling();
+
     /**
      * This method is for test purposes only.
      */
@@ -268,7 +269,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         registry = Platform.getExtensionRegistry();
         ipsEditorSettings = new IpsObjectEditorSettings();
         ipsEditorSettings.load(getStateLocation());
-        propertyVisibleController = createPropertyVisibleController();
+        createPropertyVisibleController();
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
@@ -292,10 +293,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         defaultValidityDate.setTimeInMillis(timeInMillis);
     }
 
-    private IPropertyVisibleController createPropertyVisibleController() {
-        IPropertyVisibleController propertyVisibleController = new PropertyVisibleController();
+    private void createPropertyVisibleController() {
+        propertyVisibleController = new PropertyVisibleController();
         loadPropertyFilters(propertyVisibleController);
-        return propertyVisibleController;
     }
 
     private void loadPropertyFilters(IPropertyVisibleController propertyVisibleController) {
@@ -343,8 +343,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return datatypeInputFormat.getDatatypeInputFormat(datatype);
     }
 
-    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws InvalidRegistryObjectException,
-            CoreException {
+    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreException {
         List<ValueDatatypeControlFactory> factories = new ArrayList<ValueDatatypeControlFactory>();
 
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
@@ -621,33 +620,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (fileToEdit == null) {
             return null;
         }
-        RunnableFuture<IEditorPart> runnable = new FutureTask<IEditorPart>(new Callable<IEditorPart>() {
-
-            @Override
-            public IEditorPart call() throws Exception {
-                /*
-                 * Check if the file can be edit with a corresponding IPS object editor, if the file
-                 * is outside an IPS package then the IPS object editor couldn't be used - the IPS
-                 * object could not be retrieved from the IPS source file - therefore open the
-                 * default text editor (to edit the IPS source file as XML).
-                 */
-                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-                IIpsElement ipsElement = model.getIpsElement(fileToEdit);
-                if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
-                    try {
-                        return openWithDefaultIpsSrcTextEditor(fileToEdit);
-                    } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
-                    }
-                } else {
-                    return openEditor(new FileEditorInput(fileToEdit));
-                }
-
-                return null;
-
-            }
-
-        });
+        RunnableFuture<IEditorPart> runnable = new FutureTask<IEditorPart>(new CallableImplementation(fileToEdit));
         BusyIndicator.showWhile(Display.getDefault(), runnable);
         try {
             return runnable.get();
@@ -736,49 +709,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         IEditorInput editorInput = new FileEditorInput(ipsSrcFile.getCorrespondingFile());
         IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
         return workbench.getActiveWorkbenchWindow().getActivePage().findEditor(editorInput) != null;
-    }
-
-    /**
-     * Open the given file with the default text editor. And show an information message in the
-     * editors status bar to inform the user about using the text editor instead of the IPS object
-     * editor.
-     */
-    private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
-        String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
-        IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
-        IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
-
-        IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
-        IContentType contentType = contentTypeManager.getContentType(defaultContentTypeOfIpsSrcFilesId);
-
-        IEditorDescriptor[] editors = workbench.getEditorRegistry().getEditors("", contentType); //$NON-NLS-1$
-        if (editors.length != 1) {
-            throw new CoreException(new IpsStatus(NLS.bind(
-                    "No registered editors (or more then one) for content-type id {0} found!", //$NON-NLS-1$
-                    defaultContentTypeOfIpsSrcFilesId)));
-        }
-        try {
-            IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-            if (page == null) {
-                return null;
-            }
-            IEditorPart editorPart = page.openEditor(editorInput, editors[0].getId());
-            if (editorPart == null) {
-                throw new CoreException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$
-            }
-            /*
-             * show information in the status bar about using the default text editor instead of
-             * using the default IPS object editor.
-             */
-            ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                    .setMessage(images.getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                            Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
-            return editorPart;
-        } catch (PartInitException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-
-        return null;
     }
 
     /**
@@ -913,9 +843,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                         }
                     }
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 IpsPlugin.log(e);
             }
+            // CSON: IllegalCatch
         } else {
             workbenchAdapterProviders = result;
         }
@@ -1029,7 +961,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @return the default label of the {@link IIpsElement} returned by the
      *         {@link IWorkbenchAdapter}
      */
-    public final static String getLabel(IIpsElement ipsElement) {
+    public static final String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
             return ""; //$NON-NLS-1$
@@ -1115,7 +1047,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             }
         }
 
-        boolean confirm = false; // No need to confirm because we already ask the user
+        // No need to confirm because we already ask the user
+        boolean confirm = false;
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         return PlatformUI.getWorkbench().saveAll(activeWorkbenchWindow, activeWorkbenchWindow, new IpsSrcFileFilter(),
                 confirm);
@@ -1165,9 +1098,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private List<IEditorPart> collectDirtyEditorParts() {
         ArrayList<IEditorPart> dirtyParts = new ArrayList<IEditorPart>();
         ArrayList<IEditorInput> dirtyEditorsInput = new ArrayList<IEditorInput>();
-        IWorkbenchWindow windows[] = PlatformUI.getWorkbench().getWorkbenchWindows();
+        IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
         for (IWorkbenchWindow window : windows) {
-            IWorkbenchPage pages[] = window.getPages();
+            IWorkbenchPage[] pages = window.getPages();
             for (IWorkbenchPage page : pages) {
                 IEditorPart[] dirtyEditors = page.getDirtyEditors();
                 for (int k = 0; k < dirtyEditors.length; k++) {
@@ -1236,10 +1169,150 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     // IMAGE HANDLING
     // ************************************************
 
-    private final ImageHandling images = new ImageHandling();
-
     public static ImageHandling getImageHandling() {
         return getDefault().images;
+    }
+
+    /**
+     * Returns a {@link Color} instance for the given symbolic name. If no color is found for the
+     * symbolic name the {@link RGB} object is used to create a new color-instance. From this moment
+     * on the new color instance is accessible via the same symbolic name.
+     * <p>
+     * Color instances retrieved/created via this method will be disposed when the corresponding
+     * display is disposed.
+     * 
+     * @param symbolicColorName a name that identifies the color
+     * @param rgb the RGB information of the requested color, so that it can be created in case it
+     *            hasn't been registered yet.
+     */
+    public Color getColor(String symbolicColorName, RGB rgb) {
+        ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+        if (!colorRegistry.hasValueFor(symbolicColorName)) {
+            colorRegistry.put(symbolicColorName, rgb);
+        }
+        return colorRegistry.get(symbolicColorName);
+    }
+
+    public UIDatatypeFormatter getDatatypeFormatter() {
+        return datatypeFormatter;
+    }
+
+    /**
+     * Logs the status and shows the status in a standard error dialog.
+     */
+    public static final void logAndShowErrorDialog(final IStatus status) {
+        plugin.getLog().log(status);
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
+                        Messages.IpsPlugin_msgUnexpectedError, status);
+            }
+        });
+    }
+
+    /**
+     * Logs the status and shows the status in a standard error dialog.
+     */
+    public static final void logAndShowErrorDialog(Exception e) {
+        logAndShowErrorDialog(new IpsStatus(e));
+    }
+
+    /**
+     * Logs the status and shows the status in a standard error dialog.
+     */
+    public static final void logAndShowErrorDialog(CoreException e) {
+        logAndShowErrorDialog(e.getStatus());
+    }
+
+    /**
+     * Does not log the status but show an error dialog with the status message
+     */
+    public static final void showErrorDialog(final IStatus status) {
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog, null,
+                        status);
+            }
+        });
+    }
+
+    private static class CallableImplementation implements Callable<IEditorPart> {
+        private final IFile fileToEdit;
+
+        private CallableImplementation(IFile fileToEdit) {
+            this.fileToEdit = fileToEdit;
+        }
+
+        /**
+         * Check if the file can be edit with a corresponding IPS object editor, if the file is
+         * outside an IPS package then the IPS object editor couldn't be used - the IPS object could
+         * not be retrieved from the IPS source file - therefore open the default text editor (to
+         * edit the IPS source file as XML).
+         */
+        @Override
+        public IEditorPart call() throws Exception {
+            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+            IIpsElement ipsElement = model.getIpsElement(fileToEdit);
+            if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
+                try {
+                    return openWithDefaultIpsSrcTextEditor(fileToEdit);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            } else {
+                return IpsUIPlugin.getDefault().openEditor(new FileEditorInput(fileToEdit));
+            }
+
+            return null;
+        }
+
+        /**
+         * Open the given file with the default text editor. And show an information message in the
+         * editors status bar to inform the user about using the text editor instead of the IPS
+         * object editor.
+         */
+        private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
+            String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
+            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
+            IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
+
+            IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
+            IContentType contentType = contentTypeManager.getContentType(defaultContentTypeOfIpsSrcFilesId);
+
+            IEditorDescriptor[] editors = workbench.getEditorRegistry().getEditors("", contentType); //$NON-NLS-1$
+            if (editors.length != 1) {
+                throw new CoreException(new IpsStatus(NLS.bind(
+                        "No registered editors (or more then one) for content-type id {0} found!", //$NON-NLS-1$
+                        defaultContentTypeOfIpsSrcFilesId)));
+            }
+            try {
+                IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                if (page == null) {
+                    return null;
+                }
+                IEditorPart editorPart = page.openEditor(editorInput, editors[0].getId());
+                if (editorPart == null) {
+                    throw new CoreException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$
+                }
+                /*
+                 * show information in the status bar about using the default text editor instead of
+                 * using the default IPS object editor.
+                 */
+                ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
+                        .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                                Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+                return editorPart;
+            } catch (PartInitException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+
+            return null;
+        }
+
     }
 
     /**
@@ -1259,7 +1332,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public static class ImageHandling {
 
-        public static final Map<ImageDescriptor, ImageDescriptor> enableDisableMap = new HashMap<ImageDescriptor, ImageDescriptor>();
+        private static final Map<ImageDescriptor, ImageDescriptor> ENABLE_DISABLE_MAP = new HashMap<ImageDescriptor, ImageDescriptor>();
 
         private ResourceManager resourceManager;
 
@@ -1353,7 +1426,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         public ImageDescriptor getDisabledImageDescriptor(IAdaptable adaptable) {
             ImageDescriptor enabledImageDescriptor = getImageDescriptor(adaptable);
-            ImageDescriptor disabledImageDescriptor = enableDisableMap.get(enabledImageDescriptor);
+            ImageDescriptor disabledImageDescriptor = ENABLE_DISABLE_MAP.get(enabledImageDescriptor);
             if (disabledImageDescriptor == null) {
                 disabledImageDescriptor = createDisabledImageDescriptor(enabledImageDescriptor);
             }
@@ -1587,73 +1660,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 resourceManager.dispose();
             }
         }
-    }
-
-    /**
-     * Returns a {@link Color} instance for the given symbolic name. If no color is found for the
-     * symbolic name the {@link RGB} object is used to create a new color-instance. From this moment
-     * on the new color instance is accessible via the same symbolic name.
-     * <p>
-     * Color instances retrieved/created via this method will be disposed when the corresponding
-     * display is disposed.
-     * 
-     * @param symbolicColorName a name that identifies the color
-     * @param rgb the RGB information of the requested color, so that it can be created in case it
-     *            hasn't been registered yet.
-     */
-    public Color getColor(String symbolicColorName, RGB rgb) {
-        ColorRegistry registry = JFaceResources.getColorRegistry();
-        if (!registry.hasValueFor(symbolicColorName)) {
-            registry.put(symbolicColorName, rgb);
-        }
-        return registry.get(symbolicColorName);
-    }
-
-    public UIDatatypeFormatter getDatatypeFormatter() {
-        return datatypeFormatter;
-    }
-
-    /**
-     * Logs the status and shows the status in a standard error dialog.
-     */
-    public final static void logAndShowErrorDialog(final IStatus status) {
-        plugin.getLog().log(status);
-        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
-                        Messages.IpsPlugin_msgUnexpectedError, status);
-            }
-        });
-    }
-
-    /**
-     * Logs the status and shows the status in a standard error dialog.
-     */
-    public final static void logAndShowErrorDialog(Exception e) {
-        logAndShowErrorDialog(new IpsStatus(e));
-    }
-
-    /**
-     * Logs the status and shows the status in a standard error dialog.
-     */
-    public final static void logAndShowErrorDialog(CoreException e) {
-        logAndShowErrorDialog(e.getStatus());
-    }
-
-    /**
-     * Does not log the status but show an error dialog with the status message
-     */
-    public final static void showErrorDialog(final IStatus status) {
-        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog, null,
-                        status);
-            }
-        });
     }
 
 }
