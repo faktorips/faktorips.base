@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.inputformat.MoneyFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -219,4 +218,25 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
+    public void testRefreshCurrentCurrency() {
+        moneyFormat.initFormat(Locale.US);
+        moneyFormat.formatInternal("1.23 USD");
+        moneyFormat.refreshCurrentCurrency("USD");
+        assertEquals(Currency.getInstance("USD"), moneyFormat.getCurrency());
+
+        moneyFormat.initFormat(Locale.GERMANY);
+        moneyFormat.setAddCurrencySymbol(true);
+        moneyFormat.formatInternal("1.23 EUR");
+        moneyFormat.refreshCurrentCurrency("€");
+        assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
+
+        moneyFormat.refreshCurrentCurrency("EUR");
+        assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRefreshCurrentCurrency_IAE() {
+        moneyFormat.refreshCurrentCurrency("illegalValue");
+    }
 }
