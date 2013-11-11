@@ -377,15 +377,15 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     private void validateValueWithoutDuplicateCheck(MessageList list, int index, ValueDatatype datatype) {
         ObjectProperty op = new ObjectProperty(this, PROPERTY_VALUES, index);
+        ObjectProperty parentOP = new ObjectProperty(getParent(), IValueSetOwner.PROPERTY_VALUE_SET);
         String value = values.get(index);
         if (datatype == null) {
             String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsableDatatypeUnknown, getNotNullValue(value));
-            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, op));
+            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, op, parentOP));
         } else if (!datatype.isParsable(value) || isSpecialNull(value, datatype)) {
             String msg = NLS
                     .bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value), datatype.getName());
-            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, getParent(),
-                    IConfigElement.PROPERTY_VALUE_SET));
+            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, op, parentOP));
         }
     }
 
@@ -404,21 +404,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
                 continue;
             }
             List<ObjectProperty> ops = new ArrayList<ObjectProperty>(indexes.size());
+            ops.add(new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET));
             for (Integer index : indexes) {
                 ops.add(new ObjectProperty(this, PROPERTY_VALUES, index));
             }
-            list.add(createMsgForDuplicateValues(value, ops));
+            list.add(createMsgForDuplicateValues(value, ops.toArray(new ObjectProperty[ops.size()])));
         }
     }
 
-    private Message createMsgForDuplicateValues(String value, ObjectProperty op) {
+    private Message createMsgForDuplicateValues(String value, ObjectProperty... ops) {
         String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
-        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, op);
-    }
-
-    private Message createMsgForDuplicateValues(String value, List<ObjectProperty> ops) {
-        String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
-        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, ops.toArray(new ObjectProperty[ops.size()]));
+        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, ops);
     }
 
     /**
