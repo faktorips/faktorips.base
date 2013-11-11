@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -26,17 +27,15 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,9 +71,6 @@ public class ValueSetFormatTest {
     private String OUTPUT_VALUE = "test.output";
 
     private EnumValueSet enumValueSet;
-
-    @Mock
-    private ValueSet valueSet;
 
     private ValueSetFormat format;
 
@@ -191,12 +187,14 @@ public class ValueSetFormatTest {
 
     @Test
     public void testParseInternalRange() throws CoreException {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.RANGE));
-        when(configElement.getValueSet()).thenReturn(valueSet);
+        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+                Arrays.asList(ValueSetType.RANGE, ValueSetType.ENUM));
+        IRangeValueSet range = mock(IRangeValueSet.class);
+        when(configElement.getValueSet()).thenReturn(range);
         IValueSet parseInternal = format.parseInternal("[10..100/2]");
 
         assertNotNull(parseInternal);
-        assertEquals(valueSet, parseInternal);
+        assertEquals(range, parseInternal);
     }
 
 }

@@ -55,8 +55,8 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     @Override
     protected IValueSet parseInternal(String stringToBeParsed) {
         if (isEnumValueSetAllowed()) {
-            if (isRangeAllowed()) {
-                getValueSet();
+            if (getValueSet() instanceof IRangeValueSet) {
+                return getValueSet();
             }
             if (stringToBeParsed.isEmpty()) {
                 if (isUnrestrictedAllowed()) {
@@ -77,10 +77,6 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
             }
         }
         return getValueSet();
-    }
-
-    private boolean isRangeAllowed() {
-        return isAllowedValueSetType(ValueSetType.RANGE);
     }
 
     private boolean isUnrestrictedAllowed() {
@@ -227,6 +223,19 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
         // do nothing
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Currently parsing range is not supported
+     */
+    @Override
+    public void verifyText(VerifyEvent e) {
+        super.verifyText(e);
+        if (getValueSet() instanceof IRangeValueSet) {
+            e.doit = false;
+        }
     }
 
     @Override
