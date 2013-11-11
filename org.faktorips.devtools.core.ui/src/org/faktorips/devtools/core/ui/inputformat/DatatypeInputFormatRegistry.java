@@ -108,7 +108,7 @@ public class DatatypeInputFormatRegistry {
         if (datatype == null) {
             inputformatFactory = null;
         } else {
-            inputformatFactory = getInputFormatMap().get(datatype);
+            inputformatFactory = getInputFormatMap().get(datatype.getClass());
             if (inputformatFactory == null) {
                 inputformatFactory = getNearestSupertypeFactory(datatype);
             }
