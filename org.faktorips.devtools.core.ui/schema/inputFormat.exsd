@@ -6,7 +6,7 @@
          <meta.schema plugin="org.faktorips.devtools.core.ui" id="inputFormat" name="Input Format"/>
       </appInfo>
       <documentation>
-         Adresses the supported Datatypes in an input field.
+         An input format is used to format and parse the value for a specific value datatype. Use the sub element &apos;datatype&apos; to specify a list of supported datatypes. The supported datatypes may also be superclasses or interfaces of the value datatype that is formatted by the registered input format.
       </documentation>
    </annotation>
 
