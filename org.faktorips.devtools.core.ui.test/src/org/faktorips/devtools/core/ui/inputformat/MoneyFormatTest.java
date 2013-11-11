@@ -126,6 +126,10 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
         parsed = moneyFormat.parse(input);
         assertEquals("1000.00 EUR", parsed);
 
+        input = "100,0 €";
+        parsed = moneyFormat.parse(input);
+        assertEquals("1000.00 EUR", parsed);
+
         input = "illegal";
         parsed = moneyFormat.parse(input);
         assertEquals("illegal", parsed);
@@ -219,24 +223,24 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRefreshCurrentCurrency() {
+    public void testUpdateCurrentCurrency() {
         moneyFormat.initFormat(Locale.US);
         moneyFormat.formatInternal("1.23 USD");
-        moneyFormat.refreshCurrentCurrency("USD");
+        moneyFormat.updateCurrentCurrency("USD");
         assertEquals(Currency.getInstance("USD"), moneyFormat.getCurrency());
 
         moneyFormat.initFormat(Locale.GERMANY);
         moneyFormat.setAddCurrencySymbol(true);
         moneyFormat.formatInternal("1.23 EUR");
-        moneyFormat.refreshCurrentCurrency("€");
+        moneyFormat.updateCurrentCurrency("€");
         assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
 
-        moneyFormat.refreshCurrentCurrency("EUR");
+        moneyFormat.updateCurrentCurrency("EUR");
         assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRefreshCurrentCurrency_IAE() {
-        moneyFormat.refreshCurrentCurrency("illegalValue");
+    public void testUpdateCurrentCurrency_IAE() {
+        moneyFormat.updateCurrentCurrency("illegalValue");
     }
 }
