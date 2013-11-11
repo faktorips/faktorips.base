@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
+import org.faktorips.devtools.core.ui.controller.fields.ConfigElementProposalProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ValueSetProposalProviderTest {
+public class ConfigElementProposalProviderTest {
     @Mock
     private ConfigElement propertyValue;
 
@@ -58,13 +59,13 @@ public class ValueSetProposalProviderTest {
     @Mock
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
-    private ValueSetProposalProvider valueSetProposalProvider;
+    private ConfigElementProposalProvider valueSetProposalProvider;
 
     private EnumValueSet enumValueSet;
 
     @Before
     public void setUp() throws Exception {
-        valueSetProposalProvider = new ValueSetProposalProvider(propertyValue, uiDatatypeFormatter);
+        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, uiDatatypeFormatter);
         enumValueSet = new EnumValueSet(propertyValue, "ID");
         when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
         when(enumValueDatatype.isEnum()).thenReturn(true);

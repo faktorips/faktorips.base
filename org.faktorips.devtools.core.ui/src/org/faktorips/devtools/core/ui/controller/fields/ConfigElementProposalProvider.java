@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,14 +33,14 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
-public class ValueSetProposalProvider implements IContentProposalProvider {
+public class ConfigElementProposalProvider implements IContentProposalProvider {
 
     private final IConfigElement configElement;
 
     private final UIDatatypeFormatter uiDatatypeFormatter;
 
-    public ValueSetProposalProvider(IConfigElement propertyValue, UIDatatypeFormatter uiDatatypeFormatter) {
-        configElement = propertyValue;
+    public ConfigElementProposalProvider(IConfigElement configElement, UIDatatypeFormatter uiDatatypeFormatter) {
+        this.configElement = configElement;
         this.uiDatatypeFormatter = uiDatatypeFormatter;
     }
 
@@ -139,7 +139,7 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         int i = s.length() - 1;
         while (i >= 0) {
             char c = s.charAt(i);
-            if (!isLegalChar(c)) {
+            if (isSeparatorChar(c)) {
                 break;
             }
             i--;
@@ -148,7 +148,7 @@ public class ValueSetProposalProvider implements IContentProposalProvider {
         return StringUtils.stripStart(s.substring(i + 1), null);
     }
 
-    private boolean isLegalChar(char c) {
+    private boolean isSeparatorChar(char c) {
         return EnumValueSet.ENUM_VALUESET_SEPARATOR.equals(String.valueOf(c));
     }
 }

@@ -39,10 +39,9 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueSetField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
 
 /**
  * Provides controls that allow the user to edit the value set and the default value of an
@@ -230,7 +229,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
-        ValueSetField editField = new ValueSetField(valueSetControl, ValueSetFormat.newInstance(getPropertyValue()));
+        ConfigElementField editField = new ConfigElementField(getPropertyValue(), valueSetControl);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
