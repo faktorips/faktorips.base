@@ -32,11 +32,11 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGenerat
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,7 +78,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
         attribut.setDatatype(integerDatatype.getName());
 
         IValueSet valueSet = mock(IValueSet.class);
-        when(valueSet.copy(any(IIpsObjectPart.class), any(String.class))).thenReturn(valueSet);
+        when(valueSet.copy(any(IValueSetOwner.class), any(String.class))).thenReturn(valueSet);
 
         attribut.setValueSetCopy(valueSet);
 

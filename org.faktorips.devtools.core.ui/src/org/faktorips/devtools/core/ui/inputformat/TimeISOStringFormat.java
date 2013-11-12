@@ -11,42 +11,44 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputformat;
 
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.faktorips.values.DateUtil;
 
 /**
- * Format for Date input. Maps a locale specific date string to the ISO date format (also string)
- * and vice versa.
- * <p>
- * If you need a field that maps a locale-specific string to a gregorian calendar use a
- * {@link FormattingTextField} with {@link GregorianCalendarFormat} instead.
- * 
- * @see GregorianCalendarFormat
- * 
- * @author Stefan Widmaier
+ * Format for time input. Maps a {@link Locale} specific time string to the ISO time format (also
+ * string) and vice versa.
  */
-public class DateISOStringFormat extends AbstractDateFormat<String> {
+public class TimeISOStringFormat extends AbstractDateFormat<String> {
 
-    public static DateISOStringFormat newInstance() {
-        DateISOStringFormat dateISOStringFormat = new DateISOStringFormat();
-        dateISOStringFormat.initFormat();
-        return dateISOStringFormat;
+    public static TimeISOStringFormat newInstance() {
+        TimeISOStringFormat format = new TimeISOStringFormat();
+        format.initFormat();
+        return format;
     }
 
-    protected DateISOStringFormat() {
+    protected TimeISOStringFormat() {
         // only hide the constructor
     }
 
     @Override
+    protected void initFormat(Locale locale) {
+        setDateFormat(DateFormat.getTimeInstance(DateFormat.MEDIUM, locale));
+        setExampleString(formatDate(new GregorianCalendar(2001, 6, 4, 15, 30, 45).getTime()));
+    }
+
+    @Override
     protected String mapDateToObject(Date date) {
-        return DateUtil.dateToIsoDateString(date);
+        return DateUtil.dateToIsoTimeString(date);
     }
 
     @Override
     protected Date mapObjectToDate(String value) {
-        return DateUtil.parseIsoDateStringToDate(value);
+        return DateUtil.parseIsoTimeStringToDate(value);
     }
 }

@@ -657,23 +657,24 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         Message msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
         ObjectProperty[] ops = msg0.getInvalidObjectProperties();
-        assertEquals(2, ops.length);
-        assertEquals(0, ops[0].getIndex());
-        assertEquals(2, ops[1].getIndex());
+        assertEquals(3, ops.length);
+        assertEquals(ce, ops[0].getObject());
+        assertEquals(0, ops[1].getIndex());
+        assertEquals(2, ops[2].getIndex());
 
         set.addValue("2EUR");
         list = set.validate(ipsProject);
         assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         ops = msg0.getInvalidObjectProperties();
-        assertEquals(3, ops.length);
+        assertEquals(4, ops.length);
 
         set.setValue(3, "4EUR");
         list = set.validate(ipsProject);
         assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         ops = msg0.getInvalidObjectProperties();
-        assertEquals(2, ops.length);
+        assertEquals(3, ops.length);
     }
 
     @Test
@@ -720,13 +721,13 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContainsNull() {
+    public void testIsContainingNull() {
         EnumValueSet set = new EnumValueSet(ce, "50");
 
-        assertFalse(set.getContainsNull());
+        assertFalse(set.isContainingNull());
 
         set.addValue(null);
-        assertTrue(set.getContainsNull());
+        assertTrue(set.isContainingNull());
     }
 
     @Test
@@ -780,4 +781,32 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         set.getIpsModel().removeChangeListener(mockedListener);
     }
+
+    @Test
+    public void testFormatList_empty() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+
+        String shortString = enumValueSet.toShortString();
+
+        assertEquals("{}", shortString);
+    }
+
+    @Test
+    public void testFormatList_oneElement() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, Arrays.asList("a"), "id");
+
+        String shortString = enumValueSet.toShortString();
+
+        assertEquals("{a}", shortString);
+    }
+
+    @Test
+    public void testFormatList_twoElement() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, Arrays.asList("a", "b"), "id");
+
+        String shortString = enumValueSet.toShortString();
+
+        assertEquals("{a | b}", shortString);
+    }
+
 }

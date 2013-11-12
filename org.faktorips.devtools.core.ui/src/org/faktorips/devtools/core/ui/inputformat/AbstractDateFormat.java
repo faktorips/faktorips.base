@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import java.text.DateFormat;
 import java.text.ParsePosition;
@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 
 /**
  * Base class for data type format date/gregorian calendar.

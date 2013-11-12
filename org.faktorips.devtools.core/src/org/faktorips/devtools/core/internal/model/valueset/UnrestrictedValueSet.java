@@ -16,10 +16,10 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  */
 public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
 
-    public final static String XML_TAG = "AllValues"; //$NON-NLS-1$
+    public final static String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
@@ -45,13 +45,13 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
-    public UnrestrictedValueSet(IIpsObjectPart parent, String partId) {
+    public UnrestrictedValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
     @Override
     public String toShortString() {
-        return "[" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
     }
 
     @Override
@@ -131,12 +131,12 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
-        Element tagElement = doc.createElement(XML_TAG);
+        Element tagElement = doc.createElement(XML_TAG_UNRESTRICTED);
         element.appendChild(tagElement);
     }
 
     @Override
-    public IValueSet copy(IIpsObjectPart parent, String id) {
+    public IValueSet copy(IValueSetOwner parent, String id) {
         return new UnrestrictedValueSet(parent, id);
     }
 
@@ -145,8 +145,17 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         // Nothing to do.
     }
 
+    /**
+     * @deprecated Use {@link #isContainingNull()} instead
+     */
+    @Deprecated
     @Override
     public boolean getContainsNull() {
+        return isContainingNull();
+    }
+
+    @Override
+    public boolean isContainingNull() {
         ValueDatatype type = getValueDatatype();
         return type == null || !type.isPrimitive();
     }

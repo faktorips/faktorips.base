@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.resources.IFile;
@@ -475,6 +476,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public IIpsModel getIpsModel() {
         return this;
+    }
+
+    @Override
+    public String getNextPartId(IIpsObjectPartContainer parentPart) {
+        return UUID.randomUUID().toString();
     }
 
     @Override

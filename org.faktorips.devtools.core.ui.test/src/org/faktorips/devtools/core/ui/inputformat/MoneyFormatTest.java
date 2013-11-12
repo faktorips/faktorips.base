@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -126,6 +126,10 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
         parsed = moneyFormat.parse(input);
         assertEquals("1000.00 EUR", parsed);
 
+        input = "100,0 €";
+        parsed = moneyFormat.parse(input);
+        assertEquals("1000.00 EUR", parsed);
+
         input = "illegal";
         parsed = moneyFormat.parse(input);
         assertEquals("illegal", parsed);
@@ -218,4 +222,59 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
+    public void testUpdateCurrentCurrency() {
+        moneyFormat.initFormat(Locale.US);
+        moneyFormat.formatInternal("1.23 USD");
+        moneyFormat.updateCurrentCurrency("USD");
+        assertEquals(Currency.getInstance("USD"), moneyFormat.getCurrency());
+
+        moneyFormat.initFormat(Locale.GERMANY);
+        moneyFormat.setAddCurrencySymbol(true);
+        moneyFormat.formatInternal("1.23 EUR");
+        moneyFormat.updateCurrentCurrency("€");
+        assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
+
+        moneyFormat.updateCurrentCurrency("EUR");
+        assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateCurrentCurrency_IAE() {
+        moneyFormat.updateCurrentCurrency("illegalValue");
+    }
+
+    @Test
+    public void test_getEnteredCurrency_CurrencyCode() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30EUR");
+
+        assertEquals("2,000,000.30", enteredCurrency[0]);
+        assertEquals("EUR", enteredCurrency[1]);
+    }
+
+    @Test
+    public void test_getEnteredCurrency_Symbol() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2.98€");
+
+        assertEquals("2.98", enteredCurrency[0]);
+        assertEquals("€", enteredCurrency[1]);
+    }
+
+    @Test
+    public void test_getEnteredCurrency_TestWhitespace() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30 EUR");
+
+        assertEquals("2,000,000.30", enteredCurrency[0]);
+        assertEquals("EUR", enteredCurrency[1]);
+    }
+
+    @Test
+    public void test_getEnteredCurrency_invalidRegextChar() {
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30EUR");
+
+        enteredCurrency = moneyFormat.splitStringToBeParsed("2(€");
+
+        assertEquals("2", enteredCurrency[0]);
+        assertEquals("(€", enteredCurrency[1]);
+    }
 }

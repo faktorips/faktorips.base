@@ -88,6 +88,11 @@ public interface IValueSet extends IIpsObjectPart {
     public final static String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
 
     /**
+     * Return the value set owner which is also the parent of this object.
+     */
+    public IValueSetOwner getValueSetOwner();
+
+    /**
      * Returns the type of the value set.
      */
     public ValueSetType getValueSetType();
@@ -182,7 +187,7 @@ public interface IValueSet extends IIpsObjectPart {
      * Creates a copy of this value set (type and values, parent and id are set to the given
      * values).
      */
-    public IValueSet copy(IIpsObjectPart newParent, String id);
+    public IValueSet copy(IValueSetOwner newParent, String id);
 
     /**
      * Copies all values including the abstract-flag - if applicable - (but not the parent or the
@@ -201,8 +206,16 @@ public interface IValueSet extends IIpsObjectPart {
 
     /**
      * Returns <tt>true</tt> if this value set contains the null-value, <tt>false</tt> if not.
+     * 
+     * @deprecated Use {@link #isContainingNull()} instead
      */
+    @Deprecated
     public boolean getContainsNull();
+
+    /**
+     * Returns <tt>true</tt> if this value set contains the null-value, <tt>false</tt> if not.
+     */
+    public boolean isContainingNull();
 
     /**
      * Marks this value set as abstract. An abstract value set does not define concrete values,

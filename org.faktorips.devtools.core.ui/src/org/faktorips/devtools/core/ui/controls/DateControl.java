@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractDateFormat;
-import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.inputformat.AbstractDateFormat;
+import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormat;
 
 /**
  * Control for date input providing a text control and a button. The Text control is used with a

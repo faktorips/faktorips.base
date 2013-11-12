@@ -11,15 +11,20 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.ui.controller.fields.ICurrencyHolder;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
@@ -32,13 +37,21 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     private static final String CURRENCY_SEPARATOR = " "; //$NON-NLS-1$
 
+    private static final String VALID_AMOUNT_CHARS = "[-,.\\d]"; //$NON-NLS-1$
+
+    private static Map<String, Currency> currencySymbols = new ConcurrentHashMap<String, Currency>();
+
     private DecimalNumberFormat amountFormat;
 
-    private Currency actualCurrency;
+    private Currency currentCurrency;
 
     private boolean addCurrencySymbol = false;
 
     private Locale locale;
+
+    protected MoneyFormat(Currency defaultCurrency) {
+        currentCurrency = defaultCurrency;
+    }
 
     public static MoneyFormat newInstance(Currency defaultCurrency) {
         MoneyFormat instance = new MoneyFormat(defaultCurrency);
@@ -46,31 +59,32 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         return instance;
     }
 
-    protected MoneyFormat(Currency defaultCurrency) {
-        actualCurrency = defaultCurrency;
-    }
-
     @Override
     protected void initFormat(Locale locale) {
+        assert locale != null;
         this.locale = locale;
         amountFormat = new DecimalNumberFormat(ValueDatatype.BIG_DECIMAL);
         amountFormat.initFormat(locale);
-        setActualCurrency(actualCurrency);
+        setCurrentCurrency(currentCurrency);
     }
 
     @Override
     protected String formatInternal(String value) {
         Money money = Money.valueOf(value);
         if (money != Money.NULL) {
-            setActualCurrency(money.getCurrency());
+            setCurrentCurrency(money.getCurrency());
             String formattedAmount = amountFormat.getNumberFormat().format(money.getAmount());
-            if (addCurrencySymbol && actualCurrency != null) {
-                formattedAmount += ' ' + actualCurrency.getSymbol(locale);
+            if (addCurrencySymbol && currentCurrency != null) {
+                formattedAmount += CURRENCY_SEPARATOR + currentCurrency.getSymbol(locale);
             }
             return formattedAmount;
         } else {
             return null;
         }
+    }
+
+    private void updateCurrencySumbols() {
+        currencySymbols.put(currentCurrency.getSymbol(locale), currentCurrency);
     }
 
     @Override
@@ -81,12 +95,11 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         }
 
         String amount;
-        if (stringToBeParsed.contains(CURRENCY_SEPARATOR)) {
-            // text seems to contain currency
-            String[] split = stringToBeParsed.split(CURRENCY_SEPARATOR);
-            amount = amountFormat.parse(split[0]);
+        String[] splittedString = splitStringToBeParsed(stringToBeParsed);
+        if (!StringUtils.isEmpty(splittedString[0]) && !StringUtils.isEmpty(splittedString[1])) {
+            amount = amountFormat.parse(splittedString[0]);
             try {
-                actualCurrency = Currency.getInstance(split[1]);
+                updateCurrentCurrency(splittedString[1]);
             } catch (IllegalArgumentException e) {
                 return null;
             }
@@ -95,7 +108,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         }
         try {
             Decimal decimalAmount = Decimal.valueOf(amount);
-            Money money = Money.valueOf(decimalAmount, actualCurrency);
+            Money money = Money.valueOf(decimalAmount, currentCurrency);
             if (money != Money.NULL) {
                 return money.toString();
             } else {
@@ -106,17 +119,35 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         }
     }
 
-    public void setActualCurrency(Currency actualCurrency) {
-        this.actualCurrency = actualCurrency;
-        if (actualCurrency != null) {
-            amountFormat.getNumberFormat().setCurrency(getActualCurrency());
-            amountFormat.getNumberFormat().setMaximumFractionDigits(getActualCurrency().getDefaultFractionDigits());
-            amountFormat.getNumberFormat().setMinimumFractionDigits(getActualCurrency().getDefaultFractionDigits());
+    protected String[] splitStringToBeParsed(String value) {
+        String currency = value.replaceAll(VALID_AMOUNT_CHARS, StringUtils.EMPTY).trim();
+        String[] splittedString = new String[2];
+        splittedString[0] = value.replaceAll(Pattern.quote(currency), StringUtils.EMPTY).trim();
+        splittedString[1] = currency;
+        return splittedString;
+    }
+
+    protected void updateCurrentCurrency(String currencyString) {
+        if (currencySymbols.get(currencyString) != null) {
+            String currencyCode = currencySymbols.get(currencyString).getCurrencyCode();
+            currentCurrency = Currency.getInstance(currencyCode);
+        } else {
+            currentCurrency = Currency.getInstance(currencyString);
         }
     }
 
-    public Currency getActualCurrency() {
-        return actualCurrency;
+    public void setCurrentCurrency(Currency actualCurrency) {
+        this.currentCurrency = actualCurrency;
+        if (actualCurrency != null) {
+            amountFormat.getNumberFormat().setCurrency(getCurrentCurrency());
+            amountFormat.getNumberFormat().setMaximumFractionDigits(getCurrentCurrency().getDefaultFractionDigits());
+            amountFormat.getNumberFormat().setMinimumFractionDigits(getCurrentCurrency().getDefaultFractionDigits());
+            updateCurrencySumbols();
+        }
+    }
+
+    public Currency getCurrentCurrency() {
+        return currentCurrency;
     }
 
     @Override
@@ -126,9 +157,9 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         if (e.doit) {
             try {
                 BigDecimal number = (BigDecimal)amountFormat.getNumberFormat().parse(resultingText);
-                e.doit = (number.scale() <= actualCurrency.getDefaultFractionDigits());
+                e.doit = (number.scale() <= currentCurrency.getDefaultFractionDigits());
             } catch (ParseException e1) {
-                // ignore
+                e.doit = true;
             }
 
         }
@@ -149,7 +180,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     @Override
     public Currency getCurrency() {
-        return actualCurrency;
+        return currentCurrency;
     }
 
     public void setAddCurrencySymbol(boolean addCurrencySymbol) {
@@ -158,6 +189,10 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     public boolean isAddCurrencySymbol() {
         return addCurrencySymbol;
+    }
+
+    protected static Map<String, Currency> getUsedCurrencies() {
+        return currencySymbols;
     }
 
 }

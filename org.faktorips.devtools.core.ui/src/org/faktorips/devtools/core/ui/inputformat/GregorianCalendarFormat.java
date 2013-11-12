@@ -11,10 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 
 /**
  * Format for Date input. Maps a locale-specific string to a gregorian calendar and vice versa.

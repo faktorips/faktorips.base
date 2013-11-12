@@ -28,11 +28,11 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -51,14 +51,24 @@ import org.w3c.dom.NodeList;
  */
 public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
-    private static final String XML_DATA = "Data"; //$NON-NLS-1$
+    public static final String ENUM_VALUESET_SEPARATOR = "|"; //$NON-NLS-1$
+
+    public static final String ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE = " " + ENUM_VALUESET_SEPARATOR + " "; //$NON-NLS-1$ //$NON-NLS-2$
+
+    public static final String ENUM_VALUESET_START = "{"; //$NON-NLS-1$
+
+    public static final String ENUM_VALUESET_END = "}"; //$NON-NLS-1$
+
+    public static final String ENUM_VALUESET_EMPTRY = ENUM_VALUESET_START + ENUM_VALUESET_END;
 
     public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
+
+    private static final String XML_DATA = "Data"; //$NON-NLS-1$
 
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
     /** The values in the set as list */
-    private ArrayList<String> values = new ArrayList<String>();
+    private List<String> values = new ArrayList<String>();
 
     /**
      * A map with the values as keys and the index positions of the occurrences of a value as
@@ -66,8 +76,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     private Map<String, List<Integer>> valuesToIndexMap = new HashMap<String, List<Integer>>();
 
-    public EnumValueSet(IIpsObjectPart parent, String partId) {
+    public EnumValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.ENUM, parent, partId);
+    }
+
+    public EnumValueSet(IValueSetOwner parent, List<String> values, String partId) {
+        this(parent, partId);
+        this.values = values;
+        refillValuesToIndexMap();
     }
 
     @Override
@@ -117,13 +133,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown,
                     invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
             // if the value is null we can still decide if the value is part of the set
-            if (value == null && getContainsNull()) {
+            if (value == null && isContainingNull()) {
                 return true;
             }
             return false;
         }
 
-        if (value == null && getContainsNull()) {
+        if (value == null && isContainingNull()) {
             return true;
         }
         // An abstract value set is considered containing all values. See #isAbstract()
@@ -141,11 +157,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         for (String each : values) {
             try {
                 // for performance optimization we first check equality. If the value is not
-                // parsable, the equals check may throw an IllegalArgumentException
+                // parsable, the equals check may throw a IllegalArgumentException or
+                // NullPointerException
                 if (datatype.areValuesEqual(each, value) && datatype.isParsable(each)) {
                     return true;
                 }
             } catch (IllegalArgumentException e) {
+                continue;
+            } catch (NullPointerException e) {
                 continue;
             }
         }
@@ -193,7 +212,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return true;
         }
         if (subset.isAbstract()) {
-            return false; // this set is concrete
+            // this set is concrete
+            return false;
         }
         IEnumValueSet enumSubset = (IEnumValueSet)subset;
         String[] subsetValues = enumSubset.getValues();
@@ -232,7 +252,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
-    public void addValueWithoutTriggeringChangeEvent(String newValue) {
+    protected void addValueWithoutTriggeringChangeEvent(String newValue) {
         values.add(newValue);
         Integer newIndex = values.size() - 1;
         setValueWithoutTriggeringChangeEvent(newValue, newIndex);
@@ -338,7 +358,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         checkForDuplicates(list);
 
-        if (datatype != null && datatype.isPrimitive() && getContainsNull()) {
+        if (datatype != null && datatype.isPrimitive() && isContainingNull()) {
             String text = Messages.EnumValueSet_msgNullNotSupported;
             list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
@@ -357,15 +377,15 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     private void validateValueWithoutDuplicateCheck(MessageList list, int index, ValueDatatype datatype) {
         ObjectProperty op = new ObjectProperty(this, PROPERTY_VALUES, index);
+        ObjectProperty parentOP = new ObjectProperty(getParent(), IValueSetOwner.PROPERTY_VALUE_SET);
         String value = values.get(index);
         if (datatype == null) {
             String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsableDatatypeUnknown, getNotNullValue(value));
-            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, op));
+            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, op, parentOP));
         } else if (!datatype.isParsable(value) || isSpecialNull(value, datatype)) {
             String msg = NLS
                     .bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value), datatype.getName());
-            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, getParent(),
-                    IConfigElement.PROPERTY_VALUE_SET));
+            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, op, parentOP));
         }
     }
 
@@ -384,21 +404,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
                 continue;
             }
             List<ObjectProperty> ops = new ArrayList<ObjectProperty>(indexes.size());
+            ops.add(new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET));
             for (Integer index : indexes) {
                 ops.add(new ObjectProperty(this, PROPERTY_VALUES, index));
             }
-            list.add(createMsgForDuplicateValues(value, ops));
+            list.add(createMsgForDuplicateValues(value, ops.toArray(new ObjectProperty[ops.size()])));
         }
     }
 
-    private Message createMsgForDuplicateValues(String value, ObjectProperty op) {
+    private Message createMsgForDuplicateValues(String value, ObjectProperty... ops) {
         String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
-        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, op);
-    }
-
-    private Message createMsgForDuplicateValues(String value, List<ObjectProperty> ops) {
-        String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
-        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, ops.toArray(new ObjectProperty[ops.size()]));
+        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, ops);
     }
 
     /**
@@ -443,7 +459,20 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             }
             return result.toString();
         }
-        return values.toString();
+        return formatList(values);
+    }
+
+    private String formatList(List<String> stringValues) {
+        StringBuilder stringBuilder = new StringBuilder(ENUM_VALUESET_START);
+        for (Iterator<String> iterator = stringValues.iterator(); iterator.hasNext();) {
+            String value = iterator.next();
+            stringBuilder.append(value);
+            if (iterator.hasNext()) {
+                stringBuilder.append(ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE);
+            }
+        }
+        stringBuilder.append(ENUM_VALUESET_END);
+        return stringBuilder.toString();
     }
 
     @Override
@@ -474,7 +503,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public IValueSet copy(IIpsObjectPart parent, String id) {
+    public IValueSet copy(IValueSetOwner parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
         copy.refillValuesToIndexMap();
@@ -495,8 +524,17 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         addValues(Arrays.asList(valueIds));
     }
 
+    /**
+     * @deprecated Use {@link #isContainingNull()} instead
+     */
     @Override
+    @Deprecated
     public boolean getContainsNull() {
+        return isContainingNull();
+    }
+
+    @Override
+    public boolean isContainingNull() {
         return values.contains(null);
     }
 

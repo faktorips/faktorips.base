@@ -22,10 +22,11 @@ import org.faktorips.values.DateUtil;
 
 public class GregorianCalendarDatatype extends ValueClassDatatype {
 
-    private boolean timeInfoIncluded;
+    private final boolean timeInfoIncluded;
 
     public GregorianCalendarDatatype(String name, boolean timeInfoIncluded) {
         super(GregorianCalendar.class, name);
+        this.timeInfoIncluded = timeInfoIncluded;
     }
 
     @Override

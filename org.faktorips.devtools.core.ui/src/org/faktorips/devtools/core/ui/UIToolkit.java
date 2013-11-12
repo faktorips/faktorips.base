@@ -72,6 +72,7 @@ import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
+import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.util.message.Message;
 
 /**
@@ -1052,6 +1053,27 @@ public class UIToolkit {
     public void attachContentProposalAdapter(Control control,
             IContentProposalProvider proposalProvider,
             ILabelProvider labelProvider) {
+        attachContentProposalAdapter(control, proposalProvider, ContentProposalAdapter.PROPOSAL_REPLACE, labelProvider);
+    }
+
+    /**
+     * Attaches a {@link ContentProposalAdapter} to the given control, thereby adding content
+     * proposal support.
+     * 
+     * @param control The control to add content proposal support to
+     * @param proposalProvider Provides content proposals as appropriate to the control's current
+     *            content
+     * @param proposalAcceptanceStyle The style of the acceptance:
+     *            {@link ContentProposalAdapter#PROPOSAL_IGNORE},
+     *            {@link ContentProposalAdapter#PROPOSAL_REPLACE} or
+     *            {@link ContentProposalAdapter#PROPOSAL_IGNORE}
+     * @param labelProvider Specifies how the content proposals are shown to the user. May be null
+     *            to simply provide {@link ContentProposal#getLabel()}
+     */
+    public void attachContentProposalAdapter(Control control,
+            IContentProposalProvider proposalProvider,
+            int proposalAcceptanceStyle,
+            ILabelProvider labelProvider) {
         KeyStroke keyStroke = null;
         try {
             keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
@@ -1060,7 +1082,7 @@ public class UIToolkit {
         }
         ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(control, new TextContentAdapter(),
                 proposalProvider, keyStroke, null);
-        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+        contentProposalAdapter.setProposalAcceptanceStyle(proposalAcceptanceStyle);
         contentProposalAdapter.setLabelProvider(labelProvider);
         if (proposalProvider instanceof ICachedContentProposalProvider) {
             final ICachedContentProposalProvider cachedContentProposalProvider = (ICachedContentProposalProvider)proposalProvider;

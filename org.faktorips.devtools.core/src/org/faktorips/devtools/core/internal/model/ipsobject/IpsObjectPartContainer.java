@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -173,7 +172,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Returns the id that can be used for a new part, so that its id is unique.
      */
     protected String getNextPartId() {
-        return UUID.randomUUID().toString();
+        return getIpsModel().getNextPartId(this);
     }
 
     @Override

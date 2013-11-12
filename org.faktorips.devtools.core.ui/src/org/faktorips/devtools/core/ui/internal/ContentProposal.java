@@ -72,4 +72,10 @@ public class ContentProposal implements IContentProposal {
     public int getPrefixLength() {
         return StringUtils.length(prefix);
     }
+
+    @Override
+    public String toString() {
+        return "ContentProposal [content=" + content + ", label=" + label + ", description=" + description //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ", prefix=" + prefix + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

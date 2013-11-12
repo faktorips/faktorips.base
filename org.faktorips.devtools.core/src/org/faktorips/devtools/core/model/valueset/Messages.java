@@ -30,5 +30,6 @@ public class Messages extends NLS {
     public static String ValueSetType__allValues;
     public static String ValueSetType_range;
     public static String ValueSetType_enumeration;
+    public static String ValueSetFormat_unrestricted;
 
 }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
+import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 
 public class DateControlField<T> extends FormattingTextField<T> {
 
