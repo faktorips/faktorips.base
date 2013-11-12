@@ -51,9 +51,6 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     protected MoneyFormat(Currency defaultCurrency) {
         currentCurrency = defaultCurrency;
-        if (currentCurrency != null) {
-            updateCurrencySumbols();
-        }
     }
 
     public static MoneyFormat newInstance(Currency defaultCurrency) {
@@ -64,6 +61,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     @Override
     protected void initFormat(Locale locale) {
+        assert locale != null;
         this.locale = locale;
         amountFormat = new DecimalNumberFormat(ValueDatatype.BIG_DECIMAL);
         amountFormat.initFormat(locale);
@@ -78,7 +76,6 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
             String formattedAmount = amountFormat.getNumberFormat().format(money.getAmount());
             if (addCurrencySymbol && currentCurrency != null) {
                 formattedAmount += CURRENCY_SEPARATOR + currentCurrency.getSymbol(locale);
-                updateCurrencySumbols();
             }
             return formattedAmount;
         } else {
@@ -87,7 +84,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     }
 
     private void updateCurrencySumbols() {
-        currencySymbols.put(currentCurrency.getSymbol(), currentCurrency);
+        currencySymbols.put(currentCurrency.getSymbol(locale), currentCurrency);
     }
 
     @Override
@@ -145,6 +142,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
             amountFormat.getNumberFormat().setCurrency(getCurrentCurrency());
             amountFormat.getNumberFormat().setMaximumFractionDigits(getCurrentCurrency().getDefaultFractionDigits());
             amountFormat.getNumberFormat().setMinimumFractionDigits(getCurrentCurrency().getDefaultFractionDigits());
+            updateCurrencySumbols();
         }
     }
 
