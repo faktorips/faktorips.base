@@ -98,7 +98,7 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
                 "Missing messages for validation rules", null);
 
         List<IIpsSrcFile> findAllIpsSrcFiled;
-        findAllIpsSrcFiled = root.findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
+        findAllIpsSrcFiled = root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         List<String> readMessageKeys = new ArrayList<String>();
         monitor.beginTask("Updating Policy Component Types", findAllIpsSrcFiled.size() * 2 + 1);
         for (IIpsSrcFile ipsSrcFile : findAllIpsSrcFiled) {
