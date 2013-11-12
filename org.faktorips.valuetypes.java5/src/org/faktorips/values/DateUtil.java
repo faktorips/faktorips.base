@@ -34,11 +34,21 @@ public class DateUtil {
     private static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yy-MM-dd");
 
+    private static final String REGEX_ISO_DATE = "\\d{4}-\\d{1,2}-\\d{1,2}";
+    private static final String REGEX_ISO_TIME = "([01]\\d|[2][1-3]):([0-5]\\d):([0-5]\\d)";
+    private static final Pattern PATERN_ISO_DATE = Pattern.compile("^" + REGEX_ISO_DATE + "$");
+    private static final Pattern PATERN_ISO_TIME = Pattern.compile("^" + REGEX_ISO_TIME + "$");
+    private static final Pattern PATERN_ISO_DATE_TIME = Pattern.compile("^" + REGEX_ISO_DATE + " " + REGEX_ISO_TIME
+            + "$");
+
+    private DateUtil() {
+    }
+
     /**
      * Creates an ISO String of the date the given GregorianCalendar is set to or an empty String if
      * calendar is <code>null</code>.
      */
-    public final static String gregorianCalendarToIsoDateString(GregorianCalendar calendar) {
+    public static final String gregorianCalendarToIsoDateString(GregorianCalendar calendar) {
         if (calendar == null) {
             return "";
         }
@@ -48,7 +58,7 @@ public class DateUtil {
     /**
      * Creates an ISO date String of the given Date or an empty String if date is <code>null</code>.
      */
-    public final static String dateToIsoDateString(Date date) {
+    public static final String dateToIsoDateString(Date date) {
         if (date == null) {
             return "";
         }
@@ -61,7 +71,7 @@ public class DateUtil {
      * Creates an ISO date/time String of the given Date or an empty String if date is
      * <code>null</code>.
      */
-    public final static String dateToIsoDateTimeString(Date date) {
+    public static final String dateToIsoDateTimeString(Date date) {
         if (date == null) {
             return "";
         }
@@ -71,7 +81,7 @@ public class DateUtil {
     /**
      * Creates an ISO time String of the given Date or an empty String if date is <code>null</code>.
      */
-    public final static String dateToIsoTimeString(Date date) {
+    public static final String dateToIsoTimeString(Date date) {
         if (date == null) {
             return "";
         }
@@ -81,36 +91,53 @@ public class DateUtil {
     /**
      * Parses the given ISO-formatted date String to a Gregorian calendar.
      */
-    public final static GregorianCalendar parseIsoDateStringToGregorianCalendar(String s) {
-        if (s == null || s.equals("")) {
+    public static final GregorianCalendar parseIsoDateStringToGregorianCalendar(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
-        try {
-            GregorianCalendar calendar = new GregorianCalendar();
-            calendar.setTime(parseIsoDateStringToDate(s));
-            return calendar;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can't parse " + s + " to a date!");
-        }
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(parseIsoDateStringToDate(s));
+        return calendar;
     }
 
     /**
-     * Returns <code>true</code> if the String value is conform to the ISO standard (YYYY-MM-DD),
-     * otherwise <code>false</code>.
+     * Returns <code>true</code> if the String value is conform to the ISO-Date standard
+     * (YYYY-MM-DD), otherwise <code>false</code>.
      */
-    public final static boolean isIsoDate(String value) {
+    public static final boolean isIsoDate(String value) {
         if (value == null) {
             return false;
         }
-        String regex = "^\\d{4}-\\d{1,2}-\\d{1,2}$";
-        return Pattern.matches(regex, value);
+        return PATERN_ISO_DATE.matcher(value).matches();
+    }
+
+    /**
+     * Returns <code>true</code> if the String value is conform to the ISO-Time standard (HH:MM:SS),
+     * otherwise <code>false</code>.
+     */
+    public static final boolean isIsoTime(String value) {
+        if (value == null) {
+            return false;
+        }
+        return PATERN_ISO_TIME.matcher(value).matches();
+    }
+
+    /**
+     * Returns <code>true</code> if the String value is conform to the ISO-Date-Time standard
+     * (YYYY-MM-DD HH:MM:SS), otherwise <code>false</code>.
+     */
+    public static final boolean isIsoDateTime(String value) {
+        if (value == null) {
+            return false;
+        }
+        return PATERN_ISO_DATE_TIME.matcher(value).matches();
     }
 
     /**
      * Parses the given ISO-formattted date String to a Date.
      */
-    public final static Date parseIsoDateStringToDate(String s) {
-        if (s == null || s.equals("")) {
+    public static final Date parseIsoDateStringToDate(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
         try {
@@ -123,8 +150,8 @@ public class DateUtil {
     /**
      * Parses the given ISO-formattted date/time String to a Date.
      */
-    public final static Date parseIsoDateTimeStringToDate(String s) {
-        if (s == null || s.equals("")) {
+    public static final Date parseIsoDateTimeStringToDate(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
         try {
@@ -137,8 +164,8 @@ public class DateUtil {
     /**
      * Parses the given ISO-formattted time String to a Date.
      */
-    public final static Date parseIsoTimeStringToDate(String s) {
-        if (s == null || s.equals("")) {
+    public static final Date parseIsoTimeStringToDate(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
         try {
@@ -161,7 +188,7 @@ public class DateUtil {
      * @param end the end of the period
      * @return the length of the period
      */
-    public final static int getDifferenceInYears(Calendar start, Calendar end) {
+    public static final int getDifferenceInYears(Calendar start, Calendar end) {
         if (start == null) {
             throw new IllegalArgumentException("The start date may not be null");
         }
@@ -198,7 +225,7 @@ public class DateUtil {
      * @param end the end of the period
      * @return the length of the period
      */
-    public final static int getDifferenceInYears(Date start, Date end) {
+    public static final int getDifferenceInYears(Date start, Date end) {
         if (start == null) {
             throw new IllegalArgumentException("The start date may not be null");
         }

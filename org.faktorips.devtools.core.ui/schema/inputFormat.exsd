@@ -49,7 +49,7 @@
 
    <element name="inputformat">
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="datatype" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="class" type="string" use="required">

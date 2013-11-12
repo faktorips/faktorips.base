@@ -3037,17 +3037,30 @@
                class="org.faktorips.devtools.core.ui.inputformat.DateISOStringFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
 	       	<datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
+	       	<datatype class="org.faktorips.datatype.joda.LocalDateDatatype" />
         </inputformat>
+        
+        <inputformat
+               class="org.faktorips.devtools.core.ui.inputformat.DateTimeISOStringFormatFactory">
+	        <datatype class="org.faktorips.datatype.joda.LocalDateTimeDatatype" />
+        </inputformat>
+        
+         <inputformat
+               class="org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormatFactory">
+	        <datatype class="org.faktorips.datatype.joda.LocalTimeDatatype" />
+        </inputformat>
+        
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.MoneyFormatFactory">
 	        <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
         </inputformat>
+        
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormatFactory">
             <datatype
                   class="org.faktorips.datatype.EnumDatatype">
             </datatype>
-         </inputformat>       
-       
+         </inputformat>     
+                  
    </extension> 
 </plugin>

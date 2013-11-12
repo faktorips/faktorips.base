@@ -24,11 +24,19 @@ import junit.framework.Assert;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.datatype.joda.LocalDateTimeDatatype;
+import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormatFactory;
+import org.faktorips.devtools.core.ui.inputformat.DateTimeISOStringFormatFactory;
+import org.faktorips.devtools.core.ui.inputformat.IDatatypeInputFormatFactory;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormatFactory;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,6 +54,8 @@ public class UIDatatypeFormatterTest {
 
     private static Locale savedFormattingLocale;
 
+    private UIDatatypeFormatter formatter;
+
     @BeforeClass
     public static void saveLocale() {
         savedFormattingLocale = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale();
@@ -54,6 +64,7 @@ public class UIDatatypeFormatterTest {
     @Before
     public void setUp() {
         IpsPlugin.getDefault().getIpsPreferences().setDatatypeFormattingLocale(Locale.GERMAN);
+        formatter = new UIDatatypeFormatter();
     }
 
     @AfterClass
@@ -87,8 +98,57 @@ public class UIDatatypeFormatterTest {
         assertValueDatatypeFormatting(new DateDatatype(), "2013-11-01", "01.11.2013");
     }
 
+    @Test
+    public void testFormatLocalDate_validInput() {
+        String validInput = "2013-11-13";
+        assertValueDataTypeAndInputFormatFactoryFormatting(new DateISOStringFormatFactory(), new LocalDateDatatype(),
+                validInput);
+    }
+
+    @Test
+    public void testFormatLocalDate_invalidInput() {
+        String invalidInput = "2013-11-40";
+        assertValueDataTypeAndInputFormatFactoryFormatting(new DateISOStringFormatFactory(), new LocalDateDatatype(),
+                invalidInput);
+    }
+
+    @Test
+    public void testFormatLocalTime_validInput() {
+        String invalidInput = "09:30:30";
+        assertValueDataTypeAndInputFormatFactoryFormatting(new TimeISOStringFormatFactory(), new LocalTimeDatatype(),
+                invalidInput);
+    }
+
+    @Test
+    public void testFormatLocalTime_invalidInput() {
+        String validInput = "09.90.30";
+        assertValueDataTypeAndInputFormatFactoryFormatting(new TimeISOStringFormatFactory(), new LocalTimeDatatype(),
+                validInput);
+    }
+
+    @Test
+    public void testFormatLocalDateTime_validInput() {
+        String validInput = "2013-11-13 09:30:30";
+        assertValueDataTypeAndInputFormatFactoryFormatting(new DateTimeISOStringFormatFactory(),
+                new LocalDateTimeDatatype(), validInput);
+    }
+
+    @Test
+    public void testFormatLocalDateTime_invalidInput() {
+        String invalidInput = "2013-11-40 80:30:30";
+        assertValueDataTypeAndInputFormatFactoryFormatting(new DateTimeISOStringFormatFactory(),
+                new LocalDateTimeDatatype(), invalidInput);
+    }
+
+    private void assertValueDataTypeAndInputFormatFactoryFormatting(IDatatypeInputFormatFactory factory,
+            ValueDatatype datatype,
+            String expected) {
+        IInputFormat<String> localeTimeFormat = factory.newInputFormat(datatype);
+        String actual = localeTimeFormat.format(expected);
+        assertValueDatatypeFormatting(datatype, expected, actual);
+    }
+
     private void assertValueDatatypeFormatting(ValueDatatype datatype, String value, String expectedFormattedValue) {
-        UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formattedValue = formatter.formatValue(datatype, value);
         assertEquals(expectedFormattedValue, formattedValue);
     }

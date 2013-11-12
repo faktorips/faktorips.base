@@ -47,6 +47,34 @@ public class DateUtilTest {
     }
 
     @Test
+    public void testIsIsoDateInvalidInput() {
+        Date test = DateUtil.parseIsoDateStringToDate("2008-13-35");
+        assertTrue(test.toString().contains("Feb"));
+        assertTrue(test.toString().contains("4"));
+        assertTrue(test.toString().contains("2009"));
+    }
+
+    @Test
+    public void testIsIsoTime() {
+        assertFalse(DateUtil.isIsoTime(null));
+        assertFalse(DateUtil.isIsoTime("1:2:3"));
+        assertFalse(DateUtil.isIsoTime("24:00:00"));
+        assertFalse(DateUtil.isIsoTime("00:60:00"));
+        assertFalse(DateUtil.isIsoTime("00:00:60"));
+        assertTrue(DateUtil.isIsoTime("00:00:00"));
+        assertTrue(DateUtil.isIsoTime("01:02:03"));
+        assertTrue(DateUtil.isIsoTime("23:59:59"));
+    }
+
+    @Test
+    public void tesIsIsoDateTime() {
+        assertFalse(DateUtil.isIsoDateTime(null));
+        assertFalse(DateUtil.isIsoDateTime("2008-01-01 1:2:3"));
+        assertFalse(DateUtil.isIsoDateTime("01-01-2008 23:59:59"));
+        assertTrue(DateUtil.isIsoDateTime("2008-01-01 00:00:00"));
+    }
+
+    @Test
     public void testDatetoIsoDateString() {
         assertEquals("", DateUtil.dateToIsoDateString(null));
         Date date = new GregorianCalendar(2005, 8, 9).getTime();

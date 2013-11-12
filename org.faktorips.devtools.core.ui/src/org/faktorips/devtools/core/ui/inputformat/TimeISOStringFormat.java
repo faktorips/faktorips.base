@@ -26,14 +26,14 @@ import org.faktorips.values.DateUtil;
  */
 public class TimeISOStringFormat extends AbstractDateFormat<String> {
 
+    protected TimeISOStringFormat() {
+        // only hide the constructor
+    }
+
     public static TimeISOStringFormat newInstance() {
         TimeISOStringFormat format = new TimeISOStringFormat();
         format.initFormat();
         return format;
-    }
-
-    protected TimeISOStringFormat() {
-        // only hide the constructor
     }
 
     @Override

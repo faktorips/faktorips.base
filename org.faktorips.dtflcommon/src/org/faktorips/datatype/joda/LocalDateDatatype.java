@@ -1,8 +1,10 @@
 package org.faktorips.datatype.joda;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.values.DateUtil;
 
 /**
  * {@link Datatype} for {@code org.joda.time.LocalDate}.
@@ -25,4 +27,8 @@ public class LocalDateDatatype extends ValueClassNameDatatype {
         return true;
     }
 
+    @Override
+    public boolean isParsable(String value) {
+        return StringUtils.isEmpty(value) || DateUtil.isIsoDate(value);
+    }
 }
