@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -108,26 +109,27 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
                 // No more rows, we are finished whit this sheet.
                 break;
             }
-            IRow genRow = generation.newRow();
-            for (int j = 0; j < structure.getNumOfColumns(); j++) {
-                Cell cell = sheetRow.getCell(j);
-                if (cell == null) {
-                    Object[] objects = new Object[3];
-                    objects[0] = new Integer(i);
-                    objects[1] = new Integer(j);
-                    objects[2] = nullRepresentationString;
-                    String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, objects);
-                    messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-                    genRow.setValue(j, nullRepresentationString);
-                } else {
-                    genRow.setValue(j, readCell(cell, datatypes[j]));
-                }
-            }
+            writeRow(sheetRow, i, generation);
 
             if (monitor.isCanceled()) {
                 return;
             }
             monitor.worked(1);
+        }
+    }
+
+    private void writeRow(Row sheetRow, int rowIndex, ITableContentsGeneration generation) {
+        IRow genRow = generation.newRow();
+        for (int j = 0; j < structure.getNumOfColumns(); j++) {
+            Cell cell = sheetRow.getCell(j);
+            if (cell == null) {
+                String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, new Object[] { rowIndex,
+                        j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() });
+                messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+                genRow.setValue(j, null);
+            } else {
+                genRow.setValue(j, readCell(cell, datatypes[j]));
+            }
         }
     }
 

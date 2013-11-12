@@ -160,7 +160,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                         Object[] objects = new Object[3];
                         objects[0] = new Integer(rowNumber);
                         objects[1] = new Integer(j);
-                        objects[2] = nullRepresentationString;
+                        objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                         String msg = NLS
                                 .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$

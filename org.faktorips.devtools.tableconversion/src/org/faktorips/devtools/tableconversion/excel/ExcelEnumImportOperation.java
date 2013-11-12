@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -79,24 +80,26 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        // TODO AW: ProgressMonitor is not shown to the user somehow.
+        IProgressMonitor progressMonitor;
         if (monitor == null) {
-            monitor = new NullProgressMonitor();
+            progressMonitor = new NullProgressMonitor();
+        } else {
+            progressMonitor = monitor;
         }
         try {
             initWorkbookAndSheet();
-            monitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(sheet)); //$NON-NLS-1$
+            progressMonitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(sheet)); //$NON-NLS-1$
 
             // Update datatypes because the structure might be altered if this operation is reused.
             initDatatypes();
-            monitor.worked(1);
-            fillEnum(valueContainer, sheet, monitor);
+            progressMonitor.worked(1);
+            fillEnum(valueContainer, sheet, progressMonitor);
 
-            if (monitor.isCanceled()) {
+            if (progressMonitor.isCanceled()) {
                 valueContainer.getIpsObject().getIpsSrcFile().discardChanges();
             }
-            monitor.worked(1);
-            monitor.done();
+            progressMonitor.worked(1);
+            progressMonitor.done();
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(
                     NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
@@ -109,7 +112,8 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         for (int i = startRow;; i++) {
             Row sheetRow = sheet.getRow(i);
-            if (sheetRow == null) { // No more rows.
+            if (sheetRow == null) {
+                // No more rows.
                 break;
             }
             numberRows++;
@@ -138,10 +142,10 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                     Object[] objects = new Object[3];
                     objects[0] = new Integer(i);
                     objects[1] = new Integer(j);
-                    objects[2] = nullRepresentationString;
+                    objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                     String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-                    setValueAttribute(enumAttributeValue, nullRepresentationString);
+                    setValueAttribute(enumAttributeValue, null);
                 } else {
                     setValueAttribute(enumAttributeValue, readCell(cell, datatypes[j]));
                 }
@@ -158,8 +162,8 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         if (enumAttribute.getValueType().equals(ValueType.STRING)) {
             enumAttribute.setValue(ValueFactory.createStringValue(value));
         } else if (enumAttribute.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
-            IValue<?> InternationalStringValue = enumAttribute.getValue();
-            InternationalString content = (InternationalString)InternationalStringValue.getContent();
+            IValue<?> internationalStringValue = enumAttribute.getValue();
+            InternationalString content = (InternationalString)internationalStringValue.getContent();
             content.add(new LocalizedString(getDefaultLanguage(enumAttribute.getIpsProject()), value));
         }
     }

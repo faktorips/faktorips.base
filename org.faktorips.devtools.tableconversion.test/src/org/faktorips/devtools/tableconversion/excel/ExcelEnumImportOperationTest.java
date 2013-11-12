@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -26,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -156,4 +158,45 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         wb.write(fos);
         fos.close();
     }
+
+    @Test
+    public void testImportNullCell() throws Exception {
+        MessageList ml = new MessageList();
+        IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
+
+        // create enum.xls
+        ExcelEnumExportOperation excelEnumExportOperation = new ExcelEnumExportOperation(enumType, file.getName(),
+                format, "NULL", true, new MessageList());
+        excelEnumExportOperation.run(null);
+        enumType.clear();
+
+        createEmpty();
+
+        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
+                true);
+        op.run(new NullProgressMonitor());
+        assertEquals(9, ml.size());
+        String[] row2 = new String[] { null, null, null, null, null, null, null, null };
+        assertEnumAttributeValues(row2, enumType.getEnumValues().get(0).getEnumAttributeValues());
+    }
+
+    private void assertEnumAttributeValues(String[] stringRow, List<IEnumAttributeValue> enumAttributeValues) {
+        for (int i = 0; i < stringRow.length; i++) {
+            assertEquals(stringRow[i], enumAttributeValues.get(i).getValue().getContentAsString());
+        }
+
+    }
+
+    private void createEmpty() throws Exception {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+
+        sheet.createRow(0); // header
+        sheet.createRow(1);
+
+        FileOutputStream fos = new FileOutputStream(file);
+        wb.write(fos);
+        fos.close();
+    }
+
 }

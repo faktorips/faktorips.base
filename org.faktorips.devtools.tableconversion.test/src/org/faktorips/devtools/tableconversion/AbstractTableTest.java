@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.tableconversion;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -313,6 +315,12 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
         format.executeEnumExport(enumType, new Path("enum" + format.getDefaultExtension()), "NULL",
                 exportColumnHeaderRow, new MessageList());
+    }
+
+    protected void assertRow(String[] stringRow, IRow row) {
+        for (int i = 0; i < stringRow.length; i++) {
+            assertEquals("column " + i + " mismatched", stringRow[i], row.getValue(i));
+        }
     }
 
 }

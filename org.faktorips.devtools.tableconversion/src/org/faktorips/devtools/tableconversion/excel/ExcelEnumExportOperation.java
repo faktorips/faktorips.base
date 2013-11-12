@@ -72,24 +72,28 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
+        IProgressMonitor progressMonitor;
         if (monitor == null) {
-            monitor = new NullProgressMonitor();
+            progressMonitor = new NullProgressMonitor();
+        } else {
+            progressMonitor = monitor;
         }
-        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + enumValueContainer.getEnumValuesCount());
+        progressMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle,
+                2 + enumValueContainer.getEnumValuesCount());
 
         initWorkbookAndSheet();
-        monitor.worked(1);
+        progressMonitor.worked(1);
 
         IEnumType structure = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
         List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
         exportHeader(sheet, attributes, exportColumnHeaderRow);
-        monitor.worked(1);
-        if (monitor.isCanceled()) {
+        progressMonitor.worked(1);
+        if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(sheet, enumValueContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
-        if (monitor.isCanceled()) {
+        exportDataCells(sheet, enumValueContainer.getEnumValues(), structure, progressMonitor, exportColumnHeaderRow);
+        if (progressMonitor.isCanceled()) {
             return;
         }
 
@@ -101,7 +105,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             IpsPlugin.log(e);
             messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
-        monitor.done();
+        progressMonitor.done();
     }
 
     /**

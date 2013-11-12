@@ -102,6 +102,14 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
+        String[] row0 = new String[] { "true", "12.3", "1.7976931348623157E308", "1970-01-01", "2147483647",
+                "9223372036854775807", "123.45 EUR", "einfacher text" };
+        assertRow(row0, importTarget.getRow(0));
+        String[] row1 = new String[] { "false", "12.3", "4.9E-324", "1970-01-01", "-2147483648",
+                "-9223372036854775808", "1.00 EUR", "�������{[]}" };
+        assertRow(row1, importTarget.getRow(1));
+        String[] row2 = new String[] { null, null, null, null, null, null, null, null };
+        assertRow(row2, importTarget.getRow(2));
     }
 
     @Test
@@ -140,6 +148,20 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertEquals(6, ml.size());
+    }
+
+    @Test
+    public void testImportNullCell() throws Exception {
+        MessageList ml = new MessageList();
+        structure = createTableStructure(ipsProject);
+        createEmptyRow();
+
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", true, ml, true);
+        op.run(new NullProgressMonitor());
+        assertEquals(8, ml.size());
+        String[] row2 = new String[] { null, null, null, null, null, null, null, null };
+        assertRow(row2, importTarget.getRow(0));
     }
 
     @Test
@@ -248,6 +270,18 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         row1.createCell(5).setCellValue("INVALID");
         row1.createCell(6).setCellValue("INVALID");
         row1.createCell(7).setCellValue("invalid is impossible");
+
+        FileOutputStream fos = new FileOutputStream(file);
+        wb.write(fos);
+        fos.close();
+    }
+
+    private void createEmptyRow() throws Exception {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+
+        sheet.createRow(0); // header
+        sheet.createRow(1);
 
         FileOutputStream fos = new FileOutputStream(file);
         wb.write(fos);
