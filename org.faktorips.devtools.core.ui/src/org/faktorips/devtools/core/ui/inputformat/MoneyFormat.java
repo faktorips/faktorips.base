@@ -37,7 +37,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     private static final String CURRENCY_SEPARATOR = " "; //$NON-NLS-1$
 
-    private static final String LITERALS_TO_BE_REPLACED = "[-,.\\d]"; //$NON-NLS-1$
+    private static final String VALID_AMOUNT_CHARS = "[-,.\\d]"; //$NON-NLS-1$
 
     private static Map<String, Currency> currencySymbols = new ConcurrentHashMap<String, Currency>();
 
@@ -123,7 +123,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     }
 
     protected String[] splitStringToBeParsed(String value) {
-        String currency = value.replaceAll(LITERALS_TO_BE_REPLACED, StringUtils.EMPTY).trim();
+        String currency = value.replaceAll(VALID_AMOUNT_CHARS, StringUtils.EMPTY).trim();
         String[] splittedString = new String[2];
         splittedString[0] = value.replaceAll(Pattern.quote(currency), StringUtils.EMPTY).trim();
         splittedString[1] = currency;
