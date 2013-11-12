@@ -37,6 +37,8 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     private static final String CURRENCY_SEPARATOR = " "; //$NON-NLS-1$
 
+    private static final String LITERALS_TO_BE_REPLACED = "[-,.\\d]"; //$NON-NLS-1$
+
     private static Map<String, Currency> currencySymbols = new ConcurrentHashMap<String, Currency>();
 
     private DecimalNumberFormat amountFormat;
@@ -46,8 +48,6 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     private boolean addCurrencySymbol = false;
 
     private Locale locale;
-
-    private final String LITERALS_TO_BE_REPLACED = "[-,.\\d]"; //$NON-NLS-1$
 
     protected MoneyFormat(Currency defaultCurrency) {
         currentCurrency = defaultCurrency;
@@ -77,7 +77,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
             setCurrentCurrency(money.getCurrency());
             String formattedAmount = amountFormat.getNumberFormat().format(money.getAmount());
             if (addCurrencySymbol && currentCurrency != null) {
-                formattedAmount += ' ' + currentCurrency.getSymbol(locale);
+                formattedAmount += CURRENCY_SEPARATOR + currentCurrency.getSymbol(locale);
                 updateCurrencySumbols();
             }
             return formattedAmount;
