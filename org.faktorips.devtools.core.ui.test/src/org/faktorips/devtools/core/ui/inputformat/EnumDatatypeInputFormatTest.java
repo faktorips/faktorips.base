@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -36,9 +35,12 @@ public class EnumDatatypeInputFormatTest {
     @Mock
     private IpsPreferences ipsPreferences;
 
-    @InjectMocks
-    // need to create an instance manually, otherwise it will break when running as plug-In test
-    private EnumDatatypeInputFormat enumDatatypeInputFormat = new EnumDatatypeInputFormat(null, null);
+    private EnumDatatypeInputFormat enumDatatypeInputFormat;
+
+    @Before
+    public void createInputFormat() {
+        enumDatatypeInputFormat = new EnumDatatypeInputFormat(enumDatatype, ipsPreferences);
+    }
 
     @Before
     public void setUpEnumDatatype() {

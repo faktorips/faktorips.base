@@ -21,11 +21,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.osgi.framework.Bundle;
 
 public class DatatypeInputFormatRegistry {
 
@@ -75,10 +77,10 @@ public class DatatypeInputFormatRegistry {
             IConfigurationElement datatypeElement) {
         String classAttribute = datatypeElement.getAttribute(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
         try {
-            @SuppressWarnings("unchecked")
             // class enforced by extension-point definition
-            Class<? extends ValueDatatype> datatypeClass = (Class<? extends ValueDatatype>)Class
-                    .forName(classAttribute);
+            Bundle bundle = Platform.getBundle(extension.getContributor().getName());
+            @SuppressWarnings("unchecked")
+            Class<? extends ValueDatatype> datatypeClass = bundle.loadClass(classAttribute);
             return datatypeClass;
         } catch (ClassNotFoundException e) {
             throw new CoreRuntimeException(new IpsStatus(
