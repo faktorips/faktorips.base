@@ -21,6 +21,12 @@ public interface AnnotationGeneratorFactory {
     /**
      * Returns <code>true</code> if the factory is required for the given project, as the
      * appropriate annotations have to be generated.
+     * <p>
+     * Note: This method is called during initialization of the builder set. Hence you cannot ask
+     * the IpsProject for its builder set!
+     * 
+     * @param ipsProject The {@link IIpsProject} for which the {@link AnnotationGeneratorFactory}
+     *            may be required.
      */
     public boolean isRequiredFor(IIpsProject ipsProject);
 

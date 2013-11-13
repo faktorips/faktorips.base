@@ -88,6 +88,9 @@
                type="enum">
             <discreteValues>
                <!-- see IPersistenceProvider#PROVIDER_IMPLEMENTATION_* -->
+                <value
+                     value="None">
+               </value>
                <value
                      value="EclipseLink 1.1">
                </value>

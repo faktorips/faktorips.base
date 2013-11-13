@@ -24,13 +24,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
@@ -165,13 +163,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private GeneratorModelContext generatorModelContext;
 
-    private Map<String, CachedPersistenceProvider> allSupportedPersistenceProvider;
+    private Map<String, IPersistenceProvider> allSupportedPersistenceProvider;
 
     private final String version;
 
     private final AnnotationGeneratorFactory[] annotationGeneratorFactories;
-
-    private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
         annotationGeneratorFactories = new AnnotationGeneratorFactory[] {
@@ -179,8 +175,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 new PolicyCmptImplClassJpaAnnGenFactory(),
                 // Jaxb support
                 new PolicyCmptImplClassJaxbAnnGenFactory() };
-
-        initSupportedPersistenceProviderMap();
 
         version = "3.0.0"; //$NON-NLS-1$
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
@@ -261,10 +255,39 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     @Override
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
-        createAnnotationGeneratorMap();
+        HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap = createAnnotationGeneratorMap();
         modelService = new ModelService();
-        generatorModelContext = new GeneratorModelContext(config, this, getAnnotationGenerators());
+        generatorModelContext = new GeneratorModelContext(config, this, annotationGeneratorMap);
         super.initialize(config);
+    }
+
+    private HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGeneratorMap()
+            throws CoreException {
+        HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>();
+        List<AnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
+
+        for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
+            ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<IAnnotationGenerator>();
+            for (AnnotationGeneratorFactory annotationGeneratorFactory : factories) {
+                IAnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
+                if (annotationGenerator == null) {
+                    continue;
+                }
+                annotationGenerators.add(annotationGenerator);
+            }
+            annotationGeneratorsMap.put(type, annotationGenerators);
+        }
+        return annotationGeneratorsMap;
+    }
+
+    private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
+        List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
+        for (AnnotationGeneratorFactory annotationGeneratorFactorie : annotationGeneratorFactories) {
+            if (annotationGeneratorFactorie.isRequiredFor(getIpsProject())) {
+                factories.add(annotationGeneratorFactorie);
+            }
+        }
+        return factories;
     }
 
     @Override
@@ -375,42 +398,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return builders;
     }
 
-    private void createAnnotationGeneratorMap() throws CoreException {
-        annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>();
-        List<AnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
-
-        for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
-            ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<IAnnotationGenerator>();
-            for (AnnotationGeneratorFactory annotationGeneratorFactory : factories) {
-                IAnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
-                if (annotationGenerator == null) {
-                    continue;
-                }
-                annotationGenerators.add(annotationGenerator);
-            }
-            annotationGeneratorsMap.put(type, annotationGenerators);
-        }
-    }
-
-    private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
-        List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
-        for (AnnotationGeneratorFactory annotationGeneratorFactorie : annotationGeneratorFactories) {
-            if (annotationGeneratorFactorie.isRequiredFor(getIpsProject())) {
-                factories.add(annotationGeneratorFactorie);
-            }
-        }
-        return factories;
-    }
-
-    /**
-     * Returns the map of annotation generators used to provide annotations to generated elements.
-     * 
-     * @return The annotation generator map.
-     */
-    public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> getAnnotationGenerators() {
-        return annotationGeneratorsMap;
-    }
-
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
         return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), datatypeAdapter);
@@ -475,14 +462,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
     }
 
-    private void initSupportedPersistenceProviderMap() {
-        allSupportedPersistenceProvider = new HashMap<String, CachedPersistenceProvider>(2);
-        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
-                createCachedPersistenceProvider(EclipseLink1PersistenceProvider.class));
-        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0,
-                createCachedPersistenceProvider(GenericJPA2PersistenceProvider.class));
-    }
-
     @Override
     public boolean isPersistentProviderSupportConverter() {
         IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
@@ -499,28 +478,22 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns the persistence provider or <code>null</code> if no
      */
     public IPersistenceProvider getPersistenceProviderImplementation() {
+        if (allSupportedPersistenceProvider == null) {
+            initSupportedPersistenceProviderMap();
+        }
         String persistenceProviderKey = (String)getConfig().getPropertyValue(CONFIG_PROPERTY_PERSISTENCE_PROVIDER);
         if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) {
             return null;
         }
-        CachedPersistenceProvider pProviderCached = allSupportedPersistenceProvider.get(persistenceProviderKey);
-        if (pProviderCached == null) {
-            StdBuilderPlugin.log(new IpsStatus(IStatus.WARNING,
-                    "Unknow persistence provider  \"" + persistenceProviderKey //$NON-NLS-1$
-                            + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString()));
-            return null;
-        }
+        return allSupportedPersistenceProvider.get(persistenceProviderKey);
+    }
 
-        if (pProviderCached.getCachedProvider() == null) {
-            try {
-                pProviderCached.setCachedProvider(pProviderCached.getPersistenceProviderClass().newInstance());
-                // CSOFF: IllegalCatch
-            } catch (Exception e) {
-                // CSON: IllegalCatch
-                throw new RuntimeException(e);
-            }
-        }
-        return pProviderCached.getCachedProvider();
+    private void initSupportedPersistenceProviderMap() {
+        allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(2);
+        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
+                new EclipseLink1PersistenceProvider());
+        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0,
+                new GenericJPA2PersistenceProvider());
     }
 
     public String getJavaClassName(Datatype datatype) {
@@ -639,29 +612,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public GeneratorModelContext getGeneratorModelContext() {
         return generatorModelContext;
-    }
-
-    private CachedPersistenceProvider createCachedPersistenceProvider(Class<? extends IPersistenceProvider> pPClass) {
-        CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
-        providerCache.persistenceProviderClass = pPClass;
-        return providerCache;
-    }
-
-    private static class CachedPersistenceProvider {
-        private Class<? extends IPersistenceProvider> persistenceProviderClass;
-        private IPersistenceProvider cachedProvider = null;
-
-        private Class<? extends IPersistenceProvider> getPersistenceProviderClass() {
-            return persistenceProviderClass;
-        }
-
-        private IPersistenceProvider getCachedProvider() {
-            return cachedProvider;
-        }
-
-        private void setCachedProvider(IPersistenceProvider cachedProvider) {
-            this.cachedProvider = cachedProvider;
-        }
     }
 
     public enum FormulaCompiling {

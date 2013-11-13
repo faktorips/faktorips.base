@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.util.PersistenceUtil;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
@@ -39,7 +38,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute
  * 
  * @author Roman Grutza
  */
-public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
     private static final String ANNOTATION_COLUMN = "@Column";
     private static final String ANNOTATION_TEMPORAL = "@Temporal";
@@ -165,14 +164,14 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+    public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
         if (!(ipsElement instanceof IPolicyCmptTypeAttribute)) {
             return false;
         }
         if (!((IPolicyCmptTypeAttribute)ipsElement).getPolicyCmptType().isPersistentEnabled()) {
             return false;
         }
-        // the attribute must not be marked as transient
         return !((IPolicyCmptTypeAttribute)ipsElement).getPersistenceAttributeInfo().isTransient();
     }
+
 }

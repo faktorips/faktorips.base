@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
@@ -27,7 +26,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
  * 
  * @author Roman Grutza
  */
-public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
     private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
     private static final String ANNOTATION_TRANSIENT = "@Transient";
@@ -47,7 +46,7 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+    public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
         if (ipsElement instanceof IPolicyCmptTypeAttribute) {
             IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)ipsElement;
             if (!attribute.getPolicyCmptType().isPersistentEnabled()) {

@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceS
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
@@ -38,7 +37,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
  * 
  * @author Roman Grutza
  */
-public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
     private static final String ANNOTATION_ENTITY = "@Entity";
     private static final String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
@@ -156,7 +155,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+    public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
         if (!(ipsElement instanceof IPolicyCmptType)) {
             return false;
         }

@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
@@ -42,7 +41,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociati
  * 
  * @author Roman Grutza
  */
-public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
     // JPA imports
     private static final String IMPORT_JOIN_TABLE = "javax.persistence.JoinTable";
@@ -377,7 +376,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+    public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
         if (!(ipsElement instanceof IPolicyCmptTypeAssociation)) {
             return false;
         }
@@ -404,4 +403,5 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             throw new CoreRuntimeException(e);
         }
     }
+
 }

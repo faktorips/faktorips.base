@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
@@ -24,7 +23,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
  * 
  * @author Roman Grutza
  */
-public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
@@ -37,8 +36,7 @@ public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractAnnotat
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
-        // currently there are no annotation created by this generator class
+    public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
         return false;
     }
 }
