@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import java.util.Locale;
 
 import org.faktorips.codegen.CodeFragment;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -29,11 +28,11 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class AbstractIdentifierResolver<T extends CodeFragment> implements IdentifierResolver<T> {
 
     private final IExpression expression;
-    private final ExprCompiler<JavaCodeFragment> exprCompiler;
+    private final ExprCompiler<T> exprCompiler;
     private final IIpsProject ipsProject;
     private final IdentifierParser parser;
 
-    public AbstractIdentifierResolver(IExpression expression, ExprCompiler<JavaCodeFragment> exprCompiler) {
+    public AbstractIdentifierResolver(IExpression expression, ExprCompiler<T> exprCompiler) {
         ArgumentCheck.notNull(expression, this);
         ArgumentCheck.notNull(exprCompiler, this);
         this.expression = expression;
@@ -46,7 +45,7 @@ public abstract class AbstractIdentifierResolver<T extends CodeFragment> impleme
         return expression;
     }
 
-    public ExprCompiler<JavaCodeFragment> getExprCompiler() {
+    public ExprCompiler<T> getExprCompiler() {
         return exprCompiler;
     }
 
