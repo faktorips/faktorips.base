@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -26,9 +27,9 @@ import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -188,8 +189,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             ValueDatatype[] datatypes,
             boolean uniqueKeyCheck) {
 
-        IIndex[] uniqueKeys = tableStructure.getUniqueKeys();
-        validateMissingAndInvalidUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
+        List<IIndex> indices = tableStructure.getIndices();
+        validateMissingAndInvalidIndexValue(result, datatypes, tableStructure, indices);
         validateRowValue(result, tableStructure, datatypes);
         if (uniqueKeyCheck) {
             validateUniqueKey(result, tableStructure, datatypes);
@@ -203,20 +204,20 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     /**
      * Validates this row using the given list of datatypes.
      */
-    private void validateMissingAndInvalidUniqueKeyValue(MessageList list,
+    private void validateMissingAndInvalidIndexValue(MessageList list,
             ValueDatatype[] datatypes,
             ITableStructure structure,
-            IIndex[] uniqueKeys) {
+            List<IIndex> indices) {
 
         /*
-         * this validation can only be applied if the colum sizes of the structure and content are
+         * this validation can only be applied if the column sizes of the structure and content are
          * consistent. there must be a different rule that validates this consistency
          */
         if (structure.getNumOfColumns() != getTableContents().getNumOfColumns()) {
             return;
         }
-        for (IIndex uniqueKey : uniqueKeys) {
-            IKeyItem[] keyItems = uniqueKey.getKeyItems();
+        for (IIndex indexKey : indices) {
+            IKeyItem[] keyItems = indexKey.getKeyItems();
             for (IKeyItem keyItem : keyItems) {
                 if (keyItem instanceof IColumn) {
                     IColumn column = (IColumn)keyItem;
