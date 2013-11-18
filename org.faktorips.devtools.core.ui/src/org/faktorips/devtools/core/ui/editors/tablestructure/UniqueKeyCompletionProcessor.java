@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * A completion processor for a table structure's unique keys.
+ * A completion processor for a table structure's indices.
  */
 public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
 
@@ -37,8 +37,8 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     /**
-     * Sets the table structure which unique keys should be completed. If <code>null</code> is
-     * passed, no completion is available.
+     * Sets the table structure which indices should be completed. If <code>null</code> is passed,
+     * no completion is available.
      */
     public void setTableStructure(ITableStructure structure) {
         tableStructure = structure;

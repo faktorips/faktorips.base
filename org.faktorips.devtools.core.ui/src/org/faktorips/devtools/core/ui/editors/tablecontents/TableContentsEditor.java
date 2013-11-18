@@ -45,9 +45,9 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
         super.doSave(monitor);
 
         // always refresh the table after saving
-        // thus all problem markers of unique key error are updated
-        // necessary because maybe there are old unique key validation problem marker,
-        // this could happen if the unique key error state didn't changed (e.g. at least there are
+        // thus all problem markers of index error are updated
+        // necessary because maybe there are old index validation problem marker,
+        // this could happen if the index error state didn't changed (e.g. at least there are
         // errors)
         contentsPage.refreshTable();
     }

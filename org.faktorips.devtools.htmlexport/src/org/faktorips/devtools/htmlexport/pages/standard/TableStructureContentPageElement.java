@@ -271,7 +271,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
     }
 
     /**
-     * adds a table for the unique keys
+     * adds a table for the indices
      */
     private void addUniqueKeysTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
