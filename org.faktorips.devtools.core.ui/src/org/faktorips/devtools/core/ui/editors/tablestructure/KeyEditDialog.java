@@ -48,19 +48,21 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.core.util.ArrayElementMover;
@@ -71,7 +73,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * A dialog to edit a unique or foreign key.
  */
-public class KeyEditDialog extends IpsPartEditDialog {
+public class KeyEditDialog extends IpsPartEditDialog2 {
 
     /** the key being edited */
     private IKey key;
@@ -86,8 +88,10 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
     private TextField uniqueKeyRefField;
 
-    /** completion processor for a table structure's unique keys. */
-    private UniqueKeyCompletionProcessor completionProcessor;
+    private Checkbox checkbox;
+
+    /** completion processor for a table structure's indices. */
+    private IndexCompletionProcessor completionProcessor;
 
     // buttons
     private Button addButton;
@@ -108,6 +112,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
         page.setText(Messages.KeyEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
 
+        connectToModel();
         refreshUi();
         return folder;
     }
@@ -154,7 +159,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             });
             getToolkit().createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceUniqueKey);
             Text ukRefControl = getToolkit().createText(refTableComposite);
-            completionProcessor = new UniqueKeyCompletionProcessor();
+            completionProcessor = new IndexCompletionProcessor();
             ContentAssistHandler.createHandlerForText(ukRefControl,
                     CompletionUtil.createContentAssistant(completionProcessor));
 
@@ -171,8 +176,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
             getToolkit().createHorizonzalLine(pageComposite);
             itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
         } else {
-            itemEditComposite = createTabItemComposite(folder, 3, false);
-            pageComposite = itemEditComposite;
+            pageComposite = createTabItemComposite(folder, 1, false);
+            createCheckbox(pageComposite);
+            itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
         }
         Composite left = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
         Composite leftGroup = getToolkit().createGroup(left, SWT.NONE, Messages.KeyEditDialog_labelKeyItems);
@@ -187,6 +193,15 @@ public class KeyEditDialog extends IpsPartEditDialog {
         createItemCandidatesComposite(rightGroup);
 
         return pageComposite;
+    }
+
+    private void createCheckbox(Composite pageComposite) {
+        Composite itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
+        Composite top = getToolkit().createGridComposite(itemEditComposite, 1, true, true);
+
+        checkbox = getToolkit().createCheckbox(top, Messages.KeyEditDialog_checkboxUniqueKey);
+        getToolkit().createHorizonzalLine(pageComposite);
+        getBindingContext().bindContent(checkbox, key, IIndex.PROPERTY_UNIQUE_KEY);
     }
 
     /**
@@ -351,12 +366,10 @@ public class KeyEditDialog extends IpsPartEditDialog {
         candidatesViewer.setInput(this);
     }
 
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
+    private void connectToModel() {
         if (tableStructureRefField != null) {
-            uiController.add(tableStructureRefField, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
-            uiController.add(uniqueKeyRefField, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
+            getBindingContext().bindContent(tableStructureRefField, key, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
+            getBindingContext().bindContent(uniqueKeyRefField, key, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
         }
     }
 
@@ -417,7 +430,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
 
     private void refreshUi() {
-        uiController.updateUI();
+        getBindingContext().updateUI();
         itemsViewer.refresh();
         candidatesViewer.refresh();
         setTitle(buildTitle());
@@ -433,7 +446,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
                 return;
             }
             Message msg = msgList.getMessage(0);
-            setMessage(msg.getText(), getToolkit().convertToJFaceSeverity(msg.getSeverity()));
+            setMessage(msg.getText(), UIToolkit.convertToJFaceSeverity(msg.getSeverity()));
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }

@@ -53,7 +53,7 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
         new GeneralInfoSection(getTableStructure(), formBody, toolkit);
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new ColumnsSection(getTableStructure(), members, toolkit);
-        new UniqueKeysSection(getTableStructure(), members, toolkit);
+        new IndexSection(getTableStructure(), members, toolkit);
         new RangesSection(getTableStructure(), members, toolkit);
         new ForeignKeysSection(getTableStructure(), members, toolkit);
         updatePageMessage();

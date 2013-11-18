@@ -27,20 +27,20 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
-public class UniqueKeysSection extends SimpleIpsPartsSection {
+public class IndexSection extends SimpleIpsPartsSection {
 
-    public UniqueKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.UniqueKeysSection_title, toolkit);
+    public IndexSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
+        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.IndicesSection_title, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new UniqueKeysComposite(getIpsObject(), parent, toolkit);
+        return new IndicesComposite(getIpsObject(), parent, toolkit);
     }
 
-    private class UniqueKeysComposite extends IpsPartsComposite {
+    private class IndicesComposite extends IpsPartsComposite {
 
-        public UniqueKeysComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
+        public IndicesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, getSite(), toolkit);
         }
 

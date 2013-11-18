@@ -33,7 +33,7 @@ public class Messages extends NLS {
     public static String ColumnEditDialog_labelName;
     public static String ColumnEditDialog_labelDatatype;
     public static String StructurePage_title;
-    public static String UniqueKeysSection_title;
+    public static String IndicesSection_title;
     public static String ForeignKeysSection_title;
     public static String ColumnsSection_title;
     public static String KeyEditDialog_title;
@@ -42,6 +42,7 @@ public class Messages extends NLS {
     public static String KeyEditDialog_labelReferenceUniqueKey;
     public static String KeyEditDialog_labelKeyItems;
     public static String KeyEditDialog_groupTitle;
+    public static String KeyEditDialog_checkboxUniqueKey;
     public static String RangeEditDialog_title;
     public static String RangeEditDialog_generalTitle;
     public static String RangeEditDialog_labelType;

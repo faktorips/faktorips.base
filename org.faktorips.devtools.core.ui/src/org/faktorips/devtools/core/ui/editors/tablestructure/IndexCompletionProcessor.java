@@ -27,11 +27,11 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 /**
  * A completion processor for a table structure's indices.
  */
-public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
+public class IndexCompletionProcessor extends AbstractCompletionProcessor {
 
     private ITableStructure tableStructure;
 
-    public UniqueKeyCompletionProcessor() {
+    public IndexCompletionProcessor() {
         super();
         setComputeProposalForEmptyPrefix(true);
     }
