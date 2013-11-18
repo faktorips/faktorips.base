@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.model.tablestructure;
 
 /**
- * A key item is a part of a unique key. There are two kind of key items: columns and ranges.
+ * A key item is a part of an index. There are two kind of key items: columns and ranges.
  */
 public interface IKeyItem {
 

@@ -51,7 +51,7 @@ import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -140,7 +140,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
                         ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure(key.getIpsProject());
                         completionProcessor.setTableStructure(structure);
                         if (structure != null) {
-                            IUniqueKey[] keys = structure.getUniqueKeys();
+                            IIndex[] keys = structure.getUniqueKeys();
                             if (keys.length > 0) {
                                 uniqueKeyRefField.setText(keys[0].getName());
                             }

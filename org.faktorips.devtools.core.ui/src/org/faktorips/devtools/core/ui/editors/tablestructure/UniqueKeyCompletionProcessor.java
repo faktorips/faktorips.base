@@ -20,7 +20,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -55,13 +55,13 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
         if (tableStructure == null) {
             return;
         }
-        IUniqueKey[] keys = tableStructure.getUniqueKeys();
-        for (IUniqueKey key : keys) {
+        IIndex[] keys = tableStructure.getUniqueKeys();
+        for (IIndex key : keys) {
             addToResult(result, key, documentOffset);
         }
     }
 
-    private void addToResult(List<ICompletionProposal> result, IUniqueKey key, int documentOffset) {
+    private void addToResult(List<ICompletionProposal> result, IIndex key, int documentOffset) {
         String name = key.getName();
         String displayText = name;
         Image image = IpsUIPlugin.getImageHandling().getImage(key);

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -198,18 +198,18 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private static class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IUniqueKey> {
+    private static class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IIndex> {
 
         public UniqueKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
             super(Arrays.asList(tableStructure.getUniqueKeys()), context);
         }
 
         @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IIndex uniqueKey) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getUniqueKeyData(uniqueKey)));
         }
 
-        protected List<String> getUniqueKeyData(IUniqueKey uniqueKey) {
+        protected List<String> getUniqueKeyData(IIndex uniqueKey) {
             List<String> columnData = new ArrayList<String>();
 
             columnData.add(getContext().getLabel(uniqueKey));

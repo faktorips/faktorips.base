@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 
 /**
  * A key value is an object which stores the value (string) of the content of all key item column
@@ -31,7 +31,7 @@ public class KeyValue extends AbstractKeyValue {
 
     protected String value;
 
-    public KeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
+    public KeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
         super(structure, uniqueKey, row);
         this.value = evalValue(row);
     }
@@ -39,7 +39,7 @@ public class KeyValue extends AbstractKeyValue {
     /**
      * Creates a new key value object of an a given unique key for a given row.
      */
-    public static KeyValue createKeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
+    public static KeyValue createKeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
         KeyValue keyValue = new KeyValue(structure, uniqueKey, row);
         return keyValue;
     }

@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 
 /**
  * Abstract basis class of all kind of key values (e.g. column 'only' key values or 'range' key
@@ -34,7 +34,7 @@ public abstract class AbstractKeyValue {
     protected ITableStructure structure;
 
     /** reference to the unique key this key value belongs to */
-    protected IUniqueKey uniqueKey;
+    protected IIndex uniqueKey;
 
     /** reference to the row this key value belongs to */
     protected Row row;
@@ -43,7 +43,7 @@ public abstract class AbstractKeyValue {
      * Helper method, returns all non two column range key items: column key items or column range
      * key items with type ONE_COLUMN_RANGE_FROM or ONE_COLUMN_RANGE_TO
      */
-    protected static List<IKeyItem> getNonTwoColumnRangeKeyItems(IUniqueKey uniqueKey) {
+    protected static List<IKeyItem> getNonTwoColumnRangeKeyItems(IIndex uniqueKey) {
         IKeyItem[] keyItems = uniqueKey.getKeyItems();
         List<IKeyItem> result = new ArrayList<IKeyItem>(keyItems.length);
         for (IKeyItem keyItem : keyItems) {
@@ -60,7 +60,7 @@ public abstract class AbstractKeyValue {
     /**
      * Helper method, returns a list of all two column ranges inside the given unique key
      */
-    protected static List<ColumnRange> getTwoColumnRanges(IUniqueKey uniqueKey) {
+    protected static List<ColumnRange> getTwoColumnRanges(IIndex uniqueKey) {
         IKeyItem[] keyItems = uniqueKey.getKeyItems();
         List<ColumnRange> columnRanges = new ArrayList<ColumnRange>();
         for (int i = 0; i < keyItems.length; i++) {
@@ -74,7 +74,7 @@ public abstract class AbstractKeyValue {
         return columnRanges;
     }
 
-    protected AbstractKeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
+    protected AbstractKeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
         this.structure = structure;
         this.uniqueKey = uniqueKey;
         this.row = row;
@@ -90,7 +90,7 @@ public abstract class AbstractKeyValue {
     /**
      * Returns the uique key this key value belongs to
      */
-    public IUniqueKey getUniqueKey() {
+    public IIndex getUniqueKey() {
         return uniqueKey;
     }
 

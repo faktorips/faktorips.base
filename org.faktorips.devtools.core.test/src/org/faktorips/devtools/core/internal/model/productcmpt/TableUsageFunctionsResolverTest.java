@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.fl.FlFunction;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,7 +100,7 @@ public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
         String keyColumn = "keyColumn";
         createColumn("String", keyColumn);
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.setKeyItems(new String[] { keyColumn });
 
         String typeInteger = "Integer";

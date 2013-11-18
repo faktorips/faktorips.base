@@ -39,9 +39,9 @@ import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -67,7 +67,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     public void testGetChildren() {
         IColumn c0 = table.newColumn();
         IColumnRange r0 = table.newRange();
-        IUniqueKey uk0 = table.newUniqueKey();
+        IIndex uk0 = table.newIndex();
         IForeignKey fk0 = table.newForeignKey();
 
         List<IIpsElement> children = Arrays.asList(table.getChildren());
@@ -145,7 +145,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("ageFrom");
         range.setToColumn("ageTo");
-        IUniqueKey key = table.newUniqueKey();
+        IIndex key = table.newIndex();
         key.setKeyItems(new String[] { gender.getName(), range.getName() });
         IColumn[] columns = table.getColumnsNotInKey(key);
         assertEquals(2, columns.length);
@@ -176,7 +176,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("ageFrom");
         range.setToColumn("ageTo");
-        IUniqueKey key = table.newUniqueKey();
+        IIndex key = table.newIndex();
         key.setKeyItems(new String[] { gender.getName(), range.getName() });
 
         fcts = table.getAccessFunctions();
@@ -196,7 +196,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         IColumn newKeyColumn = table.newColumn();
         newKeyColumn.setName("newKeyColumn");
         newKeyColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
-        IUniqueKey secondKey = table.newUniqueKey();
+        IIndex secondKey = table.newIndex();
         secondKey.setKeyItems(new String[] { gender.getName(), newKeyColumn.getName() });
 
         fcts = table.getAccessFunctions();
@@ -241,7 +241,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("ageFrom");
         range.setToColumn("ageTo");
-        IUniqueKey key = table.newUniqueKey();
+        IIndex key = table.newIndex();
         key.setKeyItems(new String[] { gender.getName(), range.getName() });
 
         fcts = table.getAccessFunctions();
@@ -278,7 +278,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         IColumnRange range = table.newRange();
         range.setFromColumn("ageFrom");
         range.setToColumn("ageTo");
-        IUniqueKey uniqueKey = table.newUniqueKey();
+        IIndex uniqueKey = table.newIndex();
         uniqueKey.setKeyItems(new String[] { "ageFrom", "ageTo" });
 
         Element element = table.toXml(newDocument());
@@ -294,7 +294,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals("ageFrom-ageTo", copy.getRanges()[0].getName());
 
         assertEquals(1, copy.getNumOfUniqueKeys());
-        IUniqueKey copyKey = copy.getUniqueKeys()[0];
+        IIndex copyKey = copy.getUniqueKeys()[0];
         assertEquals(2, copyKey.getKeyItemNames().length);
     }
 
@@ -302,7 +302,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     public void testNewPart() {
         assertNotNull(table.newPart(IColumn.class));
         assertNotNull(table.newPart(IColumnRange.class));
-        assertNotNull(table.newPart(IUniqueKey.class));
+        assertNotNull(table.newPart(IIndex.class));
         assertNotNull(table.newPart(IForeignKey.class));
     }
 
@@ -331,7 +331,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasUniqueKeysWithSameDatatype() throws Exception {
+    public void testHasIndexWithSameDatatype() throws Exception {
 
         TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TableStruct");
 
@@ -356,45 +356,45 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         range.setToColumn(secondInteger.getName());
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
 
-        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+        assertFalse(structure.hasIndexWithSameDatatype());
 
-        IUniqueKey firstStringKey = structure.newUniqueKey();
+        IIndex firstStringKey = structure.newIndex();
         firstStringKey.addKeyItem(firstString.getName());
 
-        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+        assertFalse(structure.hasIndexWithSameDatatype());
 
-        IUniqueKey firstIntegerKey = structure.newUniqueKey();
+        IIndex firstIntegerKey = structure.newIndex();
         firstIntegerKey.addKeyItem(firstInteger.getName());
 
-        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+        assertFalse(structure.hasIndexWithSameDatatype());
 
-        IUniqueKey secondIntegerKey = structure.newUniqueKey();
+        IIndex secondIntegerKey = structure.newIndex();
         secondIntegerKey.addKeyItem(secondInteger.getName());
 
-        assertTrue(structure.hasUniqueKeysWithSameDatatype());
+        assertTrue(structure.hasIndexWithSameDatatype());
 
-        structure.removeUniqueKey(secondIntegerKey);
+        structure.removeIndex(secondIntegerKey);
 
-        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+        assertFalse(structure.hasIndexWithSameDatatype());
 
-        IUniqueKey rangeKey = structure.newUniqueKey();
+        IIndex rangeKey = structure.newIndex();
         rangeKey.addKeyItem(range.getName());
 
-        assertTrue(structure.hasUniqueKeysWithSameDatatype());
+        assertTrue(structure.hasIndexWithSameDatatype());
 
-        structure.removeUniqueKey(rangeKey);
-        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+        structure.removeIndex(rangeKey);
+        assertFalse(structure.hasIndexWithSameDatatype());
 
-        IUniqueKey combinedKey = structure.newUniqueKey();
+        IIndex combinedKey = structure.newIndex();
         combinedKey.addKeyItem(firstString.getName());
         combinedKey.addKeyItem(firstInteger.getName());
-        assertFalse(structure.hasUniqueKeysWithSameDatatype());
+        assertFalse(structure.hasIndexWithSameDatatype());
 
-        IUniqueKey secondCombinedKey = structure.newUniqueKey();
+        IIndex secondCombinedKey = structure.newIndex();
         secondCombinedKey.addKeyItem(secondString.getName());
         secondCombinedKey.addKeyItem(secondInteger.getName());
 
-        assertTrue(structure.hasUniqueKeysWithSameDatatype());
+        assertTrue(structure.hasIndexWithSameDatatype());
     }
 
     @Test
@@ -463,4 +463,97 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         resultList = tableStructureProj2.searchMetaObjectSrcFiles(true);
         assertEquals(0, resultList.size());
     }
+
+    @Test
+    public void testGetUniqueKeys() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+
+        IIndex[] uniqueKeys = table.getUniqueKeys();
+
+        assertEquals(1, uniqueKeys.length);
+        assertEquals(index2, uniqueKeys[0]);
+    }
+
+    @Test
+    public void testGetUniqueKey() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+        index2.setKeyItems(new String[] { "index2" });
+
+        IIndex uniqueKey = table.getUniqueKey("index2");
+
+        assertEquals(index2, uniqueKey);
+    }
+
+    @Test
+    public void testGetNumOfUniqueKeys() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+
+        int numOfUniqueKeys = table.getNumOfUniqueKeys();
+
+        assertEquals(1, numOfUniqueKeys);
+    }
+
+    @Test
+    public void testGetIndices() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+
+        List<IIndex> indices = table.getIndices();
+
+        assertEquals(2, indices.size());
+        assertEquals(index1, indices.get(0));
+        assertEquals(index2, indices.get(1));
+    }
+
+    @Test
+    public void testGetIndex_nonUnqieu() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        index1.setKeyItems(new String[] { "index1" });
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+        index2.setKeyItems(new String[] { "index2" });
+
+        IIndex index = table.getIndex("index1");
+
+        assertEquals(index1, index);
+    }
+
+    @Test
+    public void testGetIndex_unqieu() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        index1.setKeyItems(new String[] { "index1" });
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+        index2.setKeyItems(new String[] { "index2" });
+
+        IIndex index = table.getIndex("index2");
+
+        assertEquals(index2, index);
+    }
+
+    @Test
+    public void testGetNumOfIndices() throws Exception {
+        IIndex index1 = table.newIndex();
+        index1.setUniqueKey(false);
+        IIndex index2 = table.newIndex();
+        index2.setUniqueKey(true);
+
+        int numOfIndices = table.getNumOfIndices();
+
+        assertEquals(2, numOfIndices);
+    }
+
 }

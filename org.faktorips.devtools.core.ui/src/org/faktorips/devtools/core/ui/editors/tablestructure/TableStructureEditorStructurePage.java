@@ -62,7 +62,7 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
     }
 
     private void updatePageMessage() {
-        boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasUniqueKeysWithSameDatatype();
+        boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasIndexWithSameDatatype();
 
         if (hasUniqueKeysWithSameDatatype) {
             getManagedForm().getForm().setMessage(

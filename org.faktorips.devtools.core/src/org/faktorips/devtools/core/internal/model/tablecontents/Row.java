@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -188,7 +188,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             ValueDatatype[] datatypes,
             boolean uniqueKeyCheck) {
 
-        IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
+        IIndex[] uniqueKeys = tableStructure.getUniqueKeys();
         validateMissingAndInvalidUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
         validateRowValue(result, tableStructure, datatypes);
         if (uniqueKeyCheck) {
@@ -206,7 +206,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateMissingAndInvalidUniqueKeyValue(MessageList list,
             ValueDatatype[] datatypes,
             ITableStructure structure,
-            IUniqueKey[] uniqueKeys) {
+            IIndex[] uniqueKeys) {
 
         /*
          * this validation can only be applied if the colum sizes of the structure and content are
@@ -215,7 +215,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         if (structure.getNumOfColumns() != getTableContents().getNumOfColumns()) {
             return;
         }
-        for (IUniqueKey uniqueKey : uniqueKeys) {
+        for (IIndex uniqueKey : uniqueKeys) {
             IKeyItem[] keyItems = uniqueKey.getKeyItems();
             for (IKeyItem keyItem : keyItems) {
                 if (keyItem instanceof IColumn) {

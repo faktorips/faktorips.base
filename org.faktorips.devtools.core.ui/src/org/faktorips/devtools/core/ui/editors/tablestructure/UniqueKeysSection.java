@@ -21,7 +21,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -55,17 +55,17 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
 
         @Override
         protected IIpsObjectPart newIpsPart() {
-            return getTableStructure().newUniqueKey();
+            return getTableStructure().newIndex();
         }
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new KeyEditDialog((IUniqueKey)part, shell);
+            return new KeyEditDialog((IIndex)part, shell);
         }
 
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
-            return getTableStructure().moveUniqueKeys(indexes, up);
+            return getTableStructure().moveIndex(indexes, up);
         }
 
         private class ContentProvider implements IStructuredContentProvider {
