@@ -45,12 +45,14 @@ public abstract class ValueDatatypeControlFactory {
      * @param toolkit The toolkit used to create the control.
      * @param parent The parent composite to which the control is added.
      * @param datatype The value datatype a control should be created for.
-     * @param valueSet An optional valueset.
+     * @param valueSet An optional @Deprecated valueset. Future Implementations should use
+     *            ValueSetOwner instead.
+     * 
      */
     public abstract EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
-            IValueSet valueSet,
+            @Deprecated IValueSet valueSet,
             IIpsProject ipsProject);
 
     /**
@@ -59,12 +61,13 @@ public abstract class ValueDatatypeControlFactory {
      * @param toolkit The toolkit used to create the control.
      * @param parent The parent composite to which the control is added.
      * @param datatype The value datatype a control should be created for.
-     * @param valueSet An optional valueset.
+     * @param valueSet An optional @Deprecated valueset.Future Implementations should use
+     *            ValueSetOwner instead.
      */
     public abstract Control createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
-            IValueSet valueSet,
+            @Deprecated IValueSet valueSet,
             IIpsProject ipsProject);
 
     /**
