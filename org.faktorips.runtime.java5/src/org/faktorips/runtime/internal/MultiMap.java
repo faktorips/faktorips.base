@@ -11,37 +11,39 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.tablestructure;
+package org.faktorips.runtime.internal;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
+/**
+ * The MultiMap manages existing and new Keys and their according Set of Values.
+ * 
+ */
 
 public class MultiMap<K, V> {
-    private HashMap<K, Set<V>> internalHashMap = new HashMap<K, Set<V>>();
 
-    public Set<V> getSet(IIndex uniqueKey) {
-        Set<V> set = internalHashMap.get(uniqueKey);
+    private Map<K, Set<V>> internalHashMap = new HashMap<K, Set<V>>();
+
+    public Set<V> get(K key) {
+        Set<V> set = internalHashMap.get(key);
         if (set == null) {
             return new HashSet<V>();
         }
         return set;
     }
 
-    public void addInternal(K indexKey, V row) {
-        Set<V> newSet = new HashSet<V>();
+    public void put(K indexKey, V row) {
+        Set<V> setInMap;
         if (internalHashMap.containsKey(indexKey)) {
-            Set<V> oldSet = internalHashMap.get(indexKey);
-            newSet = oldSet;
-            internalHashMap.remove(indexKey);
+            setInMap = internalHashMap.get(indexKey);
+        } else {
+            setInMap = new HashSet<V>();
+            internalHashMap.put(indexKey, setInMap);
         }
-        newSet.add(row);
-        internalHashMap.put(indexKey, newSet);
+        setInMap.add(row);
     }
 
-    public HashMap<K, Set<V>> getInternalHashMap() {
-        return internalHashMap;
-    }
 }
