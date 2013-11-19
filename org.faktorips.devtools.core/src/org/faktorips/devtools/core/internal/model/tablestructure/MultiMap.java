@@ -17,21 +17,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 
-public class MultiMap {
+public class MultiMap<K, V> {
+    private HashMap<K, Set<V>> internalHashMap = new HashMap<K, Set<V>>();
 
-    private HashMap<IIndex, Set<Row>> internalHashMap = new HashMap<IIndex, Set<Row>>();
-
-    public Set<Row> getSet(IIndex uniqueKey) {
-        return internalHashMap.get(uniqueKey);
+    public Set<V> getSet(IIndex uniqueKey) {
+        Set<V> set = internalHashMap.get(uniqueKey);
+        if (set == null) {
+            return new HashSet<V>();
+        }
+        return set;
     }
 
-    public void addInternal(IIndex indexKey, Row row) {
-        Set<Row> newSet = new HashSet<Row>();
+    public void addInternal(K indexKey, V row) {
+        Set<V> newSet = new HashSet<V>();
         if (internalHashMap.containsKey(indexKey)) {
-            Set<Row> oldSet = internalHashMap.get(indexKey);
+            Set<V> oldSet = internalHashMap.get(indexKey);
             newSet = oldSet;
             internalHashMap.remove(indexKey);
         }
@@ -39,7 +41,7 @@ public class MultiMap {
         internalHashMap.put(indexKey, newSet);
     }
 
-    public HashMap<IIndex, Set<Row>> getInternalHashMap() {
+    public HashMap<K, Set<V>> getInternalHashMap() {
         return internalHashMap;
     }
 }

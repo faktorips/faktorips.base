@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 
 public class MultiMapTest {
 
-    private MultiMap multimap;
+    private MultiMap<IIndex, Row> multimap;
 
     @Mock
     private IIndex indexKey1;
@@ -46,8 +46,14 @@ public class MultiMapTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        multimap = new MultiMap();
+        multimap = new MultiMap<IIndex, Row>();
         resultSet = new HashSet<Row>();
+    }
+
+    @Test
+    public void test_addinternal_Null() {
+        Set<Row> setOfIndexKey1 = multimap.getSet(indexKey1);
+        assertEquals(resultSet, setOfIndexKey1);
     }
 
     @Test
