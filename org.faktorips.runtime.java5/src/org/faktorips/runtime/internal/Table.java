@@ -26,7 +26,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.KeyType;
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
@@ -143,36 +142,6 @@ public abstract class Table<T> implements ITable {
     }
 
     /**
-     * Is used by generated classes within the initKeyMaps() method. It returns a value from the
-     * provided map that is assumed to be of type java.util.Map. If no such entry is found a new
-     * java.util.HashMap is created and added to the map for the key and the new Map is returned.
-     */
-    protected Map getMap(Map searchMap, Object key) {
-        Map returnValue = (Map)searchMap.get(key);
-        if (returnValue == null) {
-            returnValue = new HashMap();
-            searchMap.put(key, returnValue);
-        }
-        return returnValue;
-    }
-
-    /**
-     * Is used by generated classes within the initKeyMaps() method for two-column ranges. It
-     * returns a value from the provided map that is assumed to be of type java.util.Map. If no such
-     * entry is found a new java.util.HashMap is created and added to the map for the key and the
-     * new Map is returned.
-     */
-    protected Map getMap(Map searchMap, Comparable lowerBound, Comparable upperBound) {
-        TwoColumnKey key = new TwoColumnKey(lowerBound, upperBound);
-        Map returnValue = (Map)searchMap.get(key);
-        if (returnValue == null) {
-            returnValue = new HashMap();
-            searchMap.put(key, returnValue);
-        }
-        return returnValue;
-    }
-
-    /**
      * Is used within the find-methods of the generated classes to retrieve a value from a map that
      * contains trees as values. The key is used get the according tree from the provided map while
      * the <i>treeKey</i> parameter is used to retrieve the values from the tree hierarchy. The
@@ -218,4 +187,52 @@ public abstract class Table<T> implements ITable {
         }
         return output.toString();
     }
+
+    /**
+     * This is a helper class that can be used by {@link Table#initKeyMaps()} implementations to
+     * create nested maps that should be converted to search trees.
+     * <p>
+     * It extends a {@link HashMap} that is defined to have nested maps as value. You could ask for
+     * a nested map with a key, if there is no map for the specified key a new nested map will be
+     * created, put in this map and returned.
+     * 
+     */
+    public static class MapOfMaps<K1, K2, V> extends HashMap<K1, Map<K2, V>> {
+
+        public MapOfMaps() {
+            super();
+        }
+
+        public MapOfMaps(int capacity) {
+            super(capacity);
+        }
+
+        public MapOfMaps(Map<? extends K1, ? extends Map<K2, V>> m) {
+            super(m);
+        }
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Returns the map that is stored for the specified key. If there is no value for this key,
+         * a new empty map is created and added to the map. You could put new values into the
+         * returned map, changes are reflected to the map stored in this MapOfMaps.
+         */
+        @Override
+        public Map<K2, V> get(Object key) {
+            Map<K2, V> foundMap = super.get(key);
+            if (foundMap == null) {
+                foundMap = new HashMap<K2, V>();
+                @SuppressWarnings("unchecked")
+                K1 castedKey = (K1)key;
+                put(castedKey, foundMap);
+            }
+            return foundMap;
+        }
+
+    }
+
 }

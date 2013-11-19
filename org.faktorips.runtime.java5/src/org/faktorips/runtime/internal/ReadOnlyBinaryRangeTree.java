@@ -216,13 +216,6 @@ public class ReadOnlyBinaryRangeTree<K extends Comparable<K>, V> implements Seri
             } else if (!lowerBound.equals(other.lowerBound)) {
                 return false;
             }
-            if (upperBound == null) {
-                if (other.upperBound != null) {
-                    return false;
-                }
-            } else if (!upperBound.equals(other.upperBound)) {
-                return false;
-            }
             return true;
         }
 
@@ -231,7 +224,6 @@ public class ReadOnlyBinaryRangeTree<K extends Comparable<K>, V> implements Seri
             final int prime = 31;
             int result = 1;
             result = prime * result + ((lowerBound == null) ? 0 : lowerBound.hashCode());
-            result = prime * result + ((upperBound == null) ? 0 : upperBound.hashCode());
             return result;
         }
 

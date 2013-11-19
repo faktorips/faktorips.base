@@ -26,7 +26,15 @@ import java.util.Set;
 
 public class MultiMap<K, V> {
 
-    private Map<K, Set<V>> internalHashMap = new HashMap<K, Set<V>>();
+    private final Map<K, Set<V>> internalHashMap;
+
+    public MultiMap() {
+        internalHashMap = new HashMap<K, Set<V>>();
+    }
+
+    public MultiMap(int capacity) {
+        internalHashMap = new HashMap<K, Set<V>>(capacity);
+    }
 
     private final Set<V> emptySet = new HashSet<V>();
 

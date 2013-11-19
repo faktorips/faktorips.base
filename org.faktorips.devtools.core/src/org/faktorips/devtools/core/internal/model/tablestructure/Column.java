@@ -44,6 +44,11 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
     }
 
     @Override
+    public boolean isRange() {
+        return false;
+    }
+
+    @Override
     public String getAccessParameterName() {
         return name;
     }
