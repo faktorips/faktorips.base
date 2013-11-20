@@ -46,4 +46,7 @@ public class MultiMap<K, V> {
         setInMap.add(row);
     }
 
+    public Map<K, Set<V>> getInternalMap() {
+        return internalHashMap;
+    }
 }
