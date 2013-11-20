@@ -43,6 +43,8 @@ public class Messages extends NLS {
     public static String KeyEditDialog_labelKeyItems;
     public static String KeyEditDialog_groupTitle;
     public static String KeyEditDialog_checkboxUniqueKey;
+    public static String KeyEditDialogForeignKey_titleText;
+    public static String KeyEditDialogIndices_titleText;
     public static String RangeEditDialog_title;
     public static String RangeEditDialog_generalTitle;
     public static String RangeEditDialog_labelType;

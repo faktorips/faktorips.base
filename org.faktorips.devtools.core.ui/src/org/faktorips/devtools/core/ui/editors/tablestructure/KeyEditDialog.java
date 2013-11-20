@@ -35,33 +35,19 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
-import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
@@ -73,7 +59,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * A dialog to edit a unique or foreign key.
  */
-public class KeyEditDialog extends IpsPartEditDialog2 {
+public abstract class KeyEditDialog extends IpsPartEditDialog2 {
 
     /** the key being edited */
     private IKey key;
@@ -84,102 +70,21 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
     /** table viewer to show the key's items. */
     private TableViewer itemsViewer;
 
-    private TextButtonField tableStructureRefField;
-
-    private TextField uniqueKeyRefField;
-
-    private Checkbox checkbox;
-
-    /** completion processor for a table structure's indices. */
-    private IndexCompletionProcessor completionProcessor;
-
     // buttons
     private Button addButton;
     private Button removeButton;
     private Button upButton;
     private Button downButton;
 
-    public KeyEditDialog(IKey key, Shell parentShell) {
-        super(key, parentShell, Messages.KeyEditDialog_title, true);
+    private Composite itemEditComposite;
+
+    public KeyEditDialog(IKey key, Shell parentShell, String title) {
+        super(key, parentShell, title, true);
         this.key = key;
     }
 
-    @Override
-    protected Composite createWorkAreaThis(Composite parent) {
-        TabFolder folder = (TabFolder)parent;
-
-        TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText(Messages.KeyEditDialog_generalTitle);
-        page.setControl(createGeneralPage(folder));
-
-        connectToModel();
-        refreshUi();
-        return folder;
-    }
-
-    private Control createGeneralPage(TabFolder folder) {
-        Composite pageComposite;
-        Composite itemEditComposite;
-        if (key instanceof IForeignKey) {
-            pageComposite = createTabItemComposite(folder, 1, false);
-            Composite refTableComposite = getToolkit().createLabelEditColumnComposite(pageComposite);
-            GridLayout layout = (GridLayout)refTableComposite.getLayout();
-            layout.marginHeight = 12;
-            getToolkit().createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceStructure);
-            TableStructureRefControl refControl = getToolkit().createTableStructureRefControl(key.getIpsProject(),
-                    refTableComposite);
-            refControl.setFocus();
-            tableStructureRefField = new TextButtonField(refControl);
-            tableStructureRefField.addChangeListener(new ValueChangeListener() {
-
-                @Override
-                public void valueChanged(FieldValueChangedEvent e) {
-                    // following line is a hack to make sure the model is
-                    // uptodate. The uicontroller gets informated after this
-                    // listener because it is registered later, so the refreshUi methode
-                    // would work on the old model data.
-                    // correct implementation would be to listen for model changes,
-                    // and then update the ui.
-                    ((IForeignKey)key).setReferencedTableStructure(tableStructureRefField.getText());
-                    try {
-                        ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure(key.getIpsProject());
-                        completionProcessor.setTableStructure(structure);
-                        if (structure != null) {
-                            IIndex[] keys = structure.getUniqueKeys();
-                            if (keys.length > 0) {
-                                uniqueKeyRefField.setText(keys[0].getName());
-                            }
-                        }
-                    } catch (CoreException e1) {
-                        IpsPlugin.log(e1);
-                    }
-                    refreshUi();
-                }
-
-            });
-            getToolkit().createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceUniqueKey);
-            Text ukRefControl = getToolkit().createText(refTableComposite);
-            completionProcessor = new IndexCompletionProcessor();
-            ContentAssistHandler.createHandlerForText(ukRefControl,
-                    CompletionUtil.createContentAssistant(completionProcessor));
-
-            uniqueKeyRefField = new TextField(ukRefControl);
-            uniqueKeyRefField.addChangeListener(new ValueChangeListener() {
-                @Override
-                public void valueChanged(FieldValueChangedEvent e) {
-                    // see comment above
-                    ((IForeignKey)key).setReferencedUniqueKey(uniqueKeyRefField.getText());
-                    refreshUi();
-                }
-            });
-
-            getToolkit().createHorizonzalLine(pageComposite);
-            itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
-        } else {
-            pageComposite = createTabItemComposite(folder, 1, false);
-            createCheckbox(pageComposite);
-            itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
-        }
+    protected void addKeyItemSelectionControls(Composite pageComposite) {
+        itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
         Composite left = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
         Composite leftGroup = getToolkit().createGroup(left, SWT.NONE, Messages.KeyEditDialog_labelKeyItems);
         createKeyItemsComposite(leftGroup);
@@ -191,23 +96,12 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
         Composite right = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
         Composite rightGroup = getToolkit().createGroup(right, SWT.NONE, Messages.KeyEditDialog_groupTitle);
         createItemCandidatesComposite(rightGroup);
-
-        return pageComposite;
-    }
-
-    private void createCheckbox(Composite pageComposite) {
-        Composite itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
-        Composite top = getToolkit().createGridComposite(itemEditComposite, 1, true, true);
-
-        checkbox = getToolkit().createCheckbox(top, Messages.KeyEditDialog_checkboxUniqueKey);
-        getToolkit().createHorizonzalLine(pageComposite);
-        getBindingContext().bindContent(checkbox, key, IIndex.PROPERTY_UNIQUE_KEY);
     }
 
     /**
      * Creates the composite showing the key's items.
      */
-    private void createKeyItemsComposite(Composite parent) {
+    protected void createKeyItemsComposite(Composite parent) {
         Composite c = getToolkit().createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         table.setHeaderVisible(false);
@@ -254,7 +148,7 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
         itemsViewer.setInput(this);
     }
 
-    private void createButtons(Composite middle) {
+    protected void createButtons(Composite middle) {
         getToolkit().createVerticalSpacer(middle, 10);
 
         addButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
@@ -322,7 +216,7 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
 
     }
 
-    private void createItemCandidatesComposite(Composite parent) {
+    protected void createItemCandidatesComposite(Composite parent) {
         Composite c = getToolkit().createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         table.setHeaderVisible(false);
@@ -364,13 +258,6 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
 
         });
         candidatesViewer.setInput(this);
-    }
-
-    private void connectToModel() {
-        if (tableStructureRefField != null) {
-            getBindingContext().bindContent(tableStructureRefField, key, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
-            getBindingContext().bindContent(uniqueKeyRefField, key, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
-        }
     }
 
     private void addSelectedItems() {
@@ -429,7 +316,7 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
         refreshUi();
     }
 
-    private void refreshUi() {
+    protected void refreshUi() {
         getBindingContext().updateUI();
         itemsViewer.refresh();
         candidatesViewer.refresh();
@@ -509,4 +396,35 @@ public class KeyEditDialog extends IpsPartEditDialog2 {
         }
 
     }
+
+    @Override
+    protected Composite createWorkAreaThis(Composite parent) {
+        TabFolder folder = (TabFolder)parent;
+        TabItem page = new TabItem(folder, SWT.NONE);
+        page.setText(Messages.KeyEditDialog_generalTitle);
+        page.setControl(createGeneralPageComposite(folder));
+        refreshUi();
+        return folder;
+    }
+
+    private Composite createGeneralPageComposite(TabFolder folder) {
+        Composite pageComposite = createTabItemComposite(folder, 1, false);
+        addPageTopControls(pageComposite);
+        addHorizontalLine(pageComposite);
+        addKeyItemSelectionControls(pageComposite);
+        return pageComposite;
+    }
+
+    private void addHorizontalLine(Composite pageComposite) {
+        getToolkit().createHorizonzalLine(pageComposite);
+    }
+
+    /**
+     * Subclasses override this method to add custom controls at the top of the key selection page.
+     * A horizontal line is automatically drawn between the page-top controls and the key selection
+     * controls (at the bottom).
+     * 
+     * @param pageComposite the composite to add custom controls to.
+     */
+    protected abstract void addPageTopControls(Composite pageComposite);
 }
