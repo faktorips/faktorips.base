@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -195,8 +194,8 @@ public class Index extends Key implements IIndex {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        String uniqueKeyAttributeValue = element.getAttribute(XML_ATTRIBUTE_UNIQUE_KEY);
-        if (StringUtils.isNotEmpty(uniqueKeyAttributeValue)) {
+        if (element.hasAttribute(XML_ATTRIBUTE_UNIQUE_KEY)) {
+            String uniqueKeyAttributeValue = element.getAttribute(XML_ATTRIBUTE_UNIQUE_KEY);
             uniqueKey = Boolean.valueOf(uniqueKeyAttributeValue);
         }
     }
