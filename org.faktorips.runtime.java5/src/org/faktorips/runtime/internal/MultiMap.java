@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The MultiMap manages existing and new Keys and their according Set of Values.
+ * The MultiMap manages a Map, which maps keys to a Set of values.
  * 
  */
 
@@ -27,23 +27,24 @@ public class MultiMap<K, V> {
 
     private Map<K, Set<V>> internalHashMap = new HashMap<K, Set<V>>();
 
-    public Set<V> get(K key) {
-        Set<V> set = internalHashMap.get(key);
-        if (set == null) {
-            return new HashSet<V>();
-        }
-        return set;
+    protected Set<V> get(K key) {
+        getOrCreateSetFor(key);
+        return internalHashMap.get(key);
     }
 
-    public void put(K indexKey, V row) {
-        Set<V> setInMap;
-        if (internalHashMap.containsKey(indexKey)) {
-            setInMap = internalHashMap.get(indexKey);
-        } else {
-            setInMap = new HashSet<V>();
-            internalHashMap.put(indexKey, setInMap);
+    protected void put(K key, V value) {
+        Set<V> setInMap = getOrCreateSetFor(key);
+        setInMap = internalHashMap.get(key);
+        setInMap.add(value);
+    }
+
+    private Set<V> getOrCreateSetFor(K key) {
+        Set<V> set = internalHashMap.get(key);
+        if (set != null) {
+            return set;
         }
-        setInMap.add(row);
+        Set<V> newSet = new HashSet<V>();
+        return internalHashMap.put(key, newSet);
     }
 
     public Map<K, Set<V>> getInternalMap() {
