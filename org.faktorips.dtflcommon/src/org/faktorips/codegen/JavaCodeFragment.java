@@ -14,6 +14,8 @@
 package org.faktorips.codegen;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.util.StringUtil;
@@ -28,6 +30,10 @@ import org.faktorips.util.StringUtil;
  * @author Jan Ortmann
  */
 public class JavaCodeFragment extends CodeFragment {
+
+    private static final String ANNOTATION_SEPERATOR = ","; //$NON-NLS-1$
+
+    private static final String LESS_GREATER_PATTERN = "[\\<\\>]"; //$NON-NLS-1$
 
     // import declaration needed to compile the sourcecode
     private ImportDeclaration importDecl;
@@ -228,26 +234,50 @@ public class JavaCodeFragment extends CodeFragment {
      */
     public JavaCodeFragment appendClassName(String qualifiedClassName) {
         if (qualifiedClassName.indexOf('<') > 0) {
-            appendClassName(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
-            append('<');
-            String[] classNames = qualifiedClassName.substring(qualifiedClassName.indexOf('<') + 1,
-                    qualifiedClassName.lastIndexOf('>')).split(","); //$NON-NLS-1$
-            for (int i = 0; i < classNames.length; i++) {
-                String className = classNames[i].trim();
-                if (className.indexOf("extends") > className.indexOf('>')) { //$NON-NLS-1$
-                    String prefix = className.substring(0, className.indexOf("extends")).trim(); //$NON-NLS-1$
-                    append(prefix);
-                    append(" extends "); //$NON-NLS-1$
-                    className = className.substring(className.indexOf("extends") + 8).trim(); //$NON-NLS-1$
-                }
-                appendClassName(className);
-                if (i < classNames.length - 1) {
-                    append(", "); //$NON-NLS-1$
-                }
-            }
-            append('>');
+            appendClassNameWithoutGenerics(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
+            parseGenerics(qualifiedClassName);
             return this;
+        } else {
+            return appendClassNameWithoutGenerics(qualifiedClassName);
         }
+    }
+
+    private void parseGenerics(String qualifiedClassName) {
+        String genericPart = qualifiedClassName.substring(qualifiedClassName.indexOf('<') + 1,
+                qualifiedClassName.lastIndexOf('>'));
+        List<String> genericTypeParts = splitGenericTypeParts(genericPart);
+        append('<');
+        for (Iterator<String> iterator = genericTypeParts.iterator(); iterator.hasNext();) {
+            appendClassName(iterator.next());
+            if (iterator.hasNext()) {
+                append(", "); //$NON-NLS-1$
+            }
+        }
+        append('>');
+    }
+
+    List<String> splitGenericTypeParts(String genericPart) {
+        LinkedList<String> result = new LinkedList<String>();
+        int depth = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < genericPart.length(); i++) {
+            char c = genericPart.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            } else if (c == ',' && depth == 0) {
+                result.add(sb.toString().trim());
+                sb = new StringBuilder();
+                continue;
+            }
+            sb.append(c);
+        }
+        result.add(sb.toString().trim());
+        return result;
+    }
+
+    private JavaCodeFragment appendClassNameWithoutGenerics(String qualifiedClassName) {
         qualifiedClassName = qualifiedClassName.replace('$', '.'); // for inner classes.
         String unqualifiedClassName = StringUtil.unqualifiedName(qualifiedClassName);
         // don't add two imports for the same unqualified name
