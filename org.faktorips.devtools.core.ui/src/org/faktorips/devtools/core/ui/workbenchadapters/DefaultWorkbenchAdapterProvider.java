@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.Column;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
+import org.faktorips.devtools.core.internal.model.tablestructure.Index;
 import org.faktorips.devtools.core.internal.model.tablestructure.Key;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.internal.model.testcase.TestAttributeValue;
@@ -202,8 +203,9 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         register(Column.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableRange.gif", true); //$NON-NLS-1$
         register(ColumnRange.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableKey.gif", true); //$NON-NLS-1$
-        register(Key.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
+        register(Index.class, new KeyWorkbenchAdapter());
+        register(Key.class, new KeyWorkbenchAdapter());
+
         // no Image for TableAccessFuction yet
         // register(TableAccessFunction.class, defaultWorkbenchAdapter);
 
