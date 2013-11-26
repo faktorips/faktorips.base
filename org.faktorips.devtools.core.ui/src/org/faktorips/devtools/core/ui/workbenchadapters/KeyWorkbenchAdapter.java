@@ -40,13 +40,21 @@ public class KeyWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     }
 
     private String getImageName(IKey key) {
+        if (isNonUniqueKey(key)) {
+            return TABLE_KEY_NON_UNIQUE;
+        } else {
+            return TABLE_KEY;
+        }
+    }
+
+    private boolean isNonUniqueKey(IKey key) {
         if (key instanceof IIndex) {
             IIndex index = (IIndex)key;
             if (!index.isUniqueKey()) {
-                return TABLE_KEY_NON_UNIQUE;
+                return true;
             }
         }
-        return TABLE_KEY;
+        return false;
     }
 
     @Override
