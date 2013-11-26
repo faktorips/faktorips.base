@@ -84,14 +84,13 @@ public class KeyEditDialogForeignKey extends KeyEditDialog {
         ukRefControl = getToolkit().createText(refTableComposite);
         uniqueKeyRefField = new TextField(ukRefControl);
         setupContentAssist(ukRefControl);
+        ukRefControl.setFocus();
     }
 
-    protected void setupContentAssist(Text ukRefControl) {
+    private void setupContentAssist(Text ukRefControl) {
         contentProposalProvider = new KeyContentProposalProvider(new IIndex[0]);
-
         new UIToolkit(null).attachContentProposalAdapter(ukRefControl, contentProposalProvider,
                 ContentProposalAdapter.PROPOSAL_REPLACE, null);
-
     }
 
     private void bind() {

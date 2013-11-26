@@ -24,10 +24,13 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 /**
  * 
+ * A {@link IContentProposalProvider} appropriate for the textual dialog, for example
+ * {@link KeyEditDialogForeignKey} field.
  * 
  */
+
 public class KeyContentProposalProvider implements IContentProposalProvider {
-    List<IContentProposal> proposals;
+    List<IContentProposal> proposals = new ArrayList<IContentProposal>();
     private IIndex[] uniqueKeys;
 
     public KeyContentProposalProvider(IIndex[] uniqueKeys) {
@@ -36,24 +39,33 @@ public class KeyContentProposalProvider implements IContentProposalProvider {
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        proposals = new ArrayList<IContentProposal>();
-        String content = StringUtils.left(contents, position);
 
+        String content = StringUtils.left(contents, position);
+        if (uniqueKeys != null) {
+            fillProposals(content);
+        }
+        IContentProposal[] result = proposals.toArray(new IContentProposal[0]);
+        proposals.clear();
+        return result;
+
+    }
+
+    private void fillProposals(String content) {
         for (IIndex uniqueKey : uniqueKeys) {
             if (isFittingContent(uniqueKey, content)) {
                 String name = uniqueKey.getName();
                 proposals.add(new ContentProposal(name, name, name));
             }
         }
-        return proposals.toArray(new IContentProposal[proposals.size()]);
+
+    }
+
+    protected void setUniquekeys(IIndex[] newUniqueKeys) {
+        this.uniqueKeys = newUniqueKeys;
     }
 
     private boolean isFittingContent(IIndex uniqueKey, String content) {
         String uniqueKeyName = uniqueKey.getName().toLowerCase();
         return uniqueKeyName.startsWith(content.toLowerCase());
-    }
-
-    public void setUniquekeys(IIndex[] allowedContent) {
-        uniqueKeys = allowedContent;
     }
 }
