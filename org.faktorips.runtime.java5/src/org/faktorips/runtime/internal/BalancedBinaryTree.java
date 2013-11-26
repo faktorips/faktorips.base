@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.KeyType;
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
+import org.faktorips.runtime.internal.indexstructure.TwoColumnKey;
 
 /**
  * A ReadOnlyBinaryRangeTree provides a specific interpretation of the keys within a java.util.Map

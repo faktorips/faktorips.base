@@ -52,7 +52,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MultiMap;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.KeyType;
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
+import org.faktorips.runtime.internal.indexstructure.TwoColumnKey;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.util.LocalizedStringsSet;
 

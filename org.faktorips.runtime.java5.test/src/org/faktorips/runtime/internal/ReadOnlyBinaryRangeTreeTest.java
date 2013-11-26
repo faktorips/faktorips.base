@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.KeyType;
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
+import org.faktorips.runtime.internal.indexstructure.TwoColumnKey;
 import org.junit.Test;
 
 /**

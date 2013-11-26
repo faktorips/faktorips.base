@@ -16,6 +16,8 @@ package org.faktorips.runtime.internal;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.faktorips.runtime.internal.indexstructure.TwoColumnKey;
+
 /**
  * A ReadOnlyBinaryRangeTree provides a specific interpretation of the keys within a java.util.Map
  * upon which the tree is created. The keys in the map are expected to implement the
@@ -169,76 +171,5 @@ public class ReadOnlyBinaryRangeTree<K extends Comparable<K>, V> implements Seri
             return internalTree.getValue(new TwoColumnKey<K>(key, key), KeyType.KEY_IS_TWO_COLUMN_KEY);
         }
 
-    }
-
-    public static class TwoColumnKey<K extends Comparable<K>> implements Comparable<TwoColumnKey<K>>, Serializable {
-
-        private static final long serialVersionUID = 42L;
-        private final K lowerBound;
-        private final K upperBound;
-
-        /**
-         * @param lowerBound The lowerBound of this TwoColumnKey.
-         * @param upperBound The upperBound of this TwoColumnKey.
-         */
-        public TwoColumnKey(K lowerBound, K upperBound) {
-            super();
-            if (lowerBound == null) {
-                throw new NullPointerException();
-            }
-            if (upperBound == null) {
-                throw new NullPointerException();
-            }
-            this.lowerBound = lowerBound;
-            this.upperBound = upperBound;
-        }
-
-        public int compareTo(TwoColumnKey<K> other) {
-            return lowerBound.compareTo(other.lowerBound);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            TwoColumnKey<?> other = (TwoColumnKey<?>)obj;
-            if (lowerBound == null) {
-                if (other.lowerBound != null) {
-                    return false;
-                }
-            } else if (!lowerBound.equals(other.lowerBound)) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((lowerBound == null) ? 0 : lowerBound.hashCode());
-            return result;
-        }
-
-        /**
-         * @return Returns the lowerBound.
-         */
-        public K getLowerBound() {
-            return lowerBound;
-        }
-
-        /**
-         * @return Returns the upperBound.
-         */
-        public K getUpperBound() {
-            return upperBound;
-        }
     }
 }
