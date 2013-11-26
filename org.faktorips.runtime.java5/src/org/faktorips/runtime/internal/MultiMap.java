@@ -38,14 +38,14 @@ public class MultiMap<K, V> {
      * @param value value to be associated with the specified key
      */
     protected void put(K key, V value) {
-        Set<V> newSet;
+        Set<V> set;
         if (internalHashMap.containsKey(key)) {
-            newSet = internalHashMap.get(key);
+            set = internalHashMap.get(key);
         } else {
-            newSet = new HashSet<V>();
-            internalHashMap.put(key, newSet);
+            set = new HashSet<V>();
+            internalHashMap.put(key, set);
         }
-        newSet.add(value);
+        set.add(value);
     }
 
     /**
