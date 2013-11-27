@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Faktor-IPS Runtime for Java5
+Bundle-Name: Faktor-IPS Runtime
 Bundle-SymbolicName: org.faktorips.runtime.java5
 Bundle-Version: 3.11.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
@@ -10,6 +10,7 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.caching,
  org.faktorips.runtime.formula,
  org.faktorips.runtime.internal,
+ org.faktorips.runtime.internal.indexstructure,
  org.faktorips.runtime.internal.toc,
  org.faktorips.runtime.jaxb,
  org.faktorips.runtime.modeltype,
@@ -18,7 +19,3 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.util
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.xml.bind,
- javax.xml.bind.annotation,
- javax.xml.bind.annotation.adapters,
- javax.xml.stream
