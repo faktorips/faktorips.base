@@ -64,6 +64,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /** Name of the <tt>containingValues</tt> property. */
     public static final String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
+    /** Name of the <tt>extensible</tt> property. */
+    public static final String PROPERTY_EXTENSIBLE = "extensible"; //$NON-NLS-1$
+
     /** Name of the <tt>enumContentPackageFragment</tt> property. */
     public static final String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
@@ -263,6 +266,21 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      *            be defined in the <tt>IEnumType</tt> itself.
      */
     public void setContainingValues(boolean containingValues);
+
+    /**
+     * Returns <tt>true</tt> this <tt>IEnumType</tt> is extensible.
+     * <p>
+     * An <tt>IEnumType</tt> is extensible if its values can be defined in the <tt>IEnumType</tt>
+     * itself AND in a separated content.
+     */
+    public boolean isExtensible();
+
+    /**
+     * Sets whether this <tt>IEnumType</tt> will be extensible.
+     * 
+     * @param extensible Flag indicating the extensibility of this <tt>IEnumType</tt>.
+     */
+    public void setExtensible(boolean extensible);
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>

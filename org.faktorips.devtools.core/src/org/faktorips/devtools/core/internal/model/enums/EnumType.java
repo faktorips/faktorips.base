@@ -67,6 +67,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /** Flag indicating whether the values for this <tt>IEnumType</tt> are defined in the model. */
     private boolean containingValues;
 
+    /** Flag indicating whether this <tt>IEnumType</tt> is extensible. */
+    private boolean extensible;
+
     /**
      * Qualified name of the package fragment a referencing <tt>IEnumContent</tt> must be stored in.
      */
@@ -91,6 +94,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         superEnumType = ""; //$NON-NLS-1$
         containingValues = false;
+        extensible = false;
         isAbstract = false;
         enumContentPackageFragment = ""; //$NON-NLS-1$
         enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
@@ -124,6 +128,18 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         boolean oldContainingValues = this.containingValues;
         this.containingValues = containingValues;
         valueChanged(oldContainingValues, containingValues);
+    }
+
+    @Override
+    public boolean isExtensible() {
+        return extensible;
+    }
+
+    @Override
+    public void setExtensible(boolean extensible) {
+        boolean oldExtensible = this.extensible;
+        this.extensible = extensible;
+        valueChanged(oldExtensible, extensible);
     }
 
     @Override
@@ -295,6 +311,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
+        extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
 
@@ -308,6 +325,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_CONTAINING_VALUES, String.valueOf(containingValues));
+        element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
