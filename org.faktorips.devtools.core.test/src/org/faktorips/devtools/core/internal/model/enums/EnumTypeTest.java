@@ -83,6 +83,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testGetSetExtensible() {
+        assertFalse(genderEnumType.isExtensible());
+        genderEnumType.setExtensible(true);
+        assertTrue(genderEnumType.isExtensible());
+    }
+
+    @Test
     public void testGetIpsObjectType() {
         assertEquals(IpsObjectType.ENUM_TYPE, genderEnumType.getIpsObjectType());
     }
@@ -431,6 +438,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         newEnumType.setAbstract(true);
         newEnumType.setContainingValues(true);
+        newEnumType.setExtensible(true);
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         newEnumType.setEnumContentName("bar");
         newEnumType.newEnumAttribute();
@@ -439,6 +447,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_CONTAINING_VALUES)));
+        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_EXTENSIBLE)));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_NAME));
 
@@ -446,6 +455,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
         assertTrue(loadedEnumType.isContainingValues());
+        assertTrue(loadedEnumType.isExtensible());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
         assertEquals("bar", loadedEnumType.getEnumContentName());
     }
