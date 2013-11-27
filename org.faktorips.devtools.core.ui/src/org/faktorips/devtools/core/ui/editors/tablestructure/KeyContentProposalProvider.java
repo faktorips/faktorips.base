@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class KeyContentProposalProvider implements IContentProposalProvider {
     List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+
     private IIndex[] uniqueKeys;
 
     public KeyContentProposalProvider(IIndex[] uniqueKeys) {
@@ -51,6 +52,7 @@ public class KeyContentProposalProvider implements IContentProposalProvider {
     }
 
     private void fillProposals(String content) {
+
         for (IIndex uniqueKey : uniqueKeys) {
             if (isFittingContent(uniqueKey, content)) {
                 String name = uniqueKey.getName();
@@ -62,10 +64,12 @@ public class KeyContentProposalProvider implements IContentProposalProvider {
 
     protected void setUniquekeys(IIndex[] newUniqueKeys) {
         this.uniqueKeys = newUniqueKeys;
+
     }
 
     private boolean isFittingContent(IIndex uniqueKey, String content) {
         String uniqueKeyName = uniqueKey.getName().toLowerCase();
         return uniqueKeyName.startsWith(content.toLowerCase());
     }
+
 }
