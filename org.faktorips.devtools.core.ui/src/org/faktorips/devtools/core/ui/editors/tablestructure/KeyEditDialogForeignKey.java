@@ -84,7 +84,6 @@ public class KeyEditDialogForeignKey extends KeyEditDialog {
         ukRefControl = getToolkit().createText(refTableComposite);
         uniqueKeyRefField = new TextField(ukRefControl);
         setupContentAssist(ukRefControl);
-        ukRefControl.setFocus();
     }
 
     protected void setupContentAssist(Text ukRefControl) {
