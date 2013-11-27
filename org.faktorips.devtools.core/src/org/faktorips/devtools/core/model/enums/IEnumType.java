@@ -268,7 +268,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public void setContainingValues(boolean containingValues);
 
     /**
-     * Returns <tt>true</tt> this <tt>IEnumType</tt> is extensible.
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is extensible.
      * <p>
      * An <tt>IEnumType</tt> is extensible if its values can be defined in the <tt>IEnumType</tt>
      * itself AND in a separated content.

@@ -62,8 +62,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The UI check box for the <tt>valuesArePartOfModelCheckbox</tt> property. */
-    private Button valuesArePartOfModelCheckbox;
+    /** The UI check box for the <tt>extensible</tt> property. */
+    private Button extensibleCheckbox;
 
     /** The UI control for the <tt>enumContentPackageFragment</tt> property */
     private TextField enumContentNameControl;
@@ -119,12 +119,12 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         Button isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
         getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
-        // Values are part of model
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
-        valuesArePartOfModelCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-        ButtonField buttonField = new ButtonField(valuesArePartOfModelCheckbox, false);
-        getBindingContext().bindContent(buttonField, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
+        // Extensible
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
+        extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
+        ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox, false);
+        getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
 
         // EnumContent specification
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
@@ -137,7 +137,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         // Register controls for focus handling
         addFocusControl(supertypeRefControl);
         addFocusControl(isAbstractCheckbox);
-        addFocusControl(valuesArePartOfModelCheckbox);
+        addFocusControl(extensibleCheckbox);
         addFocusControl(enumContentNameControl.getTextControl());
 
         // Extension properties
@@ -190,7 +190,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     }
 
     private void wholeContentChanged() {
-        valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
+        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
     }
