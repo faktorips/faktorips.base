@@ -61,7 +61,7 @@ public class ForeignKeysSection extends SimpleIpsPartsSection {
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             // return new KeyEditDialog((IForeignKey)part, shell);
-            return new KeyEditDialogForeignKey((IForeignKey)part, shell);
+            return new ForeignKeyEditDialog((IForeignKey)part, shell);
         }
 
         @Override

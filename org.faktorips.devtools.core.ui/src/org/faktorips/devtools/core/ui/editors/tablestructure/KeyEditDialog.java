@@ -78,25 +78,58 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
 
     private Composite itemEditComposite;
 
+    private Composite middle;
+
     public KeyEditDialog(IKey key, Shell parentShell, String title) {
         super(key, parentShell, title, true);
         this.key = key;
     }
 
+    @Override
+    protected Composite createWorkAreaThis(Composite parent) {
+        TabFolder folder = (TabFolder)parent;
+        TabItem page = new TabItem(folder, SWT.NONE);
+        page.setText(Messages.KeyEditDialog_generalTitle);
+        page.setControl(createGeneralPageComposite(folder));
+        refreshUi();
+        return folder;
+    }
+
+    private Composite createGeneralPageComposite(TabFolder folder) {
+        Composite pageComposite = createTabItemComposite(folder, 1, false);
+        addPageTopControls(pageComposite);
+        addHorizontalLine(pageComposite);
+        addKeyItemSelectionControls(pageComposite);
+        return pageComposite;
+    }
+
+    /**
+     * Subclasses override this method to add custom controls at the top of the key selection page.
+     * A horizontal line is automatically drawn between the page-top controls and the key selection
+     * controls (at the bottom).
+     * 
+     * @param pageComposite the composite to add custom controls to.
+     */
+    protected abstract void addPageTopControls(Composite pageComposite);
+
+    private void addHorizontalLine(Composite pageComposite) {
+        getToolkit().createHorizonzalLine(pageComposite);
+    }
+
     protected void addKeyItemSelectionControls(Composite pageComposite) {
         itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
+        createItemCandidatesComposite(createGroup(Messages.KeyEditDialog_groupTitle));
 
-        Composite left = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
-        Composite leftGroup = getToolkit().createGroup(left, SWT.NONE, Messages.KeyEditDialog_groupTitle);
-        createItemCandidatesComposite(leftGroup);
-
-        Composite middle = getToolkit().createGridComposite(itemEditComposite, 1, true, true);
+        middle = getToolkit().createGridComposite(itemEditComposite, 1, true, true);
         middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
-        createButtons(middle);
+        createButtons();
 
-        Composite right = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
-        Composite rightGroup = getToolkit().createGroup(right, SWT.NONE, Messages.KeyEditDialog_labelKeyItems);
-        createKeyItemsComposite(rightGroup);
+        createKeyItemsComposite(createGroup(Messages.KeyEditDialog_labelKeyItems));
+    }
+
+    private Composite createGroup(String message) {
+        Composite gridComposite = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
+        return getToolkit().createGroup(gridComposite, SWT.NONE, message);
     }
 
     protected void createItemCandidatesComposite(Composite parent) {
@@ -143,74 +176,6 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
         candidatesViewer.setInput(this);
     }
 
-    protected void createButtons(Composite middle) {
-        getToolkit().createVerticalSpacer(middle, 10);
-
-        addButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
-        addButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                addSelectedItems();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        removeButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
-        removeButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                removeSelectedItems();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        getToolkit().createVerticalSpacer(middle, 10);
-
-        upButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
-        upButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                moveSelectedItems(true);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        downButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
-        downButton.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                moveSelectedItems(false);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-    }
-
     /**
      * Creates the composite showing the key's items.
      */
@@ -232,6 +197,23 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
                 return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
         };
+        setContentProviderForItemsViewer();
+        setListenerForItemsViewer();
+        itemsViewer.setInput(this);
+    }
+
+    private void setListenerForItemsViewer() {
+        itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                updateButtonEnabledState();
+            }
+
+        });
+    }
+
+    private void setContentProviderForItemsViewer() {
         itemsViewer.setContentProvider(new IStructuredContentProvider() {
 
             @Override
@@ -250,15 +232,85 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             }
 
         });
-        itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+    }
+
+    protected void createButtons() {
+        getToolkit().createVerticalSpacer(middle, 10);
+        createAddButton();
+        createRemoveButton();
+        getToolkit().createVerticalSpacer(middle, 10);
+        createUpButton();
+        createDownButton();
+
+    }
+
+    private void createDownButton() {
+        downButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
+        downButton.addSelectionListener(new SelectionListener() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledState();
+            public void widgetSelected(SelectionEvent e) {
+                moveSelectedItems(false);
             }
 
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
         });
-        itemsViewer.setInput(this);
+    }
+
+    private void createUpButton() {
+        upButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
+        upButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                moveSelectedItems(true);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createRemoveButton() {
+        removeButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        removeButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                removeSelectedItems();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createAddButton() {
+        addButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        addButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                addSelectedItems();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     private void addSelectedItems() {
@@ -326,6 +378,13 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
         validate();
     }
 
+    private void updateButtonEnabledState() {
+        addButton.setEnabled(isDataChangeable() && !candidatesViewer.getSelection().isEmpty());
+        removeButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+        upButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+        downButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+    }
+
     private void validate() {
         try {
             MessageList msgList = key.validate(key.getIpsProject());
@@ -339,44 +398,6 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             IpsPlugin.log(e);
         }
     }
-
-    private void updateButtonEnabledState() {
-        addButton.setEnabled(isDataChangeable() && !candidatesViewer.getSelection().isEmpty());
-        removeButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
-        upButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
-        downButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
-    }
-
-    @Override
-    protected Composite createWorkAreaThis(Composite parent) {
-        TabFolder folder = (TabFolder)parent;
-        TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText(Messages.KeyEditDialog_generalTitle);
-        page.setControl(createGeneralPageComposite(folder));
-        refreshUi();
-        return folder;
-    }
-
-    private Composite createGeneralPageComposite(TabFolder folder) {
-        Composite pageComposite = createTabItemComposite(folder, 1, false);
-        addPageTopControls(pageComposite);
-        addHorizontalLine(pageComposite);
-        addKeyItemSelectionControls(pageComposite);
-        return pageComposite;
-    }
-
-    private void addHorizontalLine(Composite pageComposite) {
-        getToolkit().createHorizonzalLine(pageComposite);
-    }
-
-    /**
-     * Subclasses override this method to add custom controls at the top of the key selection page.
-     * A horizontal line is automatically drawn between the page-top controls and the key selection
-     * controls (at the bottom).
-     * 
-     * @param pageComposite the composite to add custom controls to.
-     */
-    protected abstract void addPageTopControls(Composite pageComposite);
 
     private class KeyItemLabelProvider extends DefaultLabelProvider {
 
@@ -395,11 +416,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             String item = (String)element;
             Image image;
             IColumnRange range = key.getTableStructure().getRange(item);
-            if (range != null) {
-                image = super.getImage(range);
-            } else {
-                image = (Image)resourceManager.get(tableColumnDescriptor);
-            }
+            image = setImageByRange(range);
             MessageList list;
             try {
                 list = key.validate(key.getIpsProject());
@@ -419,6 +436,16 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
 
             ImageDescriptor descriptor = IpsProblemOverlayIcon.createOverlayIcon(image, itemMsgList.getSeverity());
             return (Image)resourceManager.get(descriptor);
+        }
+
+        private Image setImageByRange(IColumnRange range) {
+            Image image;
+            if (range != null) {
+                image = super.getImage(range);
+            } else {
+                image = (Image)resourceManager.get(tableColumnDescriptor);
+            }
+            return image;
         }
 
         @Override

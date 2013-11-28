@@ -22,12 +22,12 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 /**
  * A dialog to edit indices.
  */
-public class KeyEditDialogIndices extends KeyEditDialog {
+public class IndicesEditDialog extends KeyEditDialog {
 
     private IKey key;
     private Checkbox checkbox;
 
-    public KeyEditDialogIndices(IKey key, Shell parentShell) {
+    public IndicesEditDialog(IKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialogIndices_titleText);
         this.key = key;
     }

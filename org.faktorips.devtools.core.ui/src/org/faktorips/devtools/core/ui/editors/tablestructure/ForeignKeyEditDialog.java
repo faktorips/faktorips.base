@@ -37,13 +37,13 @@ import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 /**
  * A dialog to edit foreign key.
  */
-public class KeyEditDialogForeignKey extends KeyEditDialog {
+public class ForeignKeyEditDialog extends KeyEditDialog {
 
     private IKey key;
 
     private TableStructureRefControl refControl;
 
-    private KeyEditForeignKeyPMO pmo;
+    private ForeignKeyPMO pmo;
 
     /** completion processor for a table structure's indices. */
     private TextButtonField tableStructureRefField;
@@ -52,10 +52,10 @@ public class KeyEditDialogForeignKey extends KeyEditDialog {
 
     private KeyContentProposalProvider contentProposalProvider;
 
-    public KeyEditDialogForeignKey(IKey key, Shell parentShell) {
+    public ForeignKeyEditDialog(IKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialogForeignKey_titleText);
         this.key = key;
-        this.pmo = new KeyEditForeignKeyPMO(this);
+        this.pmo = new ForeignKeyPMO(this);
     }
 
     @Override
@@ -97,19 +97,19 @@ public class KeyEditDialogForeignKey extends KeyEditDialog {
         getBindingContext().bindContent(tableStructureRefField, key, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
         getBindingContext().bindContent(uniqueKeyRefField, key, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
 
-        getBindingContext().bindContent(tableStructureRefField, pmo, KeyEditForeignKeyPMO.REFERENCE_TABLE);
-        getBindingContext().bindContent(uniqueKeyRefField, pmo, KeyEditForeignKeyPMO.UNIQUE_KEY);
+        getBindingContext().bindContent(tableStructureRefField, pmo, ForeignKeyPMO.REFERENCE_TABLE);
+        getBindingContext().bindContent(uniqueKeyRefField, pmo, ForeignKeyPMO.UNIQUE_KEY);
 
     }
 
-    public static class KeyEditForeignKeyPMO extends PresentationModelObject {
+    public static class ForeignKeyPMO extends PresentationModelObject {
         private static final String UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
         private static final String REFERENCE_TABLE = "referenceTable"; //$NON-NLS-1$
         private String uniqueKey = StringUtils.EMPTY;
         private String referenceTable = StringUtils.EMPTY;
-        private KeyEditDialogForeignKey dialog;
+        private ForeignKeyEditDialog dialog;
 
-        public KeyEditForeignKeyPMO(KeyEditDialogForeignKey dialog) {
+        public ForeignKeyPMO(ForeignKeyEditDialog dialog) {
             this.dialog = dialog;
         }
 

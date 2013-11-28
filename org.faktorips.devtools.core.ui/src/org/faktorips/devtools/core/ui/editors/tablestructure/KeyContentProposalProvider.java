@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
 /**
  * 
  * A {@link IContentProposalProvider} appropriate for the textual dialog, for example
- * {@link KeyEditDialogForeignKey} field.
+ * {@link ForeignKeyEditDialog} field.
  * 
  */
 
