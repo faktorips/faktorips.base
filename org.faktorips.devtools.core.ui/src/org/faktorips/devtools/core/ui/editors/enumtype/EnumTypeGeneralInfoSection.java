@@ -108,41 +108,62 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 }
             }
         });
-        // Supertype
-        EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
-                true);
-        supertypeRefControl.setCurrentEnumType(enumType);
-        getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 
-        // Abstract
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
-        Button isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
+        EnumTypeRefControl supertypeRefControl = createSupertypeRefControl(toolkit, composite);
 
-        // Extensible
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
-        extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
-        ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox, false);
-        getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
+        Button isAbstractCheckbox = createIsAbstractCheckbox(toolkit, composite);
 
-        // EnumContent specification
+        createExtensibleCheckbox(toolkit, composite);
+
+        createEnumContentNameControl(toolkit, composite);
+
+        registerFocusHandling(supertypeRefControl, isAbstractCheckbox);
+
+        createExtensionControl(toolkit, composite);
+    }
+
+    private void createExtensionControl(UIToolkit toolkit, Composite composite) {
+        extFactory.createControls(composite, toolkit, enumType);
+        extFactory.bind(getBindingContext());
+    }
+
+    private void registerFocusHandling(EnumTypeRefControl supertypeRefControl, Button isAbstractCheckbox) {
+        addFocusControl(supertypeRefControl);
+        addFocusControl(isAbstractCheckbox);
+        addFocusControl(extensibleCheckbox);
+        addFocusControl(enumContentNameControl.getTextControl());
+    }
+
+    private void createEnumContentNameControl(UIToolkit toolkit, Composite composite) {
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
         enumContentNameControl = new TextField(text);
         toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+    }
 
-        // Register controls for focus handling
-        addFocusControl(supertypeRefControl);
-        addFocusControl(isAbstractCheckbox);
-        addFocusControl(extensibleCheckbox);
-        addFocusControl(enumContentNameControl.getTextControl());
+    private void createExtensibleCheckbox(UIToolkit toolkit, Composite composite) {
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
+        extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
+        ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox, false);
+        getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
+    }
 
-        // Extension properties
-        extFactory.createControls(composite, toolkit, enumType);
-        extFactory.bind(getBindingContext());
+    private Button createIsAbstractCheckbox(UIToolkit toolkit, Composite composite) {
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
+        Button isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
+        return isAbstractCheckbox;
+    }
+
+    private EnumTypeRefControl createSupertypeRefControl(UIToolkit toolkit, Composite composite) {
+        EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
+                true);
+        supertypeRefControl.setCurrentEnumType(enumType);
+        getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
+        return supertypeRefControl;
     }
 
     @Override
