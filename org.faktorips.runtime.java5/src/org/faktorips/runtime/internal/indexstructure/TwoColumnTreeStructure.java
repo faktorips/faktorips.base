@@ -28,6 +28,17 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
         return new TwoColumnTreeStructure<K, V, R>();
     }
 
+    /**
+     * Creates a new {@link TwoColumnTreeStructure} and put the given key value pair.
+     */
+    public static <K extends Comparable<K>, V extends Structure<R> & Mergeable<? super V>, R> TwoColumnTreeStructure<K, V, R> createWith(K lowerBound,
+            K upperBound,
+            V value) {
+        TwoColumnTreeStructure<K, V, R> structure = new TwoColumnTreeStructure<K, V, R>();
+        structure.put(lowerBound, upperBound, value);
+        return structure;
+    }
+
     public void put(K lower, K upper, V value) {
         super.put(new TwoColumnKey<K>(lower, upper), value);
     }
@@ -40,7 +51,7 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
     @Override
     public Structure<R> get(Object key) {
         TwoColumnKey<K> twoColumnKey = createTwoColumnKey(key);
-        V result = getMatchingResult(twoColumnKey);
+        V result = getMatchingValue(twoColumnKey);
         return getValidResult(result);
     }
 
@@ -67,7 +78,7 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
      * for (15-25) will yield <code>null</code> however as the requested range does no fully overlap
      * with the range defined by the {@link TreeMap}.
      */
-    private V getMatchingResult(TwoColumnKey<K> twoColumnKey) {
+    private V getMatchingValue(TwoColumnKey<K> twoColumnKey) {
         Entry<TwoColumnKey<K>, V> floorEntry = getMap().floorEntry(twoColumnKey);
         if (isMatchingEntry(twoColumnKey, floorEntry)) {
             return floorEntry.getValue();
@@ -78,14 +89,6 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
 
     private boolean isMatchingEntry(TwoColumnKey<K> twoColumnKey, Entry<TwoColumnKey<K>, V> floorEntry) {
         return floorEntry != null && twoColumnKey.isSubRangeOf(floorEntry.getKey());
-    }
-
-    private Structure<R> getValidResult(V result) {
-        if (result == null) {
-            return ResultStructure.create();
-        } else {
-            return result;
-        }
     }
 
 }

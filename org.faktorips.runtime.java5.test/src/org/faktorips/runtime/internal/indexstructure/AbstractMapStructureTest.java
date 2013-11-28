@@ -122,4 +122,22 @@ public class AbstractMapStructureTest {
         return resultSet;
     }
 
+    @Test
+    public void testGet_multipleSameKey() throws Exception {
+        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
+        abstractMapStructure.put("abc", new ResultStructure<Integer>(321));
+
+        assertThat(abstractMapStructure.get(), hasItem(123));
+        assertThat(abstractMapStructure.get(), hasItem(321));
+    }
+
+    @Test
+    public void testGet_multipleDifferentKeys() throws Exception {
+        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
+        abstractMapStructure.put("xyz", new ResultStructure<Integer>(321));
+
+        assertThat(abstractMapStructure.get(), hasItem(123));
+        assertThat(abstractMapStructure.get(), hasItem(321));
+    }
+
 }

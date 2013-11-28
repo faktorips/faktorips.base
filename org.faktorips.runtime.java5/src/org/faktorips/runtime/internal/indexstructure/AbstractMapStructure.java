@@ -73,6 +73,7 @@ public abstract class AbstractMapStructure<K, V extends Structure<R> & Mergeable
         }
     }
 
+    @Override
     public void merge(AbstractMapStructure<K, V, R> otherMap) {
         Map<K, V> otherTreeMap = otherMap.getMap();
         for (Entry<K, V> entry : otherTreeMap.entrySet()) {
@@ -98,6 +99,22 @@ public abstract class AbstractMapStructure<K, V extends Structure<R> & Mergeable
 
     protected Map<K, V> getMap() {
         return map;
+    }
+
+    /**
+     * Checks whether the given result is <code>null</code> and returns a fallback result (an empty
+     * {@link ResultStructure}) in that case.
+     * 
+     * @param result a valid result or <code>null</code>.
+     * @return the given result or an empty {@link ResultStructure} if the given result is
+     *         <code>null</code>. Never returns <code>null</code>.
+     */
+    protected Structure<R> getValidResult(V result) {
+        if (result == null) {
+            return ResultStructure.create();
+        } else {
+            return result;
+        }
     }
 
 }

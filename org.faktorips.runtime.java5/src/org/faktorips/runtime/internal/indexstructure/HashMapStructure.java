@@ -36,13 +36,20 @@ public class HashMapStructure<K, V extends Structure<R> & Mergeable<? super V>, 
         return new HashMapStructure<K, V, R>();
     }
 
+    /**
+     * Creates a new {@link HashMapStructure} and put the given key value pair.
+     */
+    public static <K, V extends Structure<R> & Mergeable<? super V>, R> HashMapStructure<K, V, R> createWith(K key,
+            V value) {
+        HashMapStructure<K, V, R> structure = new HashMapStructure<K, V, R>();
+        structure.put(key, value);
+        return structure;
+    }
+
     @Override
     public Structure<R> get(Object key) {
         V result = getMap().get(key);
-        if (result == null) {
-            return ResultStructure.create();
-        }
-        return result;
+        return getValidResult(result);
     }
 
 }

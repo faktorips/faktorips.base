@@ -51,14 +51,14 @@ public class ResultStructure<R> extends Structure<R> implements Mergeable<Result
     /**
      * Creates a new {@link ResultSet} with the given resultValue as its only result value.
      */
-    public static <R> ResultStructure<R> create(R resultValue) {
+    public static <R> ResultStructure<R> createWith(R resultValue) {
         return new ResultStructure<R>(resultValue);
     }
 
     /**
      * Creates a new {@link ResultSet} with the given set of result values.
      */
-    public static <R> ResultStructure<R> create(Set<R> resultValues) {
+    public static <R> ResultStructure<R> createWith(Set<R> resultValues) {
         return new ResultStructure<R>(resultValues);
     }
 

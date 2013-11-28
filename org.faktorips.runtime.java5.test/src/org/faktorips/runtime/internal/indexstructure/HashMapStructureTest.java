@@ -40,7 +40,7 @@ public class HashMapStructureTest {
 
     @Test
     public void testGet_oneValue() throws Exception {
-        hashMapStructure.put("abc", ResultStructure.create(123));
+        hashMapStructure.put("abc", ResultStructure.createWith(123));
 
         Structure<Integer> structure = hashMapStructure.get("abc");
 
@@ -49,8 +49,8 @@ public class HashMapStructureTest {
 
     @Test
     public void testGet_multipleValueSameKey() throws Exception {
-        hashMapStructure.put("abc", ResultStructure.create(123));
-        hashMapStructure.put("abc", ResultStructure.create(321));
+        hashMapStructure.put("abc", ResultStructure.createWith(123));
+        hashMapStructure.put("abc", ResultStructure.createWith(321));
 
         Structure<Integer> structure = hashMapStructure.get("abc");
 
@@ -64,8 +64,8 @@ public class HashMapStructureTest {
 
     @Test
     public void testGet_multipleValueSameValue() throws Exception {
-        hashMapStructure.put("abc", ResultStructure.create(123));
-        hashMapStructure.put("xyz", ResultStructure.create(123));
+        hashMapStructure.put("abc", ResultStructure.createWith(123));
+        hashMapStructure.put("xyz", ResultStructure.createWith(123));
 
         Structure<Integer> structure = hashMapStructure.get("abc");
         Structure<Integer> structure2 = hashMapStructure.get("xyz");
@@ -80,8 +80,8 @@ public class HashMapStructureTest {
 
     @Test
     public void testGet_multipleValueDifferentKeysValues() throws Exception {
-        hashMapStructure.put("abc", ResultStructure.create(123));
-        hashMapStructure.put("xyz", ResultStructure.create(321));
+        hashMapStructure.put("abc", ResultStructure.createWith(123));
+        hashMapStructure.put("xyz", ResultStructure.createWith(321));
 
         Structure<Integer> structure = hashMapStructure.get("abc");
         Structure<Integer> structure2 = hashMapStructure.get("xyz");
@@ -98,9 +98,9 @@ public class HashMapStructureTest {
     @Test
     public void testPut_nestedStructure() throws Exception {
         HashMapStructure<String, ResultStructure<Integer>, Integer> nestedMapStructure = HashMapStructure.create();
-        nestedMapStructure.put("abc", ResultStructure.create(123));
+        nestedMapStructure.put("abc", ResultStructure.createWith(123));
         HashMapStructure<String, ResultStructure<Integer>, Integer> nestedMapStructure2 = HashMapStructure.create();
-        nestedMapStructure.put("xyz", ResultStructure.create(321));
+        nestedMapStructure.put("xyz", ResultStructure.createWith(321));
         nestingMapStructure.put("aaa", nestedMapStructure);
         nestingMapStructure.put("aaa", nestedMapStructure2);
 

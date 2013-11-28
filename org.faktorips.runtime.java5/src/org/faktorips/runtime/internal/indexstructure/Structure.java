@@ -13,25 +13,26 @@
 
 package org.faktorips.runtime.internal.indexstructure;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * A {@link Structure} is contains any kind of search structure that is used by tables to optimize
- * index key access on table data. The fundamental idea is that a {@link Structure} is a self
- * containing composite, that means every structure contains another structure. Every kind of
- * {@link Structure} is optimized to get the nested structure by any key. Depending on the kind this
- * may be for example a map with direct key access or a tree to access keys in ranges. Finally the
- * last nested element is a {@link ResultStructure} which contains the resulting value.
+ * A {@link Structure} a data structure that is used by tables to optimize index key access on their
+ * data. The fundamental idea is that a {@link Structure} is a self containing composite, that means
+ * every structure contains another structure. Every kind of {@link Structure} is optimized to get
+ * the nested structure by any key. Depending on the kind this may be for example a map with direct
+ * key access or a tree to access keys in ranges. Finally the last nested element is a
+ * {@link ResultStructure} which contains the resulting value.
  * <p>
- * To prevent {@link NullPointerException} without checking for <code>null</code>, every
+ * To prevent {@link NullPointerException}s without checking for <code>null</code>, every
  * {@link #get(Object)} with any key will return a {@link Structure}. If there is no nested
- * structure for the given key, you get an empty {@link ResultStructure}. Having a
- * {@link ResultStructure} you could call {@link #get(Object)} with any key and always getting the
- * same {@link ResultStructure}. For example, you have a nested structure Map -> Tree -> Tree and
- * you call <code>get(x).get(y).get(z)</code>. If the first <code>get(x)</code> on the map fails you
- * just get an empty {@link ResultStructure}. Nevertheless the following <code>get(y).get(z)</code>
- * can be called without respecting whether there is a value for <code>x</code> you simply get the
- * empty result.
+ * structure for the given key, an empty {@link ResultStructure} is returned as a fall-back. Calling
+ * {@link #get(Object)} on it (with any key) simply returns the empty {@link ResultStructure}
+ * itself. IOW an empty {@link ResultStructure} is a kind of null-Object. For example, you have a
+ * nested structure Map -> Tree -> Tree and you call <code>get(x).get(y).get(z)</code>. If the first
+ * <code>get(x)</code> on the map fails you just get an empty {@link ResultStructure}. Nevertheless
+ * the following <code>get(y).get(z)</code> can be called without respecting whether there is a
+ * value for <code>x</code> you simply get the empty result.
  * <p>
  * To create a new nested structure, every {@link Structure} that can be nested in other structures
  * have to implement the {@link Mergeable} interface. The aim is that the user could simply create
@@ -73,15 +74,14 @@ public abstract class Structure<R> {
      * {@link AssertionError} if there is no element or more than one element.
      * 
      * @return The one and only result hold by this {@link Structure}.
-     * @throws AssertionError if your assertion that there is exactly one element is wrong and hence
-     *             there are either more or less than one result values.
+     * @throws AssertionError if your assertion that there is at most one element is wrong and hence
+     *             there are are more than one values.
+     * @throws NoSuchElementException If there is no element at all.
      */
     public R getUnique() {
         Set<R> set = get();
         if (set.size() > 1) {
             throw new AssertionError("There are multiple values for a unique key.");
-        } else if (set.isEmpty()) {
-            throw new AssertionError("There are no value.");
         } else {
             return set.iterator().next();
         }
