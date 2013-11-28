@@ -186,15 +186,10 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
 
     private void createButtons(Composite middle) {
         createTopRightArrow(middle);
-
         createTopLeftArrow(middle);
-
         getToolkit().createVerticalSpacer(middle, 10);
-
         createBottomRightArrow(middle);
-
         createBottomLeftArrow(middle);
-
     }
 
     private void createTopRightArrow(Composite middle) {
