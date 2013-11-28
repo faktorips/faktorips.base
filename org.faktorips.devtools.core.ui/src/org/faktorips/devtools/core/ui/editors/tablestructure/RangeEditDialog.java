@@ -58,10 +58,10 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private TextField toField;
     private EnumValueField rangeTypeField;
     private TextField parameterNameField;
-    private Button toLeft;
-    private Button toRight;
-    private Button toLeft2;
-    private Button toRight2;
+    private Button topRight;
+    private Button topLeft;
+    private Button bottomRight;
+    private Button bottomLeft;
     private Label fromLabel;
     private Label toLabel;
 
@@ -170,12 +170,12 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
                 }
                 return result.toArray();
             }
-    
+
             @Override
             public void dispose() {
                 // Nothing to do
             }
-    
+
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // Nothing to do
@@ -185,70 +185,86 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createButtons(Composite middle) {
-        toLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
-        toLeft.addSelectionListener(new SelectionListener() {
-    
+        createTopRightArrow(middle);
+
+        createTopLeftArrow(middle);
+
+        getToolkit().createVerticalSpacer(middle, 10);
+
+        createBottomRightArrow(middle);
+
+        createBottomLeftArrow(middle);
+
+    }
+
+    private void createTopRightArrow(Composite middle) {
+        topRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        topRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        topRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        topRight.addSelectionListener(new SelectionListener() {
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 selectColumn(fromField);
             }
-    
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // Nothing to do
             }
         });
-    
-        toRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
-        toRight.addSelectionListener(new SelectionListener() {
+    }
+
+    private void createTopLeftArrow(Composite middle) {
+        topLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        topLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        topLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        topLeft.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 clearColumn(fromField);
             }
-    
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // Nothing to do
             }
         });
-    
-        getToolkit().createVerticalSpacer(middle, 10);
-    
-        toLeft2 = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toLeft2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
-        toLeft2.addSelectionListener(new SelectionListener() {
+    }
+
+    private void createBottomRightArrow(Composite middle) {
+        bottomRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        bottomRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        bottomRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        bottomRight.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 selectColumn(toField);
             }
-    
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // Nothing to do
             }
         });
-    
-        toRight2 = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toRight2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
-        toRight2.addSelectionListener(new SelectionListener() {
-    
+    }
+
+    private void createBottomLeftArrow(Composite middle) {
+        bottomLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        bottomLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        bottomLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        bottomLeft.addSelectionListener(new SelectionListener() {
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 clearColumn(toField);
             }
-    
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // Nothing to do
             }
         });
-    
     }
 
     @Override
@@ -281,16 +297,16 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private void setEnabledForToFieldControls(boolean enabled) {
         toField.getControl().setEnabled(enabled);
         toField.getControl().setEnabled(enabled);
-        toLeft2.setEnabled(enabled);
-        toRight2.setEnabled(enabled);
+        bottomRight.setEnabled(enabled);
+        bottomLeft.setEnabled(enabled);
         toLabel.setEnabled(enabled);
     }
 
     private void setEnabledForFromFieldControls(boolean enabled) {
         fromField.getControl().setEnabled(enabled);
         toField.getControl().setEnabled(enabled);
-        toLeft.setEnabled(enabled);
-        toRight.setEnabled(enabled);
+        topRight.setEnabled(enabled);
+        topLeft.setEnabled(enabled);
         fromLabel.setEnabled(enabled);
     }
 
