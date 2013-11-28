@@ -382,7 +382,7 @@ public class TableContentsTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindMetaClass() throws CoreException {
-        ITableStructure structure = newTableStructure(project, "Structure");
+        ITableStructure structure = newTableStructure(project, "SearchStructure");
         table.setTableStructure(structure.getQualifiedName());
 
         IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);

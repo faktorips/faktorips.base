@@ -11,25 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Matchers.anyString;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-public class TreeStructureTest {
-    private TreeStructure<Integer, ResultStructure<String>, String> structure;
+public class RangeStructureTest {
+    private RangeStructure<Integer, ResultStructure<String>, String> structure;
 
     @Test(expected = NullPointerException.class)
     public void testGet_null() {
@@ -43,7 +37,7 @@ public class TreeStructureTest {
 
     @Test
     public void testGet_KeyTypeLowerBoundEqual() {
-        createStructure(KeyType.KEY_IS_LOWER_BOUND_EQUAL);
+        createStructure(RangeType.LOWER_BOUND_EQUAL);
         setForKeyWayOutOfLowerBound(isEmpty());
         setForKeyLessThanSmallestLowerBound(isEmpty());
         setForKeyExactSmallestLowerBound(hasItem("A"));
@@ -56,9 +50,14 @@ public class TreeStructureTest {
         setForKeyWayOutOfUpperBound(hasItem("C"));
     }
 
+    @SuppressWarnings("deprecation")
+    /**
+     * Tests the {@link RangeStructure} with {@link RangeType#LOWER_BOUND}. May be deleted when
+     * {@link RangeType#LOWER_BOUND} is removed.
+     */
     @Test
     public void testGet_KeyTypeLowerBound() {
-        createStructure(KeyType.KEY_IS_LOWER_BOUND);
+        createStructure(RangeType.LOWER_BOUND);
         setForKeyWayOutOfLowerBound(isEmpty());
         setForKeyLessThanSmallestLowerBound(isEmpty());
         setForKeyExactSmallestLowerBound(isEmpty());
@@ -73,7 +72,7 @@ public class TreeStructureTest {
 
     @Test
     public void testGet_KeyTypeUpperBoundEqual() {
-        createStructure(KeyType.KEY_IS_UPPER_BOUND_EQUAL);
+        createStructure(RangeType.UPPER_BOUND_EQUAL);
         setForKeyWayOutOfLowerBound(hasItem("A"));
         setForKeyLessThanSmallestLowerBound(hasItem("A"));
         setForKeyExactSmallestLowerBound(hasItem("A"));
@@ -86,9 +85,14 @@ public class TreeStructureTest {
         setForKeyWayOutOfUpperBound(isEmpty());
     }
 
+    @SuppressWarnings("deprecation")
+    /**
+     * Tests the {@link RangeStructure} with {@link RangeType#UPPER_BOUND}. May be deleted when
+     * {@link RangeType#UPPER_BOUND} is removed.
+     */
     @Test
     public void testGet_KeyTypeUpperBound() {
-        createStructure(KeyType.KEY_IS_UPPER_BOUND);
+        createStructure(RangeType.UPPER_BOUND);
         setForKeyWayOutOfLowerBound(hasItem("A"));
         setForKeyLessThanSmallestLowerBound(hasItem("A"));
         setForKeyExactSmallestLowerBound(hasItem("B"));
@@ -101,8 +105,8 @@ public class TreeStructureTest {
         setForKeyWayOutOfUpperBound(isEmpty());
     }
 
-    private void createStructure(KeyType keyType) {
-        structure = TreeStructure.create(keyType);
+    private void createStructure(RangeType keyType) {
+        structure = RangeStructure.create(keyType);
         structure.put(-5, new ResultStructure<String>("A"));
         structure.put(2, new ResultStructure<String>("B"));
         structure.put(10, new ResultStructure<String>("C"));
@@ -148,42 +152,7 @@ public class TreeStructureTest {
         assertThat(structure.get(100).get(), matcher);
     }
 
-    private static Matcher<Iterable<String>> isEmpty() {
-        return new IsEmpty<String>();
-    }
-
-    private static class IsEmpty<T> extends BaseMatcher<Iterable<T>> {
-
-        @Override
-        public boolean matches(Object item) {
-            if (item instanceof Set) {
-                Iterable<?> iterable = (Iterable<?>)item;
-                return !iterable.iterator().hasNext();
-            }
-            return false;
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("an empty Iterable");
-        }
-    }
-
-    @Test
-    public void testIsEmptyMatcher() {
-        Set<String> set = new HashSet<String>();
-        IsEmpty<String> matcher = new IsEmpty<String>();
-        assertTrue(matcher.matches(set));
-
-        set.add("String");
-        assertFalse(matcher.matches(set));
-    }
-
-    @Test
-    public void testDescribeEmptyMatcher() {
-        IsEmpty<String> matcher = new IsEmpty<String>();
-        Description description = mock(Description.class);
-        matcher.describeTo(description);
-        verify(description).appendText("an empty Iterable");
+    private Matcher<Iterable<String>> isEmpty() {
+        return not(hasItems(anyString()));
     }
 }

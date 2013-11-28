@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import java.io.Serializable;
 
@@ -86,14 +86,14 @@ public class TwoColumnKey<K extends Comparable<K>> implements Comparable<TwoColu
     }
 
     /**
-     * A two-column-key defines a range (from-to) or mathematically speaking an interval. This
-     * method tests whether this key defines a sub-range of the argument key. If this key is a sub
-     * range, all values defined by this key are also contained in the argument key.
+     * A two-column-key defines a range or mathematically speaking an interval by upper and lower
+     * bound. This method tests whether this key defines a sub-range of the argument key. If this
+     * key is a sub range, all values defined by this key are also contained in the argument key.
      * 
      * @returns <code>true</code> if both ranges have identical upper and lower bounds. Returns
-     *          <code>true</code> if this key is a true sub-range of the argument key (the argument
-     *          range contains additional elements). Returns <code>false</code> if both ranges only
-     *          partially overlap or have no common elements at all.
+     *          <code>true</code> if this key is a true sub-range of the argument key. Returns
+     *          <code>false</code>, however, if both ranges only partially overlap or have no common
+     *          elements at all.
      */
     public boolean isSubRangeOf(TwoColumnKey<K> otherKey) {
         return getLowerBound().compareTo(otherKey.getLowerBound()) >= 0

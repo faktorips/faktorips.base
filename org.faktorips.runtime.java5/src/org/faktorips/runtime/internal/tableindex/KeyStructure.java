@@ -11,43 +11,43 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import java.util.HashMap;
 
 /**
- * An implementation of {@link AbstractMapStructure} using a {@link HashMap} as underlying data
- * structure. This structure is useful for every value that could be identified exactly by its key.
- * The generic types are described in {@link AbstractMapStructure}
+ * An implementation of {@link AbstractMapStructure} mapping keys to nested {@link SearchStructure
+ * SearchStructures} much like a map. This structure is useful for values that can be identified
+ * exactly by their. The generic types are described in {@link AbstractMapStructure}
  * 
  * @see AbstractMapStructure
  */
-public class HashMapStructure<K, V extends Structure<R> & Mergeable<? super V>, R> extends
+public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>, R> extends
         AbstractMapStructure<K, V, R> {
 
-    HashMapStructure() {
+    KeyStructure() {
         super(new HashMap<K, V>());
     }
 
     /**
-     * Creates a new empty {@link HashMapStructure}.
+     * Creates a new empty {@link KeyStructure}.
      */
-    public static <K, V extends Structure<R> & Mergeable<? super V>, R> HashMapStructure<K, V, R> create() {
-        return new HashMapStructure<K, V, R>();
+    public static <K, V extends SearchStructure<R> & Mergeable<? super V>, R> KeyStructure<K, V, R> create() {
+        return new KeyStructure<K, V, R>();
     }
 
     /**
-     * Creates a new {@link HashMapStructure} and put the given key value pair.
+     * Creates a new {@link KeyStructure} and put the given key value pair.
      */
-    public static <K, V extends Structure<R> & Mergeable<? super V>, R> HashMapStructure<K, V, R> createWith(K key,
+    public static <K, V extends SearchStructure<R> & Mergeable<? super V>, R> KeyStructure<K, V, R> createWith(K key,
             V value) {
-        HashMapStructure<K, V, R> structure = new HashMapStructure<K, V, R>();
+        KeyStructure<K, V, R> structure = new KeyStructure<K, V, R>();
         structure.put(key, value);
         return structure;
     }
 
     @Override
-    public Structure<R> get(Object key) {
+    public SearchStructure<R> get(Object key) {
         V result = getMap().get(key);
         return getValidResult(result);
     }

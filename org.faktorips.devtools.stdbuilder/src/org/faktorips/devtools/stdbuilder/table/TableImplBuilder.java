@@ -52,11 +52,11 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.Table;
-import org.faktorips.runtime.internal.indexstructure.HashMapStructure;
-import org.faktorips.runtime.internal.indexstructure.KeyType;
-import org.faktorips.runtime.internal.indexstructure.ResultStructure;
-import org.faktorips.runtime.internal.indexstructure.TreeStructure;
-import org.faktorips.runtime.internal.indexstructure.TwoColumnTreeStructure;
+import org.faktorips.runtime.internal.tableindex.KeyStructure;
+import org.faktorips.runtime.internal.tableindex.RangeStructure;
+import org.faktorips.runtime.internal.tableindex.RangeType;
+import org.faktorips.runtime.internal.tableindex.ResultStructure;
+import org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -166,7 +166,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             IIndex index = keys.get(i);
             IndexCodePart indexCodePart = indexCodeParts.get(index);
             String keyVariableName = "Key" + i;
-            indexCodePart.keyStructureFieldName = StringUtils.uncapitalize(keyVariableName) + "Structure";
+            indexCodePart.keyStructureFieldName = StringUtils.uncapitalize(keyVariableName) + "SearchStructure";
             indexCodePart.keyStructureFieldClassName = getKeyStructureFieldClass(Arrays.asList(index.getKeyItems()),
                     indexCodePart.indexClassName);
         }
@@ -204,12 +204,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             structureType = ResultStructure.class.getName();
         } else if (keyItem.isRange()) {
             if (((IColumnRange)keyItem).getColumnRangeType().isTwoColumn()) {
-                structureType = TwoColumnTreeStructure.class.getName();
+                structureType = TwoColumnRangeStructure.class.getName();
             } else {
-                structureType = TreeStructure.class.getName();
+                structureType = RangeStructure.class.getName();
             }
         } else {
-            structureType = HashMapStructure.class.getName();
+            structureType = KeyStructure.class.getName();
         }
         return structureType;
     }
@@ -615,7 +615,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     String keyStructureFieldClass = getKeyStructureFieldClass(processedKeys,
                             indexCodePart.indexClassName);
                     methodBody.appendClassName(keyStructureFieldClass).append(" ");
-                    previousStructure = ((IColumnRange)keyItem).getParameterName() + "Structure" + i;
+                    previousStructure = ((IColumnRange)keyItem).getParameterName() + "SearchStructure" + i;
                     methodBody.append(previousStructure);
                     appendCreateStructure(keyItem, methodBody, putParameter);
                 } else {
@@ -665,10 +665,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (keyItem != null && keyItem.isRange()) {
             ColumnRangeType columnRangeType = ((IColumnRange)keyItem).getColumnRangeType();
             if (columnRangeType.isOneColumnFrom()) {
-                methodBody.appendClassName(KeyType.class).append('.').append(KeyType.KEY_IS_LOWER_BOUND_EQUAL.name());
+                methodBody.appendClassName(RangeType.class).append('.').append(RangeType.LOWER_BOUND_EQUAL.name());
                 addColon = true;
             } else if (columnRangeType.isOneColumnTo()) {
-                methodBody.appendClassName(KeyType.class).append('.').append(KeyType.KEY_IS_UPPER_BOUND_EQUAL.name());
+                methodBody.appendClassName(RangeType.class).append('.').append(RangeType.UPPER_BOUND_EQUAL.name());
                 addColon = true;
             }
         }

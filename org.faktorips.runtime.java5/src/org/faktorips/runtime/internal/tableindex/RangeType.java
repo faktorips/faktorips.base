@@ -11,27 +11,49 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public enum KeyType {
+/**
+ * Defines how the bounds of ranges in a {@link RangeStructure} are handled. Ranges in a
+ * {@link RangeStructure} are defined by only one value. The {@link RangeType} specifies whether
+ * this value is the upper or lower bound of the range. Ranges may thus be boundless/infinite.
+ * <p>
+ * Example: In a {@link RangeType#LOWER_BOUND_EQUAL} {@link RangeStructure} by calling
+ * <code>put(10, value1)</code> and <code>put(25, value2)</code>, two ranges are defined: [10..24]
+ * and [25..infinity]. When using {@link RangeType#UPPER_BOUND_EQUAL}, however, the same calls
+ * define the ranges [-infinity..10] and [11..25].
+ * 
+ * @see RangeStructure
+ */
+public enum RangeType {
 
     /**
-     * Indicates that the keys are meant to be the lower bound of a range.
+     * Indicates that the keys are meant to be the lower bound of a range (not included).
+     * <p>
+     * deprecated because using this type in a {@link RangeStructure} results in asymmetrical
+     * behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
+     * {@link RangeStructure#get(Object)} methods. A value that was added by calling
+     * <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
      */
-    KEY_IS_LOWER_BOUND {
+    @Deprecated
+    LOWER_BOUND {
         @Override
         public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
-            return getLowerValueIfNeccessaryOrNull(tree, key);
+            Entry<K, V> floorEntry = tree.floorEntry(key);
+            if (floorEntry == null) {
+                return null;
+            }
+            return getLowerValueIfNeccessary(tree, key, floorEntry);
         }
     },
 
     /**
      * Indicates that the keys are meant to be the lower bound of a range including the lower bound.
      */
-    KEY_IS_LOWER_BOUND_EQUAL {
+    LOWER_BOUND_EQUAL {
 
         @Override
         public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
@@ -41,27 +63,36 @@ public enum KeyType {
     },
 
     /**
-     * Indicates that the keys are meant to be the upper bound of a range.
+     * Indicates that the keys are meant to be the upper bound of a range (not included).
+     * <p>
+     * deprecated because using this type in a {@link RangeStructure} results in asymmetrical
+     * behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
+     * {@link RangeStructure#get(Object)} methods. A value that was added by calling
+     * <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
      */
-    KEY_IS_UPPER_BOUND {
+    @Deprecated
+    UPPER_BOUND {
 
         @Override
         public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
-            return getHigherValueIfNeccessaryOrNull(tree, key);
+            Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
+            if (ceilingEntry == null) {
+                return null;
+            }
+            return getHigherValueIfNeccessary(tree, key, ceilingEntry);
         }
     },
 
     /**
      * Indicates that the keys are meant to be the upper bound of a range including the upper bound.
      */
-    KEY_IS_UPPER_BOUND_EQUAL {
+    UPPER_BOUND_EQUAL {
         @Override
         public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
             return getValueOrNull(ceilingEntry);
         }
-    },
-    ;
+    };
 
     /**
      * Retrieves the matching value from the given map using the given key. The strategy used to
@@ -73,14 +104,6 @@ public enum KeyType {
      */
     public abstract <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key);
 
-    private static <K extends Comparable<K>, V> V getLowerValueIfNeccessaryOrNull(TreeMap<K, V> tree, K key) {
-        Entry<K, V> floorEntry = tree.floorEntry(key);
-        if (floorEntry == null) {
-            return null;
-        }
-        return getLowerValueIfNeccessary(tree, key, floorEntry);
-    }
-
     private static <K extends Comparable<K>, V> V getLowerValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> floorEntry) {
@@ -90,14 +113,6 @@ public enum KeyType {
             Entry<K, V> lowerEntry = tree.lowerEntry(floorEntry.getKey());
             return getValueOrNull(lowerEntry);
         }
-    }
-
-    private static <K extends Comparable<K>, V> V getHigherValueIfNeccessaryOrNull(TreeMap<K, V> tree, K key) {
-        Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
-        if (ceilingEntry == null) {
-            return null;
-        }
-        return getHigherValueIfNeccessary(tree, key, ceilingEntry);
     }
 
     private static <K extends Comparable<K>, V> V getHigherValueIfNeccessary(TreeMap<K, V> tree,

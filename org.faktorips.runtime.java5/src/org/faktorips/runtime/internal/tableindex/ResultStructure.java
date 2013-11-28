@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import java.sql.ResultSet;
 import java.util.Collections;
@@ -19,12 +19,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A {@link ResultStructure} is the final element of a chain of nested {@link Structure structures}.
- * In general it holds a set of results. It also implements the {@link Mergeable} interface to be
- * able to merge two results together.
- * 
+ * {@link ResultStructure ResultStructures} are the leaves in the tree of nested
+ * {@link SearchStructure SearchStructures}. Each {@link ResultStructure} defines a result of a
+ * search and thus holds a set of values. It also implements the {@link Mergeable} interface to be
+ * able to combine the values of two result structures.
  */
-public class ResultStructure<R> extends Structure<R> implements Mergeable<ResultStructure<R>> {
+public class ResultStructure<R> extends SearchStructure<R> implements Mergeable<ResultStructure<R>> {
 
     private final Set<R> resultSet;
 
@@ -63,7 +63,7 @@ public class ResultStructure<R> extends Structure<R> implements Mergeable<Result
     }
 
     @Override
-    public Structure<R> get(Object key) {
+    public SearchStructure<R> get(Object key) {
         return this;
     }
 

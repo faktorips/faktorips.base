@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -19,30 +19,34 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Abstract implementation for all {@link Structure structures} that uses any kind of {@link Map} as
- * data structure. It expects that every nested {@link Structure} implements the {@link Mergeable}
- * interface to be able to merge two structures with the same key.
+ * Abstract implementation for all {@link SearchStructure structures} that map keys to nested
+ * {@link SearchStructure structures} much like a map.
+ * <p>
+ * This class provides a {@link #put(Object, SearchStructure)} method to add nested structures.
+ * Adding multiple structures with the same key will result in those structures being merged. This
+ * makes setting up nested map structures easy.
  * <p>
  * This abstract implementation makes no assumption about the underlying map implementation. The map
- * instance is provided by the subclasses via the constructor. Because the implementation of
- * {@link #get(Object)} depends on the underlying data structure it is not implemented in this
- * abstract class and needs to be implemented in subclasses.
+ * instance is provided by subclasses via the constructor. Thus the {@link #get(Object)} method
+ * implementation must also be provided by subclasses using the chosen data structure.
  * 
- * @param <K> The type of the key in the underlying map - could be restricted in subclasses
- * @param <V> The type of the values in the map. First we need to restrict that only
- *            {@link Structure} elements with the same result type <code>R</code> are allowed.
- *            Second we need to restrict that only implementations of {@link Mergeable} are allowed.
- *            Because we want to implement the {@link Mergeable} interface in this class but the
- *            generic type <code>V</code> will be of subclasses of {@link AbstractMapStructure} we
- *            need to allow that <code>V</code> is an implementation of any {@link Mergeable} that
- *            is implemented in a superclass. (I tried to describe it as easy as possible and do not
- *            want to go in further details)
- * @param <R> The type of the resulting values This type need to be the same in every nested
+ * @param <K> The type of key in the underlying map - can be restricted in subclasses
+ * @param <V> The type of values in the map. Values are nested {@link SearchStructure structures}
+ *            which must:
+ *            <ul>
+ *            <li> have the same result type <code>R</code> as this {@link AbstractMapStructure}
+ *            </li> <li> implement the {@link Mergeable} interface. The class definition enforces
+ *            the implementation of {@link Mergeable} without restricting the type V to a specific
+ *            {@link SearchStructure}. Therefore the mergable type is bound to <code>? super V
+ *            </code>. </li>
+ *            </ul>
+ * 
+ * @param <R> The type of the result values. The result type must be the same in every nested
  *            structure.
  * 
  */
-public abstract class AbstractMapStructure<K, V extends Structure<R> & Mergeable<? super V>, R> extends Structure<R>
-        implements Mergeable<AbstractMapStructure<K, V, R>> {
+public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mergeable<? super V>, R> extends
+        SearchStructure<R> implements Mergeable<AbstractMapStructure<K, V, R>> {
 
     private final Map<K, V> map;
 
@@ -56,10 +60,10 @@ public abstract class AbstractMapStructure<K, V extends Structure<R> & Mergeable
     }
 
     /**
-     * Put a new element in the map. If there is already a value for the given key, the two values
-     * will be merged together. Hence you do not have to worry about overwriting existing values.
+     * Puts a new element in the map. If there is already a value for the given key, the two values
+     * will be merged together. Thus existing values will never be overwritten.
      * 
-     * @param key key with which the specified value is to be associated.
+     * @param key key that maps to the specified value
      * @param value value to be associated with the specified key.
      * @see Map#put(Object, Object)
      * @see #merge(AbstractMapStructure)
@@ -75,8 +79,8 @@ public abstract class AbstractMapStructure<K, V extends Structure<R> & Mergeable
 
     @Override
     public void merge(AbstractMapStructure<K, V, R> otherMap) {
-        Map<K, V> otherTreeMap = otherMap.getMap();
-        for (Entry<K, V> entry : otherTreeMap.entrySet()) {
+        Map<K, V> otherUnderlyingMap = otherMap.getMap();
+        for (Entry<K, V> entry : otherUnderlyingMap.entrySet()) {
             if (getMap().containsKey(entry.getKey())) {
                 V myValue = getMap().get(entry.getKey());
                 V otherValue = entry.getValue();
@@ -102,14 +106,14 @@ public abstract class AbstractMapStructure<K, V extends Structure<R> & Mergeable
     }
 
     /**
-     * Checks whether the given result is <code>null</code> and returns a fallback result (an empty
+     * Checks whether the given result is <code>null</code> and returns a fall-back result (an empty
      * {@link ResultStructure}) in that case.
      * 
      * @param result a valid result or <code>null</code>.
      * @return the given result or an empty {@link ResultStructure} if the given result is
      *         <code>null</code>. Never returns <code>null</code>.
      */
-    protected Structure<R> getValidResult(V result) {
+    protected SearchStructure<R> getValidResult(V result) {
         if (result == null) {
             return ResultStructure.create();
         } else {

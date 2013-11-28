@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -21,6 +21,8 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.faktorips.runtime.internal.tableindex.ResultStructure;
+import org.faktorips.runtime.internal.tableindex.SearchStructure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,14 +36,14 @@ public class ResultStructureTest {
 
     @Test
     public void testGetObject() throws Exception {
-        Structure<Integer> structure = resultStructure.get(1);
+        SearchStructure<Integer> structure = resultStructure.get(1);
 
         assertSame(resultStructure, structure);
     }
 
     @Test
     public void testGetObjectNull() throws Exception {
-        Structure<Integer> structure = resultStructure.get(null);
+        SearchStructure<Integer> structure = resultStructure.get(null);
 
         assertSame(resultStructure, structure);
     }

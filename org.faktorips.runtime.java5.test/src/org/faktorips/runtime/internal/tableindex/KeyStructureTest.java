@@ -11,29 +11,32 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import org.faktorips.runtime.internal.tableindex.KeyStructure;
+import org.faktorips.runtime.internal.tableindex.ResultStructure;
+import org.faktorips.runtime.internal.tableindex.SearchStructure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HashMapStructureTest {
+public class KeyStructureTest {
 
-    private final HashMapStructure<String, ResultStructure<Integer>, Integer> hashMapStructure = HashMapStructure
+    private final KeyStructure<String, ResultStructure<Integer>, Integer> hashMapStructure = KeyStructure
             .create();
 
-    private final HashMapStructure<String, HashMapStructure<String, ResultStructure<Integer>, Integer>, Integer> nestingMapStructure = HashMapStructure
+    private final KeyStructure<String, KeyStructure<String, ResultStructure<Integer>, Integer>, Integer> nestingMapStructure = KeyStructure
             .create();
 
     @Test
     public void testGet_noValue() throws Exception {
-        Structure<Integer> structure = hashMapStructure.get("abc");
+        SearchStructure<Integer> structure = hashMapStructure.get("abc");
 
         assertTrue(structure.get().isEmpty());
     }
@@ -42,7 +45,7 @@ public class HashMapStructureTest {
     public void testGet_oneValue() throws Exception {
         hashMapStructure.put("abc", ResultStructure.createWith(123));
 
-        Structure<Integer> structure = hashMapStructure.get("abc");
+        SearchStructure<Integer> structure = hashMapStructure.get("abc");
 
         assertEquals(123, structure.getUnique().intValue());
     }
@@ -52,7 +55,7 @@ public class HashMapStructureTest {
         hashMapStructure.put("abc", ResultStructure.createWith(123));
         hashMapStructure.put("abc", ResultStructure.createWith(321));
 
-        Structure<Integer> structure = hashMapStructure.get("abc");
+        SearchStructure<Integer> structure = hashMapStructure.get("abc");
 
         assertEquals(2, hashMapStructure.get().size());
         assertThat(hashMapStructure.get(), hasItem(123));
@@ -67,8 +70,8 @@ public class HashMapStructureTest {
         hashMapStructure.put("abc", ResultStructure.createWith(123));
         hashMapStructure.put("xyz", ResultStructure.createWith(123));
 
-        Structure<Integer> structure = hashMapStructure.get("abc");
-        Structure<Integer> structure2 = hashMapStructure.get("xyz");
+        SearchStructure<Integer> structure = hashMapStructure.get("abc");
+        SearchStructure<Integer> structure2 = hashMapStructure.get("xyz");
 
         assertEquals(1, hashMapStructure.get().size());
         assertThat(hashMapStructure.get(), hasItem(123));
@@ -83,8 +86,8 @@ public class HashMapStructureTest {
         hashMapStructure.put("abc", ResultStructure.createWith(123));
         hashMapStructure.put("xyz", ResultStructure.createWith(321));
 
-        Structure<Integer> structure = hashMapStructure.get("abc");
-        Structure<Integer> structure2 = hashMapStructure.get("xyz");
+        SearchStructure<Integer> structure = hashMapStructure.get("abc");
+        SearchStructure<Integer> structure2 = hashMapStructure.get("xyz");
 
         assertEquals(2, hashMapStructure.get().size());
         assertThat(hashMapStructure.get(), hasItem(123));
@@ -97,14 +100,14 @@ public class HashMapStructureTest {
 
     @Test
     public void testPut_nestedStructure() throws Exception {
-        HashMapStructure<String, ResultStructure<Integer>, Integer> nestedMapStructure = HashMapStructure.create();
+        KeyStructure<String, ResultStructure<Integer>, Integer> nestedMapStructure = KeyStructure.create();
         nestedMapStructure.put("abc", ResultStructure.createWith(123));
-        HashMapStructure<String, ResultStructure<Integer>, Integer> nestedMapStructure2 = HashMapStructure.create();
+        KeyStructure<String, ResultStructure<Integer>, Integer> nestedMapStructure2 = KeyStructure.create();
         nestedMapStructure.put("xyz", ResultStructure.createWith(321));
         nestingMapStructure.put("aaa", nestedMapStructure);
         nestingMapStructure.put("aaa", nestedMapStructure2);
 
-        Structure<Integer> resultNestedStructure = nestingMapStructure.get("aaa");
+        SearchStructure<Integer> resultNestedStructure = nestingMapStructure.get("aaa");
 
         assertEquals(2, resultNestedStructure.get().size());
         assertThat(resultNestedStructure.get(), hasItem(123));

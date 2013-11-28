@@ -11,22 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import org.faktorips.runtime.internal.tableindex.ResultStructure;
+import org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TwoColumnTreeStructureTest {
+public class TwoColumnRangeStructureTest {
 
-    private TwoColumnTreeStructure<Integer, ResultStructure<String>, String> structure;
+    private TwoColumnRangeStructure<Integer, ResultStructure<String>, String> structure;
 
     @Before
     public void setUp() {
-        structure = TwoColumnTreeStructure.create();
+        structure = TwoColumnRangeStructure.create();
         structure.put(0, 8, new ResultStructure<String>("A"));
         structure.put(12, 20, new ResultStructure<String>("B"));
     }

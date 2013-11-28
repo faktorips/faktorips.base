@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.faktorips.runtime.internal.tableindex.AbstractMapStructure;
+import org.faktorips.runtime.internal.tableindex.ResultStructure;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

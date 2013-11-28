@@ -53,7 +53,7 @@ public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
         policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(project);
         cmpt = newProductCmpt(productCmptType, "Cmpt");
-        structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Structure");
+        structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "SearchStructure");
 
         content = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Contents");
         structUsage = productCmptType.newTableStructureUsage();

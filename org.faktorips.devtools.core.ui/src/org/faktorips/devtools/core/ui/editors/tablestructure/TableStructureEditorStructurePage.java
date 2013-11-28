@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
 
-    static final String PAGE_ID = "Structure"; //$NON-NLS-1$
+    static final String PAGE_ID = "SearchStructure"; //$NON-NLS-1$
 
     private TableStructureContentsChangeListener contentsChangeListener;
 

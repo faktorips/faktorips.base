@@ -11,34 +11,63 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.indexstructure;
+package org.faktorips.runtime.internal.tableindex;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure<R> & Mergeable<? super V>, R> extends
-        AbstractMapStructure<TwoColumnKey<K>, V, R> {
+/**
+ * A {@link SearchStructure} that maps ranges to nested {@link SearchStructure SearchStructures}. A
+ * {@link TwoColumnRangeStructure} allows for defining ranges by lower and upper bound. Because of
+ * this there might be "gaps" in between ranges, however ranges cannot overlap. There are no
+ * boundless/infinite ranges (in contrast to a {@link RangeStructure}).
+ * <p>
+ * Ranges are setup by putting one or more key-key-value tuples into this structure. The keys are of
+ * a comparable data type (of course, as they define a range). The value is a nested
+ * {@link SearchStructure}. The first key defines the lower bound, the second the upper bound of the
+ * range (which includes the bounds). The value can be retrieved by calling {@link #get(Object)}
+ * with a key inside the defined range.
+ * <p>
+ * Example: In a {@link TwoColumnRangeStructure} by calling <code>put(10, 24, value1)</code> and
+ * <code>put(25, 50, value2)</code>, two ranges are defined. Calls to {@link #get(Object)} with the
+ * keys 10, 24 and all in between will yield value1 as a result. Calls to {@link #get(Object)} with
+ * the keys 25, 50 and all in between will yield value2 respectively. Keys outside these ranges,
+ * e.g. 0 or 100 will return an empty ResultStructure.
+ */
+public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
+        extends AbstractMapStructure<TwoColumnKey<K>, V, R> {
 
-    public TwoColumnTreeStructure() {
+    TwoColumnRangeStructure() {
         super(new TreeMap<TwoColumnKey<K>, V>());
     }
 
-    public static <K extends Comparable<K>, V extends Structure<R> & Mergeable<? super V>, R> TwoColumnTreeStructure<K, V, R> create() {
-        return new TwoColumnTreeStructure<K, V, R>();
+    /**
+     * Creates an empty {@link TwoColumnRangeStructure}.
+     */
+    public static <K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> create() {
+        return new TwoColumnRangeStructure<K, V, R>();
     }
 
     /**
-     * Creates a new {@link TwoColumnTreeStructure} and put the given key value pair.
+     * Creates a new {@link TwoColumnRangeStructure} and adds the given range-value pair.
      */
-    public static <K extends Comparable<K>, V extends Structure<R> & Mergeable<? super V>, R> TwoColumnTreeStructure<K, V, R> createWith(K lowerBound,
+    public static <K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> createWith(K lowerBound,
             K upperBound,
             V value) {
-        TwoColumnTreeStructure<K, V, R> structure = new TwoColumnTreeStructure<K, V, R>();
+        TwoColumnRangeStructure<K, V, R> structure = new TwoColumnRangeStructure<K, V, R>();
         structure.put(lowerBound, upperBound, value);
         return structure;
     }
 
+    /**
+     * Defines a range that maps to the given value. The keys define the upper and lower bound of
+     * the range.
+     * 
+     * @param lower the lower bound of the range (included)
+     * @param upper the upper bound of the range (included)
+     * @param value the nested {@link SearchStructure} to be added
+     */
     public void put(K lower, K upper, V value) {
         super.put(new TwoColumnKey<K>(lower, upper), value);
     }
@@ -49,7 +78,7 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
     }
 
     @Override
-    public Structure<R> get(Object key) {
+    public SearchStructure<R> get(Object key) {
         TwoColumnKey<K> twoColumnKey = createTwoColumnKey(key);
         V result = getMatchingValue(twoColumnKey);
         return getValidResult(result);
@@ -63,8 +92,8 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
     }
 
     /**
-     * Returns value mapped by the given TwoColumnKey/range or <code>null</code> no matching value
-     * can be found.
+     * Returns the value mapped by the given TwoColumnKey/range or <code>null</code> if no matching
+     * value can be found.
      * <p>
      * A simple get on the tree map might not yield the correct result (if any at all). This is due
      * to the fact that {@link TwoColumnKey}'s hashCode() considers only the lowerBound. Thus you
@@ -75,8 +104,8 @@ public class TwoColumnTreeStructure<K extends Comparable<K>, V extends Structure
      * This method uses the {@link TreeMap#floorEntry(Object)} method to retrieve the entry holding
      * the value for the next lower key. For example: the map contains key (10-20); Asking for
      * (15-15) will find the entry for (10-20) as it is the one with the next lower bound. Asking
-     * for (15-25) will yield <code>null</code> however as the requested range does no fully overlap
-     * with the range defined by the {@link TreeMap}.
+     * for (15-25) will yield <code>null</code> however as the requested range does not fully
+     * overlap with the range defined by the {@link TreeMap}.
      */
     private V getMatchingValue(TwoColumnKey<K> twoColumnKey) {
         Entry<TwoColumnKey<K>, V> floorEntry = getMap().floorEntry(twoColumnKey);

@@ -95,7 +95,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
 
         assertEquals(
-                "org.faktorips.runtime.internal.indexstructure.HashMapStructure<MyKeyClass, org.faktorips.runtime.internal.indexstructure.ResultStructure<MyRow>, MyRow>",
+                "org.faktorips.runtime.internal.tableindex.KeyStructure<MyKeyClass, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
                 keyStructureFieldClass);
     }
 
@@ -112,7 +112,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
 
         assertEquals(
-                "org.faktorips.runtime.internal.indexstructure.TreeStructure<java.lang.Integer, org.faktorips.runtime.internal.indexstructure.ResultStructure<MyRow>, MyRow>",
+                "org.faktorips.runtime.internal.tableindex.RangeStructure<java.lang.Integer, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
                 keyStructureFieldClass);
     }
 
@@ -129,7 +129,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
 
         assertEquals(
-                "org.faktorips.runtime.internal.indexstructure.TreeStructure<java.lang.Integer, org.faktorips.runtime.internal.indexstructure.ResultStructure<MyRow>, MyRow>",
+                "org.faktorips.runtime.internal.tableindex.RangeStructure<java.lang.Integer, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
                 keyStructureFieldClass);
     }
 
@@ -146,7 +146,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
 
         assertEquals(
-                "org.faktorips.runtime.internal.indexstructure.TwoColumnTreeStructure<java.lang.Integer, org.faktorips.runtime.internal.indexstructure.ResultStructure<MyRow>, MyRow>",
+                "org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure<java.lang.Integer, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
                 keyStructureFieldClass);
     }
 
@@ -176,7 +176,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
 
         assertEquals(
-                "org.faktorips.runtime.internal.indexstructure.HashMapStructure<MyKeyClass, org.faktorips.runtime.internal.indexstructure.TwoColumnTreeStructure<java.lang.String, org.faktorips.runtime.internal.indexstructure.TreeStructure<org.faktorips.values.Money, org.faktorips.runtime.internal.indexstructure.ResultStructure<MyRow>, MyRow>, MyRow>, MyRow>",
+                "org.faktorips.runtime.internal.tableindex.KeyStructure<MyKeyClass, org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure<java.lang.String, org.faktorips.runtime.internal.tableindex.RangeStructure<org.faktorips.values.Money, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>, MyRow>, MyRow>",
                 keyStructureFieldClass);
     }
 
