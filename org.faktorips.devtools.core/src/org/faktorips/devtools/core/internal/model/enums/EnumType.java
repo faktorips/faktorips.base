@@ -477,7 +477,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         // Validate possible obsolete enumeration values.
         if (getEnumValuesCount() > 0) {
-            if (!containingValues || isAbstract) {
+            if (isAbstract) {
                 String text = Messages.EnumType_EnumValuesObsolete;
                 Message validationMessage = new Message(MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE, text, Message.WARNING,
                         this);
@@ -529,7 +529,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
         // Pass validation if the EnumType is abstract or does not contain values.
-        if (isAbstract || !isContainingValues()) {
+        if (isAbstract || !isContainingValues() || !isExtensible()) {
             return;
         }
 
@@ -948,7 +948,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     @Override
     public boolean isCapableOfContainingValues() {
-        return !isAbstract && containingValues;
+        return !isAbstract;
     }
 
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierarchyVisitor {

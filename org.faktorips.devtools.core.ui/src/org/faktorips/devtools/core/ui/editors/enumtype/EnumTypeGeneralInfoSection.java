@@ -62,6 +62,12 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
+    /** The RefControl for supertype. */
+    private EnumTypeRefControl supertypeRefControl;
+
+    /** The UI check box for the <tt>abstract</tt> property. */
+    private Button isAbstractCheckbox;
+
     /** The UI check box for the <tt>extensible</tt> property. */
     private Button extensibleCheckbox;
 
@@ -109,22 +115,16 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             }
         });
 
-        EnumTypeRefControl supertypeRefControl = createSupertypeRefControl(toolkit, composite);
-
-        Button isAbstractCheckbox = createIsAbstractCheckbox(toolkit, composite);
-
+        createSupertypeRefControl(toolkit, composite);
+        createIsAbstractCheckbox(toolkit, composite);
         createExtensibleCheckbox(toolkit, composite);
-
         createEnumContentNameControl(toolkit, composite);
-
-        registerFocusHandling(supertypeRefControl, isAbstractCheckbox);
-
+        registerFocusHandling();
         createExtensionControl(toolkit, composite);
     }
 
     private EnumTypeRefControl createSupertypeRefControl(UIToolkit toolkit, Composite composite) {
-        EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
-                true);
+        supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite, true);
         supertypeRefControl.setCurrentEnumType(enumType);
         getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
         return supertypeRefControl;
@@ -132,7 +132,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private Button createIsAbstractCheckbox(UIToolkit toolkit, Composite composite) {
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
-        Button isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
         getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
         return isAbstractCheckbox;
     }
@@ -154,7 +154,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
     }
 
-    private void registerFocusHandling(EnumTypeRefControl supertypeRefControl, Button isAbstractCheckbox) {
+    private void registerFocusHandling() {
         addFocusControl(supertypeRefControl);
         addFocusControl(isAbstractCheckbox);
         addFocusControl(extensibleCheckbox);
@@ -211,7 +211,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     }
 
     private void wholeContentChanged() {
-        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
     }
@@ -221,6 +220,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         super.refresh();
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
+
     }
 
 }

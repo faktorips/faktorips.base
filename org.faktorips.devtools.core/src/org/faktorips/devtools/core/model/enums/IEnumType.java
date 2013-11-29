@@ -147,7 +147,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Validation message code to indicate that the <tt>IEnumType</tt> stores <tt>IEnumValue</tt>s
-     * even tough it delegates the values or is abstract.
+     * even tough it is abstract.
      */
     public static final String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
 
