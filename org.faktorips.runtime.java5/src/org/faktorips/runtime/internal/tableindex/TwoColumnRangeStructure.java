@@ -79,9 +79,13 @@ public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchSt
 
     @Override
     public SearchStructure<R> get(Object key) {
-        TwoColumnKey<K> twoColumnKey = createTwoColumnKey(key);
-        V result = getMatchingValue(twoColumnKey);
-        return getValidResult(result);
+        if (key == null) {
+            return createEmptyResult();
+        } else {
+            TwoColumnKey<K> twoColumnKey = createTwoColumnKey(key);
+            V result = getMatchingValue(twoColumnKey);
+            return getValidResult(result);
+        }
     }
 
     private TwoColumnKey<K> createTwoColumnKey(Object key) {

@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.faktorips.runtime.internal.tableindex.AbstractMapStructure;
-import org.faktorips.runtime.internal.tableindex.ResultStructure;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -58,6 +58,7 @@ import org.faktorips.runtime.internal.tableindex.RangeType;
 import org.faktorips.runtime.internal.tableindex.ResultStructure;
 import org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * Important: This builder expects from the <code>IJavaPackageStructure</code> the qualified class
@@ -583,30 +584,30 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private JavaCodeFragment createInitKeyMapsVariables(IIndex index) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         IndexCodePart indexCodePart = indexCodeParts.get(index);
-        methodBody.append(indexCodePart.keyStructureFieldName);
+        methodBody.append(indexCodePart.keyStructureFieldName).append(" = ");
         IKeyItem keyItem = index.getKeyItemAt(0);
         appendCreateStructure(keyItem, methodBody);
+        methodBody.appendln(';');
         return methodBody;
     }
 
     private void createForLoop(List<IIndex> keys, JavaCodeFragment methodBody) {
-        methodBody.append("for (").append(qualifiedTableRowName).append(" row : rows)");
+        methodBody.append("for (").appendClassName(qualifiedTableRowName).append(" row : rows)");
         methodBody.appendOpenBracket();
         createForLoopBody(keys, methodBody);
         methodBody.appendCloseBracket();
     }
 
     private void createForLoopBody(List<IIndex> keys, JavaCodeFragment methodBody) {
-        methodBody.appendClassName(ResultStructure.class).append('<').appendClassName(qualifiedTableRowName)
-                .append('>');
-        methodBody.append(" result");
-        appendCreateStructure(null, methodBody, "row");
+        JavaCodeFragment resultStructureCode = new JavaCodeFragment();
+        appendCreateStructure(null, resultStructureCode, "row");
+        methodBody.getImportDeclaration().add(resultStructureCode.getImportDeclaration());
         int i = 0;
         for (IIndex index : keys) {
             IndexCodePart indexCodePart = indexCodeParts.get(index);
             List<IKeyItem> keyItemList = Arrays.asList(index.getKeyItems());
             ArrayList<IKeyItem> processedKeys = new ArrayList<IKeyItem>();
-            String previousStructure = "result";
+            String previousStructure = resultStructureCode.getSourcecode();
             for (ListIterator<IKeyItem> iterator = keyItemList.listIterator(keyItemList.size()); iterator.hasPrevious();) {
                 IKeyItem keyItem = iterator.previous();
                 processedKeys.add(0, keyItem);
@@ -616,8 +617,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                             indexCodePart.indexClassName);
                     methodBody.appendClassName(keyStructureFieldClass).append(" ");
                     previousStructure = ((IColumnRange)keyItem).getParameterName() + "SearchStructure" + i;
-                    methodBody.append(previousStructure);
+                    methodBody.append(previousStructure).append(" = ");
                     appendCreateStructure(keyItem, methodBody, putParameter);
+                    methodBody.appendln(';');
                 } else {
                     previousStructure = indexCodePart.keyStructureFieldName;
                     methodBody.appendClassName(previousStructure).append(".put(");
@@ -655,7 +657,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void appendCreateStructure(IKeyItem keyItem, JavaCodeFragment methodBody, String... createArguments) {
-        methodBody.append(" = ").appendClassName(getStructureType(keyItem));
+        methodBody.appendClassName(getStructureType(keyItem));
         if (createArguments.length > 0) {
             methodBody.append(".createWith(");
         } else {
@@ -679,7 +681,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             addColon = true;
             methodBody.append(argument);
         }
-        methodBody.appendln(");");
+        methodBody.append(")");
     }
 
     private List<String> createInitKeyMapsKeyClassParameters(List<String> keyClassParameterNames) {
@@ -781,8 +783,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             } else {
                 first = false;
             }
+            methodBody.appendClassName(ObjectUtil.class).append(".equals(");
             methodBody.append(keyClassParameterName);
-            methodBody.append(".equals(other.");
+            methodBody.append(", other.");
             methodBody.append(keyClassParameterName);
             methodBody.append(")");
         }
@@ -812,7 +815,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private void createFindMethodRegular(String methodNameSuffix, IIndex index, JavaCodeFragmentBuilder codeBuilder)
             throws CoreException {
         IndexCodePart indexCodePart = indexCodeParts.get(index);
-        String methodName = getMethodNameFindRow(methodNameSuffix);
+        String methodName = getMethodNameFindRow(methodNameSuffix, index.isUniqueKey());
         JavaCodeFragment methodBody = createFindMethodBody(methodName, index, "null");
         String javaDoc = getLocalizedText(getIpsObject(), FIND_JAVADOC);
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index), methodName,
@@ -820,8 +823,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 javaDoc, ANNOTATION_GENERATED);
     }
 
-    private String getMethodNameFindRow(String methodNameSuffix) {
-        return METHOD_NAME_FIND_ROW + methodNameSuffix;
+    private String getMethodNameFindRow(String methodNameSuffix, boolean unique) {
+        return METHOD_NAME_FIND_ROW + (unique ? "" : "s") + methodNameSuffix;
     }
 
     private void createFindMethodWithNullValueRow(String methodNameSuffix,
@@ -1058,7 +1061,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         /**
          * The suffix of the find method. The method name for the finder methods are provided by the
-         * methods {@link TableImplBuilder#getMethodNameFindRow(String)}
+         * methods {@link TableImplBuilder#getMethodNameFindRow(String, boolean)}
          * {@link TableImplBuilder#getMethodNameFindExistingRow(String)} and
          * {@link TableImplBuilder#getMethodNameFindRowNullRowReturned(String)}. This suffix is
          * provided to the methods. It is only filled if there are two keys with the same datatypes

@@ -38,16 +38,17 @@ public class RangeStructureTest {
     @Test
     public void testGet_KeyTypeLowerBoundEqual() {
         createStructure(RangeType.LOWER_BOUND_EQUAL);
-        setForKeyWayOutOfLowerBound(isEmpty());
-        setForKeyLessThanSmallestLowerBound(isEmpty());
-        setForKeyExactSmallestLowerBound(hasItem("A"));
-        setForKeyGreaterThanSmallestLowerBound(hasItem("A"));
-        setForKeyInRange1(hasItem("A"));
-        setForKeyInRange2(hasItem("B"));
-        setForKeyLessThanGreatestUpperBound(hasItem("B"));
-        setForKeyExactGreatestUpperBound(hasItem("C"));
-        setForKeyGreaterThanGreatestUpperBound(hasItem("C"));
-        setForKeyWayOutOfUpperBound(hasItem("C"));
+        resultSetForKeyWayOutOfLowerBound(isEmpty());
+        resultSetForKeyLessThanSmallestLowerBound(isEmpty());
+        resultSetForKeyExactSmallestLowerBound(hasItem("A"));
+        resultSetForKeyGreaterThanSmallestLowerBound(hasItem("A"));
+        resultSetForKeyInRange1(hasItem("A"));
+        resultSetForKeyInRange2(hasItem("B"));
+        resultSetForKeyLessThanGreatestUpperBound(hasItem("B"));
+        resultSetForKeyExactGreatestUpperBound(hasItem("C"));
+        resultSetForKeyGreaterThanGreatestUpperBound(hasItem("C"));
+        resultSetForKeyWayOutOfUpperBound(hasItem("C"));
+        resultSetForKeyNull(isEmpty());
     }
 
     @SuppressWarnings("deprecation")
@@ -58,31 +59,33 @@ public class RangeStructureTest {
     @Test
     public void testGet_KeyTypeLowerBound() {
         createStructure(RangeType.LOWER_BOUND);
-        setForKeyWayOutOfLowerBound(isEmpty());
-        setForKeyLessThanSmallestLowerBound(isEmpty());
-        setForKeyExactSmallestLowerBound(isEmpty());
-        setForKeyGreaterThanSmallestLowerBound(hasItem("A"));
-        setForKeyInRange1(hasItem("A"));
-        setForKeyInRange2(hasItem("B"));
-        setForKeyLessThanGreatestUpperBound(hasItem("B"));
-        setForKeyExactGreatestUpperBound(hasItem("B"));
-        setForKeyGreaterThanGreatestUpperBound(hasItem("C"));
-        setForKeyWayOutOfUpperBound(hasItem("C"));
+        resultSetForKeyWayOutOfLowerBound(isEmpty());
+        resultSetForKeyLessThanSmallestLowerBound(isEmpty());
+        resultSetForKeyExactSmallestLowerBound(isEmpty());
+        resultSetForKeyGreaterThanSmallestLowerBound(hasItem("A"));
+        resultSetForKeyInRange1(hasItem("A"));
+        resultSetForKeyInRange2(hasItem("B"));
+        resultSetForKeyLessThanGreatestUpperBound(hasItem("B"));
+        resultSetForKeyExactGreatestUpperBound(hasItem("B"));
+        resultSetForKeyGreaterThanGreatestUpperBound(hasItem("C"));
+        resultSetForKeyWayOutOfUpperBound(hasItem("C"));
+        resultSetForKeyNull(isEmpty());
     }
 
     @Test
     public void testGet_KeyTypeUpperBoundEqual() {
         createStructure(RangeType.UPPER_BOUND_EQUAL);
-        setForKeyWayOutOfLowerBound(hasItem("A"));
-        setForKeyLessThanSmallestLowerBound(hasItem("A"));
-        setForKeyExactSmallestLowerBound(hasItem("A"));
-        setForKeyGreaterThanSmallestLowerBound(hasItem("B"));
-        setForKeyInRange1(hasItem("B"));
-        setForKeyInRange2(hasItem("C"));
-        setForKeyLessThanGreatestUpperBound(hasItem("C"));
-        setForKeyExactGreatestUpperBound(hasItem("C"));
-        setForKeyGreaterThanGreatestUpperBound(isEmpty());
-        setForKeyWayOutOfUpperBound(isEmpty());
+        resultSetForKeyWayOutOfLowerBound(hasItem("A"));
+        resultSetForKeyLessThanSmallestLowerBound(hasItem("A"));
+        resultSetForKeyExactSmallestLowerBound(hasItem("A"));
+        resultSetForKeyGreaterThanSmallestLowerBound(hasItem("B"));
+        resultSetForKeyInRange1(hasItem("B"));
+        resultSetForKeyInRange2(hasItem("C"));
+        resultSetForKeyLessThanGreatestUpperBound(hasItem("C"));
+        resultSetForKeyExactGreatestUpperBound(hasItem("C"));
+        resultSetForKeyGreaterThanGreatestUpperBound(isEmpty());
+        resultSetForKeyWayOutOfUpperBound(isEmpty());
+        resultSetForKeyNull(isEmpty());
     }
 
     @SuppressWarnings("deprecation")
@@ -93,16 +96,17 @@ public class RangeStructureTest {
     @Test
     public void testGet_KeyTypeUpperBound() {
         createStructure(RangeType.UPPER_BOUND);
-        setForKeyWayOutOfLowerBound(hasItem("A"));
-        setForKeyLessThanSmallestLowerBound(hasItem("A"));
-        setForKeyExactSmallestLowerBound(hasItem("B"));
-        setForKeyGreaterThanSmallestLowerBound(hasItem("B"));
-        setForKeyInRange1(hasItem("B"));
-        setForKeyInRange2(hasItem("C"));
-        setForKeyLessThanGreatestUpperBound(hasItem("C"));
-        setForKeyExactGreatestUpperBound(isEmpty());
-        setForKeyGreaterThanGreatestUpperBound(isEmpty());
-        setForKeyWayOutOfUpperBound(isEmpty());
+        resultSetForKeyWayOutOfLowerBound(hasItem("A"));
+        resultSetForKeyLessThanSmallestLowerBound(hasItem("A"));
+        resultSetForKeyExactSmallestLowerBound(hasItem("B"));
+        resultSetForKeyGreaterThanSmallestLowerBound(hasItem("B"));
+        resultSetForKeyInRange1(hasItem("B"));
+        resultSetForKeyInRange2(hasItem("C"));
+        resultSetForKeyLessThanGreatestUpperBound(hasItem("C"));
+        resultSetForKeyExactGreatestUpperBound(isEmpty());
+        resultSetForKeyGreaterThanGreatestUpperBound(isEmpty());
+        resultSetForKeyWayOutOfUpperBound(isEmpty());
+        resultSetForKeyNull(isEmpty());
     }
 
     private void createStructure(RangeType keyType) {
@@ -112,44 +116,48 @@ public class RangeStructureTest {
         structure.put(10, new ResultStructure<String>("C"));
     }
 
-    public void setForKeyWayOutOfLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyWayOutOfLowerBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(-100).get(), matcher);
     }
 
-    public void setForKeyLessThanSmallestLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyLessThanSmallestLowerBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(-6).get(), matcher);
     }
 
-    public void setForKeyExactSmallestLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyExactSmallestLowerBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(-5).get(), matcher);
     }
 
-    public void setForKeyGreaterThanSmallestLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyGreaterThanSmallestLowerBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(-4).get(), matcher);
     }
 
-    public void setForKeyInRange1(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyInRange1(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(0).get(), matcher);
     }
 
-    public void setForKeyInRange2(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyInRange2(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(5).get(), matcher);
     }
 
-    public void setForKeyLessThanGreatestUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyLessThanGreatestUpperBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(9).get(), matcher);
     }
 
-    public void setForKeyExactGreatestUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyExactGreatestUpperBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(10).get(), matcher);
     }
 
-    public void setForKeyGreaterThanGreatestUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyGreaterThanGreatestUpperBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(11).get(), matcher);
     }
 
-    public void setForKeyWayOutOfUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyWayOutOfUpperBound(Matcher<Iterable<String>> matcher) {
         assertThat(structure.get(100).get(), matcher);
+    }
+
+    public void resultSetForKeyNull(Matcher<Iterable<String>> matcher) {
+        assertThat(structure.get(null).get(), matcher);
     }
 
     private Matcher<Iterable<String>> isEmpty() {

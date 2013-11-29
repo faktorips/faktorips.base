@@ -115,10 +115,17 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
      */
     protected SearchStructure<R> getValidResult(V result) {
         if (result == null) {
-            return ResultStructure.create();
+            return createEmptyResult();
         } else {
             return result;
         }
+    }
+
+    /**
+     * Simply creates an empty result structure.
+     */
+    protected ResultStructure<R> createEmptyResult() {
+        return ResultStructure.create();
     }
 
 }

@@ -14,15 +14,15 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.tableindex.SearchStructure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -33,7 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class SearchStructureTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private SearchStructure<?> structure;
+    private SearchStructure<Object> structure;
 
     @Test
     public void testGetUnique_getOne() throws Exception {
@@ -46,25 +46,50 @@ public class SearchStructureTest {
     }
 
     @Test
+    public void testGetUniqueWithDefault_getOne() throws Exception {
+        Object expectedObject = mock(Object.class);
+        setUpResultSet(expectedObject);
+
+        Object unique = structure.getUnique(null);
+
+        assertEquals(expectedObject, unique);
+    }
+
+    @Test(expected = NoSuchElementException.class)
     public void testGetUnique_getNone() throws Exception {
         setUpResultSet();
 
-        Object unique = structure.getUnique();
-
-        assertNull(unique);
+        structure.getUnique();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = AssertionError.class)
     public void testGetUnique_getNonUnique() throws Exception {
         setUpResultSet(mock(Object.class), mock(Object.class));
 
         structure.getUnique();
     }
 
+    @Test(expected = AssertionError.class)
+    public void testGetUniqueWithDefault_getNonUnique() throws Exception {
+        setUpResultSet(mock(Object.class), mock(Object.class));
+
+        structure.getUnique(null);
+    }
+
     private void setUpResultSet(Object... expectedObject) {
         Set<Object> resultSet = new HashSet<Object>();
         resultSet.addAll(Arrays.asList(expectedObject));
         doReturn(resultSet).when(structure).get();
+    }
+
+    @Test
+    public void testGetUniqueWithDefault_getNone() throws Exception {
+        setUpResultSet();
+        Object defaultValue = mock(Object.class);
+
+        Object actual = structure.getUnique(defaultValue);
+
+        assertSame(defaultValue, actual);
     }
 
 }

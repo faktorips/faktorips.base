@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
-import org.faktorips.runtime.internal.tableindex.ResultStructure;
-import org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,9 +70,9 @@ public class TwoColumnRangeStructureTest {
         assertEquals(0, structure.get(-123).get().size());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testGet_Null() {
-        structure.get(null);
+        assertEquals(0, structure.get(null).get().size());
     }
 
 }

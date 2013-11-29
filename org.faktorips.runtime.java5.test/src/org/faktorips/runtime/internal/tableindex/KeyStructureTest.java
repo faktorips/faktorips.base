@@ -18,9 +18,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
-import org.faktorips.runtime.internal.tableindex.KeyStructure;
-import org.faktorips.runtime.internal.tableindex.ResultStructure;
-import org.faktorips.runtime.internal.tableindex.SearchStructure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -28,8 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class KeyStructureTest {
 
-    private final KeyStructure<String, ResultStructure<Integer>, Integer> hashMapStructure = KeyStructure
-            .create();
+    private final KeyStructure<String, ResultStructure<Integer>, Integer> hashMapStructure = KeyStructure.create();
 
     private final KeyStructure<String, KeyStructure<String, ResultStructure<Integer>, Integer>, Integer> nestingMapStructure = KeyStructure
             .create();
@@ -37,6 +33,13 @@ public class KeyStructureTest {
     @Test
     public void testGet_noValue() throws Exception {
         SearchStructure<Integer> structure = hashMapStructure.get("abc");
+
+        assertTrue(structure.get().isEmpty());
+    }
+
+    @Test
+    public void testGet_null() throws Exception {
+        SearchStructure<Integer> structure = hashMapStructure.get(null);
 
         assertTrue(structure.get().isEmpty());
     }

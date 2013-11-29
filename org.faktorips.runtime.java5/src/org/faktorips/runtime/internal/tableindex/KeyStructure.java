@@ -48,8 +48,11 @@ public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>
 
     @Override
     public SearchStructure<R> get(Object key) {
-        V result = getMap().get(key);
-        return getValidResult(result);
+        if (key == null) {
+            return createEmptyResult();
+        } else {
+            V result = getMap().get(key);
+            return getValidResult(result);
+        }
     }
-
 }

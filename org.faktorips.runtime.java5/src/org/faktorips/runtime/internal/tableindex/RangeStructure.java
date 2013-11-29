@@ -75,10 +75,14 @@ public class RangeStructure<K extends Comparable<K>, V extends SearchStructure<R
 
     @Override
     public SearchStructure<R> get(Object key) {
-        @SuppressWarnings("unchecked")
-        K kKey = (K)key;
-        V result = rangeType.getValue(getMap(), kKey);
-        return getValidResult(result);
+        if (key == null) {
+            return createEmptyResult();
+        } else {
+            @SuppressWarnings("unchecked")
+            K kKey = (K)key;
+            V result = rangeType.getValue(getMap(), kKey);
+            return getValidResult(result);
+        }
     }
 
     @Override
