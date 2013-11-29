@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.wizards.enumtype;
 
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -67,7 +68,7 @@ public class EnumTypePage extends IpsObjectPage {
      * The check box field to mark the new <tt>IEnumType</tt> that its values are defined in the
      * model.
      */
-    private CheckboxField isExtensibleField;
+    private CheckboxField extensibleField;
 
     /** The check box field to check if an id attribute should be created by the wizard. */
     private CheckboxField createIdAttributeField;
@@ -86,6 +87,9 @@ public class EnumTypePage extends IpsObjectPage {
      * values are not part of the model and the <tt>IEnumType</tt> is not abstract).
      */
     private TextField enumContentQualifiedNameField;
+
+    /** Representing the empty String "". */
+    String emptyString = StringUtils.EMPTY;
 
     /**
      * Creates the <tt>EnumTypePage</tt>.
@@ -108,7 +112,7 @@ public class EnumTypePage extends IpsObjectPage {
         supertypeField.addChangeListener(this);
 
         // Create abstract field.
-        toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
+        toolkit.createLabel(nameComposite, emptyString);
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
         isAbstractField.addChangeListener(new ValueChangeListener() {
@@ -126,7 +130,7 @@ public class EnumTypePage extends IpsObjectPage {
      * and a name attribute.
      */
     private void createIdAndNameGenerationFields(Composite nameComposite, UIToolkit uiToolkit) {
-        uiToolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
+        uiToolkit.createLabel(nameComposite, emptyString);
         Composite createFieldsContainer = uiToolkit.createGridComposite(nameComposite, 2, false, false);
 
         // Create id attribute.
@@ -159,7 +163,7 @@ public class EnumTypePage extends IpsObjectPage {
         supertypeField.addChangeListener(new ValueChangeListener() {
             @Override
             public void valueChanged(FieldValueChangedEvent e) {
-                boolean enabled = "".equals(supertypeField.getText()); //$NON-NLS-1$
+                boolean enabled = emptyString.equals(supertypeField.getText());
                 createIdAttributeField.getCheckbox().setEnabled(enabled);
                 createNameAttributeField.getCheckbox().setEnabled(enabled);
                 idAttributeNameField.setEnabled(enabled);
@@ -176,7 +180,7 @@ public class EnumTypePage extends IpsObjectPage {
      */
     private void enableEnumContentControls() {
         boolean isAbstract = isAbstractField.getValue();
-        boolean isExtensible = isExtensibleField.getValue();
+        boolean isExtensible = extensibleField.getValue();
         if (isAbstract) {
             enumContentQualifiedNameField.getTextControl().setEnabled(false);
         } else {
@@ -196,15 +200,15 @@ public class EnumTypePage extends IpsObjectPage {
         additionalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // Values are part of model.
-        isExtensibleField = new CheckboxField(toolkit.createCheckbox(additionalComposite,
+        extensibleField = new CheckboxField(toolkit.createCheckbox(additionalComposite,
                 Messages.Fields_ExtensibleContent));
         GridData data = new GridData();
         data.verticalAlignment = GridData.BEGINNING;
-        isExtensibleField.getControl().setLayoutData(data);
+        extensibleField.getControl().setLayoutData(data);
 
-        isExtensibleField.setValue(false);
-        isExtensibleField.addChangeListener(this);
-        isExtensibleField.addChangeListener(new ValueChangeListener() {
+        extensibleField.setValue(false);
+        extensibleField.addChangeListener(this);
+        extensibleField.addChangeListener(new ValueChangeListener() {
             @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 enableEnumContentControls();
@@ -235,17 +239,17 @@ public class EnumTypePage extends IpsObjectPage {
      */
     private void updateEnumContentName() {
         // Do only if the check box is not active yet to not destroy any user input.
-        if (isExtensibleField.getCheckbox().isChecked()) {
+        if (extensibleField.getCheckbox().isChecked()) {
             return;
         }
 
         String pack = getPackage();
         String name = getIpsObjectName();
-        String point = ""; //$NON-NLS-1$
+        String point = emptyString;
         if (pack.length() > 0 && name.length() > 0) {
             point = "."; //$NON-NLS-1$
         } else {
-            pack = ""; //$NON-NLS-1$
+            pack = emptyString;
         }
         enumContentQualifiedNameField.setText(pack + point + name);
     }
@@ -269,7 +273,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Set properties.
         newEnumType.setAbstract(isAbstractField.getValue());
-        newEnumType.setContainingValues(isExtensibleField.getValue().booleanValue());
+        newEnumType.setContainingValues(extensibleField.getValue().booleanValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
         newEnumType.setEnumContentName(enumContentQualifiedNameField.getText());
 
@@ -280,7 +284,7 @@ public class EnumTypePage extends IpsObjectPage {
          * Create id attribute and name attribute if checked and possible (no supertype must be
          * specified).
          */
-        if ("".equals(supertypeField.getText())) { //$NON-NLS-1$
+        if (emptyString.equals(supertypeField.getText())) {
             if (createIdAttributeField.getCheckbox().isChecked()) {
                 IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
                 idAttribute.setName(idAttributeNameField.getText());
@@ -297,7 +301,7 @@ public class EnumTypePage extends IpsObjectPage {
             }
         }
 
-        // Create literal name attribute if not abstract and containing values.
+        // Create literal name attribute if not abstract.
         if (!((Boolean)isAbstractField.getValue())) {
             IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
             IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
@@ -318,13 +322,13 @@ public class EnumTypePage extends IpsObjectPage {
         // Validate super enumeration type.
         String superTypeFieldText = supertypeField.getText();
         ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
-        if (!("".equals(superTypeFieldText)) && ipsProject != null) { //$NON-NLS-1$
+        if (!(emptyString.equals(superTypeFieldText)) && ipsProject != null) {
             EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
         }
 
         // Validate qualified enumeration content name.
         EnumTypeValidations.validateEnumContentName(validationMessages, null, isAbstractField.getValue(),
-                isExtensibleField.getCheckbox().isChecked(), enumContentQualifiedNameField.getText());
+                extensibleField.getCheckbox().isChecked(), enumContentQualifiedNameField.getText());
 
         // Display the first error message if any.
         if (validationMessages.size() > 0) {
