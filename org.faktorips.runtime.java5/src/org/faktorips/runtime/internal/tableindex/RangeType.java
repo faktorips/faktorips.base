@@ -33,10 +33,11 @@ public enum RangeType {
     /**
      * Indicates that the keys are meant to be the lower bound of a range (not included).
      * <p>
-     * deprecated because using this type in a {@link RangeStructure} results in asymmetrical
-     * behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
-     * {@link RangeStructure#get(Object)} methods. A value that was added by calling
-     * <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
+     * 
+     * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
+     *             behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
+     *             {@link RangeStructure#get(Object)} methods. A value that was added by calling
+     *             <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
      */
     @Deprecated
     LOWER_BOUND {
@@ -65,10 +66,11 @@ public enum RangeType {
     /**
      * Indicates that the keys are meant to be the upper bound of a range (not included).
      * <p>
-     * deprecated because using this type in a {@link RangeStructure} results in asymmetrical
-     * behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
-     * {@link RangeStructure#get(Object)} methods. A value that was added by calling
-     * <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
+     * 
+     * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
+     *             behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
+     *             {@link RangeStructure#get(Object)} methods. A value that was added by calling
+     *             <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
      */
     @Deprecated
     UPPER_BOUND {

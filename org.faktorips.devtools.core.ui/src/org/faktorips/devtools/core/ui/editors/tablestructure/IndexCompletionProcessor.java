@@ -19,8 +19,8 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -48,10 +48,10 @@ public class IndexCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
-            throws Exception {
+    protected void doComputeCompletionProposals(final String prefix,
+            int documentOffset,
+            List<ICompletionProposal> result) throws Exception {
 
-        prefix = prefix.toLowerCase();
         if (tableStructure == null) {
             return;
         }

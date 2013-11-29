@@ -13,12 +13,18 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
-import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
-import static org.junit.matchers.JUnitMatchers.hasItems;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
@@ -160,7 +166,43 @@ public class RangeStructureTest {
         assertThat(structure.get(null).get(), matcher);
     }
 
-    private Matcher<Iterable<String>> isEmpty() {
-        return not(hasItems(anyString()));
+    private static Matcher<Iterable<String>> isEmpty() {
+        return new IsEmpty<String>();
     }
+
+    private static class IsEmpty<T> extends BaseMatcher<Iterable<T>> {
+
+        @Override
+        public boolean matches(Object item) {
+            if (item instanceof Set) {
+                Iterable<?> iterable = (Iterable<?>)item;
+                return !iterable.iterator().hasNext();
+            }
+            return false;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("an empty Iterable");
+        }
+    }
+
+    @Test
+    public void testIsEmptyMatcher() {
+        Set<String> set = new HashSet<String>();
+        IsEmpty<String> matcher = new IsEmpty<String>();
+        assertTrue(matcher.matches(set));
+
+        set.add("String");
+        assertFalse(matcher.matches(set));
+    }
+
+    @Test
+    public void testDescribeEmptyMatcher() {
+        IsEmpty<String> matcher = new IsEmpty<String>();
+        Description description = mock(Description.class);
+        matcher.describeTo(description);
+        verify(description).appendText("an empty Iterable");
+    }
+
 }

@@ -31,10 +31,6 @@ import org.faktorips.util.StringUtil;
  */
 public class JavaCodeFragment extends CodeFragment {
 
-    private static final String ANNOTATION_SEPERATOR = ","; //$NON-NLS-1$
-
-    private static final String LESS_GREATER_PATTERN = "[\\<\\>]"; //$NON-NLS-1$
-
     // import declaration needed to compile the sourcecode
     private ImportDeclaration importDecl;
 
@@ -234,21 +230,29 @@ public class JavaCodeFragment extends CodeFragment {
      */
     public JavaCodeFragment appendClassName(String qualifiedClassName) {
         if (qualifiedClassName.indexOf('<') > 0) {
-            appendClassNameWithoutGenerics(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
-            parseGenerics(qualifiedClassName);
-            return this;
+            return appendClassNameAndParseGenerics(qualifiedClassName);
         } else {
             return appendClassNameWithoutGenerics(qualifiedClassName);
         }
     }
 
+    private JavaCodeFragment appendClassNameAndParseGenerics(String qualifiedClassName) {
+        appendClassNameWithoutGenerics(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
+        parseGenerics(qualifiedClassName);
+        return this;
+    }
+
     private void parseGenerics(String qualifiedClassName) {
-        String genericPart = qualifiedClassName.substring(qualifiedClassName.indexOf('<') + 1,
+        String generics = qualifiedClassName.substring(qualifiedClassName.indexOf('<') + 1,
                 qualifiedClassName.lastIndexOf('>'));
-        List<String> genericTypeParts = splitGenericTypeParts(genericPart);
+        List<String> toplevelGenericTypes = splitToplevelGenericTypesByColon(generics);
         append('<');
-        for (Iterator<String> iterator = genericTypeParts.iterator(); iterator.hasNext();) {
-            appendClassName(iterator.next());
+        for (Iterator<String> iterator = toplevelGenericTypes.iterator(); iterator.hasNext();) {
+            String nextGenericType = iterator.next();
+            /*
+             * Recursion: also handles nested generics.
+             */
+            appendClassName(nextGenericType);
             if (iterator.hasNext()) {
                 append(", "); //$NON-NLS-1$
             }
@@ -256,12 +260,12 @@ public class JavaCodeFragment extends CodeFragment {
         append('>');
     }
 
-    List<String> splitGenericTypeParts(String genericPart) {
+    List<String> splitToplevelGenericTypesByColon(String genericsDefinition) {
         LinkedList<String> result = new LinkedList<String>();
         int depth = 0;
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < genericPart.length(); i++) {
-            char c = genericPart.charAt(i);
+        for (int i = 0; i < genericsDefinition.length(); i++) {
+            char c = genericsDefinition.charAt(i);
             if (c == '<') {
                 depth++;
             } else if (c == '>') {

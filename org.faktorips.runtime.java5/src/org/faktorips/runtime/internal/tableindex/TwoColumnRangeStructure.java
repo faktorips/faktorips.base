@@ -33,13 +33,13 @@ import java.util.TreeMap;
  * <code>put(25, 50, value2)</code>, two ranges are defined. Calls to {@link #get(Object)} with the
  * keys 10, 24 and all in between will yield value1 as a result. Calls to {@link #get(Object)} with
  * the keys 25, 50 and all in between will yield value2 respectively. Keys outside these ranges,
- * e.g. 0 or 100 will return an empty ResultStructure.
+ * e.g. 0 or 100 will return an {@link EmptySearchStructure}.
  */
 public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
-        extends AbstractMapStructure<TwoColumnKey<K>, V, R> {
+        extends AbstractMapStructure<TwoColumnRange<K>, V, R> {
 
     TwoColumnRangeStructure() {
-        super(new TreeMap<TwoColumnKey<K>, V>());
+        super(new TreeMap<TwoColumnRange<K>, V>());
     }
 
     /**
@@ -69,38 +69,38 @@ public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchSt
      * @param value the nested {@link SearchStructure} to be added
      */
     public void put(K lower, K upper, V value) {
-        super.put(new TwoColumnKey<K>(lower, upper), value);
+        super.put(new TwoColumnRange<K>(lower, upper), value);
     }
 
     @Override
-    protected TreeMap<TwoColumnKey<K>, V> getMap() {
-        return (TreeMap<TwoColumnKey<K>, V>)super.getMap();
+    protected TreeMap<TwoColumnRange<K>, V> getMap() {
+        return (TreeMap<TwoColumnRange<K>, V>)super.getMap();
     }
 
     @Override
     public SearchStructure<R> get(Object key) {
         if (key == null) {
-            return createEmptyResult();
+            return emptyResult();
         } else {
-            TwoColumnKey<K> twoColumnKey = createTwoColumnKey(key);
+            TwoColumnRange<K> twoColumnKey = createTwoColumnKey(key);
             V result = getMatchingValue(twoColumnKey);
             return getValidResult(result);
         }
     }
 
-    private TwoColumnKey<K> createTwoColumnKey(Object key) {
+    private TwoColumnRange<K> createTwoColumnKey(Object key) {
         @SuppressWarnings("unchecked")
         K kKey = (K)key;
-        TwoColumnKey<K> twoColumnKey = new TwoColumnKey<K>(kKey, kKey);
+        TwoColumnRange<K> twoColumnKey = new TwoColumnRange<K>(kKey, kKey);
         return twoColumnKey;
     }
 
     /**
-     * Returns the value mapped by the given TwoColumnKey/range or <code>null</code> if no matching
-     * value can be found.
+     * Returns the value mapped by the given TwoColumnRange/range or <code>null</code> if no
+     * matching value can be found.
      * <p>
      * A simple get on the tree map might not yield the correct result (if any at all). This is due
-     * to the fact that {@link TwoColumnKey}'s hashCode() considers only the lowerBound. Thus you
+     * to the fact that {@link TwoColumnRange}'s hashCode() considers only the lowerBound. Thus you
      * will only find a value requesting the same lower bound (when calling the
      * {@link Map#get(Object)} method directly). Mostly though, this is not the case.
      * {@link #get(Object)} is called for values <em>within</em> such a range.
@@ -111,8 +111,8 @@ public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchSt
      * for (15-25) will yield <code>null</code> however as the requested range does not fully
      * overlap with the range defined by the {@link TreeMap}.
      */
-    private V getMatchingValue(TwoColumnKey<K> twoColumnKey) {
-        Entry<TwoColumnKey<K>, V> floorEntry = getMap().floorEntry(twoColumnKey);
+    private V getMatchingValue(TwoColumnRange<K> twoColumnKey) {
+        Entry<TwoColumnRange<K>, V> floorEntry = getMap().floorEntry(twoColumnKey);
         if (isMatchingEntry(twoColumnKey, floorEntry)) {
             return floorEntry.getValue();
         } else {
@@ -120,8 +120,8 @@ public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchSt
         }
     }
 
-    private boolean isMatchingEntry(TwoColumnKey<K> twoColumnKey, Entry<TwoColumnKey<K>, V> floorEntry) {
-        return floorEntry != null && twoColumnKey.isSubRangeOf(floorEntry.getKey());
+    private boolean isMatchingEntry(TwoColumnRange<K> twoColumnKey, Entry<TwoColumnRange<K>, V> floorEntry) {
+        return floorEntry != null && twoColumnKey.isLowerOrEqualUpperBound(floorEntry.getKey());
     }
 
 }

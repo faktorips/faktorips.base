@@ -17,8 +17,8 @@ import java.util.HashMap;
 
 /**
  * An implementation of {@link AbstractMapStructure} mapping keys to nested {@link SearchStructure
- * SearchStructures} much like a map. This structure is useful for values that can be identified
- * exactly by their. The generic types are described in {@link AbstractMapStructure}
+ * SearchStructures} much like a map. This structure is useful for values that can be identified by
+ * their key. The generic types are described in {@link AbstractMapStructure}.
  * 
  * @see AbstractMapStructure
  */
@@ -49,7 +49,7 @@ public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>
     @Override
     public SearchStructure<R> get(Object key) {
         if (key == null) {
-            return createEmptyResult();
+            return emptyResult();
         } else {
             V result = getMap().get(key);
             return getValidResult(result);

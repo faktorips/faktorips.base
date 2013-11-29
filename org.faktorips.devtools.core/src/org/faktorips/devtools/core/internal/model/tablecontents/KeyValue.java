@@ -18,9 +18,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 
 /**
  * A key value is an object which stores the value (string) of the content of all key item column
@@ -64,8 +64,8 @@ public class KeyValue extends AbstractKeyValue {
 
     private String evalValue(Row row) {
         String[] values;
-        List<IKeyItem> keyItems = getNonTwoColumnRangeKeyItems(uniqueKey);
-        
+        List<IKeyItem> keyItems = getNonTwoColumnRangeKeyItems(getUniqueKey());
+
         values = new String[keyItems.size()];
         for (int i = 0; i < keyItems.size(); i++) {
             values[i] = getValueForKeyItem(structure, row, keyItems.get(i));
@@ -90,6 +90,6 @@ public class KeyValue extends AbstractKeyValue {
 
     @Override
     public String toString() {
-        return uniqueKey.getName() + ": " + value; //$NON-NLS-1$
+        return getUniqueKey().getName() + ": " + value; //$NON-NLS-1$
     }
 }

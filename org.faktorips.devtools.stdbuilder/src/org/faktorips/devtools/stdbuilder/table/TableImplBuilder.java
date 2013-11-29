@@ -57,6 +57,7 @@ import org.faktorips.runtime.internal.tableindex.RangeStructure;
 import org.faktorips.runtime.internal.tableindex.RangeType;
 import org.faktorips.runtime.internal.tableindex.ResultStructure;
 import org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure;
+import org.faktorips.runtime.internal.tableindex.UniqueResultStructure;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.values.ObjectUtil;
 
@@ -169,40 +170,49 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String keyVariableName = "Key" + i;
             indexCodePart.keyStructureFieldName = StringUtils.uncapitalize(keyVariableName) + "SearchStructure";
             indexCodePart.keyStructureFieldClassName = getKeyStructureFieldClass(Arrays.asList(index.getKeyItems()),
-                    indexCodePart.indexClassName);
+                    indexCodePart.indexClassName, index.isUniqueKey());
         }
     }
 
-    /* private */String getKeyStructureFieldClass(List<IKeyItem> keyItemList, String keyClassName) {
-        String className = "";
+    /* private */String getKeyStructureFieldClass(List<IKeyItem> keyItemList, String keyClassName, boolean unique) {
+        StringBuffer className = new StringBuffer();
         int nestedGeneric = 0;
         boolean firstItem = true;
         for (IKeyItem keyItem : keyItemList) {
             if (firstItem || keyItem.isRange()) {
                 String structureType;
-                structureType = getStructureType(keyItem);
-                className += structureType;
+                structureType = getStructureType(keyItem, unique);
+                className.append(structureType);
                 if (keyItem.isRange()) {
-                    className += "<" + getJavaClassName(keyItem) + ", ";
+                    className.append("<").append(getJavaClassName(keyItem)).append(", ");
                 } else {
-                    className += "<" + keyClassName + ", ";
+                    className.append("<").append(keyClassName).append(", ");
                 }
                 nestedGeneric++;
                 firstItem = false;
             }
         }
-        className += ResultStructure.class.getName() + "<" + qualifiedTableRowName + ">";
+        className.append(getResultStructureClassName(unique));
+        className.append("<").append(qualifiedTableRowName).append(">");
         for (int i = 0; i < nestedGeneric; i++) {
-            className += ", " + qualifiedTableRowName;
-            className += ">";
+            className.append(", ").append(qualifiedTableRowName);
+            className.append(">");
         }
-        return className;
+        return className.toString();
     }
 
-    private String getStructureType(IKeyItem keyItem) {
+    private String getResultStructureClassName(boolean unique) {
+        if (unique) {
+            return UniqueResultStructure.class.getName();
+        } else {
+            return ResultStructure.class.getName();
+        }
+    }
+
+    private String getStructureType(IKeyItem keyItem, boolean unique) {
         String structureType;
         if (keyItem == null) {
-            structureType = ResultStructure.class.getName();
+            structureType = getResultStructureClassName(unique);
         } else if (keyItem.isRange()) {
             if (((IColumnRange)keyItem).getColumnRangeType().isTwoColumn()) {
                 structureType = TwoColumnRangeStructure.class.getName();
@@ -586,7 +596,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         IndexCodePart indexCodePart = indexCodeParts.get(index);
         methodBody.append(indexCodePart.keyStructureFieldName).append(" = ");
         IKeyItem keyItem = index.getKeyItemAt(0);
-        appendCreateStructure(keyItem, methodBody);
+        methodBody.append(codeForCreateStructure(keyItem, index.isUniqueKey()));
         methodBody.appendln(';');
         return methodBody;
     }
@@ -599,33 +609,32 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createForLoopBody(List<IIndex> keys, JavaCodeFragment methodBody) {
-        JavaCodeFragment resultStructureCode = new JavaCodeFragment();
-        appendCreateStructure(null, resultStructureCode, "row");
-        methodBody.getImportDeclaration().add(resultStructureCode.getImportDeclaration());
         int i = 0;
         for (IIndex index : keys) {
+            JavaCodeFragment resultStructureCode = codeForCreateStructure(null, index.isUniqueKey(), "row");
             IndexCodePart indexCodePart = indexCodeParts.get(index);
+            JavaCodeFragment previousStructure = resultStructureCode;
             List<IKeyItem> keyItemList = Arrays.asList(index.getKeyItems());
             ArrayList<IKeyItem> processedKeys = new ArrayList<IKeyItem>();
-            String previousStructure = resultStructureCode.getSourcecode();
             for (ListIterator<IKeyItem> iterator = keyItemList.listIterator(keyItemList.size()); iterator.hasPrevious();) {
                 IKeyItem keyItem = iterator.previous();
                 processedKeys.add(0, keyItem);
-                String[] putParameter = getPutParameter(index, keyItem, previousStructure);
+                String[] putParameter = getPutParameter(index, keyItem, previousStructure.getSourcecode());
                 if (iterator.hasPrevious() && keyItem.isRange()) {
                     String keyStructureFieldClass = getKeyStructureFieldClass(processedKeys,
-                            indexCodePart.indexClassName);
+                            indexCodePart.indexClassName, index.isUniqueKey());
                     methodBody.appendClassName(keyStructureFieldClass).append(" ");
-                    previousStructure = ((IColumnRange)keyItem).getParameterName() + "SearchStructure" + i;
+                    previousStructure = new JavaCodeFragment(((IColumnRange)keyItem).getParameterName()
+                            + "SearchStructure" + i);
                     methodBody.append(previousStructure).append(" = ");
-                    appendCreateStructure(keyItem, methodBody, putParameter);
+                    methodBody.append(codeForCreateStructure(keyItem, index.isUniqueKey(), putParameter));
                     methodBody.appendln(';');
                 } else {
-                    previousStructure = indexCodePart.keyStructureFieldName;
-                    methodBody.appendClassName(previousStructure).append(".put(");
+                    previousStructure = new JavaCodeFragment(indexCodePart.keyStructureFieldName);
+                    methodBody.append(previousStructure).append(".put(");
                     for (String param : putParameter) {
                         methodBody.append(param);
-                        if (putParameter[putParameter.length - 1] != param) {
+                        if (putParameter[putParameter.length - 1].equals(param)) {
                             methodBody.append(", ");
                         }
                     }
@@ -656,32 +665,34 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void appendCreateStructure(IKeyItem keyItem, JavaCodeFragment methodBody, String... createArguments) {
-        methodBody.appendClassName(getStructureType(keyItem));
+    private JavaCodeFragment codeForCreateStructure(IKeyItem keyItem, boolean unique, String... createArguments) {
+        JavaCodeFragment codeFragment = new JavaCodeFragment();
+        codeFragment.appendClassName(getStructureType(keyItem, unique));
         if (createArguments.length > 0) {
-            methodBody.append(".createWith(");
+            codeFragment.append(".createWith(");
         } else {
-            methodBody.append(".create(");
+            codeFragment.append(".create(");
         }
         boolean addColon = false;
         if (keyItem != null && keyItem.isRange()) {
             ColumnRangeType columnRangeType = ((IColumnRange)keyItem).getColumnRangeType();
             if (columnRangeType.isOneColumnFrom()) {
-                methodBody.appendClassName(RangeType.class).append('.').append(RangeType.LOWER_BOUND_EQUAL.name());
+                codeFragment.appendClassName(RangeType.class).append('.').append(RangeType.LOWER_BOUND_EQUAL.name());
                 addColon = true;
             } else if (columnRangeType.isOneColumnTo()) {
-                methodBody.appendClassName(RangeType.class).append('.').append(RangeType.UPPER_BOUND_EQUAL.name());
+                codeFragment.appendClassName(RangeType.class).append('.').append(RangeType.UPPER_BOUND_EQUAL.name());
                 addColon = true;
             }
         }
         for (String argument : createArguments) {
             if (addColon) {
-                methodBody.append(", ");
+                codeFragment.append(", ");
             }
             addColon = true;
-            methodBody.append(argument);
+            codeFragment.append(argument);
         }
-        methodBody.append(")");
+        codeFragment.append(")");
+        return codeFragment;
     }
 
     private List<String> createInitKeyMapsKeyClassParameters(List<String> keyClassParameterNames) {

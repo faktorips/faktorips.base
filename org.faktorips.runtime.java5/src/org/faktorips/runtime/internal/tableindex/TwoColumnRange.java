@@ -15,17 +15,23 @@ package org.faktorips.runtime.internal.tableindex;
 
 import java.io.Serializable;
 
-public class TwoColumnKey<K extends Comparable<K>> implements Comparable<TwoColumnKey<K>>, Serializable {
+/**
+ * An immutable data object defining a range between two columns. It is used by the
+ * {@link TwoColumnRangeStructure} as key object for the internal map.
+ * 
+ * @see TwoColumnRangeStructure
+ */
+class TwoColumnRange<K extends Comparable<K>> implements Comparable<TwoColumnRange<K>>, Serializable {
 
     private static final long serialVersionUID = 42L;
     private final K lowerBound;
     private final K upperBound;
 
     /**
-     * @param lowerBound The lowerBound of this TwoColumnKey.
-     * @param upperBound The upperBound of this TwoColumnKey.
+     * @param lowerBound The lowerBound of this TwoColumnRange.
+     * @param upperBound The upperBound of this TwoColumnRange.
      */
-    public TwoColumnKey(K lowerBound, K upperBound) {
+    TwoColumnRange(K lowerBound, K upperBound) {
         super();
         if (lowerBound == null) {
             throw new NullPointerException();
@@ -37,7 +43,7 @@ public class TwoColumnKey<K extends Comparable<K>> implements Comparable<TwoColu
         this.upperBound = upperBound;
     }
 
-    public int compareTo(TwoColumnKey<K> other) {
+    public int compareTo(TwoColumnRange<K> other) {
         return lowerBound.compareTo(other.lowerBound);
     }
 
@@ -52,7 +58,7 @@ public class TwoColumnKey<K extends Comparable<K>> implements Comparable<TwoColu
         if (getClass() != obj.getClass()) {
             return false;
         }
-        TwoColumnKey<?> other = (TwoColumnKey<?>)obj;
+        TwoColumnRange<?> other = (TwoColumnRange<?>)obj;
         if (lowerBound == null) {
             if (other.lowerBound != null) {
                 return false;
@@ -86,17 +92,19 @@ public class TwoColumnKey<K extends Comparable<K>> implements Comparable<TwoColu
     }
 
     /**
-     * A two-column-key defines a range or mathematically speaking an interval by upper and lower
-     * bound. This method tests whether this key defines a sub-range of the argument key. If this
-     * key is a sub range, all values defined by this key are also contained in the argument key.
+     * Returns <code>true</code> if the upper bound of the specified otherKey is lower or equals to
+     * the upper bound of this {@link TwoColumnRange}.
+     * <p>
+     * In {@link #compareTo(TwoColumnRange)} and {@link #equals(Object)} we only check the lower
+     * bound. To get the correct key that matches the lower bound we already used
+     * {@link #compareTo(TwoColumnRange)}. Using this method we could check the upper bound is also
+     * matching.
      * 
-     * @returns <code>true</code> if both ranges have identical upper and lower bounds. Returns
-     *          <code>true</code> if this key is a true sub-range of the argument key. Returns
-     *          <code>false</code>, however, if both ranges only partially overlap or have no common
-     *          elements at all.
+     * @param otherKey The other key that's upper bound is compared to this one
+     * @return <code>true</code> if the other upper bound is lower or equal to this upper bound
+     * 
      */
-    public boolean isSubRangeOf(TwoColumnKey<K> otherKey) {
-        return getLowerBound().compareTo(otherKey.getLowerBound()) >= 0
-                && getUpperBound().compareTo(otherKey.getUpperBound()) <= 0;
+    public boolean isLowerOrEqualUpperBound(TwoColumnRange<K> otherKey) {
+        return getUpperBound().compareTo(otherKey.getUpperBound()) <= 0;
     }
 }

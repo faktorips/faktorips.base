@@ -42,13 +42,6 @@ public class ResultStructure<R> extends SearchStructure<R> implements Mergeable<
     }
 
     /**
-     * Creates a new empty {@link ResultStructure}.
-     */
-    public static <R> ResultStructure<R> create() {
-        return new ResultStructure<R>();
-    }
-
-    /**
      * Creates a new {@link ResultSet} with the given resultValue as its only result value.
      */
     public static <R> ResultStructure<R> createWith(R resultValue) {

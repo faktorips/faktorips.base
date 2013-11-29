@@ -28,13 +28,13 @@ import java.util.Set;
  * <p>
  * To prevent {@link NullPointerException}s without checking for <code>null</code>, every
  * {@link #get(Object)} will return a valid {@link SearchStructure}. If there is no nested structure
- * for any given key, an empty {@link ResultStructure} is returned as a fall-back. Calling
- * {@link #get(Object)} on it (with any key) simply returns the empty {@link ResultStructure}
- * itself. IOW an empty {@link ResultStructure} is a kind of null-Object.
+ * for any given key, an {@link EmptySearchStructure} is returned as a fall-back. Calling
+ * {@link #get(Object)} on it (with any key) simply returns the {@link EmptySearchStructure} itself.
+ * In other words an {@link EmptySearchStructure} is a kind of null-Object.
  * <p>
  * Example: given a nested structure Map -> Tree -> Tree and the call
  * <code>get(x).get(y).get(z)</code> on it. If <code>get(x)</code> on the map yields no result an
- * empty {@link ResultStructure} is returned. Nevertheless the following <code>get(y).get(z)</code>
+ * {@link EmptySearchStructure} is returned. Nevertheless the following <code>get(y).get(z)</code>
  * can be called without checking for <code>null</code>. The empty result is returned on every
  * subsequent call.
  * 
@@ -47,19 +47,19 @@ public abstract class SearchStructure<R> {
 
     /**
      * Returns the nested {@link SearchStructure} for the given key. This method never returns
-     * <code>null</code>. If no value exists for a given key an empty {@link ResultStructure} is
+     * <code>null</code>. If no value exists for a given key an {@link EmptySearchStructure} is
      * returned as a fall-back.
      * 
      * @param key The key for the requested nested {@link SearchStructure}
-     * @return The nested {@link SearchStructure} or an empty {@link ResultStructure} if the key
-     *         does not exist.
+     * @return The nested {@link SearchStructure} or an {@link EmptySearchStructure} if the key does
+     *         not exist.
      */
     public abstract SearchStructure<R> get(Object key);
 
     /**
      * Returns the set of resulting values. If this {@link SearchStructure} is no
      * {@link ResultStructure} this method simply aggregates every nested {@link SearchStructure
-     * structures'} results.
+     * structures'} results. Beware that the aggregation of nested elements has linear complexity.
      * 
      * @return The set of resulting values that are reachable by this {@link SearchStructure}
      */
@@ -69,11 +69,12 @@ public abstract class SearchStructure<R> {
      * Returns the value if there is exactly one value.
      * <p>
      * Use this method if you know there should be exactly one result value. This method throws an
-     * {@link AssertionError} if there is no no value or more than one value.
+     * {@link AssertionError} if there is more than one values. If there is no value it throws an
+     * {@link NoSuchElementException} exception.
      * 
      * @return The one and only result hold by this {@link SearchStructure}.
      * @throws AssertionError if your assertion that there is at most one element is wrong and hence
-     *             there are are more than one values.
+     *             there is more than one value.
      * @throws NoSuchElementException If there is no element at all.
      */
     public R getUnique() {

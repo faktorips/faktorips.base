@@ -13,36 +13,34 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.tableindex.ResultStructure;
-import org.faktorips.runtime.internal.tableindex.SearchStructure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultStructureTest {
 
-    @InjectMocks
     private ResultStructure<Integer> resultStructure;
 
     @Test
     public void testGetObject() throws Exception {
+        resultStructure = new ResultStructure<Integer>();
+
         SearchStructure<Integer> structure = resultStructure.get(1);
 
         assertSame(resultStructure, structure);
     }
 
     @Test
-    public void testGetObjectNull() throws Exception {
+    public void testGetObject_Null() throws Exception {
+        resultStructure = new ResultStructure<Integer>();
         SearchStructure<Integer> structure = resultStructure.get(null);
 
         assertSame(resultStructure, structure);
@@ -50,28 +48,32 @@ public class ResultStructureTest {
 
     @Test
     public void testGet() throws Exception {
-        HashSet<Integer> result = new HashSet<Integer>();
-        result.add(123);
-        resultStructure = new ResultStructure<Integer>(result);
+        resultStructure = new ResultStructure<Integer>(123);
 
         Set<Integer> set = resultStructure.get();
 
-        assertEquals(result, set);
+        assertThat(set, hasItem(123));
     }
 
     @Test
     public void testMerge() throws Exception {
-        HashSet<Integer> result = new HashSet<Integer>();
-        result.add(321);
-        resultStructure = new ResultStructure<Integer>(result);
-        HashSet<Integer> result2 = new HashSet<Integer>();
-        result2.add(123);
-        ResultStructure<Integer> resultStructure2 = new ResultStructure<Integer>(result2);
+        resultStructure = new ResultStructure<Integer>(321);
+        ResultStructure<Integer> resultStructure2 = new ResultStructure<Integer>(123);
 
         resultStructure.merge(resultStructure2);
 
         assertThat(resultStructure.get(), hasItem(123));
         assertThat(resultStructure.get(), hasItem(321));
+    }
+
+    @Test
+    public void testMerge_emptyResults() throws Exception {
+        resultStructure = new ResultStructure<Integer>();
+        ResultStructure<Integer> resultStructure2 = new ResultStructure<Integer>();
+
+        resultStructure.merge(resultStructure2);
+
+        assertTrue(resultStructure.get().isEmpty());
     }
 
 }

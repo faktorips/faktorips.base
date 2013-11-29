@@ -92,10 +92,25 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         keyItems.add(keyItem1);
         when(keyItem1.isRange()).thenReturn(false);
 
-        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
+        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass", false);
 
         assertEquals(
                 "org.faktorips.runtime.internal.tableindex.KeyStructure<MyKeyClass, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
+                keyStructureFieldClass);
+    }
+
+    @Test
+    public void testAppendMapClassWithGenerics_onlyOneColumnParam_unique() throws Exception {
+        setUpForAppendMapClassWithGenerics();
+        List<IKeyItem> keyItems = new ArrayList<IKeyItem>();
+        IKeyItem keyItem1 = mock(IKeyItem.class);
+        keyItems.add(keyItem1);
+        when(keyItem1.isRange()).thenReturn(false);
+
+        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass", true);
+
+        assertEquals(
+                "org.faktorips.runtime.internal.tableindex.KeyStructure<MyKeyClass, org.faktorips.runtime.internal.tableindex.UniqueResultStructure<MyRow>, MyRow>",
                 keyStructureFieldClass);
     }
 
@@ -109,7 +124,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         when(keyItem1.getColumnRangeType()).thenReturn(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         when(keyItem1.getDatatype()).thenReturn("Integer");
 
-        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
+        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass", false);
 
         assertEquals(
                 "org.faktorips.runtime.internal.tableindex.RangeStructure<java.lang.Integer, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
@@ -126,7 +141,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         when(keyItem1.getColumnRangeType()).thenReturn(ColumnRangeType.ONE_COLUMN_RANGE_TO);
         when(keyItem1.getDatatype()).thenReturn("Integer");
 
-        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
+        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass", false);
 
         assertEquals(
                 "org.faktorips.runtime.internal.tableindex.RangeStructure<java.lang.Integer, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
@@ -143,7 +158,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         when(keyItem1.getColumnRangeType()).thenReturn(ColumnRangeType.TWO_COLUMN_RANGE);
         when(keyItem1.getDatatype()).thenReturn("Integer");
 
-        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
+        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass", false);
 
         assertEquals(
                 "org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure<java.lang.Integer, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>",
@@ -173,7 +188,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         when(keyItem3.getColumnRangeType()).thenReturn(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         when(keyItem3.getDatatype()).thenReturn("Money");
 
-        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass");
+        String keyStructureFieldClass = builder.getKeyStructureFieldClass(keyItems, "MyKeyClass", false);
 
         assertEquals(
                 "org.faktorips.runtime.internal.tableindex.KeyStructure<MyKeyClass, org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure<java.lang.String, org.faktorips.runtime.internal.tableindex.RangeStructure<org.faktorips.values.Money, org.faktorips.runtime.internal.tableindex.ResultStructure<MyRow>, MyRow>, MyRow>, MyRow>",

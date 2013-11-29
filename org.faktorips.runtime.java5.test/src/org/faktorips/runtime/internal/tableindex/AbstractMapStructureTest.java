@@ -18,9 +18,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.junit.Before;
@@ -117,8 +115,11 @@ public class AbstractMapStructureTest {
     }
 
     private ResultStructure<Integer> createResultSet(Integer... values) {
-        HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(values));
-        ResultStructure<Integer> resultSet = new ResultStructure<Integer>(set);
+        ResultStructure<Integer> resultSet = new ResultStructure<Integer>();
+        for (Integer value : values) {
+            ResultStructure<Integer> otherResult = new ResultStructure<Integer>(value);
+            resultSet.merge(otherResult);
+        }
         return resultSet;
     }
 

@@ -40,13 +40,14 @@ import java.util.Set;
  *            {@link SearchStructure}. Therefore the mergable type is bound to <code>? super V
  *            </code>. </li>
  *            </ul>
- * 
  * @param <R> The type of the result values. The result type must be the same in every nested
  *            structure.
  * 
  */
 public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mergeable<? super V>, R> extends
         SearchStructure<R> implements Mergeable<AbstractMapStructure<K, V, R>> {
+
+    private static final SearchStructure<?> EMPTY = new EmptySearchStructure<Object>();
 
     private final Map<K, V> map;
 
@@ -110,22 +111,24 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
      * {@link ResultStructure}) in that case.
      * 
      * @param result a valid result or <code>null</code>.
-     * @return the given result or an empty {@link ResultStructure} if the given result is
+     * @return the given result or an {@link EmptySearchStructure} if the given result is
      *         <code>null</code>. Never returns <code>null</code>.
      */
     protected SearchStructure<R> getValidResult(V result) {
         if (result == null) {
-            return createEmptyResult();
+            return emptyResult();
         } else {
             return result;
         }
     }
 
     /**
-     * Simply creates an empty result structure.
+     * Simply returns an {@link EmptySearchStructure}. This is the typesafe representation of
+     * {@link #EMPTY}.
      */
-    protected ResultStructure<R> createEmptyResult() {
-        return ResultStructure.create();
+    @SuppressWarnings("unchecked")
+    protected SearchStructure<R> emptyResult() {
+        return (SearchStructure<R>)EMPTY;
     }
 
 }

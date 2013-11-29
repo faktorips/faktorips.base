@@ -13,7 +13,6 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
-import java.sql.ResultSet;
 import java.util.TreeMap;
 
 /**
@@ -24,16 +23,14 @@ import java.util.TreeMap;
  * Ranges are set up by putting one or more key-value pairs into this structure. The key is of a
  * comparable data type (of course, as it defines a range). The value is a nested
  * {@link SearchStructure}. The given key defines one of the bounds of a range, which one depends on
- * the {@link RangeType}. In case of {@link RangeType#LOWER_BOUND_EQUAL} the key defines the lower
- * bound of the range (and is included the range). The upper bound is the lower bound of the
- * following/higher range. If there is no following range the range has no upper bound and is
- * infinite.
+ * the {@link RangeType}.
  * <p>
- * Example: In a {@link RangeType#LOWER_BOUND_EQUAL} {@link RangeStructure} by calling
- * <code>put(10, value1)</code> and <code>put(25, value2)</code>, two ranges are defined: [10..24]
- * and [25..infinity]. Calls to {@link #get(Object)} with the keys 10, 24 and all in between will
- * yield value1 as a result. Calls to {@link #get(Object)} with the keys 25 and higher will yield
- * value2 respectively. The keys 9 and lower, however, will return an empty {@link ResultSet}.
+ * Example: In a {@link RangeType#LOWER_BOUND_EQUAL} {@link RangeStructure} (keys of type
+ * {@link Integer}) by calling <code>put(10, value1)</code> and <code>put(25, value2)</code>, two
+ * ranges are defined: [10..24] and [25..infinity]. Calls to {@link #get(Object)} with the keys 10,
+ * 24 and all in between will yield value1 as a result. Calls to {@link #get(Object)} with the keys
+ * 25 and higher will yield value2 respectively. The keys 9 and lower, however, will return an
+ * {@link EmptySearchStructure}.
  * 
  * @see RangeType
  */
@@ -76,7 +73,7 @@ public class RangeStructure<K extends Comparable<K>, V extends SearchStructure<R
     @Override
     public SearchStructure<R> get(Object key) {
         if (key == null) {
-            return createEmptyResult();
+            return emptyResult();
         } else {
             @SuppressWarnings("unchecked")
             K kKey = (K)key;

@@ -19,9 +19,9 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 
 /**
  * Abstract basis class of all kind of key values (e.g. column 'only' key values or 'range' key
@@ -34,7 +34,7 @@ public abstract class AbstractKeyValue {
     protected ITableStructure structure;
 
     /** reference to the unique key this key value belongs to */
-    protected IIndex uniqueKey;
+    private final IIndex uniqueKey;
 
     /** reference to the row this key value belongs to */
     protected Row row;
