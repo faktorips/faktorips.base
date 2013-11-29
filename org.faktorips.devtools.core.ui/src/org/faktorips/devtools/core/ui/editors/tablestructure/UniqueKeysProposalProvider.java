@@ -29,47 +29,38 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
  * 
  */
 
-public class KeyContentProposalProvider implements IContentProposalProvider {
-    List<IContentProposal> proposals = new ArrayList<IContentProposal>();
-
+public class UniqueKeysProposalProvider implements IContentProposalProvider {
     private IIndex[] uniqueKeys;
-
-    public KeyContentProposalProvider(IIndex[] uniqueKeys) {
-        this.uniqueKeys = uniqueKeys;
-    }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-
         String content = StringUtils.left(contents, position);
         if (uniqueKeys != null) {
-            fillProposals(content);
+            List<IContentProposal> proposals = getProposals(content);
+            return proposals.toArray(new IContentProposal[proposals.size()]);
+        } else {
+            return new IContentProposal[0];
         }
-        IContentProposal[] result = proposals.toArray(new IContentProposal[0]);
-        proposals.clear();
-        return result;
-
     }
 
-    private void fillProposals(String content) {
-
+    private List<IContentProposal> getProposals(String content) {
+        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
         for (IIndex uniqueKey : uniqueKeys) {
-            if (isFittingContent(uniqueKey, content)) {
+            if (isMatchingContent(uniqueKey, content)) {
                 String name = uniqueKey.getName();
                 proposals.add(new ContentProposal(name, name, name));
             }
         }
-
+        return proposals;
     }
 
-    protected void setUniquekeys(IIndex[] newUniqueKeys) {
-        this.uniqueKeys = newUniqueKeys;
-
-    }
-
-    private boolean isFittingContent(IIndex uniqueKey, String content) {
+    private boolean isMatchingContent(IIndex uniqueKey, String content) {
         String uniqueKeyName = uniqueKey.getName().toLowerCase();
         return uniqueKeyName.startsWith(content.toLowerCase());
+    }
+
+    protected void setUniqueKeys(IIndex[] newUniqueKeys) {
+        this.uniqueKeys = newUniqueKeys;
     }
 
 }

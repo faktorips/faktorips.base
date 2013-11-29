@@ -13,23 +13,16 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import java.beans.PropertyChangeEvent;
-
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
-import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
@@ -39,10 +32,7 @@ import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
  */
 public class ForeignKeyEditDialog extends KeyEditDialog {
 
-    private IKey key;
-
     private TableStructureRefControl refControl;
-
     private ForeignKeyPMO pmo;
 
     /** completion processor for a table structure's indices. */
@@ -50,12 +40,11 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
     private TextField uniqueKeyRefField;
     private Text ukRefControl;
 
-    private KeyContentProposalProvider contentProposalProvider;
+    private UniqueKeysProposalProvider contentProposalProvider;
 
     public ForeignKeyEditDialog(IKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialogForeignKey_titleText);
-        this.key = key;
-        this.pmo = new ForeignKeyPMO(this);
+        this.pmo = new ForeignKeyPMO(key);
     }
 
     @Override
@@ -74,7 +63,7 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
 
     private void createLabelReferenceStructure(Composite refTableComposite) {
         getToolkit().createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceStructure);
-        refControl = getToolkit().createTableStructureRefControl(key.getIpsProject(), refTableComposite);
+        refControl = getToolkit().createTableStructureRefControl(getIpsPart().getIpsProject(), refTableComposite);
         refControl.setFocus();
         tableStructureRefField = new TextButtonField(refControl);
     }
@@ -87,69 +76,33 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
     }
 
     protected void setupContentAssist(Text ukRefControl) {
-        contentProposalProvider = new KeyContentProposalProvider(new IIndex[0]);
-
-        new UIToolkit(null).attachContentProposalAdapter(ukRefControl, contentProposalProvider,
+        contentProposalProvider = new UniqueKeysProposalProvider();
+        getToolkit().attachContentProposalAdapter(ukRefControl, contentProposalProvider,
                 ContentProposalAdapter.PROPOSAL_REPLACE, null);
+        addListenerToRefreshContentProposalProvider();
+    }
+
+    private void addListenerToRefreshContentProposalProvider() {
+        ukRefControl.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                IIndex[] allowedContent = pmo.getAllowedContent();
+                contentProposalProvider.setUniqueKeys(allowedContent);
+            }
+        });
     }
 
     private void bind() {
-        getBindingContext().bindContent(tableStructureRefField, key, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
-        getBindingContext().bindContent(uniqueKeyRefField, key, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
+        getBindingContext().bindContent(tableStructureRefField, getIpsPart(), IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
+        getBindingContext().bindContent(uniqueKeyRefField, getIpsPart(), IForeignKey.PROPERTY_REF_UNIQUE_KEY);
 
         getBindingContext().bindContent(tableStructureRefField, pmo, ForeignKeyPMO.REFERENCE_TABLE);
         getBindingContext().bindContent(uniqueKeyRefField, pmo, ForeignKeyPMO.UNIQUE_KEY);
-
     }
-
-    public static class ForeignKeyPMO extends PresentationModelObject {
-        private static final String UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
-        private static final String REFERENCE_TABLE = "referenceTable"; //$NON-NLS-1$
-        private String uniqueKey = StringUtils.EMPTY;
-        private String referenceTable = StringUtils.EMPTY;
-        private ForeignKeyEditDialog dialog;
-
-        public ForeignKeyPMO(ForeignKeyEditDialog dialog) {
-            this.dialog = dialog;
-        }
-
-        public void setUniqueKey(String uniqueKey) {
-            String oldValue = getUniqueKey();
-            this.uniqueKey = uniqueKey;
-            this.notifyListeners(new PropertyChangeEvent(this, UNIQUE_KEY, oldValue, uniqueKey));
-
-        }
-
-        public String getUniqueKey() {
-            IIndex[] allowedContent = getAllowedContent(getReferenceTable());
-            dialog.contentProposalProvider.setUniquekeys(allowedContent);
-            return uniqueKey;
-        }
-
-        public void setReferenceTable(String referenceTable) {
-            String oldValue = getReferenceTable();
-            this.referenceTable = referenceTable;
-            this.notifyListeners(new PropertyChangeEvent(this, REFERENCE_TABLE, oldValue, referenceTable));
-        }
-
-        public String getReferenceTable() {
-            return referenceTable;
-        }
-
-        private IIndex[] getAllowedContent(String refTableInput) {
-            IIpsObject ipsObject;
-            try {
-                ipsObject = dialog.key.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableInput);
-                if (ipsObject instanceof TableStructure) {
-                    TableStructure tableStructure = (TableStructure)ipsObject;
-                    return tableStructure.getUniqueKeys();
-                }
-            } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
 }

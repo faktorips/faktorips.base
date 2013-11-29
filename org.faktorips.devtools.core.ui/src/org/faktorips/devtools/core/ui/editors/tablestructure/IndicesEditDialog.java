@@ -24,12 +24,10 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
  */
 public class IndicesEditDialog extends KeyEditDialog {
 
-    private IKey key;
     private Checkbox checkbox;
 
     public IndicesEditDialog(IKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialogIndices_titleText);
-        this.key = key;
     }
 
     @Override
@@ -46,6 +44,6 @@ public class IndicesEditDialog extends KeyEditDialog {
     }
 
     private void bind() {
-        getBindingContext().bindContent(checkbox, key, IIndex.PROPERTY_UNIQUE_KEY);
+        getBindingContext().bindContent(checkbox, getIpsPart(), IIndex.PROPERTY_UNIQUE_KEY);
     }
 }

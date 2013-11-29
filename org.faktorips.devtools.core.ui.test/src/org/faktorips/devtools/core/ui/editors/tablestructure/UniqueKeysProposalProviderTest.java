@@ -29,10 +29,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class KeyContentProposalProviderTest {
+public class UniqueKeysProposalProviderTest {
 
     @Mock
-    private KeyContentProposalProvider proposalProvider;
+    private UniqueKeysProposalProvider proposalProvider;
 
     private List<IIndex> uniqueKeylist;
 
@@ -51,7 +51,8 @@ public class KeyContentProposalProviderTest {
         uniqueKeylist.add(index1);
         uniqueKeylist.add(index2);
         IIndex[] uniqueKeysStructure = uniqueKeylist.toArray(new IIndex[0]);
-        proposalProvider = new KeyContentProposalProvider(uniqueKeysStructure);
+        proposalProvider = new UniqueKeysProposalProvider();
+        proposalProvider.setUniqueKeys(uniqueKeysStructure);
 
         when(index1.getName()).thenReturn("firstResult");
         when(index2.getName()).thenReturn("secondResult");
@@ -59,7 +60,7 @@ public class KeyContentProposalProviderTest {
 
     @Test
     public void test_getProposal_uniqueKeysAreNull() {
-        KeyContentProposalProvider proposalProviderEmpty = new KeyContentProposalProvider(null);
+        UniqueKeysProposalProvider proposalProviderEmpty = new UniqueKeysProposalProvider();
         proposals = proposalProviderEmpty.getProposals("", 0);
         assertTrue(proposals.length == 0);
     }

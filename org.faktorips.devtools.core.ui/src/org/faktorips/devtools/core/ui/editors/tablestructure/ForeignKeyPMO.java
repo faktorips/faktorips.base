@@ -1,0 +1,72 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.editors.tablestructure;
+
+import java.beans.PropertyChangeEvent;
+
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+
+/**
+ * PMO for {@link ForeignKeyEditDialog}
+ */
+public class ForeignKeyPMO extends IpsObjectPartPmo {
+
+    public static final String UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
+    public static final String REFERENCE_TABLE = "referenceTable"; //$NON-NLS-1$
+
+    public ForeignKeyPMO(IIpsObjectPart ipsPart) {
+        super(ipsPart);
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        String oldValue = getUniqueKey();
+        this.notifyListeners(new PropertyChangeEvent(this, UNIQUE_KEY, oldValue, uniqueKey));
+    }
+
+    public String getUniqueKey() {
+        return ((IForeignKey)getIpsObjectPartContainer()).getReferencedUniqueKey();
+    }
+
+    public void setReferenceTable(String referenceTable) {
+        String oldValue = getReferenceTable();
+        this.notifyListeners(new PropertyChangeEvent(this, REFERENCE_TABLE, oldValue, referenceTable));
+    }
+
+    public String getReferenceTable() {
+        return ((IForeignKey)getIpsObjectPartContainer()).getReferencedTableStructure();
+    }
+
+    protected IIndex[] getAllowedContent() {
+        IIpsObject ipsObject = null;
+        try {
+            ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
+            if (ipsObject != null && ipsObject instanceof TableStructure) {
+                TableStructure tableStructure = (TableStructure)ipsObject;
+                return tableStructure.getUniqueKeys();
+            }
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}
