@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -460,6 +461,21 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals("bar", loadedEnumType.getEnumContentName());
     }
 
+    public void testIsExtensibleAndSavingValuesInType() throws CoreException {
+        IEnumType extensibleEnumType = newEnumType(ipsProject, "ExtensibleEnum");
+        extensibleEnumType.setExtensible(true);
+        assertNull(extensibleEnumType.getEnumValues());
+        IEnumAttribute enumAttributeId = extensibleEnumType.newEnumAttribute();
+        IEnumAttribute enumAttributeName = extensibleEnumType.newEnumAttribute();
+        enumAttributeId.setName("ID");
+        enumAttributeName.setName("NAME");
+        IEnumValue enumValue1 = extensibleEnumType.newEnumValue();
+        IEnumValue enumValue2 = extensibleEnumType.newEnumValue();
+        enumValue1.setEnumAttributeValue(enumAttributeId, ValueFactory.createStringValue("1"));
+        enumValue2.setEnumAttributeValue(enumAttributeName, ValueFactory.createStringValue("Name"));
+        assertNotNull(extensibleEnumType.getEnumValues());
+    }
+
     @Test
     public void testDeleteEnumAttributeWithValues() throws CoreException {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
@@ -614,8 +630,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         paymentMode.setEnumContentName("EnumContentPlaceholder");
         paymentMode.setContainingValues(false);
         MessageList validationMessageList = paymentMode.validate(ipsProject);
-        assertEquals(1, validationMessageList.getNoOfMessages(Message.WARNING));
-        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE));
+        assertEquals(0, validationMessageList.getNoOfMessages(Message.WARNING));
+        assertNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE));
 
         paymentMode.setContainingValues(true);
         paymentMode.setAbstract(true);
@@ -1167,7 +1183,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testIsCapableOfContainingValues() throws CoreException {
-        assertFalse(genderEnumType.isCapableOfContainingValues());
+        assertTrue(genderEnumType.isCapableOfContainingValues());
         genderEnumType.setAbstract(true);
         genderEnumType.setContainingValues(true);
         assertFalse(genderEnumType.isCapableOfContainingValues());
