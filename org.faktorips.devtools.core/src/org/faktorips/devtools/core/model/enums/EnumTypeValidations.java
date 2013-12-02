@@ -141,8 +141,8 @@ public class EnumTypeValidations {
      * 
      * @param msgList The message list where messages are added to in cases of failing validations
      * @param enumType The enumeration type that needs to be validated
-     * @param valuesDeferredToContent flag indicating whether the enumeration type is supposed to
-     *            contain values by itself or if it defers the values to an enumeration content
+     * @param enumTypeExtensible flag indicating whether the enumeration type is extensible by an
+     *            enumeration content
      * @param enumContentName The qualified name of the enumeration content of the enumeration type
      *            that is validated
      * 
@@ -152,13 +152,13 @@ public class EnumTypeValidations {
     public static void validateEnumContentName(MessageList msgList,
             IEnumType enumType,
             boolean enumTypeIsAbstract,
-            boolean valuesDeferredToContent,
+            boolean enumTypeExtensible,
             String enumContentName) {
 
         ArgumentCheck.notNull(new Object[] { msgList, enumContentName });
 
         // Name should not be empty if the EnumType defers it's values and is not abstract.
-        if (valuesDeferredToContent && !enumTypeIsAbstract) {
+        if (enumTypeExtensible && !enumTypeIsAbstract) {
             if (enumContentName.length() == 0) {
                 String text = Messages.EnumType_EnumContentNameEmpty;
                 Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text, Message.ERROR,

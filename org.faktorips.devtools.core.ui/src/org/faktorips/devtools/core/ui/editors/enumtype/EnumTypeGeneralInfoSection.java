@@ -141,7 +141,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
         extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
         extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
-        ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox, false);
+        ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox);
         getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
     }
 

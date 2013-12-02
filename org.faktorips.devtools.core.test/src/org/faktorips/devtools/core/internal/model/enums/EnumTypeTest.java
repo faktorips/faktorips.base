@@ -85,6 +85,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetSetExtensible() {
+        genderEnumType.setExtensible(false);
         assertFalse(genderEnumType.isExtensible());
         genderEnumType.setExtensible(true);
         assertTrue(genderEnumType.isExtensible());
@@ -571,6 +572,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateLiteralNameAttribute() throws CoreException {
+        genderEnumType.setExtensible(false);
         genderEnumType.setContainingValues(true);
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -582,10 +584,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.setAbstract(false);
         genderEnumType.setContainingValues(false);
+        genderEnumType.setExtensible(true);
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid(ipsProject));
 
         genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         genderEnumType.newEnumLiteralNameAttribute();
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid(ipsProject));
@@ -652,6 +656,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(paymentMode.isValid());
 
         paymentMode.setContainingValues(false);
+        paymentMode.setExtensible(true);
         paymentMode.deleteEnumValues(paymentMode.getEnumValues());
         paymentMode.deleteEnumAttributeWithValues(paymentMode.getEnumLiteralNameAttribute());
 

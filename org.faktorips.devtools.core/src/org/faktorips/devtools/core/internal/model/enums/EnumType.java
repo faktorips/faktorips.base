@@ -472,7 +472,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
         validateEnumContentAlreadyUsed(list, ipsProject);
 
-        EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), !isContainingValues(),
+        EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), isExtensible(),
                 enumContentPackageFragment);
 
         // Validate possible obsolete enumeration values.
@@ -524,12 +524,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Validates whether this <tt>IEnumType</tt> contains at least one
      * <tt>IEnumLiteralNameAttribute</tt>.
      * <p>
-     * If the this <tt>IEnumType</tt> is abstract or does not contain values the validation will
-     * succeed even if there is no <tt>IEnumLiteralNameAttribute</tt>.
+     * If this <tt>IEnumType</tt> is abstract or is extensible the validation will succeed even if
+     * there is no <tt>IEnumLiteralNameAttribute</tt>.
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
         // Pass validation if the EnumType is abstract or does not contain values.
-        if (isAbstract || !isContainingValues()) {
+        if (isAbstract || isExtensible()) {
             return;
         }
 
