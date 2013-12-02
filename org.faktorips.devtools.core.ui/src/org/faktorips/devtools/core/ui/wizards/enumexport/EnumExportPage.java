@@ -43,14 +43,6 @@ import org.faktorips.util.message.Message;
  */
 public class EnumExportPage extends IpsObjectExportPage {
 
-    @Override
-    public void createControl(Composite parent) {
-        super.createControl(parent);
-
-        // Override page title
-        setTitle(Messages.EnumExportPage_messagearea_title);
-    }
-
     public EnumExportPage(IStructuredSelection selection) throws JavaModelException {
         super(Messages.EnumExportPage_title);
         if (selection.getFirstElement() instanceof IResource) {
@@ -65,9 +57,17 @@ public class EnumExportPage extends IpsObjectExportPage {
     }
 
     @Override
+    public void createControl(Composite parent) {
+        super.createControl(parent);
+
+        // Override page title
+        setTitle(Messages.EnumExportPage_messagearea_title);
+    }
+
+    @Override
     public IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit, Composite parent) {
         toolkit.createFormLabel(parent, Messages.EnumExportPage_enum_label);
-        return toolkit.createEnumRefControl(getIpsProject(), parent, true, true);
+        return toolkit.createEnumRefControl(getIpsProject(), parent, true, false);
     }
 
     @Override
@@ -97,10 +97,6 @@ public class EnumExportPage extends IpsObjectExportPage {
                 IEnumType enumType = (IEnumType)enumValueContainer;
                 if (enumType.isAbstract()) {
                     setErrorMessage(Messages.EnumExportPage_msgAbstractEnumType);
-                    return;
-                }
-                if (!(enumType.isContainingValues())) {
-                    setErrorMessage(Messages.EnumExportPage_msgEnumTypeNotContainingValues);
                     return;
                 }
             }
@@ -170,20 +166,7 @@ public class EnumExportPage extends IpsObjectExportPage {
     }
 
     public IEnumValueContainer getEnum() throws CoreException {
-        // Return the Enum which currently holds the values if an IEnumType and an IEnumContent with
-        // the same full qualified name exist
-        final IEnumValueContainer enum1 = ((EnumRefControl)exportedIpsObjectControl).findEnum(false);
-        final IEnumValueContainer enum2 = ((EnumRefControl)exportedIpsObjectControl).findEnum(true);
-
-        if (enum1 == enum2) {
-            return enum1;
-        }
-
-        if (enum1.isCapableOfContainingValues()) {
-            return enum1;
-        } else {
-            return enum2;
-        }
+        final IEnumValueContainer enumValue = ((EnumRefControl)exportedIpsObjectControl).findEnum(true);
+        return enumValue;
     }
-
 }

@@ -51,13 +51,13 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     /**
      * The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> this page belongs to is currently editing.
      */
-    IEnumType enumType;
+    private IEnumType enumType;
 
     /** Attributes section to show the <tt>IEnumAttribute</tt>s. */
-    EnumAttributesSection enumAttributesSection;
+    private EnumAttributesSection enumAttributesSection;
 
     /** Values section showing the <tt>IEnumValue</tt>s. */
-    EnumValuesSection enumValuesSection;
+    private EnumValuesSection enumValuesSection;
 
     /**
      * Action to import <tt>IEnumValue</tt>s into the opened <tt>IEnumType</tt> from an external
@@ -135,13 +135,8 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
      * abstract.
      */
     protected void updateToolbarActionEnabledStates() {
-        boolean enableImportExportActions = enumType.isContainingValues() && !(enumType.isAbstract());
-        if (importAction != null) {
-            importAction.setEnabled(enableImportExportActions);
-        }
-        if (exportAction != null) {
-            exportAction.setEnabled(enableImportExportActions);
-        }
+        importAction.setEnabled(true);
+        exportAction.setEnabled(true);
     }
 
     /**

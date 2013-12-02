@@ -55,7 +55,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
     private static String DIALOG_SETTINGS_KEY = "EnumExportWizard"; //$NON-NLS-1$
 
     // mandatory page to select filename, table format etc.
-    public EnumExportPage exportPage;
+    private EnumExportPage exportPage;
 
     public EnumExportWizard() {
         setWindowTitle(Messages.EnumExportWizard_title);

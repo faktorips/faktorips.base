@@ -126,8 +126,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
 
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());
-        int expectedFields = enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType
-                .isCapableOfContainingValues());
+        int expectedFields = enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isExtensible());
         for (int i = startRow;; i++) {
             Row sheetRow = sheet.getRow(i);
             if (sheetRow == null) {

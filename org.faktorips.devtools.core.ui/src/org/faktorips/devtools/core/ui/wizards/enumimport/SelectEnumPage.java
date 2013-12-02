@@ -78,27 +78,22 @@ public class SelectEnumPage extends SelectImportTargetPage {
     private void createEnumImportControls(UIToolkit toolkit) {
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createFormLabel(lowerComposite, Messages.SelectEnumPage_targetTypeLabel);
-        importTargetControl = toolkit.createEnumRefControl(null, lowerComposite, true, true);
+        importTargetControl = toolkit.createEnumRefControl(null, lowerComposite, true, false);
         importTargetField = new TextButtonField(importTargetControl);
         importTargetField.addChangeListener(this);
     }
 
     @Override
     public IIpsObject getTargetForImport() throws CoreException {
-        // Return the Enum which currently holds the values if an IEnumType and an IEnumContent with
-        // the same full qualified name exist
-        final IEnumValueContainer enum1 = ((EnumRefControl)importTargetControl).findEnum(false);
-        final IEnumValueContainer enum2 = ((EnumRefControl)importTargetControl).findEnum(true);
-
-        if (enum1 == enum2) {
-            return enum1;
-        }
-
-        if (enum1.isCapableOfContainingValues()) {
-            return enum1;
-        } else {
-            return enum2;
-        }
+        // final IEnumValueContainer enum1 = ((EnumRefControl)importTargetControl).findEnum(false);
+        // final IEnumValueContainer enum2 = ((EnumRefControl)importTargetControl).findEnum(true);
+        // if (enum2 instanceof EnumContent) {
+        // return enum2;
+        // } else {
+        // return enum1;
+        // }
+        final IEnumValueContainer enumValue = ((EnumRefControl)importTargetControl).findEnum(true);
+        return enumValue;
     }
 
     @Override
@@ -153,10 +148,6 @@ public class SelectEnumPage extends SelectImportTargetPage {
                 IEnumType enumType = (IEnumType)enumValueContainer;
                 if (enumType.isAbstract()) {
                     setErrorMessage(Messages.SelectEnumPage_msgAbstractEnumType);
-                    return;
-                }
-                if (!(enumType.isContainingValues())) {
-                    setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotContainingValues);
                     return;
                 }
             }
