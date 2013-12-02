@@ -529,7 +529,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
         // Pass validation if the EnumType is abstract or does not contain values.
-        if (isAbstract || !isContainingValues() || !isExtensible()) {
+        if (isAbstract || !isContainingValues()) {
             return;
         }
 
@@ -943,8 +943,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is not abstract and is configured to contain
-     * values.
+     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is not abstract.
      */
     @Override
     public boolean isCapableOfContainingValues() {
