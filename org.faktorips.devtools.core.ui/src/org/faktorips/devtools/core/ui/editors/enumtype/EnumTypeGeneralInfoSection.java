@@ -150,7 +150,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         Text text = toolkit.createText(composite);
         enumContentNameControl = new TextField(text);
         toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+                !(enumType.isAbstract()) && enumType.isExtensible());
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
     }
 
@@ -219,7 +219,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     public void refresh() {
         super.refresh();
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+                !(enumType.isAbstract()) && enumType.isExtensible());
         extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
 
     }
