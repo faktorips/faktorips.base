@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumtype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -88,9 +90,6 @@ public class EnumTypePage extends IpsObjectPage {
      */
     private TextField enumContentQualifiedNameField;
 
-    /** Representing the empty String "". */
-    String emptyString = StringUtils.EMPTY;
-
     /**
      * Creates the <tt>EnumTypePage</tt>.
      * 
@@ -112,7 +111,7 @@ public class EnumTypePage extends IpsObjectPage {
         supertypeField.addChangeListener(this);
 
         // Create abstract field.
-        toolkit.createLabel(nameComposite, emptyString);
+        toolkit.createLabel(nameComposite, StringUtils.EMPTY);
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
         isAbstractField.addChangeListener(new ValueChangeListener() {
@@ -130,7 +129,7 @@ public class EnumTypePage extends IpsObjectPage {
      * and a name attribute.
      */
     private void createIdAndNameGenerationFields(Composite nameComposite, UIToolkit uiToolkit) {
-        uiToolkit.createLabel(nameComposite, emptyString);
+        uiToolkit.createLabel(nameComposite, StringUtils.EMPTY);
         Composite createFieldsContainer = uiToolkit.createGridComposite(nameComposite, 2, false, false);
 
         // Create id attribute.
@@ -163,7 +162,7 @@ public class EnumTypePage extends IpsObjectPage {
         supertypeField.addChangeListener(new ValueChangeListener() {
             @Override
             public void valueChanged(FieldValueChangedEvent e) {
-                boolean enabled = emptyString.equals(supertypeField.getText());
+                boolean enabled = StringUtils.isEmpty(supertypeField.getText());
                 createIdAttributeField.getCheckbox().setEnabled(enabled);
                 createNameAttributeField.getCheckbox().setEnabled(enabled);
                 idAttributeNameField.setEnabled(enabled);
@@ -245,11 +244,11 @@ public class EnumTypePage extends IpsObjectPage {
 
         String pack = getPackage();
         String name = getIpsObjectName();
-        String point = emptyString;
+        String point = StringUtils.EMPTY;
         if (pack.length() > 0 && name.length() > 0) {
             point = "."; //$NON-NLS-1$
         } else {
-            pack = emptyString;
+            pack = StringUtils.EMPTY;
         }
         enumContentQualifiedNameField.setText(pack + point + name);
     }
@@ -259,9 +258,9 @@ public class EnumTypePage extends IpsObjectPage {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
-            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProject(root.getIpsProject());
+            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(Arrays.asList(root.getIpsProject()));
         } else {
-            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProject(null);
+            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(new ArrayList<IIpsProject>());
         }
     }
 
@@ -284,7 +283,7 @@ public class EnumTypePage extends IpsObjectPage {
          * Create id attribute and name attribute if checked and possible (no supertype must be
          * specified).
          */
-        if (emptyString.equals(supertypeField.getText())) {
+        if (StringUtils.isEmpty(supertypeField.getText())) {
             if (createIdAttributeField.getCheckbox().isChecked()) {
                 IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
                 idAttribute.setName(idAttributeNameField.getText());
@@ -317,12 +316,11 @@ public class EnumTypePage extends IpsObjectPage {
         super.validatePageExtension();
 
         MessageList validationMessages = new MessageList();
-        IIpsProject ipsProject = null;
+        IIpsProject ipsProject = getIpsProject();
 
         // Validate super enumeration type.
         String superTypeFieldText = supertypeField.getText();
-        ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
-        if (!(emptyString.equals(superTypeFieldText)) && ipsProject != null) {
+        if (StringUtils.isNotEmpty(superTypeFieldText) && ipsProject != null) {
             EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
         }
 
