@@ -64,9 +64,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /** Qualified name of the super <tt>IEnumType</tt> if any. */
     private String superEnumType;
 
-    /** Flag indicating whether the values for this <tt>IEnumType</tt> are defined in the model. */
-    private boolean containingValues;
-
     /** Flag indicating whether this <tt>IEnumType</tt> is extensible. */
     private boolean extensible;
 
@@ -93,7 +90,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         super(file);
 
         superEnumType = ""; //$NON-NLS-1$
-        containingValues = false;
         extensible = false;
         isAbstract = false;
         enumContentPackageFragment = ""; //$NON-NLS-1$
@@ -120,14 +116,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public boolean isContainingValues() {
-        return containingValues;
+        return !isExtensible();
     }
 
     @Override
     public void setContainingValues(boolean containingValues) {
-        boolean oldContainingValues = this.containingValues;
-        this.containingValues = containingValues;
-        valueChanged(oldContainingValues, containingValues);
+        setExtensible(!containingValues);
     }
 
     @Override
@@ -310,7 +304,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
-        containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
         extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
@@ -324,7 +317,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
-        element.setAttribute(PROPERTY_CONTAINING_VALUES, String.valueOf(containingValues));
+        // element.setAttribute(PROPERTY_CONTAINING_VALUES, String.valueOf(containingValues));
         element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }

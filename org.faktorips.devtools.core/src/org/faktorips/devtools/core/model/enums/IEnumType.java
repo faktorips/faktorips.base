@@ -254,17 +254,19 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Returns <tt>true</tt> if the values for this <tt>IEnumType</tt> are defined in the
-     * <tt>IEnumType</tt> itself.
+     * <tt>IEnumType</tt> itself. This method is deprecated use {@link #isExtensible()} instead.
      */
+    @Deprecated
     public boolean isContainingValues();
 
     /**
      * Sets whether the values for this <tt>IEnumType</tt> will be defined in the <tt>IEnumType</tt>
-     * itself.
+     * itself.This method is deprecated use {@link #setExtensible(boolean)} instead.
      * 
      * @param containingValues Flag indicating whether the values for this <tt>IEnumType</tt> will
      *            be defined in the <tt>IEnumType</tt> itself.
      */
+    @Deprecated
     public void setContainingValues(boolean containingValues);
 
     /**

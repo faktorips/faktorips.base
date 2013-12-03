@@ -148,7 +148,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         booleanAttribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         booleanAttribute.setName("BooleanAttribute");
 
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
 
         IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(2);

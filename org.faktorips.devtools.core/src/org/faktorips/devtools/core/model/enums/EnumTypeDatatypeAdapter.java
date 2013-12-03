@@ -82,10 +82,10 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     @Override
     public String[] getAllValueIds(boolean includeNull) {
         if (enumContent == null) {
-            if (!(enumType.isContainingValues()) && includeNull) {
+            if (enumType.isExtensible() && includeNull) {
                 return new String[] { null };
             }
-            if (!(enumType.isContainingValues())) {
+            if (enumType.isExtensible()) {
                 return new String[0];
             }
         }
@@ -111,7 +111,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             return null;
         }
 
-        if (enumContent == null && !(enumType.isContainingValues())) {
+        if (enumContent == null && !(enumType.isExtensible())) {
             return null;
         }
 
@@ -138,7 +138,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     @Override
     public Object getValue(String value) {
-        if (enumContent == null && !(enumType.isContainingValues())) {
+        if (enumContent == null && !(enumType.isExtensible())) {
             return null;
         }
 

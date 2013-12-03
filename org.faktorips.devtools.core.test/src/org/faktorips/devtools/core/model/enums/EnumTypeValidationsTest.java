@@ -39,7 +39,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
 
         abstractEnum = newEnumType(ipsProject, "AbstractEnum");
         abstractEnum.setAbstract(true);
-        abstractEnum.setContainingValues(true);
+        abstractEnum.setExtensible(false);
         abstractEnum.setEnumContentName("enumcontents");
         IEnumAttribute id = abstractEnum.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -50,7 +50,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         abstractSubEnum = newEnumType(ipsProject, "AbstractSubEnum");
         abstractSubEnum.setSuperEnumType(abstractEnum.getQualifiedName());
         abstractSubEnum.setAbstract(true);
-        abstractSubEnum.setContainingValues(true);
+        abstractSubEnum.setExtensible(false);
         abstractSubEnum.setEnumContentName("enumcontents");
         IEnumAttribute shortText = abstractSubEnum.newEnumAttribute();
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
@@ -61,7 +61,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setSuperEnumType(abstractSubEnum.getQualifiedName());
         paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         paymentMode.setEnumContentName("enumcontents");
         paymentMode.newEnumLiteralNameAttribute();
 

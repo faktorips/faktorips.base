@@ -590,7 +590,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindValueDatatypeWithEnumTypes() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         paymentMode.newEnumLiteralNameAttribute();
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -599,7 +599,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         gender.setAbstract(false);
-        gender.setContainingValues(true);
+        gender.setExtensible(false);
         gender.newEnumLiteralNameAttribute();
         id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -616,7 +616,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testfindEnumTypes() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(true);
-        paymentMode.setContainingValues(false);
+        paymentMode.setExtensible(true);
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -624,7 +624,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         gender.setAbstract(false);
-        gender.setContainingValues(true);
+        gender.setExtensible(false);
         gender.newEnumLiteralNameAttribute();
         id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -790,7 +790,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindDatatypesOfEnumType() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         paymentMode.newEnumLiteralNameAttribute();
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -799,7 +799,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         gender.setAbstract(false);
-        gender.setContainingValues(true);
+        gender.setExtensible(false);
         gender.newEnumLiteralNameAttribute();
         id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -1505,7 +1505,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         paymentMode.newEnumLiteralNameAttribute();
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -1514,7 +1514,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         gender.setAbstract(false);
-        gender.setContainingValues(true);
+        gender.setExtensible(false);
         gender.newEnumLiteralNameAttribute();
         id = gender.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -2067,7 +2067,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testFindEnumContent() throws Exception {
         IEnumType eA = newEnumType(ipsProject, "a.b.c.EA");
-        eA.setContainingValues(false);
+        eA.setExtensible(true);
         eA.setEnumContentName("a.b.c");
         eA.setEnumContentName("a.b.c.contentA");
         IEnumContent contentA = newEnumContent(eA, "a.b.c.contentA");

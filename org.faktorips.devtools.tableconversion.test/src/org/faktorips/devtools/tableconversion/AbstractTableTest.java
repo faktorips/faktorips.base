@@ -205,7 +205,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     protected IEnumType createValidEnumTypeWithValues(IIpsProject ipsProject) throws CoreException {
         IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
         enumType.setAbstract(false);
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.newEnumLiteralNameAttribute();
 
         // create attributes (structure)
@@ -267,7 +267,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     protected IEnumType createInvalidEnumTypeWithValues(IIpsProject ipsProject) throws CoreException {
         IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
         enumType.setAbstract(false);
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.newEnumLiteralNameAttribute();
 
         // create attributes (structure)

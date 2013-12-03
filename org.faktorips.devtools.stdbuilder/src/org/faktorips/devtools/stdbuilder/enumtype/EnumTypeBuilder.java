@@ -122,7 +122,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return false;
         }
 
-        if (!(enumType.isContainingValues())) {
+        if (enumType.isExtensible()) {
             return false;
         }
 
@@ -143,7 +143,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return false;
         }
 
-        return !enumType.isContainingValues();
+        return !enumType.isExtensible();
     }
 
     /**
@@ -179,7 +179,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         String description = getDescriptionInGeneratorLanguage(enumType);
         mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
 
-        if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && !enumType.isContainingValues()
+        if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && enumType.isExtensible()
                 && !enumType.isAbstract()) {
             EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER,
                     EnumXmlAdapterBuilder.class);
@@ -240,7 +240,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean isNeedMessageHelper() {
-        if (getEnumType().isContainingValues()) {
+        if (!getEnumType().isExtensible()) {
             List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributes(false);
             for (IEnumAttribute enumAttribute : enumAttributes) {
                 if (enumAttribute.isMultilingual()) {
@@ -256,7 +256,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         // the method getEnumValueId is only needed for enumerations with separated content
-        if (getEnumType().isContainingValues()) {
+        if (!getEnumType().isExtensible()) {
             return;
         }
         IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
@@ -309,7 +309,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * is not abstract.
          */
         IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
-        if (enumType.isContainingValues() && !(enumType.isAbstract()) && literalNameAttribute != null) {
+        if (!enumType.isExtensible() && !(enumType.isAbstract()) && literalNameAttribute != null) {
             // Go over all model side defined enum values
             List<IEnumValue> enumValues = enumType.getEnumValues();
 
@@ -367,7 +367,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment repositoryExp = expressionCompiler.getRuntimeRepositoryExpression();
 
         JavaCodeFragment fragment = new JavaCodeFragment();
-        if (enumTypeAdapter.getEnumType().isContainingValues()) {
+        if (!enumTypeAdapter.getEnumType().isExtensible()) {
             IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
                     enumTypeAdapter.getEnumValueContainer().getIpsProject());
             if (enumValue == null) {
@@ -505,7 +505,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         ArgumentCheck.notNull(enumType);
 
-        if (enumType.isContainingValues()) {
+        if (!enumType.isExtensible()) {
             IEnumAttribute enumAttribute = enumType.findIdentiferAttribute(getIpsProject());
             if (enumAttribute != null) {
                 DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(
@@ -691,11 +691,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private boolean isGenerateAttributeCode(IEnumAttribute currentEnumAttribute) {
         return !(useClassGeneration() && currentEnumAttribute.isInherited())
-                || (useClassGeneration() && !(getEnumType().isContainingValues()));
+                || (useClassGeneration() && getEnumType().isExtensible());
     }
 
     private boolean isGenerateFieldFor(IEnumAttribute enumAttribute) {
-        return !getEnumType().isContainingValues() || !enumAttribute.isMultilingual();
+        return getEnumType().isExtensible() || !enumAttribute.isMultilingual();
     }
 
     /** The first character will be made lower case. */
@@ -717,7 +717,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         IEnumType enumType = getEnumType();
-        if (!enumType.isContainingValues() || enumType.isAbstract()) {
+        if (enumType.isExtensible() || enumType.isAbstract()) {
             return;
         }
         int constructorVisibility = (useClassGeneration() && enumType.isAbstract()) ? Modifier.PROTECTED
@@ -781,7 +781,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         IEnumType enumType = getEnumType();
-        if (enumType.isContainingValues() || enumType.isAbstract()) {
+        if (!enumType.isExtensible() || enumType.isAbstract()) {
             return;
         }
         generatePublicConstructor(constructorBuilder, Modifier.PUBLIC);
@@ -790,7 +790,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
             throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!enumType.isValid(getIpsProject()) || enumType.isContainingValues() || enumType.isAbstract()) {
+        if (enumType.isValid(getIpsProject()) || enumType.isExtensible() || enumType.isAbstract()) {
             return;
         }
         List<IEnumAttribute> enumAttributesIncludeSupertypeCopies = enumType
@@ -857,7 +857,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private boolean isExpressionForEnumDatatype(DatatypeHelper helper) {
         if (helper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
-            if (!enumHelper.getEnumType().isContainingValues()) {
+            if (enumHelper.getEnumType().isExtensible()) {
                 return true;
             }
         }
@@ -898,7 +898,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean isIndexFieldRequired() {
-        return !getEnumType().isContainingValues() || isGenerateMethodCompareTo();
+        return getEnumType().isExtensible() || isGenerateMethodCompareTo();
     }
 
     private void createIndexInitialization(JavaCodeFragment constructorMethodBody) {
@@ -979,7 +979,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (useEnumGeneration()) {
             return true;
         }
-        if ((useClassGeneration() && !(enumType.isContainingValues()))) {
+        if ((useClassGeneration() && enumType.isExtensible())) {
             return true;
         }
         if (!(useClassGeneration() && currentEnumAttribute.isInherited())) {
@@ -1031,7 +1031,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!(enumType.isContainingValues()) || enumType.isAbstract()) {
+        if (enumType.isExtensible() || enumType.isAbstract()) {
             return;
         }
 
@@ -1120,7 +1120,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodIsValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!(enumType.isContainingValues()) || enumType.isAbstract()) {
+        if (enumType.isExtensible() || enumType.isAbstract()) {
             return;
         }
 
@@ -1165,7 +1165,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (useEnumGeneration() || enumType.isAbstract() || !(enumType.isContainingValues())) {
+        if (useEnumGeneration() || enumType.isAbstract() || enumType.isExtensible()) {
             return;
         }
 
@@ -1223,7 +1223,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodReadResolve(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!(useClassGeneration()) || enumType.isAbstract() || !enumType.isContainingValues()) {
+        if (!(useClassGeneration()) || enumType.isAbstract() || enumType.isExtensible()) {
             return;
         }
 
@@ -1234,7 +1234,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return "); //$NON-NLS-1$
-        if (enumType.isContainingValues()) {
+        if (!enumType.isExtensible()) {
             methodBody.append(getMethodNameGetValueBy(identifierAttribute));
             methodBody.append('(');
             if (identifierAttribute.isInherited()) {
@@ -1340,7 +1340,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     boolean isGenerateMethodCompareTo() {
-        return !getEnumType().isContainingValues() && !useInterfaceGeneration();
+        return getEnumType().isExtensible() && !useInterfaceGeneration();
     }
 
     /**

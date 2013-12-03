@@ -272,7 +272,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Set properties.
         newEnumType.setAbstract(isAbstractField.getValue());
-        newEnumType.setContainingValues(extensibleField.getValue().booleanValue());
+        newEnumType.setExtensible(extensibleField.getValue().booleanValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
         newEnumType.setEnumContentName(enumContentQualifiedNameField.getText());
 

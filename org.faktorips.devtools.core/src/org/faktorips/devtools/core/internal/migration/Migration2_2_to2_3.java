@@ -247,7 +247,7 @@ public class Migration2_2_to2_3 {
                     currentTableStructure.getName(), true, null);
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
             newEnumType.setAbstract(true);
-            newEnumType.setContainingValues(false);
+            newEnumType.setExtensible(false);
 
             String oldDescription = currentTableStructure.getDescriptions().toArray(new IDescription[1])[0].getText();
             IDescription description = newEnumType.newDescription();
@@ -331,7 +331,7 @@ public class Migration2_2_to2_3 {
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
             newEnumType.setSuperEnumType(currentTableContents.getTableStructure());
             newEnumType.setAbstract(false);
-            newEnumType.setContainingValues(true);
+            newEnumType.setExtensible(true);
 
             // Inherit the EnumAttributes.
             newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(ipsProject));

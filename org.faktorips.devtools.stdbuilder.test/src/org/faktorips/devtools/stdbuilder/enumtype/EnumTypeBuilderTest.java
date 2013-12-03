@@ -68,7 +68,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
         enumType.setAbstract(true);
-        enumType.setContainingValues(true);
+        enumType.setExtensible(true);
         enumType.setSuperEnumType(superEnumType.getQualifiedName());
         idAttribute = enumType.newEnumAttribute();
         idAttribute.setName("id");
@@ -204,7 +204,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGenerateMethodeCompareToOtherEnum_withContentSeperatedEnum() throws Exception {
-        enumType.setContainingValues(false);
+        enumType.setExtensible(false);
         builder.beforeBuild(enumType.getIpsSrcFile(), null);
 
         assertTrue(builder.isGenerateMethodCompareTo());

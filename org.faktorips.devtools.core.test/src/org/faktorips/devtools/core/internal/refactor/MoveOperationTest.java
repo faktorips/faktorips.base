@@ -384,7 +384,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
             InterruptedException {
 
         IEnumType enumType = newEnumType(ipsRoot, "model.EnumType");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         enumType.setEnumContentName("model.deep.EnumType");
         IEnumContent enumContent = newEnumContent(enumType, "model.deep.EnumType");
 

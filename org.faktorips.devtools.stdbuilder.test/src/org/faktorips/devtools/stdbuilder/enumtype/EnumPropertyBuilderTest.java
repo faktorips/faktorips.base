@@ -66,7 +66,7 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
         when(builderSet.getIpsProject()).thenReturn(ipsProject);
         when(builderSet.getLanguageUsedInGeneratedSourceCode()).thenReturn(Locale.GERMAN);
         enumType = newEnumType(ipsProject, "AnyEnumType");
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         ipsSrcFile = enumType.getIpsSrcFile();
         when(enumTypeBuilder.getRelativeJavaFile(ipsSrcFile)).thenReturn(new Path("/org/package/AnyEnumType.java"));
     }
@@ -139,6 +139,19 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGeneratePropertyFile_noChanges() throws Exception {
+        EnumPropertyGenerator enumPropertyGenerator = mock(EnumPropertyGenerator.class);
+        when(enumPropertyGenerator.getLocale()).thenReturn(Locale.GERMAN);
+        createEnumAttributes();
+        enumType.newEnumValue();
+        enumPropertyBuilder.build(ipsSrcFile);
+
+        enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
+
+        verify(enumPropertyGenerator, times(0)).getStream(anyString());
+    }
+
+    @Test
     public void testGeneratePropertyFile_changes() throws Exception {
         EnumPropertyGenerator enumPropertyGenerator = mock(EnumPropertyGenerator.class);
         when(enumPropertyGenerator.getLocale()).thenReturn(Locale.GERMAN);
@@ -150,18 +163,5 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
         enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
 
         verify(enumPropertyGenerator, times(1)).getStream(anyString());
-    }
-
-    @Test
-    public void testGeneratePropertyFile_noChanges() throws Exception {
-        EnumPropertyGenerator enumPropertyGenerator = mock(EnumPropertyGenerator.class);
-        when(enumPropertyGenerator.getLocale()).thenReturn(Locale.GERMAN);
-        createEnumAttributes();
-        enumType.newEnumValue();
-        enumPropertyBuilder.build(ipsSrcFile);
-
-        enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
-
-        verify(enumPropertyGenerator, times(0)).getStream(anyString());
     }
 }

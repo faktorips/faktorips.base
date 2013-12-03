@@ -601,7 +601,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             throws CoreException {
 
         EnumType enumType = newEnumType(ipsProject, qualifiedName);
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.newEnumLiteralNameAttribute();
         IEnumAttribute idAttr = enumType.newEnumAttribute();
         idAttr.setName("id");

@@ -95,7 +95,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsPluginT
 
         IEnumType enumType = newEnumType(ipsProject, name);
         enumType.setAbstract(false);
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.setSuperEnumType(superEnumType != null ? superEnumType.getQualifiedName() : "");
 
         IEnumAttribute idAttribute = enumType.newEnumAttribute();

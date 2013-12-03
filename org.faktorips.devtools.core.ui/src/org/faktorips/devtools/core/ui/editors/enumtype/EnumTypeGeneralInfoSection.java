@@ -193,7 +193,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
          * Initialize enumeration content field if none has been specified yet and the values are
          * not part of the model.
          */
-        if (!(enumType.isContainingValues()) && enumContentNameControl.getText().length() == 0) {
+        if ((enumType.isExtensible()) && enumContentNameControl.getText().length() == 0) {
             enumContentNameControl.setText(enumType.getQualifiedName());
         }
 
@@ -212,7 +212,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private void wholeContentChanged() {
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+                !(enumType.isAbstract()) && (enumType.isExtensible()));
     }
 
     @Override

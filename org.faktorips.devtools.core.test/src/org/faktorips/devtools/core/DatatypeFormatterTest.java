@@ -36,7 +36,7 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
 
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
-        enum1.setContainingValues(true);
+        enum1.setExtensible(true);
         enum1.newEnumLiteralNameAttribute();
 
         IEnumAttribute attr1 = enum1.newEnumAttribute();

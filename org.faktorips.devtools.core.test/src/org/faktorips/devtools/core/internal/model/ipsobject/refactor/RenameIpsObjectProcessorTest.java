@@ -228,7 +228,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     @Test
     public void testRenameEnumContent() throws CoreException {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         enumType.setEnumContentName("EnumContent");
         IEnumContent enumContent = newEnumContent(enumType, "EnumContent");
 

@@ -780,7 +780,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (!includeAbstract && currentEnumType.isAbstract()) {
                 continue;
             }
-            if (!includeNotContainingValues && !(currentEnumType.isContainingValues())) {
+            if (!includeNotContainingValues && currentEnumType.isExtensible()) {
                 continue;
             }
             filteredList.add(currentEnumType);
@@ -986,13 +986,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IEnumContent findEnumContent(IEnumType enumType) throws CoreException {
         ArgumentCheck.notNull(enumType, this);
-        if (enumType.isContainingValues()) {
-            return null;
-        }
-        IIpsSrcFile enumContentSrcFile = findIpsSrcFile(IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
 
-        if (enumContentSrcFile != null && enumContentSrcFile.exists()) {
-            return (IEnumContent)enumContentSrcFile.getIpsObject();
+        if (enumType.isExtensible()) {
+            IIpsSrcFile enumContentSrcFile = findIpsSrcFile(IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
+            if (enumContentSrcFile != null && enumContentSrcFile.exists()) {
+                return (IEnumContent)enumContentSrcFile.getIpsObject();
+            }
         }
         return null;
     }
@@ -1063,7 +1062,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         List<IEnumType> enumTypeList = findEnumTypes(includeAbstract, true);
         for (IEnumType enumType : enumTypeList) {
-            if (enumType.isContainingValues()) {
+            if (!enumType.isExtensible()) {
                 result.add(new EnumTypeDatatypeAdapter(enumType, null));
                 continue;
             }
@@ -1199,7 +1198,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
         if (enumTypeSrcFile != null && enumTypeSrcFile.exists()) {
             IEnumType enumType = (IEnumType)enumTypeSrcFile.getIpsObject();
-            if (enumType.isContainingValues()) {
+            if (!enumType.isExtensible()) {
                 return new EnumTypeDatatypeAdapter(enumType, null);
             }
             IEnumContent enumContent = ipsProject.findEnumContent(enumType);

@@ -55,7 +55,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     @Test
     public void testGetJavaClassName() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = enumType.newEnumAttribute();
@@ -130,7 +130,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         idList = Arrays.asList(ids);
         assertTrue(idList.contains(null));
 
-        paymentModeAdapter.getEnumType().setContainingValues(false);
+        paymentModeAdapter.getEnumType().setExtensible(true);
         ids = paymentModeAdapter.getAllValueIds(true);
         idList = Arrays.asList(ids);
         assertEquals(1, ids.length);
@@ -141,7 +141,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
 
         IEnumType color = newEnumType(ipsProject, "Color");
         color.setAbstract(false);
-        color.setContainingValues(true);
+        color.setExtensible(false);
         color.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = color.newEnumAttribute();
@@ -167,7 +167,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     @Test
     public void testGetAllValueIds2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
         String[] result = adapter.getAllValueIds(true);
         assertEquals(1, result.length);
@@ -178,6 +178,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
 
     @Test
     public void testGetValueName() {
+        paymentMode.setExtensible(true);
         assertNotNull(paymentModeAdapter.getValueName("P1"));
         assertNotNull(paymentModeAdapter.getValueName("P2"));
         assertNull(paymentModeAdapter.getValueName("quarterly"));
@@ -186,7 +187,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     @Test
     public void testGetValueName2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         IEnumLiteralNameAttribute literalNameAttribute = enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
         assertNull(adapter.getValueName(null));
@@ -204,7 +205,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         enumType.deleteEnumAttributeWithValues(literalNameAttribute);
         IEnumContent content = newEnumContent(enumType, "EnumContent");
         IEnumValue enumValue = content.newEnumValue();
@@ -246,7 +247,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     @Test
     public void testEquals() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = enumType.newEnumAttribute();
@@ -271,7 +272,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         assertEquals(adapter, adapter);
 
         IEnumType enumType2 = newEnumType(ipsProject, "a.EnumType");
-        enumType2.setContainingValues(true);
+        enumType2.setExtensible(false);
 
         IEnumAttribute id2 = enumType2.newEnumAttribute();
         id2.setName("id");
@@ -299,7 +300,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     @Test
     public void testEquals2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
@@ -333,7 +334,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     @Test
     public void testHashCode() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");

@@ -32,7 +32,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractStdBuilderTest {
     public void testHelper() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         paymentMode.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = paymentMode.newEnumAttribute();

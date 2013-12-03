@@ -222,7 +222,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     @Test
     public void testMoveEnumContent() throws CoreException {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         enumType.setEnumContentName(ORIGINAL_PACKAGE_NAME + '.' + "EnumContent");
         IEnumContent enumContent = newEnumContent(enumType, ORIGINAL_PACKAGE_NAME + '.' + "EnumContent");
 

@@ -103,7 +103,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     @Test
     public void testRenameEnumAttributeUsedInLiteralName() throws CoreException {
         IEnumType modelEnumType = newEnumType(ipsProject, "ModelEnumType");
-        modelEnumType.setContainingValues(true);
+        modelEnumType.setExtensible(false);
 
         IEnumAttribute enumAttribute = modelEnumType.newEnumAttribute();
         enumAttribute.setName("id");

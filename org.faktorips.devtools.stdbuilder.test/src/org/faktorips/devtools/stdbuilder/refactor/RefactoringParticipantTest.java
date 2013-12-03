@@ -151,7 +151,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
 
         IEnumType enumType = newEnumType(ipsProject, name);
         enumType.setAbstract(false);
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.setSuperEnumType(superEnumType != null ? superEnumType.getQualifiedName() : "");
 
         IEnumAttribute idAttribute = enumType.newEnumAttribute();

@@ -292,7 +292,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     @Test
     public void testRenameEnumType() throws CoreException {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         enumType.setEnumContentName("EnumContent");
 
         saveIpsSrcFile(enumType);

@@ -129,7 +129,7 @@ public abstract class EnumContentValidations {
 
         // Values are part of model?
         IEnumType enumTypeRef = (IEnumType)enumSrcFile.getIpsObject();
-        if (enumTypeRef.isContainingValues()) {
+        if (!enumTypeRef.isExtensible()) {
             text = NLS.bind(Messages.EnumContent_ValuesArePartOfType, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE, text,
                     Message.ERROR, objectProperties));

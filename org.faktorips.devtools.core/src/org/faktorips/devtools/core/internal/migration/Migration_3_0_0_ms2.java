@@ -47,7 +47,7 @@ public class Migration_3_0_0_ms2 extends DefaultMigration {
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE)) {
             IEnumType enumType = (IEnumType)srcFile.getIpsObject();
-            if (enumType.isContainingValues()) {
+            if (enumType.isExtensible()) {
                 int literalIndex = enumType.getIndexOfEnumLiteralNameAttribute();
                 if (literalIndex == -1) {
                     return;

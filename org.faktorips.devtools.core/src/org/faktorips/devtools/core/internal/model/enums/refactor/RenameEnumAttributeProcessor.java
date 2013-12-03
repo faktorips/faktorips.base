@@ -26,8 +26,8 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -64,7 +64,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
             for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
                 result.add(ipsSrcFile);
             }
-            if (!(getEnumType().isContainingValues())) {
+            if ((getEnumType().isExtensible())) {
                 IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
                 if (enumContent != null) {
                     result.add(enumContent.getIpsSrcFile());
@@ -88,7 +88,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         addAffectedSrcFiles(modificationSet);
         updateSubclassReferences();
         if (!(getEnumType().isAbstract())) {
-            if (getEnumType().isContainingValues()) {
+            if (!getEnumType().isExtensible()) {
                 updateLiteralNameReference();
             } else {
                 updateEnumContentReference();

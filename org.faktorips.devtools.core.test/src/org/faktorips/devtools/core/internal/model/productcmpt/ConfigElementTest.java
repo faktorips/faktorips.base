@@ -199,7 +199,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateParsableEnumTypeDatatype() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         enumType.newEnumLiteralNameAttribute();
 
         IEnumAttribute id = enumType.newEnumAttribute();

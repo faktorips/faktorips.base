@@ -89,7 +89,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     private void createPaymentModeEnum() throws Exception {
         paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         IEnumLiteralNameAttribute literalNameAttribute = paymentMode.newEnumLiteralNameAttribute();
         literalNameAttribute.setDefaultValueProviderAttribute("name");
 
@@ -118,7 +118,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     private void createGenderEnum() throws CoreException {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
         genderEnumType.setAbstract(false);
-        genderEnumType.setContainingValues(false);
         genderEnumType.setExtensible(true);
         genderEnumType.setSuperEnumType("");
         genderEnumType.setEnumContentName(ENUMCONTENTS_NAME);

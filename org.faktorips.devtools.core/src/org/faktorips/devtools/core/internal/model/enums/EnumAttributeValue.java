@@ -207,7 +207,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
         IEnumType enumType = enumAttribute.getEnumType();
         if (enumValueContainer instanceof IEnumType) {
-            if (enumType.isAbstract() || !(enumType.isContainingValues())) {
+            if (enumType.isAbstract() || enumType.isExtensible()) {
                 return;
             }
         }

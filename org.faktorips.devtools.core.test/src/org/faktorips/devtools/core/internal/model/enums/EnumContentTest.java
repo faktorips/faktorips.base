@@ -114,11 +114,11 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         // Test values are part of type.
         ipsModel.clearValidationCache();
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         validationMessageList = genderEnumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE));
-        genderEnumType.setContainingValues(false);
+        genderEnumType.setExtensible(true);
 
         // Test EnumType is abstract.
         ipsModel.clearValidationCache();
@@ -229,9 +229,9 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setAbstract(false);
         assertFalse(genderEnumContent.isFixToModelRequired());
 
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         assertTrue(genderEnumContent.isFixToModelRequired());
-        genderEnumType.setContainingValues(false);
+        genderEnumType.setExtensible(true);
         assertFalse(genderEnumContent.isFixToModelRequired());
 
         genderEnumContent.setEnumType("foo");

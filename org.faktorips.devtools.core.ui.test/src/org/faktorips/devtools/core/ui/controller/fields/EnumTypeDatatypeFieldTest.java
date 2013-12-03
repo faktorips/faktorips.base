@@ -50,7 +50,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
         enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
-        enum1.setContainingValues(true);
+        enum1.setExtensible(true);
         enum1.newEnumLiteralNameAttribute();
 
         IEnumAttribute attr1 = enum1.newEnumAttribute();
@@ -117,7 +117,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     public void testGetDatatypeValueIdsWithEnumContent() throws Exception {
         Shell shell = new Shell(Display.getDefault());
 
-        enum1.setContainingValues(false);
+        enum1.setExtensible(true);
         enum1.deleteEnumAttributeWithValues(enum1.getEnumLiteralNameAttribute());
         enum1.setEnumContentName(enum1.getIpsPackageFragment().getName());
 

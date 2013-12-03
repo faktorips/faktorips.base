@@ -272,7 +272,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     private void createEnumModel() throws CoreException {
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
         enumType.setEnumContentName(ENUM_CONTENT_NAME);
-        enumType.setContainingValues(false);
+        enumType.setExtensible(true);
         enumType.setAbstract(false);
         enumAttribute = enumType.newEnumAttribute();
         enumAttribute.setName(ENUM_ATTRIBUTE_NAME);
@@ -283,7 +283,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
         valuedEnumType = newEnumType(ipsProject, "ValuedEnumType");
         valuedEnumType.setAbstract(false);
-        valuedEnumType.setContainingValues(true);
+        valuedEnumType.setExtensible(false);
 
         IEnumAttribute idAttribute = valuedEnumType.newEnumAttribute();
         idAttribute.setName("id");

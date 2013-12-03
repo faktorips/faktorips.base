@@ -76,6 +76,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isAbstract());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetSetContainingValues() {
         assertFalse(genderEnumType.isContainingValues());
@@ -88,7 +89,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setExtensible(false);
         assertFalse(genderEnumType.isExtensible());
         genderEnumType.setExtensible(true);
-        assertTrue(genderEnumType.isExtensible());
     }
 
     @Test
@@ -276,7 +276,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testNewEnumLiteralNameAttribute() throws CoreException {
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         IEnumValue modelSideEnumValue = genderEnumType.newEnumValue();
         IEnumLiteralNameAttribute literal = genderEnumType.newEnumLiteralNameAttribute();
         assertEquals(literal, genderEnumType.getEnumLiteralNameAttribute());
@@ -307,7 +307,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumAttribute newEnumAttribute = genderEnumType.newEnumAttribute();
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
 
         IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValues().get(1);
@@ -357,7 +357,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValues().get(1);
 
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         genderEnumType.moveEnumAttribute(genderEnumAttributeName, true);
 
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes(true).get(0));
@@ -377,7 +377,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumAttribute newEnumAttribute = genderEnumType.newEnumAttribute();
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
 
         IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValues().get(1);
@@ -425,7 +425,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValues().get(1);
 
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
 
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes(true).get(0));
@@ -439,7 +439,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws CoreException, ParserConfigurationException {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         newEnumType.setAbstract(true);
-        newEnumType.setContainingValues(true);
         newEnumType.setExtensible(true);
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         newEnumType.setEnumContentName("bar");
@@ -448,7 +447,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         Element xmlElement = newEnumType.toXml(createXmlDocument(IEnumType.XML_TAG));
 
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
-        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_CONTAINING_VALUES)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_EXTENSIBLE)));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_NAME));
@@ -456,7 +454,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
-        assertTrue(loadedEnumType.isContainingValues());
         assertTrue(loadedEnumType.isExtensible());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
         assertEquals("bar", loadedEnumType.getEnumContentName());
@@ -464,7 +461,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testIsExtensibleAndSavingValuesInType() throws CoreException {
         IEnumType extensibleEnumType = newEnumType(ipsProject, "ExtensibleEnum");
-        extensibleEnumType.setExtensible(true);
+        extensibleEnumType.setExtensible(false);
         assertNull(extensibleEnumType.getEnumValues());
         IEnumAttribute enumAttributeId = extensibleEnumType.newEnumAttribute();
         IEnumAttribute enumAttributeName = extensibleEnumType.newEnumAttribute();
@@ -573,7 +570,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testValidateLiteralNameAttribute() throws CoreException {
         genderEnumType.setExtensible(false);
-        genderEnumType.setContainingValues(true);
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE));
@@ -583,12 +579,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isValid(ipsProject));
 
         genderEnumType.setAbstract(false);
-        genderEnumType.setContainingValues(false);
         genderEnumType.setExtensible(true);
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid(ipsProject));
 
-        genderEnumType.setContainingValues(true);
         genderEnumType.setExtensible(false);
         genderEnumType.newEnumLiteralNameAttribute();
         getIpsModel().clearValidationCache();
@@ -632,12 +626,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testValidateObsoleteValues() throws CoreException {
         paymentMode.setEnumContentName("EnumContentPlaceholder");
-        paymentMode.setContainingValues(false);
+        paymentMode.setExtensible(true);
         MessageList validationMessageList = paymentMode.validate(ipsProject);
         assertEquals(0, validationMessageList.getNoOfMessages(Message.WARNING));
         assertNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE));
 
-        paymentMode.setContainingValues(true);
+        paymentMode.setExtensible(false);
         paymentMode.setAbstract(true);
         getIpsModel().clearValidationCache();
         validationMessageList = paymentMode.validate(ipsProject);
@@ -655,7 +649,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         paymentMode.setEnumContentName(ENUMCONTENTS_NAME);
         assertTrue(paymentMode.isValid());
 
-        paymentMode.setContainingValues(false);
         paymentMode.setExtensible(true);
         paymentMode.deleteEnumValues(paymentMode.getEnumValues());
         paymentMode.deleteEnumAttributeWithValues(paymentMode.getEnumLiteralNameAttribute());
@@ -677,7 +670,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testValidate_performance() throws Exception {
         EnumType enumType = newEnumType(ipsProject, "PerformanceTestEnum");
-        enumType.setContainingValues(true);
+        enumType.setExtensible(false);
         for (int column = 0; column < 10; column++) {
             IEnumAttribute enumAttribute = enumType.newEnumAttribute();
             enumAttribute.setUnique(true);
@@ -1103,7 +1096,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testFindIsUsedAsIdInFaktorIpsUiAttribute() throws Exception {
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
-        enum1.setContainingValues(true);
+        enum1.setExtensible(false);
 
         IEnumAttribute attr1 = enum1.newEnumAttribute();
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
@@ -1130,7 +1123,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testfindIsUsedAsNameInFaktorIpsUiAttribute() throws Exception {
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
-        enum1.setContainingValues(true);
+        enum1.setExtensible(false);
 
         IEnumAttribute attr1 = enum1.newEnumAttribute();
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
@@ -1191,7 +1184,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isCapableOfContainingValues());
         genderEnumType.setAbstract(true);
         genderEnumType.setAbstract(true);
-        genderEnumType.setContainingValues(true);
+        genderEnumType.setExtensible(false);
         assertFalse(genderEnumType.isCapableOfContainingValues());
         genderEnumType.setAbstract(false);
         assertTrue(genderEnumType.isCapableOfContainingValues());

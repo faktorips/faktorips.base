@@ -503,7 +503,7 @@ public class FixEnumContentWizard extends Wizard {
 
             IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
             if (enumType != null) {
-                if (!(enumType.isAbstract()) && !(enumType.isContainingValues())) {
+                if (!(enumType.isAbstract()) && enumType.isExtensible()) {
                     enumTypeRefControl.setText(enumType.getQualifiedName());
                 }
             }
@@ -536,7 +536,7 @@ public class FixEnumContentWizard extends Wizard {
                         setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract);
                         pageComplete = false;
                     }
-                    if (newEnumType.isContainingValues()) {
+                    if (!newEnumType.isExtensible()) {
                         setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel);
                         pageComplete = false;
                     }

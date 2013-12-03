@@ -232,7 +232,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     @Ignore("Only performance messure, no real test")
     public void testUniqueIdentifierValidationPerformance() throws CoreException {
         IEnumType hugeEnumType = newEnumType(ipsProject, "HugeEnumType");
-        hugeEnumType.setContainingValues(true);
+        hugeEnumType.setExtensible(false);
         IEnumLiteralNameAttribute literalNameAttribute = hugeEnumType.newEnumLiteralNameAttribute();
         literalNameAttribute.setDefaultValueProviderAttribute("id");
         IEnumAttribute idAttribute = hugeEnumType.newEnumAttribute();

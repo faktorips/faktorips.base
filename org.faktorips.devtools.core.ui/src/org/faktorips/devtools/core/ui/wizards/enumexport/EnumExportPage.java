@@ -140,18 +140,22 @@ public class EnumExportPage extends IpsObjectExportPage {
             if (element instanceof IIpsSrcFile) {
                 IIpsSrcFile src = (IIpsSrcFile)element;
                 IpsObjectType ipsObjectType = src.getIpsObjectType();
-                if (ipsObjectType.equals(IpsObjectType.ENUM_TYPE)) {
-                    IEnumType enumType = (IEnumType)src.getIpsObject();
-                    if (!(enumType.isAbstract()) && enumType.isContainingValues()) {
-                        setEnum(enumType);
-                    }
-                } else if (ipsObjectType.equals(IpsObjectType.ENUM_CONTENT)) {
-                    IEnumContent enumContent = (IEnumContent)src.getIpsObject();
-                    setEnum(enumContent);
-                }
+                setDefaultByEnumValueContainer(src, ipsObjectType);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void setDefaultByEnumValueContainer(IIpsSrcFile src, IpsObjectType ipsObjectType) throws CoreException {
+        if (ipsObjectType.equals(IpsObjectType.ENUM_TYPE)) {
+            IEnumType enumType = (IEnumType)src.getIpsObject();
+            if (!(enumType.isAbstract()) && !(enumType.isExtensible())) {
+                setEnum(enumType);
+            }
+        } else if (ipsObjectType.equals(IpsObjectType.ENUM_CONTENT)) {
+            IEnumContent enumContent = (IEnumContent)src.getIpsObject();
+            setEnum(enumContent);
         }
     }
 

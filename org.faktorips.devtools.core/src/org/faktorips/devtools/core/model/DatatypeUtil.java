@@ -36,7 +36,7 @@ public class DatatypeUtil {
             return false;
         }
         IEnumType enumType = ((EnumTypeDatatypeAdapter)datatype).getEnumType();
-        return !enumType.isContainingValues();
+        return enumType.isExtensible();
     }
 
 }

@@ -471,7 +471,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                 List<IEnumType> retEnumTypes = new ArrayList<IEnumType>(enumTypesInProject.size() / 2);
                 for (IEnumType currentEnumType : enumTypesInProject) {
                     String enumContentName = currentEnumType.getEnumContentName();
-                    if (currentEnumType.isContainingValues() || enumContentName.length() == 0) {
+                    if (!(currentEnumType.isExtensible()) || enumContentName.length() == 0) {
                         continue;
                     }
                     if (ipsProject.findEnumContent(currentEnumType) == null) {

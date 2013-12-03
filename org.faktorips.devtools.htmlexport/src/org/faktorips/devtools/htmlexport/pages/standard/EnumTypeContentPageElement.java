@@ -154,15 +154,13 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
     @Override
     public void build() {
         super.build();
-
         addAttributesTable();
 
-        if (getDocumentedIpsObject().isContainingValues()) {
+        if (!(getDocumentedIpsObject().isExtensible())) {
             addValuesTable();
         } else {
             addEnumContentsList();
         }
-
     }
 
     /**

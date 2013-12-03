@@ -74,7 +74,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         e.setProductCmptType("");
 
         enum1 = newEnumType(root, "AnEnum1");
-        enum1.setContainingValues(true);
+        enum1.setExtensible(false);
         enum1.newEnumLiteralNameAttribute();
         IEnumAttribute idAttr = enum1.newEnumAttribute();
         idAttr.setDatatype(Datatype.STRING.getQualifiedName());

@@ -296,7 +296,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
             EnumTypeDatatypeAdapter enumDatatypeAdapter = (EnumTypeDatatypeAdapter)ipsDatatype;
             IEnumType enumDatatype = enumDatatypeAdapter.getEnumType();
-            if (enumType.isContainingValues() && !(enumDatatype.isContainingValues())) {
+            if (!(enumType.isExtensible()) && enumDatatype.isExtensible()) {
                 text = NLS.bind(Messages.EnumAttribute_EnumDatatypeDoesNotContainValuesButParentEnumTypeDoes,
                         enumDatatype.getQualifiedName());
                 validationMessage = new Message(

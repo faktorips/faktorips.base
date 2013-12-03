@@ -141,7 +141,7 @@ public interface ITableFormat {
     /**
      * The file to import can either contain attributes of an enumeration (therefore defining a
      * structure) or enumeration values. In case of enumeration values the decision where to store
-     * them is based on {@link IEnumType#isContainingValues()}.
+     * them is based on {@link IEnumType#isExtensible()}.
      * 
      * @param valueContainer The destination of the import.
      * @param filename The name of the file to import from.
@@ -177,7 +177,7 @@ public interface ITableFormat {
     /**
      * The file to export can either contain attributes of an enumeration (therefore defining a
      * structure) or enumeration values. In case of enumeration values the decision where to store
-     * them is based on {@link IEnumType#isContainingValues()}.
+     * them is based on {@link IEnumType#isExtensible()}.
      * 
      * @param valueContainer The destination of the export.
      * @param filename The name of the file to export from.

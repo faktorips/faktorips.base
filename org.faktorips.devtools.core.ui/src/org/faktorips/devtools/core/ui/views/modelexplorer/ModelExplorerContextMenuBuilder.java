@@ -344,7 +344,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     private boolean isRootArchive(Object object) {
         IIpsPackageFragmentRoot root = getPackageFragmentRoot(object);
         if (root != null) {
-                return root.getIpsStorage() != null;
+            return root.getIpsStorage() != null;
         }
         return false;
     }
@@ -411,7 +411,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 IEnumType enumType = (IEnumType)selected;
                 try {
                     enumType = (IEnumType)enumType.getIpsSrcFile().getIpsObject();
-                    show = !(enumType.isAbstract()) && enumType.isContainingValues();
+                    show = !(enumType.isAbstract()) && !(enumType.isExtensible());
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
@@ -504,6 +504,5 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         properties.setEnabled(propertiesAction.isEnabledFor(selected));
         manager.add(properties);
     }
-
 
 }
