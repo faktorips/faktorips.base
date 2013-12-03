@@ -301,8 +301,8 @@ public class EnumTypePage extends IpsObjectPage {
             }
         }
 
-        // Create literal name attribute if not abstract.
-        if (!((Boolean)isAbstractField.getValue())) {
+        // Create literal name attribute if not abstract and not extensible.
+        if (!((Boolean)isAbstractField.getValue()) && !((Boolean)extensibleField.getValue())) {
             IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
             IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
             literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
