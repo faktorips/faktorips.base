@@ -42,31 +42,28 @@ public class UniqueKeysProposalProviderTest {
     @Mock
     private IIndex index2;
 
+    @Mock
+    private ForeignKeyPMO pmo;
+
     private IContentProposal[] proposals;
 
     @Before
     public void setUp() {
-
-        uniqueKeylist = new ArrayList<IIndex>();
-        uniqueKeylist.add(index1);
-        uniqueKeylist.add(index2);
-        IIndex[] uniqueKeysStructure = uniqueKeylist.toArray(new IIndex[0]);
-        proposalProvider = new UniqueKeysProposalProvider();
-        proposalProvider.setUniqueKeys(uniqueKeysStructure);
-
+        proposalProvider = new UniqueKeysProposalProvider(pmo);
         when(index1.getName()).thenReturn("firstResult");
         when(index2.getName()).thenReturn("secondResult");
     }
 
     @Test
     public void test_getProposal_uniqueKeysAreNull() {
-        UniqueKeysProposalProvider proposalProviderEmpty = new UniqueKeysProposalProvider();
+        UniqueKeysProposalProvider proposalProviderEmpty = new UniqueKeysProposalProvider(pmo);
         proposals = proposalProviderEmpty.getProposals("", 0);
         assertTrue(proposals.length == 0);
     }
 
     @Test
     public void test_getProposal_emptyInput() {
+        setUpKeyList();
         proposals = proposalProvider.getProposals("", 0);
         IContentProposal proposal1 = proposals[0];
 
@@ -80,6 +77,7 @@ public class UniqueKeysProposalProviderTest {
 
     @Test
     public void test_getProposal_falseInput() {
+        setUpKeyList();
         proposals = proposalProvider.getProposals("NotFIRST", 8);
 
         assertTrue(proposals.length == 0);
@@ -87,10 +85,20 @@ public class UniqueKeysProposalProviderTest {
 
     @Test
     public void test_getProposal_UpperLowerCaseInput() {
+        setUpKeyList();
         proposals = proposalProvider.getProposals("FIRST", 5);
         IContentProposal proposal1 = proposals[0];
 
         assertEquals(index1.getName(), proposal1.getLabel());
         assertTrue(proposals.length == 1);
     }
+
+    private void setUpKeyList() {
+        uniqueKeylist = new ArrayList<IIndex>();
+        uniqueKeylist.add(index1);
+        uniqueKeylist.add(index2);
+        IIndex[] uniqueKeysStructure = uniqueKeylist.toArray(new IIndex[0]);
+        when(pmo.getAvailableUniqueKeys()).thenReturn(uniqueKeysStructure);
+    }
+
 }

@@ -30,13 +30,19 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
  */
 
 public class UniqueKeysProposalProvider implements IContentProposalProvider {
+
     private IContentProposal[] EMPTY_PROPOSALS = new IContentProposal[0];
-    private IIndex[] uniqueKeys;
+
+    private final ForeignKeyPMO pmo;
+
+    public UniqueKeysProposalProvider(ForeignKeyPMO pmo) {
+        this.pmo = pmo;
+    }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
         String content = StringUtils.left(contents, position);
-        if (uniqueKeys != null) {
+        if (pmo.getAvailableUniqueKeys() != null) {
             List<IContentProposal> proposals = getProposals(content);
             return proposals.toArray(new IContentProposal[proposals.size()]);
         } else {
@@ -46,7 +52,8 @@ public class UniqueKeysProposalProvider implements IContentProposalProvider {
 
     private List<IContentProposal> getProposals(String content) {
         List<IContentProposal> proposals = new ArrayList<IContentProposal>();
-        for (IIndex uniqueKey : uniqueKeys) {
+        IIndex[] availableUniqueKeys = pmo.getAvailableUniqueKeys();
+        for (IIndex uniqueKey : availableUniqueKeys) {
             if (isMatchingContent(uniqueKey, content)) {
                 String name = uniqueKey.getName();
                 proposals.add(new ContentProposal(name, name, name));
@@ -58,10 +65,6 @@ public class UniqueKeysProposalProvider implements IContentProposalProvider {
     private boolean isMatchingContent(IIndex uniqueKey, String content) {
         String uniqueKeyName = uniqueKey.getName().toLowerCase();
         return uniqueKeyName.startsWith(content.toLowerCase());
-    }
-
-    protected void setUniqueKeys(IIndex[] newUniqueKeys) {
-        this.uniqueKeys = newUniqueKeys;
     }
 
 }

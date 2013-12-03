@@ -72,10 +72,9 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
     }
 
     protected void setupContentAssist(Text ukRefControl) {
-        contentProposalProvider = new UniqueKeysProposalProvider();
+        contentProposalProvider = new UniqueKeysProposalProvider(pmo);
         getToolkit().attachContentProposalAdapter(ukRefControl, contentProposalProvider,
                 ContentProposalAdapter.PROPOSAL_REPLACE, null);
-        pmo.setContentProvider(contentProposalProvider);
     }
 
     private void bind() {

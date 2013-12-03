@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -29,7 +30,6 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
     public static final String UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
     public static final String REFERENCE_TABLE = "referenceTable"; //$NON-NLS-1$
     private IIndex[] EMPTY_ARRAY = new IIndex[0];
-    private UniqueKeysProposalProvider contentProposalProvider = new UniqueKeysProposalProvider();
 
     public ForeignKeyPMO(IForeignKey foreignKey) {
         super(foreignKey);
@@ -40,10 +40,6 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
         return (IForeignKey)super.getIpsObjectPartContainer();
     }
 
-    protected void setContentProvider(UniqueKeysProposalProvider contentProposalProvider) {
-        this.contentProposalProvider = contentProposalProvider;
-    }
-
     public String getReferenceTable() {
         return getIpsObjectPartContainer().getReferencedTableStructure();
     }
@@ -52,8 +48,7 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
         getIpsObjectPartContainer().setReferencedTableStructure(referenceTable);
     }
 
-    public String getUniqueKey() throws CoreException {
-        contentProposalProvider.setUniqueKeys(getAllowedContent());
+    public String getUniqueKey() {
         return getIpsObjectPartContainer().getReferencedUniqueKey();
     }
 
@@ -61,14 +56,18 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
         getIpsObjectPartContainer().setReferencedUniqueKey(uniqueKey);
     }
 
-    private IIndex[] getAllowedContent() throws CoreException {
+    public IIndex[] getAvailableUniqueKeys() {
         IIpsObject ipsObject;
-        ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
-        if (ipsObject != null && ipsObject instanceof TableStructure) {
-            TableStructure tableStructure = (TableStructure)ipsObject;
-            return tableStructure.getUniqueKeys();
+        try {
+            ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
+            if (ipsObject != null && ipsObject instanceof TableStructure) {
+                TableStructure tableStructure = (TableStructure)ipsObject;
+                return tableStructure.getUniqueKeys();
+            }
+            return EMPTY_ARRAY;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
-        return EMPTY_ARRAY;
     }
 
 }
