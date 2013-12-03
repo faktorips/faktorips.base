@@ -520,6 +520,14 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public boolean hasSuperEnumType();
 
     /**
+     * Returns <tt>true</tt> if values are ONLY defined in this <tt>IEnumType</tt>. Otherwise
+     * <tt>false>/tt>.
+     * <p>
+     * This is the case when this <tt>IEnumType</tt> is not abstract and is not extensible.
+     */
+    public boolean hasEnumOnlyInternalValues();
+
+    /**
      * Returns whether this <tt>IEnumType</tt> has a super enumeration type that really exists.
      * 
      * @param ipsProject The <tt>IIpsProject</tt> that provides the object path that is used to

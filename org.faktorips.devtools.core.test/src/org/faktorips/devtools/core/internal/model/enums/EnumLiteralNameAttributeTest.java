@@ -78,6 +78,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
 
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(false);
+        paymentMode.setExtensible(true);
         getIpsModel().clearValidationCache();
         validationMessageList = literalNameAttribute.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
