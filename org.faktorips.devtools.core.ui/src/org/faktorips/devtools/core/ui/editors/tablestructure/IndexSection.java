@@ -60,7 +60,6 @@ public class IndexSection extends SimpleIpsPartsSection {
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            // return new KeyEditDialog((IIndex)part, shell);
             return new IndicesEditDialog((IIndex)part, shell);
         }
 

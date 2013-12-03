@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
  */
 
 public class UniqueKeysProposalProvider implements IContentProposalProvider {
+    private IContentProposal[] EMPTY_PROPOSALS = new IContentProposal[0];
     private IIndex[] uniqueKeys;
 
     @Override
@@ -39,7 +40,7 @@ public class UniqueKeysProposalProvider implements IContentProposalProvider {
             List<IContentProposal> proposals = getProposals(content);
             return proposals.toArray(new IContentProposal[proposals.size()]);
         } else {
-            return new IContentProposal[0];
+            return EMPTY_PROPOSALS;
         }
     }
 

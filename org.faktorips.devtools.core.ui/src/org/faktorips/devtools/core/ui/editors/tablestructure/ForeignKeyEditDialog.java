@@ -14,15 +14,11 @@
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
@@ -42,7 +38,7 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
 
     private UniqueKeysProposalProvider contentProposalProvider;
 
-    public ForeignKeyEditDialog(IKey key, Shell parentShell) {
+    public ForeignKeyEditDialog(IForeignKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialogForeignKey_titleText);
         this.pmo = new ForeignKeyPMO(key);
     }
@@ -79,29 +75,10 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
         contentProposalProvider = new UniqueKeysProposalProvider();
         getToolkit().attachContentProposalAdapter(ukRefControl, contentProposalProvider,
                 ContentProposalAdapter.PROPOSAL_REPLACE, null);
-        addListenerToRefreshContentProposalProvider();
-    }
-
-    private void addListenerToRefreshContentProposalProvider() {
-        ukRefControl.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                IIndex[] allowedContent = pmo.getAllowedContent();
-                contentProposalProvider.setUniqueKeys(allowedContent);
-            }
-        });
+        pmo.setContentProvider(contentProposalProvider);
     }
 
     private void bind() {
-        getBindingContext().bindContent(tableStructureRefField, getIpsPart(), IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
-        getBindingContext().bindContent(uniqueKeyRefField, getIpsPart(), IForeignKey.PROPERTY_REF_UNIQUE_KEY);
-
         getBindingContext().bindContent(tableStructureRefField, pmo, ForeignKeyPMO.REFERENCE_TABLE);
         getBindingContext().bindContent(uniqueKeyRefField, pmo, ForeignKeyPMO.UNIQUE_KEY);
     }

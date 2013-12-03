@@ -70,7 +70,6 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
     /** table viewer to show the key's items. */
     private TableViewer itemsViewer;
 
-    // buttons
     private Button addButton;
     private Button removeButton;
     private Button upButton;
