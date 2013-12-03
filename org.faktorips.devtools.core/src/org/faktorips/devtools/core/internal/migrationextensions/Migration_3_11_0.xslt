@@ -11,9 +11,15 @@
 	</xsl:template>
 
 	<xsl:template match="/TableStructure/UniqueKey">
-        <Index uniqueKey="true">
-            <xsl:apply-templates select="@* | node()"/>
-        </Index>
+		<Index uniqueKey="true">
+			<xsl:apply-templates select="@* | node()" />
+		</Index>
+	</xsl:template>
+
+	<xsl:template match="/EnumType/@containingValues">
+		<xsl:attribute name="extensible">
+			<xsl:value-of select="not(@containingValues)" />
+		</xsl:attribute>
 	</xsl:template>
 
 </xsl:stylesheet>

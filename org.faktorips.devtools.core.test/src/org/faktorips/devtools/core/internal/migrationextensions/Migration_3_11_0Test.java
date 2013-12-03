@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 import javax.xml.transform.TransformerException;
 
@@ -27,7 +28,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
@@ -38,6 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.w3c.dom.Document;
 
 @RunWith(MockitoJUnitRunner.class)
 public class Migration_3_11_0Test extends AbstractIpsPluginTest {
@@ -55,11 +59,11 @@ public class Migration_3_11_0Test extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testMigrate() throws Exception {
+    public void testMigrate_tableStructure() throws Exception {
         TableStructure tableStructure = newTableStructure(ipsProject, "pack.my.MyTableContent");
         IIpsSrcFile ipsSrcFile = tableStructure.getIpsSrcFile();
         IFile file = ipsSrcFile.getCorrespondingFile();
-        writeTestDocument(file);
+        writeTestDocument(file, getTableStructureTestResource());
 
         migration_3_11_0.migrate(new NullProgressMonitor());
 
@@ -76,12 +80,35 @@ public class Migration_3_11_0Test extends AbstractIpsPluginTest {
         assertTrue(index2.isUniqueKey());
     }
 
-    private void writeTestDocument(IFile file) {
+    private String getTableStructureTestResource() {
+        return getClass().getName().replaceAll("\\.", "/") + "_tableStructure.xml";
+    }
+
+    @Test
+    public void testMigrate_enumType() throws Exception {
+        EnumType enumType = newEnumType(ipsProject, "pack.my.MyEnumType");
+        IIpsSrcFile ipsSrcFile = enumType.getIpsSrcFile();
+        IFile file = ipsSrcFile.getCorrespondingFile();
+        writeTestDocument(file, getEnumTypeTestResource());
+
+        migration_3_11_0.migrate(new NullProgressMonitor());
+
+        ipsSrcFile.save(true, null);
+
+        IEnumType newEnumType = (IEnumType)ipsSrcFile.getIpsObject();
+        assertTrue(newEnumType.isExtensible());
+    }
+
+    private String getEnumTypeTestResource() {
+        return getClass().getName().replaceAll("\\.", "/") + "_enumType.xml";
+    }
+
+    private void writeTestDocument(IFile file, String resourceName) {
         ByteArrayInputStream bis = null;
         ByteArrayOutputStream bos = null;
         try {
             bos = new ByteArrayOutputStream();
-            XmlUtil.writeXMLtoStream(bos, getTestDocument(), null, 2, ipsProject.getXmlFileCharset());
+            XmlUtil.writeXMLtoStream(bos, getTestDocument(resourceName), null, 2, ipsProject.getXmlFileCharset());
             bis = new ByteArrayInputStream(bos.toByteArray());
             file.setContents(bis, true, false, null);
         } catch (TransformerException e) {
@@ -91,6 +118,21 @@ public class Migration_3_11_0Test extends AbstractIpsPluginTest {
         } finally {
             IoUtil.close(bis);
             IoUtil.close(bos);
+        }
+    }
+
+    public Document getTestDocument(String resourceName) {
+        InputStream is = null;
+        try {
+            is = getClass().getClassLoader().getResourceAsStream(resourceName);
+            if (is == null) {
+                throw new RuntimeException("Can't find resource " + resourceName);
+            }
+            return getDocumentBuilder().parse(is);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IoUtil.close(is);
         }
     }
 

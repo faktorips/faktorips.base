@@ -37,7 +37,8 @@ public class Migration_3_11_0 extends DefaultMigration {
 
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        if (IpsObjectType.TABLE_STRUCTURE.equals(srcFile.getIpsObjectType())) {
+        if (IpsObjectType.TABLE_STRUCTURE.equals(srcFile.getIpsObjectType())
+                || IpsObjectType.ENUM_TYPE.equals(srcFile.getIpsObjectType())) {
             migrateUsingTransformation(srcFile, srcFile.getContentFromEnclosingResource(), xslFile);
         }
     }
