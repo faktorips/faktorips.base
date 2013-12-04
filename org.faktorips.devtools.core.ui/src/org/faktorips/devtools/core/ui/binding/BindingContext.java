@@ -770,6 +770,8 @@ public class BindingContext {
                                     + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                         }
                     }
+                } else {
+                    mapping.setControlValue();
                 }
             }
 
