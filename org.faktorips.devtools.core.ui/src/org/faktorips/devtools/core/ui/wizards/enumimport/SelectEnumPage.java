@@ -85,13 +85,6 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     @Override
     public IIpsObject getTargetForImport() throws CoreException {
-        // final IEnumValueContainer enum1 = ((EnumRefControl)importTargetControl).findEnum(false);
-        // final IEnumValueContainer enum2 = ((EnumRefControl)importTargetControl).findEnum(true);
-        // if (enum2 instanceof EnumContent) {
-        // return enum2;
-        // } else {
-        // return enum1;
-        // }
         final IEnumValueContainer enumValue = ((EnumRefControl)importTargetControl).findEnum(true);
         return enumValue;
     }

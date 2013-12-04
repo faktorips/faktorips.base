@@ -85,7 +85,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         enumType = editor.getEnumType();
         changeListener = new ContentsChangeListener() {
             @Override
-            public void contentsChanged(ContentChangeEvent event) {
+            public void contentsChanged(ContentChangeEvent event) throws CoreException {
                 if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
                     updateToolbarActionEnabledStates();
                     enumAttributesSection.refresh();
@@ -134,9 +134,14 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
      * Enable the import and export operation if the <tt>IEnumType</tt> contains values and is not
      * abstract.
      */
-    protected void updateToolbarActionEnabledStates() {
-        importAction.setEnabled(true);
-        exportAction.setEnabled(true);
+    protected void updateToolbarActionEnabledStates() throws CoreException {
+        boolean enableImportExportActions = enumType.isCapableOfContainingValues();
+        if (importAction != null) {
+            importAction.setEnabled(enableImportExportActions);
+        }
+        if (exportAction != null) {
+            exportAction.setEnabled(enableImportExportActions);
+        }
     }
 
     /**

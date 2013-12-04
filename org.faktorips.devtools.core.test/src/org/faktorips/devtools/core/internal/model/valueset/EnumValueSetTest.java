@@ -731,7 +731,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddValues() {
+    public void testAddValues() throws CoreException {
         EnumValueSet set = spy(new EnumValueSet(ce, "50"));
         ContentsChangeListener mockedListener = mock(ContentsChangeListener.class);
         set.getIpsModel().addChangeListener(mockedListener);
@@ -756,7 +756,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveValues() {
+    public void testRemoveValues() throws CoreException {
         EnumValueSet set = spy(new EnumValueSet(ce, "50"));
         ContentsChangeListener mockedListener = mock(ContentsChangeListener.class);
         set.getIpsModel().addChangeListener(mockedListener);
