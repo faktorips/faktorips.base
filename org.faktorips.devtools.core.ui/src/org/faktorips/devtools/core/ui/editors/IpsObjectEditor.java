@@ -543,8 +543,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                     updatePageStructure(false);
                 }
 
-                refresh();
-
                 logMethodFinished("contentChanged()"); //$NON-NLS-1$
             }
         });
