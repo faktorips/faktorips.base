@@ -13,7 +13,6 @@
 
 package org.faktorips.values;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -26,7 +25,7 @@ import java.util.Map;
  * different languages. The {@link InternationalString} consists of a set of {@link LocalizedString
  * localized strings}.
  */
-public class InternationalString implements Serializable {
+public class InternationalString implements IInternationalString {
 
     private static final long serialVersionUID = -4599838166284499045L;
 
@@ -47,8 +46,7 @@ public class InternationalString implements Serializable {
     }
 
     /**
-     * Returns the String in the given locale stored in this InternationalString, or null, if the
-     * content has not been translated in the given locale.
+     * {@inheritDoc}
      */
     public String get(Locale locale) {
         LocalizedString localizedString = localizedStringMap.get(locale);

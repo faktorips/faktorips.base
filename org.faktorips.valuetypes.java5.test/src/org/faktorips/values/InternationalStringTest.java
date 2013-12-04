@@ -81,7 +81,7 @@ public class InternationalStringTest {
         List<LocalizedString> list = new ArrayList<LocalizedString>();
         list.add(english2);
         list.add(german2);
-        InternationalString internationalString2 = new InternationalString(list);
+        IInternationalString internationalString2 = new InternationalString(list);
 
         assertEquals(internationalString, internationalString2);
         assertEquals(internationalString2, internationalString);
@@ -119,7 +119,7 @@ public class InternationalStringTest {
     public void testUnmodifiableMap() throws Exception {
         Object readObject = serializeAndDeserialize();
 
-        Field internalField = ((InternationalString)readObject).getClass().getDeclaredField("localizedStringMap");
+        Field internalField = ((IInternationalString)readObject).getClass().getDeclaredField("localizedStringMap");
         assertNotNull(internalField);
         internalField.setAccessible(true);
         @SuppressWarnings("unchecked")

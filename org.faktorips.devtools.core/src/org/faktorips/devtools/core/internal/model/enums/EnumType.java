@@ -125,6 +125,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
+    public boolean containsValues() {
+        return !getEnumValues().isEmpty();
+    }
+
+    @Override
     public boolean isExtensible() {
         return extensible;
     }

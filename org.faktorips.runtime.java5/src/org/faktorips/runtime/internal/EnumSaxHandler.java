@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.faktorips.values.IInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.xml.sax.Attributes;
@@ -42,7 +43,7 @@ public class EnumSaxHandler extends DefaultHandler {
 
     private List<LocalizedString> localizedStrings;
 
-    private InternationalString internationalString;
+    private IInternationalString internationalString;
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

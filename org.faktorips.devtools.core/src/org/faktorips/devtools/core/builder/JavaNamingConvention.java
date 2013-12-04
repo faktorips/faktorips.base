@@ -140,17 +140,15 @@ public class JavaNamingConvention implements IJavaNamingConvention {
 
     @Override
     public String getValidJavaIdentifier(String identifier) {
-
         // Replace characters that are not valid for Java identifier
         char[] characters = identifier.toCharArray();
         for (int i = 0; i < characters.length; i++) {
-            if ((i == 0 && !Character.isJavaIdentifierStart(characters[i]))
-                    || (i > 0 && !Character.isJavaIdentifierPart(characters[i]))) {
+            if (!Character.isJavaIdentifierPart(characters[i])) {
                 characters[i] = '_';
             }
         }
-
-        return String.valueOf(characters);
+        return Character.isJavaIdentifierStart(characters[0]) ? String.valueOf(characters) : '_' + String
+                .valueOf(characters);
     }
 
     @Override

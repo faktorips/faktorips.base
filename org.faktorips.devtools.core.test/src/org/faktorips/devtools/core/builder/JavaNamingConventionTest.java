@@ -142,7 +142,7 @@ public class JavaNamingConventionTest {
     @Test
     public void testGetValidProjectName_NotValidCharacter_NummberAsFirsCharacter() {
         String projectName = javaNamingConvention.getValidJavaIdentifier("123");
-        assertEquals("_23", projectName);
+        assertEquals("_123", projectName);
     }
 
     @Test
@@ -155,6 +155,18 @@ public class JavaNamingConventionTest {
     public void testGetValidProjectName_NotValidHyphen() {
         String projectName = javaNamingConvention.getValidJavaIdentifier("$-123");
         assertEquals("$_123", projectName);
+    }
+
+    @Test
+    public void testGetValidJavaIdentifier() throws Exception {
+        assertEquals("ABC", javaNamingConvention.getEnumLiteral("abc"));
+        assertEquals("ABC123", javaNamingConvention.getEnumLiteral("abc123"));
+        assertEquals("AEUEI", javaNamingConvention.getEnumLiteral("äüi"));
+        assertEquals("_1", javaNamingConvention.getEnumLiteral("1"));
+        assertEquals("_123", javaNamingConvention.getEnumLiteral("123"));
+        assertEquals("ASD_", javaNamingConvention.getEnumLiteral("asd+"));
+        assertEquals("$____", javaNamingConvention.getEnumLiteral("$%%&&"));
+        assertEquals("___", javaNamingConvention.getEnumLiteral("%%&"));
     }
 
 }

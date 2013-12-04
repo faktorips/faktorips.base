@@ -62,7 +62,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         if (ipsObject instanceof IEnumType) {
             IEnumType foundEnumType = (IEnumType)ipsObject;
-            if (!foundEnumType.isExtensible()) {
+            if (foundEnumType.containsValues()) {
                 this.enumType = foundEnumType;
                 generatePropertyFilesFor();
             }

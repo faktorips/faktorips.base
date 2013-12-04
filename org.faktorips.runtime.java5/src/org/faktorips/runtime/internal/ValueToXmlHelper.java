@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
+import org.faktorips.values.IInternationalString;
 import org.faktorips.values.InternationalString;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -180,7 +181,7 @@ public class ValueToXmlHelper {
      * @param el The xml element that is the parent of the element storing the international string.
      * @param tagName The name of the child
      */
-    public static InternationalString getInternationalStringFromElement(Element el, String tagName) {
+    public static IInternationalString getInternationalStringFromElement(Element el, String tagName) {
         return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el, tagName));
     }
 
