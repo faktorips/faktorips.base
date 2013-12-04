@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -152,11 +151,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setEnum(useEnumGeneration());
         int classModifier = Modifier.PUBLIC;
         if (useClassGeneration()) {
-            if (enumType.isAbstract()) {
-                classModifier = Modifier.PUBLIC | Modifier.ABSTRACT;
-            } else {
-                classModifier = Modifier.PUBLIC | Modifier.FINAL;
-            }
+            classModifier = Modifier.PUBLIC | Modifier.FINAL;
         }
         mainSection.setClassModifier(classModifier);
         String typeName = getJavaNamingConvention().getTypeName(enumType.getName());
@@ -669,8 +664,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateCodeForEnumAttributes(JavaCodeFragmentBuilder attributeBuilder) throws CoreException {
-        IEnumType enumType = getEnumType();
-        int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL;
+        int modifier = Modifier.PRIVATE | Modifier.FINAL;
 
         /*
          * if enum type is without separate content or abstract, than the index field will be
@@ -809,7 +803,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
             throws CoreException {
         IEnumType enumType = getEnumType();
-        if (enumType.isValid(getIpsProject()) || enumType.isExtensible() || enumType.isAbstract()) {
+        if (!enumType.isValid(getIpsProject()) || !enumType.isExtensible() || enumType.isAbstract()) {
             return;
         }
         List<IEnumAttribute> enumAttributesIncludeSupertypeCopies = enumType
@@ -929,7 +923,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodIsValueBy(methodBuilder);
         generateMethodGetterMethods(methodBuilder);
         generateMethodValues(methodBuilder);
-        generateMethodReadResolve(methodBuilder);
         generateMethodToString(methodBuilder);
         generateMethodEquals(methodBuilder);
         generateMethodHashCode(methodBuilder);
@@ -1225,53 +1218,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName()
                 + "[]", methodName, new String[0], new String[0], methodBody, null); //$NON-NLS-1$
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * [Javadoc]
-     * private Object readResolve() throws ObjectStreamException {
-     *     return getGender(id);
-     * }
-     * </pre>
-     * 
-     * Only generated for class generation because Java 5 enumerations are serializable out of the
-     * box.
-     */
-    private void generateMethodReadResolve(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        IEnumType enumType = getEnumType();
-        if (!(useClassGeneration()) || enumType.isAbstract() || enumType.isExtensible()) {
-            return;
-        }
-
-        IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
-        if (identifierAttribute == null) {
-            return;
-        }
-
-        JavaCodeFragment methodBody = new JavaCodeFragment();
-        methodBody.append("return "); //$NON-NLS-1$
-        if (!enumType.isExtensible()) {
-            methodBody.append(getMethodNameGetValueBy(identifierAttribute));
-            methodBody.append('(');
-            if (identifierAttribute.isInherited()) {
-                methodBody.append(getJavaNamingConvention().getGetterMethodName(identifierAttribute.getName(),
-                        identifierAttribute.findDatatype(getIpsProject())));
-                methodBody.append('(');
-                methodBody.append(')');
-            } else {
-                methodBody.append(identifierAttribute.getName());
-            }
-            methodBody.append(')');
-        } else {
-            methodBody.append("null"); //$NON-NLS-1$
-        }
-        methodBody.append(';');
-        methodBuilder.javaDoc(null, ANNOTATION_GENERATED);
-        methodBuilder.method(Modifier.PRIVATE, Object.class, "readResolve", new String[0], new Class[0], //$NON-NLS-1$
-                new Class[] { ObjectStreamException.class }, methodBody, null);
     }
 
     /**

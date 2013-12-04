@@ -61,7 +61,12 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /** Name of the <tt>abstract</tt> property. */
     public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
-    /** Name of the <tt>containingValues</tt> property. */
+    /**
+     * Name of the <tt>containingValues</tt> property.
+     * 
+     * @deprecated replaced by {@link #PROPERTY_EXTENSIBLE}
+     */
+    @Deprecated
     public static final String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
     /** Name of the <tt>extensible</tt> property. */
@@ -254,17 +259,20 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Returns <tt>true</tt> if the values for this <tt>IEnumType</tt> are defined in the
-     * <tt>IEnumType</tt> itself. This method is deprecated use {@link #isExtensible()} instead.
+     * <tt>IEnumType</tt> itself.
+     * 
+     * @deprecated This method is deprecated use {@link #isExtensible()} instead.
      */
     @Deprecated
     public boolean isContainingValues();
 
     /**
      * Sets whether the values for this <tt>IEnumType</tt> will be defined in the <tt>IEnumType</tt>
-     * itself.This method is deprecated use {@link #setExtensible(boolean)} instead.
+     * itself.
      * 
      * @param containingValues Flag indicating whether the values for this <tt>IEnumType</tt> will
      *            be defined in the <tt>IEnumType</tt> itself.
+     * @deprecated This method is deprecated use {@link #setExtensible(boolean)} instead.
      */
     @Deprecated
     public void setContainingValues(boolean containingValues);

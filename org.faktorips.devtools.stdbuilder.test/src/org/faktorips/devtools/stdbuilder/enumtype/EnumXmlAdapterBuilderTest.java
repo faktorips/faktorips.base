@@ -37,6 +37,7 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
         EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(builderSet);
         builder = new EnumXmlAdapterBuilder(builderSet, enumTypeBuilder);
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
+        enumType.setExtensible(true);
     }
 
     @Test

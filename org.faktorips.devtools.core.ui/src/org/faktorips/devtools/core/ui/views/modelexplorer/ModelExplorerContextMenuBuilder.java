@@ -411,7 +411,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 IEnumType enumType = (IEnumType)selected;
                 try {
                     enumType = (IEnumType)enumType.getIpsSrcFile().getIpsObject();
-                    show = !(enumType.isAbstract()) && !(enumType.isExtensible());
+                    show = enumType.isCapableOfContainingValues();
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }

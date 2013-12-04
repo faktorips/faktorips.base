@@ -114,12 +114,20 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         valueChanged(oldIsAbstract, isAbstract);
     }
 
+    /**
+     * @deprecated This method is deprecated use {@link #isExtensible()} instead.
+     */
     @Override
+    @Deprecated
     public boolean isContainingValues() {
         return !isExtensible();
     }
 
+    /**
+     * @deprecated This method is deprecated use {@link #setExtensible(boolean)} instead.
+     */
     @Override
+    @Deprecated
     public void setContainingValues(boolean containingValues) {
         setExtensible(!containingValues);
     }
@@ -319,10 +327,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
-        // element.setAttribute(PROPERTY_CONTAINING_VALUES, String.valueOf(containingValues));
         element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }

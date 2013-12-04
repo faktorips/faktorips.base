@@ -139,19 +139,6 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGeneratePropertyFile_noChanges() throws Exception {
-        EnumPropertyGenerator enumPropertyGenerator = mock(EnumPropertyGenerator.class);
-        when(enumPropertyGenerator.getLocale()).thenReturn(Locale.GERMAN);
-        createEnumAttributes();
-        enumType.newEnumValue();
-        enumPropertyBuilder.build(ipsSrcFile);
-
-        enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
-
-        verify(enumPropertyGenerator, times(0)).getStream(anyString());
-    }
-
-    @Test
     public void testGeneratePropertyFile_changes() throws Exception {
         EnumPropertyGenerator enumPropertyGenerator = mock(EnumPropertyGenerator.class);
         when(enumPropertyGenerator.getLocale()).thenReturn(Locale.GERMAN);
@@ -163,5 +150,18 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
         enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
 
         verify(enumPropertyGenerator, times(1)).getStream(anyString());
+    }
+
+    @Test
+    public void testGeneratePropertyFile_noChanges() throws Exception {
+        EnumPropertyGenerator enumPropertyGenerator = mock(EnumPropertyGenerator.class);
+        when(enumPropertyGenerator.getLocale()).thenReturn(Locale.GERMAN);
+        createEnumAttributes();
+        enumType.newEnumValue();
+        enumPropertyBuilder.build(ipsSrcFile);
+
+        enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
+
+        verify(enumPropertyGenerator, times(0)).getStream(anyString());
     }
 }

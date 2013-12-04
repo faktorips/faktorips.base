@@ -183,22 +183,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         performRenameRefactoring(enumType.getEnumAttribute("id"), "test");
 
         AbstractEnumAttributeExpectations expectations = new AbstractEnumAttributeExpectations(enumType);
-        expectations.check("id", "test", true);
-    }
-
-    @Test
-    public void testRenameEnumAttributeAbstract() throws CoreException {
-        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
-        IEnumType enumType = createEnumType("EnumType", null, "id", "name");
-        enumType.setAbstract(true);
-
-        saveIpsSrcFile(enumType);
-        performFullBuild(ipsProject);
-
-        performRenameRefactoring(enumType.getEnumAttribute("id"), "test");
-
-        AbstractEnumAttributeExpectations expectations = new AbstractEnumAttributeExpectations(enumType);
-        expectations.check("id", "test", false);
+        expectations.check("id", "test");
     }
 
     /**
@@ -399,12 +384,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
             javaEnum = getJavaType("", enumType.getName(), true, false, ipsProject);
         }
 
-        private void check(String oldName, String newName, boolean useJava5Enums) {
-            if (useJava5Enums) {
-                checkJava5Enums(oldName, newName);
-            } else {
-                checkNoJava5Enums(oldName, newName);
-            }
+        private void check(String oldName, String newName) {
+            checkJava5Enums(oldName, newName);
         }
 
         private void checkJava5Enums(String oldName, String newName) {
@@ -413,17 +394,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
             assertFalse(javaEnum.getMethod("get" + oldNameCamelCase, new String[0]).exists());
 
-            assertTrue(javaEnum.getMethod("get" + newNameCamelCase, new String[0]).exists());
-        }
-
-        private void checkNoJava5Enums(String oldName, String newName) {
-            String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
-            String newNameCamelCase = StringUtil.toCamelCase(newName, true);
-
-            assertFalse(javaEnum.getField(oldName).exists());
-            assertFalse(javaEnum.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-
-            assertTrue(javaEnum.getField(newName).exists());
             assertTrue(javaEnum.getMethod("get" + newNameCamelCase, new String[0]).exists());
         }
 

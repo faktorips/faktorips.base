@@ -323,7 +323,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                     String targetRoot = getTargetSourceFolderName();
                     IIpsPackageFragmentRoot root = null;
                     if (targetRoot.length() > 0) {
-                        root = targetIpsProject.getIpsPackageFragmentRoot(targetRoot);
+                        root = targetIpsProject == null ? null : targetIpsProject.getIpsPackageFragmentRoot(targetRoot);
                     }
                     boolean rootDoesNotExist = (root == null) ? true : !(root.exists());
                     if (rootDoesNotExist) {

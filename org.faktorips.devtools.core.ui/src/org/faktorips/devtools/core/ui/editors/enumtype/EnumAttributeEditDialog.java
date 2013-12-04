@@ -259,8 +259,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                     }
 
                     // Disallow if it is not containing values while the parent EnumType does.
-                    if (parentEnumType.isExtensible()) {
-                        if (!(enumType.isExtensible())) {
+                    if (!parentEnumType.isExtensible()) {
+                        if (enumType.isExtensible()) {
                             disallowedDatatypes.add(adapter);
                             continue;
                         }

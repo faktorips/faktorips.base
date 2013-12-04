@@ -150,7 +150,7 @@ public class EnumExportPage extends IpsObjectExportPage {
     private void setDefaultByEnumValueContainer(IIpsSrcFile src, IpsObjectType ipsObjectType) throws CoreException {
         if (ipsObjectType.equals(IpsObjectType.ENUM_TYPE)) {
             IEnumType enumType = (IEnumType)src.getIpsObject();
-            if (!(enumType.isAbstract()) && !(enumType.isExtensible())) {
+            if (enumType.isCapableOfContainingValues()) {
                 setEnum(enumType);
             }
         } else if (ipsObjectType.equals(IpsObjectType.ENUM_CONTENT)) {
