@@ -272,4 +272,12 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertFalse(genderEnumContent.isCapableOfContainingValues());
     }
 
+    @Test
+    public void testFindAggregatedEnumValue() throws CoreException {
+        EnumContent enumContent = (EnumContent)genderEnumContent;
+        genderEnumType.newEnumValue();
+        assertEquals(1, genderEnumType.getEnumValues().size());
+        assertEquals(2, genderEnumContent.getEnumValues().size());
+        assertEquals(3, enumContent.findAggregatedEnumValues().size());
+    }
 }

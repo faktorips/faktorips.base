@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -112,6 +113,13 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         valueChanged(oldEnumType, enumType);
 
         refreshEnumAttributeReferences();
+    }
+
+    @Override
+    public List<IEnumValue> findAggregatedEnumValues() {
+        List<IEnumValue> aggrregatedEnumValues = findEnumType(getIpsProject()).getEnumValues();
+        aggrregatedEnumValues.addAll(getEnumValues());
+        return aggrregatedEnumValues;
     }
 
     /**

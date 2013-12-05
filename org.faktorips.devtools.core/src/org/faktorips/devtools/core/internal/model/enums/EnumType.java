@@ -986,4 +986,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     }
 
+    @Override
+    public List<IEnumValue> findAggregatedEnumValues() {
+        return getEnumValues();
+    }
+
 }

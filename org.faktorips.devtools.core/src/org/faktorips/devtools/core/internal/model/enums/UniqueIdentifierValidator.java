@@ -98,7 +98,7 @@ class UniqueIdentifierValidator {
 
     private AttributeValues createAttributeValues(int columnIndex) {
         AttributeValues attributeValues = new AttributeValues();
-        for (IEnumValue value : container.getEnumValues()) {
+        for (IEnumValue value : container.findAggregatedEnumValues()) {
             IEnumAttributeValue enumAttributeValue = value.getEnumAttributeValues().get(columnIndex);
             Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
             for (LocalizedString localizedString : localizedIdentifyerList) {

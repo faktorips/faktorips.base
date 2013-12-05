@@ -42,6 +42,15 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
+     * Returns a list of <tt>IEnumValue</tt>.
+     * <p>
+     * If this is an <tt>EnumType</tt>, the method will delegate to <tt>getEnumValues()</tt>. If
+     * this is an <tt>EnumContent</tt>, the method will return a list containing all
+     * <tt>IEnumValue</tt> from the <tt>EnumContent</tt> and the corresponding <tt>EnumType</tt>.
+     */
+    public List<IEnumValue> findAggregatedEnumValues();
+
+    /**
      * Returns the <tt>IEnumValue</tt> for the provided value of the identifier attribute.
      * <p>
      * This method can only be applied to <tt>IEnumValueContainer</tt>s that contain their own
