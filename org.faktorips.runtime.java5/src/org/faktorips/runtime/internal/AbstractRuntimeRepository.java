@@ -15,6 +15,7 @@ package org.faktorips.runtime.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -22,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -61,6 +62,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private static final String ROOTIPSTESTSUITENAME = "ipstest"; //$NON-NLS-1$
 
+    private static final ConcurrentHashMap<Class<?>, List<?>> enumValueCache = new ConcurrentHashMap<Class<?>, List<?>>();
+
     // The name of the repository
     private String name;
 
@@ -71,11 +74,11 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     // see getAllRepositories() for further information
     private List<IRuntimeRepository> allRepositories = null;
 
-    private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
+    private Map<Class<?>, IModelType> modelTypes = new ConcurrentHashMap<Class<?>, IModelType>();
 
-    private Map<String, IModelType> modelTypesByName = new HashMap<String, IModelType>();
+    private Map<String, IModelType> modelTypesByName = new ConcurrentHashMap<String, IModelType>();
 
-    private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new HashMap<Class<?>, IEnumValueLookupService<?>>();
+    private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new ConcurrentHashMap<Class<?>, IEnumValueLookupService<?>>();
 
     private IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
@@ -472,7 +475,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (qNamePrefix == null) {
             throw new NullPointerException();
         }
-        HashMap<String, IpsTestSuite> suites = new HashMap<String, IpsTestSuite>();
+        Map<String, IpsTestSuite> suites = new ConcurrentHashMap<String, IpsTestSuite>();
         String suiteName = removeLastSegment(qNamePrefix);
         suiteName = suiteName.length() == 0 ? ROOTIPSTESTSUITENAME : suiteName;
         IpsTestSuite rootSuite = new IpsTestSuite(suiteName);
@@ -488,12 +491,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return rootSuite;
     }
 
-    private void addTest(HashMap<String, IpsTestSuite> suites, IpsTest2 test) {
+    private void addTest(Map<String, IpsTestSuite> suites, IpsTest2 test) {
         IpsTestSuite suite = getTestSuite(suites, test.getQualifiedName());
         suite.addTest(test);
     }
 
-    private IpsTestSuite getTestSuite(HashMap<String, IpsTestSuite> suites, String testCaseQName) {
+    private IpsTestSuite getTestSuite(Map<String, IpsTestSuite> suites, String testCaseQName) {
         String suiteQName = ""; //$NON-NLS-1$
         if (testCaseQName.indexOf(".") >= 0) { //$NON-NLS-1$
             suiteQName = removeLastSegment(testCaseQName);
@@ -729,8 +732,11 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         } else {
             values = getEnumValuesInternal(clazz);
         }
+        List<T> valuesFromType = getEnumValuesDefinedInType(clazz);
+        ArrayList<T> allValues = new ArrayList<T>(valuesFromType);
         if (values != null) {
-            return Collections.unmodifiableList(values);
+            allValues.addAll(values);
+            return Collections.unmodifiableList(allValues);
         }
         for (IRuntimeRepository repository : repositories) {
             values = repository.getEnumValues(clazz);
@@ -738,7 +744,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
                 return Collections.unmodifiableList(values);
             }
         }
-        return null;
+        return allValues;
     }
 
     /**
@@ -746,6 +752,55 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * class which is provided to it.
      */
     protected abstract <T> List<T> getEnumValuesInternal(Class<T> clazz);
+
+    /**
+     * Returns the values that are defined in the type by a constant called 'VALUES'. If no such
+     * constant is available an empty list is returned. If the constant is available but is either
+     * not accessible or of wrong type an exception is thrown.
+     * <p>
+     * For performance optimization the values are cached in the static map {@link #enumValueCache}.
+     * We only check once if there is already a cached value. We disclaim a double checking with
+     * synchronization because in worst case two threads simply getting the same result. The
+     * {@link #enumValueCache} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
+     * will be put into the cache using {@link ConcurrentHashMap#putIfAbsent(Object, Object)}.
+     * 
+     * @param enumClass The class of which you want to get the enumeration values
+     * @return A list of instances of enumClass that are defined as enumeration values of the
+     *         specified type.
+     */
+    protected <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
+        if (enumValueCache.containsKey(enumClass)) {
+            return getCachedEnumValuesDefinedInType(enumClass);
+        } else {
+            return getEnumValuesDefinedInTypeByReflection(enumClass);
+        }
+    }
+
+    private <T> List<T> getCachedEnumValuesDefinedInType(Class<T> enumClass) {
+        @SuppressWarnings("unchecked")
+        List<T> values = (List<T>)enumValueCache.get(enumClass);
+        return values;
+    }
+
+    private <T> List<T> getEnumValuesDefinedInTypeByReflection(Class<T> enumClass) {
+        try {
+            Field valuesField = enumClass.getDeclaredField("VALUES");
+            @SuppressWarnings("unchecked")
+            List<T> values = (List<T>)valuesField.get(null);
+            enumValueCache.putIfAbsent(enumClass, values);
+            return values;
+        } catch (SecurityException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            // No values are defined in the enum class
+            enumValueCache.putIfAbsent(enumClass, Collections.emptyList());
+            return Collections.emptyList();
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void addEnumValueLookupService(IEnumValueLookupService<?> lookup) {
         enumValueLookups.put(lookup.getEnumTypeClass(), lookup);
