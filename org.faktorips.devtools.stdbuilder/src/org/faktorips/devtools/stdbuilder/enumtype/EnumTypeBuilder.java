@@ -333,6 +333,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         if (useClassGeneration() && !enumValues.isEmpty()) {
             String className = List.class.getName() + "<" + getQualifiedClassName() + ">";
+            appendLocalizedJavaDoc("CONSTANT_VALUES", getEnumType(), mainSection.getConstantBuilder()); //$NON-NLS-1$
             mainSection.getConstantBuilder().varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                     className, CONSTANT_VALUES, getConstantValuesInitExpression(literalNames));
         }
