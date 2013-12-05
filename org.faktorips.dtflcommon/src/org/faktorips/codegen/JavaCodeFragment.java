@@ -249,9 +249,7 @@ public class JavaCodeFragment extends CodeFragment {
         append('<');
         for (Iterator<String> iterator = toplevelGenericTypes.iterator(); iterator.hasNext();) {
             String nextGenericType = iterator.next();
-            /*
-             * Recursion: also handles nested generics.
-             */
+            // Recursion: also handles nested generics.
             appendClassName(nextGenericType);
             if (iterator.hasNext()) {
                 append(", "); //$NON-NLS-1$
@@ -281,8 +279,9 @@ public class JavaCodeFragment extends CodeFragment {
         return result;
     }
 
-    private JavaCodeFragment appendClassNameWithoutGenerics(String qualifiedClassName) {
-        qualifiedClassName = qualifiedClassName.replace('$', '.'); // for inner classes.
+    private JavaCodeFragment appendClassNameWithoutGenerics(final String className) {
+        // Consider "$" for inner classes
+        String qualifiedClassName = className.replace('$', '.');
         String unqualifiedClassName = StringUtil.unqualifiedName(qualifiedClassName);
         // don't add two imports for the same unqualified name
         for (Iterator<String> iterator = importDecl.iterator(); iterator.hasNext();) {

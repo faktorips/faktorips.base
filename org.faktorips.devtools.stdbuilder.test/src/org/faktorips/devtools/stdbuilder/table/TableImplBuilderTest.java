@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -202,4 +203,13 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         builder.beforeBuild(structure.getIpsSrcFile(), null);
     }
 
+    @Test
+    public void testAppendPutIntoPreviousStructure() {
+        JavaCodeFragment methodBody = new JavaCodeFragment();
+        JavaCodeFragment previousStructure = new JavaCodeFragment("treeStructure");
+        String[] putParameter = new String[] { "A", "B", "1", "2" };
+        builder.appendPutIntoPreviousStructure(methodBody, previousStructure, putParameter);
+
+        assertEquals("treeStructure.put(A, B, 1, 2);", methodBody.toString().trim());
+    }
 }

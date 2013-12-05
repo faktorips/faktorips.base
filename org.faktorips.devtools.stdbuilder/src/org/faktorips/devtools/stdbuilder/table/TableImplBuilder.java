@@ -557,7 +557,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             IndexCodePart indexCodePart = indexCodeParts.get(index);
             appendLocalizedJavaDoc("FIELD_KEY_MAP", getTableStructure(), codeBuilder);
             codeBuilder.varDeclaration(Modifier.PRIVATE, indexCodePart.keyStructureFieldClassName,
-                    indexCodePart.keyStructureFieldName.toString());
+                    indexCodePart.keyStructureFieldName);
         }
     }
 
@@ -631,19 +631,25 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     methodBody.appendln(';');
                 } else {
                     previousStructure = new JavaCodeFragment(indexCodePart.keyStructureFieldName);
-                    methodBody.append(previousStructure).append(".put(");
-                    for (String param : putParameter) {
-                        methodBody.append(param);
-                        if (putParameter[putParameter.length - 1].equals(param)) {
-                            methodBody.append(", ");
-                        }
-                    }
-                    methodBody.appendln(");");
+                    appendPutIntoPreviousStructure(methodBody, previousStructure, putParameter);
                     break;
                 }
             }
             i++;
         }
+    }
+
+    /* private */void appendPutIntoPreviousStructure(JavaCodeFragment methodBody,
+            JavaCodeFragment previousStructure,
+            String[] putParameter) {
+        methodBody.append(previousStructure).append(".put(");
+        for (String param : putParameter) {
+            methodBody.append(param);
+            if (!putParameter[putParameter.length - 1].equals(param)) {
+                methodBody.append(", ");
+            }
+        }
+        methodBody.appendln(");");
     }
 
     private String[] getPutParameter(IIndex index, IKeyItem keyItem, String result) {

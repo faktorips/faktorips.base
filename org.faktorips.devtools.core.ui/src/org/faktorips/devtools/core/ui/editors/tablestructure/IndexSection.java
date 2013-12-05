@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -35,13 +36,13 @@ public class IndexSection extends SimpleIpsPartsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new IndicesComposite(getIpsObject(), parent, toolkit);
+        return new IndicesComposite(getIpsObject(), parent, getSite(), toolkit);
     }
 
-    private class IndicesComposite extends IpsPartsComposite {
+    private static class IndicesComposite extends IpsPartsComposite {
 
-        public IndicesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, getSite(), toolkit);
+        public IndicesComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(pdObject, parent, site, toolkit);
         }
 
         public ITableStructure getTableStructure() {
