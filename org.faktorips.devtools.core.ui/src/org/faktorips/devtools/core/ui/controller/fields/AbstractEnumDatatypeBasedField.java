@@ -161,6 +161,8 @@ public abstract class AbstractEnumDatatypeBasedField extends StringValueComboFie
             // must reinit the item in the drop down, only so we can select the invalid value
             reInitInternal();
             setText(getDisplayTextForValue(newValue));
+        } else {
+            setInvalidValue(null);
         }
     }
 

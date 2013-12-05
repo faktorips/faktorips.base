@@ -14,7 +14,11 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -196,4 +200,29 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         assertEquals(3, items.length);
     }
 
+    @Test
+    public void test_getDatatypeValueIds() {
+        Combo combo = new Combo(shell, SWT.READ_ONLY);
+        field = new EnumValueSetField(combo, valueSet, datatype);
+        valueSet.addValue(PaymentMode.ANNUAL_ID);
+        valueSet.addValue(PaymentMode.MONTHLY_ID);
+        valueSet.addValue(null);
+        List<String> datatypeValueIds = field.getDatatypeValueIds();
+
+        assertTrue(datatypeValueIds.contains("1"));
+        assertTrue(datatypeValueIds.contains("12"));
+        assertTrue(datatypeValueIds.contains(null));
+        assertFalse(datatypeValueIds.contains("2"));
+        assertTrue(datatypeValueIds.size() == 3);
+    }
+
+    @Test
+    public void test_getDatatypeValueIds_EMPTY() {
+        Combo combo = new Combo(shell, SWT.READ_ONLY);
+        field = new EnumValueSetField(combo, valueSet, datatype);
+        List<String> datatypeValueIds = field.getDatatypeValueIds();
+
+        assertTrue(datatypeValueIds.contains(null));
+        assertTrue(datatypeValueIds.size() == 1);
+    }
 }
