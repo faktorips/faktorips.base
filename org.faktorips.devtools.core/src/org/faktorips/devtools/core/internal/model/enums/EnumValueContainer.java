@@ -86,19 +86,26 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject) {
-        List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
+        List<String> valueIds = new ArrayList<String>();
         IEnumType enumType = findEnumType(ipsProject);
         IEnumAttribute isIdentifierEnumAttribute = enumType.findIdentiferAttribute(ipsProject);
-        if (isIdentifierEnumAttribute != null) {
-            for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttributeValue value = enumValue.getEnumAttributeValue(isIdentifierEnumAttribute);
-                if (value == null) {
-                    break;
-                }
-                valueIds.add(value.getValue().getDefaultLocalizedContent(ipsProject));
+        List<IEnumValue> allEnumValues = findAggregatedEnumValues();
+        for (IEnumValue enumValue : allEnumValues) {
+            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(isIdentifierEnumAttribute);
+            if (enumAttributeValue != null) {
+                valueIds.add(enumAttributeValue.getValue().getDefaultLocalizedContent(ipsProject));
             }
         }
         return valueIds;
+    }
+
+    @Override
+    public List<IEnumValue> findAggregatedEnumValues() {
+        if (this instanceof EnumContent) {
+            return ((EnumContent)this).findAggregatedEnumValues();
+        } else {
+            return ((EnumType)this).findAggregatedEnumValues();
+        }
     }
 
     @Override

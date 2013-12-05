@@ -89,10 +89,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public EnumType(IIpsSrcFile file) {
         super(file);
 
-        superEnumType = ""; //$NON-NLS-1$
+        superEnumType = StringUtils.EMPTY;
         extensible = false;
         isAbstract = false;
-        enumContentPackageFragment = ""; //$NON-NLS-1$
+        enumContentPackageFragment = StringUtils.EMPTY;
         enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
     }

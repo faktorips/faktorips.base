@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -79,7 +80,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     public EnumContent(IIpsSrcFile file) {
         super(file);
 
-        enumType = ""; //$NON-NLS-1$
+        enumType = StringUtils.EMPTY;
         enumAttributeReferences = new IpsObjectPartCollection<IEnumAttributeReference>(this,
                 EnumAttributeReference.class, IEnumAttributeReference.class, IEnumAttributeReference.XML_TAG);
     }
