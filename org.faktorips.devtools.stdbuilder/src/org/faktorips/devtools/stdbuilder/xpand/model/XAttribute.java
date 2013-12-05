@@ -155,7 +155,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
      * 
      */
     public boolean isDatatypeContentSeparatedEnum() {
-        return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
+        return DatatypeUtil.isExtensibleEnumType(getDatatype());
     }
 
     public String getToStringExpression(String memberVarName) {

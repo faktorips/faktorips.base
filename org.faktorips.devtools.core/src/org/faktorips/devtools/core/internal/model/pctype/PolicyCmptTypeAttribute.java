@@ -189,7 +189,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             ValueSetType valueSetType = it.next();
             if (valueSetType.isEnum()) {
                 ValueDatatype datatype = findDatatype(ipsProject);
-                if (DatatypeUtil.isEnumTypeWithSeparateContent(datatype)) {
+                if (DatatypeUtil.isExtensibleEnumType(datatype)) {
                     it.remove();
                 }
             }

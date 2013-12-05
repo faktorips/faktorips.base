@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 public class DatatypeUtil {
 
     /**
-     * Returns <code>true</code> if the given data type is an enumeration type with a separate
-     * content containing the values. Returns <code>false</code> if data type is <code>null</code>.
+     * Returns <code>true</code> if the given data type is an extensible enumeration type. Returns
+     * <code>false</code> if data type is <code>null</code>.
      */
-    public static final boolean isEnumTypeWithSeparateContent(Datatype datatype) {
+    public static final boolean isExtensibleEnumType(Datatype datatype) {
         if (datatype == null) {
             return false;
         }
