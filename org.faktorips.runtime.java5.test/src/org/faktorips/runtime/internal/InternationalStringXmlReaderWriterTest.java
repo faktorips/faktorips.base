@@ -25,7 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -41,19 +41,19 @@ public class InternationalStringXmlReaderWriterTest {
                 + "<LocalizedString locale=\"en\" text=\"english\"/>\n" //
                 + "</InternationalString>";
 
-        InternationalString internationalString = fromXml(xmlSnippet);
+        DefaultInternationalString internationalString = fromXml(xmlSnippet);
 
         assertThat(internationalString.getLocalizedStrings(), hasItem(new LocalizedString(Locale.GERMAN, "blabla")));
         assertThat(internationalString.getLocalizedStrings(), hasItem(new LocalizedString(Locale.ENGLISH, "english")));
     }
 
     /**
-     * Reads an {@link InternationalString} from an XML snippet represented by the String parameter.
+     * Reads an {@link DefaultInternationalString} from an XML snippet represented by the String parameter.
      * 
-     * @param xmlSnippet The XML representation of the {@link InternationalString}
-     * @return An {@link InternationalString} loaded from the XML snippet
+     * @param xmlSnippet The XML representation of the {@link DefaultInternationalString}
+     * @return An {@link DefaultInternationalString} loaded from the XML snippet
      */
-    public static InternationalString fromXml(String xmlSnippet) {
+    public static DefaultInternationalString fromXml(String xmlSnippet) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder;
@@ -62,7 +62,7 @@ public class InternationalStringXmlReaderWriterTest {
             Document document = builder.parse(new ByteArrayInputStream(xmlSnippet.getBytes()));
             Element rootElement = document.getDocumentElement();
             Collection<LocalizedString> collection = InternationalStringXmlReaderWriter.fromXml(rootElement);
-            return new InternationalString(collection);
+            return new DefaultInternationalString(collection);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {

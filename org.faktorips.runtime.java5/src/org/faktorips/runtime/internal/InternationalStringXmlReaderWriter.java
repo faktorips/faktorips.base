@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,8 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Helper class to read {@link InternationalString international strings} from XML and write them
- * back to XML.
+ * Helper class to read international strings from XML and write them back to XML.
  * <p>
  * The helper should not be initialized, just use the static utility methods.
  */
@@ -42,21 +41,21 @@ public class InternationalStringXmlReaderWriter {
     }
 
     /**
-     * Creates a new {@link Element} containing the given {@link InternationalString}.
+     * Creates a new {@link Element} containing the given {@link DefaultInternationalString}.
      * 
      * @param doc the xml {@link Document} used to store the new element.
-     * @param internationalString the {@link InternationalString} to be saved.
+     * @param internationalString the {@link DefaultInternationalString} to be saved.
      * @return the new element representing the given international string.
      */
-    public static Element toXml(Document doc, InternationalString internationalString) {
+    public static Element toXml(Document doc, DefaultInternationalString internationalString) {
         return toXml(doc, internationalString.getLocalizedStrings());
     }
 
     /**
      * Creates a new {@link Element} containing the given {@link LocalizedString localized strings}.
-     * The element that is created represents an {@link InternationalString} even though the element
-     * can be created from passing only the contents (the localized strings) of an international
-     * string.
+     * The element that is created represents an {@link DefaultInternationalString} even though the
+     * element can be created from passing only the contents (the localized strings) of an
+     * international string.
      * 
      * @param doc the xml {@link Document} used to store the new element.
      * @param localizedStrings the {@link LocalizedString localized strings} to be saved.
@@ -77,13 +76,13 @@ public class InternationalStringXmlReaderWriter {
     }
 
     /**
-     * Reads the {@link LocalizedString localized strings} stored in the given xml {@link Element}.
-     * If the given element is not representing an {@link InternationalString}, an empty collection
-     * is returned.
+     * Reads the {@link LocalizedString localized strings} stored in the given XML {@link Element}.
+     * If the given element is not representing an international string, an empty collection is
+     * returned.
      * 
-     * @param element the xml {@link Element} representing an {@link InternationalString}.
+     * @param element the XML {@link Element} representing an international string
      * @return a collection of all {@link LocalizedString localized strings} defined in the
-     *         {@link InternationalString} represented by the given {@link Element}.
+     *         international string represented by the given {@link Element}.
      */
     public static Collection<LocalizedString> fromXml(Element element) {
         List<LocalizedString> localizedStrings = new ArrayList<LocalizedString>();
@@ -112,14 +111,12 @@ public class InternationalStringXmlReaderWriter {
     /**
      * Reads the {@link LocalizedString localized strings} stored in the child {@link Element} with
      * the specified name. If the given element does not contain a child of the given name or if
-     * that child does not represent an {@link InternationalString}, an empty collection is
-     * returned.
+     * that child does not represent an international string, an empty collection is returned.
      * 
-     * @param element the xml {@link Element} representing the parent of an
-     *            {@link InternationalString}.
-     * @param tagName the name of the child node representing an {@link InternationalString}.
+     * @param element the XML {@link Element} representing the parent of an international string.
+     * @param tagName the name of the child node representing an international string.
      * @return a collection of all {@link LocalizedString localized strings} defined in the
-     *         {@link InternationalString}.
+     *         international string.
      */
     public static Collection<LocalizedString> fromXml(Element element, String tagName) {
         Element valueEl = XmlUtil.getFirstElement(element, tagName);

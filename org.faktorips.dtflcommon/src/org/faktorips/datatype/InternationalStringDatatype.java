@@ -13,20 +13,38 @@
 
 package org.faktorips.datatype;
 
-import org.faktorips.values.IInternationalString;
+import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 
 /**
  * This is the datatype for international strings. This datatype is not implemented for using
  * directly. It is only used internally for code generation.
  * 
- * @see IInternationalString
+ * @see InternationalString
+ * @see DefaultInternationalString
  * 
  * @author dirmeier
  */
 public class InternationalStringDatatype extends AbstractDatatype implements ValueDatatype {
 
+    private final Class<? extends InternationalString> wrappedClass;
+
+    /**
+     * Creates a new instance of {@link InternationalStringDatatype} and specifies whether to use
+     * the interface {@link InternationalString} or the implementation {@link DefaultInternationalString}
+     * as wrapped class.
+     * 
+     */
+    public InternationalStringDatatype(boolean useInterface) {
+        if (useInterface) {
+            wrappedClass = InternationalString.class;
+        } else {
+            wrappedClass = DefaultInternationalString.class;
+        }
+    }
+
     public String getName() {
-        return IInternationalString.class.getName();
+        return wrappedClass.getName();
     }
 
     public String getQualifiedName() {
@@ -46,7 +64,7 @@ public class InternationalStringDatatype extends AbstractDatatype implements Val
     }
 
     public String getJavaClassName() {
-        return IInternationalString.class.getCanonicalName();
+        return wrappedClass.getCanonicalName();
     }
 
     public ValueDatatype getWrapperType() {

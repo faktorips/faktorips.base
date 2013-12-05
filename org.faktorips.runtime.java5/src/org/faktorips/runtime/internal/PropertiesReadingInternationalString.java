@@ -16,9 +16,9 @@ package org.faktorips.runtime.internal;
 import java.util.Locale;
 
 import org.faktorips.runtime.util.MessagesHelper;
-import org.faktorips.values.IInternationalString;
+import org.faktorips.values.InternationalString;
 
-public class PropertyReadingInternationalString implements IInternationalString {
+public class PropertiesReadingInternationalString implements InternationalString {
 
     /**
      * Comment for <code>serialVersionUID</code>
@@ -29,7 +29,7 @@ public class PropertyReadingInternationalString implements IInternationalString 
 
     private final String key;
 
-    public PropertyReadingInternationalString(String key, MessagesHelper messagesHelper) {
+    public PropertiesReadingInternationalString(String key, MessagesHelper messagesHelper) {
         this.key = key;
         messageHelper = messagesHelper;
     }

@@ -16,8 +16,11 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -54,11 +57,11 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.PropertyReadingInternationalString;
+import org.faktorips.runtime.internal.PropertiesReadingInternationalString;
 import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.values.IInternationalString;
+import org.faktorips.values.InternationalString;
 
 /**
  * Builder that generates the java source for <code>EnumType</code>s.
@@ -68,6 +71,8 @@ import org.faktorips.values.IInternationalString;
  * @since 2.3
  */
 public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
+
+    public static final String CONSTANT_VALUES = "VALUES";
 
     private static final String VARNAME_PRODUCT_REPOSITORY = "productRepository";
 
@@ -79,6 +84,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private static final String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
 
     private ExtendedExprCompiler expressionCompilerLazy;
+
+    private IEnumAttribute identiferAttribute;
+
+    private IEnumLiteralNameAttribute literalNameAttribute;
 
     /**
      * Creates a new <code>EnumTypeBuilder</code> that will belong to the given IPS artefact builder
@@ -144,6 +153,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         IEnumType enumType = getEnumType();
+        identiferAttribute = enumType.findIdentiferAttribute(getIpsProject());
+        literalNameAttribute = enumType.getEnumLiteralNameAttribute();
 
         // Set general properties
         TypeSection mainSection = getMainTypeSection();
@@ -287,53 +298,84 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateCodeForEnumValues(TypeSection mainSection) throws CoreException {
         IEnumType enumType = getEnumType();
-        /*
-         * If no enumeration value definition is added we need to make the semicolon anyway telling
-         * the compiler that now the attribute section begins.
-         */
-        boolean appendSemicolon = getEnumType().isExtensible();
-        boolean generateJava5Enum = useEnumGeneration();
-        boolean lastEnumValueGenerated = false;
-
-        /*
-         * Generate the enumeration values if they are part of the model and if the enumeration type
-         * is not abstract.
-         */
-        IEnumAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
-        if (literalNameAttribute == null) {
-            literalNameAttribute = enumType.findIdentiferAttribute(getIpsProject());
-        }
-        if (!(enumType.isAbstract()) && literalNameAttribute != null) {
-            // Go over all model side defined enum values
+        if (!(enumType.isAbstract())) {
             List<IEnumValue> enumValues = enumType.getEnumValues();
-
-            for (int i = 0; i < enumValues.size(); i++) {
-                IEnumValue currentEnumValue = enumValues.get(i);
-                // Generate only for valid enum values
-                if (currentEnumValue.isValid(getIpsProject())) {
-                    List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
-                    IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(enumType
-                            .getIndexOfEnumAttribute(literalNameAttribute));
-                    if (currentLiteralNameEnumAttributeValue.isEnumLiteralNameAttributeValue()) {
-                        currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
-                    }
-                    if (generateJava5Enum) {
-                        lastEnumValueGenerated = (i == enumValues.size() - 1);
-                        createEnumValueAsEnumDefinition(currentEnumAttributeValues,
-                                currentLiteralNameEnumAttributeValue, lastEnumValueGenerated,
-                                mainSection.getEnumDefinitionBuilder());
-                        appendSemicolon = false;
-                    } else {
-                        createEnumValueAsConstant(i, currentEnumAttributeValues, currentLiteralNameEnumAttributeValue,
-                                mainSection.getConstantBuilder());
-                    }
-                }
+            if (useEnumGeneration()) {
+                createEnumValuesInEnum(mainSection, enumValues);
+            } else {
+                createEnumValuesInClass(mainSection, enumValues);
             }
         }
+    }
 
-        if (appendSemicolon || (!lastEnumValueGenerated)) {
+    private void createEnumValuesInEnum(TypeSection mainSection, List<IEnumValue> enumValues) throws CoreException {
+        for (int i = 0; i < enumValues.size(); i++) {
+            IEnumValue currentEnumValue = enumValues.get(i);
+            if (currentEnumValue.isValid(getIpsProject())) {
+                boolean lastEnumValueGenerated = (i == enumValues.size() - 1);
+                createEnumValueAsEnumDefinition(currentEnumValue, lastEnumValueGenerated,
+                        mainSection.getEnumDefinitionBuilder());
+            }
+        }
+        if (enumValues.isEmpty()) {
+            // Need to create an semicolon if there is no value at all to get valid code.
             mainSection.getEnumDefinitionBuilder().append(';');
         }
+    }
+
+    private void createEnumValuesInClass(TypeSection mainSection, List<IEnumValue> enumValues) throws CoreException {
+        List<String> literalNames = getLiteralNames(enumValues);
+        for (int i = 0; i < enumValues.size(); i++) {
+            IEnumValue currentEnumValue = enumValues.get(i);
+            if (currentEnumValue.isValid(getIpsProject())) {
+                createEnumValueAsConstant(i, currentEnumValue, literalNames.get(i), mainSection.getConstantBuilder());
+            }
+        }
+        if (useClassGeneration() && !enumValues.isEmpty()) {
+            String className = List.class.getName() + "<" + getQualifiedClassName() + ">";
+            mainSection.getConstantBuilder().varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
+                    className, CONSTANT_VALUES, getConstantValuesInitExpression(literalNames));
+        }
+    }
+
+    List<String> getLiteralNames(List<IEnumValue> enumValues) {
+        ArrayList<String> literalNames = new ArrayList<String>();
+        Map<String, Integer> dublicatedLiteralNameCounter = new HashMap<String, Integer>();
+        for (IEnumValue enumValue : enumValues) {
+            String identifierValue = enumValue.getEnumAttributeValue(identiferAttribute).getValue()
+                    .getLocalizedContent(getLanguageUsedInGeneratedSourceCode());
+            String literalName = getIpsProject().getJavaNamingConvention().getEnumLiteral(identifierValue);
+            if (dublicatedLiteralNameCounter.containsKey(literalName)) {
+                int count = dublicatedLiteralNameCounter.get(literalName) + 1;
+                dublicatedLiteralNameCounter.put(literalName, count);
+                literalNames.add(literalName + "_" + count);
+            } else if (literalNames.contains(literalName)) {
+                int indexOfExisting = literalNames.indexOf(literalName);
+                literalNames.remove(indexOfExisting);
+                literalNames.add(indexOfExisting, literalName + "_1");
+                literalNames.add(literalName + "_2");
+                dublicatedLiteralNameCounter.put(literalName, 2);
+            } else {
+                literalNames.add(literalName);
+            }
+        }
+        return literalNames;
+    }
+
+    private JavaCodeFragment getConstantValuesInitExpression(List<String> literalNames) {
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
+        javaCodeFragment.appendClassName(Arrays.class).append(".asList(");
+        boolean first = true;
+        for (String literalName : literalNames) {
+            if (first) {
+                first = false;
+            } else {
+                javaCodeFragment.append(", ");
+            }
+            javaCodeFragment.append(literalName);
+        }
+        javaCodeFragment.append(")");
+        return javaCodeFragment;
     }
 
     /**
@@ -414,7 +456,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String valueOrExpression,
             boolean isExpression,
             JavaCodeFragment repositoryExp) throws CoreException {
-        IEnumAttribute attribute = enumType.findIdentiferAttribute(getIpsProject());
+        IEnumAttribute attribute = getIdentifierAttribute(enumType);
         DatatypeHelper datatypeHelper = getDatatypeHelper(attribute, true);
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (repositoryExp != null) {
@@ -502,7 +544,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         ArgumentCheck.notNull(enumType);
 
         if (!enumType.isExtensible()) {
-            IEnumAttribute enumAttribute = enumType.findIdentiferAttribute(getIpsProject());
+            IEnumAttribute enumAttribute = getIdentifierAttribute(enumType);
             if (enumAttribute != null) {
                 DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(
                         enumAttribute.findDatatype(getIpsProject()).getQualifiedName());
@@ -556,25 +598,25 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates the Java source code for an enumeration value as enum definition (Java at least 5).
      * 
-     * @param enumAttributeValues The enumeration attribute values of the enumeration value to
-     *            create.
-     * @param literalEnumAttributeValue The enumeration attribute value that refers to the literal
-     *            name enumeration attribute.
+     * @param currentEnumValue The enum value for which we currently create the enum definition
      * @param lastEnumDefinition Flag indicating whether this enum definition will be the last one.
      * @param enumDefinitionBuilder The java source code builder to use for creating enum
      *            definitions.
      */
-    private void createEnumValueAsEnumDefinition(List<IEnumAttributeValue> enumAttributeValues,
-            IEnumAttributeValue literalEnumAttributeValue,
+    private void createEnumValueAsEnumDefinition(IEnumValue currentEnumValue,
             boolean lastEnumDefinition,
             JavaCodeFragmentBuilder enumDefinitionBuilder) {
+        List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
+        IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(getEnumType()
+                .getIndexOfEnumAttribute(literalNameAttribute));
+        currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
 
         // Create enumeration definition source fragment
         appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
-        enumDefinitionBuilder.append(literalEnumAttributeValue.getValue().getLocalizedContent(
+        enumDefinitionBuilder.append(currentLiteralNameEnumAttributeValue.getValue().getLocalizedContent(
                 getLanguageUsedInGeneratedSourceCode()));
         enumDefinitionBuilder.append(" ("); //$NON-NLS-1$
-        appendEnumValueParameters(enumAttributeValues, enumDefinitionBuilder.getFragment());
+        appendEnumValueParameters(currentEnumAttributeValues, enumDefinitionBuilder.getFragment());
         enumDefinitionBuilder.append(')');
         if (!(lastEnumDefinition)) {
             enumDefinitionBuilder.append(","); //$NON-NLS-1$
@@ -590,20 +632,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the Java source code for an enumeration value as constant (Java less than 5).
      * 
      * @param index The index of the enum value
-     * @param enumAttributeValues The enumeration attribute values of the enumeration value to
-     *            create.
-     * @param literalEnumAttributeValue The enumeration attribute value that refers to the literal
-     *            name enumeration attribute.
+     * @param currentValue The {@link IEnumValue} for which we currently create the constant
      * @param constantBuilder The Java source code builder to use for creating constants.
      */
     private void createEnumValueAsConstant(int index,
-            List<IEnumAttributeValue> enumAttributeValues,
-            IEnumAttributeValue literalEnumAttributeValue,
+            IEnumValue currentValue,
+            String literalName,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-
+        List<IEnumAttributeValue> enumAttributeValues = currentValue.getEnumAttributeValues();
         IEnumType enumType = getEnumType();
 
-        // Build constant source
         appendLocalizedJavaDoc("ENUMVALUE", enumType, constantBuilder); //$NON-NLS-1$
         JavaCodeFragment initExpression = new JavaCodeFragment();
         initExpression.append("new "); //$NON-NLS-1$
@@ -613,15 +651,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendEnumValueParameters(enumAttributeValues, initExpression);
         initExpression.append(')');
 
-        String literalName = literalEnumAttributeValue.getValue().getLocalizedContent(
-                getLanguageUsedInGeneratedSourceCode());
-        if (!literalEnumAttributeValue.isEnumLiteralNameAttributeValue()) {
-            literalName = getIpsProject().getJavaNamingConvention().getEnumLiteral(literalName);
-        }
-
-        DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                datatypeHelper.getJavaClassName(), literalName, initExpression);
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, getQualifiedClassName(),
+                literalName, initExpression);
         constantBuilder.appendln();
     }
 
@@ -654,7 +685,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
             IEnumAttributeValue idValue = currentEnumAttributeValue.getEnumValue().getEnumAttributeValue(
                     identifierAttribute);
-            javaCodeFragment.append("new ").appendClassName(PropertyReadingInternationalString.class).append("(\"")
+            javaCodeFragment.append("new ").appendClassName(PropertiesReadingInternationalString.class).append("(\"")
                     .append(enumAttribute.getName()).append("_").append(idValue.getStringValue()).append("\"")
                     .append(", ").append(VARNAME_MESSAGE_HELPER).append(")");
         } else {
@@ -837,7 +868,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             final IEnumAttribute currentEnumAttribute = enumAttribute;
             argNames[arrayIndex] = currentEnumAttribute.getName() + "String";
             if (currentEnumAttribute.isMultilingual()) {
-                argClasses[arrayIndex] = IInternationalString.class;
+                argClasses[arrayIndex] = InternationalString.class;
             } else {
                 argClasses[arrayIndex] = String.class;
             }
@@ -1049,7 +1080,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         List<IEnumAttribute> uniqueAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         List<IEnumValue> enumValues = enumType.getEnumValues();
-        IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+        IEnumLiteralNameAttribute literalNameAttribute = getLiteralNameAttribute(enumType);
         if (literalNameAttribute == null) {
             return;
         }
@@ -1195,7 +1226,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 continue;
             }
 
-            IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+            IEnumLiteralNameAttribute literalNameAttribute = getLiteralNameAttribute(enumType);
             if (literalNameAttribute == null) {
                 continue;
             }
@@ -1327,7 +1358,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.isAbstract()) {
             return;
         }
-        IEnumAttribute idAttribute = enumType.findIdentiferAttribute(getIpsProject());
+        IEnumAttribute idAttribute = getIdentifierAttribute(enumType);
         if (idAttribute == null || !(idAttribute.isValid(getIpsProject()))) {
             return;
         }
@@ -1362,6 +1393,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
+    }
+
+    private IEnumAttribute getIdentifierAttribute(IEnumType enumType) {
+        if (enumType == getEnumType()) {
+            return identiferAttribute;
+        } else {
+            return enumType.findIdentiferAttribute(getIpsProject());
+        }
+
+    }
+
+    private IEnumLiteralNameAttribute getLiteralNameAttribute(IEnumType enumType) {
+        if (enumType == getEnumType()) {
+            return literalNameAttribute;
+        } else {
+            return enumType.getEnumLiteralNameAttribute();
+        }
     }
 
     @Override
@@ -1495,7 +1543,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             if (enumAttribute == null) {
                 return getIpsProject().getDatatypeHelper(Datatype.STRING);
             } else if (mapMultilingual && enumAttribute.isMultilingual()) {
-                return new InternationalStringDatatypeHelper();
+                return new InternationalStringDatatypeHelper(true);
             } else {
                 return getIpsProject().getDatatypeHelper(enumAttribute.findDatatype(getIpsProject()));
             }

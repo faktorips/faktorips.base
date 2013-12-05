@@ -61,13 +61,13 @@ public class XProductAttribute extends XAttribute {
     public DatatypeHelper getDatatypeHelper() {
         if (isMultiValue()) {
             if (isMultilingual()) {
-                return new ListOfValueDatatypeHelper(new InternationalStringDatatype());
+                return new ListOfValueDatatypeHelper(new InternationalStringDatatype(false));
             } else {
                 return new ListOfValueDatatypeHelper((ValueDatatype)super.getDatatypeHelper().getDatatype());
             }
         } else {
             if (isMultilingual()) {
-                return new InternationalStringDatatypeHelper();
+                return new InternationalStringDatatypeHelper(false);
             } else {
                 return super.getDatatypeHelper();
             }

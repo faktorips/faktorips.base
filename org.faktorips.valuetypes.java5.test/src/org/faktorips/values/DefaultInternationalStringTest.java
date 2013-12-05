@@ -34,11 +34,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-public class InternationalStringTest {
+public class DefaultInternationalStringTest {
     private static final String ENGLISH_TEXT = "english text";
     private static final String GERMAN_TEXT = "deutscher Text";
 
-    private InternationalString internationalString;
+    private DefaultInternationalString internationalString;
     private LocalizedString englishLocalizedString;
     private LocalizedString germanLocalizedString;
 
@@ -49,7 +49,7 @@ public class InternationalStringTest {
         List<LocalizedString> list = new ArrayList<LocalizedString>();
         list.add(englishLocalizedString);
         list.add(germanLocalizedString);
-        internationalString = new InternationalString(list);
+        internationalString = new DefaultInternationalString(list);
     }
 
     @Test
@@ -81,20 +81,20 @@ public class InternationalStringTest {
         List<LocalizedString> list = new ArrayList<LocalizedString>();
         list.add(english2);
         list.add(german2);
-        IInternationalString internationalString2 = new InternationalString(list);
+        InternationalString internationalString2 = new DefaultInternationalString(list);
 
         assertEquals(internationalString, internationalString2);
         assertEquals(internationalString2, internationalString);
         assertEquals(internationalString.hashCode(), internationalString2.hashCode());
 
         list.add(new LocalizedString(Locale.CHINESE, "abc"));
-        internationalString2 = new InternationalString(list);
+        internationalString2 = new DefaultInternationalString(list);
         assertFalse(internationalString.equals(internationalString2));
         assertFalse(internationalString2.equals(internationalString));
 
         list.clear();
         list.add(german2);
-        internationalString2 = new InternationalString(list);
+        internationalString2 = new DefaultInternationalString(list);
         assertFalse(internationalString.equals(internationalString2));
         assertFalse(internationalString2.equals(internationalString));
     }
@@ -119,7 +119,7 @@ public class InternationalStringTest {
     public void testUnmodifiableMap() throws Exception {
         Object readObject = serializeAndDeserialize();
 
-        Field internalField = ((IInternationalString)readObject).getClass().getDeclaredField("localizedStringMap");
+        Field internalField = ((InternationalString)readObject).getClass().getDeclaredField("localizedStringMap");
         assertNotNull(internalField);
         internalField.setAccessible(true);
         @SuppressWarnings("unchecked")

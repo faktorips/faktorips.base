@@ -16,6 +16,13 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -26,6 +33,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -251,6 +259,70 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         } else {
             assertFalse(generatedJavaElements.contains(method));
         }
+    }
+
+    @Test
+    public void testGetLiteralNames_empty() throws Exception {
+        List<String> literalNames = builder.getLiteralNames(new ArrayList<IEnumValue>());
+
+        assertTrue(literalNames.isEmpty());
+    }
+
+    @Test
+    public void testGetLiteralNames_noDublicates() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("abc"));
+        enumValues.add(mockEnumValue("xyz"));
+        List<String> literalNames = builder.getLiteralNames(enumValues);
+
+        assertEquals(Arrays.asList("ABC", "XYZ"), literalNames);
+    }
+
+    @Test
+    public void testGetLiteralNames_withTwoDublicates() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("_123"));
+        enumValues.add(mockEnumValue("-123"));
+        List<String> literalNames = builder.getLiteralNames(enumValues);
+
+        assertEquals(Arrays.asList("_123_1", "_123_2"), literalNames);
+    }
+
+    @Test
+    public void testGetLiteralNames_withMoreDublicates() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("_123"));
+        enumValues.add(mockEnumValue("-123"));
+        enumValues.add(mockEnumValue("+123"));
+        List<String> literalNames = builder.getLiteralNames(enumValues);
+
+        assertEquals(Arrays.asList("_123_1", "_123_2", "_123_3"), literalNames);
+    }
+
+    @Test
+    public void testGetLiteralNames_withMoreDublicatesAndOtherValues() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("abc"));
+        enumValues.add(mockEnumValue("_123"));
+        enumValues.add(mockEnumValue("xyz"));
+        enumValues.add(mockEnumValue("-123"));
+        enumValues.add(mockEnumValue("foo"));
+        enumValues.add(mockEnumValue("bar"));
+        enumValues.add(mockEnumValue("123"));
+        enumValues.add(mockEnumValue("+123"));
+        enumValues.add(mockEnumValue("blub"));
+        List<String> literalNames = builder.getLiteralNames(enumValues);
+
+        assertEquals(Arrays.asList("ABC", "_123_1", "XYZ", "_123_2", "FOO", "BAR", "_123_3", "_123_4", "BLUB"),
+                literalNames);
+    }
+
+    private IEnumValue mockEnumValue(String id) {
+        IEnumValue enumValue = mock(IEnumValue.class);
+        IEnumAttributeValue enumAttributeValue = mock(IEnumAttributeValue.class);
+        doReturn(ValueFactory.createStringValue(id)).when(enumAttributeValue).getValue();
+        when(enumValue.getEnumAttributeValue(null)).thenReturn(enumAttributeValue);
+        return enumValue;
     }
 
 }

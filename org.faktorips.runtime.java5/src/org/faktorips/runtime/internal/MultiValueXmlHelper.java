@@ -16,7 +16,7 @@ package org.faktorips.runtime.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -78,24 +78,24 @@ public final class MultiValueXmlHelper {
     }
 
     /**
-     * Reads {@link InternationalString} values from the XML structure.
+     * Reads {@link DefaultInternationalString} values from the XML structure.
      * 
      * @param attrValueElement the element to extract multiple values from
      * @return a list containing all values in the given element as international strings
      * @throws NullPointerException if the outer value-tag or the MultiValue-Tag cannot be found
      */
-    public static List<InternationalString> getInternationalStringsFromXML(Element attrValueElement) {
+    public static List<DefaultInternationalString> getInternationalStringsFromXML(Element attrValueElement) {
         Element value = XmlUtil.getFirstElement(attrValueElement, XML_TAG_VALUE);
         assertElementExists(value, XML_TAG_VALUE);
         Element multiValueElement = XmlUtil.getFirstElement(value, XML_TAG_MULTIVALUE);
         assertElementExists(multiValueElement, XML_TAG_MULTIVALUE);
 
-        ArrayList<InternationalString> list = new ArrayList<InternationalString>();
+        ArrayList<DefaultInternationalString> list = new ArrayList<DefaultInternationalString>();
         NodeList valueNodeList = multiValueElement.getElementsByTagName(XML_TAG_VALUE);
         for (int i = 0; i < valueNodeList.getLength(); i++) {
             Element valueElement = (Element)valueNodeList.item(i);
             list.add(ValueToXmlHelper.getInternationalStringFromElement(XmlUtil.getFirstElement(valueElement,
-                    "InternationalString")));
+                    InternationalStringXmlReaderWriter.XML_TAG)));
         }
         return list;
     }
@@ -141,18 +141,18 @@ public final class MultiValueXmlHelper {
     }
 
     /**
-     * Adds all {@link InternationalString international strings} in the given list as a
+     * Adds all {@link DefaultInternationalString international strings} in the given list as a
      * "multi-value" child element to the given element.
      */
     public static void addInternationalStringsToElement(Element element,
-            List<InternationalString> internationalStringList) {
+            List<DefaultInternationalString> internationalStringList) {
         Element outerValueElement = element.getOwnerDocument().createElement(XML_TAG_VALUE);
         element.appendChild(outerValueElement);
 
         Element multiValueElement = outerValueElement.getOwnerDocument().createElement(XML_TAG_MULTIVALUE);
         outerValueElement.appendChild(multiValueElement);
 
-        for (InternationalString internationalStringValue : internationalStringList) {
+        for (DefaultInternationalString internationalStringValue : internationalStringList) {
             ValueToXmlHelper
                     .addInternationalStringToElement(internationalStringValue, multiValueElement, XML_TAG_VALUE);
         }

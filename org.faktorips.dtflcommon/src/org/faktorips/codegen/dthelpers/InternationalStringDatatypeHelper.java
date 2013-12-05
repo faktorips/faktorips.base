@@ -19,8 +19,8 @@ import org.faktorips.datatype.InternationalStringDatatype;
 
 public class InternationalStringDatatypeHelper extends AbstractDatatypeHelper {
 
-    public InternationalStringDatatypeHelper() {
-        super(new InternationalStringDatatype());
+    public InternationalStringDatatypeHelper(boolean useInterface) {
+        super(new InternationalStringDatatype(useInterface));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class InternationalStringDatatypeHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      * <p>
      * In the implementation of {@link InternationalStringDatatypeHelper} we ignore the checkForNull
-     * because InternationalString variables should never be null at all.
+     * because international string variables should never be null at all.
      */
     @Override
     public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
@@ -57,7 +57,7 @@ public class InternationalStringDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      * <p>
-     * For InternationalString we do not use the string representation! We simply return the field
+     * For international string we do not use the string representation! We simply return the field
      * name because every use of the international string should handle the type directly. This is a
      * big difference to all other datatypes but is necessary to read and write international
      * strings in a proper format.

@@ -3,7 +3,7 @@ import org::faktorips::devtools::stdbuilder::xpand::productcmpt::model;
 extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
 
 xmlValueType(XProductAttribute this) :
-	multilingual ? InternationalString() : "String";
+	multilingual ? DefaultInternationalString() : "String";
 
 getFromElement(XProductAttribute this, String paramConfigElement, String paramValue) :
 	multilingual ? getInternationalStringFromElement(paramConfigElement, paramValue) : getValueFromElement(paramConfigElement, paramValue);

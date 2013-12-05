@@ -41,7 +41,7 @@ import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
-import org.faktorips.values.IInternationalString;
+import org.faktorips.values.InternationalString;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -235,7 +235,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     }
 
     private boolean isParameterClassValid(Class<?> parameterClass) {
-        return parameterClass != String.class && parameterClass != IInternationalString.class
+        return parameterClass != String.class && !InternationalString.class.isAssignableFrom(parameterClass)
                 && parameterClass != Integer.TYPE;
     }
 

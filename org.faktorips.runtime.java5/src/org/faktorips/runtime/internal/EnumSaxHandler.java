@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.values.IInternationalString;
 import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -43,7 +43,7 @@ public class EnumSaxHandler extends DefaultHandler {
 
     private List<LocalizedString> localizedStrings;
 
-    private IInternationalString internationalString;
+    private InternationalString internationalString;
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -80,7 +80,7 @@ public class EnumSaxHandler extends DefaultHandler {
             enumValues.add(enumValue);
             enumValue = null;
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
-            internationalString = new InternationalString(localizedStrings);
+            internationalString = new DefaultInternationalString(localizedStrings);
         }
     }
 

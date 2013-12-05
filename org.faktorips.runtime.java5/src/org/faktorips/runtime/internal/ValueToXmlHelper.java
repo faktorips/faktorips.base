@@ -13,8 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
-import org.faktorips.values.IInternationalString;
-import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,14 +62,14 @@ public class ValueToXmlHelper {
     }
 
     /**
-     * Adds the {@link InternationalString} to the given xml element. Takes care of proper null
+     * Adds the {@link DefaultInternationalString} to the given xml element. Takes care of proper null
      * handling.
      * 
-     * @param value the {@link InternationalString} to be added.
+     * @param value the {@link DefaultInternationalString} to be added.
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value.
      */
-    public static void addInternationalStringToElement(InternationalString value, Element el, String tagName) {
+    public static void addInternationalStringToElement(DefaultInternationalString value, Element el, String tagName) {
         addInternationalStringAndReturnElement(value, el, tagName);
     }
 
@@ -104,16 +103,16 @@ public class ValueToXmlHelper {
     }
 
     /**
-     * Adds the {@link InternationalString} to the given xml element as does
-     * {@link #addInternationalStringToElement(InternationalString, Element, String)}. The created
+     * Adds the {@link DefaultInternationalString} to the given xml element as does
+     * {@link #addInternationalStringToElement(DefaultInternationalString, Element, String)}. The created
      * element then is returned.
      * 
-     * @param value the {@link InternationalString} to be added.
+     * @param value the {@link DefaultInternationalString} to be added.
      * @param el the XML element to add the value to.
      * @param tagName the tag name for the element that stored the value.
      * @return the created element with the given tag name, that contains the given value.
      */
-    private static Element addInternationalStringAndReturnElement(InternationalString value, Element el, String tagName) {
+    private static Element addInternationalStringAndReturnElement(DefaultInternationalString value, Element el, String tagName) {
         Document ownerDocument = el.getOwnerDocument();
         Element valueEl = ownerDocument.createElement(tagName);
         Element internationalStringEl = InternationalStringXmlReaderWriter.toXml(ownerDocument, value);
@@ -174,15 +173,15 @@ public class ValueToXmlHelper {
     }
 
     /**
-     * Returns the {@link InternationalString} stored in the child element of the given element with
-     * the indicated name. Returns an empty InternationalString if the value is null or no such
+     * Returns the {@link DefaultInternationalString} stored in the child element of the given element with
+     * the indicated name. Returns an empty DefaultInternationalString if the value is null or no such
      * child element exists.
      * 
      * @param el The xml element that is the parent of the element storing the international string.
      * @param tagName The name of the child
      */
-    public static IInternationalString getInternationalStringFromElement(Element el, String tagName) {
-        return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el, tagName));
+    public static DefaultInternationalString getInternationalStringFromElement(Element el, String tagName) {
+        return new DefaultInternationalString(InternationalStringXmlReaderWriter.fromXml(el, tagName));
     }
 
     /**
@@ -216,13 +215,13 @@ public class ValueToXmlHelper {
     }
 
     /**
-     * Returns the {@link InternationalString} stored in the given element. Returns an empty
-     * InternationalString if the value is null.
+     * Returns the {@link DefaultInternationalString} stored in the given element. Returns an empty
+     * DefaultInternationalString if the value is null.
      * 
      * @param el The xml element storing the international string.
      */
-    public static InternationalString getInternationalStringFromElement(Element el) {
-        return new InternationalString(InternationalStringXmlReaderWriter.fromXml(el));
+    public static DefaultInternationalString getInternationalStringFromElement(Element el) {
+        return new DefaultInternationalString(InternationalStringXmlReaderWriter.fromXml(el));
     }
 
     public static Range getRangeFromElement(Element el, String tagName) {

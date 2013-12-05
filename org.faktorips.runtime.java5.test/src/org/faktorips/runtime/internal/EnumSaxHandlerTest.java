@@ -24,7 +24,7 @@ import java.util.Locale;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.values.IInternationalString;
+import org.faktorips.values.InternationalString;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -120,12 +120,12 @@ public class EnumSaxHandlerTest {
         List<Object> values = enumValueList.get(0);
         assertEquals(2, values.size());
         assertEquals("a", values.get(0));
-        assertEquals("deText", ((IInternationalString)values.get(1)).get(Locale.GERMAN));
-        assertEquals("enText", ((IInternationalString)values.get(1)).get(Locale.ENGLISH));
+        assertEquals("deText", ((InternationalString)values.get(1)).get(Locale.GERMAN));
+        assertEquals("enText", ((InternationalString)values.get(1)).get(Locale.ENGLISH));
         values = enumValueList.get(1);
         assertEquals(2, values.size());
         assertEquals("b", values.get(0));
-        assertEquals("deText2", ((IInternationalString)values.get(1)).get(Locale.GERMAN));
-        assertEquals("enText2", ((IInternationalString)values.get(1)).get(Locale.ENGLISH));
+        assertEquals("deText2", ((InternationalString)values.get(1)).get(Locale.GERMAN));
+        assertEquals("enText2", ((InternationalString)values.get(1)).get(Locale.ENGLISH));
     }
 }

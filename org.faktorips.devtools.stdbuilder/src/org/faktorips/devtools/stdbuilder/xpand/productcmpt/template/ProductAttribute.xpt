@@ -69,7 +69,7 @@
 		«IF genInterface()»;«ELSE-»
 		{
 	        «List_("String")-» result = new «ArrayList("String")»();
-	        for («InternationalString()» internationalString : «fieldName») {
+	        for («DefaultInternationalString()» internationalString : «fieldName») {
 	            result.add(internationalString.get(locale));
 	        }
 	        return result;

@@ -157,8 +157,8 @@ Locale(AbstractGeneratorModelNode this):
 LocalizedString(AbstractGeneratorModelNode this):
 	addImport(LocalizedString.name);
 	
-InternationalString(AbstractGeneratorModelNode this):
-	addImport(InternationalString.name);
+DefaultInternationalString(AbstractGeneratorModelNode this):
+	addImport(DefaultInternationalString.name);
 
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
