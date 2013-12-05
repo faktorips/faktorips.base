@@ -18,8 +18,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 
 /**
  * A key value range is an object which stores the 'from'-value for a unique key of a table row. The
@@ -39,7 +39,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      */
     private String valueFrom;
 
-    private KeyValueRange(ITableStructure structure, ValueDatatype[] datatypes, IUniqueKey uniqueKey,
+    private KeyValueRange(ITableStructure structure, ValueDatatype[] datatypes, IIndex uniqueKey,
             ColumnRange columnRange, Row row) {
 
         super(structure, uniqueKey, row);
@@ -55,7 +55,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      */
     public static KeyValueRange createKeyValue(ITableStructure structure,
             ValueDatatype[] datatypes,
-            IUniqueKey uniqueKey,
+            IIndex uniqueKey,
             Row row,
             ColumnRange columnRange) {
 
@@ -227,6 +227,6 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      */
     @Override
     public String toString() {
-        return uniqueKey.getName() + ": " + valueFrom + "- /" + evalValueTo(row, columnRange); //$NON-NLS-1$ //$NON-NLS-2$
+        return getUniqueKey().getName() + ": " + valueFrom + "- /" + evalValueTo(row, columnRange); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

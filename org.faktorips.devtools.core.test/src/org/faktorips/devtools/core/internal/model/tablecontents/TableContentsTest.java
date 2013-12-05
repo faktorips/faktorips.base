@@ -42,8 +42,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
@@ -273,7 +273,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         range.setFromColumn("first");
         range.setToColumn("second");
 
-        structure.newUniqueKey().addKeyItem(range.getName());
+        structure.newIndex().addKeyItem(range.getName());
 
         table.setTableStructure(structure.getQualifiedName());
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
@@ -315,7 +315,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         range.setFromColumn("fromColumn");
         range.setToColumn("toColumn");
 
-        structure.newUniqueKey().addKeyItem(range.getName());
+        structure.newIndex().addKeyItem(range.getName());
 
         table.setTableStructure(structure.getQualifiedName());
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
@@ -348,7 +348,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         column3.setDatatype(Datatype.STRING.getQualifiedName());
         column3.setName("third");
 
-        IUniqueKey key = structure.newUniqueKey();
+        IIndex key = structure.newIndex();
         key.addKeyItem("first");
         key.addKeyItem("third");
 
@@ -365,7 +365,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.deleteColumn(0);
         // there was an error in the code of the Row validate method that caused an
         // IndexOutOfBoundsException if a column was removed from the tablecontents
-        // but not from the table structure and a UniqueKey was defined which contained an item
+        // but not from the table structure and a Index was defined which contained an item
         // which index number was equal
         // or greater than the number of table contents columns.
         msgList = table.validate(project);
@@ -382,7 +382,7 @@ public class TableContentsTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindMetaClass() throws CoreException {
-        ITableStructure structure = newTableStructure(project, "Structure");
+        ITableStructure structure = newTableStructure(project, "SearchStructure");
         table.setTableStructure(structure.getQualifiedName());
 
         IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);
@@ -390,19 +390,19 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindGenerationEffectiveOn() throws Exception {
+    public void testGetGenerationEffectiveOn() throws Exception {
         table.newGeneration();
 
         assertEquals(1, table.getNumOfGenerations());
 
-        IIpsObjectGeneration generation = table.findGenerationEffectiveOn(null);
+        IIpsObjectGeneration generation = table.getGenerationEffectiveOn(null);
         assertEquals(table.getFirstGeneration(), generation);
 
-        generation = table.findGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
+        generation = table.getGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
         assertEquals(table.getFirstGeneration(), generation);
 
         table.setValidTo(null);
-        generation = table.findGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
+        generation = table.getGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
         assertEquals(table.getFirstGeneration(), generation);
     }
 

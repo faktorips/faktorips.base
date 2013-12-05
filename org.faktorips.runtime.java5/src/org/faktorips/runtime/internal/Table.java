@@ -15,18 +15,14 @@ package org.faktorips.runtime.internal;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.KeyType;
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
@@ -50,7 +46,6 @@ import org.xml.sax.InputSource;
  * 
  * @author Peter Erzberger, Thorsten Waertel
  */
-// TODO change table model to generic?
 public abstract class Table<T> implements ITable {
 
     /**
@@ -93,117 +88,6 @@ public abstract class Table<T> implements ITable {
     }
 
     /**
-     * This method is used by generated classes to convert the values of the provided map into
-     * <code>ReadOnlyBinaryRangeTree</code> objects. The provided map can recursively contain maps.
-     * For each level accept from the zero level the maps are converted into trees. On zero level
-     * there is still a map. This map will be returned.
-     * 
-     * @param map starting from this map a new map is build up while the keys of this map are
-     *            transfered but the values which are assumed to be maps are converted into
-     *            <code>ReadOnlyBinaryRangeTree</code> objects recursively.
-     * 
-     * @param treeTypes an array of tree types. See in the <code>ReadOnlyBinaryRangeTree</code>
-     *            description for possible tree types
-     * @return the zero level map see description above
-     */
-    protected Map convert(Map map, KeyType[] treeTypes) {
-        return convert(map, treeTypes, 0);
-    }
-
-    private Map convert(Map map, KeyType[] treeTypes, int level) {
-        Map returnValue = new HashMap();
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
-            if (treeTypes.length == level) {
-                return map;
-            }
-            returnValue.put(entry.getKey(), generateTree((Map)entry.getValue(), treeTypes, level));
-        }
-        return returnValue;
-    }
-
-    /**
-     * This method is used by generated classes to convert the provided map into
-     * <code>ReadOnlyBinaryRangeTree</code> object. The provided map can recursively contain maps.
-     * If so each map is converted into a tree.
-     * 
-     * @param map is converted into a <code>ReadOnlyBinaryRangeTree</code>
-     * @param treeTypes the tree types of the created <code>ReadOnlyBinaryRangeTree</code>. The
-     *            length of this are must reflect the depth of the map hierarchy. See in the
-     *            <code>ReadOnlyBinaryRangeTree</code> description for possible tree types
-     * @return returns the created <code>ReadOnlyBinaryRangeTree</code>
-     */
-    protected ReadOnlyBinaryRangeTree generateTree(Map map, KeyType[] treeTypes) {
-        return generateTree(map, treeTypes, 0);
-    }
-
-    private ReadOnlyBinaryRangeTree generateTree(Map map, KeyType[] treeTypes, int level) {
-        Map nextLevel = convert(map, treeTypes, level + 1);
-        return new ReadOnlyBinaryRangeTree(nextLevel, treeTypes[level]);
-    }
-
-    /**
-     * Is used by generated classes within the initKeyMaps() method. It returns a value from the
-     * provided map that is assumed to be of type java.util.Map. If no such entry is found a new
-     * java.util.HashMap is created and added to the map for the key and the new Map is returned.
-     */
-    protected Map getMap(Map searchMap, Object key) {
-        Map returnValue = (Map)searchMap.get(key);
-        if (returnValue == null) {
-            returnValue = new HashMap();
-            searchMap.put(key, returnValue);
-        }
-        return returnValue;
-    }
-
-    /**
-     * Is used by generated classes within the initKeyMaps() method for two-column ranges. It
-     * returns a value from the provided map that is assumed to be of type java.util.Map. If no such
-     * entry is found a new java.util.HashMap is created and added to the map for the key and the
-     * new Map is returned.
-     */
-    protected Map getMap(Map searchMap, Comparable lowerBound, Comparable upperBound) {
-        TwoColumnKey key = new TwoColumnKey(lowerBound, upperBound);
-        Map returnValue = (Map)searchMap.get(key);
-        if (returnValue == null) {
-            returnValue = new HashMap();
-            searchMap.put(key, returnValue);
-        }
-        return returnValue;
-    }
-
-    /**
-     * Is used within the find-methods of the generated classes to retrieve a value from a map that
-     * contains trees as values. The key is used get the according tree from the provided map while
-     * the <i>treeKey</i> parameter is used to retrieve the values from the tree hierarchy. The
-     * length of the array is equal to the tree hierarchy.
-     */
-    protected Object getValue(Map map, Object key, Comparable[] treeKey) {
-        ReadOnlyBinaryRangeTree tree = (ReadOnlyBinaryRangeTree)map.get(key);
-        return getValue(tree, treeKey);
-    }
-
-    /**
-     * Is used within the find-methods of the generated classes to retrieve a value from a tree
-     * hierarchy. The length of the <i>keys</i> array is equals to the depth of the tree hierarchy.
-     */
-    protected Object getValue(ReadOnlyBinaryRangeTree tree, Comparable[] keys) {
-        return getValue(tree, keys, 0);
-    }
-
-    private Object getValue(ReadOnlyBinaryRangeTree tree, Comparable[] keys, int level) {
-
-        if (tree == null) {
-            return null;
-        }
-        Object value = tree.getValue(keys[level]);
-        if (value == null || level == keys.length - 1) {
-            return value;
-        }
-        return getValue((ReadOnlyBinaryRangeTree)value, keys, ++level);
-    }
-
-    /**
      * Returns the String representation of up to ten of this table's rows.
      */
     @Override
@@ -218,4 +102,5 @@ public abstract class Table<T> implements ITable {
         }
         return output.toString();
     }
+
 }

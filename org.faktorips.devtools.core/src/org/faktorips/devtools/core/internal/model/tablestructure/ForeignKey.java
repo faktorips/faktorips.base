@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -96,7 +96,7 @@ public class ForeignKey extends Key implements IForeignKey {
                     "referenced unique key", this, PROPERTY_REF_UNIQUE_KEY, "", list)) { //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
-            IUniqueKey uk = structure.getUniqueKey(refUniqueKey);
+            IIndex uk = structure.getUniqueKey(refUniqueKey);
             if (uk == null) {
                 String text = NLS.bind(Messages.ForeignKey_msgMissingUniqueKey, refTableStructure, refUniqueKey);
                 list.add(new Message("", text, Message.ERROR, this, PROPERTY_REF_UNIQUE_KEY)); //$NON-NLS-1$

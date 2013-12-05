@@ -19,26 +19,26 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * A completion processor for a table structure's unique keys.
+ * A completion processor for a table structure's indices.
  */
-public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
+public class IndexCompletionProcessor extends AbstractCompletionProcessor {
 
     private ITableStructure tableStructure;
 
-    public UniqueKeyCompletionProcessor() {
+    public IndexCompletionProcessor() {
         super();
         setComputeProposalForEmptyPrefix(true);
     }
 
     /**
-     * Sets the table structure which unique keys should be completed. If <code>null</code> is
-     * passed, no completion is available.
+     * Sets the table structure which indices should be completed. If <code>null</code> is passed,
+     * no completion is available.
      */
     public void setTableStructure(ITableStructure structure) {
         tableStructure = structure;
@@ -48,20 +48,20 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
-            throws Exception {
+    protected void doComputeCompletionProposals(final String prefix,
+            int documentOffset,
+            List<ICompletionProposal> result) throws Exception {
 
-        prefix = prefix.toLowerCase();
         if (tableStructure == null) {
             return;
         }
-        IUniqueKey[] keys = tableStructure.getUniqueKeys();
-        for (IUniqueKey key : keys) {
+        IIndex[] keys = tableStructure.getUniqueKeys();
+        for (IIndex key : keys) {
             addToResult(result, key, documentOffset);
         }
     }
 
-    private void addToResult(List<ICompletionProposal> result, IUniqueKey key, int documentOffset) {
+    private void addToResult(List<ICompletionProposal> result, IIndex key, int documentOffset) {
         String name = key.getName();
         String displayText = name;
         Image image = IpsUIPlugin.getImageHandling().getImage(key);

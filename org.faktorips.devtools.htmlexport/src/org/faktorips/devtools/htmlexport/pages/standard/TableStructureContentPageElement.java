@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -198,18 +198,18 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private static class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IUniqueKey> {
+    private static class IndexTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IIndex> {
 
-        public UniqueKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
-            super(Arrays.asList(tableStructure.getUniqueKeys()), context);
+        public IndexTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(tableStructure.getIndices(), context);
         }
 
         @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
-            return Arrays.asList(new PageElementUtils().createTextPageElements(getUniqueKeyData(uniqueKey)));
+        protected List<IPageElement> createRowWithIpsObjectPart(IIndex index) {
+            return Arrays.asList(new PageElementUtils().createTextPageElements(getIndexData(index)));
         }
 
-        protected List<String> getUniqueKeyData(IUniqueKey uniqueKey) {
+        protected List<String> getIndexData(IIndex uniqueKey) {
             List<String> columnData = new ArrayList<String>();
 
             columnData.add(getContext().getLabel(uniqueKey));
@@ -247,7 +247,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
         addColumnTable();
 
-        addUniqueKeysTable();
+        addIndexTable();
 
         addColumnRangesTable();
 
@@ -271,15 +271,15 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
     }
 
     /**
-     * adds a table for the unique keys
+     * adds a table for the indices
      */
-    private void addUniqueKeysTable() {
+    private void addIndexTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 "TableStructureContentPageElement_uniqueKeys"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getDocumentedIpsObject(),
+        wrapper.addPageElements(getTableOrAlternativeText(new IndexTablePageElement(getDocumentedIpsObject(),
                 getContext()), getContext()
                 .getMessage(HtmlExportMessages.TableStructureContentPageElement_noUniqueKeys)));
         addPageElements(wrapper);

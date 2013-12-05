@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
- * Structure creator for creating a tree that represents the structure of a
+ * SearchStructure creator for creating a tree that represents the structure of a
  * <code>ITableContents</code> object.
  * 
  * @author Stefan Widmaier

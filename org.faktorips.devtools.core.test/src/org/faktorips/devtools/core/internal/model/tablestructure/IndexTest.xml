@@ -3,7 +3,7 @@
 <!--
  Test data for ColumnImplTest.java
 -->
-<UniqueKey id="42">
+<Index id="42" uniqueKey="false">
 	<Item name="age"/>
 	<Item name="gender"/>
-</UniqueKey>
+</Index>

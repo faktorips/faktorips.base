@@ -58,10 +58,10 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private TextField toField;
     private EnumValueField rangeTypeField;
     private TextField parameterNameField;
-    private Button toLeft;
-    private Button toRight;
-    private Button toLeft2;
-    private Button toRight2;
+    private Button topRight;
+    private Button topLeft;
+    private Button bottomRight;
+    private Button bottomLeft;
     private Label fromLabel;
     private Label toLabel;
 
@@ -108,9 +108,18 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         Composite container = getToolkit().createGridComposite(c, 3, false, false);
 
         Composite left = getToolkit().createGridComposite(container, 1, false, true);
-        Composite leftGroup = getToolkit().createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupTitle);
+        Composite leftGroup = getToolkit()
+                .createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupAvailableColsTitle);
+        createColumnSelectionComposite(leftGroup);
 
-        Composite editArea = getToolkit().createLabelEditColumnComposite(leftGroup);
+        Composite middle = getToolkit().createGridComposite(container, 1, true, true);
+        middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
+        createButtons(middle);
+
+        Composite right = getToolkit().createGridComposite(container, 1, false, true);
+        Composite rightGroup = getToolkit().createGroup(right, SWT.NONE, Messages.RangeEditDialog_groupTitle);
+
+        Composite editArea = getToolkit().createLabelEditColumnComposite(rightGroup);
         GridData data = (GridData)editArea.getLayoutData();
         data.widthHint = 180;
         data.heightHint = 200;
@@ -131,126 +140,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         Text toText = getToolkit().createText(editArea);
         toField = new TextField(toText);
 
-        Composite middle = getToolkit().createGridComposite(container, 1, true, true);
-        middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
-        createButtons(middle);
-
-        Composite right = getToolkit().createGridComposite(container, 1, false, true);
-        Composite rightGroup = getToolkit().createGroup(right, SWT.NONE,
-                Messages.RangeEditDialog_groupAvailableColsTitle);
-        createColumnSelectionComposite(rightGroup);
-
         return c;
-    }
-
-    @Override
-    protected Control createContents(Composite parent) {
-        Control control = super.createContents(parent);
-        // set the inital state depending on the range type
-        adjustEnableStateToRangeType(range.getColumnRangeType());
-        return control;
-    }
-
-    private void adjustEnableStateToRangeType(ColumnRangeType type) {
-        if (type.equals(ColumnRangeType.TWO_COLUMN_RANGE)) {
-            setEnabledForFromFieldControls(true);
-            setEnabledForToFieldControls(true);
-            return;
-        }
-
-        if (type.equals(ColumnRangeType.ONE_COLUMN_RANGE_FROM)) {
-            setEnabledForFromFieldControls(true);
-            setEnabledForToFieldControls(false);
-            return;
-        }
-
-        if (type.equals(ColumnRangeType.ONE_COLUMN_RANGE_TO)) {
-            setEnabledForFromFieldControls(false);
-            setEnabledForToFieldControls(true);
-        }
-    }
-
-    private void setEnabledForToFieldControls(boolean enabled) {
-        toField.getControl().setEnabled(enabled);
-        toField.getControl().setEnabled(enabled);
-        toLeft2.setEnabled(enabled);
-        toRight2.setEnabled(enabled);
-        toLabel.setEnabled(enabled);
-    }
-
-    private void setEnabledForFromFieldControls(boolean enabled) {
-        fromField.getControl().setEnabled(enabled);
-        toField.getControl().setEnabled(enabled);
-        toLeft.setEnabled(enabled);
-        toRight.setEnabled(enabled);
-        fromLabel.setEnabled(enabled);
-    }
-
-    private void createButtons(Composite middle) {
-        toLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
-        toLeft.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                selectColumn(fromField);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        toRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
-        toRight.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                clearColumn(fromField);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        getToolkit().createVerticalSpacer(middle, 10);
-
-        toLeft2 = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toLeft2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
-        toLeft2.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                selectColumn(toField);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        toRight2 = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        toRight2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
-        toRight2.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                clearColumn(toField);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
     }
 
     private void createColumnSelectionComposite(Composite parent) {
@@ -292,6 +182,127 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
             }
         });
         columnViewer.setInput(this);
+    }
+
+    private void createButtons(Composite middle) {
+        createTopRightArrow(middle);
+        createTopLeftArrow(middle);
+        getToolkit().createVerticalSpacer(middle, 10);
+        createBottomRightArrow(middle);
+        createBottomLeftArrow(middle);
+    }
+
+    private void createTopRightArrow(Composite middle) {
+        topRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        topRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        topRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        topRight.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                selectColumn(fromField);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createTopLeftArrow(Composite middle) {
+        topLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        topLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        topLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        topLeft.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                clearColumn(fromField);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createBottomRightArrow(Composite middle) {
+        bottomRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        bottomRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        bottomRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        bottomRight.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                selectColumn(toField);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createBottomLeftArrow(Composite middle) {
+        bottomLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        bottomLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        bottomLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        bottomLeft.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                clearColumn(toField);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    @Override
+    protected Control createContents(Composite parent) {
+        Control control = super.createContents(parent);
+        // set the inital state depending on the range type
+        adjustEnableStateToRangeType(range.getColumnRangeType());
+        return control;
+    }
+
+    private void adjustEnableStateToRangeType(ColumnRangeType type) {
+        if (type.equals(ColumnRangeType.TWO_COLUMN_RANGE)) {
+            setEnabledForFromFieldControls(true);
+            setEnabledForToFieldControls(true);
+            return;
+        }
+
+        if (type.equals(ColumnRangeType.ONE_COLUMN_RANGE_FROM)) {
+            setEnabledForFromFieldControls(true);
+            setEnabledForToFieldControls(false);
+            return;
+        }
+
+        if (type.equals(ColumnRangeType.ONE_COLUMN_RANGE_TO)) {
+            setEnabledForFromFieldControls(false);
+            setEnabledForToFieldControls(true);
+        }
+    }
+
+    private void setEnabledForToFieldControls(boolean enabled) {
+        toField.getControl().setEnabled(enabled);
+        toField.getControl().setEnabled(enabled);
+        bottomRight.setEnabled(enabled);
+        bottomLeft.setEnabled(enabled);
+        toLabel.setEnabled(enabled);
+    }
+
+    private void setEnabledForFromFieldControls(boolean enabled) {
+        fromField.getControl().setEnabled(enabled);
+        toField.getControl().setEnabled(enabled);
+        topRight.setEnabled(enabled);
+        topLeft.setEnabled(enabled);
+        fromLabel.setEnabled(enabled);
     }
 
     private void bindContent() {
