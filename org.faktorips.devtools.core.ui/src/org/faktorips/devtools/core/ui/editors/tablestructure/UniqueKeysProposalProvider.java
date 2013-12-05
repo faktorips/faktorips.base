@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class UniqueKeysProposalProvider implements IContentProposalProvider {
 
-    private IContentProposal[] EMPTY_PROPOSALS = new IContentProposal[0];
+    private static final IContentProposal[] EMPTY_PROPOSALS = new IContentProposal[0];
 
     private final ForeignKeyPMO pmo;
 

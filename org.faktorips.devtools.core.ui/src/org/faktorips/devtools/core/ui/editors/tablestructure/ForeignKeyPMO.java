@@ -29,7 +29,7 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
 
     public static final String UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
     public static final String REFERENCE_TABLE = "referenceTable"; //$NON-NLS-1$
-    private IIndex[] EMPTY_ARRAY = new IIndex[0];
+    private static final IIndex[] EMPTY_ARRAY = new IIndex[0];
 
     public ForeignKeyPMO(IForeignKey foreignKey) {
         super(foreignKey);
