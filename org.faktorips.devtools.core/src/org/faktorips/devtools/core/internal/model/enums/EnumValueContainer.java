@@ -100,15 +100,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public List<IEnumValue> findAggregatedEnumValues() {
-        if (this instanceof EnumContent) {
-            return ((EnumContent)this).findAggregatedEnumValues();
-        } else {
-            return ((EnumType)this).findAggregatedEnumValues();
-        }
-    }
-
-    @Override
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
         if (identifierAttributeValue == null) {
             return null;

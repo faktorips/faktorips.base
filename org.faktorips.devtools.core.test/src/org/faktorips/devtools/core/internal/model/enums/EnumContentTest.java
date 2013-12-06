@@ -275,6 +275,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testFindAggregatedEnumValue() throws CoreException {
         EnumContent enumContent = (EnumContent)genderEnumContent;
+        assertEquals(2, enumContent.findAggregatedEnumValues().size());
         genderEnumType.newEnumValue();
         assertEquals(1, genderEnumType.getEnumValues().size());
         assertEquals(2, genderEnumContent.getEnumValues().size());

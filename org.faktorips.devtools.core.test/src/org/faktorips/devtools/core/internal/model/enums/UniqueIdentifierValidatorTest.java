@@ -60,7 +60,8 @@ public class UniqueIdentifierValidatorTest {
     @Test
     public void testGetUniqueIdentifierViolations_noViolation() throws Exception {
         createValues();
-        IEnumAttributeValue enumAttributeValue = container.getEnumValues().get(0).getEnumAttributeValues().get(0);
+        IEnumAttributeValue enumAttributeValue = container.findAggregatedEnumValues().get(0).getEnumAttributeValues()
+                .get(0);
 
         List<String> uniqueIdentifierViolations = uniqueIdentifierValidator
                 .getUniqueIdentifierViolations(enumAttributeValue);
@@ -71,9 +72,11 @@ public class UniqueIdentifierValidatorTest {
     @Test
     public void testGetUniqueIdentifierViolations_sameAttributeViolation() throws Exception {
         createValues();
-        IEnumAttributeValue firstEnumAttributeValue = container.getEnumValues().get(0).getEnumAttributeValues().get(0);
+        IEnumAttributeValue firstEnumAttributeValue = container.findAggregatedEnumValues().get(0)
+                .getEnumAttributeValues().get(0);
         doReturn(new StringValue("equalValue")).when(firstEnumAttributeValue).getValue();
-        IEnumAttributeValue secondEnumAttributeValue = container.getEnumValues().get(1).getEnumAttributeValues().get(0);
+        IEnumAttributeValue secondEnumAttributeValue = container.findAggregatedEnumValues().get(1)
+                .getEnumAttributeValues().get(0);
         doReturn(new StringValue("equalValue")).when(secondEnumAttributeValue).getValue();
 
         List<String> uniqueIdentifierViolations = uniqueIdentifierValidator
@@ -85,10 +88,12 @@ public class UniqueIdentifierValidatorTest {
     @Test
     public void testGetUniqueIdentifierViolations_differentAttributes() throws Exception {
         createValues();
-        IEnumAttributeValue firstEnumAttributeValue = container.getEnumValues().get(0).getEnumAttributeValues().get(0);
+        IEnumAttributeValue firstEnumAttributeValue = container.findAggregatedEnumValues().get(0)
+                .getEnumAttributeValues().get(0);
         StringValue equalValue = new StringValue("equalValue");
         doReturn(equalValue).when(firstEnumAttributeValue).getValue();
-        IEnumAttributeValue secondEnumAttributeValue = container.getEnumValues().get(0).getEnumAttributeValues().get(1);
+        IEnumAttributeValue secondEnumAttributeValue = container.findAggregatedEnumValues().get(0)
+                .getEnumAttributeValues().get(1);
         doReturn(equalValue).when(secondEnumAttributeValue).getValue();
 
         List<String> uniqueIdentifierViolations = uniqueIdentifierValidator
@@ -100,7 +105,8 @@ public class UniqueIdentifierValidatorTest {
     @Test
     public void testGetUniqueIdentifierViolations_sameAttributeViolationInternational() throws Exception {
         createValues();
-        IEnumAttributeValue firstEnumAttributeValue = container.getEnumValues().get(0).getEnumAttributeValues().get(0);
+        IEnumAttributeValue firstEnumAttributeValue = container.findAggregatedEnumValues().get(0)
+                .getEnumAttributeValues().get(0);
         InternationalStringValue value1 = new InternationalStringValue();
         value1.getContent().add(new LocalizedString(Locale.GERMAN, "differen1"));
         value1.getContent().add(new LocalizedString(Locale.ENGLISH, "same"));
@@ -108,7 +114,8 @@ public class UniqueIdentifierValidatorTest {
         value2.getContent().add(new LocalizedString(Locale.GERMAN, "differen2"));
         value2.getContent().add(new LocalizedString(Locale.ENGLISH, "same"));
         doReturn(value1).when(firstEnumAttributeValue).getValue();
-        IEnumAttributeValue secondEnumAttributeValue = container.getEnumValues().get(1).getEnumAttributeValues().get(0);
+        IEnumAttributeValue secondEnumAttributeValue = container.findAggregatedEnumValues().get(1)
+                .getEnumAttributeValues().get(0);
         doReturn(value2).when(secondEnumAttributeValue).getValue();
 
         List<String> uniqueIdentifierViolations = uniqueIdentifierValidator
@@ -120,7 +127,8 @@ public class UniqueIdentifierValidatorTest {
     @Test
     public void testGetUniqueIdentifierViolations_sameAttributeViolationDifferentInternational() throws Exception {
         createValues();
-        IEnumAttributeValue firstEnumAttributeValue = container.getEnumValues().get(0).getEnumAttributeValues().get(0);
+        IEnumAttributeValue firstEnumAttributeValue = container.findAggregatedEnumValues().get(0)
+                .getEnumAttributeValues().get(0);
         InternationalStringValue value1 = new InternationalStringValue();
         value1.getContent().add(new LocalizedString(Locale.GERMAN, "differen1"));
         value1.getContent().add(new LocalizedString(Locale.ENGLISH, "same"));
@@ -128,7 +136,8 @@ public class UniqueIdentifierValidatorTest {
         value2.getContent().add(new LocalizedString(Locale.GERMAN, "same"));
         value2.getContent().add(new LocalizedString(Locale.ENGLISH, "different2"));
         doReturn(value1).when(firstEnumAttributeValue).getValue();
-        IEnumAttributeValue secondEnumAttributeValue = container.getEnumValues().get(1).getEnumAttributeValues().get(0);
+        IEnumAttributeValue secondEnumAttributeValue = container.findAggregatedEnumValues().get(1)
+                .getEnumAttributeValues().get(0);
         doReturn(value2).when(secondEnumAttributeValue).getValue();
 
         List<String> uniqueIdentifierViolations = uniqueIdentifierValidator
@@ -144,7 +153,7 @@ public class UniqueIdentifierValidatorTest {
             createAttributeValues(enumValue, i);
             values.add(enumValue);
         }
-        when(container.getEnumValues()).thenReturn(values);
+        when(container.findAggregatedEnumValues()).thenReturn(values);
     }
 
     private void createAttributeValues(IEnumValue enumValue, int i) {

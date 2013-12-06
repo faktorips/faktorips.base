@@ -18,16 +18,20 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.enums.EnumContent;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.enums.EnumValueContainer;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 
 /**
- * <tt>EnumValueContainer</tt> is the super type for <tt>EnumType</tt> and <tt>EnumContent</tt>.
+ * {@link EnumValueContainer} is the super type for {@link EnumType} and {@link EnumContent}.
  * <p>
- * In Faktor-IPS the values of an enumeration can be defined directly in the <tt>IEnumType</tt>
- * itself or separate from it in an <tt>IEnumContent</tt>.
+ * In Faktor-IPS the values of an enumeration can be defined directly in the {@link IEnumType}
+ * itself or separate from it in an {@link IEnumContent}.
  * 
  * @author Alexander Weickmann
  * 
@@ -36,39 +40,40 @@ import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 public interface IEnumValueContainer extends IIpsObject {
 
     /**
-     * Returns a list containing all <tt>IEnumValue</tt>s that belong to this
-     * <tt>IEnumValueContainer</tt>.
+     * Returns a list containing all {@link IEnumValue}s that belong to this
+     * {@link IEnumValueContainer}.
      */
     public List<IEnumValue> getEnumValues();
 
     /**
-     * Returns a list of <tt>IEnumValue</tt>.
+     * Returns a list of all {@link IEnumValue}s belonging to this enum. {@link IEnumValue}s from
+     * inside AND outside the container will be taking into account.
      * <p>
-     * If this is an <tt>EnumType</tt>, the method will delegate to <tt>getEnumValues()</tt>. If
-     * this is an <tt>EnumContent</tt>, the method will return a list containing all
-     * <tt>IEnumValue</tt> from the <tt>EnumContent</tt> and the corresponding <tt>EnumType</tt>.
+     * E.g: Consider an {@link EnumContent}, this method will return all {@link IEnumValue}s from
+     * the {@link EnumContent} and also all {@link IEnumValue} form its corresponding
+     * {@link EnumType}.
      */
     public List<IEnumValue> findAggregatedEnumValues();
 
     /**
-     * Returns the <tt>IEnumValue</tt> for the provided value of the identifier attribute.
+     * Returns the {@link IEnumValue} for the provided value of the identifier attribute.
      * <p>
-     * This method can only be applied to <tt>IEnumValueContainer</tt>s that contain their own
-     * values. Especially this doesn't hold true for <tt>IEnumType</tt>s which delegate their
-     * content to a separate <tt>IEnumContent</tt>. For those cases <tt>null</tt> will be returned
-     * by this method.
+     * This method can only be applied to {@link IEnumValueContainer}s that contain their own
+     * values. Especially this doesn't hold true for {@link IEnumType}s which delegate their content
+     * to a separate {@link IEnumContent}. For those cases {@code null} will be returned by this
+     * method.
      * <p>
-     * Returns <tt>null</tt> if no <tt>IEnumValue</tt> could be found for the given identifier
-     * attribute value, if the referenced <tt>IEnumType</tt> isn't known or no valid identifier
+     * Returns {@code null} if no {@link IEnumValue} could be found for the given identifier
+     * attribute value, if the referenced {@link IEnumType} isn't known or no valid identifier
      * attribute can be found.
      * 
      * @param identifierAttributeValue The value of the default identifier attribute that identifies
-     *            the <tt>IEnumValue</tt> to retrieve
+     *            the {@link IEnumValue} to retrieve
      * @param ipsProject The IPS project used as the starting point to search for the enumeration
      *            type if necessary
      * 
-     * @throws CoreException If an error occurs while searching for the referenced
-     *             <tt>IEnumType</tt> or the identifier <tt>IEnumAttribute</tt>
+     * @throws CoreException If an error occurs while searching for the referenced {@link IEnumType}
+     *             or the identifier {@link IEnumAttribute}
      */
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
 
@@ -82,84 +87,82 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject);
 
     /**
-     * Creates and returns a new <tt>IEnumValue</tt> that has as many <tt>IEnumAttributeValue</tt>s
-     * as the corresponding <tt>IEnumType</tt> has <tt>IEnumAttribute</tt>s.
+     * Creates and returns a new {@link IEnumValue} that has as many {@link IEnumAttributeValue}s as
+     * the corresponding {@link IEnumType} has {@link IEnumAttribute}s.
      * <p>
-     * If the <tt>IEnumType</tt> referenced by this <tt>IEnumValueContainer</tt> cannot be found
-     * then no <tt>IEnumValue</tt> will be created and <tt>null</tt> will be returned.
+     * If the {@link IEnumType} referenced by this {@link IEnumValueContainer} cannot be found then
+     * no {@link IEnumValue} will be created and null will be returned.
      * 
-     * @throws CoreException If an error occurs while searching for the referenced
-     *             <tt>IEnumType</tt> (in case this <tt>IEnumValueContainer</tt> is an
-     *             <tt>IEnumContent</tt>.
+     * @throws CoreException If an error occurs while searching for the referenced {@link IEnumType}
+     *             (in case this {@link IEnumValueContainer} is an {@link IEnumContent}.
      */
     public IEnumValue newEnumValue() throws CoreException;
 
     /**
-     * Returns a reference to the <tt>IEnumType</tt> or <tt>null</tt> if no <tt>IEnumType</tt> can
-     * be found.
+     * Returns a reference to the {@link IEnumType} or {@code null} if no {@link IEnumType} can be
+     * found.
      * 
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
-     *            necessarily the project this <tt>IEnumAttribute</tt> is part of.
+     *            necessarily the project this {@link IEnumAttribute} is part of.
      * 
-     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     * @throws NullPointerException If {@code ipsProject} is {@code null} .
      */
     public IEnumType findEnumType(IIpsProject ipsProject);
 
-    /** Returns how many <tt>IEnumValue</tt>s this <tt>IEnumValueContainer</tt> currently contains. */
+    /** Returns how many {@link IEnumValue}s this {@link IEnumValueContainer} currently contains. */
     public int getEnumValuesCount();
 
     /**
-     * Moves the given <tt>IEnumValue</tt>s up or down by 1 and returns the their new positions.
-     * This operation assures that there aren't any <tt>ContentChangeEvent</tt>s fired while moving
-     * the individual <tt>IEnumValue</tt>s. Instead, a <tt>WHOLE_CONTENT_CHANGED</tt> event will be
-     * fired after every <tt>IEnumValue</tt>s has been moved.
+     * Moves the given {@link IEnumValue}s up or down by 1 and returns the their new positions. This
+     * operation assures that there aren't any {@link ContentChangeEvent}s fired while moving the
+     * individual {@link IEnumValue}s. Instead, a {@code WHOLE_CONTENT_CHANGED} event will be fired
+     * after every {@link IEnumValue}s has been moved.
      * 
-     * @param enumValuesToMove A list containing the <tt>IEnumValue</tt>s that shall be moved.
-     * @param up Flag indicating whether to move up (<code>true</code>) or down (<code>false</code>
-     *            ).
+     * @param enumValuesToMove A list containing the {@link IEnumValue}s that shall be moved.
+     * @param up Flag indicating whether to move up ({@code true}) or down ({@code false} ).
      * 
-     * @throws CoreException If an error occurs while moving the <tt>IEnumValue</tt>s.
-     * @throws NullPointerException If <code>enumValuesToMove</code> is <code>null</code>.
-     * @throws NoSuchElementException If any of the given <tt>IEnumValue</tt>s is not part of this
-     *             <tt>IEnumValueContainer</tt>.
+     * @throws CoreException If an error occurs while moving the {@link IEnumValue}s.
+     * @throws NullPointerException If {@code enumValuesToMove} is {@code null}.
+     * @throws NoSuchElementException If any of the given {@link IEnumValue}s is not part of this
+     *             {@link IEnumValueContainer}.
      */
     public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException;
 
     /**
-     * Returns the index of the given <tt>IEnumValue</tt> or -1 if the given <tt>IEnumValue</tt>
-     * does not exist in this <tt>IEnumValueContainer</tt>.
+     * Returns the index of the given {@link IEnumValue} or -1 if the given {@link IEnumValue} does
+     * not exist in this {@link IEnumValueContainer}.
      * 
-     * @param enumValue The <tt>IEnumValue</tt> to obtain its index for.
+     * @param enumValue The {@link IEnumValue} to obtain its index for.
      * 
-     * @throws NullPointerException If <tt>enumValue</tt> is <tt>null</tt>.
+     * @throws NullPointerException If {@code enumValue} is {@code null}.
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);
 
     /**
-     * Deletes all <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>.
+     * Deletes all {@link IEnumValue}s from this {@link IEnumValueContainer}.
      */
     public void clear();
 
     /**
-     * Deletes the given <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>. This operation
-     * assures that no <tt>ContentChangeEvent</tt>s are fired during the deletion of the individual
-     * <tt>IEnumValue</tt>s. Instead a <tt>WHOLE_CONTENT_CHANGED</tt> event will be fired after
-     * every <tt>IEnumValue</tt> has been deleted.
+     * Deletes the given {@link IEnumValue}s from this {@link IEnumValueContainer}. This operation
+     * assures that no {@link ContentChangeEvent}s are fired during the deletion of the individual
+     * {@link IEnumValue}s. Instead a {@code WHOLE_CONTENT_CHANGED} event will be fired after every
+     * {@link IEnumValue} has been deleted.
      * <p>
-     * If <tt>null</tt> is given nothing will happen. If an <tt>IEnumValue</tt> is not part of this
-     * <tt>IEnumValueContainer</tt> the <tt>IEnumValue</tt> will be skipped.
+     * If {@code null} is given nothing will happen. If an {@link IEnumValue} is not part of this
+     * {@link IEnumValueContainer} the {@link IEnumValue} will be skipped.
      * <p>
-     * Returns <tt>true</tt> if any <tt>IEnumValue</tt>s were deleted, <tt>false</tt> if not
-     * (following the behavior of the Java collections here).
+     * Returns {@code true} if any {@link IEnumValue}s were deleted, {@code false} if not (following
+     * the behavior of the Java collections here).
      * 
-     * @param enumValuesToDelete A list containing all <tt>IEnumValue</tt>s that should be deleted
-     *            from this <tt>IEnumValueContainer</tt>.
+     * @param enumValuesToDelete A list containing all {@link IEnumValue}s that should be deleted
+     *            from this {@link IEnumValueContainer}.
      */
     public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete);
 
     /**
-     * Returns whether this <tt>IEnumValueContainer</tt> is currently capable of holding
-     * <tt>IEnumValue</tt>s (<tt>true</tt>) or not (<tt>false</tt>).
+     * Returns whether this {@link IEnumValueContainer} is currently capable of holding
+     * {@link IEnumValue}s ({@code true}) or not ({@code false}).
      * 
      * @throws CoreException May throw this exception at any time.
      */
