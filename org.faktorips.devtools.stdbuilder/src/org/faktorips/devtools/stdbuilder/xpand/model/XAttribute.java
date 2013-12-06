@@ -138,7 +138,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         JavaCodeFragment fragment = datatypeHelper.newInstanceFromExpression(expression);
         addImport(fragment.getImportDeclaration());
         String result = fragment.getSourcecode();
-        if (isDatatypeContentSeparatedEnum()) {
+        if (isDatatypeExtensibleEnum()) {
             return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
         } else {
             return result;
@@ -150,11 +150,11 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns <code>true</code> if this attributes data type is an enumeration-type with separate
-     * content. <code>false</code> else.
+     * Returns <code>true</code> if this attributes data type is an enumeration-type with values in
+     * type and separated content.
      * 
      */
-    public boolean isDatatypeContentSeparatedEnum() {
+    public boolean isDatatypeExtensibleEnum() {
         return DatatypeUtil.isExtensibleEnumType(getDatatype());
     }
 

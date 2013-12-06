@@ -296,7 +296,7 @@ public class XPolicyAttribute extends XAttribute {
             if (isValueSetUnrestricted() && !isProductRelevant()) {
                 return false;
             }
-            if (isValueSetEnum() && isDatatypeContentSeparatedEnum()) {
+            if (isValueSetEnum() && isDatatypeExtensibleEnum()) {
                 return false;
             }
             return true;

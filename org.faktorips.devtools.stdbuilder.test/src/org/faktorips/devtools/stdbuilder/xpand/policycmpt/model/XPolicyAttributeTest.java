@@ -109,7 +109,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
-        doReturn(true).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
+        doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
         assertEquals(false, generatedMethod);
@@ -123,7 +123,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
-        doReturn(false).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
         assertEquals(true, generatedMethod);
@@ -137,11 +137,11 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
-        doReturn(false).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
         assertEquals(true, generatedMethod);
-        verify(xPolicyAttribute, never()).isDatatypeContentSeparatedEnum();
+        verify(xPolicyAttribute, never()).isDatatypeExtensibleEnum();
     }
 
     @Test
@@ -152,7 +152,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
-        doReturn(false).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
         assertEquals(true, generatedMethod);
@@ -167,7 +167,7 @@ public class XPolicyAttributeTest {
         verify(xPolicyAttribute, never()).isValueSetEnum();
         verify(xPolicyAttribute, never()).isValueSetUnrestricted();
         verify(xPolicyAttribute, never()).isProductRelevant();
-        verify(xPolicyAttribute, never()).isDatatypeContentSeparatedEnum();
+        verify(xPolicyAttribute, never()).isDatatypeExtensibleEnum();
     }
 
     @Test
