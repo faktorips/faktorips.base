@@ -320,8 +320,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
-
+        initDeprecatedProperties(element);
         super.initPropertiesFromXml(element, id);
+    }
+
+    private void initDeprecatedProperties(Element element) {
+        @SuppressWarnings("deprecation")
+        String containsValuesAttribute = element.getAttribute(PROPERTY_CONTAINING_VALUES);
+        if (StringUtils.isNotEmpty(containsValuesAttribute)) {
+            extensible = !Boolean.parseBoolean(containsValuesAttribute);
+        }
     }
 
     @Override
