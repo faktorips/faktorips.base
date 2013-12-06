@@ -201,7 +201,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
 
         // Create an EnumLiteralNameAttribute if the EnumType does not have one but needs one.
-        if (enumType.hasEnumOnlyInternalValues()) {
+        if (enumType.isInextensibleEnum()) {
             if (!(enumType.containsEnumLiteralNameAttribute())) {
                 IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType.newEnumLiteralNameAttribute();
                 IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());

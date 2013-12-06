@@ -112,7 +112,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         super.performRefresh();
 
         enumAttributesComposite.updateInheritButtonEnabledState();
-        enumAttributesComposite.setCanDelete(!(getEnumType().hasEnumOnlyInternalValues()));
+        enumAttributesComposite.setCanDelete(!(getEnumType().isInextensibleEnum()));
     }
 
     /**
@@ -201,7 +201,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                 enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
                 // Delete all enum values if there are no more enum attributes.
-                if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.hasEnumOnlyInternalValues()) == 0) {
+                if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isInextensibleEnum()) == 0) {
                     for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                         currentEnumValue.delete();
                     }
@@ -282,7 +282,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             setCanDelete(true);
-            if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.hasEnumOnlyInternalValues()) {
+            if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.isInextensibleEnum()) {
                 setCanDelete(false);
             }
         }

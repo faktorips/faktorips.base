@@ -533,7 +533,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
         // Pass validation if the EnumType is abstract or does not contain values.
-        if (!hasEnumOnlyInternalValues()) {
+        if (!isInextensibleEnum()) {
             return;
         }
 
@@ -558,7 +558,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean hasEnumOnlyInternalValues() {
+    public boolean isInextensibleEnum() {
         return !isAbstract && !isExtensible();
     }
 
@@ -959,6 +959,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return !isAbstract;
     }
 
+    @Override
+    public List<IEnumValue> findAggregatedEnumValues() {
+        return getEnumValues();
+    }
+
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierarchyVisitor {
 
         private IEnumType superEnumTypeCandidate;
@@ -984,11 +989,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             return true;
         }
 
-    }
-
-    @Override
-    public List<IEnumValue> findAggregatedEnumValues() {
-        return getEnumValues();
     }
 
 }

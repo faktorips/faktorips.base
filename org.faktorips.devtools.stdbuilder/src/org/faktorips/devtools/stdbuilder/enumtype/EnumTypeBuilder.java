@@ -406,7 +406,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment repositoryExp = expressionCompiler.getRuntimeRepositoryExpression();
 
         JavaCodeFragment fragment = new JavaCodeFragment();
-        if (!enumTypeAdapter.getEnumType().isExtensible()) {
+        if (enumTypeAdapter.getEnumType().isInextensibleEnum()) {
             IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
                     enumTypeAdapter.getEnumValueContainer().getIpsProject());
             if (enumValue == null) {

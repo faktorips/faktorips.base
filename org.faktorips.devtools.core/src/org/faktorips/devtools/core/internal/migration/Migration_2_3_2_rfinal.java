@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.migration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,8 +78,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-            InterruptedException {
+    public MessageList migrate(IProgressMonitor monitor) throws CoreException {
 
         IIpsProject ipsProject = getIpsProject();
         List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
@@ -108,7 +106,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
         enumContent.setEnumType(enumContent.getEnumType());
     }
 
-    /** Adapts the new literal name handling for the given <tt>IEnumType</tt>. */
+    // CSOFF: CyclomaticComplexity
     private void migrateEnumType(IEnumType enumType, IIpsProject ipsProject) throws CoreException {
         /*
          * Perform the following operations if the current enumeration type needs an enumeration
@@ -116,7 +114,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
          * enumeration type contains any enumeration values (so enumeration values that are
          * considered 'out of use' get their literal names, too).
          */
-        if (enumType.hasEnumOnlyInternalValues() || enumType.getEnumValues().size() > 0) {
+        if (enumType.isInextensibleEnum() || enumType.getEnumValues().size() > 0) {
             /*
              * It could be that the new literal name attributes already exist. This is the case if
              * the user migrates a project that's version is less than 2.3.0.rfinal. The

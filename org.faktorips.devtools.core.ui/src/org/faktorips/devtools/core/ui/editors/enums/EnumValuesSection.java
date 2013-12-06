@@ -57,7 +57,6 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.ValueFactory;
@@ -185,6 +184,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             enumType = (IEnumType)enumValueContainer;
         } else {
             enumContent = (IEnumContent)enumValueContainer;
+            enumType = enumContent.findEnumType(ipsProject);
         }
 
         loadDialogSettings();
@@ -399,7 +399,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         moveEnumValueDownAction = new MoveEnumValueAction(enumValuesTableViewer, false);
 
         if (enumTypeEditing) {
-            IEnumType enumType = (IEnumType)enumValueContainer;
             lockAndSyncLiteralNameAction = new LockAndSyncLiteralNameAction(this);
             lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
             renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
@@ -466,8 +465,13 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /** Updates the enabled states of the table and the tool bar actions. */
-    private void updateEnabledStates() throws CoreException {
-        boolean enabled = enumValueContainer.isCapableOfContainingValues();
+    private void updateEnabledStates() {
+        boolean enabled;
+        try {
+            enabled = enumValueContainer.isCapableOfContainingValues();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         newEnumValueAction.setEnabled(enabled);
         deleteEnumValueAction.setEnabled(enabled);
         if (enumTypeEditing) {
@@ -540,9 +544,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        IEnumType enumType;
-        enumType = enumValueContainer.findEnumType(ipsProject);
-
         /*
          * Return if the content changed was not the EnumValueContainer to be edited or the
          * referenced EnumType.
@@ -557,7 +558,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
         }
 
-        if (enumType.hasEnumLiteralNameAttribute() && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
+        if (enumType.isInextensibleEnum() && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
             contentsChangedUpdateLiteralNameColumn(event);
             enumValuesTableViewer.refresh();
         }
@@ -566,22 +567,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
             case ContentChangeEvent.TYPE_PART_ADDED:
             case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                try {
-                    IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
-                    if (enumTypeEditing) {
-                        if (changedIpsObject instanceof IEnumType) {
-                            reinit();
-                            updateEnabledStates();
-                        }
-                    } else {
-                        if (changedIpsObject instanceof IEnumContent) {
-                            reinit();
-                            updateEnabledStates();
-                        }
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                reinit();
+                updateEnabledStates();
                 break;
         }
     }
