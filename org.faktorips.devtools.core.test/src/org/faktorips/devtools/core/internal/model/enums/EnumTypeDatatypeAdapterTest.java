@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,9 +24,15 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,11 +45,33 @@ public class EnumTypeDatatypeAdapterTest {
 
     @Mock
     private IEnumType enumType;
+
+    @Mock
+    private IEnumContent enumContent;
+
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
+    private IEnumValue enumValue;
+
+    @Mock
+    private IEnumAttribute displayNameAttribute;
+
+    @Mock
+    private IEnumAttributeValue enumAttributeValue;
+
+    @Mock
+    private IValue<IInternationalString> resultValue;
+
     private EnumTypeDatatypeAdapter adapter;
+
+    private EnumTypeDatatypeAdapter adapterWithContent;
 
     @Before
     public void setUp() {
         adapter = new EnumTypeDatatypeAdapter(enumType, null);
+        adapterWithContent = new EnumTypeDatatypeAdapter(enumType, enumContent);
     }
 
     @Test
@@ -128,6 +157,64 @@ public class EnumTypeDatatypeAdapterTest {
         assertEquals("B", list.get(1));
         assertEquals("C", list.get(2));
         assertNull(list.get(3));
+    }
+
+    public void initEnumContentAndType() throws CoreException {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.getIpsProject()).thenReturn(ipsProject);
+        when(enumContent.findEnumValue("testValue", ipsProject)).thenReturn(enumValue);
+    }
+
+    @Test
+    public void test_getValueName_NULL() throws CoreException {
+        assertTrue(adapter.getValueName(null) == null);
+
+        initEnumContentAndType();
+        when(enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject)).thenReturn(displayNameAttribute);
+        when(enumValue.getEnumAttributeValue(displayNameAttribute)).thenReturn(null);
+
+        assertTrue(adapterWithContent.getValueName("testValue") == null);
+    }
+
+    @Test
+    public void test_getValue() throws CoreException {
+        initEnumContentAndType();
+        assertEquals(enumValue, adapterWithContent.getValue("testValue"));
+    }
+
+    @Test
+    public void test_getValue_Null() throws CoreException {
+        initEnumContentAndType();
+        when(enumContent.findEnumValue("testValue", ipsProject)).thenReturn(null);
+        assertEquals(null, adapterWithContent.getValue("testValue"));
+    }
+
+    @Test
+    public void test_getAllValueIds_EnumContentNotNull_ResultContainsNull() {
+        List<String> list = new ArrayList<String>();
+        list.add("result1");
+        list.add("result2");
+
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumContent.findAllIdentifierAttributeValues(ipsProject)).thenReturn(list);
+        String[] result = adapterWithContent.getAllValueIds(true);
+
+        assertEquals(3, result.length);
+        assertEquals("result1", result[0]);
+    }
+
+    @Test
+    public void test_getAllValueIds_EnumContentNotNull() {
+
+        List<String> list = new ArrayList<String>();
+        list.add("result1");
+
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumContent.findAllIdentifierAttributeValues(ipsProject)).thenReturn(list);
+
+        String[] result = adapterWithContent.getAllValueIds(false);
+        assertEquals(1, result.length);
+        assertEquals("result1", result[0]);
     }
 
     private static class TestComparator implements Comparator<String> {

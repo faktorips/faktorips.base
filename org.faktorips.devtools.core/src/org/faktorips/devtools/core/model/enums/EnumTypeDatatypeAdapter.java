@@ -81,14 +81,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      */
     @Override
     public String[] getAllValueIds(boolean includeNull) {
-        if (enumContent == null) {
-            if (enumType.isExtensible() && includeNull) {
-                return new String[] { null };
-            }
-            if (enumType.isExtensible()) {
-                return new String[0];
-            }
-        }
         List<String> result = findAllIdentifierAttributeValues(includeNull);
         return result.toArray(new String[result.size()]);
     }
@@ -108,10 +100,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     @Override
     public String getValueName(String id) {
         if (id == null) {
-            return null;
-        }
-
-        if (enumContent == null && !(enumType.isExtensible())) {
             return null;
         }
 
@@ -138,10 +126,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     @Override
     public Object getValue(String value) {
-        if (enumContent == null && !(enumType.isExtensible())) {
-            return null;
-        }
-
         try {
             IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
             IEnumValue enumValue = getEnumValueContainer().findEnumValue(value, ipsProject);
