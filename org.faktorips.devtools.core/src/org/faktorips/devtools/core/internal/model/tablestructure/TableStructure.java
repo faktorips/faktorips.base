@@ -24,6 +24,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -153,7 +154,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new RuntimeException("Can't get index for column " + column); //$NON-NLS-1$
+        throw new CoreRuntimeException("Can't get index for column " + column); //$NON-NLS-1$
     }
 
     @Override
@@ -163,7 +164,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new RuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
+        throw new CoreRuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -28,10 +29,10 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyValueRange> {
 
     /** reference to the column range this key value is created for */
-    private ColumnRange columnRange;
+    private final ColumnRange columnRange;
 
     /** contains the value datatype (cached) of the 'from' and 'to' column */
-    private ValueDatatype valueDatatype;
+    private final ValueDatatype valueDatatype;
 
     /**
      * only the 'from' value is stored, because this value is used as key within the sorted map the
@@ -86,14 +87,14 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
         if (valueDatatype == null) {
             return false;
         }
-        return valueDatatype.isParsable(valueFrom) && valueDatatype.isParsable(evalValueTo(row, columnRange));
+        return valueDatatype.isParsable(valueFrom) && valueDatatype.isParsable(evalValueTo(getRow(), columnRange));
     }
 
     /**
      * Returns the 'to'-value of the column range of the row this key value range was created for.
      */
     public String getValueTo() {
-        return evalValueTo(row, columnRange);
+        return evalValueTo(getRow(), columnRange);
     }
 
     /**
@@ -110,7 +111,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * Returns <code>true</code> if the to value is greater than the from value.
      */
     private boolean isToGreaterOrEqualFrom() {
-        return compareTo(evalValueTo(row, columnRange), valueFrom) >= 0;
+        return compareTo(evalValueTo(getRow(), columnRange), valueFrom) >= 0;
     }
 
     /**
@@ -134,7 +135,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * also #isValid())
      */
     private String evalValueFrom(Row row, ColumnRange columnRange) {
-        return evalValue(structure, row, columnRange.getFromColumn());
+        return evalValue(getStructure(), row, columnRange.getFromColumn());
     }
 
     /**
@@ -142,7 +143,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * The 'to' value will be read using the given row and column range.
      */
     private String evalValueTo(Row row, ColumnRange columnRange) {
-        return evalValue(structure, row, columnRange.getToColumn());
+        return evalValue(getStructure(), row, columnRange.getToColumn());
     }
 
     /**
@@ -158,13 +159,6 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
     }
 
     private static int compareTo(ValueDatatype valueDatatype, String value1, String value2) {
-        // if (!valueDatatype.isParsable(value1)) {
-        //            throw new RuntimeException("Value " + value1 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
-        // }
-        // if (!valueDatatype.isParsable(value2)) {
-        //            throw new RuntimeException("Value " + value2 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
-        // }
-
         return valueDatatype.compare(value1, value2);
     }
 
@@ -183,7 +177,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
                 } else {
                     IpsPlugin.log(new IpsStatus("Datatype of column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } catch (RuntimeException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
                 return null;
             }
@@ -227,6 +221,6 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      */
     @Override
     public String toString() {
-        return getUniqueKey().getName() + ": " + valueFrom + "- /" + evalValueTo(row, columnRange); //$NON-NLS-1$ //$NON-NLS-2$
+        return getUniqueKey().getName() + ": " + valueFrom + "- /" + evalValueTo(getRow(), columnRange); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

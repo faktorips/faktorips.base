@@ -29,11 +29,11 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
  */
 public class KeyValue extends AbstractKeyValue {
 
-    protected String value;
+    private final String value;
 
     public KeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
         super(structure, uniqueKey, row);
-        this.value = evalValue(row);
+        value = evalValue(row);
     }
 
     /**
@@ -50,16 +50,16 @@ public class KeyValue extends AbstractKeyValue {
      */
     @Override
     protected String getKeyValue() {
-        return value;
+        return getValue();
     }
 
     @Override
     public boolean isValid(Row row) {
         String valueNew = evalValue(row);
-        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(value)) {
+        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(getValue())) {
             return false;
         }
-        return value.equals(valueNew);
+        return getValue().equals(valueNew);
     }
 
     private String evalValue(Row row) {
@@ -68,7 +68,7 @@ public class KeyValue extends AbstractKeyValue {
 
         values = new String[keyItems.size()];
         for (int i = 0; i < keyItems.size(); i++) {
-            values[i] = getValueForKeyItem(structure, row, keyItems.get(i));
+            values[i] = getValueForKeyItem(getStructure(), row, keyItems.get(i));
         }
         return Arrays.toString(values);
     }
@@ -90,6 +90,11 @@ public class KeyValue extends AbstractKeyValue {
 
     @Override
     public String toString() {
-        return getUniqueKey().getName() + ": " + value; //$NON-NLS-1$
+        return getUniqueKey().getName() + ": " + getValue(); //$NON-NLS-1$
     }
+
+    public String getValue() {
+        return value;
+    }
+
 }

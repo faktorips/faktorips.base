@@ -31,13 +31,19 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 public abstract class AbstractKeyValue {
 
     /** reference to the table structure this key value belongs to */
-    protected ITableStructure structure;
+    private final ITableStructure structure;
 
     /** reference to the unique key this key value belongs to */
     private final IIndex uniqueKey;
 
     /** reference to the row this key value belongs to */
-    protected Row row;
+    private final Row row;
+
+    protected AbstractKeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
+        this.structure = structure;
+        this.uniqueKey = uniqueKey;
+        this.row = row;
+    }
 
     /**
      * Helper method, returns all non two column range key items: column key items or column range
@@ -74,10 +80,11 @@ public abstract class AbstractKeyValue {
         return columnRanges;
     }
 
-    protected AbstractKeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
-        this.structure = structure;
-        this.uniqueKey = uniqueKey;
-        this.row = row;
+    /**
+     * Returns the table structure this key value belongs to.
+     */
+    public ITableStructure getStructure() {
+        return structure;
     }
 
     /**
@@ -88,7 +95,7 @@ public abstract class AbstractKeyValue {
     }
 
     /**
-     * Returns the uique key this key value belongs to
+     * Returns the unique key this key value belongs to
      */
     public IIndex getUniqueKey() {
         return uniqueKey;
