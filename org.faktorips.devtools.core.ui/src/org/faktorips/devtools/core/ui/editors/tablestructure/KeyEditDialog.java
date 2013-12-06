@@ -35,32 +35,20 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
-import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.core.util.ArrayElementMover;
@@ -71,7 +59,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * A dialog to edit a unique or foreign key.
  */
-public class KeyEditDialog extends IpsPartEditDialog {
+public abstract class KeyEditDialog extends IpsPartEditDialog2 {
 
     /** the key being edited */
     private IKey key;
@@ -82,232 +70,68 @@ public class KeyEditDialog extends IpsPartEditDialog {
     /** table viewer to show the key's items. */
     private TableViewer itemsViewer;
 
-    private TextButtonField tableStructureRefField;
-
-    private TextField uniqueKeyRefField;
-
-    /** completion processor for a table structure's unique keys. */
-    private UniqueKeyCompletionProcessor completionProcessor;
-
-    // buttons
     private Button addButton;
     private Button removeButton;
     private Button upButton;
     private Button downButton;
 
-    public KeyEditDialog(IKey key, Shell parentShell) {
-        super(key, parentShell, Messages.KeyEditDialog_title, true);
+    private Composite itemEditComposite;
+
+    private Composite middle;
+
+    public KeyEditDialog(IKey key, Shell parentShell, String title) {
+        super(key, parentShell, title, true);
         this.key = key;
     }
 
     @Override
     protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
-
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.KeyEditDialog_generalTitle);
-        page.setControl(createGeneralPage(folder));
-
+        page.setControl(createGeneralPageComposite(folder));
         refreshUi();
         return folder;
     }
 
-    private Control createGeneralPage(TabFolder folder) {
-        Composite pageComposite;
-        Composite itemEditComposite;
-        if (key instanceof IForeignKey) {
-            pageComposite = createTabItemComposite(folder, 1, false);
-            Composite refTableComposite = getToolkit().createLabelEditColumnComposite(pageComposite);
-            GridLayout layout = (GridLayout)refTableComposite.getLayout();
-            layout.marginHeight = 12;
-            getToolkit().createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceStructure);
-            TableStructureRefControl refControl = getToolkit().createTableStructureRefControl(key.getIpsProject(),
-                    refTableComposite);
-            refControl.setFocus();
-            tableStructureRefField = new TextButtonField(refControl);
-            tableStructureRefField.addChangeListener(new ValueChangeListener() {
-
-                @Override
-                public void valueChanged(FieldValueChangedEvent e) {
-                    // following line is a hack to make sure the model is
-                    // uptodate. The uicontroller gets informated after this
-                    // listener because it is registered later, so the refreshUi methode
-                    // would work on the old model data.
-                    // correct implementation would be to listen for model changes,
-                    // and then update the ui.
-                    ((IForeignKey)key).setReferencedTableStructure(tableStructureRefField.getText());
-                    try {
-                        ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure(key.getIpsProject());
-                        completionProcessor.setTableStructure(structure);
-                        if (structure != null) {
-                            IUniqueKey[] keys = structure.getUniqueKeys();
-                            if (keys.length > 0) {
-                                uniqueKeyRefField.setText(keys[0].getName());
-                            }
-                        }
-                    } catch (CoreException e1) {
-                        IpsPlugin.log(e1);
-                    }
-                    refreshUi();
-                }
-
-            });
-            getToolkit().createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceUniqueKey);
-            Text ukRefControl = getToolkit().createText(refTableComposite);
-            completionProcessor = new UniqueKeyCompletionProcessor();
-            ContentAssistHandler.createHandlerForText(ukRefControl,
-                    CompletionUtil.createContentAssistant(completionProcessor));
-
-            uniqueKeyRefField = new TextField(ukRefControl);
-            uniqueKeyRefField.addChangeListener(new ValueChangeListener() {
-                @Override
-                public void valueChanged(FieldValueChangedEvent e) {
-                    // see comment above
-                    ((IForeignKey)key).setReferencedUniqueKey(uniqueKeyRefField.getText());
-                    refreshUi();
-                }
-            });
-
-            getToolkit().createHorizonzalLine(pageComposite);
-            itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
-        } else {
-            itemEditComposite = createTabItemComposite(folder, 3, false);
-            pageComposite = itemEditComposite;
-        }
-        Composite left = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
-        Composite leftGroup = getToolkit().createGroup(left, SWT.NONE, Messages.KeyEditDialog_labelKeyItems);
-        createKeyItemsComposite(leftGroup);
-
-        Composite middle = getToolkit().createGridComposite(itemEditComposite, 1, true, true);
-        middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
-        createButtons(middle);
-
-        Composite right = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
-        Composite rightGroup = getToolkit().createGroup(right, SWT.NONE, Messages.KeyEditDialog_groupTitle);
-        createItemCandidatesComposite(rightGroup);
-
+    private Composite createGeneralPageComposite(TabFolder folder) {
+        Composite pageComposite = createTabItemComposite(folder, 1, false);
+        addPageTopControls(pageComposite);
+        addHorizontalLine(pageComposite);
+        addKeyItemSelectionControls(pageComposite);
         return pageComposite;
     }
 
     /**
-     * Creates the composite showing the key's items.
+     * Subclasses override this method to add custom controls at the top of the key selection page.
+     * A horizontal line is automatically drawn between the page-top controls and the key selection
+     * controls (at the bottom).
+     * 
+     * @param pageComposite the composite to add custom controls to.
      */
-    private void createKeyItemsComposite(Composite parent) {
-        Composite c = getToolkit().createGridComposite(parent, 1, false, false);
-        Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-        table.setHeaderVisible(false);
-        table.setLinesVisible(false);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = 180;
-        data.heightHint = 200;
-        table.setLayoutData(data);
-        itemsViewer = new TableViewer(table);
-        itemsViewer.setLabelProvider(new KeyItemLabelProvider());
-        new TableMessageHoverService(itemsViewer) {
-            @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
-                MessageList list = key.validate(key.getIpsProject());
-                return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
-            }
-        };
-        itemsViewer.setContentProvider(new IStructuredContentProvider() {
+    protected abstract void addPageTopControls(Composite pageComposite);
 
-            @Override
-            public Object[] getElements(Object inputElement) {
-                return key.getKeyItemNames();
-            }
-
-            @Override
-            public void dispose() {
-                // Nothing to do
-            }
-
-            @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // Nothing to do
-            }
-
-        });
-        itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledState();
-            }
-
-        });
-        itemsViewer.setInput(this);
+    private void addHorizontalLine(Composite pageComposite) {
+        getToolkit().createHorizonzalLine(pageComposite);
     }
 
-    private void createButtons(Composite middle) {
-        getToolkit().createVerticalSpacer(middle, 10);
+    protected void addKeyItemSelectionControls(Composite pageComposite) {
+        itemEditComposite = getToolkit().createGridComposite(pageComposite, 3, false, false);
+        createItemCandidatesComposite(createGroup(Messages.KeyEditDialog_groupTitle));
 
-        addButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
-        addButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                addSelectedItems();
-            }
+        middle = getToolkit().createGridComposite(itemEditComposite, 1, true, true);
+        middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
+        createButtons();
 
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        removeButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
-        removeButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                removeSelectedItems();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        getToolkit().createVerticalSpacer(middle, 10);
-
-        upButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
-        upButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                moveSelectedItems(true);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        downButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
-        downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
-        downButton.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                moveSelectedItems(false);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
+        createKeyItemsComposite(createGroup(Messages.KeyEditDialog_labelKeyItems));
     }
 
-    private void createItemCandidatesComposite(Composite parent) {
+    private Composite createGroup(String message) {
+        Composite gridComposite = getToolkit().createGridComposite(itemEditComposite, 1, false, true);
+        return getToolkit().createGroup(gridComposite, SWT.NONE, message);
+    }
+
+    protected void createItemCandidatesComposite(Composite parent) {
         Composite c = getToolkit().createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         table.setHeaderVisible(false);
@@ -351,13 +175,141 @@ public class KeyEditDialog extends IpsPartEditDialog {
         candidatesViewer.setInput(this);
     }
 
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        if (tableStructureRefField != null) {
-            uiController.add(tableStructureRefField, IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
-            uiController.add(uniqueKeyRefField, IForeignKey.PROPERTY_REF_UNIQUE_KEY);
-        }
+    /**
+     * Creates the composite showing the key's items.
+     */
+    protected void createKeyItemsComposite(Composite parent) {
+        Composite c = getToolkit().createGridComposite(parent, 1, false, false);
+        Table table = new Table(c, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+        table.setHeaderVisible(false);
+        table.setLinesVisible(false);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.widthHint = 180;
+        data.heightHint = 200;
+        table.setLayoutData(data);
+        itemsViewer = new TableViewer(table);
+        itemsViewer.setLabelProvider(new KeyItemLabelProvider());
+        new TableMessageHoverService(itemsViewer) {
+            @Override
+            protected MessageList getMessagesFor(Object element) throws CoreException {
+                MessageList list = key.validate(key.getIpsProject());
+                return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
+            }
+        };
+        setContentProviderForItemsViewer();
+        setListenerForItemsViewer();
+        itemsViewer.setInput(this);
+    }
+
+    private void setListenerForItemsViewer() {
+        itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                updateButtonEnabledState();
+            }
+
+        });
+    }
+
+    private void setContentProviderForItemsViewer() {
+        itemsViewer.setContentProvider(new IStructuredContentProvider() {
+
+            @Override
+            public Object[] getElements(Object inputElement) {
+                return key.getKeyItemNames();
+            }
+
+            @Override
+            public void dispose() {
+                // Nothing to do
+            }
+
+            @Override
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
+            }
+
+        });
+    }
+
+    protected void createButtons() {
+        getToolkit().createVerticalSpacer(middle, 10);
+        createAddButton();
+        createRemoveButton();
+        getToolkit().createVerticalSpacer(middle, 10);
+        createUpButton();
+        createDownButton();
+
+    }
+
+    private void createDownButton() {
+        downButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
+        downButton.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                moveSelectedItems(false);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createUpButton() {
+        upButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
+        upButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                moveSelectedItems(true);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createRemoveButton() {
+        removeButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        removeButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                removeSelectedItems();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
+    }
+
+    private void createAddButton() {
+        addButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
+        addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        addButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                addSelectedItems();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        });
     }
 
     private void addSelectedItems() {
@@ -416,13 +368,20 @@ public class KeyEditDialog extends IpsPartEditDialog {
         refreshUi();
     }
 
-    private void refreshUi() {
-        uiController.updateUI();
+    protected void refreshUi() {
+        getBindingContext().updateUI();
         itemsViewer.refresh();
         candidatesViewer.refresh();
         setTitle(buildTitle());
         updateButtonEnabledState();
         validate();
+    }
+
+    private void updateButtonEnabledState() {
+        addButton.setEnabled(isDataChangeable() && !candidatesViewer.getSelection().isEmpty());
+        removeButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+        upButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+        downButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
     }
 
     private void validate() {
@@ -433,17 +392,10 @@ public class KeyEditDialog extends IpsPartEditDialog {
                 return;
             }
             Message msg = msgList.getMessage(0);
-            setMessage(msg.getText(), getToolkit().convertToJFaceSeverity(msg.getSeverity()));
+            setMessage(msg.getText(), UIToolkit.convertToJFaceSeverity(msg.getSeverity()));
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-    }
-
-    private void updateButtonEnabledState() {
-        addButton.setEnabled(isDataChangeable() && !candidatesViewer.getSelection().isEmpty());
-        removeButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
-        upButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
-        downButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
     }
 
     private class KeyItemLabelProvider extends DefaultLabelProvider {
@@ -463,11 +415,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             String item = (String)element;
             Image image;
             IColumnRange range = key.getTableStructure().getRange(item);
-            if (range != null) {
-                image = super.getImage(range);
-            } else {
-                image = (Image)resourceManager.get(tableColumnDescriptor);
-            }
+            image = setImageByRange(range);
             MessageList list;
             try {
                 list = key.validate(key.getIpsProject());
@@ -489,6 +437,16 @@ public class KeyEditDialog extends IpsPartEditDialog {
             return (Image)resourceManager.get(descriptor);
         }
 
+        private Image setImageByRange(IColumnRange range) {
+            Image image;
+            if (range != null) {
+                image = super.getImage(range);
+            } else {
+                image = (Image)resourceManager.get(tableColumnDescriptor);
+            }
+            return image;
+        }
+
         @Override
         public void dispose() {
             resourceManager.dispose();
@@ -496,4 +454,5 @@ public class KeyEditDialog extends IpsPartEditDialog {
         }
 
     }
+
 }

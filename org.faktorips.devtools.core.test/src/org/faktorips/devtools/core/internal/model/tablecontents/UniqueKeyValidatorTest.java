@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
@@ -101,7 +101,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column.setName("end2");
         column.setDatatype("Integer");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         // range 1
         IColumnRange range = structure.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
@@ -137,9 +137,9 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column = structure.newColumn();
         column.setName("b");
         column.setDatatype("int");
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("a");
-        uniqueKey = structure.newUniqueKey();
+        uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("b");
 
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
@@ -190,7 +190,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column = structure.newColumn();
         column.setName("rate");
         column.setDatatype("String");
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("age");
 
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
@@ -280,7 +280,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setFromColumn("a");
         range.setToColumn("b");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
 
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
@@ -355,7 +355,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setFromColumn("a");
         range.setToColumn("b");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
 
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
@@ -396,7 +396,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column.setName("c");
         column.setDatatype("Decimal");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         // column key enty
         uniqueKey.addKeyItem("c");
         // range 1
@@ -532,7 +532,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column.setName("e");
         column.setDatatype("int");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         IColumnRange range = structure.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("b");
@@ -600,7 +600,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column.setName("d");
         column.setDatatype("int");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         IColumnRange range = structure.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("a");
@@ -667,7 +667,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setFromColumn("a");
         range.setToColumn("b");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
 
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
@@ -750,7 +750,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setFromColumn("ageMin");
         range.setToColumn("ageMax");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("mandant");
         uniqueKey.addKeyItem(range.getName());
 
@@ -833,7 +833,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setFromColumn("ageMin");
         range.setToColumn("ageMax");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("mandant");
         uniqueKey.addKeyItem(range.getName());
 
@@ -960,7 +960,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         column.setName("c");
         column.setDatatype("Decimal");
 
-        IUniqueKey uniqueKey = structure.newUniqueKey();
+        IIndex uniqueKey = structure.newIndex();
 
         uniqueKey.addKeyItem("c");
         IColumnRange newRange = structure.newRange();

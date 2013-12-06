@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
@@ -116,7 +116,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         column = table.newColumn();
         column.setName("second");
         column.setDatatype("String");
-        IUniqueKey tableKey = table.newUniqueKey();
+        IIndex tableKey = table.newIndex();
         tableKey.addKeyItem("second");
 
         ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
@@ -148,7 +148,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         column = table.newColumn();
         column.setName("second");
         column.setDatatype("String");
-        IUniqueKey tableKey = table.newUniqueKey();
+        IIndex tableKey = table.newIndex();
         tableKey.addKeyItem("second");
 
         ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],

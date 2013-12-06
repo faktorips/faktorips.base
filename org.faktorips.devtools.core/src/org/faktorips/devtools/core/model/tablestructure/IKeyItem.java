@@ -13,14 +13,18 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+
 /**
- * A key item is a part of a unique key. There are two kind of key items: columns and ranges.
+ * A key item is a part of an index. There are two kind of key items: columns and ranges.
  */
-public interface IKeyItem {
+public interface IKeyItem extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Returns the item's name.
      */
+    @Override
     public String getName();
 
     /**
@@ -40,5 +44,10 @@ public interface IKeyItem {
      * Returns the columns this item comprises.
      */
     public IColumn[] getColumns();
+
+    /**
+     * Returns <code>true</code> if this key item is a range, false if not.
+     */
+    public boolean isRange();
 
 }

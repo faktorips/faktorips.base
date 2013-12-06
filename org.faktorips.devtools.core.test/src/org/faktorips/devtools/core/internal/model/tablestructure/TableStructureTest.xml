@@ -8,9 +8,9 @@
     <Column id="1" name="ageTo" datatype="int"/>
     <Column id="2" name="rate" datatype="Decimal"/>
     <Range id="3" fromColumn="ageFrom" toColumn="ageTo"/>
-    <UniqueKey id="4">
+    <Index id="4">
     	<Item name="ageFrom-ageTo"/>
-    </UniqueKey>
+    </Index>
 	<ForeignKey id="5" referencedTableStructure="OtherTable">
 		<Item name="age"/>
 	</ForeignKey>

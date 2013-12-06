@@ -41,9 +41,9 @@ public class Messages extends NLS {
     public static String ForeignKey_msgNotAColumn;
     public static String ForeignKey_msgKeyDatatypeMismatch;
 
-    public static String UniqueKey_msgTooLessItems;
-    public static String UniqueKey_msgKeyItemMismatch;
-    public static String UniqueKey_wrong_sequence;
+    public static String Index_msgTooLessItems;
+    public static String Index_msgKeyItemMismatch;
+    public static String Index_wrong_sequence;
 
     public static String ColumnRange_msgParameterEmpty;
     public static String Column_msgPrimitvesArentSupported;

@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -68,7 +68,7 @@ public class UniqueKeyValidator {
     }
 
     /** cache to validate simple column unique keys */
-    private Map<IUniqueKey, Map<AbstractKeyValue, List<Row>>> uniqueKeyMapColumn = new HashMap<IUniqueKey, Map<AbstractKeyValue, List<Row>>>();
+    private Map<IIndex, Map<AbstractKeyValue, List<Row>>> uniqueKeyMapColumn = new HashMap<IIndex, Map<AbstractKeyValue, List<Row>>>();
 
     /**
      * caches to validate column ranges of type TWO_COLUMN_RANGE note that the unique key validation
@@ -76,7 +76,7 @@ public class UniqueKeyValidator {
      * because the nature of this type of range is to return always one row this map contains a
      * special UniqueKeyValidatorRange object for each unique key with at least one two column range
      */
-    private Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange = new HashMap<IUniqueKey, UniqueKeyValidatorRange>();
+    private Map<IIndex, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange = new HashMap<IIndex, UniqueKeyValidatorRange>();
 
     private MessageList cachedMessageList;
 
@@ -158,8 +158,8 @@ public class UniqueKeyValidator {
         }
         cacheTableStructureAndValueDatatypes(tableContentsGeneration);
 
-        IUniqueKey[] uniqueKeys = cachedTableStructure.getUniqueKeys();
-        for (IUniqueKey uniqueKey : uniqueKeys) {
+        IIndex[] uniqueKeys = cachedTableStructure.getUniqueKeys();
+        for (IIndex uniqueKey : uniqueKeys) {
             if (uniqueKey.containsTwoColumnRanges()) {
                 updateUniqueKeysColumnRange(row, operation, uniqueKey);
             } else {
@@ -172,7 +172,7 @@ public class UniqueKeyValidator {
      * Updates the unique key cache for the given row. This method handles the update of non two
      * column range keys.
      */
-    private void updateUniqueKeysCacheColumn(Row row, int operation, IUniqueKey uniqueKey) {
+    private void updateUniqueKeysCacheColumn(Row row, int operation, IIndex uniqueKey) {
         Map<AbstractKeyValue, List<Row>> keyValueMap = uniqueKeyMapColumn.get(uniqueKey);
 
         // if not exist, create a new cache (map) for the given unique key first
@@ -188,7 +188,7 @@ public class UniqueKeyValidator {
      * Updates the unique key cache for the given row. This method handles the update of all two
      * column range keys.
      */
-    private void updateUniqueKeysColumnRange(Row row, int operation, IUniqueKey uniqueKey) {
+    private void updateUniqueKeysColumnRange(Row row, int operation, IIndex uniqueKey) {
         UniqueKeyValidatorRange uniqueKeyValidatorRange = uniqueKeyValidatorForTwoColumnRange.get(uniqueKey);
         if (uniqueKeyValidatorRange == null) {
             uniqueKeyValidatorRange = new UniqueKeyValidatorRange(this, uniqueKey);
@@ -255,7 +255,7 @@ public class UniqueKeyValidator {
     }
 
     private void validateUniqueKeysRange(MessageList list,
-            Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange) {
+            Map<IIndex, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange) {
 
         for (UniqueKeyValidatorRange uniqueKeyValidatorRange : uniqueKeyValidatorForTwoColumnRange.values()) {
             uniqueKeyValidatorRange.validate(list);
@@ -268,7 +268,7 @@ public class UniqueKeyValidator {
      * map of key value objects. This method validates the key values for column key values only -
      * not key value ranges (two column key value objects)
      */
-    private void validateUniqueKeys(MessageList list, Map<IUniqueKey, Map<AbstractKeyValue, List<Row>>> uniqueKeyMap2) {
+    private void validateUniqueKeys(MessageList list, Map<IIndex, Map<AbstractKeyValue, List<Row>>> uniqueKeyMap2) {
         // iterate all unique keys, specified in the table structure
         for (Map<AbstractKeyValue, List<Row>> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
             List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
@@ -406,7 +406,7 @@ public class UniqueKeyValidator {
     /**
      * Creates a unique key validation error and adds it to the give message list.
      */
-    void createValidationErrorUniqueKeyViolation(MessageList list, IUniqueKey uniqueKey, Row row) {
+    void createValidationErrorUniqueKeyViolation(MessageList list, IIndex uniqueKey, Row row) {
         String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(), uniqueKey
                 .getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
@@ -415,7 +415,7 @@ public class UniqueKeyValidator {
                 .toArray(new ObjectProperty[objectProperties.size()])));
     }
 
-    private void createObjectProperties(IUniqueKey uniqueKey, Row row, List<ObjectProperty> objectProperties) {
+    private void createObjectProperties(IIndex uniqueKey, Row row, List<ObjectProperty> objectProperties) {
         IKeyItem[] items = uniqueKey.getKeyItems();
         for (IKeyItem item : items) {
             IColumn[] columns = item.getColumns();

@@ -11,11 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.sourcecode;
+package org.faktorips.codegen;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.Calendar;
 import java.util.List;
@@ -24,10 +26,6 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.codegen.ClassNameUtil;
-import org.faktorips.codegen.ImportDeclaration;
-import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.junit.Test;
 
 /**
@@ -40,11 +38,11 @@ public class JavaCodeFragmentTest {
     public void testGetImportDeclaration() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(JavaCodeFragment.class);
-        fragment.appendClassName(this.getClass());
+        fragment.appendClassName(Map.class);
         String pack = ClassNameUtil.getPackageName(JavaCodeFragment.class.getName());
         ImportDeclaration decl = fragment.getImportDeclaration(pack);
         assertEquals(1, decl.getNoOfImports());
-        assertTrue(decl.toString().indexOf(getClass().getName()) != -1);
+        assertThat(decl.getImports(), hasItem(Map.class.getName()));
     }
 
     @Test
@@ -73,7 +71,60 @@ public class JavaCodeFragmentTest {
         assertEquals("List[][]", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(List.class));
+    }
 
+    @Test
+    public void testAppendClassName_oneGeneric() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName("any.package.Type<any.other.GenType>");
+        assertEquals("Type<GenType>", fragment.getSourcecode()); //$NON-NLS-1$
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
+    }
+
+    @Test
+    public void testAppendClassName_twoGeneric() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName("any.package.Type<any.other.GenType, another.GenType2>");
+        assertEquals("Type<GenType, GenType2>", fragment.getSourcecode()); //$NON-NLS-1$
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("another.GenType2"));
+    }
+
+    @Test
+    public void testAppendClassName_twoGenericSameClassDifferentPackage() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName("any.package.Type<any.other.GenType, another.GenType>");
+        assertEquals("Type<GenType, another.GenType>", fragment.getSourcecode()); //$NON-NLS-1$
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
+    }
+
+    @Test
+    public void testAppendClassName_nestedGeneric() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName("any.package.Type<any.other.GenType, another.GenType2<xy.A, xy.B<any.other.GenType>>>");
+        assertEquals("Type<GenType, GenType2<A, B<GenType>>>", fragment.getSourcecode()); //$NON-NLS-1$
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("another.GenType2"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("xy.A"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("xy.B"));
+    }
+
+    @Test
+    public void testAppendClassName_nestedGeneric2() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName("any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>");
+        assertEquals("Type<GenType<X, Y>, GenType2<A, B<GenType>, F>, H>", fragment.getSourcecode()); //$NON-NLS-1$
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("another.GenType2"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("xy.A"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("xy.B"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("ab.X"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("ab.Y"));
     }
 
     @Test
@@ -145,5 +196,27 @@ public class JavaCodeFragmentTest {
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(Calendar.class));
     }
+
+    @Test
+                        public void testSplitToplevelGenericTypesByColon_noSplit() throws Exception {
+                            String input = "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>";
+                    
+                            List<String> typeParts = new JavaCodeFragment().splitToplevelGenericTypesByColon(input);
+                    
+                            assertEquals(
+                                    "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>",
+                                    typeParts.get(0));
+                        }
+
+    @Test
+                        public void testSplitToplevelGenericTypesByColon_splits() throws Exception {
+                            String input = "any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H";
+                    
+                            List<String> typeParts = new JavaCodeFragment().splitToplevelGenericTypesByColon(input);
+                    
+                            assertEquals("any.other.GenType<ab.X,ab.Y>", typeParts.get(0));
+                            assertEquals("another.GenType2<xy.A, xy.B<any.other.GenType>, F>", typeParts.get(1));
+                            assertEquals("H", typeParts.get(2));
+                        }
 
 }

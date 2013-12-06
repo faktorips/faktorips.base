@@ -20,6 +20,8 @@ import java.util.List;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -31,7 +33,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 
-    private IEnumValueSet valueSet;
+    private IValueSetOwner valueSetOwner;
 
     /**
      * Creates a new EnumValueSetField.
@@ -43,16 +45,26 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
     public EnumValueSetField(Combo combo, IEnumValueSet valueSet, ValueDatatype datatype) {
         super(combo, datatype);
         ArgumentCheck.notNull(valueSet, this);
-        this.valueSet = valueSet;
+        this.valueSetOwner = valueSet.getValueSetOwner();
         reInitInternal();
     }
 
     @Override
     protected List<String> getDatatypeValueIds() {
         List<String> ids = new ArrayList<String>();
-        ids.addAll(Arrays.asList(valueSet.getValues()));
-
+        IValueSet newValueSet = valueSetOwner.getValueSet();
+        fillList(ids, newValueSet);
         return ids;
+    }
+
+    private void fillList(List<String> ids, IValueSet newValueSet) {
+        if (newValueSet instanceof IEnumValueSet) {
+            IEnumValueSet newEnumValueSet = (IEnumValueSet)newValueSet;
+            ids.addAll(Arrays.asList(newEnumValueSet.getValues()));
+        }
+        if (ids.isEmpty()) {
+            ids.add(null);
+        }
     }
 
 }

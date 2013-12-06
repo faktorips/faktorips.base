@@ -17,31 +17,32 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
-public class UniqueKeysSection extends SimpleIpsPartsSection {
+public class IndexSection extends SimpleIpsPartsSection {
 
-    public UniqueKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.UniqueKeysSection_title, toolkit);
+    public IndexSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
+        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.IndicesSection_title, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new UniqueKeysComposite(getIpsObject(), parent, toolkit);
+        return new IndicesComposite(getIpsObject(), parent, getSite(), toolkit);
     }
 
-    private class UniqueKeysComposite extends IpsPartsComposite {
+    private static class IndicesComposite extends IpsPartsComposite {
 
-        public UniqueKeysComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, getSite(), toolkit);
+        public IndicesComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+            super(pdObject, parent, site, toolkit);
         }
 
         public ITableStructure getTableStructure() {
@@ -55,23 +56,23 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
 
         @Override
         protected IIpsObjectPart newIpsPart() {
-            return getTableStructure().newUniqueKey();
+            return getTableStructure().newIndex();
         }
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new KeyEditDialog((IUniqueKey)part, shell);
+            return new IndicesEditDialog((IIndex)part, shell);
         }
 
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
-            return getTableStructure().moveUniqueKeys(indexes, up);
+            return getTableStructure().moveIndex(indexes, up);
         }
 
         private class ContentProvider implements IStructuredContentProvider {
             @Override
             public Object[] getElements(Object inputElement) {
-                return getTableStructure().getUniqueKeys();
+                return getTableStructure().getIndices().toArray();
             }
 
             @Override

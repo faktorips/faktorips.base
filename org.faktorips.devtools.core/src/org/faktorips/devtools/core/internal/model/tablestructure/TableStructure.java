@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +24,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -34,11 +36,11 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
@@ -57,7 +59,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     private List<IColumnRange> ranges = new ArrayList<IColumnRange>(0);
 
-    private List<IUniqueKey> uniqueKeys = new ArrayList<IUniqueKey>(1);
+    private List<IIndex> indices = new ArrayList<IIndex>(1);
 
     private List<IForeignKey> foreignKeys = new ArrayList<IForeignKey>(0);
 
@@ -152,7 +154,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new RuntimeException("Can't get index for column " + column); //$NON-NLS-1$
+        throw new CoreRuntimeException("Can't get index for column " + column); //$NON-NLS-1$
     }
 
     @Override
@@ -162,7 +164,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new RuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
+        throw new CoreRuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
     }
 
     @Override
@@ -213,16 +215,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public IUniqueKey[] getUniqueKeys() {
-        IUniqueKey[] keys = new IUniqueKey[uniqueKeys.size()];
-        uniqueKeys.toArray(keys);
-        return keys;
+    public IIndex[] getUniqueKeys() {
+        ArrayList<IIndex> result = new ArrayList<IIndex>();
+        for (IIndex index : indices) {
+            if (index.isUniqueKey()) {
+                result.add(index);
+            }
+        }
+        return result.toArray(new IIndex[result.size()]);
     }
 
     @Override
-    public IUniqueKey getUniqueKey(String name) {
-        for (IUniqueKey key : uniqueKeys) {
-            if (key.getName().equals(name)) {
+    public IIndex getUniqueKey(String name) {
+        for (IIndex key : indices) {
+            if (key.isUniqueKey() && key.getName().equals(name)) {
                 return key;
             }
         }
@@ -231,32 +237,70 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public int getNumOfUniqueKeys() {
-        return uniqueKeys.size();
+        return getUniqueKeys().length;
     }
 
     @Override
-    public IUniqueKey newUniqueKey() {
-        IUniqueKey newUniqueKey = newUniqueKeyInternal(getNextPartId());
-        objectHasChanged();
-        return newUniqueKey;
+    public List<IIndex> getIndices() {
+        return Collections.unmodifiableList(indices);
     }
 
+    @Override
+    public IIndex getIndex(String name) {
+        for (IIndex key : indices) {
+            if (key.getName().equals(name)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int getNumOfIndices() {
+        return indices.size();
+    }
+
+    /**
+     * @deprecated Use {@link #newIndex()} instead
+     */
+    @Deprecated
+    @Override
+    public IIndex newUniqueKey() {
+        return newIndex();
+    }
+
+    @Override
+    public IIndex newIndex() {
+        IIndex newIndex = newIndexInternal(getNextPartId());
+        objectHasChanged();
+        return newIndex;
+    }
+
+    /**
+     * @deprecated Use {@link #moveIndex(int[],boolean)} instead
+     */
+    @Deprecated
     @Override
     public int[] moveUniqueKeys(int[] indexes, boolean up) {
-        ListElementMover<IUniqueKey> mover = new ListElementMover<IUniqueKey>(uniqueKeys);
+        return moveIndex(indexes, up);
+    }
+
+    @Override
+    public int[] moveIndex(int[] indexes, boolean up) {
+        ListElementMover<IIndex> mover = new ListElementMover<IIndex>(indices);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
     }
 
-    private IUniqueKey newUniqueKeyInternal(String id) {
-        IUniqueKey newUniqueKey = new UniqueKey(this, id);
-        uniqueKeys.add(newUniqueKey);
-        return newUniqueKey;
+    private IIndex newIndexInternal(String id) {
+        IIndex newIndex = new Index(this, id);
+        indices.add(newIndex);
+        return newIndex;
     }
 
-    void removeUniqueKey(IUniqueKey key) {
-        uniqueKeys.remove(key);
+    void removeIndex(IIndex index) {
+        indices.remove(index);
     }
 
     @Override
@@ -323,26 +367,25 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public ITableAccessFunction[] getAccessFunctions() {
-        if (getUniqueKeys().length == 0) {
+        if (indices.size() == 0) {
             return new ITableAccessFunction[0];
         }
 
         List<ITableAccessFunction> functions = new ArrayList<ITableAccessFunction>();
 
-        IUniqueKey[] keys = getUniqueKeys();
         // add functions for each key and column which is not in the key
-        for (IUniqueKey key : keys) {
-            IColumn[] columnsNotInKey = getColumnsNotInKey(key);
+        for (IIndex index : indices) {
+            IColumn[] columnsNotInKey = getColumnsNotInKey(index);
             for (int j = 0; j < columnsNotInKey.length; j++) {
                 // add function for each column which is not included in the key
-                functions.add(createFunction("" + j, key, columnsNotInKey[j])); //$NON-NLS-1$
+                functions.add(createFunction("" + j, index, columnsNotInKey[j])); //$NON-NLS-1$
             }
         }
 
         return functions.toArray(new ITableAccessFunction[functions.size()]);
     }
 
-    private ITableAccessFunction createFunction(String id, IUniqueKey key, IColumn column) {
+    private ITableAccessFunction createFunction(String id, IIndex key, IColumn column) {
         TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
         fct.setType(column.getDatatype());
@@ -358,7 +401,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return fct;
     }
 
-    private void createDescriptionForFunction(IUniqueKey key, IColumn column, TableAccessFunction fct) {
+    private void createDescriptionForFunction(IIndex key, IColumn column, TableAccessFunction fct) {
         LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(this.getClass());
         Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
@@ -420,11 +463,11 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        int size = columns.size() + ranges.size() + uniqueKeys.size() + foreignKeys.size();
+        int size = columns.size() + ranges.size() + indices.size() + foreignKeys.size();
         List<IIpsElement> children = new ArrayList<IIpsElement>(size);
         children.addAll(columns);
         children.addAll(ranges);
-        children.addAll(uniqueKeys);
+        children.addAll(indices);
         children.addAll(foreignKeys);
         return children.toArray(new IIpsElement[children.size()]);
     }
@@ -433,7 +476,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     protected void reinitPartCollectionsThis() {
         columns.clear();
         ranges.clear();
-        uniqueKeys.clear();
+        indices.clear();
         foreignKeys.clear();
     }
 
@@ -445,8 +488,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (part instanceof IColumnRange) {
             ranges.add((IColumnRange)part);
             return true;
-        } else if (part instanceof IUniqueKey) {
-            uniqueKeys.add((IUniqueKey)part);
+        } else if (part instanceof IIndex) {
+            indices.add((IIndex)part);
             return true;
         } else if (part instanceof IForeignKey) {
             foreignKeys.add((IForeignKey)part);
@@ -463,8 +506,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (part instanceof IColumnRange) {
             ranges.remove(part);
             return true;
-        } else if (part instanceof IUniqueKey) {
-            uniqueKeys.remove(part);
+        } else if (part instanceof IIndex) {
+            indices.remove(part);
             return true;
         } else if (part instanceof IForeignKey) {
             foreignKeys.remove(part);
@@ -480,8 +523,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
             return newColumnInternal(id);
         } else if (xmlTagName.equals(ColumnRange.TAG_NAME)) {
             return newColumnRangeInternal(id);
-        } else if (xmlTagName.equals(UniqueKey.TAG_NAME)) {
-            return newUniqueKeyInternal(id);
+        } else if (xmlTagName.equals(Index.TAG_NAME)) {
+            return newIndexInternal(id);
         } else if (xmlTagName.equals(ForeignKey.TAG_NAME)) {
             return newForeignKeyInternal(id);
         }
@@ -494,8 +537,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
             return newColumnInternal(getNextPartId());
         } else if (partType.equals(IColumnRange.class)) {
             return newColumnRangeInternal(getNextPartId());
-        } else if (partType.equals(IUniqueKey.class)) {
-            return newUniqueKeyInternal(getNextPartId());
+        } else if (partType.equals(IIndex.class)) {
+            return newIndexInternal(getNextPartId());
         } else if (partType.equals(IForeignKey.class)) {
             return newForeignKeyInternal(getNextPartId());
         }
@@ -519,11 +562,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return result;
     }
 
+    /**
+     * @deprecated Use {@link #hasIndexWithSameDatatype()} instead
+     */
+    @Deprecated
     @Override
     public boolean hasUniqueKeysWithSameDatatype() {
+        return hasIndexWithSameDatatype();
+    }
+
+    @Override
+    public boolean hasIndexWithSameDatatype() {
         Set<List<String>> keysDatatypes = new HashSet<List<String>>();
-        for (IUniqueKey uniqueKey : uniqueKeys) {
-            List<String> keyDatatype = uniqueKey.getDatatypes();
+        for (IIndex index : indices) {
+            List<String> keyDatatype = index.getDatatypes();
             if (keysDatatypes.contains(keyDatatype)) {
                 return true;
             }

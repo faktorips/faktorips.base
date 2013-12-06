@@ -18,9 +18,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 
 /**
  * A key value is an object which stores the value (string) of the content of all key item column
@@ -29,17 +29,17 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
  */
 public class KeyValue extends AbstractKeyValue {
 
-    protected String value;
+    private final String value;
 
-    public KeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
+    public KeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
         super(structure, uniqueKey, row);
-        this.value = evalValue(row);
+        value = evalValue(row);
     }
 
     /**
      * Creates a new key value object of an a given unique key for a given row.
      */
-    public static KeyValue createKeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
+    public static KeyValue createKeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
         KeyValue keyValue = new KeyValue(structure, uniqueKey, row);
         return keyValue;
     }
@@ -50,25 +50,25 @@ public class KeyValue extends AbstractKeyValue {
      */
     @Override
     protected String getKeyValue() {
-        return value;
+        return getValue();
     }
 
     @Override
     public boolean isValid(Row row) {
         String valueNew = evalValue(row);
-        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(value)) {
+        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(getValue())) {
             return false;
         }
-        return value.equals(valueNew);
+        return getValue().equals(valueNew);
     }
 
     private String evalValue(Row row) {
         String[] values;
-        List<IKeyItem> keyItems = getNonTwoColumnRangeKeyItems(uniqueKey);
-        
+        List<IKeyItem> keyItems = getNonTwoColumnRangeKeyItems(getUniqueKey());
+
         values = new String[keyItems.size()];
         for (int i = 0; i < keyItems.size(); i++) {
-            values[i] = getValueForKeyItem(structure, row, keyItems.get(i));
+            values[i] = getValueForKeyItem(getStructure(), row, keyItems.get(i));
         }
         return Arrays.toString(values);
     }
@@ -90,6 +90,11 @@ public class KeyValue extends AbstractKeyValue {
 
     @Override
     public String toString() {
-        return uniqueKey.getName() + ": " + value; //$NON-NLS-1$
+        return getUniqueKey().getName() + ": " + getValue(); //$NON-NLS-1$
     }
+
+    public String getValue() {
+        return value;
+    }
+
 }

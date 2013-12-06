@@ -15,12 +15,10 @@ package org.faktorips.devtools.core.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public interface IColumn extends IIpsObjectPart, IKeyItem, IDescribedElement, ILabeledElement {
+public interface IColumn extends IKeyItem, ILabeledElement {
 
     /**
      * Prefix for all message codes of this class.

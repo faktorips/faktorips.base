@@ -29,20 +29,20 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
-public class UniqueKeyTest extends AbstractIpsPluginTest {
+public class IndexTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
-    private UniqueKey key;
+    private Index key;
 
     @Override
     @Before
@@ -51,7 +51,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         project = newIpsProject();
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
-        key = (UniqueKey)table.newUniqueKey();
+        key = (Index)table.newIndex();
         ipsSrcFile.save(true, null);
     }
 
@@ -198,22 +198,22 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         range.setToColumn(secondInteger.getName());
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
 
-        IUniqueKey firstStringKey = table.newUniqueKey();
+        IIndex firstStringKey = table.newIndex();
         firstStringKey.addKeyItem(firstString.getName());
 
         assertEquals(Arrays.asList("String"), firstStringKey.getDatatypes());
 
-        IUniqueKey firstIntegerKey = table.newUniqueKey();
+        IIndex firstIntegerKey = table.newIndex();
         firstIntegerKey.addKeyItem(firstInteger.getName());
 
         assertEquals(Arrays.asList("Integer"), firstIntegerKey.getDatatypes());
 
-        IUniqueKey rangeKey = table.newUniqueKey();
+        IIndex rangeKey = table.newIndex();
         rangeKey.addKeyItem(range.getName());
 
         assertEquals(Arrays.asList("Integer"), firstIntegerKey.getDatatypes());
 
-        IUniqueKey combinedKey = table.newUniqueKey();
+        IIndex combinedKey = table.newIndex();
         combinedKey.addKeyItem(firstString.getName());
         combinedKey.addKeyItem(firstInteger.getName());
 
@@ -264,13 +264,17 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        key = (UniqueKey)table.newUniqueKey();
+        key = (Index)table.newIndex();
+        key.setUniqueKey(false);
         String[] items = new String[] { "age", "gender" };
         key.setKeyItems(items);
+
         Element element = key.toXml(newDocument());
-        UniqueKey copy = new UniqueKey();
+        Index copy = new Index();
         copy.initFromXml(element);
+
         assertEquals(key.getId(), copy.getId());
+        assertEquals(false, copy.isUniqueKey());
         assertEquals(2, copy.getNumOfKeyItems());
         assertEquals("age", copy.getKeyItemNames()[0]);
         assertEquals("gender", copy.getKeyItemNames()[1]);
@@ -279,7 +283,9 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
     @Test
     public void testInitFromXml() {
         key.initFromXml(getTestDocument().getDocumentElement());
+
         assertEquals("42", key.getId());
+        assertEquals(false, key.isUniqueKey());
         assertEquals(2, key.getNumOfKeyItems());
         assertEquals("age", key.getKeyItemNames()[0]);
         assertEquals("gender", key.getKeyItemNames()[1]);

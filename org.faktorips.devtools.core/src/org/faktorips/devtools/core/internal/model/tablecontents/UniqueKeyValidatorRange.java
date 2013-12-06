@@ -27,7 +27,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -48,7 +48,7 @@ public class UniqueKeyValidatorRange {
     private UniqueKeyValidator uniqueKeyValidator;
 
     /** the unique key this validator is for */
-    private IUniqueKey uniqueKey;
+    private IIndex uniqueKey;
 
     /**
      * cache contains for each key value a map of column ranges (key) and sorted maps (value) each
@@ -58,7 +58,7 @@ public class UniqueKeyValidatorRange {
 
     private List<ColumnRange> twoColumnRanges;
 
-    public UniqueKeyValidatorRange(UniqueKeyValidator uniqueKeyValidator, IUniqueKey uniqueKey) {
+    public UniqueKeyValidatorRange(UniqueKeyValidator uniqueKeyValidator, IIndex uniqueKey) {
         this.uniqueKeyValidator = uniqueKeyValidator;
         this.uniqueKey = uniqueKey;
         twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);

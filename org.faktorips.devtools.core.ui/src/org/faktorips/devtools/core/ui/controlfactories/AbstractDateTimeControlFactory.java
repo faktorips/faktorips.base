@@ -58,9 +58,9 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
         return formatField;
     }
 
-    abstract protected AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit);
+    protected abstract AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit);
 
-    abstract protected AbstractInputFormat<String> getFormat();
+    protected abstract AbstractInputFormat<String> getFormat();
 
     @Override
     public Control createControl(UIToolkit toolkit,

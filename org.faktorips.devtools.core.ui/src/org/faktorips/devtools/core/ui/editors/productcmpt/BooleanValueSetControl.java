@@ -122,7 +122,7 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
         trueBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(true)));
         falseBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(false)));
         if (nullBox != null) {
-            nullBox.setEnabled(false);
+            nullBox.setEnabled(dataChangeable);
             nullBox.setChecked(allowedValues.contains(null));
         }
     }

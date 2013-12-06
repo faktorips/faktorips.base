@@ -22,24 +22,28 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class UniqueKey extends Key implements IUniqueKey {
+public class Index extends Key implements IIndex {
 
-    static final String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
+    static final String TAG_NAME = "Index"; //$NON-NLS-1$
 
-    public UniqueKey(TableStructure tableStructure, String id) {
+    private static final String XML_ATTRIBUTE_UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
+
+    private boolean uniqueKey = true;
+
+    public Index(TableStructure tableStructure, String id) {
         super(tableStructure, id);
     }
 
-    public UniqueKey() {
+    public Index() {
         super();
     }
 
@@ -72,7 +76,7 @@ public class UniqueKey extends Key implements IUniqueKey {
                 }
             }
             if (wrongSequenceFound) {
-                msgList.add(new Message("", Messages.UniqueKey_wrong_sequence, //$NON-NLS-1$
+                msgList.add(new Message("", Messages.Index_wrong_sequence, //$NON-NLS-1$
                         Message.ERROR, new ObjectProperty(this, IKey.PROPERTY_KEY_ITEMS, potentiallyWrongKeyElement)));
             }
         }
@@ -82,8 +86,8 @@ public class UniqueKey extends Key implements IUniqueKey {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         if (getNumOfKeyItems() == 0) {
-            String text = Messages.UniqueKey_msgTooLessItems;
-            list.add(new Message(IUniqueKey.MSGCODE_TOO_LESS_ITEMS, text, Message.ERROR, this));
+            String text = Messages.Index_msgTooLessItems;
+            list.add(new Message(IIndex.MSGCODE_TOO_LESS_ITEMS, text, Message.ERROR, this));
         }
         String[] items = getKeyItemNames();
         for (int i = 0; i < items.length; i++) {
@@ -101,8 +105,8 @@ public class UniqueKey extends Key implements IUniqueKey {
         if (range != null) {
             return;
         }
-        String text = NLS.bind(Messages.UniqueKey_msgKeyItemMismatch, item);
-        list.add(new Message(IUniqueKey.MSGCODE_KEY_ITEM_MISMATCH, text, Message.ERROR, new ObjectProperty(this,
+        String text = NLS.bind(Messages.Index_msgKeyItemMismatch, item);
+        list.add(new Message(IIndex.MSGCODE_KEY_ITEM_MISMATCH, text, Message.ERROR, new ObjectProperty(this,
                 IKey.PROPERTY_KEY_ITEMS, itemmIndex)));
         return;
     }
@@ -167,6 +171,33 @@ public class UniqueKey extends Key implements IUniqueKey {
             keyDatatype.add(keyItem.getDatatype());
         }
         return keyDatatype;
+    }
+
+    @Override
+    public boolean isUniqueKey() {
+        return uniqueKey;
+    }
+
+    @Override
+    public void setUniqueKey(boolean unique) {
+        boolean oldValue = this.uniqueKey;
+        this.uniqueKey = unique;
+        valueChanged(oldValue, uniqueKey, PROPERTY_UNIQUE_KEY);
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(XML_ATTRIBUTE_UNIQUE_KEY, Boolean.valueOf(isUniqueKey()).toString());
+    }
+
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
+        super.initPropertiesFromXml(element, id);
+        if (element.hasAttribute(XML_ATTRIBUTE_UNIQUE_KEY)) {
+            String uniqueKeyAttributeValue = element.getAttribute(XML_ATTRIBUTE_UNIQUE_KEY);
+            uniqueKey = Boolean.valueOf(uniqueKeyAttributeValue);
+        }
     }
 
 }

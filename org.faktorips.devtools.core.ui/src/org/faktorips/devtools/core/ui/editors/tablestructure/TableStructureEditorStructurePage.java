@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
 
-    static final String PAGE_ID = "Structure"; //$NON-NLS-1$
+    static final String PAGE_ID = "SearchStructure"; //$NON-NLS-1$
 
     private TableStructureContentsChangeListener contentsChangeListener;
 
@@ -53,7 +53,7 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
         new GeneralInfoSection(getTableStructure(), formBody, toolkit);
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new ColumnsSection(getTableStructure(), members, toolkit);
-        new UniqueKeysSection(getTableStructure(), members, toolkit);
+        new IndexSection(getTableStructure(), members, toolkit);
         new RangesSection(getTableStructure(), members, toolkit);
         new ForeignKeysSection(getTableStructure(), members, toolkit);
         updatePageMessage();
@@ -62,7 +62,7 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
     }
 
     private void updatePageMessage() {
-        boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasUniqueKeysWithSameDatatype();
+        boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasIndexWithSameDatatype();
 
         if (hasUniqueKeysWithSameDatatype) {
             getManagedForm().getForm().setMessage(

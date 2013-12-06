@@ -489,8 +489,8 @@ public class ContentPage extends IpsObjectEditorPage {
     public void refreshTable(final IRow row) {
         tableViewer.refresh(row);
         if (wasUniqueKeyErrorStateChanged()) {
-            // either the unique key error is solved or there is a new unique key error
-            // refresh the rest of the table because an unique key error concerns to more than one
+            // either the index error is solved or there is a new index error
+            // refresh the rest of the table because an index error concerns more than one
             // row
             refreshTable();
         }

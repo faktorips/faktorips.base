@@ -58,7 +58,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.ArgumentCheck;
@@ -255,7 +255,7 @@ public class Migration2_2_to2_3 {
 
             // Create enumeration attributes.
             // 1. key is the id, 2. key is the name.
-            IUniqueKey[] uniqueKeys = currentTableStructure.getUniqueKeys();
+            IIndex[] uniqueKeys = currentTableStructure.getUniqueKeys();
             String id = uniqueKeys[0].getKeyItemAt(0).getName();
             String name = uniqueKeys[1].getKeyItemAt(0).getName();
             for (IColumn currentColumn : currentTableStructure.getColumns()) {
