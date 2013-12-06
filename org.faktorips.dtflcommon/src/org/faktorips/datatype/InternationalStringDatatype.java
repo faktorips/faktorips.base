@@ -13,12 +13,12 @@
 
 package org.faktorips.datatype;
 
-import org.faktorips.values.InternationalString;
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 
 /**
- * This is the datatype for international strings. This datatype is not implemented for using
- * directly. It is only used internally for code generation.
+ * This is the datatype for international strings. This datatype is not implemented for direct use.
+ * It is only used internally for code generation.
  * 
  * @see InternationalString
  * @see DefaultInternationalString
@@ -31,8 +31,8 @@ public class InternationalStringDatatype extends AbstractDatatype implements Val
 
     /**
      * Creates a new instance of {@link InternationalStringDatatype} and specifies whether to use
-     * the interface {@link InternationalString} or the implementation {@link DefaultInternationalString}
-     * as wrapped class.
+     * the interface {@link InternationalString} or the implementation
+     * {@link DefaultInternationalString} as wrapped class.
      * 
      */
     public InternationalStringDatatype(boolean useInterface) {
