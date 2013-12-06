@@ -100,6 +100,16 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         client.setLayout(new GridLayout(1, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
+        createSuperclassLink(toolkit, composite);
+        createSupertypeRefControl(toolkit, composite);
+        createIsAbstractCheckbox(toolkit, composite);
+        createExtensibleCheckbox(toolkit, composite);
+        createEnumContentNameControl(toolkit, composite);
+        registerFocusHandling();
+        createExtensionControl(toolkit, composite);
+    }
+
+    private void createSuperclassLink(UIToolkit toolkit, Composite composite) {
         Hyperlink link = toolkit.createHyperlink(composite, Messages.EnumTypeGeneralInfoSection_linkSuperclass);
         link.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
@@ -114,13 +124,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 }
             }
         });
-
-        createSupertypeRefControl(toolkit, composite);
-        createIsAbstractCheckbox(toolkit, composite);
-        createExtensibleCheckbox(toolkit, composite);
-        createEnumContentNameControl(toolkit, composite);
-        registerFocusHandling();
-        createExtensionControl(toolkit, composite);
     }
 
     private EnumTypeRefControl createSupertypeRefControl(UIToolkit toolkit, Composite composite) {
