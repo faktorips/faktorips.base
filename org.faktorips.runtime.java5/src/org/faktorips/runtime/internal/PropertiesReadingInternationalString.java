@@ -18,6 +18,11 @@ import java.util.Locale;
 import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.values.InternationalString;
 
+/**
+ * An {@link PropertiesReadingInternationalString} could be used for string properties that could be
+ * translated in different languages. The {@link PropertiesReadingInternationalString} makes thereby
+ * use of a {@link MessagesHelper}.
+ */
 public class PropertiesReadingInternationalString implements InternationalString {
 
     /**
