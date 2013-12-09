@@ -541,15 +541,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * there is no <tt>IEnumLiteralNameAttribute</tt>.
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
-        // Pass validation if the EnumType is abstract or does not contain values.
-        if (!isInextensibleEnum()) {
+
+        if (isAbstract()) {
             return;
         }
-
-        String text;
+String text;
         Message message;
 
-        if (!(containsEnumLiteralNameAttribute())) {
+        if (!containsEnumLiteralNameAttribute()) {
             text = Messages.EnumType_NoLiteralNameAttribute;
             message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
                     new ObjectProperty[] { new ObjectProperty(this, null) });

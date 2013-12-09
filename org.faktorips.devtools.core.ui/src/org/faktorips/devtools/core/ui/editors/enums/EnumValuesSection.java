@@ -558,7 +558,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
         }
 
-        if (enumType.isInextensibleEnum() && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
+        if (enumType.hasEnumLiteralNameAttribute() && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
             contentsChangedUpdateLiteralNameColumn(event);
             enumValuesTableViewer.refresh();
         }

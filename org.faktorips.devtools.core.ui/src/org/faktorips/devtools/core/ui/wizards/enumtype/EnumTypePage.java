@@ -58,7 +58,7 @@ import org.faktorips.util.message.MessageList;
 public class EnumTypePage extends IpsObjectPage {
 
     /** The image for the wizard page. */
-    private final String PAGE_IMAGE = "wizards/NewEnumTypeWizard.png"; //$NON-NLS-1$
+    private static final String PAGE_IMAGE = "wizards/NewEnumTypeWizard.png"; //$NON-NLS-1$
 
     /** The text field to choose the supertype for the new <tt>IEnumType</tt>. */
     private TextButtonField supertypeField;
@@ -301,7 +301,7 @@ public class EnumTypePage extends IpsObjectPage {
         }
 
         // Create literal name attribute if not abstract and not extensible.
-        if (!((Boolean)isAbstractField.getValue()) && !((Boolean)extensibleField.getValue())) {
+        if (!isAbstractField.getValue()) {
             IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
             IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
             literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());

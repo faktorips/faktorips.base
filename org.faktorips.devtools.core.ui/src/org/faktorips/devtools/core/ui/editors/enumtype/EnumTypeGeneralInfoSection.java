@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -94,6 +95,12 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
         enumType.getIpsModel().addChangeListener(this);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        enumType.getIpsModel().removeChangeListener(this);
     }
 
     @Override
@@ -188,7 +195,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                     break;
             }
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -202,14 +209,11 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
 
         // Create an EnumLiteralNameAttribute if the EnumType does not have one but needs one.
-        if (enumType.isInextensibleEnum()) {
-            if (!(enumType.containsEnumLiteralNameAttribute())) {
-                IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType.newEnumLiteralNameAttribute();
-                IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
-                if (nameAttribute != null) {
-                    newEnumLiteralNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
-                }
-
+        if (!enumType.isAbstract() && !(enumType.containsEnumLiteralNameAttribute())) {
+            IEnumLiteralNameAttribute newEnumLiteralNameAttribute = enumType.newEnumLiteralNameAttribute();
+            IEnumAttribute nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
+            if (nameAttribute != null) {
+                newEnumLiteralNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
             }
         }
     }

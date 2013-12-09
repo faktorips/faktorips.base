@@ -264,7 +264,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             setCanDelete(true);
-            if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.isInextensibleEnum()) {
+            if (getSelectedPart() instanceof IEnumLiteralNameAttribute) {
                 setCanDelete(false);
             }
         }

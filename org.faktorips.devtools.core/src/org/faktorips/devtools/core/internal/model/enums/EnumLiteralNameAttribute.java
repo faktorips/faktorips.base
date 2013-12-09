@@ -98,7 +98,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      */
     private void validateIsNeeded(MessageList list) {
         IEnumType enumType = getEnumType();
-        if (!(enumType.isInextensibleEnum())) {
+        if (!(enumType.isAbstract())) {
             String text = Messages.EnumLiteralNameAttribute_NotNeeded;
             Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED, text, Message.ERROR, this);
             list.add(msg);

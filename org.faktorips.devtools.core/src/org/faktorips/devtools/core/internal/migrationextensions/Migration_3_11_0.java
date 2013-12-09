@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.migrationextensions;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -40,6 +41,16 @@ public class Migration_3_11_0 extends DefaultMigration {
         if (IpsObjectType.TABLE_STRUCTURE.equals(srcFile.getIpsObjectType())
                 || IpsObjectType.ENUM_TYPE.equals(srcFile.getIpsObjectType())) {
             migrateUsingTransformation(srcFile, srcFile.getContentFromEnclosingResource(), xslFile);
+        }
+        if (IpsObjectType.ENUM_TYPE.equals(srcFile.getIpsObjectType())) {
+            addEnumLiteralName(srcFile);
+        }
+    }
+
+    private void addEnumLiteralName(IIpsSrcFile srcFile) throws CoreException {
+        IEnumType enumType = ((IEnumType)srcFile.getIpsObject());
+        if (!enumType.isAbstract() && !enumType.containsEnumLiteralNameAttribute()) {
+            enumType.newEnumLiteralNameAttribute();
         }
     }
 

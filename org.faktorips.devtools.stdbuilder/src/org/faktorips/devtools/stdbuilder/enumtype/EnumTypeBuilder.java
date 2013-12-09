@@ -347,7 +347,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         ArrayList<String> literalNames = new ArrayList<String>();
         Map<String, Integer> dublicatedLiteralNameCounter = new HashMap<String, Integer>();
         for (IEnumValue enumValue : enumValues) {
-            String identifierValue = enumValue.getEnumAttributeValue(identiferAttribute).getValue()
+            String identifierValue = enumValue.getEnumAttributeValue(literalNameAttribute).getValue()
                     .getLocalizedContent(getLanguageUsedInGeneratedSourceCode());
             String literalName = getIpsProject().getJavaNamingConvention().getEnumLiteral(identifierValue);
             if (dublicatedLiteralNameCounter.containsKey(literalName)) {
@@ -744,7 +744,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean isGenerateFieldFor(IEnumAttribute enumAttribute) {
-        return getEnumType().isExtensible() || !enumAttribute.isMultilingual();
+        return (getEnumType().isExtensible() || !enumAttribute.isMultilingual())
+                && !enumAttribute.isEnumLiteralNameAttribute();
     }
 
     /** The first character will be made lower case. */
