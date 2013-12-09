@@ -59,10 +59,8 @@ public interface IEnumValueContainer extends IIpsObject {
     /**
      * Returns the {@link IEnumValue} for the provided value of the identifier attribute.
      * <p>
-     * This method can only be applied to {@link IEnumValueContainer}s that contain their own
-     * values. Especially this doesn't hold true for {@link IEnumType}s which delegate their content
-     * to a separate {@link IEnumContent}. For those cases {@code null} will be returned by this
-     * method.
+     * This method can be applied to {@link IEnumValueContainer}s that contain their own values and
+     * also those {@link IEnumValueContainer}s which are extensible.
      * <p>
      * Returns {@code null} if no {@link IEnumValue} could be found for the given identifier
      * attribute value, if the referenced {@link IEnumType} isn't known or no valid identifier
@@ -81,6 +79,9 @@ public interface IEnumValueContainer extends IIpsObject {
     /**
      * Creates a new list and collects the values of the enumeration attribute that is marked as the
      * identifier attribute of all enumeration values of this container and returns it.
+     * <p>
+     * If this is an extensible {@link IEnumType} then the returned list contains aggregated values
+     * {@code findAggregatedEnumValues()}.
      * 
      * @param ipsProject The IPS project used as the starting point to search for the enumeration
      *            type if necessary.

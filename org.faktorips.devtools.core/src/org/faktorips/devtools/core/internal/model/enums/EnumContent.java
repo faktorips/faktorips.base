@@ -117,16 +117,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
-        IEnumValue enumValue = super.findEnumValue(identifierAttributeValue, ipsProject);
-        if (enumValue == null) {
-            IEnumType enumType = findEnumType(getIpsProject());
-            return enumType.findEnumValue(identifierAttributeValue, ipsProject);
-        }
-        return enumValue;
-    }
-
-    @Override
     public List<IEnumValue> findAggregatedEnumValues() {
         List<IEnumValue> aggrregatedEnumValues = findEnumType(getIpsProject()).getEnumValues();
         aggrregatedEnumValues.addAll(getEnumValues());
