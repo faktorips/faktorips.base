@@ -1062,7 +1062,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         List<IEnumType> enumTypeList = findEnumTypes(includeAbstract, true);
         for (IEnumType enumType : enumTypeList) {
-            if (!enumType.isExtensible()) {
+            if (enumType.isInextensibleEnum()) {
                 result.add(new EnumTypeDatatypeAdapter(enumType, null));
                 continue;
             }
@@ -1198,7 +1198,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
         if (enumTypeSrcFile != null && enumTypeSrcFile.exists()) {
             IEnumType enumType = (IEnumType)enumTypeSrcFile.getIpsObject();
-            if (!enumType.isExtensible()) {
+            if (enumType.isInextensibleEnum()) {
                 return new EnumTypeDatatypeAdapter(enumType, null);
             }
             IEnumContent enumContent = ipsProject.findEnumContent(enumType);

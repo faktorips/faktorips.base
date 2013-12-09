@@ -180,7 +180,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                  * editing.
                  */
                 if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
-                    if (!enumType.isExtensible() && !(enumType.isAbstract())) {
+                    if (enumType.isInextensibleEnum() && !(enumType.isAbstract())) {
                         if (enumType.getEnumValuesCount() == 0) {
                             enumType.newEnumValue();
                         }

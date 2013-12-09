@@ -461,7 +461,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (!getBuilderSet().isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }
-        if (!enumType.isExtensible() || enumType.isAbstract()) {
+        if (enumType.isInextensibleEnum() || enumType.isAbstract()) {
             return null;
         }
         TocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),

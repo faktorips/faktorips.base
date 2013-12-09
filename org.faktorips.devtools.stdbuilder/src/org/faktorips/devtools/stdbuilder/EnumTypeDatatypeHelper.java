@@ -98,7 +98,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
 
     @Override
     public JavaCodeFragment newInstanceFromExpression(String expression) {
-        return super.newInstanceFromExpression(expression, !(enumTypeAdapter.getEnumType().isExtensible()));
+        return super.newInstanceFromExpression(expression, enumTypeAdapter.getEnumType().isInextensibleEnum());
     }
 
     /**

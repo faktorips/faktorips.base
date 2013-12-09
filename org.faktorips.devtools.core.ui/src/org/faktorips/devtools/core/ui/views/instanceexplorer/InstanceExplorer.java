@@ -299,7 +299,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
     private void showEmptyTableMessage(IIpsObject element) {
         String message = ""; //$NON-NLS-1$
-        if (element instanceof IEnumType && !((IEnumType)element).isExtensible()) {
+        if (element instanceof IEnumType && !((IEnumType)element).isInextensibleEnum()) {
             message = Messages.InstanceExplorer_enumContainsValues;
         } else {
             message = NLS.bind(Messages.InstanceExplorer_noInstancesFoundInProject, element.getIpsProject().getName());

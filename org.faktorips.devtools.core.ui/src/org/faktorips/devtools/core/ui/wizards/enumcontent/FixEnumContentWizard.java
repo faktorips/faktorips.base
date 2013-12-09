@@ -536,7 +536,7 @@ public class FixEnumContentWizard extends Wizard {
                         setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract);
                         pageComplete = false;
                     }
-                    if (!newEnumType.isExtensible()) {
+                    if (newEnumType.isInextensibleEnum()) {
                         setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel);
                         pageComplete = false;
                     }

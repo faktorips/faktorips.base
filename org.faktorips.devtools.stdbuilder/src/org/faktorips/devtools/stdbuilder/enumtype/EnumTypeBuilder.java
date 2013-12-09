@@ -125,7 +125,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.isAbstract()) {
             return false;
         }
-        return !enumType.isExtensible();
+        return enumType.isInextensibleEnum();
     }
 
     /**
@@ -261,7 +261,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         // the method getEnumValueId is only needed for enumerations with separated content
-        if (!getEnumType().isExtensible()) {
+        if (getEnumType().isInextensibleEnum()) {
             return;
         }
         IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
@@ -548,7 +548,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         ArgumentCheck.notNull(enumType);
 
-        if (!enumType.isExtensible()) {
+        if (enumType.isInextensibleEnum()) {
             IEnumAttribute enumAttribute = getIdentifierAttribute(enumType);
             if (enumAttribute != null) {
                 DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(
@@ -766,7 +766,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         IEnumType enumType = getEnumType();
-        if (enumType.isExtensible() || enumType.isAbstract()) {
+        if (!enumType.isInextensibleEnum()) {
             return;
         }
         int constructorVisibility = (useClassGeneration() && enumType.isAbstract()) ? Modifier.PROTECTED
@@ -830,7 +830,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         IEnumType enumType = getEnumType();
-        if (!enumType.isExtensible() || enumType.isAbstract()) {
+        if (enumType.isInextensibleEnum() || enumType.isAbstract()) {
             return;
         }
         generatePublicConstructor(constructorBuilder, Modifier.PUBLIC);

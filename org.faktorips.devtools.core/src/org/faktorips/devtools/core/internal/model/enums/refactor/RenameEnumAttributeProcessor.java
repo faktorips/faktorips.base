@@ -88,7 +88,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         addAffectedSrcFiles(modificationSet);
         updateSubclassReferences();
         if (!(getEnumType().isAbstract())) {
-            if (!getEnumType().isExtensible()) {
+            if (getEnumType().isInextensibleEnum()) {
                 updateLiteralNameReference();
             } else {
                 updateEnumContentReference();

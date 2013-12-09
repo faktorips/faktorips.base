@@ -506,7 +506,7 @@ public class XPolicyAttribute extends XAttribute {
     public String getAllEnumValuesCode(String repositoryExpression) {
         EnumTypeDatatypeAdapter enumDatatype = ((EnumTypeDatatypeAdapter)getDatatype());
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
-        if (!enumDatatype.getEnumType().isExtensible()) {
+        if (enumDatatype.getEnumType().isInextensibleEnum()) {
             javaCodeFragment.appendClassName(Arrays.class).append(".asList(").append(getJavaClassName())
                     .append(".values())");
         } else {
@@ -593,7 +593,7 @@ public class XPolicyAttribute extends XAttribute {
     private EnumTypeDatatypeHelper getDatatypeHelperForContentSeparatedEnum() {
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
-            if (!enumHelper.getEnumType().isExtensible()) {
+            if (enumHelper.getEnumType().isExtensible()) {
                 return enumHelper;
             }
         }
