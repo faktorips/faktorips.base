@@ -295,6 +295,13 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testFindEnumValue_ForContentInType() throws CoreException {
+        IEnumValue newEnumValue = genderEnumType.newEnumValue();
+        newEnumValue.setEnumAttributeValue(0, ValueFactory.createStringValue("test1"));
+        assertNotNull(genderEnumContent.findEnumValue("test1", ipsProject));
+    }
+
+    @Test
     public void testFindEnumValueIdentifierUsedTwice() throws CoreException {
         IEnumValue enumValue1 = paymentMode.getEnumValues().get(0);
         IEnumValue enumValue2 = paymentMode.getEnumValues().get(1);

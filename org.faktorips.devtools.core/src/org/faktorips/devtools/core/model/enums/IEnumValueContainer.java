@@ -49,9 +49,10 @@ public interface IEnumValueContainer extends IIpsObject {
      * Returns a list of all {@link IEnumValue}s belonging to this enum. {@link IEnumValue}s from
      * inside AND outside the container will be taking into account.
      * <p>
-     * E.g: Consider an {@link EnumContent}, this method will return all {@link IEnumValue}s from
-     * the {@link EnumContent} and also all {@link IEnumValue} form its corresponding
-     * {@link EnumType}.
+     * E.g: If the {@link EnumValueContainer} is an {@link EnumContent}, this method will return all
+     * {@link IEnumValue}s from the {@link EnumContent} and also all {@link IEnumValue} form its
+     * corresponding {@link EnumType}. Otherwise only the {@link IEnumValue}s of the
+     * {@link EnumType} are identified.
      */
     public List<IEnumValue> findAggregatedEnumValues();
 
