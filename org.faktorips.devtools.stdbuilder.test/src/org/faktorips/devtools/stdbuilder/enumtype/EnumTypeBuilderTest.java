@@ -262,60 +262,60 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetLiteralNames_empty() throws Exception {
-        List<String> literalNames = builder.getLiteralNames(new ArrayList<IEnumValue>());
-
-        assertTrue(literalNames.isEmpty());
-    }
-
-    @Test
-    public void testGetLiteralNames_noDublicates() throws Exception {
-        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-        enumValues.add(mockEnumValue("abc"));
-        enumValues.add(mockEnumValue("xyz"));
-        List<String> literalNames = builder.getLiteralNames(enumValues);
-
-        assertEquals(Arrays.asList("ABC", "XYZ"), literalNames);
-    }
+        public void testGetLiteralNamesForConstant_empty() throws Exception {
+            List<String> literalNames = builder.getLiteralNamesForConstant(new ArrayList<IEnumValue>());
+    
+            assertTrue(literalNames.isEmpty());
+        }
 
     @Test
-    public void testGetLiteralNames_withTwoDublicates() throws Exception {
-        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-        enumValues.add(mockEnumValue("_123"));
-        enumValues.add(mockEnumValue("-123"));
-        List<String> literalNames = builder.getLiteralNames(enumValues);
-
-        assertEquals(Arrays.asList("_123_1", "_123_2"), literalNames);
-    }
-
-    @Test
-    public void testGetLiteralNames_withMoreDublicates() throws Exception {
-        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-        enumValues.add(mockEnumValue("_123"));
-        enumValues.add(mockEnumValue("-123"));
-        enumValues.add(mockEnumValue("+123"));
-        List<String> literalNames = builder.getLiteralNames(enumValues);
-
-        assertEquals(Arrays.asList("_123_1", "_123_2", "_123_3"), literalNames);
-    }
+        public void testGetLiteralNamesForConstant_noDublicates() throws Exception {
+            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+            enumValues.add(mockEnumValue("abc"));
+            enumValues.add(mockEnumValue("xyz"));
+            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+    
+            assertEquals(Arrays.asList("ABC", "XYZ"), literalNames);
+        }
 
     @Test
-    public void testGetLiteralNames_withMoreDublicatesAndOtherValues() throws Exception {
-        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-        enumValues.add(mockEnumValue("abc"));
-        enumValues.add(mockEnumValue("_123"));
-        enumValues.add(mockEnumValue("xyz"));
-        enumValues.add(mockEnumValue("-123"));
-        enumValues.add(mockEnumValue("foo"));
-        enumValues.add(mockEnumValue("bar"));
-        enumValues.add(mockEnumValue("123"));
-        enumValues.add(mockEnumValue("+123"));
-        enumValues.add(mockEnumValue("blub"));
-        List<String> literalNames = builder.getLiteralNames(enumValues);
+        public void testGetLiteralNamesForConstant_withTwoDublicates() throws Exception {
+            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+            enumValues.add(mockEnumValue("_123"));
+            enumValues.add(mockEnumValue("-123"));
+            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+    
+            assertEquals(Arrays.asList("_123_1", "_123_2"), literalNames);
+        }
 
-        assertEquals(Arrays.asList("ABC", "_123_1", "XYZ", "_123_2", "FOO", "BAR", "_123_3", "_123_4", "BLUB"),
-                literalNames);
-    }
+    @Test
+        public void testGetLiteralNamesForConstant_withMoreDublicates() throws Exception {
+            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+            enumValues.add(mockEnumValue("_123"));
+            enumValues.add(mockEnumValue("-123"));
+            enumValues.add(mockEnumValue("+123"));
+            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+    
+            assertEquals(Arrays.asList("_123_1", "_123_2", "_123_3"), literalNames);
+        }
+
+    @Test
+        public void testGetLiteralNamesForConstant_withMoreDublicatesAndOtherValues() throws Exception {
+            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+            enumValues.add(mockEnumValue("abc"));
+            enumValues.add(mockEnumValue("_123"));
+            enumValues.add(mockEnumValue("xyz"));
+            enumValues.add(mockEnumValue("-123"));
+            enumValues.add(mockEnumValue("foo"));
+            enumValues.add(mockEnumValue("bar"));
+            enumValues.add(mockEnumValue("123"));
+            enumValues.add(mockEnumValue("+123"));
+            enumValues.add(mockEnumValue("blub"));
+            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+    
+            assertEquals(Arrays.asList("ABC", "_123_1", "XYZ", "_123_2", "FOO", "BAR", "_123_3", "_123_4", "BLUB"),
+                    literalNames);
+        }
 
     private IEnumValue mockEnumValue(String id) {
         IEnumValue enumValue = mock(IEnumValue.class);

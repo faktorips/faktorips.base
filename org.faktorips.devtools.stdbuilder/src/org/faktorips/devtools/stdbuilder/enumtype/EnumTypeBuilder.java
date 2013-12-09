@@ -153,6 +153,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         IEnumType enumType = getEnumType();
+
         identiferAttribute = enumType.findIdentiferAttribute(getIpsProject());
         literalNameAttribute = enumType.getEnumLiteralNameAttribute();
 
@@ -180,6 +181,24 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         // Set super type / implemented interface and ensure serialization
+        setupSupertypeAndInterfaces(enumType, mainSection, typeName);
+
+        if (!enumType.isValid(getIpsProject())) {
+            return;
+        }
+
+        if (useClassGeneration()) {
+            // in case of class generation we need the message helper before enum values
+            generateMessageHelperVar(mainSection.getConstantBuilder());
+        }
+
+        generateCodeForEnumValues(mainSection);
+        generateAttributesAndConstructor(mainSection);
+        generateCodeForMethods(mainSection.getMethodBuilder());
+    }
+
+    private void setupSupertypeAndInterfaces(IEnumType enumType, TypeSection mainSection, String typeName)
+            throws CoreException {
         List<String> implementedInterfaces = new ArrayList<String>(5);
 
         IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
@@ -191,26 +210,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
         if (useClassGeneration()) {
-            if ((enumType.isAbstract() && !(enumType.hasSuperEnumType()))
-                    || (useClassGeneration() && isJava5EnumsAvailable())) {
-                implementedInterfaces.add(Serializable.class.getName());
-            }
+            implementedInterfaces.add(Serializable.class.getName());
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
-        }
-        if (isGenerateMethodCompareTo()) {
             implementedInterfaces.add(Comparable.class.getName() + "<" + typeName + ">");
         }
         mainSection.setExtendedInterfaces(implementedInterfaces.toArray(new String[implementedInterfaces.size()]));
+    }
 
-        if (useClassGeneration()) {
-            // in case of class generation we need the message helper before enum values
-            generateMessageHelperVar(mainSection.getConstantBuilder());
-        }
-
-        // Generate enumeration values
-        generateCodeForEnumValues(mainSection);
-
-        // Generate the attributes and the constructor
+    private void generateAttributesAndConstructor(TypeSection mainSection) throws CoreException {
         if (useEnumGeneration() || useClassGeneration()) {
             if (useEnumGeneration()) {
                 // in case of class generation the message helper is already generated before enum
@@ -220,9 +227,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             generateCodeForEnumAttributes(mainSection.getMemberVarBuilder());
             generateCodeForConstructor(mainSection.getConstructorBuilder());
         }
-
-        // Generate the methods
-        generateCodeForMethods(mainSection.getMethodBuilder());
     }
 
     private void generateMessageHelperVar(JavaCodeFragmentBuilder memberVarBuilder) throws CoreException {
@@ -324,7 +328,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createEnumValuesInClass(TypeSection mainSection, List<IEnumValue> enumValues) throws CoreException {
-        List<String> literalNames = getLiteralNames(enumValues);
+        List<String> literalNames = getLiteralNamesForConstant(enumValues);
         for (int i = 0; i < enumValues.size(); i++) {
             IEnumValue currentEnumValue = enumValues.get(i);
             if (currentEnumValue.isValid(getIpsProject())) {
@@ -339,7 +343,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    List<String> getLiteralNames(List<IEnumValue> enumValues) {
+    List<String> getLiteralNamesForConstant(List<IEnumValue> enumValues) {
         ArrayList<String> literalNames = new ArrayList<String>();
         Map<String, Integer> dublicatedLiteralNameCounter = new HashMap<String, Integer>();
         for (IEnumValue enumValue : enumValues) {
@@ -1075,13 +1079,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (enumType.isExtensible() || enumType.isAbstract()) {
+        if (!enumType.isInextensibleEnum()) {
             return;
         }
 
         List<IEnumAttribute> uniqueAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         List<IEnumValue> enumValues = enumType.getEnumValues();
-        IEnumLiteralNameAttribute literalNameAttribute = getLiteralNameAttribute(enumType);
         if (literalNameAttribute == null) {
             return;
         }
@@ -1227,7 +1230,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 continue;
             }
 
-            IEnumLiteralNameAttribute literalNameAttribute = getLiteralNameAttribute(enumType);
             if (literalNameAttribute == null) {
                 continue;
             }
@@ -1403,14 +1405,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return enumType.findIdentiferAttribute(getIpsProject());
         }
 
-    }
-
-    private IEnumLiteralNameAttribute getLiteralNameAttribute(IEnumType enumType) {
-        if (enumType == getEnumType()) {
-            return literalNameAttribute;
-        } else {
-            return enumType.getEnumLiteralNameAttribute();
-        }
     }
 
     @Override

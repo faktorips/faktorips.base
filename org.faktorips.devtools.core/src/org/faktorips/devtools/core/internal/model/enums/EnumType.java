@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
@@ -719,6 +720,25 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        if (part instanceof IEnumAttribute) {
+            IEnumAttribute enumAttributeToDelete = (IEnumAttribute)part;
+            try {
+                deleteEnumAttributeWithValues(enumAttributeToDelete);
+                // Delete all enum values if there are no more enum attributes.
+                if (getEnumAttributesCountIncludeSupertypeCopies(isInextensibleEnum()) == 0) {
+                    for (IEnumValue currentEnumValue : getEnumValues()) {
+                        currentEnumValue.delete();
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return super.removePartThis(part);
+    }
+
+    @Override
     public boolean deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         if (enumAttribute == null) {
             return false;
@@ -731,7 +751,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             @Override
             public boolean execute() throws CoreException {
                 deleteEnumAttributeValues(enumAttribute, getEnumValues());
-                enumAttribute.delete();
                 return true;
             }
         });

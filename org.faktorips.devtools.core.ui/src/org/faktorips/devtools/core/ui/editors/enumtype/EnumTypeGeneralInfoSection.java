@@ -93,6 +93,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         setGrabVerticalSpace(false);
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
+        enumType.getIpsModel().addChangeListener(this);
     }
 
     @Override
@@ -214,8 +215,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     }
 
     private void wholeContentChanged() {
-        getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && (enumType.isExtensible()));
+        Text textControl = enumContentNameControl.getTextControl();
+        if (!textControl.isDisposed()) {
+            getToolkit().setDataChangeable(textControl, !(enumType.isAbstract()) && (enumType.isExtensible()));
+        }
     }
 
     @Override

@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -192,23 +191,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                 throw new CoreRuntimeException(e);
             }
 
-        }
-
-        @Override
-        protected void deleteIpsPart(IIpsObjectPart partToDelete) {
-            IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
-            try {
-                enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
-
-                // Delete all enum values if there are no more enum attributes.
-                if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isInextensibleEnum()) == 0) {
-                    for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
-                        currentEnumValue.delete();
-                    }
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
         }
 
         @Override
