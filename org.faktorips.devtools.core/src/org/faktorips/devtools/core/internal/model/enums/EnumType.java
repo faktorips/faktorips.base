@@ -885,7 +885,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         if (hasSuperEnumType()) {
-            IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+            IDependency superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(),
                     new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
             addDetails(details, superEnumTypeDependency, this, PROPERTY_SUPERTYPE);
             return new IDependency[] { superEnumTypeDependency };

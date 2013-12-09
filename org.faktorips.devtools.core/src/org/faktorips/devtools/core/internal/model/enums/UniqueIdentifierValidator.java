@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.internal.model.value.ValueUtil;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.values.LocalizedString;
@@ -41,6 +42,8 @@ class UniqueIdentifierValidator {
 
     private final EnumValueContainer container;
 
+    private IEnumType enumType;
+
     private Map<Integer, AttributeValues> columnAttributeValues = new ConcurrentHashMap<Integer, UniqueIdentifierValidator.AttributeValues>();
 
     public UniqueIdentifierValidator(EnumValueContainer container) {
@@ -53,7 +56,7 @@ class UniqueIdentifierValidator {
 
             @Override
             public void contentsChanged(ContentChangeEvent event) {
-                if (event.isAffected(container)) {
+                if (isRelevantChangeEvent(event)) {
                     IIpsObjectPart part = event.getPart();
                     if (part instanceof IEnumAttributeValue) {
                         IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
@@ -65,6 +68,24 @@ class UniqueIdentifierValidator {
                 }
             }
         });
+    }
+
+    private boolean isRelevantChangeEvent(ContentChangeEvent event) {
+        if (event.isAffected(container)) {
+            return true;
+        } else {
+            if (!(container instanceof IEnumType)) {
+                if (enumType == null) {
+                    getEnumType();
+                }
+                return enumType != null ? event.isAffected(enumType) : false;
+            }
+        }
+        return false;
+    }
+
+    private void getEnumType() {
+        this.enumType = container.findEnumType(container.getIpsProject());
     }
 
     public List<String> getUniqueIdentifierViolations(IEnumAttributeValue enumAttributeValue) {
