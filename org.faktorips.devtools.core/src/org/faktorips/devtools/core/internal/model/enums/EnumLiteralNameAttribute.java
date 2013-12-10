@@ -111,20 +111,31 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         if (StringUtils.isEmpty(defaultValueProviderAttribute)) {
             return;
         }
+        validateValueProviderAttributeExists(list);
+        validateValueProviderAttributeHasStringDatatype(list);
+    }
 
-        // The provider attribute must exist in the parent EnumType.
+    private void validateValueProviderAttributeExists(MessageList list) {
         IEnumType enumType = getEnumType();
-        if (!(enumType.containsEnumAttributeIncludeSupertypeCopies(defaultValueProviderAttribute))) {
+        if (isValueProviderAttributeMissing(enumType)) {
             String text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist,
                     defaultValueProviderAttribute);
             Message msg = new Message(
                     MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST, text,
                     Message.ERROR, this, PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
             list.add(msg);
+        }
+    }
+
+    private boolean isValueProviderAttributeMissing(IEnumType enumType) {
+        return !(enumType.containsEnumAttributeIncludeSupertypeCopies(defaultValueProviderAttribute));
+    }
+
+    private void validateValueProviderAttributeHasStringDatatype(MessageList list) throws CoreException {
+        IEnumType enumType = getEnumType();
+        if (isValueProviderAttributeMissing(enumType)) {
             return;
         }
-
-        // The provider attribute must be of data type String.
         IEnumAttribute providerAttribute = enumType
                 .getEnumAttributeIncludeSupertypeCopies(defaultValueProviderAttribute);
         Datatype datatype = providerAttribute.findDatatype(getIpsProject());

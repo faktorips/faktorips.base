@@ -274,6 +274,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         enumType.setEnumContentName(ENUM_CONTENT_NAME);
         enumType.setExtensible(true);
         enumType.setAbstract(false);
+        enumType.newEnumLiteralNameAttribute();
         enumAttribute = enumType.newEnumAttribute();
         enumAttribute.setName(ENUM_ATTRIBUTE_NAME);
         enumAttribute.setDatatype(Datatype.STRING.getQualifiedName());

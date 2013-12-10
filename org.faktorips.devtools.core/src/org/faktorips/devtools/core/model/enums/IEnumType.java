@@ -528,7 +528,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * 
      * @throws CoreException If an error occurs while searching the given IPS project for the super
      *             enumeration types.
+     * 
+     * @deprecated Do not use this method. Always remove an enumAttribute by calling
+     *             {@link IEnumAttribute#delete()}.
      */
+    @Deprecated
     public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
 
     /** Returns whether this <tt>IEnumType</tt> has a super enumeration type. */

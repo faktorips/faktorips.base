@@ -508,15 +508,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
             throws CoreException {
-
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
         // Pass validation on abstract EnumType.
-        if (isAbstract) {
+        if (isAbstract()) {
             return;
         }
+        validateInheritedAttributesNonAbstract(validationMessageList, ipsProject);
+    }
 
-        // All attributes from supertype hierarchy inherited?
+    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject)
+            throws CoreException {
         List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates(ipsProject);
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
@@ -541,33 +543,39 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * there is no <tt>IEnumLiteralNameAttribute</tt>.
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
-
         if (isAbstract()) {
             return;
         }
-String text;
-        Message message;
+        validateLiteralNameAttributeExists(validationMessageList);
+        validateLiteralNameAttributeCount(validationMessageList);
+    }
 
-        if (!containsEnumLiteralNameAttribute()) {
-            text = Messages.EnumType_NoLiteralNameAttribute;
-            message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
+    private void validateLiteralNameAttributeExists(MessageList validationMessageList) {
+        if (isMissingLiteralNameAttribute()) {
+            String text = Messages.EnumType_NoLiteralNameAttribute;
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
                     new ObjectProperty[] { new ObjectProperty(this, null) });
             validationMessageList.add(message);
-            return;
         }
+    }
 
+    public boolean isMissingLiteralNameAttribute() {
+        return !containsEnumLiteralNameAttribute();
+    }
+
+    private void validateLiteralNameAttributeCount(MessageList validationMessageList) {
         int literalNameAttributesCount = getEnumLiteralNameAttributesCount();
         if (literalNameAttributesCount > 1) {
-            text = NLS.bind(Messages.EnumType_MultipleLiteralNameAttributes, literalNameAttributesCount);
-            message = new Message(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES, text, Message.ERROR,
-                    this);
+            String text = NLS.bind(Messages.EnumType_MultipleLiteralNameAttributes, literalNameAttributesCount);
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES, text,
+                    Message.ERROR, this);
             validationMessageList.add(message);
         }
     }
 
     @Override
     public boolean isInextensibleEnum() {
-        return !isAbstract && !isExtensible();
+        return !isAbstract() && !isExtensible();
     }
 
     public int getEnumLiteralNameAttributesCount() {
@@ -719,25 +727,32 @@ String text;
     }
 
     @Override
-    protected boolean removePartThis(IIpsObjectPart part) {
+    protected boolean removePartThis(final IIpsObjectPart part) {
         if (part instanceof IEnumAttribute) {
-            IEnumAttribute enumAttributeToDelete = (IEnumAttribute)part;
+            final IEnumAttribute enumAttributeToDelete = (IEnumAttribute)part;
             try {
-                deleteEnumAttributeWithValues(enumAttributeToDelete);
-                // Delete all enum values if there are no more enum attributes.
-                if (getEnumAttributesCountIncludeSupertypeCopies(isInextensibleEnum()) == 0) {
-                    for (IEnumValue currentEnumValue : getEnumValues()) {
-                        currentEnumValue.delete();
+                getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
+                    @Override
+                    public boolean execute() throws CoreException {
+                        deleteEnumAttributeValues(enumAttributeToDelete, getEnumValues());
+                        return EnumType.super.removePartThis(part);
                     }
-                }
+                });
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+            return part.isDeleted();
+        } else {
+            return super.removePartThis(part);
         }
-        return super.removePartThis(part);
     }
 
+    /**
+     * @deprecated Do not use this method. Always remove an enumAttribute by calling
+     *             {@link IEnumAttribute#delete()}.
+     */
     @Override
+    @Deprecated
     public boolean deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         if (enumAttribute == null) {
             return false;
@@ -749,7 +764,7 @@ String text;
         getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
             @Override
             public boolean execute() throws CoreException {
-                deleteEnumAttributeValues(enumAttribute, getEnumValues());
+                enumAttribute.delete();
                 return true;
             }
         });

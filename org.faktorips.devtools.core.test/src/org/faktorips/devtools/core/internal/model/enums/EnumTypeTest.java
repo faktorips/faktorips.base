@@ -478,14 +478,14 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testDeleteEnumAttributeWithValues() throws CoreException {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
-        assertFalse(genderEnumType.deleteEnumAttributeWithValues(newEnumAttribute));
+        newEnumAttribute.delete();
         assertEquals(2, genderEnumType.getEnumAttributesCount(false));
 
         IEnumValue modelValue = genderEnumType.newEnumValue();
 
         contentsChangeCounter.reset();
-        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
-        assertEquals(1, contentsChangeCounter.getCounts());
+        genderEnumAttributeId.delete();
+        assertEquals(2, contentsChangeCounter.getCounts());
         List<IEnumAttribute> enumAttributes = genderEnumType.getEnumAttributes(true);
         assertEquals(1, enumAttributes.size());
         assertEquals(genderEnumAttributeName, enumAttributes.get(0));
@@ -493,10 +493,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, enumAttributeValues.size());
         assertEquals(1, modelValue.getEnumAttributeValues().size());
 
-        assertFalse(genderEnumType.deleteEnumAttributeWithValues(null));
-        assertFalse(genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId));
-
-        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
+        genderEnumAttributeName.delete();
         assertEquals(0, genderEnumType.getEnumAttributes(true).size());
         assertEquals(2, genderEnumValueMale.getEnumAttributeValues().size());
         assertEquals(0, modelValue.getEnumAttributeValues().size());
@@ -505,12 +502,15 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateThis() throws CoreException {
+        genderEnumType.newEnumLiteralNameAttribute();
+
         assertTrue(genderEnumType.isValid(ipsProject));
     }
 
     @Test
     public void testValidateSuperEnumType() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
+        genderEnumType.newEnumLiteralNameAttribute();
 
         // Test super enumeration type does not exit.
         genderEnumType.setSuperEnumType("FooBar");
@@ -533,6 +533,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testValidateInheritedAttributes() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
+        genderEnumType.newEnumLiteralNameAttribute();
 
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
@@ -580,11 +581,11 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.setAbstract(false);
         genderEnumType.setExtensible(true);
+        genderEnumType.newEnumLiteralNameAttribute();
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid(ipsProject));
 
         genderEnumType.setExtensible(false);
-        genderEnumType.newEnumLiteralNameAttribute();
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid(ipsProject));
 
@@ -599,6 +600,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateUsedAsIdInFaktorIpsUiAttribute() throws CoreException {
+        genderEnumType.newEnumLiteralNameAttribute();
         genderEnumAttributeId.setIdentifier(false);
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -608,6 +610,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateUsedAsNameInFaktorIpsUiAttribute() throws CoreException {
+        genderEnumType.newEnumLiteralNameAttribute();
         genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(false);
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -617,6 +620,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateEnumContentPackageFragment() throws CoreException {
+        genderEnumType.newEnumLiteralNameAttribute();
         genderEnumType.setEnumContentName("");
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -651,7 +655,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         paymentMode.setExtensible(true);
         paymentMode.deleteEnumValues(paymentMode.getEnumValues());
-        paymentMode.deleteEnumAttributeWithValues(paymentMode.getEnumLiteralNameAttribute());
 
         MessageList validationMessageList = paymentMode.validate(ipsProject);
         assertEquals(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED,
@@ -996,7 +999,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, dependenciesSubSubEnumType.length);
 
         List<IDependency> depencendiesListSubEnumType = Arrays.asList(dependenciesSubEnumType);
-        IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subEnumType
+        IDependency superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(subEnumType
                 .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
                 IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubEnumType.contains(superEnumTypeDependency));
@@ -1007,7 +1010,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(details.contains(detail));
 
         List<IDependency> depencendiesListSubSubEnumType = Arrays.asList(dependenciesSubSubEnumType);
-        superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subSubEnumType.getQualifiedNameType(),
+        superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(subSubEnumType.getQualifiedNameType(),
                 new QualifiedNameType(subEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubSubEnumType.contains(superEnumTypeDependency));
 

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
@@ -32,9 +33,9 @@ import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -133,11 +134,16 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         paymentModeAdapter.getEnumType().setExtensible(true);
         ids = paymentModeAdapter.getAllValueIds(true);
         idList = Arrays.asList(ids);
-        assertEquals(1, ids.length);
+        assertEquals(3, ids.length);
+        assertTrue(idList.contains("P1"));
+        assertTrue(idList.contains("P2"));
         assertTrue(idList.contains(null));
 
         ids = paymentModeAdapter.getAllValueIds(false);
-        assertEquals(0, ids.length);
+        assertEquals(2, ids.length);
+        idList = Arrays.asList(ids);
+        assertTrue(idList.contains("P1"));
+        assertTrue(idList.contains("P2"));
 
         IEnumType color = newEnumType(ipsProject, "Color");
         color.setAbstract(false);
@@ -185,13 +191,18 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     }
 
     @Test
-    public void testGetValueName2() throws Exception {
+    public void testGetValueNameNotExtensible() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setExtensible(false);
-        IEnumLiteralNameAttribute literalNameAttribute = enumType.newEnumLiteralNameAttribute();
+        enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
         assertNull(adapter.getValueName(null));
         assertNull(adapter.getValueName("a"));
+    }
+
+    @Test
+    public void testGetValueNameExtensible() throws CoreException {
+        IEnumType enumType = newEnumType(ipsProject, "EnumType");
 
         IEnumAttribute id = enumType.newEnumAttribute();
         id.setName("id");
@@ -205,17 +216,25 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
-        enumType.setExtensible(true);
-        enumType.deleteEnumAttributeWithValues(literalNameAttribute);
-        IEnumContent content = newEnumContent(enumType, "EnumContent");
-        IEnumValue enumValue = content.newEnumValue();
-        List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue(new StringValue("a"));
-        values.get(1).setValue(new StringValue("an"));
-        adapter = new EnumTypeDatatypeAdapter(enumType, content);
+        // EnumValue in Type
+        addEnumValue(enumType, "idA", "nameA");
 
-        assertEquals("an", adapter.getValueName("a"));
-        assertNull(adapter.getValueName("b"));
+        enumType.setExtensible(true);
+        IEnumContent content = newEnumContent(enumType, "EnumContent");
+        // EnumValue in Content
+        addEnumValue(content, "idB", "nameB");
+        EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, content);
+
+        assertEquals("nameA", adapter.getValueName("idA"));
+        assertEquals("nameB", adapter.getValueName("idB"));
+        assertNull(adapter.getValueName("idC"));
+    }
+
+    private void addEnumValue(IEnumValueContainer container, String id, String name) throws CoreException {
+        IEnumValue contentEnumValue = container.newEnumValue();
+        List<IEnumAttributeValue> values = contentEnumValue.getEnumAttributeValues();
+        values.get(0).setValue(new StringValue(id));
+        values.get(1).setValue(new StringValue(name));
     }
 
     @Test
@@ -324,8 +343,8 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         IEnumContent content2 = newEnumContent(enumType, "EnumContent2");
         IEnumValue enumValue2 = content2.newEnumValue();
         List<IEnumAttributeValue> values2 = enumValue2.getEnumAttributeValues();
-        values2.get(0).setValue(new StringValue("a"));
-        values2.get(1).setValue(new StringValue("an"));
+        values2.get(0).setValue(new StringValue("b"));
+        values2.get(1).setValue(new StringValue("bn"));
         EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, content2);
 
         assertFalse(adapter1.equals(adapter2));

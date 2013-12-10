@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,18 +72,30 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testValidateIsNeeded() throws CoreException {
         paymentMode.setAbstract(true);
-        MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED));
+        assertOneValidationMessage(literalNameAttribute);
+        assertTrue(hasLiteralNameNotNeededMessage(literalNameAttribute));
 
         paymentMode.setAbstract(false);
         paymentMode.setExtensible(true);
         getIpsModel().clearValidationCache();
-        validationMessageList = literalNameAttribute.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED));
+        assertFalse(hasLiteralNameNotNeededMessage(literalNameAttribute));
+
+        paymentMode.setAbstract(false);
+        paymentMode.setExtensible(false);
+        getIpsModel().clearValidationCache();
+        assertFalse(hasLiteralNameNotNeededMessage(literalNameAttribute));
+    }
+
+    private void assertOneValidationMessage(IEnumLiteralNameAttribute literalNameAttribute2) throws CoreException {
+        assertOneValidationMessage(literalNameAttribute2.validate(ipsProject));
+    }
+
+    private boolean hasLiteralNameNotNeededMessage(IEnumLiteralNameAttribute literalNameAttribute2)
+            throws CoreException {
+        MessageList validationMessageList = literalNameAttribute2.validate(ipsProject);
+        Message notNeededMessage = validationMessageList
+                .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED);
+        return notNeededMessage != null;
     }
 
     @Test
