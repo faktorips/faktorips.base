@@ -52,7 +52,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumExportWizard extends IpsObjectExportWizard {
 
-    private static String DIALOG_SETTINGS_KEY = "EnumExportWizard"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS_KEY_ENUM_EXPORT = "EnumExportWizard"; //$NON-NLS-1$
 
     // mandatory page to select filename, table format etc.
     private EnumExportPage exportPage;
@@ -63,7 +63,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
                 "wizards/EnumExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY_ENUM_EXPORT);
         if (section == null) {
             hasNewDialogSettings = true;
         } else {

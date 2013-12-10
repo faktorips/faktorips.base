@@ -75,7 +75,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
      * Listener responsible for toggling the import/export actions and to refresh the
      * <tt>EnumAttributesSection</tt> on page change.
      */
-    protected ContentsChangeListener changeListener;
+    private ContentsChangeListener changeListener;
 
     public EnumTypeEditorPage(EnumTypeEditor editor) {
         super(editor, "EnumTypeEditorPage", Messages.EnumTypeStructurePage_title); //$NON-NLS-1$
@@ -85,7 +85,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         enumType = editor.getEnumType();
         changeListener = new ContentsChangeListener() {
             @Override
-            public void contentsChanged(ContentChangeEvent event) throws CoreException {
+            public void contentsChanged(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
                     updateToolbarActionEnabledStates();
                     enumAttributesSection.refresh();
@@ -134,8 +134,13 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
      * Enable the import and export operation if the <tt>IEnumType</tt> contains values and is not
      * abstract.
      */
-    protected void updateToolbarActionEnabledStates() throws CoreException {
-        boolean enableImportExportActions = enumType.isCapableOfContainingValues();
+    protected void updateToolbarActionEnabledStates() {
+        boolean enableImportExportActions;
+        try {
+            enableImportExportActions = enumType.isCapableOfContainingValues();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         if (importAction != null) {
             importAction.setEnabled(enableImportExportActions);
         }

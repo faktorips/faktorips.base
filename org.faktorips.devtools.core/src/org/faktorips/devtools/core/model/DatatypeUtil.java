@@ -24,6 +24,10 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
  */
 public class DatatypeUtil {
 
+    private DatatypeUtil() {
+
+    }
+
     /**
      * Returns <code>true</code> if the given data type is an extensible enumeration type. Returns
      * <code>false</code> if data type is <code>null</code>.

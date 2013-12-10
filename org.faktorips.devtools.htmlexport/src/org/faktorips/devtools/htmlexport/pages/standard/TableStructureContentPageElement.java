@@ -47,190 +47,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectP
 public class TableStructureContentPageElement extends AbstractIpsObjectContentPageElement<ITableStructure> {
 
     /**
-     * a table for foreignKeys of the tableStructure
-     * 
-     * @author dicker
-     * 
-     */
-    private static class ForeignKeysTablePageElement extends
-            AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
-
-        public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
-            super(Arrays.asList(tableStructure.getForeignKeys()), context);
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
-            List<IPageElement> cells = new ArrayList<IPageElement>();
-
-            IPageElement link = getLinkToReferencedTableStructure(foreignKey);
-
-            cells.add(new TextPageElement(getContext().getLabel(foreignKey)));
-            cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
-            cells.add(link);
-            cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
-            cells.add(new TextPageElement(getContext().getDescription(foreignKey)));
-
-            return cells;
-        }
-
-        private IPageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
-            ITableStructure findReferencedTableStructure;
-            try {
-                findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext().getIpsProject());
-            } catch (CoreException e) {
-                getContext().addStatus(
-                        new IpsStatus(IStatus.WARNING,
-                                "Could not find referenced TableStructure for foreignKey" + foreignKey.getName())); //$NON-NLS-1$
-
-                return new TextPageElement(foreignKey.getReferencedTableStructure());
-            }
-
-            return new PageElementUtils().createLinkPageElement(getContext(), findReferencedTableStructure,
-                    TargetType.CONTENT, foreignKey.getReferencedTableStructure(), true);
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
-
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_keyItems));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_referenced)
-                    + IpsObjectType.TABLE_STRUCTURE.getDisplayName());
-            headline.add(getContext().getMessage(
-                    HtmlExportMessages.TableStructureContentPageElement_referencedUniqueKey));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
-
-            return headline;
-        }
-    }
-
-    /**
-     * a table for ColumnRanges of the tableStructure
-     * 
-     * @author dicker
-     * 
-     */
-    private static class ColumnsRangesTablePageElement extends
-            AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
-
-        public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
-            super(Arrays.asList(tableStructure.getRanges()), context);
-        }
-
-        protected List<String> getColumnRangeData(IColumnRange columnRange) {
-            List<String> columnData = new ArrayList<String>();
-
-            columnData.add(getContext().getLabel(columnRange));
-            columnData.add(columnRange.getParameterName());
-            columnData.add(columnRange.getColumnRangeType().getName());
-            columnData.add(columnRange.getFromColumn());
-            columnData.add(columnRange.getToColumn());
-            columnData.add(getContext().getDescription(columnRange));
-
-            return columnData;
-
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
-            return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnRangeData(columnRange)));
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
-
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_parameterName));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_columnRangeName));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_fromColumn));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_toColumn));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
-
-            return headline;
-        }
-    }
-
-    /**
-     * a table for columns of the tableStructure
-     * 
-     * @author dicker
-     * 
-     */
-    private static class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
-
-        public ColumnsTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
-            super(Arrays.asList(tableStructure.getColumns()), context);
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IColumn column) {
-            return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnData(column)));
-        }
-
-        protected List<String> getColumnData(IColumn column) {
-            List<String> columnData = new ArrayList<String>();
-
-            columnData.add(getContext().getLabel(column));
-            columnData.add(column.getDatatype());
-            columnData.add(getContext().getDescription(column));
-
-            return columnData;
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
-
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_datatype));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
-
-            return headline;
-        }
-    }
-
-    /**
-     * a table for uniqueKey of the tableStructure
-     * 
-     * @author dicker
-     * 
-     */
-    private static class IndexTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IIndex> {
-
-        public IndexTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
-            super(tableStructure.getIndices(), context);
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IIndex index) {
-            return Arrays.asList(new PageElementUtils().createTextPageElements(getIndexData(index)));
-        }
-
-        protected List<String> getIndexData(IIndex uniqueKey) {
-            List<String> columnData = new ArrayList<String>();
-
-            columnData.add(getContext().getLabel(uniqueKey));
-            columnData.add(getContext().getDescription(uniqueKey));
-
-            return columnData;
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
-
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
-            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
-
-            return headline;
-        }
-
-    }
-
-    /**
      * creates a page for the given {@link ITableStructure} with the context
      * 
      */
@@ -348,5 +164,189 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         wrapper.addPageElements(liste);
         IPageElement createTableContentList = wrapper;
         addPageElements(createTableContentList);
+    }
+
+    /**
+     * a table for foreignKeys of the tableStructure
+     * 
+     * @author dicker
+     * 
+     */
+    private static class ForeignKeysTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
+    
+        public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getForeignKeys()), context);
+        }
+    
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
+            List<IPageElement> cells = new ArrayList<IPageElement>();
+    
+            IPageElement link = getLinkToReferencedTableStructure(foreignKey);
+    
+            cells.add(new TextPageElement(getContext().getLabel(foreignKey)));
+            cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
+            cells.add(link);
+            cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
+            cells.add(new TextPageElement(getContext().getDescription(foreignKey)));
+    
+            return cells;
+        }
+    
+        private IPageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
+            ITableStructure findReferencedTableStructure;
+            try {
+                findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext().getIpsProject());
+            } catch (CoreException e) {
+                getContext().addStatus(
+                        new IpsStatus(IStatus.WARNING,
+                                "Could not find referenced TableStructure for foreignKey" + foreignKey.getName())); //$NON-NLS-1$
+    
+                return new TextPageElement(foreignKey.getReferencedTableStructure());
+            }
+    
+            return new PageElementUtils().createLinkPageElement(getContext(), findReferencedTableStructure,
+                    TargetType.CONTENT, foreignKey.getReferencedTableStructure(), true);
+        }
+    
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = new ArrayList<String>();
+    
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_keyItems));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_referenced)
+                    + IpsObjectType.TABLE_STRUCTURE.getDisplayName());
+            headline.add(getContext().getMessage(
+                    HtmlExportMessages.TableStructureContentPageElement_referencedUniqueKey));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
+    
+            return headline;
+        }
+    }
+
+    /**
+     * a table for ColumnRanges of the tableStructure
+     * 
+     * @author dicker
+     * 
+     */
+    private static class ColumnsRangesTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
+    
+        public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getRanges()), context);
+        }
+    
+        protected List<String> getColumnRangeData(IColumnRange columnRange) {
+            List<String> columnData = new ArrayList<String>();
+    
+            columnData.add(getContext().getLabel(columnRange));
+            columnData.add(columnRange.getParameterName());
+            columnData.add(columnRange.getColumnRangeType().getName());
+            columnData.add(columnRange.getFromColumn());
+            columnData.add(columnRange.getToColumn());
+            columnData.add(getContext().getDescription(columnRange));
+    
+            return columnData;
+    
+        }
+    
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
+            return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnRangeData(columnRange)));
+        }
+    
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = new ArrayList<String>();
+    
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_parameterName));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_columnRangeName));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_fromColumn));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_toColumn));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
+    
+            return headline;
+        }
+    }
+
+    /**
+     * a table for columns of the tableStructure
+     * 
+     * @author dicker
+     * 
+     */
+    private static class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
+    
+        public ColumnsTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getColumns()), context);
+        }
+    
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(IColumn column) {
+            return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnData(column)));
+        }
+    
+        protected List<String> getColumnData(IColumn column) {
+            List<String> columnData = new ArrayList<String>();
+    
+            columnData.add(getContext().getLabel(column));
+            columnData.add(column.getDatatype());
+            columnData.add(getContext().getDescription(column));
+    
+            return columnData;
+        }
+    
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = new ArrayList<String>();
+    
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_datatype));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
+    
+            return headline;
+        }
+    }
+
+    /**
+     * a table for uniqueKey of the tableStructure
+     * 
+     * @author dicker
+     * 
+     */
+    private static class IndexTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IIndex> {
+    
+        public IndexTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(tableStructure.getIndices(), context);
+        }
+    
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(IIndex index) {
+            return Arrays.asList(new PageElementUtils().createTextPageElements(getIndexData(index)));
+        }
+    
+        protected List<String> getIndexData(IIndex uniqueKey) {
+            List<String> columnData = new ArrayList<String>();
+    
+            columnData.add(getContext().getLabel(uniqueKey));
+            columnData.add(getContext().getDescription(uniqueKey));
+    
+            return columnData;
+        }
+    
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = new ArrayList<String>();
+    
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
+            headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));
+    
+            return headline;
+        }
+    
     }
 }

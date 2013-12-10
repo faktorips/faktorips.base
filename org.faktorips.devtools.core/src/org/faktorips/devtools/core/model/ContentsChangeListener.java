@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.eclipse.core.runtime.CoreException;
 
 /**
  * A listener that listens to changes in source files.
@@ -25,8 +24,7 @@ public interface ContentsChangeListener {
     /**
      * Notifies the listener that an object has changed.
      * 
-     * @throws CoreException
      */
-    public void contentsChanged(ContentChangeEvent event) throws CoreException;
+    public void contentsChanged(ContentChangeEvent event);
 
 }
