@@ -562,9 +562,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         checkExpressionForNullAndEmptyString));
                 fragment.append(")"); //$NON-NLS-1$
                 return fragment;
+            } else {
+                return new JavaCodeFragment("null");
             }
+        } else {
+            return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumType, expressionValue, true,
+                    repositoryExp);
         }
-        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumType, expressionValue, true, repositoryExp);
     }
 
     public String getMethodNameGetValueBy(IEnumAttribute uniqueEnumAttribute) {

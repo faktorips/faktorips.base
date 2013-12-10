@@ -77,6 +77,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     @Test
     public void testMoveEnumType() throws CoreException {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
+        enumType.newEnumLiteralNameAttribute();
         enumType.setExtensible(true);
         enumType.setEnumContentName("EnumContent");
 

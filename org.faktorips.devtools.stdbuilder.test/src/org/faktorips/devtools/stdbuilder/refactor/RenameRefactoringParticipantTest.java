@@ -198,7 +198,9 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         superEnumType.setAbstract(true);
         IEnumType midEnumType = createEnumType("MidEnumType", superEnumType, "id", "name");
         midEnumType.setAbstract(true);
+        midEnumType.getEnumAttribute("name").setInherited(true);
         IEnumType subEnumType = createEnumType("SubEnumType", midEnumType, "id", "name");
+        subEnumType.getEnumAttribute("name").setInherited(true);
         subEnumType.newEnumLiteralNameAttribute();
 
         saveIpsSrcFile(superEnumType);
@@ -278,6 +280,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     public void testRenameEnumType() throws CoreException {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
         enumType.setExtensible(true);
+        enumType.newEnumLiteralNameAttribute();
         enumType.setEnumContentName("EnumContent");
 
         saveIpsSrcFile(enumType);
