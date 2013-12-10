@@ -570,6 +570,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 reinit();
                 updateEnabledStates();
                 break;
+            default:
+                break;
         }
     }
 

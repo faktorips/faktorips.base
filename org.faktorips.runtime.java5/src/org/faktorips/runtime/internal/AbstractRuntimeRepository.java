@@ -62,7 +62,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private static final String ROOTIPSTESTSUITENAME = "ipstest"; //$NON-NLS-1$
 
-    private static final ConcurrentHashMap<Class<?>, List<?>> enumValueCache = new ConcurrentHashMap<Class<?>, List<?>>();
+    private static final ConcurrentHashMap<Class<?>, List<?>> ENUMVALUECACHE = new ConcurrentHashMap<Class<?>, List<?>>();
 
     // The name of the repository
     private String name;
@@ -670,6 +670,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
+    /**
+     * @deprecated This method does only return valid enums if the id attribute of the enum is of
+     *             type {@link String}. You should never use this method! Use
+     *             {@link #getEnumValue(Class, Object)} instead. This method may be returned in
+     *             future releases.
+     */
     @Deprecated
     public Object getEnumValue(String uniqueId) {
         int index = uniqueId.indexOf('#');
@@ -720,7 +726,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
-    private void throwUnableToCallMethodException(Exception e) throws IllegalStateException {
+    private void throwUnableToCallMethodException(Exception e) {
         throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e); //$NON-NLS-1$
     }
 
@@ -728,7 +734,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         List<T> values = null;
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
         if (lookup != null) {
-            return values = lookup.getEnumValues();
+            return lookup.getEnumValues();
         } else {
             values = getEnumValuesInternal(clazz);
         }
@@ -758,10 +764,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * constant is available an empty list is returned. If the constant is available but is either
      * not accessible or of wrong type an exception is thrown.
      * <p>
-     * For performance optimization the values are cached in the static map {@link #enumValueCache}.
+     * For performance optimization the values are cached in the static map {@link #ENUMVALUECACHE}.
      * We only check once if there is already a cached value. We disclaim a double checking with
      * synchronization because in worst case two threads simply getting the same result. The
-     * {@link #enumValueCache} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
+     * {@link #ENUMVALUECACHE} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
      * will be put into the cache using {@link ConcurrentHashMap#putIfAbsent(Object, Object)}.
      * 
      * @param enumClass The class of which you want to get the enumeration values
@@ -769,7 +775,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      *         specified type.
      */
     protected <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
-        if (enumValueCache.containsKey(enumClass)) {
+        if (ENUMVALUECACHE.containsKey(enumClass)) {
             return getCachedEnumValuesDefinedInType(enumClass);
         } else {
             return getEnumValuesDefinedInTypeByReflection(enumClass);
@@ -778,7 +784,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private <T> List<T> getCachedEnumValuesDefinedInType(Class<T> enumClass) {
         @SuppressWarnings("unchecked")
-        List<T> values = (List<T>)enumValueCache.get(enumClass);
+        List<T> values = (List<T>)ENUMVALUECACHE.get(enumClass);
         return values;
     }
 
@@ -787,13 +793,19 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             Field valuesField = enumClass.getDeclaredField("VALUES");
             @SuppressWarnings("unchecked")
             List<T> values = (List<T>)valuesField.get(null);
-            enumValueCache.putIfAbsent(enumClass, values);
-            return values;
+            List<?> previousValues = ENUMVALUECACHE.putIfAbsent(enumClass, values);
+            if (previousValues != null) {
+                @SuppressWarnings("unchecked")
+                List<T> castedPreviousValues = (List<T>)previousValues;
+                return castedPreviousValues;
+            } else {
+                return values;
+            }
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (NoSuchFieldException e) {
             // No values are defined in the enum class
-            enumValueCache.putIfAbsent(enumClass, Collections.emptyList());
+            ENUMVALUECACHE.putIfAbsent(enumClass, Collections.emptyList());
             return Collections.emptyList();
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
