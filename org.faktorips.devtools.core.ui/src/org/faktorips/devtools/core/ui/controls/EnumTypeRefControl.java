@@ -85,11 +85,11 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         List<IIpsSrcFile> resultSrcFiles = new ArrayList<IIpsSrcFile>(0);
-        if (getIpsProject() == null) {
+        if (getIpsProjects().isEmpty() || getIpsProjects().get(0) == null) {
             return new IIpsSrcFile[0];
         }
 
-        IIpsSrcFile[] ipsSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+        IIpsSrcFile[] ipsSrcFiles = getIpsProjects().get(0).findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
         for (IIpsSrcFile currentIpsSrcFile : ipsSrcFiles) {
             IEnumType currentLoopEnumType = (IEnumType)currentIpsSrcFile.getIpsObject();
             if (currentLoopEnumType != currentEnumType) {

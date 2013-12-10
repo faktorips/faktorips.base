@@ -119,10 +119,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateInitWithProductData() {
-        return isProductRelevant()
-                && isChangeable()
-                && (!isOverwrite() || isAttributeTypeChangedByOverwrite() || !getOverwrittenAttribute()
-                        .isProductRelevant());
+        return isProductRelevant() && isChangeable() && isGenerateInitWithProductDataBecauseOfOverwrite();
+    }
+
+    private boolean isGenerateInitWithProductDataBecauseOfOverwrite() {
+        return !isOverwrite() || isAttributeTypeChangedByOverwrite() || !getOverwrittenAttribute().isProductRelevant();
     }
 
     public boolean isGenerateInitWithoutProductData() {
@@ -573,7 +574,7 @@ public class XPolicyAttribute extends XAttribute {
      */
     public String getValueByIdentifier(String expression, String repositoryExpression) {
         try {
-            EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForContentSeparatedEnum();
+            EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForExtensibleEnum();
             JavaCodeFragment valueByIdentifierFragment = enumHelper.getEnumTypeBuilder()
                     .getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expression,
                             new JavaCodeFragment(repositoryExpression));
@@ -590,7 +591,7 @@ public class XPolicyAttribute extends XAttribute {
      * @throws NullPointerException if this attribute's datatype is no enum of if there are no
      *             separate contents.
      */
-    private EnumTypeDatatypeHelper getDatatypeHelperForContentSeparatedEnum() {
+    private EnumTypeDatatypeHelper getDatatypeHelperForExtensibleEnum() {
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
             if (enumHelper.getEnumType().isExtensible()) {

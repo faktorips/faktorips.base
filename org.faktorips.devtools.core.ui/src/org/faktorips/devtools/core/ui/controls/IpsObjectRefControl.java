@@ -99,6 +99,10 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         setIpsProjects(Arrays.asList(project));
     }
 
+    public void setIpsProjects(IIpsProject... projects) {
+        setIpsProjects(Arrays.asList(projects));
+    }
+
     public void setIpsProjects(List<IIpsProject> projects) {
         ipsProjects = new ArrayList<IIpsProject>();
 
@@ -153,24 +157,20 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
                 }
             }
         });
-        try {
-            if (isDialogFilterEnabled()) {
-                dialog.setFilter(getDefaultDialogFilterExpression());
-            }
-            if (dialog.open() == Window.OK) {
-                if (dialog.getResult().length > 0) {
-                    List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-                    Object[] result = dialog.getResult();
-                    for (Object element : result) {
-                        srcFiles.add((IIpsSrcFile)element);
-                    }
-                    updateTextControlAfterDialogOK(srcFiles);
-                } else {
-                    setText(""); //$NON-NLS-1$
+        if (isDialogFilterEnabled()) {
+            dialog.setFilter(getDefaultDialogFilterExpression());
+        }
+        if (dialog.open() == Window.OK) {
+            if (dialog.getResult().length > 0) {
+                List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+                Object[] result = dialog.getResult();
+                for (Object element : result) {
+                    srcFiles.add((IIpsSrcFile)element);
                 }
+                updateTextControlAfterDialogOK(srcFiles);
+            } else {
+                setText(""); //$NON-NLS-1$
             }
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 

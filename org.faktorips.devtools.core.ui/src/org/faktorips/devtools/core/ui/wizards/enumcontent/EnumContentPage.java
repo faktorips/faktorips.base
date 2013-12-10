@@ -60,7 +60,7 @@ import org.faktorips.util.message.MessageList;
 public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements ValueChangeListener {
 
     /** The image for the wizard page. */
-    private final String PAGE_IMAGE = "wizards/NewEnumContentWizard.png"; //$NON-NLS-1$
+    private static final String PAGE_IMAGE = "wizards/NewEnumContentWizard.png"; //$NON-NLS-1$
 
     /**
      * The text field to choose the <tt>IEnumType</tt> on which the new <tt>IEnumContent</tt> shall
@@ -76,7 +76,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      * Flag that is <tt>true</tt> if the input is validated and errors are displayed in the messages
      * area.
      */
-    protected boolean validateInput = true;
+    private boolean validateInput = true;
 
     /** Page control as defined by the wizard page class. */
     private Composite pageControl;
@@ -183,9 +183,9 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     protected void sourceFolderChanged() {
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
-            ((IpsObjectRefControl)enumTypeField.getControl()).setIpsProject(root.getIpsProject());
+            ((IpsObjectRefControl)enumTypeField.getControl()).setIpsProjects(root.getIpsProject());
         } else {
-            ((IpsObjectRefControl)enumTypeField.getControl()).setIpsProject(null);
+            ((IpsObjectRefControl)enumTypeField.getControl()).setIpsProjects();
         }
     }
 
@@ -284,7 +284,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         if (e.field == sourceFolderField) {
             sourceFolderChanged();
         }
-        if (validateInput) { // Don't validate during control creating!
+        // Don't validate during control creating!
+        if (validateInput) {
             try {
                 validatePage();
             } catch (CoreException coreEx) {

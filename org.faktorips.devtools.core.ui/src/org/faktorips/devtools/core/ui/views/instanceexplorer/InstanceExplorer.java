@@ -299,7 +299,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
     private void showEmptyTableMessage(IIpsObject element) {
         String message = ""; //$NON-NLS-1$
-        if (element instanceof IEnumType && !((IEnumType)element).isInextensibleEnum()) {
+        if (element instanceof IEnumType && ((IEnumType)element).isInextensibleEnum()) {
             message = Messages.InstanceExplorer_enumContainsValues;
         } else {
             message = NLS.bind(Messages.InstanceExplorer_noInstancesFoundInProject, element.getIpsProject().getName());
@@ -360,30 +360,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
             return;
         }
         if (changedIpsSrcFiles.size() > 0) {
-            Display.getDefault().asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        Object input = tableViewer.getInput();
-                        if (input instanceof IIpsMetaClass) {
-                            IIpsMetaClass element = (IIpsMetaClass)input;
-                            if (!element.getIpsSrcFile().exists()) {
-                                setInputData(null);
-                                contentProvider.removeActualElement();
-                                return;
-                            }
-                            if (containsRootElement(changedIpsSrcFiles)
-                                    || isDependendObjectChanged(element, changedIpsSrcFiles)
-                                    || containsElement(changedIpsSrcFiles)) {
-                                showInstancesOf(contentProvider.getActualElement());
-                            }
-                        }
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
-                }
-            });
+            Display.getDefault().asyncExec(new ContentChangedRunnable(changedIpsSrcFiles));
         }
     }
 
@@ -468,13 +445,8 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
      * @return true if the parameter support subtypes
      */
     protected static boolean supportsSubtypes(IIpsObject ipsObject) {
-        if (ipsObject instanceof IProductCmptType || ipsObject instanceof IProductCmpt) {
-            return true;
-        } else if (ipsObject instanceof IEnumType || ipsObject instanceof IEnumContent) {
-            return true;
-        } else {
-            return false;
-        }
+        return ipsObject instanceof IProductCmptType || ipsObject instanceof IProductCmpt
+                || ipsObject instanceof IEnumType || ipsObject instanceof IEnumContent;
     }
 
     /**
@@ -496,6 +468,59 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         getSite().setSelectionProvider(null);
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), null);
         super.dispose();
+    }
+
+    @Override
+    protected ISelection getSelection() {
+        return tableViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        if (ipsObject == null) {
+            return false;
+        }
+        try {
+            if (supports(ipsObject)) {
+                showInstancesOf(ipsObject);
+                return true;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return false;
+    }
+
+    private class ContentChangedRunnable implements Runnable {
+
+        private final Set<IIpsSrcFile> changedIpsSrcFiles;
+
+        private ContentChangedRunnable(Set<IIpsSrcFile> changedIpsSrcFiles) {
+            this.changedIpsSrcFiles = changedIpsSrcFiles;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Object input = tableViewer.getInput();
+                if (input instanceof IIpsMetaClass) {
+                    IIpsMetaClass element = (IIpsMetaClass)input;
+                    if (!element.getIpsSrcFile().exists()) {
+                        setInputData(null);
+                        contentProvider.removeActualElement();
+                        return;
+                    }
+                    if (containsRootElement(changedIpsSrcFiles)
+                            || isDependendObjectChanged(element, changedIpsSrcFiles)
+                            || containsElement(changedIpsSrcFiles)) {
+                        showInstancesOf(contentProvider.getActualElement());
+                    }
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
     }
 
     private class InstanceDropListener extends IpsElementDropListener {
@@ -537,8 +562,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                     }
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
-                }// ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
-
+                }
             }
         }
 
@@ -662,27 +686,5 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
             return new IDependency[0];
         }
 
-    }
-
-    @Override
-    protected ISelection getSelection() {
-        return tableViewer.getSelection();
-    }
-
-    @Override
-    protected boolean show(IAdaptable adaptable) {
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
-        if (ipsObject == null) {
-            return false;
-        }
-        try {
-            if (supports(ipsObject)) {
-                showInstancesOf(ipsObject);
-                return true;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return false;
     }
 }

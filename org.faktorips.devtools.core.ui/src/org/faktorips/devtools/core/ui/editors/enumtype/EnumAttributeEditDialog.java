@@ -239,35 +239,35 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * contain values will be disallowed to select, too.
      */
     private void filterDatatypes() {
-        IEnumType parentEnumType = enumAttribute.getEnumType();
-        IIpsProject ipsProject = parentEnumType.getIpsProject();
+        IEnumType enumType = enumAttribute.getEnumType();
+        IIpsProject ipsProject = enumType.getIpsProject();
         List<Datatype> disallowedDatatypes = new ArrayList<Datatype>();
 
         // Disallow parent EnumType.
-        disallowedDatatypes.add(new EnumTypeDatatypeAdapter(parentEnumType, null));
+        disallowedDatatypes.add(new EnumTypeDatatypeAdapter(enumType, null));
 
         // Go once over all EnumTypeDatatypeAdapters.
         try {
             for (EnumDatatype currentEnumDatatype : ipsProject.findEnumDatatypes()) {
                 if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter) {
                     EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)currentEnumDatatype;
-                    IEnumType enumType = adapter.getEnumType();
+                    IEnumType enumTypeOfDatatype = adapter.getEnumType();
 
                     // Continue if it is the parent EnumType that we have already disallowed.
-                    if (enumType.equals(parentEnumType)) {
+                    if (enumTypeOfDatatype.equals(enumType)) {
                         continue;
                     }
 
                     // Disallow if it is not containing values while the parent EnumType does.
-                    if (parentEnumType.isInextensibleEnum()) {
-                        if (!enumType.isInextensibleEnum()) {
+                    if (enumType.isInextensibleEnum()) {
+                        if (enumTypeOfDatatype.isExtensible()) {
                             disallowedDatatypes.add(adapter);
                             continue;
                         }
                     }
 
                     // Disallow if it is a subtype of the parent EnumType.
-                    if (enumType.isSubEnumTypeOf(parentEnumType, ipsProject)) {
+                    if (enumTypeOfDatatype.isSubEnumTypeOf(enumType, ipsProject)) {
                         disallowedDatatypes.add(adapter);
                     }
                 }
