@@ -215,7 +215,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, paymentMode.validate(ipsProject).size());
 
         // Test working for EnumAttribute deletion.
-        paymentMode.deleteEnumAttributeWithValues(newUnique);
+        newUnique.delete();
         getIpsModel().clearValidationCache();
         assertEquals(2, paymentMode.validate(ipsProject).size());
     }

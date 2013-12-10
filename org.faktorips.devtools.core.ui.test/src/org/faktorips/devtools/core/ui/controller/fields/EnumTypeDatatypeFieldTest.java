@@ -118,7 +118,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         Shell shell = new Shell(Display.getDefault());
 
         enum1.setExtensible(true);
-        enum1.deleteEnumAttributeWithValues(enum1.getEnumLiteralNameAttribute());
+        enum1.getEnumLiteralNameAttribute().delete();
         enum1.setEnumContentName(enum1.getIpsPackageFragment().getName());
 
         IEnumContent enumContent = newEnumContent(enum1, "enum1Content");

@@ -73,10 +73,10 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertNull(maleIdAttributeValue.findEnumAttribute(ipsProject));
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
-        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
+        genderEnumAttributeId.delete();
         assertNull(maleIdAttributeValue.findEnumAttribute(ipsProject));
 
-        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
+        genderEnumAttributeName.delete();
         assertNull(maleNameAttributeValue.findEnumAttribute(ipsProject));
     }
 
