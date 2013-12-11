@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -75,6 +76,9 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     /** The UI control for the <tt>enumContentPackageFragment</tt> property */
     private TextField enumContentNameControl;
+
+    /** The UI text for <tt>identifierBoundary</tt> property */
+    private Text boundaryText;
 
     /**
      * Creates a new <tt>EnumTypeGeneralInfoSection</tt>.
@@ -178,7 +182,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         gridData.horizontalIndent = 50;
         label.setLayoutData(gridData);
 
-        Text boundaryText = toolkit.createText(newComposite);
+        boundaryText = toolkit.createText(newComposite);
         boundaryText.setToolTipText(Messages.EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText);
         getBindingContext().bindContent(boundaryText, enumType, IEnumType.PROPERTY_IDENTIFIER_BOUNDARY);
     }
@@ -241,6 +245,23 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         if (!textControl.isDisposed()) {
             getToolkit().setDataChangeable(textControl, !(enumType.isAbstract()) && (enumType.isExtensible()));
         }
+        if (!boundaryText.isDisposed()) {
+            getToolkit().setDataChangeable(boundaryText, isBoundaryTextEnable());
+        }
+    }
+
+    private boolean isBoundaryTextEnable() {
+        IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
+        boolean supportCompare = false;
+        if (identiferAttribute != null) {
+            try {
+                ValueDatatype datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
+                supportCompare = datatype.supportsCompare();
+            } catch (CoreException e) {
+                new CoreRuntimeException(e);
+            }
+        }
+        return enumType.isExtensible() && supportCompare;
     }
 
     @Override
@@ -249,7 +270,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && enumType.isExtensible());
         extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
-
     }
 
 }
