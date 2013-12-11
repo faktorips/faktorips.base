@@ -432,7 +432,7 @@ public class TestAbstractRuntimeRepositoryTest {
     @Test
     public void testGetEnumValuesFromLookup() {
         Lookup lookup = new Lookup();
-        assertNull(baseRepository.getEnumValues(TestEnumValue.class));
+        assertTrue(baseRepository.getEnumValues(TestEnumValue.class).isEmpty());
 
         baseRepository.addEnumValueLookupService(lookup);
         List<TestEnumValue> values = baseRepository.getEnumValues(TestEnumValue.class);
@@ -469,10 +469,12 @@ public class TestAbstractRuntimeRepositoryTest {
             values.add(value2);
         }
 
+        @Override
         public Class<TestEnumValue> getEnumTypeClass() {
             return TestEnumValue.class;
         }
 
+        @Override
         public TestEnumValue getEnumValue(Object id) {
             for (TestEnumValue value : values) {
                 if (value.getEnumValueId().equals(id)) {
@@ -482,10 +484,12 @@ public class TestAbstractRuntimeRepositoryTest {
             return null;
         }
 
+        @Override
         public List<TestEnumValue> getEnumValues() {
             return values;
         }
 
+        @Override
         public XmlAdapter<?, TestEnumValue> getXmlAdapter() {
             return null;
         }
