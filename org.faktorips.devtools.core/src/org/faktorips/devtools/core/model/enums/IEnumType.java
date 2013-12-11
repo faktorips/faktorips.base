@@ -303,20 +303,20 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /**
      * Returns the boundary for the values of the identifier attribute.
      * <p>
-     * This functionality is primarily useful if this {@link IEnumType} is extensible. Thus, one can
-     * explicitly define the boundary for the values of the identifier attribute in this
-     * {@link IEnumType} and in the extended {@link IEnumContent}. Values which are smaller than the
-     * boundary can ONLY be use in this {@link IEnumType}, as those which are greater or equal to the
-     * boundary can ONLY be used in the corresponding {@link IEnumContent}. Logically, data type has
-     * to implement {@link Comparable}.
+     * This functionality is useful if this {@link IEnumType} is extensible. The user can explicitly
+     * define the boundary for the values of the identifier attribute in this {@link IEnumType} and
+     * in the extended {@link IEnumContent}. Values which are smaller than the boundary can ONLY be
+     * used in this {@link IEnumType}. Values which are greater or equal to the boundary can ONLY be
+     * used in the corresponding {@link IEnumContent}. Therefore Data type has to implement
+     * {@link Comparable}.
      */
     public String getIdentifierBoundary();
 
     /**
      * Sets the identifier attribute boundary for this {@link IEnumType}.
      * <p>
-     * If the boundary is set to <code>null</code> then no restriction will be made due to defining
-     * values in the {@link IEnumType} and its corresponding {@link IEnumContent}.
+     * If the boundary is set <code>null</code> then no restriction will be made for the values in
+     * the {@link IEnumType} and its corresponding {@link IEnumContent}.
      * 
      * @see #getIdentifierBoundary()
      */
