@@ -261,7 +261,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     /**
-     * @deprecated Use {@link #newIndex()} instead
+     * @deprecated Since 3.11 use {@link #newIndex()} instead
      */
     @Deprecated
     @Override
@@ -277,7 +277,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     /**
-     * @deprecated Use {@link #moveIndex(int[],boolean)} instead
+     * @deprecated Since 3.11 use {@link #moveIndex(int[],boolean)} instead
      */
     @Deprecated
     @Override
@@ -519,14 +519,28 @@ public class TableStructure extends IpsObject implements ITableStructure {
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(Column.TAG_NAME)) {
+        if (Column.TAG_NAME.equals(xmlTagName)) {
             return newColumnInternal(id);
-        } else if (xmlTagName.equals(ColumnRange.TAG_NAME)) {
+        } else if (ColumnRange.TAG_NAME.equals(xmlTagName)) {
             return newColumnRangeInternal(id);
-        } else if (xmlTagName.equals(Index.TAG_NAME)) {
+        } else if (Index.TAG_NAME.equals(xmlTagName)) {
             return newIndexInternal(id);
-        } else if (xmlTagName.equals(ForeignKey.TAG_NAME)) {
+        } else if (ForeignKey.TAG_NAME.equals(xmlTagName)) {
             return newForeignKeyInternal(id);
+        }
+        return newPartForDeprecatedXml(xmlTagName, id);
+    }
+
+    /**
+     * @deprecated Load old XML format for backwards compatibility. May be removed when cleaning up
+     *             deprecated API in future releases.
+     */
+    @Deprecated
+    private IIpsObjectPart newPartForDeprecatedXml(String xmlTagName, String id) {
+        if ("UniqueKey".equals(xmlTagName)) { //$NON-NLS-1$
+            IIndex newIndex = newIndexInternal(id);
+            newIndex.setUniqueKey(true);
+            return newIndex;
         }
         return null;
     }
@@ -546,13 +560,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isModelEnumType() {
-        // OK to use the deprecated constant here as the method itself is deprecated.
-        return type == TableStructureType.ENUMTYPE_MODEL;
-    }
-
-    @Override
     public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
@@ -563,7 +570,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     /**
-     * @deprecated Use {@link #hasIndexWithSameDatatype()} instead
+     * @deprecated Since 3.11 use {@link #hasIndexWithSameDatatype()} instead
      */
     @Deprecated
     @Override

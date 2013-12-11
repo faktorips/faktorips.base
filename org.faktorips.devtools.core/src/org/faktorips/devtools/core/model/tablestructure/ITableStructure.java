@@ -46,16 +46,6 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
     public TableStructureType getTableStructureType();
 
     /**
-     * Returns true if this table structure is an enumeration type which values are defined at model
-     * definition time.
-     * 
-     * @deprecated Since version 2.3 enumerations can be modeled as enumerations, no need for the
-     *             work around to model them as tables any more.
-     */
-    @Deprecated
-    public boolean isModelEnumType();
-
-    /**
      * Returns the functions to access the table in the formula language.
      * 
      */
@@ -186,7 +176,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
     /**
      * Returns true, if there are several indices based on the same datatypes
      * 
-     * @deprecated Use {@link #hasIndexWithSameDatatype()} instead
+     * @deprecated Since 3.11 use {@link #hasIndexWithSameDatatype()} instead
      */
     @Deprecated
     public boolean hasUniqueKeysWithSameDatatype();
@@ -199,7 +189,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
     /**
      * Creates a new unique key.
      * 
-     * @deprecated Use {@link #newIndex()} instead
+     * @deprecated Since 3.11 use {@link #newIndex()} instead
      */
     @Deprecated
     public IIndex newUniqueKey();
@@ -222,7 +212,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
      * @throws NullPointerException if indices is null.
      * @throws IndexOutOfBoundsException if one of the indices does not identify a {@link IIndex}
      *             object.
-     * @deprecated Use {@link #moveIndex(int[],boolean)} instead
+     * @deprecated Since 3.11 use {@link #moveIndex(int[],boolean)} instead
      */
     @Deprecated
     public int[] moveUniqueKeys(int[] indices, boolean up);
