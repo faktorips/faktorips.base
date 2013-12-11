@@ -180,6 +180,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         Text boundaryText = toolkit.createText(newComposite);
         boundaryText.setToolTipText(Messages.EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText);
+        getBindingContext().bindContent(boundaryText, enumType, IEnumType.PROPERTY_IDENTIFIER_BOUNDARY);
     }
 
     private void registerFocusHandling() {
