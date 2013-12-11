@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -146,6 +147,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         page.setText(Messages.EnumAttributeEditDialog_generalTitle);
         Control generalPage = createGeneralPage(tabFolder);
         page.setControl(generalPage);
+
+        checkExtensibleDatatypeAnd(enumAttribute);
 
         return tabFolder;
     }
@@ -346,6 +349,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             }
             if (!literalNameAttribute) {
                 checkValueTypeMismatch(changedPart);
+                checkExtensibleDatatypeAnd(changedPart);
             }
         }
     }
@@ -361,6 +365,26 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
             setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
         }
+    }
+
+    private void checkExtensibleDatatypeAnd(IEnumAttribute enumAttribute) {
+        resetMismatchText();
+        IEnumType enumType = enumAttribute.getEnumType();
+        try {
+            Datatype ipsDatatype = enumType.getIpsProject().findDatatype(enumAttribute.getDatatype());
+            if (ipsDatatype != null && ipsDatatype instanceof EnumTypeDatatypeAdapter) {
+                EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)ipsDatatype;
+                IEnumType datatypeEnumType = adapter.getEnumType();
+                if (enumType.isExtensible() && datatypeEnumType.isExtensible()) {
+                    setMismatchText(NLS.bind(
+                            Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
+                            datatypeEnumType.getQualifiedName()));
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
     }
 
     private void setMismatchText(String text) {
