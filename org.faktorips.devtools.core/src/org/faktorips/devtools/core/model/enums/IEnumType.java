@@ -72,6 +72,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /** Name of the <tt>extensible</tt> property. */
     public static final String PROPERTY_EXTENSIBLE = "extensible"; //$NON-NLS-1$
 
+    /** Name of the <tt>identifierBoundary</tt> property. */
+    public static final String PROPERTY_IDENTIFIER_BOUNDARY = "identifierBoundary"; //$NON-NLS-1$
+
     /** Name of the <tt>enumContentPackageFragment</tt> property. */
     public static final String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
@@ -296,6 +299,23 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @param extensible Flag indicating the extensibility of this <tt>IEnumType</tt>.
      */
     public void setExtensible(boolean extensible);
+
+    /**
+     * Returns <code>true</code> if the identifier attribute contains values which are bounded,
+     * otherwise <code>false</code>.
+     */
+    public boolean isIdentifierBoundary();
+
+    /**
+     * Sets whether the identifier attribute of this {@link IEnumType} contain values which are
+     * bounded.
+     * <p>
+     * This functionality is primarily useful if this {@link IEnumType} is extensible. Thus, one can
+     * explicitly define that {@link IEnumValue}s in the {@link IEnumType} contains values below a
+     * certain bound and the {@link IEnumValue}s in the extended {@link IEnumContent} are above that
+     * bound. Logically, data type has to implement {@link Comparable}.
+     */
+    public void setIdentifierBoundary(boolean boundedIdentiferAttribute);
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>

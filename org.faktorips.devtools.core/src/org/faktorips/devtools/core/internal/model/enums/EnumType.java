@@ -68,6 +68,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /** Flag indicating whether this <tt>IEnumType</tt> is extensible. */
     private boolean extensible;
 
+    /** Flag indicating whether the identifier attribute of this {@link IEnumType} are bounded. */
+    private boolean identifierBoundary;
+
     /**
      * Qualified name of the package fragment a referencing <tt>IEnumContent</tt> must be stored in.
      */
@@ -92,6 +95,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         superEnumType = StringUtils.EMPTY;
         extensible = false;
+        identifierBoundary = false;
         isAbstract = false;
         enumContentPackageFragment = StringUtils.EMPTY;
         enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
@@ -148,6 +152,18 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         boolean oldExtensible = this.extensible;
         this.extensible = extensible;
         valueChanged(oldExtensible, extensible);
+    }
+
+    @Override
+    public boolean isIdentifierBoundary() {
+        return identifierBoundary;
+    }
+
+    @Override
+    public void setIdentifierBoundary(boolean identifierBoundary) {
+        boolean oldIdentifierBoundary = this.identifierBoundary;
+        this.identifierBoundary = identifierBoundary;
+        valueChanged(oldIdentifierBoundary, identifierBoundary);
     }
 
     @Override
@@ -319,6 +335,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
+        identifierBoundary = Boolean.parseBoolean(element.getAttribute(PROPERTY_IDENTIFIER_BOUNDARY));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
         initDeprecatedProperties(element);
@@ -339,6 +356,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
+        element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, String.valueOf(identifierBoundary));
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
@@ -1031,5 +1049,4 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
     }
-
 }
