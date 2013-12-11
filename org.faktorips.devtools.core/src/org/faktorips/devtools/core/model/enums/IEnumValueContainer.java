@@ -200,4 +200,12 @@ public interface IEnumValueContainer extends IIpsObject {
      * @return {@link ValueTypeMismatch}
      */
     ValueTypeMismatch checkValueTypeMismatch(IEnumAttribute enumAttribute);
+
+    /**
+     * @return <code>true</code> if the IDs of values in this value container must be less than the
+     *         identifier boundary defined in the corresponding enum type. <code>false</code> if the
+     *         IDs must greater than or equal to the boundary.
+     * @see IEnumType#getIdentifierBoundary()
+     */
+    public boolean isIdentifierNamespaceBelowBoundary();
 }

@@ -225,6 +225,39 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testValidateIdBoundary1() throws CoreException {
+        paymentMode.setIdentifierBoundary("P9");
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        getIpsModel().clearValidationCache();
+        paymentMode.setIdentifierBoundary("B1");
+
+        validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(2, validationMessageList.size());
+        assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
+                validationMessageList.getMessage(0).getCode());
+        assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
+                validationMessageList.getMessage(1).getCode());
+    }
+
+    @Test
+    public void testValidateIdBoundary2() throws CoreException {
+        paymentMode.setIdentifierBoundary("P9");
+        assertTrue(paymentMode.isValid(ipsProject));
+
+        IEnumValue monthly = paymentMode.getEnumValues().get(0);
+        monthly.setEnumAttributeValue(1, ValueFactory.createStringValue("X1"));
+
+        getIpsModel().clearValidationCache();
+
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(1, validationMessageList.size());
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY));
+    }
+
+    @Test
     public void testGetEnumValue() {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }

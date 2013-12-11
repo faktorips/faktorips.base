@@ -1023,6 +1023,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return getEnumValues();
     }
 
+    @Override
+    public boolean isIdentifierNamespaceBelowBoundary() {
+        return true;
+    }
+
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierarchyVisitor {
 
         private IEnumType superEnumTypeCandidate;
@@ -1049,4 +1054,5 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
     }
+
 }

@@ -41,8 +41,6 @@ import org.w3c.dom.Element;
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValue
  * 
- * @author Alexander Weickmann
- * 
  * @since 2.3
  */
 public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
@@ -59,7 +57,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * @param parent The <tt>IEnumValueContainer</tt> this <tt>IEnumValue</tt> belongs to.
      * @param id A unique ID for this <tt>IEnumValue</tt>.
      */
-    public EnumValue(IEnumValueContainer parent, String id) {
+    public EnumValue(EnumValueContainer parent, String id) {
         super(parent, id);
         enumAttributeValues = new IpsObjectPartCollection<IEnumAttributeValue>(this, EnumAttributeValue.class,
                 IEnumAttributeValue.class, IEnumAttributeValue.XML_TAG);
@@ -98,7 +96,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     private void fixEnumAttributeValueAfterConstructing(IEnumAttributeValue enumAttributeValue) {
-        IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+        IEnumType enumType = findEnumType();
         if (enumType != null) {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
             int index = getEnumAttributeValuesCount() - 1;
@@ -107,6 +105,10 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                 enumAttributeValue.fixValueType(enumAttribute.isMultilingual());
             }
         }
+    }
+
+    private IEnumType findEnumType() {
+        return getEnumValueContainer().findEnumType(getIpsProject());
     }
 
     @Override
@@ -200,7 +202,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     @Override
     public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws CoreException {
         ArgumentCheck.notNull(enumAttributeName);
-        IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+        IEnumType enumType = findEnumType();
         IEnumAttribute enumAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(enumAttributeName);
         if (enumAttribute == null) {
             throw new NoSuchElementException();
