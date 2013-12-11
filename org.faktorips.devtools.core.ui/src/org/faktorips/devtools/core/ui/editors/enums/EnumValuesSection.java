@@ -324,7 +324,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             EnumValueTraversalStrategy previousTraversalStrategy) {
         int alignment = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype).getDefaultAlignment();
         TableViewerColumn newColumn = new TableViewerColumn(enumValuesTableViewer, alignment);
-        newColumn.setLabelProvider(new EnumValuesLabelProvider());
+        newColumn.setLabelProvider(new EnumValuesLabelProvider(enumTypeEditing));
         newColumn.getColumn().setText(columnName);
         newColumn.getColumn().setWidth(200);
 
@@ -685,6 +685,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** The label provider for the table viewer. */
     private static class EnumValuesLabelProvider extends CellLabelProvider implements ITableLabelProvider {
 
+        private boolean enumTypeEditing;
+
+        public EnumValuesLabelProvider(boolean enumTypeEditing) {
+            this.enumTypeEditing = enumTypeEditing;
+        }
+
         @Override
         public void update(ViewerCell cell) {
             Object element = cell.getElement();
@@ -742,9 +748,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 if (enumAttribute == null) {
                     return columnValue;
                 }
-
-                String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
-                ValueDatatype valueDatatype = ipsProject.findValueDatatype(datatype);
+                ValueDatatype valueDatatype;
+                if (enumTypeEditing) {
+                    valueDatatype = enumAttribute.findDatatypeIgnoreEnumContents(ipsProject);
+                } else {
+                    valueDatatype = enumAttribute.findDatatype(ipsProject);
+                }
                 return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(valueDatatype, columnValue);
             } catch (CoreException e) {
                 throw new RuntimeException(e);

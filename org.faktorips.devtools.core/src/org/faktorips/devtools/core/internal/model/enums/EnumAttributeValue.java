@@ -21,6 +21,7 @@ import java.util.Observer;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
@@ -216,8 +217,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // DataType Value parsable?
         if (getValue() != null) {
-            getValue().validate(enumAttribute.findDatatype(ipsProject), getParent().getIpsProject(), list,
-                    new ObjectProperty(this, PROPERTY_VALUE));
+            ValueDatatype datatype;
+            if (getEnumValue().getEnumValueContainer() instanceof IEnumType) {
+                datatype = enumAttribute.findDatatypeIgnoreEnumContents(ipsProject);
+            } else {
+                datatype = enumAttribute.findDatatype(ipsProject);
+            }
+            getValue().validate(datatype, getParent().getIpsProject(), list, new ObjectProperty(this, PROPERTY_VALUE));
 
             // Unique identifier and literal name validations.
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute)) {
