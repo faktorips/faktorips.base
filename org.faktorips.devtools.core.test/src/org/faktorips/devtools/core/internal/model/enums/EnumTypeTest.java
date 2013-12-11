@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
@@ -89,6 +90,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setExtensible(false);
         assertFalse(genderEnumType.isExtensible());
         genderEnumType.setExtensible(true);
+    }
+
+    @Test
+    public void testGetSetIdentifierBoundary() {
+        assertEquals(StringUtils.EMPTY, genderEnumType.getIdentifierBoundary());
+        genderEnumType.setIdentifierBoundary("100");
+        assertEquals("100", genderEnumType.getIdentifierBoundary());
     }
 
     @Test
@@ -440,6 +448,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         newEnumType.setAbstract(true);
         newEnumType.setExtensible(true);
+        newEnumType.setIdentifierBoundary("100");
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         newEnumType.setEnumContentName("bar");
         newEnumType.newEnumAttribute();
@@ -448,6 +457,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_EXTENSIBLE)));
+        assertEquals("100", xmlElement.getAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_NAME));
 
@@ -455,6 +465,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
         assertTrue(loadedEnumType.isExtensible());
+        assertEquals("100", loadedEnumType.getIdentifierBoundary());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
         assertEquals("bar", loadedEnumType.getEnumContentName());
     }

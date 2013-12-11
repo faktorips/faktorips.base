@@ -301,21 +301,19 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public void setExtensible(boolean extensible);
 
     /**
-     * Returns <code>true</code> if the identifier attribute contains values which are bounded,
-     * otherwise <code>false</code>.
+     * Returns the boundary for the values of the identifier attribute.
      */
-    public boolean isIdentifierBoundary();
+    public String getIdentifierBoundary();
 
     /**
-     * Sets whether the identifier attribute of this {@link IEnumType} contain values which are
-     * bounded.
+     * Sets the identifier attribute boundary for this {@link IEnumType}.
      * <p>
      * This functionality is primarily useful if this {@link IEnumType} is extensible. Thus, one can
-     * explicitly define that {@link IEnumValue}s in the {@link IEnumType} contains values below a
-     * certain bound and the {@link IEnumValue}s in the extended {@link IEnumContent} are above that
-     * bound. Logically, data type has to implement {@link Comparable}.
+     * explicitly define the boundary for the values of the identifier attribute in this
+     * {@link IEnumType} and in the extended {@link IEnumContent}. Logically, data type has to
+     * implement {@link Comparable}.
      */
-    public void setIdentifierBoundary(boolean boundedIdentiferAttribute);
+    public void setIdentifierBoundary(String boundary);
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
