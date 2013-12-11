@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -105,14 +106,14 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        client.setLayout(new GridLayout(1, false));
+        client.setLayout(new GridLayout(2, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
         createSuperclassLink(toolkit, composite);
         createSupertypeRefControl(toolkit, composite);
         createIsAbstractCheckbox(toolkit, composite);
         createExtensibleCheckbox(toolkit, composite);
-        createEnumContentNameControl(toolkit, composite);
+        createEnumContentSpecificationAndBoundary(composite, toolkit);
         registerFocusHandling();
         createExtensionControl(toolkit, composite);
     }
@@ -156,13 +157,29 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
     }
 
-    private void createEnumContentNameControl(UIToolkit toolkit, Composite composite) {
+    private void createEnumContentSpecificationAndBoundary(Composite composite, UIToolkit toolkit) {
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
-        Text text = toolkit.createText(composite);
+
+        Composite newComposite = new Composite(composite, 0);
+        newComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        GridLayout layout = new GridLayout(3, false);
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        newComposite.setLayout(layout);
+
+        Text text = toolkit.createText(newComposite);
         enumContentNameControl = new TextField(text);
         toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && enumType.isExtensible());
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+
+        Label label = toolkit.createFormLabel(newComposite, Messages.EnumTypeGeneralInfoSection_IdentifierBoundary);
+        GridData gridData = new GridData(SWT.RIGHT, SWT.END, true, false);
+        gridData.horizontalIndent = 50;
+        label.setLayoutData(gridData);
+
+        Text boundaryText = toolkit.createText(newComposite);
+        boundaryText.setToolTipText(Messages.EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText);
     }
 
     private void registerFocusHandling() {
