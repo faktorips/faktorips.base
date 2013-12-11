@@ -266,6 +266,8 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
         assertEquals(1, table.getNumOfRanges());
         assertEquals("ageFrom-ageTo", table.getRanges()[0].getName());
+
+        assertEquals(2, table.getIndices().size());
     }
 
     @Test

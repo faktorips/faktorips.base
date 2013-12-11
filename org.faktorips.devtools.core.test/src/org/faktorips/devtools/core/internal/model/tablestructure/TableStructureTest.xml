@@ -14,5 +14,8 @@
 	<ForeignKey id="5" referencedTableStructure="OtherTable">
 		<Item name="age"/>
 	</ForeignKey>
+    <UniqueKey id="6">
+    	<Item name="rate"/>
+    </UniqueKey>
     
 </TableStructure>
