@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.isNull;
 
 import java.util.List;
 
@@ -29,7 +34,9 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -471,4 +478,32 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeName.setMultilingual(true);
         assertFalse(((EnumAttribute)genderEnumAttributeName).isMultilingualSupported());
     }
+
+    @Test
+    public void testFindDatatypeIgnoreEnumContents_noEnum() throws Exception {
+        ValueDatatype datatype = genderEnumAttributeId.findDatatypeIgnoreEnumContents(ipsProject);
+
+        assertEquals(genderEnumAttributeId.findDatatype(ipsProject), datatype);
+    }
+
+    @Test
+    public void testFindDatatypeIgnoreEnumContents_inextensibleEnum() throws Exception {
+        genderEnumAttributeId.setDatatype(paymentMode.getName());
+        ValueDatatype datatype = genderEnumAttributeId.findDatatypeIgnoreEnumContents(ipsProject);
+
+        assertEquals(genderEnumAttributeId.findDatatype(ipsProject), datatype);
+        assertThat(datatype, is(instanceOf(EnumTypeDatatypeAdapter.class)));
+    }
+
+    @Test
+    public void testFindDatatypeIgnoreEnumContents_extensibleEnum() throws Exception {
+        genderEnumAttributeId.setDatatype(paymentMode.getName());
+        ValueDatatype datatype = genderEnumAttributeId.findDatatypeIgnoreEnumContents(ipsProject);
+
+        assertNotSame(genderEnumAttributeId.findDatatype(ipsProject), datatype);
+        assertThat(datatype, is(EnumTypeDatatypeAdapter.class));
+        assertThat(((EnumTypeDatatypeAdapter)datatype).getEnumContent(), is(isNull(IEnumContent.class)));
+        assertThat((EnumType)((EnumTypeDatatypeAdapter)datatype).getEnumType(), is(paymentMode));
+    }
+
 }

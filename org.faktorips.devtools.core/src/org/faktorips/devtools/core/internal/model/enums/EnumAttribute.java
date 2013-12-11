@@ -26,6 +26,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -390,6 +391,16 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return superEnumAttribute.findDatatype(ipsProject);
         }
         return ipsProject.findValueDatatype(datatype);
+    }
+
+    @Override
+    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreException {
+        ValueDatatype datatype = findDatatype(ipsProject);
+        if (DatatypeUtil.isExtensibleEnumType(datatype)) {
+            EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)datatype;
+            return new EnumTypeDatatypeAdapter(enumDatatype.getEnumType(), null);
+        }
+        return datatype;
     }
 
     @Override

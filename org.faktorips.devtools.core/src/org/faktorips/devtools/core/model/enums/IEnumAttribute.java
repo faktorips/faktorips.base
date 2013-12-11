@@ -257,6 +257,25 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns this <tt>IEnumAttribute</tt>'s <tt>ValueDatatype</tt>. If the datatype is another
+     * enum type this method returns an {@link EnumTypeDatatypeAdapter} that only reflects the
+     * values that are defined in the enum type not the values of any separated content. If the
+     * datatype is no enum type it simply returns the same as {@link #findDatatype(IIpsProject)}.
+     * 
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration attribute. This is not necessarily the project this
+     *            <tt>IEnumAttribute</tt> is part of.
+     * 
+     * @see #getDatatype()
+     * @see #findDatatype(IIpsProject)
+     * 
+     * @throws CoreException If an error occurs while searching the given IPS project for the value
+     *             data type.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     */
+    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Sets the data type of this <tt>IEnumAttribute</tt>.
      * 
      * @param dataType The unqualified name of the data type.

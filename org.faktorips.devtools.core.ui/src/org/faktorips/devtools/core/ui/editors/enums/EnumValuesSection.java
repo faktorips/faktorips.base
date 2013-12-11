@@ -182,9 +182,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         if (enumValueContainer instanceof IEnumType) {
             enumTypeEditing = true;
             enumType = (IEnumType)enumValueContainer;
-        } else {
+        } else if (enumValueContainer instanceof IEnumContent) {
             enumContent = (IEnumContent)enumValueContainer;
             enumType = enumContent.findEnumType(ipsProject);
+        } else {
+            throw new CoreRuntimeException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
         }
 
         loadDialogSettings();
@@ -267,7 +269,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
             String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
             try {
-                previousTraversalStrategy = addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
+                previousTraversalStrategy = addTableColumn(columnName,
+                        currentEnumAttribute.findDatatypeIgnoreEnumContents(ipsProject),
                         currentEnumAttribute.findIsUnique(ipsProject),
                         currentEnumAttribute.isEnumLiteralNameAttribute(), currentEnumAttribute.isMultilingual(),
                         previousTraversalStrategy);
