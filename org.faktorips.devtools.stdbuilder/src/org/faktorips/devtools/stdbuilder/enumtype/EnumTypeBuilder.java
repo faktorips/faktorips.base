@@ -461,29 +461,27 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String valueOrExpression,
             boolean isExpression,
             JavaCodeFragment repositoryExp) throws CoreException {
+        IEnumAttribute attribute = getIdentifierAttribute(enumType);
+        DatatypeHelper datatypeHelper = getDatatypeHelper(attribute, true);
+        JavaCodeFragment fragment = new JavaCodeFragment();
         if (repositoryExp != null) {
-            IEnumAttribute attribute = getIdentifierAttribute(enumType);
-            DatatypeHelper datatypeHelper = getDatatypeHelper(attribute, true);
-            JavaCodeFragment fragment = new JavaCodeFragment();
             fragment.append(repositoryExp);
-            fragment.append('.');
-            fragment.append("getEnumValue("); //$NON-NLS-1$
-            fragment.appendClassName(getQualifiedClassName(enumType));
-            fragment.append(".class, "); //$NON-NLS-1$
-            String expression = valueOrExpression;
-            if (!isExpression) {
-                expression = "\"" + valueOrExpression + "\""; //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            /*
-             * As the data type of the identifier attribute needn't be a String, we have to convert
-             * the String expression to an instance of the appropriate data type. (see bug #1586)
-             */
-            fragment.append(datatypeHelper.newInstanceFromExpression(expression));
-            fragment.append(")"); //$NON-NLS-1$
-            return fragment;
-        } else {
-            return new JavaCodeFragment("null");
         }
+        fragment.append('.');
+        fragment.append("getEnumValue("); //$NON-NLS-1$
+        fragment.appendClassName(getQualifiedClassName(enumType));
+        fragment.append(".class, "); //$NON-NLS-1$
+        String expression = valueOrExpression;
+        if (!isExpression) {
+            expression = "\"" + valueOrExpression + "\""; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        /*
+         * As the data type of the identifier attribute needn't be a String, we have to convert the
+         * String expression to an instance of the appropriate data type. (see bug #1586)
+         */
+        fragment.append(datatypeHelper.newInstanceFromExpression(expression));
+        fragment.append(")"); //$NON-NLS-1$
+        return fragment;
     }
 
     /**
