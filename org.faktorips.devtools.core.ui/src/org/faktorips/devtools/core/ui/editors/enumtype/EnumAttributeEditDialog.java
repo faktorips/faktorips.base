@@ -33,6 +33,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -47,6 +48,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
+import org.faktorips.util.StringUtil;
 
 /**
  * Dialog to edit an <tt>IEnumAttribute</tt> of an <tt>IEnumType</tt>.
@@ -148,7 +150,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Control generalPage = createGeneralPage(tabFolder);
         page.setControl(generalPage);
 
-        checkExtensibleDatatypeAnd(enumAttribute);
+        checkEnumTypeAndDatatypeEnumTypeExtensible(enumAttribute);
 
         return tabFolder;
     }
@@ -348,52 +350,49 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
             if (!literalNameAttribute) {
-                checkValueTypeMismatch(changedPart);
-                checkExtensibleDatatypeAnd(changedPart);
+                updateHintText(changedPart);
             }
         }
     }
 
+    private void updateHintText(IEnumAttribute enumAttribute) {
+        resetHintText();
+        checkValueTypeMismatch(enumAttribute);
+        checkEnumTypeAndDatatypeEnumTypeExtensible(enumAttribute);
+    }
+
     private void checkValueTypeMismatch(IEnumAttribute enumAttribute) {
-        resetMismatchText();
         IEnumType enumType = enumAttribute.getEnumType();
         String defaultlanguage = enumType.getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale()
                 .getLanguage();
         ValueTypeMismatch typeMismatch = enumType.checkValueTypeMismatch(enumAttribute);
         if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
-            setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
+            setHintText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
         } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
-            setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
+            setHintText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
         }
     }
 
-    private void checkExtensibleDatatypeAnd(IEnumAttribute enumAttribute) {
-        resetMismatchText();
+    private void checkEnumTypeAndDatatypeEnumTypeExtensible(IEnumAttribute enumAttribute) {
         IEnumType enumType = enumAttribute.getEnumType();
         try {
             Datatype ipsDatatype = enumType.getIpsProject().findDatatype(enumAttribute.getDatatype());
-            if (ipsDatatype != null && ipsDatatype instanceof EnumTypeDatatypeAdapter) {
-                EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)ipsDatatype;
-                IEnumType datatypeEnumType = adapter.getEnumType();
-                if (enumType.isExtensible() && datatypeEnumType.isExtensible()) {
-                    setMismatchText(NLS.bind(
-                            Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
-                            datatypeEnumType.getQualifiedName()));
-                }
+            if (enumType.isExtensible() && DatatypeUtil.isExtensibleEnumType(ipsDatatype)) {
+                setHintText(NLS.bind(Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
+                        StringUtil.unqualifiedName(ipsDatatype.getQualifiedName())));
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-
     }
 
-    private void setMismatchText(String text) {
+    private void setHintText(String text) {
         mismatchLabelImage.setImage(JFaceResources.getImage(DLG_IMG_MESSAGE_INFO));
         mismatchLabel.setText(text);
         mismatchLabel.getParent().pack();
     }
 
-    private void resetMismatchText() {
+    private void resetHintText() {
         mismatchLabelImage.setImage(null);
         mismatchLabel.setText(StringUtils.EMPTY);
     }
