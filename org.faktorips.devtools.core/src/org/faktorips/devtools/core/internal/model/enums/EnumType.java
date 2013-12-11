@@ -161,7 +161,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public void setIdentifierBoundary(String identifierBoundary) {
-        ArgumentCheck.notNull(identifierBoundary);
         String oldIdentifierBoundary = this.identifierBoundary;
         this.identifierBoundary = identifierBoundary;
         valueChanged(oldIdentifierBoundary, identifierBoundary);
