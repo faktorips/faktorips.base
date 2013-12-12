@@ -110,7 +110,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        client.setLayout(new GridLayout(2, false));
+        client.setLayout(new GridLayout(1, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
         createSuperclassLink(toolkit, composite);
@@ -263,17 +263,27 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     }
 
     private boolean isBoundaryTextEnable() {
-        IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
         boolean supportCompare = false;
+        ValueDatatype datatype = getIdentifierAttributeDatatype();
+
+        if (datatype != null) {
+            supportCompare = datatype.supportsCompare();
+        }
+
+        return enumType.isExtensible() && supportCompare;
+    }
+
+    private ValueDatatype getIdentifierAttributeDatatype() {
+        IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
+        ValueDatatype datatype = null;
         if (identiferAttribute != null) {
             try {
-                ValueDatatype datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
-                supportCompare = datatype.supportsCompare();
+                datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
             } catch (CoreException e) {
                 new CoreRuntimeException(e);
             }
         }
-        return enumType.isExtensible() && supportCompare;
+        return datatype;
     }
 
     @Override
