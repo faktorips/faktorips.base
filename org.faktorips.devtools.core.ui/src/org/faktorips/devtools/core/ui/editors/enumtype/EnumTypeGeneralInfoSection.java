@@ -189,7 +189,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         GridData gridData = new GridData(SWT.RIGHT, SWT.END, true, false);
         gridData.horizontalIndent = 50;
         label.setLayoutData(gridData);
-    
+
         boundaryText = toolkit.createText(newComposite);
         boundaryText.setToolTipText(Messages.EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText);
     }
@@ -238,8 +238,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
          * Initialize enumeration content field if none has been specified yet and the values are
          * not part of the model.
          */
-        if ((enumType.isExtensible()) && enumContentNameControl.getText().length() == 0) {
-            enumContentNameControl.setText(enumType.getQualifiedName());
+        if (!enumContentNameControl.getTextControl().isDisposed()) {
+            if ((enumType.isExtensible()) && enumContentNameControl.getText().length() == 0) {
+                enumContentNameControl.setText(enumType.getQualifiedName());
+            }
         }
 
         // Create an EnumLiteralNameAttribute if the EnumType does not have one but needs one.
@@ -258,18 +260,16 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             getToolkit().setDataChangeable(textControl, !(enumType.isAbstract()) && (enumType.isExtensible()));
         }
         if (!boundaryText.isDisposed()) {
-            getToolkit().setDataChangeable(boundaryText, isBoundaryTextEnable());
+            getToolkit().setDataChangeable(boundaryText, !enumType.isAbstract() && isBoundaryTextEnable());
         }
     }
 
     private boolean isBoundaryTextEnable() {
         boolean supportCompare = false;
         ValueDatatype datatype = getIdentifierAttributeDatatype();
-
         if (datatype != null) {
             supportCompare = datatype.supportsCompare();
         }
-
         return enumType.isExtensible() && supportCompare;
     }
 
@@ -291,6 +291,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         super.refresh();
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && enumType.isExtensible());
+        getToolkit().setDataChangeable(boundaryText, !enumType.isAbstract() && isBoundaryTextEnable());
         extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
     }
 
