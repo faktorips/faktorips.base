@@ -395,12 +395,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     @Override
     public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreException {
-        ValueDatatype datatype = findDatatype(ipsProject);
-        if (DatatypeUtil.isExtensibleEnumType(datatype)) {
-            EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)datatype;
+        ValueDatatype foundDatatype = findDatatype(ipsProject);
+        if (DatatypeUtil.isExtensibleEnumType(foundDatatype)) {
+            EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)foundDatatype;
             return new EnumTypeDatatypeAdapter(enumDatatype.getEnumType(), null);
         }
-        return datatype;
+        return foundDatatype;
     }
 
     @Override
