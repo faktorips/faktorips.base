@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.enums;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -35,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements IEnumLiteralNameAttributeValue {
 
-    public EnumLiteralNameAttributeValue(IEnumValue parent, String id) throws CoreException {
+    public EnumLiteralNameAttributeValue(EnumValue parent, String id) throws CoreException {
         super(parent, id);
     }
 
