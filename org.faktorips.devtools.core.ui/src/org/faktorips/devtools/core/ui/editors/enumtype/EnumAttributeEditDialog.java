@@ -16,14 +16,11 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -46,6 +43,7 @@ import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controls.InfoLabel;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.util.StringUtil;
@@ -98,8 +96,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The canvas. */
     private Composite workArea;
 
-    private Label mismatchLabel;
-    private Label mismatchLabelImage;
+    private InfoLabel infoLabel;
 
     /**
      * Flag indicating whether the given <tt>IEnumAttribute</tt> is a
@@ -160,10 +157,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Composite control = createTabItemComposite(tabFolder, 1, false);
         workArea = getToolkit().createLabelEditColumnComposite(control);
 
-        getToolkit().createVerticalSpacer(control, 50);
-        Composite messageLabelComposite = getToolkit().createGridComposite(control, 2, false, false);
-        mismatchLabelImage = getToolkit().createLabel(messageLabelComposite, StringUtils.EMPTY);
-        mismatchLabel = getToolkit().createLabel(messageLabelComposite, StringUtils.EMPTY);
+        createInfoLabel(control);
 
         // Create extension properties on position top.
         extFactory.createControls(workArea, getToolkit(), enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
@@ -183,6 +177,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         nameText.setFocus();
 
         return control;
+    }
+
+    private void createInfoLabel(Composite control) {
+        getToolkit().createVerticalSpacer(control, 20);
+        infoLabel = new InfoLabel(control);
     }
 
     /** Creates the UI fields for a <tt>IEnumLiteralNameAttribute</tt>. */
@@ -350,13 +349,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
             if (!literalNameAttribute) {
-                updateHintText(changedPart);
+                updateInfoText(changedPart);
             }
         }
     }
 
-    private void updateHintText(IEnumAttribute enumAttribute) {
-        resetHintText();
+    private void updateInfoText(IEnumAttribute enumAttribute) {
+        resetInfoText();
         checkValueTypeMismatch(enumAttribute);
         checkEnumTypeAndDatatypeEnumTypeExtensible(enumAttribute);
     }
@@ -367,9 +366,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 .getLanguage();
         ValueTypeMismatch typeMismatch = enumType.checkValueTypeMismatch(enumAttribute);
         if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
-            setHintText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
+            setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
         } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
-            setHintText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
+            setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
         }
     }
 
@@ -378,7 +377,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         try {
             Datatype ipsDatatype = enumType.getIpsProject().findDatatype(enumAttribute.getDatatype());
             if (enumType.isExtensible() && DatatypeUtil.isExtensibleEnumType(ipsDatatype)) {
-                setHintText(NLS.bind(Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
+                setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
                         StringUtil.unqualifiedName(ipsDatatype.getQualifiedName())));
             }
         } catch (CoreException e) {
@@ -386,15 +385,12 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
     }
 
-    private void setHintText(String text) {
-        mismatchLabelImage.setImage(JFaceResources.getImage(DLG_IMG_MESSAGE_INFO));
-        mismatchLabel.setText(text);
-        mismatchLabel.getParent().pack();
+    private void setInfoText(String text) {
+        infoLabel.setInfoText(text);
     }
 
-    private void resetHintText() {
-        mismatchLabelImage.setImage(null);
-        mismatchLabel.setText(StringUtils.EMPTY);
+    private void resetInfoText() {
+        infoLabel.setInfoText(null);
     }
 
     private void inheritedChanged() {
