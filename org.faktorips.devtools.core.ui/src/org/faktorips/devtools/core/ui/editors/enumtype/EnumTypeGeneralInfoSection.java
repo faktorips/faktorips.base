@@ -162,6 +162,12 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     }
 
     private void createEnumContentSpecificationAndBoundary(Composite composite, UIToolkit toolkit) {
+        Composite newComposite = createEnumContentSpecification(composite, toolkit);
+        createEnumContentBoundary(toolkit, newComposite);
+        bind();
+    }
+
+    private Composite createEnumContentSpecification(Composite composite, UIToolkit toolkit) {
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
 
         Composite newComposite = new Composite(composite, 0);
@@ -175,15 +181,21 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         enumContentNameControl = new TextField(text);
         toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && enumType.isExtensible());
-        getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+        return newComposite;
+    }
 
+    private void createEnumContentBoundary(UIToolkit toolkit, Composite newComposite) {
         Label label = toolkit.createFormLabel(newComposite, Messages.EnumTypeGeneralInfoSection_IdentifierBoundary);
         GridData gridData = new GridData(SWT.RIGHT, SWT.END, true, false);
         gridData.horizontalIndent = 50;
         label.setLayoutData(gridData);
-
+    
         boundaryText = toolkit.createText(newComposite);
         boundaryText.setToolTipText(Messages.EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText);
+    }
+
+    private void bind() {
+        getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
         getBindingContext().bindContent(boundaryText, enumType, IEnumType.PROPERTY_IDENTIFIER_BOUNDARY);
     }
 
