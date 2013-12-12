@@ -617,7 +617,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragmentBuilder enumDefinitionBuilder) throws CoreException {
         List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
         IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(getEnumType()
-                .getIndexOfEnumAttribute(literalNameAttribute));
+                .getIndexOfEnumAttribute(literalNameAttribute, true));
         currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
 
         // Create enumeration definition source fragment

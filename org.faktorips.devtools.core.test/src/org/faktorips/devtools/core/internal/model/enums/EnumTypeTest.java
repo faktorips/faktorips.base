@@ -758,14 +758,30 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetIndexOfEnumAttribute() throws CoreException {
-        assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
-        assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
+        assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId, true));
+        assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName, true));
 
         genderEnumType.moveEnumAttribute(genderEnumAttributeName, true);
-        assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
-        assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
+        assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId, true));
+        assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName, true));
 
-        assertEquals(-1, genderEnumType.getIndexOfEnumAttribute(paymentMode.getEnumAttributes(false).get(0)));
+        assertEquals(-1, genderEnumType.getIndexOfEnumAttribute(paymentMode.getEnumAttributes(false).get(0), true));
+    }
+
+    @Test
+    public void testGetIndexOfEnumAttributeIEnumAttributeBoolean_considerLiteralName() throws Exception {
+        IEnumAttribute identiferAttribute = paymentMode.findIdentiferAttribute(ipsProject);
+        int indexOfEnumAttribute = paymentMode.getIndexOfEnumAttribute(identiferAttribute, true);
+
+        assertEquals(1, indexOfEnumAttribute);
+    }
+
+    @Test
+    public void testGetIndexOfEnumAttributeIEnumAttributeBoolean_ignoreLiteralName() throws Exception {
+        IEnumAttribute identiferAttribute = paymentMode.findIdentiferAttribute(ipsProject);
+        int indexOfEnumAttribute = paymentMode.getIndexOfEnumAttribute(identiferAttribute, false);
+
+        assertEquals(0, indexOfEnumAttribute);
     }
 
     @Test
@@ -1216,4 +1232,5 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
             counter++;
         }
     }
+
 }

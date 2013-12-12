@@ -199,16 +199,6 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * Returns the <tt>IEnumAttributeValue</tt> referencing the <tt>IEnumLiteralNameAttribute</tt>
      * or <tt>null</tt> if there exists none or this <tt>IEnumValue</tt> is part of an
      * <tt>IEnumContent</tt>.
-     * 
-     * @deprecated Since version 3.0 {@link #getEnumLiteralNameAttributeValue()} should be used.
-     */
-    @Deprecated
-    public IEnumAttributeValue getLiteralNameAttributeValue();
-
-    /**
-     * Returns the <tt>IEnumAttributeValue</tt> referencing the <tt>IEnumLiteralNameAttribute</tt>
-     * or <tt>null</tt> if there exists none or this <tt>IEnumValue</tt> is part of an
-     * <tt>IEnumContent</tt>.
      */
     public IEnumLiteralNameAttributeValue getEnumLiteralNameAttributeValue();
 

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.isNull;
 
 import java.util.List;
 
@@ -36,7 +35,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -502,8 +500,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         assertNotSame(genderEnumAttributeId.findDatatype(ipsProject), datatype);
         assertThat(datatype, is(EnumTypeDatatypeAdapter.class));
-        assertThat(((EnumTypeDatatypeAdapter)datatype).getEnumContent(), is(isNull(IEnumContent.class)));
+        assertNull(((EnumTypeDatatypeAdapter)datatype).getEnumContent());
         assertThat((EnumType)((EnumTypeDatatypeAdapter)datatype).getEnumType(), is(paymentMode));
     }
-
 }

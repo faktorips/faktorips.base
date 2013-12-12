@@ -351,12 +351,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (up) {
             // Can't move further up any more.
             if (enumAttribute == enumAttributes.getPart(0)) {
-                return getIndexOfEnumAttribute(enumAttribute);
+                return getIndexOfEnumAttribute(enumAttribute, true);
             }
         } else {
             // Can't move further down any more.
             if (enumAttribute == enumAttributes.getPart(enumAttributes.size() - 1)) {
-                return getIndexOfEnumAttribute(enumAttribute);
+                return getIndexOfEnumAttribute(enumAttribute, true);
             }
         }
 
@@ -365,7 +365,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
             @Override
             public boolean execute() throws CoreException {
-                int indexToMove = getIndexOfEnumAttribute(enumAttribute);
+                int indexToMove = getIndexOfEnumAttribute(enumAttribute, true);
                 // Move the EnumAttribute.
                 newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
                 // Move the EnumAttributeValues of the EnumValues of this EnumType.
@@ -382,10 +382,28 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         });
     }
 
+    /**
+     * @deprecated Since 3.11 use {@link #getIndexOfEnumAttribute(IEnumAttribute,boolean)} instead
+     *             because in the case of enum contents there we need to ignore the literal name
+     *             column if we want to get the column index
+     */
+    @Deprecated
     @Override
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
+        return getIndexOfEnumAttribute(enumAttribute, true);
+    }
+
+    @Override
+    public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute, boolean considerLiteralName) {
         ArgumentCheck.notNull(enumAttribute);
-        return enumAttributes.indexOf(enumAttribute);
+        int indexOf = enumAttributes.indexOf(enumAttribute);
+        if (!considerLiteralName) {
+            int indexOfEnumLiteralNameAttribute = getIndexOfEnumLiteralNameAttribute();
+            if (indexOfEnumLiteralNameAttribute >= 0 && indexOfEnumLiteralNameAttribute < indexOf) {
+                return indexOf - 1;
+            }
+        }
+        return indexOf;
     }
 
     @Override
@@ -781,7 +799,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues) {
         boolean deleteEnumValues = false;
         for (IEnumValue currentEnumValue : enumValues) {
-            int index = getIndexOfEnumAttribute(enumAttribute);
+            int index = getIndexOfEnumAttribute(enumAttribute, true);
             currentEnumValue.getEnumAttributeValues().get(index).delete();
             deleteEnumValues = currentEnumValue.getEnumAttributeValuesCount() == 0;
         }

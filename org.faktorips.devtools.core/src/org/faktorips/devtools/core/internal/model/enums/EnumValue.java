@@ -184,7 +184,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         if (enumAttribute == null) {
             return null;
         }
-        int attributeIndex = enumAttribute.getEnumType().getIndexOfEnumAttribute(enumAttribute);
+        int attributeIndex = enumAttribute.getEnumType().getIndexOfEnumAttribute(enumAttribute,
+                getEnumValueContainer() instanceof IEnumType);
         if (enumAttributeValues.size() - 1 < attributeIndex) {
             return null;
         }
@@ -233,11 +234,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue) {
         ArgumentCheck.notNull(enumAttributeValue);
         return enumAttributeValues.indexOf(enumAttributeValue);
-    }
-
-    @Override
-    public IEnumAttributeValue getLiteralNameAttributeValue() {
-        return getEnumLiteralNameAttributeValue();
     }
 
     @Override

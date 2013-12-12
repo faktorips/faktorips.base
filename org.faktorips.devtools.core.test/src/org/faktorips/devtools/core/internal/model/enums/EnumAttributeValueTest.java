@@ -46,6 +46,9 @@ import org.w3c.dom.Element;
 
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
+    private static final String TYPE_ID = "typeId";
+    private static final String CONTENT_ID = "contentId";
+    private static final String PAYMENT_CONTENT = "paymentContent";
     private IEnumAttributeValue maleIdAttributeValue;
     private IEnumAttributeValue maleNameAttributeValue;
 
@@ -303,6 +306,44 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
         maleNameAttributeValue.fixValueType(true);
         assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
+    }
+
+    @Test
+    public void testValidate_referenceExtensibleEnumValueInContent() throws Exception {
+        IEnumValue newEnumValue = createEnumValueWithEnumReference(CONTENT_ID);
+
+        MessageList messageList = newEnumValue.validate(ipsProject);
+
+        assertNotNull(messageList
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+    }
+
+    @Test
+    public void testValidate_referenceExtensibleEnumValueInType() throws Exception {
+        IEnumValue newEnumValue = createEnumValueWithEnumReference(TYPE_ID);
+
+        MessageList messageList = newEnumValue.validate(ipsProject);
+
+        assertNull(messageList
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+    }
+
+    private IEnumValue createEnumValueWithEnumReference(String refId) throws CoreException {
+        genderEnumType.setExtensible(true);
+        genderEnumType.newEnumLiteralNameAttribute();
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName(PAYMENT_CONTENT);
+        EnumContent newEnumContent = newEnumContent(paymentMode, PAYMENT_CONTENT);
+        paymentMode.newEnumValue().getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue(TYPE_ID));
+        newEnumContent.newEnumValue().getEnumAttributeValues().get(0)
+                .setValue(ValueFactory.createStringValue(CONTENT_ID));
+        genderEnumAttributeName.setDatatype(paymentMode.getName());
+        IEnumValue newEnumValue = genderEnumType.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("id1"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue(refId));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("LITERAL"));
+        return newEnumValue;
     }
 
 }
