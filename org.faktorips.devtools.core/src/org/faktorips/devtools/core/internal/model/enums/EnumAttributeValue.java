@@ -146,15 +146,19 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private IEnumAttribute getEnumAttribute(IEnumType enumType) {
         IEnumValue enumValue = getEnumValue();
 
+        IEnumValueContainer valueContainer = enumValue.getEnumValueContainer();
+
         // Check number of EnumAttributeValues matching number of EnumAttributes.
         int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
-        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(true);
+        boolean includeLiteralName = valueContainer instanceof IEnumType;
+
+        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
         if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount()) || attributeValueIndex == -1
                 || enumAttributesCount < attributeValueIndex + 1) {
             return null;
         }
 
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
         return enumAttributes.get(attributeValueIndex);
     }
 

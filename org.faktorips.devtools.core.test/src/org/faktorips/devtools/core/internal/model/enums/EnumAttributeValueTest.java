@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Locale;
@@ -61,14 +60,13 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(1);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testFindEnumAttribute_failOnNull() {
+        maleIdAttributeValue.findEnumAttribute(null);
+    }
+
     @Test
     public void testFindEnumAttribute() throws CoreException {
-        try {
-            maleIdAttributeValue.findEnumAttribute(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
-
         assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute(ipsProject));
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute(ipsProject));
 
@@ -154,17 +152,19 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setExtensible(false);
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
 
-        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(2);
-        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
-        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
+        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
+        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
+        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(5);
 
         stringNewAttributeValue.setValue(ValueFactory.createStringValue("String"));
         integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
         booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
 
-        assertTrue(stringNewAttributeValue.isValid(ipsProject));
-        assertTrue(integerNewAttributeValue.isValid(ipsProject));
-        assertTrue(booleanNewAttributeValue.isValid(ipsProject));
+        assertTrue(stringNewAttributeValue.validate(ipsProject).toString(), stringNewAttributeValue.isValid(ipsProject));
+        assertTrue(integerNewAttributeValue.validate(ipsProject).toString(),
+                integerNewAttributeValue.isValid(ipsProject));
+        assertTrue(booleanNewAttributeValue.validate(ipsProject).toString(),
+                booleanNewAttributeValue.isValid(ipsProject));
 
         IIpsModel ipsModel = getIpsModel();
 
@@ -324,13 +324,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         MessageList messageList = newEnumValue.validate(ipsProject);
 
-        assertNull(messageList
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        assertNull(
+                IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE
+                        + "not expected but message list was: " + messageList.toString(),
+                messageList
+                        .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }
 
     private IEnumValue createEnumValueWithEnumReference(String refId) throws CoreException {
-        genderEnumType.setExtensible(true);
-        genderEnumType.newEnumLiteralNameAttribute();
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName(PAYMENT_CONTENT);
         EnumContent newEnumContent = newEnumContent(paymentMode, PAYMENT_CONTENT);
@@ -340,9 +341,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeName.setDatatype(paymentMode.getName());
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
         List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
-        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("id1"));
-        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue(refId));
-        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("LITERAL"));
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("LITERAL"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("id1"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue(refId));
         return newEnumValue;
     }
 

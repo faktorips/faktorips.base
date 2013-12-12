@@ -98,9 +98,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     private void fixEnumAttributeValueAfterConstructing(IEnumAttributeValue enumAttributeValue) {
-        IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+        IEnumValueContainer enumValueContainer = getEnumValueContainer();
+        IEnumType enumType = enumValueContainer.findEnumType(getIpsProject());
         if (enumType != null) {
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+            List<IEnumAttribute> enumAttributes = enumType
+                    .getEnumAttributesIncludeSupertypeCopies(enumValueContainer instanceof IEnumType);
             int index = getEnumAttributeValuesCount() - 1;
             if (enumAttributes.size() > index) {
                 IEnumAttribute enumAttribute = enumAttributes.get(index);
