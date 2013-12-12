@@ -260,17 +260,17 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             getToolkit().setDataChangeable(textControl, !(enumType.isAbstract()) && (enumType.isExtensible()));
         }
         if (!boundaryText.isDisposed()) {
-            getToolkit().setDataChangeable(boundaryText, !enumType.isAbstract() && isBoundaryTextEnable());
+            getToolkit().setDataChangeable(boundaryText, isBoundaryTextEnabled());
         }
     }
 
-    private boolean isBoundaryTextEnable() {
+    private boolean isBoundaryTextEnabled() {
         boolean supportCompare = false;
         ValueDatatype datatype = getIdentifierAttributeDatatype();
         if (datatype != null) {
             supportCompare = datatype.supportsCompare();
         }
-        return enumType.isExtensible() && supportCompare;
+        return enumType.isExtensible() && supportCompare && !enumType.isAbstract();
     }
 
     private ValueDatatype getIdentifierAttributeDatatype() {
@@ -291,7 +291,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         super.refresh();
         getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && enumType.isExtensible());
-        getToolkit().setDataChangeable(boundaryText, !enumType.isAbstract() && isBoundaryTextEnable());
+        getToolkit().setDataChangeable(boundaryText, !enumType.isAbstract() && isBoundaryTextEnabled());
         extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
     }
 
