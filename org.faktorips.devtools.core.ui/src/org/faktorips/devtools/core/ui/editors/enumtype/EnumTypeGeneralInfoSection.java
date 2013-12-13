@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
@@ -156,9 +157,9 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     private void createExtensibleCheckbox(UIToolkit toolkit, Composite composite) {
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
         extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
         ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox);
         getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
+        getBindingContext().bindEnabled(extensibleCheckbox, new Pmo(), Pmo.PROPERTY_EXTENSIBLE_CHECKBOX);
     }
 
     private void createEnumContentSpecificationAndBoundary(Composite composite, UIToolkit toolkit) {
@@ -179,8 +180,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         Text text = toolkit.createText(newComposite);
         enumContentNameControl = new TextField(text);
-        toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && enumType.isExtensible());
         return newComposite;
     }
 
@@ -196,7 +195,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private void bind() {
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+        getBindingContext().bindEnabled(enumContentNameControl.getControl(), new Pmo(),
+                Pmo.PROPERTY_ENUM_CONTENT_NAME_CONTROL);
         getBindingContext().bindContent(boundaryText, enumType, IEnumType.PROPERTY_IDENTIFIER_BOUNDARY);
+        getBindingContext().bindEnabled(boundaryText, new Pmo(), Pmo.PROPERTY_BOUNDARY_TEXT);
     }
 
     private void registerFocusHandling() {
@@ -219,15 +221,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
 
         try {
-            switch (event.getEventType()) {
-                case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                    wholeContentChanged();
-                    //$FALL-THROUGH$
-
-                case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                    propertyChanged();
-                    break;
-            }
+            propertyChanged();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -254,45 +248,43 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
     }
 
-    private void wholeContentChanged() {
-        Text textControl = enumContentNameControl.getTextControl();
-        if (!textControl.isDisposed()) {
-            getToolkit().setDataChangeable(textControl, !(enumType.isAbstract()) && (enumType.isExtensible()));
-        }
-        if (!boundaryText.isDisposed()) {
-            getToolkit().setDataChangeable(boundaryText, isBoundaryTextEnabled());
-        }
-    }
+    public class Pmo extends IpsObjectPartPmo {
+        public static final String PROPERTY_EXTENSIBLE_CHECKBOX = "extensibleCheckboxEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_ENUM_CONTENT_NAME_CONTROL = "enumContentNameControlEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_BOUNDARY_TEXT = "boundaryTextEnabled"; //$NON-NLS-1$
 
-    private boolean isBoundaryTextEnabled() {
-        boolean supportCompare = false;
-        ValueDatatype datatype = getIdentifierAttributeDatatype();
-        if (datatype != null) {
-            supportCompare = datatype.supportsCompare();
+        public boolean isExtensibleCheckboxEnabled() {
+            return !enumType.isAbstract();
         }
-        return enumType.isExtensible() && supportCompare && !enumType.isAbstract();
-    }
 
-    private ValueDatatype getIdentifierAttributeDatatype() {
-        IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
-        ValueDatatype datatype = null;
-        if (identiferAttribute != null) {
-            try {
-                datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
-            } catch (CoreException e) {
-                new CoreRuntimeException(e);
+        public boolean isEnumContentNameControlEnabled() {
+            return !(enumType.isAbstract()) && (enumType.isExtensible());
+        }
+
+        public boolean isBoundaryTextEnabled() {
+            return isIdentifierBoundaryTextEnabled();
+        }
+
+        private boolean isIdentifierBoundaryTextEnabled() {
+            boolean supportCompare = false;
+            ValueDatatype datatype = getIdentifierAttributeDatatype();
+            if (datatype != null) {
+                supportCompare = datatype.supportsCompare();
             }
+            return enumType.isExtensible() && supportCompare && !enumType.isAbstract();
         }
-        return datatype;
-    }
 
-    @Override
-    public void refresh() {
-        super.refresh();
-        getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && enumType.isExtensible());
-        getToolkit().setDataChangeable(boundaryText, !enumType.isAbstract() && isBoundaryTextEnabled());
-        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
+        private ValueDatatype getIdentifierAttributeDatatype() {
+            IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
+            ValueDatatype datatype = null;
+            if (identiferAttribute != null) {
+                try {
+                    datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
+                } catch (CoreException e) {
+                    new CoreRuntimeException(e);
+                }
+            }
+            return datatype;
+        }
     }
-
 }
