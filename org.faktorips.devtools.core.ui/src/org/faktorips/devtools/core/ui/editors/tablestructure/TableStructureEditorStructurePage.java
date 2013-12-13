@@ -62,14 +62,17 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
     }
 
     private void updatePageMessage() {
-        boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasIndexWithSameDatatype();
+        if (!getManagedForm().getForm().isDisposed()) {
+            boolean hasUniqueKeysWithSameDatatype = getTableStructure().hasIndexWithSameDatatype();
 
-        if (hasUniqueKeysWithSameDatatype) {
-            getManagedForm().getForm().setMessage(
-                    Messages.TableStructureEditorStructurePage_warningUniqueKeysWithSameDatatypes,
-                    IMessageProvider.WARNING);
-        } else {
-            getManagedForm().getForm().setMessage(null, IMessageProvider.NONE);
+            if (hasUniqueKeysWithSameDatatype) {
+                getManagedForm().getForm().setMessage(
+                        Messages.TableStructureEditorStructurePage_warningUniqueKeysWithSameDatatypes,
+                        IMessageProvider.WARNING);
+            } else {
+
+                getManagedForm().getForm().setMessage(null, IMessageProvider.NONE);
+            }
         }
     }
 
@@ -84,7 +87,9 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
 
     @Override
     public void dispose() {
-        getTableStructure().getIpsModel().removeChangeListener(contentsChangeListener);
+        if (getTableStructure() != null) {
+            getTableStructure().getIpsModel().removeChangeListener(contentsChangeListener);
+        }
         super.dispose();
     }
 

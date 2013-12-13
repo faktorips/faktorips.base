@@ -136,7 +136,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      */
     private void reinitEnumValuesByIdentifierMap() {
         enumValuesByIdentifier.clear();
-        for (IEnumValue enumValue : findAggregatedEnumValues()) {
+        List<IEnumValue> aggregatedEnumValues = findAggregatedEnumValues();
+        for (IEnumValue enumValue : aggregatedEnumValues) {
             IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(identifierAttribute);
             if (enumAttributeValue == null) {
                 continue;
@@ -159,7 +160,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
          * very possible that such an enum value exists (because the map might not be up-to-date,
          * e.g. if the identifier value has been changed).
          */
-        for (IEnumValue currentEnumValue : findAggregatedEnumValues()) {
+        List<IEnumValue> aggregatedEnumValues = findAggregatedEnumValues();
+        for (IEnumValue currentEnumValue : aggregatedEnumValues) {
             IEnumAttributeValue enumAttributeValue = currentEnumValue.getEnumAttributeValue(identifierAttribute);
             if (enumAttributeValue == null) {
                 continue;

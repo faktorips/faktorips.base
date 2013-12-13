@@ -32,6 +32,8 @@ import org.junit.Test;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
+    private static final String PAYMENT_CONTENT = "paymentContent";
+
     @Test
     public void testNewEnumAttributeValue() throws CoreException {
         IEnumAttributeValue newEnumAttributeValue = genderEnumValueMale.newEnumAttributeValue();
@@ -100,6 +102,22 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testGetEnumAttributeValue_extensibleContent() throws CoreException {
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName(PAYMENT_CONTENT);
+        EnumContent enumContent = newEnumContent(paymentMode, PAYMENT_CONTENT);
+        IEnumValue enumValue = enumContent.newEnumValue();
+        enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("idValue"));
+        enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("nameValue"));
+
+        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(paymentMode
+                .findIdentiferAttribute(ipsProject));
+
+        assertEquals(2, enumValue.getEnumAttributeValues().size());
+        assertEquals("idValue", enumAttributeValue.getStringValue());
+    }
+
+    @Test
     public void testSetEnumAttributeValueAttributeGiven() throws CoreException {
         try {
             genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, ValueFactory.createStringValue(""));
@@ -148,15 +166,6 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         List<IEnumAttributeValue> uniqueAttributeValues = value.findUniqueEnumAttributeValues(
                 paymentMode.findUniqueEnumAttributes(true, ipsProject), ipsProject);
         assertEquals(3, uniqueAttributeValues.size());
-    }
-
-    @SuppressWarnings("deprecation")
-    // Test of deprecated method.
-    @Test
-    public void testGetLiteralNameAttributeValue() {
-        assertNull(genderEnumValueMale.getLiteralNameAttributeValue());
-        IEnumValue value = paymentMode.getEnumValues().get(0);
-        assertEquals("MONTHLY", value.getLiteralNameAttributeValue().getStringValue());
     }
 
     @Test

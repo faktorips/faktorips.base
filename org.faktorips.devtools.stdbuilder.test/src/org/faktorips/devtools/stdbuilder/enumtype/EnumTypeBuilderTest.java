@@ -30,8 +30,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumContent;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -262,60 +265,60 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-        public void testGetLiteralNamesForConstant_empty() throws Exception {
-            List<String> literalNames = builder.getLiteralNamesForConstant(new ArrayList<IEnumValue>());
-    
-            assertTrue(literalNames.isEmpty());
-        }
+    public void testGetLiteralNamesForConstant_empty() throws Exception {
+        List<String> literalNames = builder.getLiteralNamesForConstant(new ArrayList<IEnumValue>());
+
+        assertTrue(literalNames.isEmpty());
+    }
 
     @Test
-        public void testGetLiteralNamesForConstant_noDublicates() throws Exception {
-            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-            enumValues.add(mockEnumValue("abc"));
-            enumValues.add(mockEnumValue("xyz"));
-            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
-    
-            assertEquals(Arrays.asList("ABC", "XYZ"), literalNames);
-        }
+    public void testGetLiteralNamesForConstant_noDublicates() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("abc"));
+        enumValues.add(mockEnumValue("xyz"));
+        List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+
+        assertEquals(Arrays.asList("ABC", "XYZ"), literalNames);
+    }
 
     @Test
-        public void testGetLiteralNamesForConstant_withTwoDublicates() throws Exception {
-            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-            enumValues.add(mockEnumValue("_123"));
-            enumValues.add(mockEnumValue("-123"));
-            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
-    
-            assertEquals(Arrays.asList("_123_1", "_123_2"), literalNames);
-        }
+    public void testGetLiteralNamesForConstant_withTwoDublicates() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("_123"));
+        enumValues.add(mockEnumValue("-123"));
+        List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+
+        assertEquals(Arrays.asList("_123_1", "_123_2"), literalNames);
+    }
 
     @Test
-        public void testGetLiteralNamesForConstant_withMoreDublicates() throws Exception {
-            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-            enumValues.add(mockEnumValue("_123"));
-            enumValues.add(mockEnumValue("-123"));
-            enumValues.add(mockEnumValue("+123"));
-            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
-    
-            assertEquals(Arrays.asList("_123_1", "_123_2", "_123_3"), literalNames);
-        }
+    public void testGetLiteralNamesForConstant_withMoreDublicates() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("_123"));
+        enumValues.add(mockEnumValue("-123"));
+        enumValues.add(mockEnumValue("+123"));
+        List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+
+        assertEquals(Arrays.asList("_123_1", "_123_2", "_123_3"), literalNames);
+    }
 
     @Test
-        public void testGetLiteralNamesForConstant_withMoreDublicatesAndOtherValues() throws Exception {
-            ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
-            enumValues.add(mockEnumValue("abc"));
-            enumValues.add(mockEnumValue("_123"));
-            enumValues.add(mockEnumValue("xyz"));
-            enumValues.add(mockEnumValue("-123"));
-            enumValues.add(mockEnumValue("foo"));
-            enumValues.add(mockEnumValue("bar"));
-            enumValues.add(mockEnumValue("123"));
-            enumValues.add(mockEnumValue("+123"));
-            enumValues.add(mockEnumValue("blub"));
-            List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
-    
-            assertEquals(Arrays.asList("ABC", "_123_1", "XYZ", "_123_2", "FOO", "BAR", "_123_3", "_123_4", "BLUB"),
-                    literalNames);
-        }
+    public void testGetLiteralNamesForConstant_withMoreDublicatesAndOtherValues() throws Exception {
+        ArrayList<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        enumValues.add(mockEnumValue("abc"));
+        enumValues.add(mockEnumValue("_123"));
+        enumValues.add(mockEnumValue("xyz"));
+        enumValues.add(mockEnumValue("-123"));
+        enumValues.add(mockEnumValue("foo"));
+        enumValues.add(mockEnumValue("bar"));
+        enumValues.add(mockEnumValue("123"));
+        enumValues.add(mockEnumValue("+123"));
+        enumValues.add(mockEnumValue("blub"));
+        List<String> literalNames = builder.getLiteralNamesForConstant(enumValues);
+
+        assertEquals(Arrays.asList("ABC", "_123_1", "XYZ", "_123_2", "FOO", "BAR", "_123_3", "_123_4", "BLUB"),
+                literalNames);
+    }
 
     private IEnumValue mockEnumValue(String id) {
         IEnumValue enumValue = mock(IEnumValue.class);
@@ -323,6 +326,53 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         doReturn(ValueFactory.createStringValue(id)).when(enumAttributeValue).getValue();
         when(enumValue.getEnumAttributeValue(null)).thenReturn(enumAttributeValue);
         return enumValue;
+    }
+
+    @Test
+    public void testGetNewInstanceCodeFragement_inextensibleEnum() throws Exception {
+        EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumType.newEnumLiteralNameAttribute();
+        enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("1"));
+        enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("name"));
+        enumValue.getEnumAttributeValues().get(3).setValue(ValueFactory.createStringValue("ABC"));
+
+        JavaCodeFragment codeFragement = builder.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+
+        assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
+    }
+
+    @Test
+    public void testGetNewInstanceCodeFragement_extensibleEnum() throws Exception {
+        enumType.setExtensible(true);
+        EnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
+        EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, enumContent);
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumType.newEnumLiteralNameAttribute();
+        enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("1"));
+        enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("name"));
+        enumValue.getEnumAttributeValues().get(3).setValue(ValueFactory.createStringValue("ABC"));
+
+        JavaCodeFragment codeFragement = builder.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+
+        assertEquals(
+                "this.getRepository().getEnumValue(TestEnumType.class, (\"1\"==null || \"1\".equals(\"\")) ? null : new Integer(\"1\"))",
+                codeFragement.getSourcecode());
+    }
+
+    @Test
+    public void testGetNewInstanceCodeFragement_extensibleEnumWithoutContent() throws Exception {
+        enumType.setExtensible(true);
+        EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumType.newEnumLiteralNameAttribute();
+        enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("1"));
+        enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("name"));
+        enumValue.getEnumAttributeValues().get(3).setValue(ValueFactory.createStringValue("ABC"));
+
+        JavaCodeFragment codeFragement = builder.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+
+        assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
     }
 
 }

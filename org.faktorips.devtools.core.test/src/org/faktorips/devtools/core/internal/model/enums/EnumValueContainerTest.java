@@ -297,7 +297,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testFindEnumValue_ForContentInType() throws CoreException {
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
-        newEnumValue.setEnumAttributeValue(0, ValueFactory.createStringValue("test1"));
+        newEnumValue.setEnumAttributeValue(1, ValueFactory.createStringValue("test1"));
         assertNotNull(genderEnumContent.findEnumValue("test1", ipsProject));
     }
 

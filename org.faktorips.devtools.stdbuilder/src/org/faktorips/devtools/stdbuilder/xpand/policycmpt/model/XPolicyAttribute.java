@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -563,43 +562,6 @@ public class XPolicyAttribute extends XAttribute {
         } else {
             return prefix + "_SET_OF_ALLOWED_VALUES";
         }
-    }
-
-    /**
-     * Returns the getValueByIdentifier code if and only if this attribute's datatype is an enum
-     * type with separate content.
-     * 
-     * @throws NullPointerException if this attribute's datatype is no enum of if there are no
-     *             separate contents.
-     */
-    public String getValueByIdentifier(String expression, String repositoryExpression) {
-        try {
-            EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForExtensibleEnum();
-            JavaCodeFragment valueByIdentifierFragment = enumHelper.getEnumTypeBuilder()
-                    .getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expression,
-                            new JavaCodeFragment(repositoryExpression));
-            return valueByIdentifierFragment.getSourcecode();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    /**
-     * Returns the {@link EnumTypeDatatypeHelper} if and only if this attribute's datatype is an
-     * enum type with separate content.
-     * 
-     * @throws NullPointerException if this attribute's datatype is no enum of if there are no
-     *             separate contents.
-     */
-    private EnumTypeDatatypeHelper getDatatypeHelperForExtensibleEnum() {
-        if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
-            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
-            if (enumHelper.getEnumType().isExtensible()) {
-                return enumHelper;
-            }
-        }
-        throw new NullPointerException(NLS.bind("The datatype of attribute {0} is no enum type with separate content.",
-                getAttribute()));
     }
 
     /**
