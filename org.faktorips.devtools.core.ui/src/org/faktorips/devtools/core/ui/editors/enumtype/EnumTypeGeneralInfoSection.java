@@ -112,12 +112,15 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
-        Composite composite = toolkit.createLabelEditColumnComposite(client);
+        Composite composite = toolkit.createGridComposite(client, 4, false, true);
+        toolkit.getFormToolkit().paintBordersFor(composite);
 
         createSuperclassLink(toolkit, composite);
         createSupertypeRefControl(toolkit, composite);
         createIsAbstractCheckbox(toolkit, composite);
         createExtensibleCheckbox(toolkit, composite);
+        toolkit.createHorizontalSpacer(composite, 0);
+        toolkit.createHorizontalSpacer(composite, 0);
         createEnumContentSpecificationAndBoundary(composite, toolkit);
         registerFocusHandling();
         createExtensionControl(toolkit, composite);
@@ -142,48 +145,43 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private EnumTypeRefControl createSupertypeRefControl(UIToolkit toolkit, Composite composite) {
         supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite, true);
+        ((GridData)supertypeRefControl.getLayoutData()).horizontalSpan = 3;
         supertypeRefControl.setCurrentEnumType(enumType);
         getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
         return supertypeRefControl;
     }
 
     private Button createIsAbstractCheckbox(UIToolkit toolkit, Composite composite) {
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
-        isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        // toolkit.createFormLabel(composite, );
+        isAbstractCheckbox = toolkit.createButton(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract,
+                SWT.CHECK);
         getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
         return isAbstractCheckbox;
     }
 
     private void createExtensibleCheckbox(UIToolkit toolkit, Composite composite) {
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
-        extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
+        // toolkit.createFormLabel(composite, );
+        extensibleCheckbox = toolkit.createButton(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible,
+                SWT.CHECK);
         ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox);
         getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
         getBindingContext().bindEnabled(extensibleCheckbox, new Pmo(), Pmo.PROPERTY_EXTENSIBLE_CHECKBOX);
     }
 
     private void createEnumContentSpecificationAndBoundary(Composite composite, UIToolkit toolkit) {
-        Composite newComposite = createEnumContentSpecification(composite, toolkit);
-        createEnumContentBoundary(toolkit, newComposite);
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
+
+        createEnumContentText(toolkit, composite);
+        createIdentifierBoundaryField(toolkit, composite);
         bind();
     }
 
-    private Composite createEnumContentSpecification(Composite composite, UIToolkit toolkit) {
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
-
-        Composite newComposite = new Composite(composite, 0);
-        newComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        GridLayout layout = new GridLayout(3, false);
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        newComposite.setLayout(layout);
-
+    private void createEnumContentText(UIToolkit toolkit, Composite newComposite) {
         Text text = toolkit.createText(newComposite);
         enumContentNameControl = new TextField(text);
-        return newComposite;
     }
 
-    private void createEnumContentBoundary(UIToolkit toolkit, Composite newComposite) {
+    private void createIdentifierBoundaryField(UIToolkit toolkit, Composite newComposite) {
         Label label = toolkit.createFormLabel(newComposite, Messages.EnumTypeGeneralInfoSection_IdentifierBoundary);
         GridData gridData = new GridData(SWT.RIGHT, SWT.END, true, false);
         gridData.horizontalIndent = 50;
