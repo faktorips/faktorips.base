@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
@@ -94,7 +93,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetSetIdentifierBoundary() {
-        assertEquals(StringUtils.EMPTY, genderEnumType.getIdentifierBoundary());
+        assertEquals(null, genderEnumType.getIdentifierBoundary());
         genderEnumType.setIdentifierBoundary("100");
         assertEquals("100", genderEnumType.getIdentifierBoundary());
     }
@@ -457,6 +456,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_EXTENSIBLE)));
+        assertTrue(xmlElement.hasAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
         assertEquals("100", xmlElement.getAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_NAME));
@@ -468,6 +468,24 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals("100", loadedEnumType.getIdentifierBoundary());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
         assertEquals("bar", loadedEnumType.getEnumContentName());
+    }
+
+    @Test
+    public void testXmlBoundary() throws CoreException, ParserConfigurationException {
+        IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
+        newEnumType.setAbstract(true);
+        newEnumType.setExtensible(true);
+        newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        newEnumType.setEnumContentName("bar");
+        newEnumType.newEnumAttribute();
+
+        Element xmlElement = newEnumType.toXml(createXmlDocument(IEnumType.XML_TAG));
+
+        assertFalse(xmlElement.hasAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
+
+        IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
+        loadedEnumType.initFromXml(xmlElement);
+        assertEquals(null, loadedEnumType.getIdentifierBoundary());
     }
 
     public void testIsExtensibleAndSavingValuesInType() throws CoreException {

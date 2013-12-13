@@ -95,7 +95,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         superEnumType = StringUtils.EMPTY;
         extensible = false;
-        identifierBoundary = StringUtils.EMPTY;
+        identifierBoundary = null;
         isAbstract = false;
         enumContentPackageFragment = StringUtils.EMPTY;
         enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
@@ -335,7 +335,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
-        identifierBoundary = element.getAttribute(PROPERTY_IDENTIFIER_BOUNDARY);
+        if (element.hasAttribute(PROPERTY_IDENTIFIER_BOUNDARY)) {
+            identifierBoundary = element.getAttribute(PROPERTY_IDENTIFIER_BOUNDARY);
+        }
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
         initDeprecatedProperties(element);
@@ -356,7 +358,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
-        element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, identifierBoundary);
+        if (identifierBoundary != null) {
+            element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, identifierBoundary);
+        }
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
