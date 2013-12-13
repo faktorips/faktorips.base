@@ -380,8 +380,27 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain its index for.
      * 
      * @throws NullPointerException If <tt>enumAttribute</tt> is <tt>null</tt>.
+     * @deprecated Since 3.11 use {@link #getIndexOfEnumAttribute(IEnumAttribute,boolean)} instead
+     *             because in the case of enum contents there we need to ignore the literal name
+     *             column if we want to get the column index
      */
+    @Deprecated
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute);
+
+    /**
+     * Returns the index of the given <tt>IEnumAttribute</tt> or -1 if the given
+     * <tt>IEnumAttribute</tt> does not exist in this <tt>IEnumType</tt>.
+     * <p>
+     * Be careful: If the given <tt>IEnumAttribute</tt> is an original from the super type
+     * hierarchy, for which this <tt>IEnumType</tt> only stores a copy, the element won't be found!
+     * 
+     * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain its index for.
+     * @param considerLiteralName <code>true</code> if you want to consider the literal name
+     *            columns, <code>false</code> to ignore it.
+     * 
+     * @throws NullPointerException If <tt>enumAttribute</tt> is <tt>null</tt>.
+     */
+    public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute, boolean considerLiteralName);
 
     /**
      * Returns the index of the first <tt>IEnumLiteralNameAttribute</tt> or -1 if no

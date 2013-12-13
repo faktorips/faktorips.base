@@ -122,6 +122,8 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumType.setSuperEnumType("");
         genderEnumType.setEnumContentName(ENUMCONTENTS_NAME);
 
+        genderEnumType.newEnumLiteralNameAttribute();
+
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());

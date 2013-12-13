@@ -16,14 +16,11 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -31,7 +28,9 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -44,8 +43,10 @@ import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controls.InfoLabel;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
+import org.faktorips.util.StringUtil;
 
 /**
  * Dialog to edit an <tt>IEnumAttribute</tt> of an <tt>IEnumType</tt>.
@@ -95,8 +96,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The canvas. */
     private Composite workArea;
 
-    private Label mismatchLabel;
-    private Label mismatchLabelImage;
+    private InfoLabel infoLabel;
 
     /**
      * Flag indicating whether the given <tt>IEnumAttribute</tt> is a
@@ -147,6 +147,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Control generalPage = createGeneralPage(tabFolder);
         page.setControl(generalPage);
 
+        checkEnumTypeAndDatatypeEnumTypeExtensible(enumAttribute);
+
         return tabFolder;
     }
 
@@ -155,10 +157,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Composite control = createTabItemComposite(tabFolder, 1, false);
         workArea = getToolkit().createLabelEditColumnComposite(control);
 
-        getToolkit().createVerticalSpacer(control, 50);
-        Composite messageLabelComposite = getToolkit().createGridComposite(control, 2, false, false);
-        mismatchLabelImage = getToolkit().createLabel(messageLabelComposite, StringUtils.EMPTY);
-        mismatchLabel = getToolkit().createLabel(messageLabelComposite, StringUtils.EMPTY);
+        createInfoLabel(control);
 
         // Create extension properties on position top.
         extFactory.createControls(workArea, getToolkit(), enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
@@ -178,6 +177,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         nameText.setFocus();
 
         return control;
+    }
+
+    private void createInfoLabel(Composite control) {
+        getToolkit().createVerticalSpacer(control, 20);
+        infoLabel = new InfoLabel(control);
     }
 
     /** Creates the UI fields for a <tt>IEnumLiteralNameAttribute</tt>. */
@@ -345,33 +349,48 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
             if (!literalNameAttribute) {
-                checkValueTypeMismatch(changedPart);
+                updateInfoText(changedPart);
             }
         }
     }
 
+    private void updateInfoText(IEnumAttribute enumAttribute) {
+        resetInfoText();
+        checkValueTypeMismatch(enumAttribute);
+        checkEnumTypeAndDatatypeEnumTypeExtensible(enumAttribute);
+    }
+
     private void checkValueTypeMismatch(IEnumAttribute enumAttribute) {
-        resetMismatchText();
         IEnumType enumType = enumAttribute.getEnumType();
         String defaultlanguage = enumType.getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale()
                 .getLanguage();
         ValueTypeMismatch typeMismatch = enumType.checkValueTypeMismatch(enumAttribute);
         if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
-            setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
+            setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchMultilingual, defaultlanguage));
         } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
-            setMismatchText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
+            setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_mismatchNoMultilingual, defaultlanguage));
         }
     }
 
-    private void setMismatchText(String text) {
-        mismatchLabelImage.setImage(JFaceResources.getImage(DLG_IMG_MESSAGE_INFO));
-        mismatchLabel.setText(text);
-        mismatchLabel.getParent().pack();
+    private void checkEnumTypeAndDatatypeEnumTypeExtensible(IEnumAttribute enumAttribute) {
+        IEnumType enumType = enumAttribute.getEnumType();
+        try {
+            Datatype ipsDatatype = enumType.getIpsProject().findDatatype(enumAttribute.getDatatype());
+            if (enumType.isExtensible() && DatatypeUtil.isExtensibleEnumType(ipsDatatype)) {
+                setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
+                        StringUtil.unqualifiedName(ipsDatatype.getQualifiedName())));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
-    private void resetMismatchText() {
-        mismatchLabelImage.setImage(null);
-        mismatchLabel.setText(StringUtils.EMPTY);
+    private void setInfoText(String text) {
+        infoLabel.setInfoText(text);
+    }
+
+    private void resetInfoText() {
+        infoLabel.setInfoText(null);
     }
 
     private void inheritedChanged() {

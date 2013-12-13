@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +45,9 @@ import org.w3c.dom.Element;
 
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
+    private static final String TYPE_ID = "typeId";
+    private static final String CONTENT_ID = "contentId";
+    private static final String PAYMENT_CONTENT = "paymentContent";
     private IEnumAttributeValue maleIdAttributeValue;
     private IEnumAttributeValue maleNameAttributeValue;
 
@@ -58,14 +60,13 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(1);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testFindEnumAttribute_failOnNull() {
+        maleIdAttributeValue.findEnumAttribute(null);
+    }
+
     @Test
     public void testFindEnumAttribute() throws CoreException {
-        try {
-            maleIdAttributeValue.findEnumAttribute(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
-
         assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute(ipsProject));
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute(ipsProject));
 
@@ -151,17 +152,19 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setExtensible(false);
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
 
-        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(2);
-        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
-        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
+        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
+        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
+        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(5);
 
         stringNewAttributeValue.setValue(ValueFactory.createStringValue("String"));
         integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
         booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
 
-        assertTrue(stringNewAttributeValue.isValid(ipsProject));
-        assertTrue(integerNewAttributeValue.isValid(ipsProject));
-        assertTrue(booleanNewAttributeValue.isValid(ipsProject));
+        assertTrue(stringNewAttributeValue.validate(ipsProject).toString(), stringNewAttributeValue.isValid(ipsProject));
+        assertTrue(integerNewAttributeValue.validate(ipsProject).toString(),
+                integerNewAttributeValue.isValid(ipsProject));
+        assertTrue(booleanNewAttributeValue.validate(ipsProject).toString(),
+                booleanNewAttributeValue.isValid(ipsProject));
 
         IIpsModel ipsModel = getIpsModel();
 
@@ -303,6 +306,45 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
         maleNameAttributeValue.fixValueType(true);
         assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
+    }
+
+    @Test
+    public void testValidate_referenceExtensibleEnumValueInContent() throws Exception {
+        IEnumValue newEnumValue = createEnumValueWithEnumReference(CONTENT_ID);
+
+        MessageList messageList = newEnumValue.validate(ipsProject);
+
+        assertNotNull(messageList
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+    }
+
+    @Test
+    public void testValidate_referenceExtensibleEnumValueInType() throws Exception {
+        IEnumValue newEnumValue = createEnumValueWithEnumReference(TYPE_ID);
+
+        MessageList messageList = newEnumValue.validate(ipsProject);
+
+        assertNull(
+                IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE
+                        + "not expected but message list was: " + messageList.toString(),
+                messageList
+                        .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+    }
+
+    private IEnumValue createEnumValueWithEnumReference(String refId) throws CoreException {
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName(PAYMENT_CONTENT);
+        EnumContent newEnumContent = newEnumContent(paymentMode, PAYMENT_CONTENT);
+        paymentMode.newEnumValue().getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue(TYPE_ID));
+        newEnumContent.newEnumValue().getEnumAttributeValues().get(0)
+                .setValue(ValueFactory.createStringValue(CONTENT_ID));
+        genderEnumAttributeName.setDatatype(paymentMode.getName());
+        IEnumValue newEnumValue = genderEnumType.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("LITERAL"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("id1"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue(refId));
+        return newEnumValue;
     }
 
 }

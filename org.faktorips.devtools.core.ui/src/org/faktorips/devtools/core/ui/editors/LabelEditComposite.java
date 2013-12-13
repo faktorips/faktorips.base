@@ -151,8 +151,7 @@ public final class LabelEditComposite extends Composite {
         table.setLinesVisible(true);
 
         // Make the table use all available space.
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gridData.heightHint = 200;
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
         table.setLayoutData(gridData);
     }
 

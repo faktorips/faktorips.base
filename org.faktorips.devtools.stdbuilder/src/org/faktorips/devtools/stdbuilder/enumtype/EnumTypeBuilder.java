@@ -410,7 +410,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment repositoryExp = expressionCompiler.getRuntimeRepositoryExpression();
 
         JavaCodeFragment fragment = new JavaCodeFragment();
-        if (enumTypeAdapter.getEnumType().isInextensibleEnum()) {
+        if (enumTypeAdapter.getEnumType().isInextensibleEnum() || enumTypeAdapter.getEnumContent() == null) {
             IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
                     enumTypeAdapter.getEnumValueContainer().getIpsProject());
             if (enumValue == null) {
@@ -614,10 +614,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void createEnumValueAsEnumDefinition(IEnumValue currentEnumValue,
             boolean lastEnumDefinition,
-            JavaCodeFragmentBuilder enumDefinitionBuilder) {
+            JavaCodeFragmentBuilder enumDefinitionBuilder) throws CoreException {
         List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
         IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(getEnumType()
-                .getIndexOfEnumAttribute(literalNameAttribute));
+                .getIndexOfEnumAttribute(literalNameAttribute, true));
         currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
 
         // Create enumeration definition source fragment
@@ -665,9 +665,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         constantBuilder.appendln();
     }
 
-    /** Appends the parameter values to an enumeration value creation code fragment. */
+    /**
+     * Appends the parameter values to an enumeration value creation code fragment.
+     * 
+     */
     private void appendEnumValueParameters(List<IEnumAttributeValue> enumAttributeValues,
-            JavaCodeFragment javaCodeFragment) {
+            JavaCodeFragment javaCodeFragment) throws CoreException {
         boolean first = true;
         for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValues) {
             IEnumAttribute referencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute(getIpsProject());
@@ -679,7 +682,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             } else {
                 first = false;
             }
-            DatatypeHelper datatypeHelper = getDatatypeHelper(referencedEnumAttribute, false);
+            ValueDatatype datatype = referencedEnumAttribute.findDatatypeIgnoreEnumContents(getIpsProject());
+            DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
             if (datatypeHelper != null) {
                 appendValue(currentEnumAttributeValue, referencedEnumAttribute, datatypeHelper, javaCodeFragment);
             }
@@ -758,7 +762,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateCodeForConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
-        generateConstructorForEnumsWithSeparateContent(constructorBuilder);
+        generateConstructorForExtensibleEnums(constructorBuilder);
         generateConstructurForEnumsWithContent(constructorBuilder);
         generatePublicConstructorForEnumsWithSeparateContent(constructorBuilder);
     }
@@ -841,8 +845,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generatePublicConstructor(constructorBuilder, Modifier.PUBLIC);
     }
 
-    private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
-            throws CoreException {
+    private void generateConstructorForExtensibleEnums(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         if (!enumType.isValid(getIpsProject()) || !enumType.isExtensible() || enumType.isAbstract()) {
             return;
@@ -1545,11 +1548,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             } else if (mapMultilingual && enumAttribute.isMultilingual()) {
                 return new InternationalStringDatatypeHelper(true);
             } else {
-                return getIpsProject().getDatatypeHelper(enumAttribute.findDatatype(getIpsProject()));
+                ValueDatatype datatype = enumAttribute.findDatatype(getIpsProject());
+                return getDatatypeHelper(datatype);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected DatatypeHelper getDatatypeHelper(ValueDatatype datatype) {
+        return getIpsProject().getDatatypeHelper(datatype);
     }
 
     @Override

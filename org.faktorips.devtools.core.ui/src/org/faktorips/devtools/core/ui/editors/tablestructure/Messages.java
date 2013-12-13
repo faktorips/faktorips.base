@@ -36,7 +36,6 @@ public class Messages extends NLS {
     public static String IndicesSection_title;
     public static String ForeignKeysSection_title;
     public static String ColumnsSection_title;
-    public static String KeyEditDialog_title;
     public static String KeyEditDialog_generalTitle;
     public static String KeyEditDialog_labelReferenceStructure;
     public static String KeyEditDialog_labelReferenceUniqueKey;

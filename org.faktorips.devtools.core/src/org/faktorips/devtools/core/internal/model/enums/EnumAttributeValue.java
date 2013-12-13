@@ -21,6 +21,7 @@ import java.util.Observer;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
@@ -71,7 +72,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * 
      * @throws CoreException If an error occurs while initializing the object.
      */
-    public EnumAttributeValue(IEnumValue parent, String id) throws CoreException {
+    public EnumAttributeValue(EnumValue parent, String id) throws CoreException {
         super(parent, id);
         valueObserver = new Observer() {
 
@@ -147,13 +148,15 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // Check number of EnumAttributeValues matching number of EnumAttributes.
         int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
-        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(true);
+        boolean includeLiteralName = getEnumValue().isEnumTypeValue();
+
+        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
         if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount()) || attributeValueIndex == -1
                 || enumAttributesCount < attributeValueIndex + 1) {
             return null;
         }
 
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
         return enumAttributes.get(attributeValueIndex);
     }
 
@@ -204,9 +207,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return;
         }
 
-        IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
         IEnumType enumType = enumAttribute.getEnumType();
-        if (enumValueContainer instanceof IEnumType) {
+        if (getEnumValue().isEnumTypeValue()) {
             if (enumType.isAbstract()) {
                 return;
             }
@@ -216,8 +218,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // DataType Value parsable?
         if (getValue() != null) {
-            getValue().validate(enumAttribute.findDatatype(ipsProject), getParent().getIpsProject(), list,
-                    new ObjectProperty(this, PROPERTY_VALUE));
+            ValueDatatype datatype;
+            if (getEnumValue().isEnumTypeValue()) {
+                datatype = enumAttribute.findDatatypeIgnoreEnumContents(ipsProject);
+            } else {
+                datatype = enumAttribute.findDatatype(ipsProject);
+            }
+            getValue().validate(datatype, getParent().getIpsProject(), list, new ObjectProperty(this, PROPERTY_VALUE));
 
             // Unique identifier and literal name validations.
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute)) {
@@ -315,8 +322,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     @Override
-    public IEnumValue getEnumValue() {
-        return (IEnumValue)getParent();
+    public EnumValue getEnumValue() {
+        return (EnumValue)getParent();
     }
 
     @Override

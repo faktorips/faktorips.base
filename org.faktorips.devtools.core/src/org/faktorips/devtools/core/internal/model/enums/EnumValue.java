@@ -98,15 +98,20 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     private void fixEnumAttributeValueAfterConstructing(IEnumAttributeValue enumAttributeValue) {
-        IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+        IEnumValueContainer enumValueContainer = getEnumValueContainer();
+        IEnumType enumType = enumValueContainer.findEnumType(getIpsProject());
         if (enumType != null) {
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(isEnumTypeValue());
             int index = getEnumAttributeValuesCount() - 1;
             if (enumAttributes.size() > index) {
                 IEnumAttribute enumAttribute = enumAttributes.get(index);
                 enumAttributeValue.fixValueType(enumAttribute.isMultilingual());
             }
         }
+    }
+
+    protected boolean isEnumTypeValue() {
+        return getEnumValueContainer() instanceof IEnumType;
     }
 
     @Override
@@ -153,7 +158,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
          * EnumValueContainer.
          */
         int numberNeeded = 0;
-        if (enumValueContainer instanceof IEnumType) {
+        if (isEnumTypeValue()) {
             IEnumType containerType = (IEnumType)enumValueContainer;
             numberNeeded = containerType.getEnumAttributesCountIncludeSupertypeCopies(true);
         } else {
@@ -184,7 +189,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         if (enumAttribute == null) {
             return null;
         }
-        int attributeIndex = enumAttribute.getEnumType().getIndexOfEnumAttribute(enumAttribute);
+        int attributeIndex = enumAttribute.getEnumType().getIndexOfEnumAttribute(enumAttribute, isEnumTypeValue());
         if (enumAttributeValues.size() - 1 < attributeIndex) {
             return null;
         }
@@ -236,13 +241,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    public IEnumAttributeValue getLiteralNameAttributeValue() {
-        return getEnumLiteralNameAttributeValue();
-    }
-
-    @Override
     public IEnumLiteralNameAttributeValue getEnumLiteralNameAttributeValue() {
-        if (!(getEnumValueContainer() instanceof IEnumType)) {
+        if (!isEnumTypeValue()) {
             return null;
         }
         for (IEnumAttributeValue enumAttributeValue : enumAttributeValues) {

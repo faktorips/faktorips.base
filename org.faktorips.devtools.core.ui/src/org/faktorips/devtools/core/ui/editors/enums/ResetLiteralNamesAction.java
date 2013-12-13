@@ -42,7 +42,7 @@ import org.faktorips.util.ArgumentCheck;
 public class ResetLiteralNamesAction extends Action {
 
     /** The name of the image for the action. */
-    private final String IMAGE_NAME = "Refresh.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME = "Refresh.gif"; //$NON-NLS-1$
 
     /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;
@@ -80,9 +80,9 @@ public class ResetLiteralNamesAction extends Action {
 
         IEnumAttribute defaultProviderAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
                 .getDefaultValueProviderAttribute());
-        int indexDefaultProvider = (defaultProviderAttribute == null) ? -1 : enumType
-                .getIndexOfEnumAttribute(defaultProviderAttribute);
-        int indexLiteralName = enumType.getIndexOfEnumAttribute(literalNameAttribute);
+        int indexDefaultProvider = (defaultProviderAttribute == null) ? -1 : enumType.getIndexOfEnumAttribute(
+                defaultProviderAttribute, true);
+        int indexLiteralName = enumType.getIndexOfEnumAttribute(literalNameAttribute, true);
         for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
             List<IEnumAttributeValue> attributeValues = currentEnumValue.getEnumAttributeValues();
             String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
