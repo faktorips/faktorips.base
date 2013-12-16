@@ -12,13 +12,21 @@
 package org.faktorips.devtools.core.ui.search.product;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
+import java.beans.PropertyChangeListener;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperatorType;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +40,8 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
     @Override
     @Before
     public void setUp() throws Exception {
+        mock(PropertyChangeListener.class);
+
         model = new ProductSearchPresentationModel();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragsArt");
@@ -57,5 +67,48 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
         productCmptType.newAssociation();
 
         assertEquals(3, model.getAvailableConditionTypes().size());
+    }
+
+    @Test
+    public void testIsConditionTypeAvailable() {
+        assertFalse(model.isConditionTypeAvailable());
+        productCmptType.newProductCmptTypeAttribute("ProduktAttribut");
+        assertTrue(model.isConditionTypeAvailable());
+    }
+
+    @Test
+    public void testIsConditionDefined() {
+        assertFalse(model.isConditionDefined());
+        model.createProductSearchConditionPresentationModel();
+        assertTrue(model.isConditionDefined());
+    }
+
+    @Test
+    public void testIsProductCmptTypeChosen() {
+        assertTrue(model.isProductCmptTypeChosen());
+        assertFalse(new ProductSearchPresentationModel().isProductCmptTypeChosen());
+    }
+
+    @Test
+    public void testIsValid() {
+        assertFalse(new ProductSearchPresentationModel().isValid());
+
+        assertTrue(model.isValid());
+
+        model.createProductSearchConditionPresentationModel();
+
+        assertFalse(model.isValid());
+
+        ProductSearchConditionPresentationModel conditionPresentationModel = model
+                .getProductSearchConditionPresentationModels().get(0);
+
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("attribute");
+        attribute.setDatatype("Integer");
+
+        conditionPresentationModel.setCondition(new ProductAttributeConditionType());
+        conditionPresentationModel.setSearchedElement(attribute);
+        conditionPresentationModel.setOperatorType(EqualitySearchOperatorType.EQUALITY);
+
+        assertTrue(model.isValid());
     }
 }

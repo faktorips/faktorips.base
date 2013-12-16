@@ -21,8 +21,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -40,27 +38,6 @@ import org.faktorips.runtime.IProductComponent;
  * @author dicker
  */
 public class PolicyAttributeConditionType extends AbstractAttributeConditionType {
-
-    private static final class PolicyAttributeConditionOperandProvider implements IOperandProvider {
-
-        private final IAttribute attribute;
-
-        public PolicyAttributeConditionOperandProvider(IAttribute attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public Object getSearchOperand(IProductPartsContainer productPartsContainer) {
-            List<IConfigElement> configElements = productPartsContainer.getProductParts(IConfigElement.class);
-            for (IConfigElement configElement : configElements) {
-                if (configElement.getPolicyCmptTypeAttribute().equals(attribute.getName())) {
-                    return configElement.getValueSet();
-                }
-            }
-            return null;
-        }
-
-    }
 
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType) {

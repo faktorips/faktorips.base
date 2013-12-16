@@ -11,7 +11,6 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,19 +20,15 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 
 /**
  * Contains the logic of the Faktor-IPS Product Search. It contains a
@@ -46,7 +41,12 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOpe
 public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPresentationModel> {
 
     public ProductSearchQuery(ProductSearchPresentationModel model) {
-        super(model, IpsPlugin.getDefault().getIpsModel());
+        this(model, IpsPlugin.getDefault().getIpsModel());
+    }
+
+    protected ProductSearchQuery(ProductSearchPresentationModel model, IIpsModel ipsModel) {
+        super(model, ipsModel);
+
     }
 
     @Override
@@ -56,89 +56,44 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     protected void searchDetails() throws CoreException {
-        Set<IIpsSrcFile> matchingSrcFiles = getMatchingSrcFiles();
+        ProductSearchQueryConditionMatcher resultBuilder = new ProductSearchQueryConditionMatcher(getSearchModel());
+        Set<IProductPartsContainer> results = resultBuilder.getResults(getMatchingSrcFiles());
 
-        List<ISearchOperator> searchOperators = new ArrayList<ISearchOperator>();
-        List<ProductSearchConditionPresentationModel> models = getSearchModel()
-                .getProductSearchConditionPresentationModels();
-        for (ProductSearchConditionPresentationModel conditionModel : models) {
-            if (conditionModel.isValid()) {
-
-                ISearchOperator searchOperator = createSearchOperator(conditionModel);
-
-                searchOperators.add(searchOperator);
-            }
+        for (IProductPartsContainer productPartsContainer : results) {
+            getSearchResult().addMatch(new Match(productPartsContainer, 0, 0));
         }
-
-        for (IIpsSrcFile srcFile : matchingSrcFiles) {
-            searchDetailProductPartContainers(srcFile, searchOperators);
-        }
-    }
-
-    private ISearchOperator createSearchOperator(ProductSearchConditionPresentationModel conditionModel) {
-
-        IOperandProvider operandProvider = conditionModel.getConditionType().createOperandProvider(
-                conditionModel.getSearchedElement());
-        ISearchOperatorType operatorType = conditionModel.getOperatorType();
-
-        ISearchOperator searchOperator = operatorType.createSearchOperator(operandProvider,
-                conditionModel.getValueDatatype(), conditionModel.getArgument());
-
-        return searchOperator;
-    }
-
-    private void searchDetailProductPartContainers(IIpsSrcFile srcFile, List<ISearchOperator> searchOperators)
-            throws CoreException {
-        if (!IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType())) {
-            return;
-        }
-
-        IProductCmpt productComponent = (IProductCmpt)srcFile.getIpsObject();
-
-        List<IProductCmptGeneration> generations = productComponent.getProductCmptGenerations();
-
-        if (isMatchingProductPartContainer(searchOperators, productComponent)) {
-            getSearchResult().addMatch(new Match(productComponent, 0, 0));
-        }
-
-        for (IProductCmptGeneration productCmptGeneration : generations) {
-            if (isMatchingProductPartContainer(searchOperators, productCmptGeneration)) {
-                getSearchResult().addMatch(new Match(productCmptGeneration, 0, 0));
-            }
-        }
-    }
-
-    private boolean isMatchingProductPartContainer(List<ISearchOperator> searchOperators,
-            IProductPartsContainer productPartsContainer) {
-
-        for (ISearchOperator searchOperator : searchOperators) {
-            if (!searchOperator.check(productPartsContainer)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
     protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
         Set<IIpsSrcFile> selectedSrcFiles = super.getSelectedSrcFiles();
-        Set<IIpsSrcFile> matchingProductComponents = new HashSet<IIpsSrcFile>();
+
+        if (selectedSrcFiles.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        Set<IIpsSrcFile> instancesOfProductComponentType = getAllInstancesOfProductCmptType(getSearchModel()
+                .getProductCmptType());
+
+        selectedSrcFiles.retainAll(instancesOfProductComponentType);
+
+        return selectedSrcFiles;
+    }
+
+    private Set<IIpsSrcFile> getAllInstancesOfProductCmptType(IProductCmptType productCmptType) throws CoreException {
+        Set<IIpsSrcFile> instancesOfProductComponentType = new HashSet<IIpsSrcFile>();
 
         IIpsProject[] productDefinitionProjects = getIpsModel().getIpsProductDefinitionProjects();
         for (IIpsProject project : productDefinitionProjects) {
 
-            IProductCmptType type = project.findProductCmptType(getSearchModel().getProductCmptType()
-                    .getQualifiedName());
+            IProductCmptType type = project.findProductCmptType(productCmptType.getQualifiedName());
 
             if (type != null) {
                 List<IIpsSrcFile> asList = Arrays.asList(project.findAllProductCmptSrcFiles(type, true));
-                matchingProductComponents.addAll(asList);
+                instancesOfProductComponentType.addAll(asList);
             }
         }
-
-        selectedSrcFiles.retainAll(matchingProductComponents);
-
-        return selectedSrcFiles;
+        return instancesOfProductComponentType;
     }
 
     @Override
@@ -160,6 +115,12 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
     @Override
     public String getResultLabel(int matchCount) {
         return matchCount + Messages.ProductSearchQuery_1 + getSearchModel().getProductCmptType().getQualifiedName();
+    }
+
+    // overwritten just for testing purposes
+    @Override
+    protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
+        return super.getMatchingSrcFiles();
     }
 
 }

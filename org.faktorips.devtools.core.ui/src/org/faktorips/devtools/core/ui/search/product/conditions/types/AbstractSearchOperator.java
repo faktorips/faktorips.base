@@ -46,15 +46,15 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
      */
     protected abstract boolean check(Object searchOperand, IProductPartsContainer productCmptGeneration);
 
-    S getSearchOperatorType() {
+    public S getSearchOperatorType() {
         return searchOperatorType;
     }
 
-    String getArgument() {
+    public String getArgument() {
         return argument;
     }
 
-    ValueDatatype getValueDatatype() {
+    public ValueDatatype getValueDatatype() {
         return valueDatatype;
     }
 

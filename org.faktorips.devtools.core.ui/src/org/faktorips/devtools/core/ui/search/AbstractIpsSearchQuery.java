@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
@@ -53,7 +52,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
     }
 
     @Override
-    public IStatus run(IProgressMonitor monitor) throws OperationCanceledException {
+    public IStatus run(IProgressMonitor monitor) {
         getSearchResult().removeAll();
 
         monitor.beginTask(this.getLabel(), 2);

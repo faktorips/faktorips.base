@@ -39,12 +39,20 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductCom
  */
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
+    public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
+
+    public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
+
+    public static final String VALID_SEARCH = "valid"; //$NON-NLS-1$
+
+    public static final String CONDITION_DEFINED = "conditionDefined"; //$NON-NLS-1$
+
+    public static final String CONDITION_TYPE_AVAILABLE = "conditionTypeAvailable"; //$NON-NLS-1$
+
     private static final IConditionType[] CONDITION_TYPES = { new ProductAttributeConditionType(),
             new PolicyAttributeConditionType(), new ProductComponentAssociationConditionType() };
 
     private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
-
-    public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     private IProductCmptType productCmptType;
 
@@ -73,16 +81,12 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
     }
 
-    public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
-
     /**
      * Returns true, if the {@link #productCmptType} is already set
      */
     public boolean isProductCmptTypeChosen() {
         return productCmptType != null;
     }
-
-    public static final String VALID_SEARCH = "valid"; //$NON-NLS-1$
 
     @Override
     public boolean isValid() {
@@ -132,8 +136,6 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return true;
     }
 
-    public static final String CONDITION_TYPE_AVAILABLE = "conditionTypeAvailable"; //$NON-NLS-1$
-
     /**
      * Returns {@code true}, if there is any element on the {@link #productCmptType}, which can be
      * searched. If there are no elements, which can be served, this method returns {@code false}
@@ -142,8 +144,6 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     public boolean isConditionTypeAvailable() {
         return !getAvailableConditionTypes().isEmpty();
     }
-
-    public static final String CONDITION_DEFINED = "conditionDefined"; //$NON-NLS-1$
 
     /**
      * Returns {@code true}, if there is any element on the {@link #productCmptType}, which can be
