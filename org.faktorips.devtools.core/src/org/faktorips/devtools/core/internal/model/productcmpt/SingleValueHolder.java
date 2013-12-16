@@ -177,7 +177,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
                     text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, getValue(), attribute.getValueSet()
                             .toShortString());
                 } else {
-                    text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, getValue());
+                    text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, getValue(), getParent().getName());
                 }
                 list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR,
                         invalidObjectProperties));
