@@ -730,18 +730,78 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateIdentifierBoundaryOnDatatype() throws CoreException {
-        genderEnumType.newEnumLiteralNameAttribute();
         MessageList validate = genderEnumType.validate(ipsProject);
         assertTrue(validate.isEmpty());
 
         genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
         genderEnumType.setIdentifierBoundary("String");
         validate = genderEnumType.validate(ipsProject);
-        assertTrue(!validate.isEmpty());
-        assertEquals("String ist kein Integer.", validate.getMessage(0).getText());
+        assertFalse(validate.isEmpty());
+        assertEquals("String ist kein gültiger Wert für den Datentyp Integer.", validate.getMessage(0).getText());
 
         genderEnumType.setIdentifierBoundary("1000");
         validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype_NotExtensible() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        genderEnumType.setIdentifierBoundary("String");
+        validate = genderEnumType.validate(ipsProject);
+        assertFalse(validate.isEmpty());
+        assertEquals("String ist kein gültiger Wert für den Datentyp Integer.", validate.getMessage(0).getText());
+
+        genderEnumType.setExtensible(false);
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype_EmptyStringAndNull() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        genderEnumType.setIdentifierBoundary("");
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumType.setIdentifierBoundary(null);
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype_WithEnumSuperType() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+
+        EnumType enumSuperType = newEnumType(ipsProject, "enumSuperType");
+        enumSuperType.setAbstract(true);
+        IEnumAttribute enumAttribute = enumSuperType.newEnumAttribute();
+        enumAttribute.setName("Id");
+        enumAttribute.setUnique(true);
+        enumAttribute.setIdentifier(true);
+        enumAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        assertFalse(genderEnumType.hasSuperEnumType());
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumType.setSuperEnumType("enumSuperType");
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        genderEnumAttributeId.setInherited(true);
+        assertTrue(genderEnumType.hasSuperEnumType());
+        genderEnumType.setIdentifierBoundary("String");
+        validate = genderEnumType.validate(ipsProject);
+        assertFalse(validate.isEmpty());
+        assertEquals("String ist kein gültiger Wert für den Datentyp Integer.", validate.getMessage(0).getText());
+
+        genderEnumType.setIdentifierBoundary("100");
+        validate = genderEnumType.validate(ipsProject);
+        System.out.println(validate.getText());
         assertTrue(validate.isEmpty());
     }
 

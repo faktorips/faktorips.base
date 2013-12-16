@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
@@ -523,7 +524,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateIdentifierAttribute(list, ipsProject);
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
         validateEnumContentAlreadyUsed(list, ipsProject);
-        validateIdentifierBoundaryOnDatatype(list);
+        if (isValidateIdentifierBoundaryOnDatatypeNecessary()) {
+            validateIdentifierBoundaryOnDatatype(list);
+        }
 
         EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), isExtensible(),
                 enumContentPackageFragment);
@@ -537,6 +540,25 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 list.add(validationMessage);
             }
         }
+    }
+
+    private boolean isValidateIdentifierBoundaryOnDatatypeNecessary() {
+        return !isAbstract && isExtensible() && isIdentifierAttributeComparable();
+    }
+
+    private boolean isIdentifierAttributeComparable() {
+        IEnumAttribute identiferAttribute = findIdentiferAttribute(getIpsProject());
+        if (identiferAttribute != null) {
+            try {
+                ValueDatatype datatype = identiferAttribute.findDatatype(getIpsProject());
+                if (datatype != null) {
+                    return datatype.supportsCompare();
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return false;
     }
 
     /**
@@ -694,12 +716,19 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     private void validateIdentifierBoundaryOnDatatype(MessageList validationMessageList) throws CoreException {
-        IEnumAttribute identifierAttribute = findIdentiferAttribute(getIpsProject());
+        IEnumAttribute identifierAttribute;
+        if (hasSuperEnumType()) {
+            identifierAttribute = findSuperEnumType(getIpsProject()).findIdentiferAttribute(getIpsProject());
+        } else {
+            identifierAttribute = findIdentiferAttribute(getIpsProject());
+        }
         if (identifierAttribute != null) {
             String identifierAttributeDatatype = identifierAttribute.getDatatype();
             String identifierBoundary = getIdentifierBoundary();
-            ValidationUtils.checkValue(identifierAttributeDatatype, identifierBoundary, identifierAttribute,
-                    PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
+            if (identifierBoundary != null && !(identifierBoundary.isEmpty())) {
+                ValidationUtils.checkValue(identifierAttributeDatatype, identifierBoundary, identifierAttribute,
+                        PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
+            }
         }
     }
 
