@@ -29,6 +29,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -522,6 +523,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateIdentifierAttribute(list, ipsProject);
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
         validateEnumContentAlreadyUsed(list, ipsProject);
+        validateIdentifierBoundaryOnDatatype(list);
 
         EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), isExtensible(),
                 enumContentPackageFragment);
@@ -688,6 +690,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED, text, Message.ERROR,
                     this, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
             validationMessageList.add(message);
+        }
+    }
+
+    private void validateIdentifierBoundaryOnDatatype(MessageList validationMessageList) throws CoreException {
+        IEnumAttribute identifierAttribute = findIdentiferAttribute(getIpsProject());
+        if (identifierAttribute != null) {
+            String identifierAttributeDatatype = identifierAttribute.getDatatype();
+            String identifierBoundary = getIdentifierBoundary();
+            ValidationUtils.checkValue(identifierAttributeDatatype, identifierBoundary, identifierAttribute,
+                    PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
         }
     }
 

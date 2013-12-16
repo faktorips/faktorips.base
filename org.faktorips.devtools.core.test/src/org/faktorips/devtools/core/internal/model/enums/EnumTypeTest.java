@@ -728,6 +728,23 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue("Needed " + duration + " seconds. (should be less than 3)", duration < 3);
     }
 
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype() throws CoreException {
+        genderEnumType.newEnumLiteralNameAttribute();
+        MessageList validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        genderEnumType.setIdentifierBoundary("String");
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(!validate.isEmpty());
+        assertEquals("String ist kein Integer.", validate.getMessage(0).getText());
+
+        genderEnumType.setIdentifierBoundary("1000");
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
     private void fillAttributeValues(IEnumValue enumValue, int i) {
         List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
         for (int j = 0; j < 10; j++) {
