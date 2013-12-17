@@ -44,8 +44,7 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
 
     @Override
     protected NewProductDefinitionOperation<? extends NewProductDefinitionPMO> getOperation() {
-        // TODO FIPS-2489
-        return null;
+        return new NewTableContentsOperation(getPmo());
     }
 
     @Override
