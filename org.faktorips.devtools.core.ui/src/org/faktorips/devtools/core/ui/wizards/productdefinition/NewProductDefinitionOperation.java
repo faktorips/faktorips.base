@@ -47,13 +47,14 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
  * It is also possible to override {@link #createIpsSrcFile(IProgressMonitor)} if it should be
  * necessary to hook into creation of the source file.
  */
-public abstract class NewProductDefinitionOperation extends WorkspaceModifyOperation {
+public abstract class NewProductDefinitionOperation<PMO extends NewProductDefinitionPMO> extends
+        WorkspaceModifyOperation {
 
-    private final NewProductDefinitionPMO pmo;
+    private final PMO pmo;
 
     private final List<INewProductDefinitionOperationParticipant> participants = new ArrayList<INewProductDefinitionOperationParticipant>();
 
-    protected NewProductDefinitionOperation(NewProductDefinitionPMO pmo) {
+    protected NewProductDefinitionOperation(PMO pmo) {
         this.pmo = pmo;
         loadParticipantsFromExtensions();
     }
@@ -146,7 +147,7 @@ public abstract class NewProductDefinitionOperation extends WorkspaceModifyOpera
      */
     protected abstract void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor);
 
-    public NewProductDefinitionPMO getPmo() {
+    public PMO getPmo() {
         return pmo;
     }
 

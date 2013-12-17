@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * Operation that is intended to be used by {@link NewProductCmptWizard} to create the new
  * {@link IIpsSrcFile}.
  */
-public class NewProductCmptOperation extends NewProductDefinitionOperation {
+public class NewProductCmptOperation extends NewProductDefinitionOperation<NewProductCmptPMO> {
 
     public NewProductCmptOperation(NewProductCmptPMO pmo) {
         super(pmo);
@@ -142,11 +142,6 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation {
                 }
             }
         }
-    }
-
-    @Override
-    public NewProductCmptPMO getPmo() {
-        return (NewProductCmptPMO)super.getPmo();
     }
 
 }
