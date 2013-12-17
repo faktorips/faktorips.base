@@ -23,6 +23,7 @@
    <extension-point id="deepCopyOperation" name="Deep Copy Operation" schema="schema/deepCopyOperation.exsd"/>
    <extension-point id="teamOperationsFactory" name="TeamOperationsFactory" schema="schema/teamOperationsFactory.exsd"/>
    <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
+   <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
    
    
 <!-- 
