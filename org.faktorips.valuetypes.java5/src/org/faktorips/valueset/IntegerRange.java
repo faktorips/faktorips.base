@@ -45,8 +45,8 @@ public class IntegerRange extends DefaultRange<Integer> {
      * Integer.valueOf() method. An empty String is interpreted as <code>null</code>.
      */
     public static IntegerRange valueOf(String lower, String upper) {
-        Integer min = (lower == null || "".equals(lower)) ? null : Integer.valueOf(lower);
-        Integer max = (upper == null || "".equals(upper)) ? null : Integer.valueOf(upper);
+        Integer min = (lower == null || lower.isEmpty()) ? null : Integer.valueOf(lower);
+        Integer max = (upper == null || upper.isEmpty()) ? null : Integer.valueOf(upper);
         return new IntegerRange(min, max);
 
     }
@@ -58,9 +58,9 @@ public class IntegerRange extends DefaultRange<Integer> {
      * range.
      */
     public static IntegerRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        Integer min = (lower == null || "".equals(lower)) ? null : Integer.valueOf(lower);
-        Integer max = (upper == null || "".equals(upper)) ? null : Integer.valueOf(upper);
-        Integer stepInt = (step == null || "".equals(step)) ? null : Integer.valueOf(step);
+        Integer min = (lower == null || lower.isEmpty()) ? null : Integer.valueOf(lower);
+        Integer max = (upper == null || upper.isEmpty()) ? null : Integer.valueOf(upper);
+        Integer stepInt = (step == null || step.isEmpty()) ? null : Integer.valueOf(step);
         return new IntegerRange(min, max, stepInt, containsNull);
     }
 

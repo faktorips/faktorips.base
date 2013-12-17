@@ -38,8 +38,8 @@ public class LongRange extends DefaultRange<Long> {
      * Long.valueOf() method. An empty String is interpreted as <code>null</code>.
      */
     public static LongRange valueOf(String lower, String upper) {
-        Long min = (lower == null || "".equals(lower)) ? null : Long.valueOf(lower);
-        Long max = (upper == null || "".equals(upper)) ? null : Long.valueOf(upper);
+        Long min = (lower == null || lower.isEmpty()) ? null : Long.valueOf(lower);
+        Long max = (upper == null || upper.isEmpty()) ? null : Long.valueOf(upper);
         return new LongRange(min, max);
     }
 
@@ -49,9 +49,9 @@ public class LongRange extends DefaultRange<Long> {
      * containsNull is true <code>null</code> is considered to be included within this range.
      */
     public static LongRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        Long min = (lower == null || "".equals(lower)) ? null : Long.valueOf(lower);
-        Long max = (upper == null || "".equals(upper)) ? null : Long.valueOf(upper);
-        Long stepLong = (step == null || "".equals(step)) ? null : Long.valueOf(step);
+        Long min = (lower == null || lower.isEmpty()) ? null : Long.valueOf(lower);
+        Long max = (upper == null || upper.isEmpty()) ? null : Long.valueOf(upper);
+        Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
         return new LongRange(min, max, stepLong, containsNull);
     }
 
