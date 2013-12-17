@@ -59,11 +59,10 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     protected NewProductDefinitionOperation(PMO pmo) {
         this.pmo = pmo;
-        participants.addAll(loadParticipantsFromExtensions());
+        loadParticipantsFromExtensions();
     }
 
-    List<INewProductDefinitionOperationParticipant> loadParticipantsFromExtensions() {
-        List<INewProductDefinitionOperationParticipant> participants = new ArrayList<INewProductDefinitionOperationParticipant>();
+    private void loadParticipantsFromExtensions() {
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
                 IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints
@@ -74,7 +73,6 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
                     INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
                     INewProductDefinitionOperationParticipant.class));
         }
-        return participants;
     }
 
     @Override
@@ -88,6 +86,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
             IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
             finishIpsSrcFile(ipsSrcFile, monitor);
+            callParticipants(ipsSrcFile, monitor);
             saveIpsSrcFile(ipsSrcFile, monitor);
             postProcess(ipsSrcFile, monitor);
 
@@ -151,6 +150,12 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      * @param monitor progress monitor to show progress with
      */
     protected abstract void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor);
+
+    private void callParticipants(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
+        for (INewProductDefinitionOperationParticipant participant : participants) {
+            participant.finishIpsSrcFile(ipsSrcFile, monitor);
+        }
+    }
 
     /**
      * Returns the {@link PresentationModelObject} that configures this operation.
