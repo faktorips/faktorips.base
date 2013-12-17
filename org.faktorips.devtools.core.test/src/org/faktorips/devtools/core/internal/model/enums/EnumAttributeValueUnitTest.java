@@ -180,8 +180,14 @@ public class EnumAttributeValueUnitTest {
     }
 
     @Test
-    public void testValueNotParsable() {
+    public void testIDValueNotParsable() {
         when(attribute.getStringValue()).thenReturn("AAABBBB");
+        assertFalse(validator.canValidate());
+    }
+
+    @Test
+    public void testBoundaryValueNotParsable() {
+        when(enumType.getIdentifierBoundary()).thenReturn("AAABBBB");
         assertFalse(validator.canValidate());
     }
 

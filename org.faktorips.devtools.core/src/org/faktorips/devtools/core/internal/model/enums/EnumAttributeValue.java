@@ -387,7 +387,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
          *         this validation or not all required information has been given.
          */
         public boolean canValidate() {
-            return isIdentifierValue() && isIDValueParsable() && isBoundaryValueDefined();
+            return isIdentifierValue() && isIDValueParsable() && isBoundaryValueParsable();
         }
 
         private boolean isIdentifierValue() {
@@ -401,6 +401,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         private boolean hasDatatype() {
             return getDatatype() != null;
+        }
+
+        private boolean isBoundaryValueParsable() {
+            return isBoundaryValueDefined() && getDatatype().isParsable(getIdentifierBoundary());
         }
 
         private boolean isBoundaryValueDefined() {
