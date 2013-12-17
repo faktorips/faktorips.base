@@ -75,7 +75,8 @@ public class Messages extends NLS {
     public static String EnumContent_ReferencedEnumAttributeNamesInvalid;
     public static String EnumContent_ReferencedEnumAttributesOrderingInvalid;
 
-    public static String EnumAttributeValue_Msg_IdNotAllowedByIdentifierBoundary;
+    public static String EnumAttributeValue_Msg_IdNotAllowedByIdentifierBoundary_valueOfEnumType;
+    public static String EnumAttributeValue_Msg_IdNotAllowedByIdentifierBoundary_valueOfEnumContent;
 
     public static String EnumAttributeValue_MultiLingual;
     public static String EnumAttributeValue_NotMultiLingual;

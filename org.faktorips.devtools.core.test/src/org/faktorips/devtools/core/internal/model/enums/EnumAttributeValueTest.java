@@ -136,129 +136,129 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateParsable() throws CoreException {
-        IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
-        stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        stringAttribute.setName("StringAttribute");
-
-        IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
-        integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        integerAttribute.setName("IntegerAttribute");
-
-        IEnumAttribute booleanAttribute = genderEnumType.newEnumAttribute();
-        booleanAttribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
-        booleanAttribute.setName("BooleanAttribute");
-
-        genderEnumType.setExtensible(false);
-        IEnumValue newEnumValue = genderEnumType.newEnumValue();
-
-        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
-        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
-        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(5);
-
-        stringNewAttributeValue.setValue(ValueFactory.createStringValue("String"));
-        integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
-        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
-
-        assertTrue(stringNewAttributeValue.validate(ipsProject).toString(), stringNewAttributeValue.isValid(ipsProject));
-        assertTrue(integerNewAttributeValue.validate(ipsProject).toString(),
-                integerNewAttributeValue.isValid(ipsProject));
-        assertTrue(booleanNewAttributeValue.validate(ipsProject).toString(),
-                booleanNewAttributeValue.isValid(ipsProject));
-
-        IIpsModel ipsModel = getIpsModel();
-
-        // Test value parsable with data type Integer.
-        ipsModel.clearValidationCache();
-        integerNewAttributeValue.setValue(ValueFactory.createStringValue("fooBar"));
-        MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-        integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
-
-        // Test value parsable with data type Boolean.
-        ipsModel.clearValidationCache();
-        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("fooBar"));
-        validationMessageList = booleanNewAttributeValue.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
-    }
-
-    @Test
-    public void testValidateUniqueIdentifierValueEmpty() throws CoreException {
-        IIpsModel ipsModel = getIpsModel();
-        IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
-
-        uniqueIdentifierEnumAttributeValue.setValue(ValueFactory.createStringValue(""));
-        MessageList validationMessageList = genderEnumValueFemale.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
-
-        ipsModel.clearValidationCache();
-        uniqueIdentifierEnumAttributeValue.setValue(ValueFactory.createStringValue(null));
-        validationMessageList = genderEnumValueFemale.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
-    }
+        public void testValidateAndAppendMessagesParsable() throws CoreException {
+            IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
+            stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+            stringAttribute.setName("StringAttribute");
+    
+            IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
+            integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+            integerAttribute.setName("IntegerAttribute");
+    
+            IEnumAttribute booleanAttribute = genderEnumType.newEnumAttribute();
+            booleanAttribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+            booleanAttribute.setName("BooleanAttribute");
+    
+            genderEnumType.setExtensible(false);
+            IEnumValue newEnumValue = genderEnumType.newEnumValue();
+    
+            IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
+            IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
+            IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(5);
+    
+            stringNewAttributeValue.setValue(ValueFactory.createStringValue("String"));
+            integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
+            booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
+    
+            assertTrue(stringNewAttributeValue.validate(ipsProject).toString(), stringNewAttributeValue.isValid(ipsProject));
+            assertTrue(integerNewAttributeValue.validate(ipsProject).toString(),
+                    integerNewAttributeValue.isValid(ipsProject));
+            assertTrue(booleanNewAttributeValue.validate(ipsProject).toString(),
+                    booleanNewAttributeValue.isValid(ipsProject));
+    
+            IIpsModel ipsModel = getIpsModel();
+    
+            // Test value parsable with data type Integer.
+            ipsModel.clearValidationCache();
+            integerNewAttributeValue.setValue(ValueFactory.createStringValue("fooBar"));
+            MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
+            assertOneValidationMessage(validationMessageList);
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+            integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
+    
+            // Test value parsable with data type Boolean.
+            ipsModel.clearValidationCache();
+            booleanNewAttributeValue.setValue(ValueFactory.createStringValue("fooBar"));
+            validationMessageList = booleanNewAttributeValue.validate(ipsProject);
+            assertOneValidationMessage(validationMessageList);
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+            booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
+        }
 
     @Test
-    public void testValidateUniqueIdentifierValueNotUnique() throws CoreException {
-        IEnumAttributeValue uniqueIdentifierEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues()
-                .get(0);
-        IEnumAttributeValue uniqueIdentifierEnumAttributeValueFemale = genderEnumValueFemale.getEnumAttributeValues()
-                .get(0);
-
-        uniqueIdentifierEnumAttributeValueMale.setValue(ValueFactory.createStringValue("foo"));
-        uniqueIdentifierEnumAttributeValueFemale.setValue(ValueFactory.createStringValue("foo"));
-
-        MessageList validationMessageList = uniqueIdentifierEnumAttributeValueMale.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
-
-        validationMessageList = uniqueIdentifierEnumAttributeValueFemale.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
-    }
+        public void testValidateAndAppendMessagesUniqueIdentifierValueEmpty() throws CoreException {
+            IIpsModel ipsModel = getIpsModel();
+            IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
+    
+            uniqueIdentifierEnumAttributeValue.setValue(ValueFactory.createStringValue(""));
+            MessageList validationMessageList = genderEnumValueFemale.validate(ipsProject);
+            assertOneValidationMessage(validationMessageList);
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
+    
+            ipsModel.clearValidationCache();
+            uniqueIdentifierEnumAttributeValue.setValue(ValueFactory.createStringValue(null));
+            validationMessageList = genderEnumValueFemale.validate(ipsProject);
+            assertOneValidationMessage(validationMessageList);
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
+        }
 
     @Test
-    public void testValidateIdBoundary1() throws CoreException {
-        paymentMode.setIdentifierBoundary("P9");
-        MessageList validationMessageList = paymentMode.validate(ipsProject);
-        assertTrue(validationMessageList.isEmpty());
-
-        getIpsModel().clearValidationCache();
-        paymentMode.setIdentifierBoundary("B1");
-
-        validationMessageList = paymentMode.validate(ipsProject);
-        assertEquals(2, validationMessageList.size());
-        assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
-                validationMessageList.getMessage(0).getCode());
-        assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
-                validationMessageList.getMessage(1).getCode());
-    }
+        public void testValidateAndAppendMessagesUniqueIdentifierValueNotUnique() throws CoreException {
+            IEnumAttributeValue uniqueIdentifierEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues()
+                    .get(0);
+            IEnumAttributeValue uniqueIdentifierEnumAttributeValueFemale = genderEnumValueFemale.getEnumAttributeValues()
+                    .get(0);
+    
+            uniqueIdentifierEnumAttributeValueMale.setValue(ValueFactory.createStringValue("foo"));
+            uniqueIdentifierEnumAttributeValueFemale.setValue(ValueFactory.createStringValue("foo"));
+    
+            MessageList validationMessageList = uniqueIdentifierEnumAttributeValueMale.validate(ipsProject);
+            assertOneValidationMessage(validationMessageList);
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
+    
+            validationMessageList = uniqueIdentifierEnumAttributeValueFemale.validate(ipsProject);
+            assertOneValidationMessage(validationMessageList);
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
+        }
 
     @Test
-    public void testValidateIdBoundary2() throws CoreException {
-        paymentMode.setIdentifierBoundary("P9");
-        assertTrue(paymentMode.isValid(ipsProject));
+        public void testValidateAndAppendMessagesIdBoundary1() throws CoreException {
+            paymentMode.setIdentifierBoundary("P9");
+            MessageList validationMessageList = paymentMode.validate(ipsProject);
+            assertTrue(validationMessageList.isEmpty());
+    
+            getIpsModel().clearValidationCache();
+            paymentMode.setIdentifierBoundary("B1");
+    
+            validationMessageList = paymentMode.validate(ipsProject);
+            assertEquals(2, validationMessageList.size());
+            assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
+                    validationMessageList.getMessage(0).getCode());
+            assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
+                    validationMessageList.getMessage(1).getCode());
+        }
 
-        IEnumValue monthly = paymentMode.getEnumValues().get(0);
-        monthly.setEnumAttributeValue(1, ValueFactory.createStringValue("X1"));
-
-        getIpsModel().clearValidationCache();
-
-        MessageList validationMessageList = paymentMode.validate(ipsProject);
-        assertEquals(1, validationMessageList.size());
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY));
-    }
+    @Test
+        public void testValidateAndAppendMessagesIdBoundary2() throws CoreException {
+            paymentMode.setIdentifierBoundary("P9");
+            assertTrue(paymentMode.isValid(ipsProject));
+    
+            IEnumValue monthly = paymentMode.getEnumValues().get(0);
+            monthly.setEnumAttributeValue(1, ValueFactory.createStringValue("X1"));
+    
+            getIpsModel().clearValidationCache();
+    
+            MessageList validationMessageList = paymentMode.validate(ipsProject);
+            assertEquals(1, validationMessageList.size());
+            assertNotNull(validationMessageList
+                    .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY));
+        }
 
     @Test
     public void testGetEnumValue() {
@@ -310,21 +310,21 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateMultilingual() throws CoreException {
-        InternationalStringValue internationalStringValue = new InternationalStringValue();
-        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
-        maleNameAttributeValue.setValue(internationalStringValue);
-        assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
-        maleNameAttributeValue.validate(ipsProject);
-        assertFalse(maleNameAttributeValue.findEnumAttribute(ipsProject).isMultilingual());
-
-        maleNameAttributeValue.setValue(new StringValue("foo"));
-        maleNameAttributeValue.findEnumAttribute(ipsProject).setMultilingual(true);
-        assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
-        maleNameAttributeValue.validate(ipsProject);
-        assertTrue(maleNameAttributeValue.findEnumAttribute(ipsProject).isMultilingual());
-
-    }
+        public void testValidateAndAppendMessagesMultilingual() throws CoreException {
+            InternationalStringValue internationalStringValue = new InternationalStringValue();
+            internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+            maleNameAttributeValue.setValue(internationalStringValue);
+            assertEquals(ValueType.INTERNATIONAL_STRING, maleNameAttributeValue.getValueType());
+            maleNameAttributeValue.validate(ipsProject);
+            assertFalse(maleNameAttributeValue.findEnumAttribute(ipsProject).isMultilingual());
+    
+            maleNameAttributeValue.setValue(new StringValue("foo"));
+            maleNameAttributeValue.findEnumAttribute(ipsProject).setMultilingual(true);
+            assertEquals(ValueType.STRING, maleNameAttributeValue.getValueType());
+            maleNameAttributeValue.validate(ipsProject);
+            assertTrue(maleNameAttributeValue.findEnumAttribute(ipsProject).isMultilingual());
+    
+        }
 
     @Test
     public void testFixValueType() {
@@ -342,27 +342,27 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidate_referenceExtensibleEnumValueInContent() throws Exception {
-        IEnumValue newEnumValue = createEnumValueWithEnumReference(CONTENT_ID);
-
-        MessageList messageList = newEnumValue.validate(ipsProject);
-
-        assertNotNull(messageList
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-    }
+        public void testValidateAndAppendMessages_referenceExtensibleEnumValueInContent() throws Exception {
+            IEnumValue newEnumValue = createEnumValueWithEnumReference(CONTENT_ID);
+    
+            MessageList messageList = newEnumValue.validate(ipsProject);
+    
+            assertNotNull(messageList
+                    .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        }
 
     @Test
-    public void testValidate_referenceExtensibleEnumValueInType() throws Exception {
-        IEnumValue newEnumValue = createEnumValueWithEnumReference(TYPE_ID);
-
-        MessageList messageList = newEnumValue.validate(ipsProject);
-
-        assertNull(
-                IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE
-                        + "not expected but message list was: " + messageList.toString(),
-                messageList
-                        .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-    }
+        public void testValidateAndAppendMessages_referenceExtensibleEnumValueInType() throws Exception {
+            IEnumValue newEnumValue = createEnumValueWithEnumReference(TYPE_ID);
+    
+            MessageList messageList = newEnumValue.validate(ipsProject);
+    
+            assertNull(
+                    IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE
+                            + "not expected but message list was: " + messageList.toString(),
+                    messageList
+                            .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        }
 
     private IEnumValue createEnumValueWithEnumReference(String refId) throws CoreException {
         paymentMode.setExtensible(true);

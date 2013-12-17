@@ -16,12 +16,14 @@ package org.faktorips.devtools.core.internal.model.enums;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.AssertionFailedException;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumAttributeValue.IdentifierBoundaryValidator;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -49,8 +51,6 @@ public class EnumAttributeValueUnitTest {
     @Mock
     private IntegerDatatype datatype;
     @Mock
-    private MessageList messageList;
-    @Mock
     private IEnumAttribute identifierAttribute;
     @Mock
     private EnumType enumType;
@@ -59,17 +59,14 @@ public class EnumAttributeValueUnitTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new IdentifierBoundaryValidator(attribute);
-        validator.withIpsProject(ipsProject);
-        validator.withMessageList(messageList);
-        validator.withEnumType(enumType);
-        validator.withDatatype(datatype);
+        validator = new IdentifierBoundaryValidator(attribute, enumType, datatype, ipsProject);
         when(attribute.findEnumAttribute(ipsProject)).thenReturn(identifierAttribute);
         when(enumType.getIdentifierBoundary()).thenReturn("10");
 
         when(datatype.compare(anyString(), anyString())).thenCallRealMethod();
         when(datatype.supportsCompare()).thenCallRealMethod();
         when(datatype.getValue(anyString())).thenCallRealMethod();
+        when(datatype.isParsable(anyString())).thenCallRealMethod();
 
         when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
         when(identifierAttribute.findDatatype(ipsProject)).thenReturn(datatype);
@@ -81,12 +78,14 @@ public class EnumAttributeValueUnitTest {
         when(enumValue.getEnumValueContainer()).thenReturn(enumType);
     }
 
+    @Test(expected = AssertionFailedException.class)
+    public void testConstructor() {
+        validator = new IdentifierBoundaryValidator(attribute, enumType, datatype, null);
+    }
+
     @Test
     public void testIdentifierBoundaryValidation_cannotValidate() {
-        validator.withIpsProject(null);
-        validator.withMessageList(null);
-        validator.withEnumType(null);
-        validator.withDatatype(null);
+        validator = new IdentifierBoundaryValidator(null, null, null, ipsProject);
         assertFalse(validator.canValidate());
     }
 
@@ -97,19 +96,7 @@ public class EnumAttributeValueUnitTest {
 
     @Test
     public void testIdentifierBoundaryValidation_canValidate_nullDatatype() {
-        validator.withDatatype(null);
-        assertFalse(validator.canValidate());
-    }
-
-    @Test
-    public void testIdentifierBoundaryValidation_canValidate_nullProject() {
-        validator.withIpsProject(null);
-        assertFalse(validator.canValidate());
-    }
-
-    @Test
-    public void testIdentifierBoundaryValidation_canValidate_nullMessageList() {
-        validator.withMessageList(null);
+        validator = new IdentifierBoundaryValidator(attribute, enumType, null, ipsProject);
         assertFalse(validator.canValidate());
     }
 
@@ -179,16 +166,23 @@ public class EnumAttributeValueUnitTest {
         assertTrue(validator.canValidate());
 
         validator.validateIfPossible();
-        verify(validator).validate();
+        verify(validator).validateAndAppendMessages(any(MessageList.class));
     }
 
     @Test
     public void testValidateIfPossible_cannotValidate() {
-        validator.withEnumType(null);
+        validator = new IdentifierBoundaryValidator(null, enumType, datatype, ipsProject);
         validator = spy(validator);
         assertFalse(validator.canValidate());
 
         validator.validateIfPossible();
-        verify(validator, never()).validate();
+        verify(validator, never()).validateAndAppendMessages(any(MessageList.class));
     }
+
+    @Test
+    public void testValueNotParsable() {
+        when(attribute.getStringValue()).thenReturn("AAABBBB");
+        assertFalse(validator.canValidate());
+    }
+
 }

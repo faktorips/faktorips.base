@@ -19,6 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
@@ -232,8 +233,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             }
         }
 
-        new IdentifierBoundaryValidator(this).withIpsProject(ipsProject).withMessageList(list).withDatatype(datatype)
-                .withEnumType(enumType).validateIfPossible();
+        IdentifierBoundaryValidator validator = new IdentifierBoundaryValidator(this, enumType, datatype, ipsProject);
+        list.add(validator.validateIfPossible());
     }
 
     private void validateMultilingual(MessageList list, IEnumAttribute enumAttribute) {
@@ -350,23 +351,31 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     public static class IdentifierBoundaryValidator {
 
         private final IEnumAttributeValue attributeValue;
+        private final IIpsProject ipsProject;
+        private final IEnumType enumType;
+        private final ValueDatatype datatype;
 
-        private IIpsProject ipsProject;
-        private MessageList messageList;
-        private IEnumType enumType;
-        private ValueDatatype datatype;
-
-        public IdentifierBoundaryValidator(IEnumAttributeValue attributeValue) {
+        public IdentifierBoundaryValidator(IEnumAttributeValue attributeValue, IEnumType enumType,
+                ValueDatatype datatype, IIpsProject ipsProject) {
             this.attributeValue = attributeValue;
+            this.enumType = enumType;
+            this.datatype = datatype;
+            Assert.isNotNull(ipsProject);
+            this.ipsProject = ipsProject;
         }
 
         /**
          * Validates if {@link #canValidate()} returns <code>true</code>. Does nothing otherwise.
+         * 
+         * @return the message list containing the validation messages. Contains no messages if no
+         *         problems were detected.
          */
-        public void validateIfPossible() {
+        public MessageList validateIfPossible() {
+            MessageList messageList = new MessageList();
             if (canValidate()) {
-                validate();
+                validateAndAppendMessages(messageList);
             }
+            return messageList;
         }
 
         /**
@@ -376,15 +385,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
          *         this validation or not all required information has been given.
          */
         public boolean canValidate() {
-            return hasMessageListAndProject() && hasDatatype() && isIdentifierValue() && hasBoundary();
-        }
-
-        private boolean hasMessageListAndProject() {
-            return getIpsProject() != null && getMessageList() != null;
-        }
-
-        private boolean hasDatatype() {
-            return getDatatype() != null;
+            return isIdentifierValue() && isIDValueParsable() && isBoundaryValueDefined();
         }
 
         private boolean isIdentifierValue() {
@@ -392,7 +393,15 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                     && getAttributeValue().findEnumAttribute(getIpsProject()) == getIdentifierAttribute();
         }
 
-        private boolean hasBoundary() {
+        private boolean isIDValueParsable() {
+            return hasDatatype() && getDatatype().isParsable(getIdAsString());
+        }
+
+        private boolean hasDatatype() {
+            return getDatatype() != null;
+        }
+
+        private boolean isBoundaryValueDefined() {
             if (getEnumType() == null) {
                 return false;
             } else {
@@ -400,14 +409,24 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             }
         }
 
-        protected void validate() {
+        protected void validateAndAppendMessages(MessageList messageList) {
             if (!isIdentitifierValid()) {
-                String message = NLS.bind(Messages.EnumAttributeValue_Msg_IdNotAllowedByIdentifierBoundary,
-                        getIdAsString(), getIdentifierBoundary());
-                getMessageList().add(
-                        new Message(MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY, message,
-                                Message.ERROR, this));
+                String message = NLS.bind(getRawMessageForTypeOrContent(), getIdAsString(), getIdentifierBoundary());
+                messageList.add(new Message(MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY, message,
+                        Message.ERROR, new ObjectProperty(getAttributeValue(), PROPERTY_VALUE)));
             }
+        }
+
+        private String getRawMessageForTypeOrContent() {
+            if (isValueOfEnumType()) {
+                return Messages.EnumAttributeValue_Msg_IdNotAllowedByIdentifierBoundary_valueOfEnumType;
+            } else {
+                return Messages.EnumAttributeValue_Msg_IdNotAllowedByIdentifierBoundary_valueOfEnumContent;
+            }
+        }
+
+        private boolean isValueOfEnumType() {
+            return isIdNameSpaceLessThanBoundary();
         }
 
         protected boolean isIdentitifierValid() {
@@ -427,7 +446,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
 
         private boolean allowsIdentifier(int resultOfCompare) {
-            return resultOfCompare < 0 == isIdNameSpaceLessThanBoundary();
+            return resultOfCompare < 0 == isValueOfEnumType();
         }
 
         private boolean isIdNameSpaceLessThanBoundary() {
@@ -446,36 +465,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return ipsProject;
         }
 
-        public IdentifierBoundaryValidator withIpsProject(IIpsProject ipsProject) {
-            this.ipsProject = ipsProject;
-            return this;
-        }
-
-        private MessageList getMessageList() {
-            return messageList;
-        }
-
-        public IdentifierBoundaryValidator withMessageList(MessageList messageList) {
-            this.messageList = messageList;
-            return this;
-        }
-
         private IEnumType getEnumType() {
             return enumType;
         }
 
-        public IdentifierBoundaryValidator withEnumType(IEnumType enumType) {
-            this.enumType = enumType;
-            return this;
-        }
-
         private ValueDatatype getDatatype() {
             return datatype;
-        }
-
-        public IdentifierBoundaryValidator withDatatype(ValueDatatype datatype) {
-            this.datatype = datatype;
-            return this;
         }
 
     }
