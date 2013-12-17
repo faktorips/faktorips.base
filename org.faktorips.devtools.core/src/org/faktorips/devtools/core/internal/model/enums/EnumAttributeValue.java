@@ -140,7 +140,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Returns the <tt>IEnumAttribute</tt> this <tt>IEnumAttributeValue</tt> is a value for.
+     * Returns the <tt>IEnumAttribute</tt> this <tt>IEnumAttributeValue</tt> is a value for. t
      * 
      * @param enumType The <tt>IEnumType</tt> this <tt>IEnumAttributeValue</tt> is referring to.
      */
@@ -344,7 +344,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * on the type of value container, enum-type or enum-content, a given id must be less than or
      * greater than (or equal to) the identifier boundary.
      * <p>
-     * Does nothing if no boundary is defined (=null).
+     * Does nothing if no boundary is defined (empty or null).
+     * <p>
+     * Concept Discussion: https://wiki.faktorzehn.de/display/FaktorIPSdevelWiki/Validierung
      * 
      * @see IEnumType#getIdentifierBoundary()
      */
