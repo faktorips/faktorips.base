@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * plugins.
  * <p>
  * <strong>This feature is experimental and the interface may change in future releases.</strong>
- * </p>
  * 
  * @since 3.11
  */

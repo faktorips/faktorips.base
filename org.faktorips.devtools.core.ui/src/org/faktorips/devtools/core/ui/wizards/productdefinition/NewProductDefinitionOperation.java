@@ -20,49 +20,134 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
 
-public class NewProductDefinitionOperation extends WorkspaceModifyOperation {
+/**
+ * Operation that is responsible for the creation of a new product definition element. Intended to
+ * be used together with {@link NewProductDefinitionWizard}.
+ * <p>
+ * <strong>Subclassing:</strong><br>
+ * Concrete {@link NewProductDefinitionWizard NewProductDefinitionWizards} are supposed to use an
+ * according {@link NewProductDefinitionOperation} as well.
+ * <p>
+ * Subclasses must implement two operations that are called during
+ * {@link #execute(IProgressMonitor)}:
+ * <ul>
+ * <li>{@link #finishIpsSrcFile(IIpsSrcFile, IProgressMonitor)}
+ * <li>{@link #postProcess(IIpsSrcFile, IProgressMonitor)}
+ * </ul>
+ * <p>
+ * It is also possible to override {@link #createIpsSrcFile(IProgressMonitor)} if it should be
+ * necessary to hook into creation of the source file.
+ */
+public abstract class NewProductDefinitionOperation extends WorkspaceModifyOperation {
 
     private final NewProductDefinitionPMO pmo;
-    private List<INewProductDefinitionOperationParticipant> participants;
 
-    public NewProductDefinitionOperation(NewProductDefinitionPMO pmo) {
+    private final List<INewProductDefinitionOperationParticipant> participants = new ArrayList<INewProductDefinitionOperationParticipant>();
+
+    protected NewProductDefinitionOperation(NewProductDefinitionPMO pmo) {
         this.pmo = pmo;
+        loadParticipantsFromExtensions();
+    }
+
+    private void loadParticipantsFromExtensions() {
+        ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
+                IpsPlugin.PLUGIN_ID);
+        IExtension[] extensions = extensionPoints
+                .getExtension(INewProductDefinitionOperationParticipant.EXTENSION_POINT_ID_NEW_PRODUCT_DEFINITION_OPERATION);
+        for (IExtension extension : extensions) {
+            participants.addAll(ExtensionPoints.createExecutableExtensions(extension,
+                    INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ID_PARTICIPANT,
+                    INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
+                    INewProductDefinitionOperationParticipant.class));
+        }
     }
 
     @Override
     protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
 
+        monitor.beginTask(Messages.NewProductCmptWizard_title, 5);
+
+        try {
+            createIpsPackageFragmentIfNonExistent(monitor);
+
+            IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
+            finishIpsSrcFile(ipsSrcFile, monitor);
+            saveIpsSrcFile(ipsSrcFile, monitor);
+            postProcess(ipsSrcFile, monitor);
+
+        } finally {
+            monitor.done();
+        }
+    }
+
+    private void createIpsPackageFragmentIfNonExistent(IProgressMonitor monitor) throws CoreException {
+        IIpsPackageFragment ipsPackage = pmo.getIpsPackage();
+        if (!ipsPackage.exists()) {
+            pmo.getPackageRoot().createPackageFragment(ipsPackage.getName(), true, new SubProgressMonitor(monitor, 1));
+        }
+    }
+
+    private void saveIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+        ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
     }
 
     /**
-     * Returns the {@link INewProductDefinitionOperationParticipant
-     * INewProductDefinitionOperationParticipants} defined in the extension point
-     * {@code org.faktorips.devtools.core.newProductDefinitionOperation}.
+     * Creates a new {@link IIpsSrcFile} using the information provided by the user and returns the
+     * newly created file.
+     * <p>
+     * <strong>Subclassing:</strong><br>
+     * The {@link NewProductDefinitionOperation} implementation creates the source file in the
+     * package fragment as configured by {@link NewProductDefinitionPMO}.
      * 
-     * @return the {@link INewProductDefinitionOperationParticipant
-     *         INewProductDefinitionOperationParticipants}
+     * @param monitor progress monitor to show progress to the user
+     * @return the new {@link IIpsSrcFile}
+     * 
+     * @throws CoreException in case of exceptions during file creation
      */
-    private List<INewProductDefinitionOperationParticipant> getParticipants() {
-        if (participants == null) {
-            ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
-                    IpsPlugin.PLUGIN_ID);
-            IExtension[] extensions = extensionPoints
-                    .getExtension(INewProductDefinitionOperationParticipant.EXTENSION_POINT_ID_NEW_PRODUCT_DEFINITION_OPERATION);
-            participants = new ArrayList<INewProductDefinitionOperationParticipant>();
-            for (IExtension extension : extensions) {
-                participants.addAll(ExtensionPoints.createExecutableExtensions(extension,
-                        INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ID_PARTICIPANT,
-                        INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
-                        INewProductDefinitionOperationParticipant.class));
-            }
-        }
-        return participants;
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+        return pmo.getIpsPackage().createIpsFile( //
+                pmo.getIpsObjectType(), //
+                pmo.getName(), //
+                true, //
+                new SubProgressMonitor(monitor, 1));
+    }
+
+    /**
+     * <strong>Subclassing:</strong><br>
+     * Finishing the new {@link IIpsSrcFile} means to fill all information given from the user into
+     * the newly created object. Subclasses may copy the content from an old object or something
+     * similar. Subclasses do not need to save the file after changing anything as this will be done
+     * automatically.
+     * 
+     * @param ipsSrcFile the newly created source file
+     * @param monitor progress monitor to show progress with
+     * 
+     * @throws CoreException thrown in case of any error
+     */
+    protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException;
+
+    /**
+     * <strong>Subclassing:</strong><br>
+     * This method may put the new {@link IIpsSrcFile} in context to other objects. It is called
+     * after the source file has been created and saved.
+     * 
+     * @param ipsSrcFile the newly created source file
+     * @param monitor progress monitor to show progress with
+     */
+    protected abstract void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor);
+
+    public NewProductDefinitionPMO getPmo() {
+        return pmo;
     }
 
 }
