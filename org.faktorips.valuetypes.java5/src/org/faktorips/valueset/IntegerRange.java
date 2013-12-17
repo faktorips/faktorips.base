@@ -24,12 +24,29 @@ public class IntegerRange extends DefaultRange<Integer> {
     private static final long serialVersionUID = 8454353227761904051L;
 
     /**
+     * Creates and new IntegerRange with the provided lower and upper bounds. The step increment is
+     * 1 and this range doesn't contain <code>null</code>
+     * 
+     * @param lower the lower bound of the range. The parameter being null indicates that the range
+     *            is unlimited on this side
+     * @param upper the upper bound of the range. The parameter being null indicates that the range
+     *            is unlimited on this side
+     */
+    public IntegerRange(Integer lower, Integer upper) {
+        super(lower, upper, 1);
+    }
+
+    private IntegerRange(Integer lower, Integer upper, Integer step, boolean containsNull) {
+        super(lower, upper, step, containsNull);
+    }
+
+    /**
      * Creates an IntegerRange based on the indicated Strings. The Strings are parsed with the
      * Integer.valueOf() method. An empty String is interpreted as <code>null</code>.
      */
     public static IntegerRange valueOf(String lower, String upper) {
-        Integer min = (lower == null || lower.equals("")) ? null : Integer.valueOf(lower);
-        Integer max = (upper == null || upper.equals("")) ? null : Integer.valueOf(upper);
+        Integer min = (lower == null || lower.isEmpty()) ? null : Integer.valueOf(lower);
+        Integer max = (upper == null || upper.isEmpty()) ? null : Integer.valueOf(upper);
         return new IntegerRange(min, max);
 
     }
@@ -41,9 +58,9 @@ public class IntegerRange extends DefaultRange<Integer> {
      * range.
      */
     public static IntegerRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        Integer min = (lower == null || lower.equals("")) ? null : Integer.valueOf(lower);
-        Integer max = (upper == null || upper.equals("")) ? null : Integer.valueOf(upper);
-        Integer stepInt = (step == null || step.equals("")) ? null : Integer.valueOf(step);
+        Integer min = (lower == null || lower.isEmpty()) ? null : Integer.valueOf(lower);
+        Integer max = (upper == null || upper.isEmpty()) ? null : Integer.valueOf(upper);
+        Integer stepInt = (step == null || step.isEmpty()) ? null : Integer.valueOf(step);
         return new IntegerRange(min, max, stepInt, containsNull);
     }
 
@@ -65,6 +82,18 @@ public class IntegerRange extends DefaultRange<Integer> {
     }
 
     /**
+     * Creates and new IntegerRange with the provided lower, upper bounds.
+     * 
+     * @param lower the lower bound of the range. The parameter being null indicates that the range
+     *            is unlimited on this side
+     * @param upper the upper bound of the range. The parameter being null indicates that the range
+     *            is unlimited on this side
+     */
+    public static IntegerRange valueOf(Integer lower, Integer upper) {
+        return new IntegerRange(lower, upper);
+    }
+
+    /**
      * Creates and new IntegerRange with the provided lower, upper bounds and step.
      * 
      * @param lower the lower bound of the range. The parameter being null indicates that the range
@@ -75,23 +104,6 @@ public class IntegerRange extends DefaultRange<Integer> {
      */
     public static IntegerRange valueOf(Integer lower, Integer upper, int step) {
         return valueOf(lower, upper, new Integer(step), false);
-    }
-
-    /**
-     * Creates and new IntegerRange with the provided lower and upper bounds. The step increment is
-     * 1 and this range doesn't contain <code>null</code>
-     * 
-     * @param lower the lower bound of the range. The parameter being null indicates that the range
-     *            is unlimited on this side
-     * @param upper the upper bound of the range. The parameter being null indicates that the range
-     *            is unlimited on this side
-     */
-    public IntegerRange(Integer lower, Integer upper) {
-        super(lower, upper, 1);
-    }
-
-    private IntegerRange(Integer lower, Integer upper, Integer step, boolean containsNull) {
-        super(lower, upper, step, containsNull);
     }
 
     @Override

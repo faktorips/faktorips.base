@@ -356,7 +356,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         JavaCodeFragment codeFragement = builder.getNewInstanceCodeFragement(enumTypeAdapter, "1");
 
         assertEquals(
-                "this.getRepository().getEnumValue(TestEnumType.class, (\"1\"==null || \"1\".equals(\"\")) ? null : new Integer(\"1\"))",
+                "this.getRepository().getEnumValue(TestEnumType.class, (\"1\"==null || \"1\".equals(\"\")) ? null : Integer.valueOf(\"1\"))",
                 codeFragement.getSourcecode());
     }
 

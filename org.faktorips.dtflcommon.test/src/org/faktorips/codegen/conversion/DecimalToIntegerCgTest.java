@@ -29,6 +29,6 @@ public class DecimalToIntegerCgTest extends AbstractSingleConversionCgTest {
 
     @Test
     public void testGetConversionCode() throws Exception {
-        assertEquals("new Integer(decimal.intValue())", getConversionCode(converter, "decimal"));
+        assertEquals("Integer.valueOf(decimal.intValue())", getConversionCode(converter, "decimal"));
     }
 }

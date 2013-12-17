@@ -44,9 +44,8 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
 
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
-        fragment.append('(');
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(expression);
         fragment.append(')');
         return fragment;

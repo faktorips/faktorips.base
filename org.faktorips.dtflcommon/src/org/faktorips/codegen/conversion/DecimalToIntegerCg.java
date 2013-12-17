@@ -23,11 +23,10 @@ public class DecimalToIntegerCg extends AbstractSingleConversionCg {
     }
 
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-        // new Integer(Decimal.valueOf("").intValue());
+        // Integer.valueOf(Decimal.valueOf("").intValue());
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
-        fragment.append("("); //$NON-NLS-1$
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(fromValue);
         fragment.append(".intValue())"); //$NON-NLS-1$
         return fragment;

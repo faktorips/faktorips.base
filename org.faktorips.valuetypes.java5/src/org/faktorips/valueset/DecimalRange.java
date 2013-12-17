@@ -29,9 +29,23 @@ public class DecimalRange extends DefaultRange<Decimal> {
     private static final long serialVersionUID = 5007646029371664759L;
 
     /**
+     * Creates a new DecimalRange with the provided lower bound and upper bound.
+     */
+    public DecimalRange(Decimal lowerBound, Decimal upperBound) {
+        super(lowerBound, upperBound);
+    }
+
+    /**
+     * Creates a new DecimalRange with the provided lower bound upper bound and step.
+     */
+    private DecimalRange(Decimal lowerBound, Decimal upperBound, Decimal step, boolean containsNull) {
+        super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
      * Creates and new DecimalRange with the provided lower and upper bounds.
      */
-    public final static DecimalRange valueOf(String lower, String upper) {
+    public static final DecimalRange valueOf(String lower, String upper) {
         return new DecimalRange(Decimal.valueOf(lower), Decimal.valueOf(upper));
     }
 
@@ -39,7 +53,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
      * Creates and new DecimalRange with the provided lower and upper bounds, the step increment and
      * an indicator saying if the null value is contained.
      */
-    public final static DecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
+    public static final DecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
         return new DecimalRange(Decimal.valueOf(lower), Decimal.valueOf(upper), Decimal.valueOf(step), containsNull);
     }
 
@@ -53,7 +67,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
      * @param step the step increment of this range. The parameter being null indicates that the
      *            range is continuous
      */
-    public final static DecimalRange valueOf(Decimal lower, Decimal upper, Decimal step) {
+    public static final DecimalRange valueOf(Decimal lower, Decimal upper, Decimal step) {
         return valueOf(lower, upper, step, false);
     }
 
@@ -69,24 +83,10 @@ public class DecimalRange extends DefaultRange<Decimal> {
      * @param containsNull true indicates that the range contains null or the null representation
      *            value of the datatype of this range
      */
-    public final static DecimalRange valueOf(Decimal lower, Decimal upper, Decimal step, boolean containsNull) {
+    public static final DecimalRange valueOf(Decimal lower, Decimal upper, Decimal step, boolean containsNull) {
         DecimalRange range = new DecimalRange(lower, upper, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
-    }
-
-    /**
-     * Creates a new DecimalRange with the provided lower bound and upper bound.
-     */
-    public DecimalRange(Decimal lowerBound, Decimal upperBound) {
-        super(lowerBound, upperBound);
-    }
-
-    /**
-     * Creates a new DecimalRange with the provided lower bound upper bound and step.
-     */
-    private DecimalRange(Decimal lowerBound, Decimal upperBound, Decimal step, boolean containsNull) {
-        super(lowerBound, upperBound, step, containsNull);
     }
 
     @Override
