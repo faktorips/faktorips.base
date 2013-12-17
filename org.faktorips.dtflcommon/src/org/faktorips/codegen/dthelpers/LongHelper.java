@@ -45,9 +45,8 @@ public class LongHelper extends AbstractDatatypeHelper {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Long.class);
-        fragment.append('(');
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(value);
         fragment.append(')');
         return fragment;

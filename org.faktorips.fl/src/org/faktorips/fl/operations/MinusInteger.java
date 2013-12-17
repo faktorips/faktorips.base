@@ -39,7 +39,7 @@ public class MinusInteger extends AbstractUnaryJavaOperation {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append('(');
         fragment.append(arg.getCodeFragment());
-        fragment.append("==null?null:new Integer(-1 * "); //$NON-NLS-1$
+        fragment.append("==null?null:Integer.valueOf(-1 * "); //$NON-NLS-1$
         fragment.append(arg.getCodeFragment());
         fragment.append(".intValue()))"); //$NON-NLS-1$
         arg.setCodeFragment(fragment);

@@ -26,9 +26,23 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     private static final long serialVersionUID = -9040271817746215911L;
 
     /**
+     * Creates a new BigDecimalRange with the provided lower bound and upper bound.
+     */
+    public BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound) {
+        super(lowerBound, upperBound);
+    }
+
+    /**
+     * Creates a new BigDecimalRange with the provided lower bound upper bound and step.
+     */
+    private BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound, BigDecimal step, boolean containsNull) {
+        super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
      * Creates and new BigDecimalRange with the provided lower and upper bounds.
      */
-    public final static BigDecimalRange valueOf(String lower, String upper) {
+    public static final BigDecimalRange valueOf(String lower, String upper) {
         return new BigDecimalRange(new BigDecimal(lower), new BigDecimal(upper));
     }
 
@@ -36,7 +50,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      * Creates and new BigDecimalRange with the provided lower and upper bounds, the step increment
      * and an indicator saying if the null value is contained.
      */
-    public final static BigDecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
+    public static final BigDecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
         return new BigDecimalRange(new BigDecimal(lower), new BigDecimal(upper), new BigDecimal(step), containsNull);
     }
 
@@ -50,7 +64,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      * @param step the step increment of this range. The parameter being null indicates that the
      *            range is continuous
      */
-    public final static BigDecimalRange valueOf(BigDecimal lower, BigDecimal upper, BigDecimal step) {
+    public static final BigDecimalRange valueOf(BigDecimal lower, BigDecimal upper, BigDecimal step) {
         return valueOf(lower, upper, step, false);
     }
 
@@ -66,27 +80,13 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      * @param containsNull true indicates that the range contains null or the null representation
      *            value of the datatype of this range
      */
-    public final static BigDecimalRange valueOf(BigDecimal lower,
+    public static final BigDecimalRange valueOf(BigDecimal lower,
             BigDecimal upper,
             BigDecimal step,
             boolean containsNull) {
         BigDecimalRange range = new BigDecimalRange(lower, upper, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
-    }
-
-    /**
-     * Creates a new BigDecimalRange with the provided lower bound and upper bound.
-     */
-    public BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound) {
-        super(lowerBound, upperBound);
-    }
-
-    /**
-     * Creates a new BigDecimalRange with the provided lower bound upper bound and step.
-     */
-    private BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound, BigDecimal step, boolean containsNull) {
-        super(lowerBound, upperBound, step, containsNull);
     }
 
     @Override

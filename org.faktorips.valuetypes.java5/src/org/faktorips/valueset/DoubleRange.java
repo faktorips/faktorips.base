@@ -41,14 +41,14 @@ public class DoubleRange extends DefaultRange<Double> {
     public static DoubleRange valueOf(String lower, String upper, boolean containsNull) {
         Double min = null;
         if (lower != null) {
-            if (!lower.equals("*")) {
+            if (!"*".equals(lower)) {
                 min = Double.valueOf(lower);
             }
         }
 
         Double max = null;
         if (upper != null) {
-            if (!upper.equals("*")) {
+            if (!"*".equals(upper)) {
                 max = Double.valueOf(upper);
             }
         }
