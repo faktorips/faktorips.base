@@ -102,8 +102,6 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
             newProductCmpt.fixAllDifferencesToModel(getPmo().getIpsProject());
         }
 
-        // FIXME FIPS-2489: Extension Operations aufrufen
-
         monitor.worked(1);
     }
 
@@ -117,14 +115,14 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
      */
     @Override
     protected void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
-        // TODO FIPS-2489 test
-
         monitor.beginTask(null, 2);
 
         IProductCmptTypeAssociation association = getPmo().getAddToAssociation();
         IProductCmptGeneration generationToAddTo = getPmo().getAddToProductCmptGeneration();
-        if (generationToAddTo != null && IpsUIPlugin.getDefault().isGenerationEditable(generationToAddTo)
+        if (generationToAddTo != null //
+                && IpsUIPlugin.getDefault().isGenerationEditable(generationToAddTo) //
                 && association != null) {
+
             IIpsSrcFile srcFile = generationToAddTo.getIpsSrcFile();
             if (getPmo().getValidator().validateAddToGeneration().isEmpty()) {
                 boolean wasDirty = srcFile.isDirty();

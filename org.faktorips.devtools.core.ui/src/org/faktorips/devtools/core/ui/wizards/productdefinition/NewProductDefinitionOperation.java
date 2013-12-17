@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
 
 /**
@@ -46,6 +47,8 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
  * <p>
  * It is also possible to override {@link #createIpsSrcFile(IProgressMonitor)} if it should be
  * necessary to hook into creation of the source file.
+ * 
+ * @param <PMO> type of the {@link PresentationModelObject} that configures this operation
  */
 public abstract class NewProductDefinitionOperation<PMO extends NewProductDefinitionPMO> extends
         WorkspaceModifyOperation {
@@ -56,10 +59,11 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     protected NewProductDefinitionOperation(PMO pmo) {
         this.pmo = pmo;
-        loadParticipantsFromExtensions();
+        participants.addAll(loadParticipantsFromExtensions());
     }
 
-    private void loadParticipantsFromExtensions() {
+    List<INewProductDefinitionOperationParticipant> loadParticipantsFromExtensions() {
+        List<INewProductDefinitionOperationParticipant> participants = new ArrayList<INewProductDefinitionOperationParticipant>();
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
                 IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints
@@ -70,6 +74,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
                     INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
                     INewProductDefinitionOperationParticipant.class));
         }
+        return participants;
     }
 
     @Override
@@ -147,7 +152,10 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      */
     protected abstract void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor);
 
-    public PMO getPmo() {
+    /**
+     * Returns the {@link PresentationModelObject} that configures this operation.
+     */
+    protected final PMO getPmo() {
         return pmo;
     }
 

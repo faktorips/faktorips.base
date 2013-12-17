@@ -14,7 +14,10 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.GregorianCalendar;
@@ -22,6 +25,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -32,10 +36,15 @@ import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,11 +57,21 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    private SingletonMockHelper singletonMockHelper;
+
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
+        singletonMockHelper = new SingletonMockHelper();
+    }
+
+    @Override
+    @After
+    public void tearDown() {
+        singletonMockHelper.reset();
     }
 
     @Test
@@ -158,32 +177,140 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO() throws CoreException,
             InvocationTargetException, InterruptedException {
 
-        // TODO PA-2023
-
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
         IProductCmptTypeAssociation association = sourceProductCmptType.newProductCmptTypeAssociation();
         association.setTarget(targetProductCmptType.getQualifiedName());
 
-        IProductCmpt productCmpt = newProductCmpt(sourceProductCmptType, "SourceProductCmpt");
-        IProductCmptGeneration productCmptGeneration = productCmpt.getFirstGeneration();
+        IProductCmpt sourceProductCmpt = newProductCmpt(sourceProductCmptType, "SourceProductCmpt");
+        IProductCmptGeneration sourceProductCmptGeneration = sourceProductCmpt.getFirstGeneration();
 
         NewProductCmptPMO pmo = new NewProductCmptPMO();
         pmo.setIpsProject(ipsProject);
         pmo.setIpsPackage(getDefaultIpsPackageFragment());
         pmo.setRuntimeId("testRuntimeId");
         pmo.setSelectedType(targetProductCmptType);
-        pmo.setEffectiveDate(productCmptGeneration.getValidFrom());
+        pmo.setEffectiveDate(sourceProductCmptGeneration.getValidFrom());
+        pmo.setAddToAssociation(sourceProductCmptGeneration, association);
 
         NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
         operation.run(monitor);
 
         IIpsSrcFile newSrcFile = getDefaultIpsPackageFragment().getIpsSrcFile(pmo.getName(), pmo.getIpsObjectType());
         IProductCmpt newProductCmpt = (IProductCmpt)newSrcFile.getIpsObject();
-        IProductCmptGeneration newProductCmptGeneration = newProductCmpt.getFirstGeneration();
-        assertEquals("defaultPolicyValue", newProductCmptGeneration.getConfigElement("testPolicyAttribute").getValue());
-        assertEquals("defaultProductValue", newProductCmptGeneration.getAttributeValue("testProductAttribute")
-                .getValueHolder().getStringValue());
+        IProductCmptLink newProductCmptLink = sourceProductCmptGeneration.getLinks(association.getName())[0];
+        assertEquals(newProductCmpt.getQualifiedName(), newProductCmptLink.getTarget());
+    }
+
+    @Test
+    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_SaveIfNotDirtyBefore() throws CoreException,
+            InvocationTargetException, InterruptedException {
+
+        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
+        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
+        IProductCmptTypeAssociation association = sourceProductCmptType.newProductCmptTypeAssociation();
+        association.setTarget(targetProductCmptType.getQualifiedName());
+
+        IProductCmpt sourceProductCmpt = newProductCmpt(sourceProductCmptType, "SourceProductCmpt");
+        IProductCmptGeneration sourceProductCmptGeneration = sourceProductCmpt.getFirstGeneration();
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setIpsPackage(getDefaultIpsPackageFragment());
+        pmo.setRuntimeId("testRuntimeId");
+        pmo.setSelectedType(targetProductCmptType);
+        pmo.setEffectiveDate(sourceProductCmptGeneration.getValidFrom());
+        pmo.setAddToAssociation(sourceProductCmptGeneration, association);
+
+        NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
+        operation.run(monitor);
+
+        assertFalse(sourceProductCmpt.getIpsSrcFile().isDirty());
+    }
+
+    @Test
+    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_DoNotSaveIfDirtyBefore() throws CoreException,
+            InvocationTargetException, InterruptedException {
+
+        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
+        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
+        IProductCmptTypeAssociation association = sourceProductCmptType.newProductCmptTypeAssociation();
+        association.setTarget(targetProductCmptType.getQualifiedName());
+
+        IProductCmpt sourceProductCmpt = newProductCmpt(sourceProductCmptType, "SourceProductCmpt");
+        sourceProductCmpt.getIpsSrcFile().markAsDirty();
+        IProductCmptGeneration sourceProductCmptGeneration = sourceProductCmpt.getFirstGeneration();
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setIpsPackage(getDefaultIpsPackageFragment());
+        pmo.setRuntimeId("testRuntimeId");
+        pmo.setSelectedType(targetProductCmptType);
+        pmo.setEffectiveDate(sourceProductCmptGeneration.getValidFrom());
+        pmo.setAddToAssociation(sourceProductCmptGeneration, association);
+
+        NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
+        operation.run(monitor);
+
+        assertTrue(sourceProductCmpt.getIpsSrcFile().isDirty());
+    }
+
+    @Test
+    public void testRun_DoNotAddLinkToProductCmptGenerationIfValidatorFails() throws CoreException,
+            InvocationTargetException, InterruptedException {
+
+        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
+        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
+        IProductCmptTypeAssociation association = sourceProductCmptType.newProductCmptTypeAssociation();
+        association.setTarget(targetProductCmptType.getQualifiedName());
+
+        IProductCmpt sourceProductCmpt = newProductCmpt(sourceProductCmptType, "SourceProductCmpt");
+        IProductCmptGeneration sourceProductCmptGeneration = sourceProductCmpt.getFirstGeneration();
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO() {
+            @Override
+            protected NewProductCmptValidator getValidator() {
+                MessageList validationMessages = new MessageList(new Message("CODE", "text", Message.ERROR));
+                NewProductCmptValidator validator = mock(NewProductCmptValidator.class);
+                when(validator.validateAddToGeneration()).thenReturn(validationMessages);
+                return validator;
+            }
+        };
+        pmo.setIpsProject(ipsProject);
+        pmo.setIpsPackage(getDefaultIpsPackageFragment());
+        pmo.setAddToAssociation(sourceProductCmptGeneration, association);
+
+        NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
+        operation.run(monitor);
+
+        assertEquals(0, sourceProductCmptGeneration.getNumOfLinks());
+    }
+
+    @Test
+    public void testRun_DoNotAddLinkToProductCmptGenerationIfGenerationNotEditable() throws CoreException,
+            InvocationTargetException, InterruptedException {
+
+        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
+        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
+        IProductCmptTypeAssociation association = sourceProductCmptType.newProductCmptTypeAssociation();
+        association.setTarget(targetProductCmptType.getQualifiedName());
+
+        IProductCmpt sourceProductCmpt = newProductCmpt(sourceProductCmptType, "SourceProductCmpt");
+        IProductCmptGeneration sourceProductCmptGeneration = sourceProductCmpt.getFirstGeneration();
+
+        IpsUIPlugin ipsUiPlugin = mock(IpsUIPlugin.class);
+        when(ipsUiPlugin.isGenerationEditable(sourceProductCmptGeneration)).thenReturn(false);
+        singletonMockHelper.setSingletonInstance(IpsUIPlugin.class, ipsUiPlugin);
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setIpsPackage(getDefaultIpsPackageFragment());
+        pmo.setAddToAssociation(sourceProductCmptGeneration, association);
+
+        NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
+        operation.run(monitor);
+
+        assertEquals(0, sourceProductCmptGeneration.getNumOfLinks());
     }
 
     private IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(IPolicyCmptType policyCmptType,

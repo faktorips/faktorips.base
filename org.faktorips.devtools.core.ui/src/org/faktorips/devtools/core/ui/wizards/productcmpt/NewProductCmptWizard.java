@@ -13,16 +13,10 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import javax.xml.transform.TransformerException;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -30,11 +24,10 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
-import org.faktorips.devtools.core.util.XmlUtil;
-import org.w3c.dom.Element;
 
 /**
  * Wizard to create a new product component.
@@ -70,13 +63,18 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     }
 
     @Override
-    protected String getDialogId() {
-        return ID;
+    public NewProductCmptPMO getPmo() {
+        return (NewProductCmptPMO)super.getPmo();
     }
 
     @Override
-    public NewProductCmptPMO getPmo() {
-        return (NewProductCmptPMO)super.getPmo();
+    protected NewProductDefinitionOperation<? extends NewProductDefinitionPMO> getOperation() {
+        return new NewProductCmptOperation(getPmo());
+    }
+
+    @Override
+    protected String getDialogId() {
+        return ID;
     }
 
     @Override
@@ -101,76 +99,6 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
             return productCmptPage;
         } else {
             return super.getStartingPage();
-        }
-    }
-
-    @Override
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        if (getPmo().isCopyMode()) {
-            return copyIpsSrcFile(monitor);
-        } else {
-            return super.createIpsSrcFile(monitor);
-        }
-    }
-
-    private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
-        String fileName = IpsObjectType.PRODUCT_CMPT.getFileName(getPmo().getName());
-        IIpsSrcFile ipsSrcFile = targetPackageFragment.createIpsFile(fileName, getContentsOfIpsObject(getPmo()
-                .getCopyProductCmpt()), true, new SubProgressMonitor(monitor, 1));
-        return ipsSrcFile;
-    }
-
-    private String getContentsOfIpsObject(IIpsObject ipsObject) {
-        String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-        Element xml = ipsObject.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
-        try {
-            return XmlUtil.nodeToString(xml, encoding);
-        } catch (TransformerException e) {
-            // This is a programming error, re-throw as runtime exception
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
-        IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        newProductCmpt.setProductCmptType(getPmo().getSelectedType().getQualifiedName());
-        newProductCmpt.setRuntimeId(getPmo().getRuntimeId());
-
-        if (!getPmo().isCopyMode()) {
-            IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
-            generation.setValidFrom(getPmo().getEffectiveDate());
-            newProductCmpt.fixAllDifferencesToModel(getPmo().getIpsProject());
-        }
-
-        // FIXME FIPS-2489: Extension Operations aufrufen
-
-        monitor.worked(1);
-    }
-
-    @Override
-    protected void postProcess(IIpsSrcFile newProductCmpt, IProgressMonitor monitor) {
-        monitor.beginTask(null, 2);
-        IProductCmptTypeAssociation association = getPmo().getAddToAssociation();
-        IProductCmptGeneration generationToAddTo = getPmo().getAddToProductCmptGeneration();
-        if (generationToAddTo != null && IpsUIPlugin.getDefault().isGenerationEditable(generationToAddTo)
-                && association != null) {
-            IIpsSrcFile srcFile = generationToAddTo.getIpsSrcFile();
-            if (getPmo().getValidator().validateAddToGeneration().isEmpty()) {
-                boolean dirty = srcFile.isDirty();
-
-                String targetQName = newProductCmpt.getQualifiedNameType().getName();
-                new LinkCreatorUtil(false).createLink(association, generationToAddTo, targetQName);
-                monitor.worked(1);
-                if (!dirty) {
-                    try {
-                        srcFile.save(true, new SubProgressMonitor(monitor, 1));
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
-                }
-            }
         }
     }
 

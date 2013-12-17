@@ -16,16 +16,23 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.SingletonMockHelper;
+import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,11 +45,20 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    private SingletonMockHelper singletonMockHelper;
+
     @Override
     @Before
     public void setUp() throws CoreException {
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
+        singletonMockHelper = new SingletonMockHelper();
+    }
+
+    @Override
+    @After
+    public void tearDown() {
+        singletonMockHelper.reset();
     }
 
     @Test
@@ -111,6 +127,20 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
         assertTrue(operation.postProcessCalled);
     }
 
+    @Test
+    public void testRun_CallParticipants() throws InvocationTargetException, InterruptedException {
+        NewProductDefinitionPMO pmo = new TestProductDefinitionPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setIpsPackage(ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment());
+
+        TestProductDefinitionOperation operation = new TestProductDefinitionOperation(pmo);
+        operation.run(monitor);
+
+        for (INewProductDefinitionOperationParticipant participant : operation.participants) {
+            verify(participant).finishIpsSrcFile(any(IIpsSrcFile.class), any(IProgressMonitor.class));
+        }
+    }
+
     private static class TestProductDefinitionPMO extends NewProductDefinitionPMO {
 
         @Override
@@ -132,12 +162,20 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     private static class TestProductDefinitionOperation extends NewProductDefinitionOperation {
 
+        private final List<INewProductDefinitionOperationParticipant> participants = new ArrayList<INewProductDefinitionOperationParticipant>();
+
         private boolean finishIpsSrcFileCalled;
 
         private boolean postProcessCalled;
 
         public TestProductDefinitionOperation(NewProductDefinitionPMO pmo) {
             super(pmo);
+        }
+
+        @Override
+        List<INewProductDefinitionOperationParticipant> loadParticipantsFromExtensions() {
+            participants.add(mock(INewProductDefinitionOperationParticipant.class));
+            return participants;
         }
 
         @Override
