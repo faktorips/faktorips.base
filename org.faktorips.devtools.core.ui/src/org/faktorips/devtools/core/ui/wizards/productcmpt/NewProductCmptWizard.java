@@ -144,6 +144,8 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
             newProductCmpt.fixAllDifferencesToModel(getPmo().getIpsProject());
         }
 
+        // FIXME FIPS-2489: Extension Operations aufrufen
+
         monitor.worked(1);
     }
 
