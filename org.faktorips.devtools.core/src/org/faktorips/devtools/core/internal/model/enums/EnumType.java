@@ -622,7 +622,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    private boolean isValidateIdentifierBoundaryOnDatatypeNecessary(String identifierBoundaryString) {
+    public boolean isValidateIdentifierBoundaryOnDatatypeNecessary(String identifierBoundaryString) {
         return !isAbstract && isExtensible() && isIdentifierAttributeComparable()
                 && isIdentifierBoundaryValueValid(identifierBoundaryString);
     }
