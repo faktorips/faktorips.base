@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -76,9 +77,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
     }
 
     @Override
-    protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-            InterruptedException {
-
+    protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         monitor.beginTask(Messages.NewProductCmptWizard_title, 5);
 
         try {
@@ -89,7 +88,8 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
             callParticipants(ipsSrcFile, monitor);
             saveIpsSrcFile(ipsSrcFile, monitor);
             postProcess(ipsSrcFile, monitor);
-
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         } finally {
             monitor.done();
         }
@@ -120,11 +120,13 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      * @throws CoreException in case of exceptions during file creation
      */
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        return pmo.getIpsPackage().createIpsFile( //
-                pmo.getIpsObjectType(), //
-                pmo.getName(), //
-                true, //
+        // @formatter:off
+        return pmo.getIpsPackage().createIpsFile(
+                pmo.getIpsObjectType(),
+                pmo.getName(),
+                true,
                 new SubProgressMonitor(monitor, 1));
+        // @formatter:on
     }
 
     /**

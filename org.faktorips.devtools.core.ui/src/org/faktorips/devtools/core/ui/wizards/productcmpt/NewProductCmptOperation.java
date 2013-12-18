@@ -63,11 +63,13 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
     private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
         String fileName = IpsObjectType.PRODUCT_CMPT.getFileName(getPmo().getName());
-        return targetPackageFragment.createIpsFile( //
-                fileName, //
-                getContentsOfIpsObject(getPmo().getCopyProductCmpt()), //
-                true, //
+        // @formatter:off
+        return targetPackageFragment.createIpsFile(
+                fileName,
+                getContentsOfIpsObject(getPmo().getCopyProductCmpt()),
+                true,
                 new SubProgressMonitor(monitor, 1));
+        // @formatter:on
     }
 
     private String getContentsOfIpsObject(IIpsObject ipsObject) {
@@ -119,10 +121,11 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
 
         IProductCmptTypeAssociation association = getPmo().getAddToAssociation();
         IProductCmptGeneration generationToAddTo = getPmo().getAddToProductCmptGeneration();
-        if (generationToAddTo != null //
-                && IpsUIPlugin.getDefault().isGenerationEditable(generationToAddTo) //
+        // @formatter:off
+        if (generationToAddTo != null
+                && IpsUIPlugin.getDefault().isGenerationEditable(generationToAddTo)
                 && association != null) {
-
+            // @formatter:on
             IIpsSrcFile srcFile = generationToAddTo.getIpsSrcFile();
             if (getPmo().getValidator().validateAddToGeneration().isEmpty()) {
                 boolean wasDirty = srcFile.isDirty();
