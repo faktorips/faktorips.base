@@ -17,17 +17,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -41,8 +33,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
-import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
 import org.faktorips.util.message.MessageList;
 
 public abstract class NewProductDefinitionWizard extends Wizard implements INewWizard {
@@ -122,6 +112,11 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      */
     protected abstract void initDefaults(IIpsPackageFragment selectedPackage, IIpsObject selectedIpsObject);
 
+    /**
+     * Returns the operation that should be executed by this wizard.
+     */
+    protected abstract NewProductDefinitionOperation<? extends NewProductDefinitionPMO> getOperation();
+
     @Override
     public boolean canFinish() {
         MessageList messageList = getPmo().getValidator().validateAllPages();
@@ -130,35 +125,8 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
 
     @Override
     public boolean performFinish() {
-        IWorkspaceRunnable op = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-                monitor.beginTask(Messages.NewProductCmptWizard_title, 5);
-                if (!pmo.getIpsPackage().exists()) {
-                    pmo.getPackageRoot().createPackageFragment(pmo.getIpsPackage().getName(), true,
-                            new SubProgressMonitor(monitor, 1));
-                }
-                IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
-                finishIpsSrcFile(ipsSrcFile, monitor);
-                ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
-                postProcess(ipsSrcFile, monitor);
-                monitor.done();
-            }
-
-        };
         try {
-            ISchedulingRule rule = null;
-            Job job = Job.getJobManager().currentJob();
-            if (job != null) {
-                rule = job.getRule();
-            }
-            IRunnableWithProgress runnable = null;
-            if (rule != null) {
-                runnable = new WorkbenchRunnableAdapter(op, rule);
-            } else {
-                runnable = new WorkbenchRunnableAdapter(op, ResourcesPlugin.getWorkspace().getRoot());
-            }
-            getContainer().run(false, true, runnable);
+            getContainer().run(false, true, getOperation());
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
@@ -168,42 +136,6 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
         afterFinishPerformed();
         return true;
     }
-
-    /**
-     * Create a new {@link IIpsSrcFile} using the information given from the user. This method
-     * returns the newly created file.
-     * 
-     * @param monitor A progress monitor to show your progress to the user
-     * @return A new {@link IIpsSrcFile} file
-     * 
-     * @throws CoreException In case of exceptions while creating the new file
-     */
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        IIpsSrcFile ipsSrcFile = pmo.getIpsPackage().createIpsFile(getPmo().getIpsObjectType(), pmo.getName(), true,
-                new SubProgressMonitor(monitor, 1));
-        return ipsSrcFile;
-    }
-
-    /**
-     * Finishing the new {@link IIpsSrcFile} means to fill all information given from the user into
-     * the new created object. You may copy the content from an old object or something like that.
-     * You do not need to save the file after change anything.
-     * 
-     * @param ipsSrcFile The {@link IIpsSrcFile} you want to manipulate
-     * @param monitor A progress monitor to show your progress
-     * 
-     * @throws CoreException A {@link CoreException} thrown in case of exceptions
-     */
-    protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException;
-
-    /**
-     * This method may put the {@link IIpsSrcFile} in context to other objects. It is called after
-     * the {@link IIpsSrcFile} is created and saved successfully.
-     * 
-     * @param ipsSrcFile The newly created {@link IIpsSrcFile}
-     * @param monitor The progress monitor to show your progress
-     */
-    protected abstract void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor);
 
     /**
      * This method is called after the wizard has been finished successfully. You may open the
