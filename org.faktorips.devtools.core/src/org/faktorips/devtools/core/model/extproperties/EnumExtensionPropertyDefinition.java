@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.extproperties;
 
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
 /**
@@ -45,16 +44,16 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
 
     @Override
     public Object getValueFromXml(Element valueElement) {
-        CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
-        if (cdata == null) {
+        String content = XmlUtil.getCDATAorTextContent(valueElement);
+        if (content == null) {
             return defaultValue;
         }
-        int qualifiedNameDelimiterPos = cdata.getData().lastIndexOf("."); //$NON-NLS-1$
+        int qualifiedNameDelimiterPos = content.lastIndexOf("."); //$NON-NLS-1$
         String id = ""; //$NON-NLS-1$
         if (qualifiedNameDelimiterPos < 0) {
-            id = cdata.getData();
+            id = content;
         } else {
-            id = cdata.getData().substring(qualifiedNameDelimiterPos + 1);
+            id = content.substring(qualifiedNameDelimiterPos + 1);
         }
         return enumType.getEnumValue(id);
     }

@@ -18,11 +18,7 @@ import org.faktorips.devtools.core.internal.model.value.InternationalStringValue
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 /**
  * Factory to build StringValue or InternationalStringValue
@@ -48,23 +44,8 @@ public final class ValueFactory {
         if (InternationalStringXmlHelper.isInternationalStringElement(valueEl)) {
             return InternationalStringValue.createFromXml(valueEl);
         }
-        CDATASection cdata = XmlUtil.getFirstCDataSection(valueEl);
-        // if no cdata-section was found, the value stored was an empty string.
-        // In this case, the cdata-section get lost during transformation of the
-        // xml-document to a string.
-        String result = ""; //$NON-NLS-1$
-        if (cdata != null) {
-            result = cdata.getData();
-        } else {
-            NodeList childNodes = valueEl.getChildNodes();
-            if (childNodes.getLength() > 0) {
-                Node node = childNodes.item(0);
-                if (node instanceof Text) {
-                    result = node.getNodeValue();
-                }
-            }
-        }
-        return new StringValue(result);
+        String content = XmlUtil.getCDATAorTextContent(valueEl);
+        return new StringValue(content == null ? "" : content); //$NON-NLS-1$
     }
 
     /**
