@@ -649,9 +649,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private void validateIdentifierBoundaryOnDatatype(MessageList validationMessageList) throws CoreException {
         IEnumAttribute identifierAttribute = getIdentifierAttribute();
         if (identifierAttribute != null) {
-            String identifierAttributeDatatype = identifierAttribute.getDatatype();
+            ValueDatatype identifierAttributeDatatype = identifierAttribute.findDatatype(getIpsProject());
             String identifierBoundaryString = getIdentifierBoundary();
-            ValidationUtils.checkValue(identifierAttributeDatatype, identifierBoundaryString, identifierAttribute,
+            ValidationUtils.checkValue(identifierAttributeDatatype, identifierBoundaryString, this,
                     PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
         }
     }
