@@ -22,6 +22,7 @@ package org.faktorips.valueset;
 public class DoubleRange extends DefaultRange<Double> {
 
     private static final long serialVersionUID = 3093772484960108819L;
+    private static final String ASTERISK_STAR = "*";
 
     public DoubleRange(Double lower, Double upper, boolean containsNull) {
         super(lower, upper, containsNull);
@@ -41,14 +42,14 @@ public class DoubleRange extends DefaultRange<Double> {
     public static DoubleRange valueOf(String lower, String upper, boolean containsNull) {
         Double min = null;
         if (lower != null) {
-            if (!lower.equals("*")) {
+            if (!ASTERISK_STAR.equals(lower)) {
                 min = Double.valueOf(lower);
             }
         }
 
         Double max = null;
         if (upper != null) {
-            if (!upper.equals("*")) {
+            if (!ASTERISK_STAR.equals(upper)) {
                 max = Double.valueOf(upper);
             }
         }

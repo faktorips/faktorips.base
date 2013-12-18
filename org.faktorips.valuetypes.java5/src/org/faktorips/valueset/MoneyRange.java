@@ -30,33 +30,6 @@ public class MoneyRange extends DefaultRange<Money> {
     private static final long serialVersionUID = 4750295893441094927L;
 
     /**
-     * Creates a new MoneyRange with the provided lower and upper bounds parsed using the
-     * Money.valueOf(String s) method.
-     */
-    public final static MoneyRange valueOf(String lower, String upper) {
-        return new MoneyRange(Money.valueOf(lower), Money.valueOf(upper));
-    }
-
-    /**
-     * Creates a new MoneyRange with the provided lower and upper bounds, the step increment and an
-     * indicator saying if the null value is contained. The values are determined by parsing the
-     * strings using the Money.valueOf(String s) method.
-     */
-    public final static MoneyRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        return new MoneyRange(Money.valueOf(lower), Money.valueOf(upper), Money.valueOf(step), containsNull);
-    }
-
-    public final static MoneyRange valueOf(Money lower, Money upper, Money step) {
-        return valueOf(lower, upper, step, false);
-    }
-
-    public final static MoneyRange valueOf(Money lower, Money upper, Money step, boolean containsNull) {
-        MoneyRange range = new MoneyRange(lower, upper, step, containsNull);
-        range.checkIfStepFitsIntoBounds();
-        return range;
-    }
-
-    /**
      * Creates a new MoneyRange with the provided lower bound and upper bound.
      */
     public MoneyRange(Money lowerBound, Money upperBound) {
@@ -68,6 +41,33 @@ public class MoneyRange extends DefaultRange<Money> {
      */
     private MoneyRange(Money lowerBound, Money upperBound, Money step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
+     * Creates a new MoneyRange with the provided lower and upper bounds parsed using the
+     * Money.valueOf(String s) method.
+     */
+    public static final MoneyRange valueOf(String lower, String upper) {
+        return new MoneyRange(Money.valueOf(lower), Money.valueOf(upper));
+    }
+
+    /**
+     * Creates a new MoneyRange with the provided lower and upper bounds, the step increment and an
+     * indicator saying if the null value is contained. The values are determined by parsing the
+     * strings using the Money.valueOf(String s) method.
+     */
+    public static final MoneyRange valueOf(String lower, String upper, String step, boolean containsNull) {
+        return new MoneyRange(Money.valueOf(lower), Money.valueOf(upper), Money.valueOf(step), containsNull);
+    }
+
+    public static final MoneyRange valueOf(Money lower, Money upper, Money step) {
+        return valueOf(lower, upper, step, false);
+    }
+
+    public static final MoneyRange valueOf(Money lower, Money upper, Money step, boolean containsNull) {
+        MoneyRange range = new MoneyRange(lower, upper, step, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
     }
 
     @Override

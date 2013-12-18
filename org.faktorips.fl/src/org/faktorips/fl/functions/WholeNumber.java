@@ -41,9 +41,8 @@ public class WholeNumber extends AbstractFlFunction {
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
-        fragment.append('(');
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(argResults[0].getCodeFragment());
         fragment.append(".setScale(0, "); //$NON-NLS-1$
         fragment.appendClassName(BigDecimal.class);
