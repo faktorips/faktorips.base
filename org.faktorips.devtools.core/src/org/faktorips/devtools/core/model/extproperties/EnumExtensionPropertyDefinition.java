@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
  * 
  * @author Faktor Zehn AG, Juergen Niedernhuber
  */
+@SuppressWarnings("deprecation")
 public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyDefinition {
 
     private EnumType enumType;
