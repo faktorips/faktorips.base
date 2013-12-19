@@ -24,11 +24,8 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
 
 public class Migration_3_11_0 extends DefaultMigration {
 
-    private final String xslFile;
-
     public Migration_3_11_0(IIpsProject ipsProject, String featureId) {
         super(ipsProject, featureId);
-        xslFile = getClass().getName().replaceAll("\\.", "/") + ".xslt"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override
@@ -40,7 +37,7 @@ public class Migration_3_11_0 extends DefaultMigration {
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         if (IpsObjectType.TABLE_STRUCTURE.equals(srcFile.getIpsObjectType())
                 || IpsObjectType.ENUM_TYPE.equals(srcFile.getIpsObjectType())) {
-            migrateUsingTransformation(srcFile, srcFile.getContentFromEnclosingResource(), xslFile);
+            srcFile.markAsDirty();
         }
         if (IpsObjectType.ENUM_TYPE.equals(srcFile.getIpsObjectType())) {
             addEnumLiteralName(srcFile);
