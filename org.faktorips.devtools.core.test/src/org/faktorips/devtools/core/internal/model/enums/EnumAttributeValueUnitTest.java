@@ -62,6 +62,8 @@ public class EnumAttributeValueUnitTest {
         validator = new IdentifierBoundaryValidator(attribute, enumType, datatype, ipsProject);
         when(attribute.findEnumAttribute(ipsProject)).thenReturn(identifierAttribute);
         when(enumType.getIdentifierBoundary()).thenReturn("10");
+        when(enumType.isValidateIdentifierBoundaryOnDatatypeNecessary(enumType.getIdentifierBoundary())).thenReturn(
+                true);
 
         when(datatype.compare(anyString(), anyString())).thenCallRealMethod();
         when(datatype.supportsCompare()).thenCallRealMethod();

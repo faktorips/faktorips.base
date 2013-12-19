@@ -391,8 +391,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
 
         private boolean isValidateNecessary() {
-            return ((EnumType)getEnumType()).isValidateIdentifierBoundaryOnDatatypeNecessary(enumType
-                    .getIdentifierBoundary());
+            if (enumType != null) {
+                return ((EnumType)getEnumType()).isValidateIdentifierBoundaryOnDatatypeNecessary(enumType
+                        .getIdentifierBoundary());
+            }
+            return false;
         }
 
         private boolean isIdentifierValue() {

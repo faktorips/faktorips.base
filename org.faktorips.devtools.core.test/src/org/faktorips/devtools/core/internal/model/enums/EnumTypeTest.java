@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -737,7 +738,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setIdentifierBoundary("String");
         validate = genderEnumType.validate(ipsProject);
         assertFalse(validate.isEmpty());
-        assertEquals("String ist kein gültiger Wert für den Datentyp Integer.", validate.getMessage(0).getText());
+        assertEquals(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, validate
+                .getFirstMessage(Message.ERROR).getCode());
 
         genderEnumType.setIdentifierBoundary("1000");
         validate = genderEnumType.validate(ipsProject);
@@ -753,7 +755,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setIdentifierBoundary("String");
         validate = genderEnumType.validate(ipsProject);
         assertFalse(validate.isEmpty());
-        assertEquals("String ist kein gültiger Wert für den Datentyp Integer.", validate.getMessage(0).getText());
+        assertEquals(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, validate
+                .getFirstMessage(Message.ERROR).getCode());
 
         genderEnumType.setExtensible(false);
         validate = genderEnumType.validate(ipsProject);
@@ -797,7 +800,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setIdentifierBoundary("String");
         validate = genderEnumType.validate(ipsProject);
         assertFalse(validate.isEmpty());
-        assertEquals("String ist kein gültiger Wert für den Datentyp Integer.", validate.getMessage(0).getText());
+        assertEquals(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, validate
+                .getFirstMessage(Message.ERROR).getCode());
 
         genderEnumType.setIdentifierBoundary("100");
         validate = genderEnumType.validate(ipsProject);
