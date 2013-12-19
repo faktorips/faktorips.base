@@ -27,8 +27,10 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -68,6 +70,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /** Flag indicating whether this <tt>IEnumType</tt> is extensible. */
     private boolean extensible;
 
+    /** Boundary for the identifier attribute of this {@link IEnumType}. */
+    private String identifierBoundary;
+
     /**
      * Qualified name of the package fragment a referencing <tt>IEnumContent</tt> must be stored in.
      */
@@ -89,7 +94,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public EnumType(IIpsSrcFile file) {
         super(file);
-
         superEnumType = StringUtils.EMPTY;
         extensible = false;
         isAbstract = false;
@@ -148,6 +152,18 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         boolean oldExtensible = this.extensible;
         this.extensible = extensible;
         valueChanged(oldExtensible, extensible);
+    }
+
+    @Override
+    public String getIdentifierBoundary() {
+        return identifierBoundary;
+    }
+
+    @Override
+    public void setIdentifierBoundary(String identifierBoundary) {
+        String oldIdentifierBoundary = this.identifierBoundary;
+        this.identifierBoundary = identifierBoundary;
+        valueChanged(oldIdentifierBoundary, identifierBoundary);
     }
 
     @Override
@@ -319,6 +335,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
+        if (element.hasAttribute(PROPERTY_IDENTIFIER_BOUNDARY)) {
+            identifierBoundary = element.getAttribute(PROPERTY_IDENTIFIER_BOUNDARY);
+        }
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
         initDeprecatedProperties(element);
@@ -339,6 +358,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
+        if (identifierBoundary != null) {
+            element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, identifierBoundary);
+        }
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
@@ -502,6 +524,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateIdentifierAttribute(list, ipsProject);
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
         validateEnumContentAlreadyUsed(list, ipsProject);
+        if (isValidateIdentifierBoundaryOnDatatypeNecessary(getIdentifierBoundary())) {
+            validateIdentifierBoundaryOnDatatype(list);
+        }
 
         EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), isExtensible(),
                 enumContentPackageFragment);
@@ -518,42 +543,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> inherits all <tt>IEnumAttribute</tt>s defined in
-     * its supertype hierarchy.
-     * <p>
-     * Adds validation messages to the given message list. The validation will pass immediately if
-     * the <tt>IEnumType</tt> is abstract.
-     */
-    private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
-        ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
-
-        // Pass validation on abstract EnumType.
-        if (isAbstract()) {
-            return;
-        }
-        validateInheritedAttributesNonAbstract(validationMessageList, ipsProject);
-    }
-
-    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
-        List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates(ipsProject);
-        int notInheritedAttributesCount = notInheritedAttributes.size();
-        if (notInheritedAttributesCount > 0) {
-            IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
-            String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
-                    + ')';
-            String text = (notInheritedAttributesCount > 1) ? NLS.bind(
-                    Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural, notInheritedAttributesCount,
-                    showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
-                    showFirst);
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
-                    text, Message.ERROR, this);
-            validationMessageList.add(message);
-        }
-    }
-
-    /**
      * Validates whether this <tt>IEnumType</tt> contains at least one
      * <tt>IEnumLiteralNameAttribute</tt>.
      * <p>
@@ -566,44 +555,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
         validateLiteralNameAttributeExists(validationMessageList);
         validateLiteralNameAttributeCount(validationMessageList);
-    }
-
-    private void validateLiteralNameAttributeExists(MessageList validationMessageList) {
-        if (isMissingLiteralNameAttribute()) {
-            String text = Messages.EnumType_NoLiteralNameAttribute;
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(this, null) });
-            validationMessageList.add(message);
-        }
-    }
-
-    public boolean isMissingLiteralNameAttribute() {
-        return !containsEnumLiteralNameAttribute();
-    }
-
-    private void validateLiteralNameAttributeCount(MessageList validationMessageList) {
-        int literalNameAttributesCount = getEnumLiteralNameAttributesCount();
-        if (literalNameAttributesCount > 1) {
-            String text = NLS.bind(Messages.EnumType_MultipleLiteralNameAttributes, literalNameAttributesCount);
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES, text,
-                    Message.ERROR, this);
-            validationMessageList.add(message);
-        }
-    }
-
-    @Override
-    public boolean isInextensibleEnum() {
-        return !isAbstract() && !isExtensible();
-    }
-
-    public int getEnumLiteralNameAttributesCount() {
-        int count = 0;
-        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute instanceof IEnumLiteralNameAttribute) {
-                count++;
-            }
-        }
-        return count;
     }
 
     /**
@@ -669,6 +620,124 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     this, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
             validationMessageList.add(message);
         }
+    }
+
+    protected boolean isValidateIdentifierBoundaryOnDatatypeNecessary(String identifierBoundaryString) {
+        return !isAbstract && isExtensible() && isIdentifierAttributeComparable()
+                && isIdentifierBoundaryValueValid(identifierBoundaryString);
+    }
+
+    private boolean isIdentifierAttributeComparable() {
+        IEnumAttribute identiferAttribute = findIdentiferAttribute(getIpsProject());
+        if (identiferAttribute != null) {
+            try {
+                ValueDatatype datatype = identiferAttribute.findDatatype(getIpsProject());
+                if (datatype != null) {
+                    return datatype.supportsCompare();
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return false;
+    }
+
+    private boolean isIdentifierBoundaryValueValid(String identifierBoundaryString) {
+        return identifierBoundaryString != null && !(identifierBoundaryString.isEmpty());
+    }
+
+    private void validateIdentifierBoundaryOnDatatype(MessageList validationMessageList) throws CoreException {
+        IEnumAttribute identifierAttribute = getIdentifierAttribute();
+        if (identifierAttribute != null) {
+            ValueDatatype identifierAttributeDatatype = identifierAttribute.findDatatype(getIpsProject());
+            String identifierBoundaryString = getIdentifierBoundary();
+            ValidationUtils.checkValue(identifierAttributeDatatype, identifierBoundaryString, this,
+                    PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
+        }
+    }
+
+    private IEnumAttribute getIdentifierAttribute() throws CoreException {
+        IEnumAttribute identifierAttribute;
+        if (hasSuperEnumType()) {
+            identifierAttribute = findSuperEnumType(getIpsProject()).findIdentiferAttribute(getIpsProject());
+        } else {
+            identifierAttribute = findIdentiferAttribute(getIpsProject());
+        }
+        return identifierAttribute;
+    }
+
+    private void validateLiteralNameAttributeExists(MessageList validationMessageList) {
+        if (isMissingLiteralNameAttribute()) {
+            String text = Messages.EnumType_NoLiteralNameAttribute;
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
+                    new ObjectProperty[] { new ObjectProperty(this, null) });
+            validationMessageList.add(message);
+        }
+    }
+
+    private void validateLiteralNameAttributeCount(MessageList validationMessageList) {
+        int literalNameAttributesCount = getEnumLiteralNameAttributesCount();
+        if (literalNameAttributesCount > 1) {
+            String text = NLS.bind(Messages.EnumType_MultipleLiteralNameAttributes, literalNameAttributesCount);
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES, text,
+                    Message.ERROR, this);
+            validationMessageList.add(message);
+        }
+    }
+
+    /**
+     * Validates whether this <tt>IEnumType</tt> inherits all <tt>IEnumAttribute</tt>s defined in
+     * its supertype hierarchy.
+     * <p>
+     * Adds validation messages to the given message list. The validation will pass immediately if
+     * the <tt>IEnumType</tt> is abstract.
+     */
+    private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
+            throws CoreException {
+        ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
+
+        // Pass validation on abstract EnumType.
+        if (isAbstract()) {
+            return;
+        }
+        validateInheritedAttributesNonAbstract(validationMessageList, ipsProject);
+    }
+
+    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject)
+            throws CoreException {
+        List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates(ipsProject);
+        int notInheritedAttributesCount = notInheritedAttributes.size();
+        if (notInheritedAttributesCount > 0) {
+            IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
+            String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
+                    + ')';
+            String text = (notInheritedAttributesCount > 1) ? NLS.bind(
+                    Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural, notInheritedAttributesCount,
+                    showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
+                    showFirst);
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
+                    text, Message.ERROR, this);
+            validationMessageList.add(message);
+        }
+    }
+
+    public boolean isMissingLiteralNameAttribute() {
+        return !containsEnumLiteralNameAttribute();
+    }
+
+    @Override
+    public boolean isInextensibleEnum() {
+        return !isAbstract() && !isExtensible();
+    }
+
+    public int getEnumLiteralNameAttributesCount() {
+        int count = 0;
+        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
+            if (currentEnumAttribute instanceof IEnumLiteralNameAttribute) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -1021,6 +1090,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     public List<IEnumValue> findAggregatedEnumValues() {
         return getEnumValues();
+    }
+
+    @Override
+    public boolean isIdentifierNamespaceBelowBoundary() {
+        return true;
     }
 
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierarchyVisitor {

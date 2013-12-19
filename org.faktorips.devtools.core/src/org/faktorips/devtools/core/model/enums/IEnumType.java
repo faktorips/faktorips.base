@@ -72,6 +72,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /** Name of the <tt>extensible</tt> property. */
     public static final String PROPERTY_EXTENSIBLE = "extensible"; //$NON-NLS-1$
 
+    /** Name of the <tt>identifierBoundary</tt> property. */
+    public static final String PROPERTY_IDENTIFIER_BOUNDARY = "identifierBoundary"; //$NON-NLS-1$
+
     /** Name of the <tt>enumContentPackageFragment</tt> property. */
     public static final String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
@@ -296,6 +299,29 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * @param extensible Flag indicating the extensibility of this <tt>IEnumType</tt>.
      */
     public void setExtensible(boolean extensible);
+
+    /**
+     * Returns the boundary for the values of the identifier attribute, or an empty string or
+     * <code>null</code> for no boundary.
+     * <p>
+     * This functionality is useful if this {@link IEnumType} is extensible. The user can explicitly
+     * define a boundary for identifiers used in this {@link IEnumType} and in the extending
+     * {@link IEnumContent}. Values in this {@link IEnumType} can ONLY use identifiers less than the
+     * boundary. Values in the corresponding {@link IEnumContent} can ONLY use identifiers greater
+     * than or equal to the boundary. Therefore the identifier-attribute's data-type has to
+     * implement {@link Comparable}.
+     */
+    public String getIdentifierBoundary();
+
+    /**
+     * Sets the identifier attribute boundary for this {@link IEnumType}.
+     * <p>
+     * If the boundary is set to the empty string or <code>null</code> then no restriction will be
+     * made for the values in the {@link IEnumType} and its corresponding {@link IEnumContent}.
+     * 
+     * @see #getIdentifierBoundary()
+     */
+    public void setIdentifierBoundary(String identifierBoundary);
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>

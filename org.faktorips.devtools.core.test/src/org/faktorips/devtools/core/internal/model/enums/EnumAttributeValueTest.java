@@ -136,7 +136,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateParsable() throws CoreException {
+    public void testValidateAndAppendMessagesParsable() throws CoreException {
         IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
         stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         stringAttribute.setName("StringAttribute");
@@ -188,7 +188,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateUniqueIdentifierValueEmpty() throws CoreException {
+    public void testValidateAndAppendMessagesUniqueIdentifierValueEmpty() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
         IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
 
@@ -207,7 +207,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateUniqueIdentifierValueNotUnique() throws CoreException {
+    public void testValidateAndAppendMessagesUniqueIdentifierValueNotUnique() throws CoreException {
         IEnumAttributeValue uniqueIdentifierEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues()
                 .get(0);
         IEnumAttributeValue uniqueIdentifierEnumAttributeValueFemale = genderEnumValueFemale.getEnumAttributeValues()
@@ -225,6 +225,86 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
+    }
+
+    @Test
+    public void testValidateAndAppendMessagesIdBoundary1() throws CoreException {
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName("EnumContentName");
+        paymentMode.setIdentifierBoundary("P9");
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        getIpsModel().clearValidationCache();
+        paymentMode.setIdentifierBoundary("B1");
+
+        validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(2, validationMessageList.size());
+        assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
+                validationMessageList.getMessage(0).getCode());
+        assertEquals(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY,
+                validationMessageList.getMessage(1).getCode());
+    }
+
+    @Test
+    public void testValidateAndAppendMessagesIdBoundary2() throws CoreException {
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName("EnumContentName");
+        paymentMode.setIdentifierBoundary("P9");
+        assertTrue(paymentMode.isValid(ipsProject));
+
+        IEnumValue monthly = paymentMode.getEnumValues().get(0);
+        monthly.setEnumAttributeValue(1, ValueFactory.createStringValue("X1"));
+
+        getIpsModel().clearValidationCache();
+
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(1, validationMessageList.size());
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY));
+    }
+
+    @Test
+    public void testValidateIdentifierValueNotValid_NotExtensible() throws CoreException {
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName("EnumContentName");
+        paymentMode.setIdentifierBoundary("P9");
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        getIpsModel().clearValidationCache();
+        paymentMode.setIdentifierBoundary("B1");
+
+        validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(2, validationMessageList.size());
+
+        paymentMode.setExtensible(false);
+        validationMessageList = paymentMode.validate(ipsProject);
+        System.out.println(validationMessageList.getText());
+        assertEquals(0, validationMessageList.size());
+    }
+
+    @Test
+    public void testValidateIdentifierValueNotValid_Abstract() throws CoreException {
+        paymentMode.setExtensible(true);
+        paymentMode.setEnumContentName("EnumContentName");
+        paymentMode.setIdentifierBoundary("P9");
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        getIpsModel().clearValidationCache();
+        paymentMode.setIdentifierBoundary("B1");
+
+        validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(2, validationMessageList.size());
+
+        paymentMode.setAbstract(true);
+        validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(2, validationMessageList.size());
+        assertFalse(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
+                .getMessage(0).getCode());
+        assertFalse(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
+                .getMessage(1).getCode());
     }
 
     @Test
@@ -277,7 +357,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateMultilingual() throws CoreException {
+    public void testValidateAndAppendMessagesMultilingual() throws CoreException {
         InternationalStringValue internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
         maleNameAttributeValue.setValue(internationalStringValue);
@@ -309,7 +389,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidate_referenceExtensibleEnumValueInContent() throws Exception {
+    public void testValidateAndAppendMessages_referenceExtensibleEnumValueInContent() throws Exception {
         IEnumValue newEnumValue = createEnumValueWithEnumReference(CONTENT_ID);
 
         MessageList messageList = newEnumValue.validate(ipsProject);
@@ -319,7 +399,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidate_referenceExtensibleEnumValueInType() throws Exception {
+    public void testValidateAndAppendMessages_referenceExtensibleEnumValueInType() throws Exception {
         IEnumValue newEnumValue = createEnumValueWithEnumReference(TYPE_ID);
 
         MessageList messageList = newEnumValue.validate(ipsProject);

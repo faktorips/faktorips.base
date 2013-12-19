@@ -68,6 +68,8 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     public static final String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
             + "EnumAttributeValueIdentifierNotUnique"; //$NON-NLS-1$
 
+    public static final String MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY = MSGCODE_PREFIX
+            + "IdDisallowedByEnumTypesIdentifierBoundary"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that that this <tt>IEnumAttributeValue</tt> is referring
      * a <tt>IEnumLiteralNameAttribute</tt> but its value is not java conform.

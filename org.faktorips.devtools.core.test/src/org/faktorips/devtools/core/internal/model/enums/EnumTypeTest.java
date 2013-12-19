@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -89,6 +90,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setExtensible(false);
         assertFalse(genderEnumType.isExtensible());
         genderEnumType.setExtensible(true);
+    }
+
+    @Test
+    public void testGetSetIdentifierBoundary() {
+        assertEquals(null, genderEnumType.getIdentifierBoundary());
+        genderEnumType.setIdentifierBoundary("100");
+        assertEquals("100", genderEnumType.getIdentifierBoundary());
     }
 
     @Test
@@ -452,6 +460,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         newEnumType.setAbstract(true);
         newEnumType.setExtensible(true);
+        newEnumType.setIdentifierBoundary("100");
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         newEnumType.setEnumContentName("bar");
         newEnumType.newEnumAttribute();
@@ -460,6 +469,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_EXTENSIBLE)));
+        assertTrue(xmlElement.hasAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
+        assertEquals("100", xmlElement.getAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_NAME));
 
@@ -467,8 +478,27 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
         assertTrue(loadedEnumType.isExtensible());
+        assertEquals("100", loadedEnumType.getIdentifierBoundary());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
         assertEquals("bar", loadedEnumType.getEnumContentName());
+    }
+
+    @Test
+    public void testXmlBoundary() throws CoreException, ParserConfigurationException {
+        IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
+        newEnumType.setAbstract(true);
+        newEnumType.setExtensible(true);
+        newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        newEnumType.setEnumContentName("bar");
+        newEnumType.newEnumAttribute();
+
+        Element xmlElement = newEnumType.toXml(createXmlDocument(IEnumType.XML_TAG));
+
+        assertFalse(xmlElement.hasAttribute(IEnumType.PROPERTY_IDENTIFIER_BOUNDARY));
+
+        IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
+        loadedEnumType.initFromXml(xmlElement);
+        assertEquals(null, loadedEnumType.getIdentifierBoundary());
     }
 
     public void testIsExtensibleAndSavingValuesInType() throws CoreException {
@@ -697,6 +727,85 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         enumType.validate(ipsProject);
         double duration = (System.nanoTime() - time) / 1000000000.0;
         assertTrue("Needed " + duration + " seconds. (should be less than 3)", duration < 3);
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        genderEnumType.setIdentifierBoundary("String");
+        validate = genderEnumType.validate(ipsProject);
+        assertFalse(validate.isEmpty());
+        assertEquals(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, validate
+                .getFirstMessage(Message.ERROR).getCode());
+
+        genderEnumType.setIdentifierBoundary("1000");
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype_NotExtensible() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        genderEnumType.setIdentifierBoundary("String");
+        validate = genderEnumType.validate(ipsProject);
+        assertFalse(validate.isEmpty());
+        assertEquals(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, validate
+                .getFirstMessage(Message.ERROR).getCode());
+
+        genderEnumType.setExtensible(false);
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype_EmptyStringAndNull() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        genderEnumType.setIdentifierBoundary("");
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumType.setIdentifierBoundary(null);
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+    }
+
+    @Test
+    public void testValidateIdentifierBoundaryOnDatatype_WithEnumSuperType() throws CoreException {
+        MessageList validate = genderEnumType.validate(ipsProject);
+
+        EnumType enumSuperType = newEnumType(ipsProject, "enumSuperType");
+        enumSuperType.setAbstract(true);
+        IEnumAttribute enumAttribute = enumSuperType.newEnumAttribute();
+        enumAttribute.setName("Id");
+        enumAttribute.setUnique(true);
+        enumAttribute.setIdentifier(true);
+        enumAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        assertFalse(genderEnumType.hasSuperEnumType());
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
+
+        genderEnumType.setSuperEnumType("enumSuperType");
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        genderEnumAttributeId.setInherited(true);
+        assertTrue(genderEnumType.hasSuperEnumType());
+        genderEnumType.setIdentifierBoundary("String");
+        validate = genderEnumType.validate(ipsProject);
+        assertFalse(validate.isEmpty());
+        assertEquals(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, validate
+                .getFirstMessage(Message.ERROR).getCode());
+
+        genderEnumType.setIdentifierBoundary("100");
+        validate = genderEnumType.validate(ipsProject);
+        assertTrue(validate.isEmpty());
     }
 
     private void fillAttributeValues(IEnumValue enumValue, int i) {

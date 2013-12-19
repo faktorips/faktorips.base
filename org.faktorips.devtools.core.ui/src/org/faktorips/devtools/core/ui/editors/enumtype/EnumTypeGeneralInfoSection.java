@@ -19,10 +19,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -32,6 +34,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
@@ -72,8 +75,17 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The UI check box for the <tt>extensible</tt> property. */
     private Button extensibleCheckbox;
 
+    /** The IU buttonField for <tt>extensible</tt> property. */
+    private ButtonField extensibleButtonField;
+
     /** The UI control for the <tt>enumContentPackageFragment</tt> property */
     private TextField enumContentNameControl;
+
+    /** The UI text for <tt>identifierBoundary</tt> property */
+    private Text boundaryText;
+
+    /** pmo for Binding */
+    private final EnumTypePmo pmo;
 
     /**
      * Creates a new <tt>EnumTypeGeneralInfoSection</tt>.
@@ -89,10 +101,12 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         ArgumentCheck.notNull(enumType);
 
         this.enumType = enumType;
-        extFactory = new ExtensionPropertyControlFactory(enumType);
+        this.extFactory = new ExtensionPropertyControlFactory(enumType);
+        this.pmo = new EnumTypePmo(enumType);
 
         setGrabVerticalSpace(false);
         initControls();
+        bindContent();
         setText(Messages.EnumTypeGeneralInfoSection_title);
         enumType.getIpsModel().addChangeListener(this);
     }
@@ -100,19 +114,23 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     @Override
     public void dispose() {
         super.dispose();
+        getBindingContext().dispose();
         enumType.getIpsModel().removeChangeListener(this);
     }
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
-        Composite composite = toolkit.createLabelEditColumnComposite(client);
+        Composite composite = toolkit.createGridComposite(client, 4, false, true);
+        toolkit.getFormToolkit().paintBordersFor(composite);
 
         createSuperclassLink(toolkit, composite);
         createSupertypeRefControl(toolkit, composite);
         createIsAbstractCheckbox(toolkit, composite);
         createExtensibleCheckbox(toolkit, composite);
-        createEnumContentNameControl(toolkit, composite);
+        toolkit.createHorizontalSpacer(composite, 0);
+        toolkit.createHorizontalSpacer(composite, 0);
+        createEnumContentSpecificationAndBoundary(composite, toolkit);
         registerFocusHandling();
         createExtensionControl(toolkit, composite);
     }
@@ -136,33 +154,57 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private EnumTypeRefControl createSupertypeRefControl(UIToolkit toolkit, Composite composite) {
         supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite, true);
+        ((GridData)supertypeRefControl.getLayoutData()).horizontalSpan = 3;
         supertypeRefControl.setCurrentEnumType(enumType);
-        getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
         return supertypeRefControl;
     }
 
     private Button createIsAbstractCheckbox(UIToolkit toolkit, Composite composite) {
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
-        isAbstractCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
+        // toolkit.createFormLabel(composite, );
+        isAbstractCheckbox = toolkit.createButton(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract,
+                SWT.CHECK);
         return isAbstractCheckbox;
     }
 
     private void createExtensibleCheckbox(UIToolkit toolkit, Composite composite) {
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible);
-        extensibleCheckbox = toolkit.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
-        ButtonField extensibleButtonField = new ButtonField(extensibleCheckbox);
-        getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
+        // toolkit.createFormLabel(composite, );
+        extensibleCheckbox = toolkit.createButton(composite, Messages.EnumTypeGeneralInfoSection_labelExtensible,
+                SWT.CHECK);
+        extensibleButtonField = new ButtonField(extensibleCheckbox);
     }
 
-    private void createEnumContentNameControl(UIToolkit toolkit, Composite composite) {
+    private void createEnumContentSpecificationAndBoundary(Composite composite, UIToolkit toolkit) {
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
-        Text text = toolkit.createText(composite);
+
+        createEnumContentText(toolkit, composite);
+        createIdentifierBoundaryField(toolkit, composite);
+    }
+
+    private void createEnumContentText(UIToolkit toolkit, Composite newComposite) {
+        Text text = toolkit.createText(newComposite);
         enumContentNameControl = new TextField(text);
-        toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && enumType.isExtensible());
+    }
+
+    private void createIdentifierBoundaryField(UIToolkit toolkit, Composite newComposite) {
+        Label label = toolkit.createFormLabel(newComposite, Messages.EnumTypeGeneralInfoSection_IdentifierBoundary);
+        GridData gridData = new GridData(SWT.RIGHT, SWT.END, true, false);
+        gridData.horizontalIndent = 50;
+        label.setLayoutData(gridData);
+
+        boundaryText = toolkit.createText(newComposite);
+        boundaryText.setToolTipText(Messages.EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText);
+    }
+
+    private void bindContent() {
+        getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
+        getBindingContext().bindContent(extensibleButtonField, enumType, IEnumType.PROPERTY_EXTENSIBLE);
+        getBindingContext().bindContent(isAbstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+        getBindingContext().bindContent(boundaryText, enumType, IEnumType.PROPERTY_IDENTIFIER_BOUNDARY);
+        getBindingContext().bindEnabled(extensibleCheckbox, pmo, EnumTypePmo.PROPERTY_EXTENSIBLE_CHECKBOX);
+        getBindingContext().bindEnabled(enumContentNameControl.getControl(), pmo,
+                EnumTypePmo.PROPERTY_ENUM_CONTENT_NAME_CONTROL);
+        getBindingContext().bindEnabled(boundaryText, pmo, EnumTypePmo.PROPERTY_BOUNDARY_TEXT);
     }
 
     private void registerFocusHandling() {
@@ -185,15 +227,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
 
         try {
-            switch (event.getEventType()) {
-                case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                    wholeContentChanged();
-                    //$FALL-THROUGH$
-
-                case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                    propertyChanged();
-                    break;
-            }
+            propertyChanged();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -204,8 +238,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
          * Initialize enumeration content field if none has been specified yet and the values are
          * not part of the model.
          */
-        if ((enumType.isExtensible()) && enumContentNameControl.getText().length() == 0) {
-            enumContentNameControl.setText(enumType.getQualifiedName());
+        if (!enumContentNameControl.getTextControl().isDisposed()) {
+            if ((enumType.isExtensible()) && enumContentNameControl.getText().length() == 0) {
+                enumContentNameControl.setText(enumType.getQualifiedName());
+            }
         }
 
         // Create an EnumLiteralNameAttribute if the EnumType does not have one but needs one.
@@ -218,20 +254,53 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
     }
 
-    private void wholeContentChanged() {
-        Text textControl = enumContentNameControl.getTextControl();
-        if (!textControl.isDisposed()) {
-            getToolkit().setDataChangeable(textControl, !(enumType.isAbstract()) && (enumType.isExtensible()));
+    public static class EnumTypePmo extends IpsObjectPartPmo {
+        public static final String PROPERTY_EXTENSIBLE_CHECKBOX = "extensibleCheckboxEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_ENUM_CONTENT_NAME_CONTROL = "enumContentNameControlEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_BOUNDARY_TEXT = "boundaryTextEnabled"; //$NON-NLS-1$
+
+        private final IEnumType enumType;
+
+        public EnumTypePmo(IEnumType enumType) {
+            this.enumType = enumType;
+        }
+
+        public boolean isExtensibleCheckboxEnabled() {
+            return !enumType.isAbstract();
+        }
+
+        public boolean isEnumContentNameControlEnabled() {
+            return !enumType.isAbstract() && enumType.isExtensible();
+        }
+
+        public boolean isBoundaryTextEnabled() {
+            return isIdentifierBoundaryTextEnabled();
+        }
+
+        private boolean isIdentifierBoundaryTextEnabled() {
+            return isEnumContentNameControlEnabled() && supportDatatypeCompare();
+        }
+
+        private boolean supportDatatypeCompare() {
+            boolean supportCompare = false;
+            ValueDatatype datatype = getIdentifierAttributeDatatype();
+            if (datatype != null) {
+                supportCompare = datatype.supportsCompare();
+            }
+            return supportCompare;
+        }
+
+        private ValueDatatype getIdentifierAttributeDatatype() {
+            IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
+            ValueDatatype datatype = null;
+            if (identiferAttribute != null) {
+                try {
+                    datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+            return datatype;
         }
     }
-
-    @Override
-    public void refresh() {
-        super.refresh();
-        getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
-                !(enumType.isAbstract()) && enumType.isExtensible());
-        extensibleCheckbox.setEnabled(!(enumType.isAbstract()));
-
-    }
-
 }

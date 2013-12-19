@@ -34,6 +34,8 @@ public class Messages extends NLS {
     public static String EnumTypeGeneralInfoSection_labelAbstract;
     public static String EnumTypeGeneralInfoSection_labelExtensible;
     public static String EnumTypeGeneralInfoSection_labelEnumContentPackageFragment;
+    public static String EnumTypeGeneralInfoSection_IdentifierBoundary;
+    public static String EnumTypeGeneralInfoSection_IdentifierBoundaryTooltipText;
 
     public static String EnumTypeStructurePage_title;
     public static String EnumTypeStructurePage_andLiteral;

@@ -345,4 +345,9 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return false;
     }
 
+    @Override
+    public boolean isIdentifierNamespaceBelowBoundary() {
+        return false;
+    }
+
 }

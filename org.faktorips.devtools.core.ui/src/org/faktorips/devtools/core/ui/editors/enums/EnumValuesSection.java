@@ -591,7 +591,9 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 if (providerAttribute != null && providerAttribute.equals(changedEnumAttribute)) {
                     IEnumAttributeValue literalNameValue = changedAttributeValue.getEnumValue().getEnumAttributeValue(
                             literalNameAttribute);
-                    updateLiteralName(changedAttributeValue, literalNameValue);
+                    if (literalNameValue != null) {
+                        updateLiteralName(changedAttributeValue, literalNameValue);
+                    }
                 }
             }
         }
