@@ -49,13 +49,13 @@ public class IpsObjectPartStringExtPropertyTest {
 
         // not null
         property.valueToXml(el, "blabla");
-        assertEquals("blabla", XmlUtil.getFirstCDataSection(el).getData());
+        assertEquals("blabla", XmlUtil.getCDATAorTextContent(el));
         assertEquals("blabla", property.getValueFromXml(el));
 
         // not null, special characters
         el = doc.createElement("Value");
         property.valueToXml(el, "<>&");
-        assertEquals("<>&", XmlUtil.getFirstCDataSection(el).getData());
+        assertEquals("<>&", XmlUtil.getCDATAorTextContent(el));
         assertEquals("<>&", property.getValueFromXml(el));
     }
 

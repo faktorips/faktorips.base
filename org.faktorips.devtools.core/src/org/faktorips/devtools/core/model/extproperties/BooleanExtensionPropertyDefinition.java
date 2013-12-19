@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.model.extproperties;
 
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
 /**
@@ -34,11 +33,8 @@ public class BooleanExtensionPropertyDefinition extends ExtensionPropertyDefinit
 
     @Override
     public Object getValueFromXml(Element valueElement) {
-        CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
-        if (cdata == null) {
-            return Boolean.FALSE;
-        }
-        return Boolean.valueOf(cdata.getData());
+        String content = XmlUtil.getCDATAorTextContent(valueElement);
+        return content == null ? Boolean.FALSE : Boolean.valueOf(content);
     }
 
     @Override
