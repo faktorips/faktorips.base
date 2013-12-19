@@ -805,7 +805,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.setIdentifierBoundary("100");
         validate = genderEnumType.validate(ipsProject);
-        System.out.println(validate.getText());
         assertTrue(validate.isEmpty());
     }
 
