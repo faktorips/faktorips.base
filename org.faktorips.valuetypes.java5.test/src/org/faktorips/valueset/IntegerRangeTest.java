@@ -56,18 +56,14 @@ public class IntegerRangeTest {
 
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testValueOf() {
         assertEquals(new IntegerRange(2, 5), IntegerRange.valueOf("2", "5"));
         assertEquals(new IntegerRange(null, null), IntegerRange.valueOf("", ""));
-        assertEquals(new IntegerRange(null, null), IntegerRange.valueOf(null, null));
+        assertEquals(new IntegerRange(null, null), IntegerRange.valueOf((String)null, (String)null));
 
-        try {
-            IntegerRange.valueOf(new Integer(0), new Integer(100), new Integer(0), false);
-            fail("Expect to fail since zero step size is not allowed.");
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        IntegerRange.valueOf(new Integer(0), new Integer(100), new Integer(0), false);
+        fail("Expect to fail since zero step size is not allowed.");
     }
 
     @Test

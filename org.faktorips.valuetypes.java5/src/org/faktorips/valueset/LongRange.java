@@ -25,13 +25,21 @@ public class LongRange extends DefaultRange<Long> {
 
     private static final long serialVersionUID = -785773839824461985L;
 
+    public LongRange(Long lower, Long upper) {
+        super(lower, upper, new Long(1));
+    }
+
+    private LongRange(Long lower, Long upper, Long step, boolean containsNull) {
+        super(lower, upper, step, containsNull);
+    }
+
     /**
      * Creates a LongRange based on the indicated Strings. The Strings are parsed with the
      * Long.valueOf() method. An empty String is interpreted as <code>null</code>.
      */
     public static LongRange valueOf(String lower, String upper) {
-        Long min = (lower == null || lower.equals("")) ? null : Long.valueOf(lower);
-        Long max = (upper == null || upper.equals("")) ? null : Long.valueOf(upper);
+        Long min = (lower == null || lower.isEmpty()) ? null : Long.valueOf(lower);
+        Long max = (upper == null || upper.isEmpty()) ? null : Long.valueOf(upper);
         return new LongRange(min, max);
     }
 
@@ -41,9 +49,9 @@ public class LongRange extends DefaultRange<Long> {
      * containsNull is true <code>null</code> is considered to be included within this range.
      */
     public static LongRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        Long min = (lower == null || lower.equals("")) ? null : Long.valueOf(lower);
-        Long max = (upper == null || upper.equals("")) ? null : Long.valueOf(upper);
-        Long stepLong = (step == null || step.equals("")) ? null : Long.valueOf(step);
+        Long min = (lower == null || lower.isEmpty()) ? null : Long.valueOf(lower);
+        Long max = (upper == null || upper.isEmpty()) ? null : Long.valueOf(upper);
+        Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
         return new LongRange(min, max, stepLong, containsNull);
     }
 
@@ -55,14 +63,6 @@ public class LongRange extends DefaultRange<Long> {
         LongRange range = new LongRange(lower, upper, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
-    }
-
-    public LongRange(Long lower, Long upper) {
-        super(lower, upper, new Long(1));
-    }
-
-    private LongRange(Long lower, Long upper, Long step, boolean containsNull) {
-        super(lower, upper, step, containsNull);
     }
 
     @Override

@@ -29,6 +29,6 @@ public class IntegerToLongCgTest extends AbstractSingleConversionCgTest {
 
     @Test
     public void testGetConversionCode() throws Exception {
-        assertEquals("new Long(integer.intValue())", getConversionCode(converter, "integer"));
+        assertEquals("Long.valueOf(integer.intValue())", getConversionCode(converter, "integer"));
     }
 }

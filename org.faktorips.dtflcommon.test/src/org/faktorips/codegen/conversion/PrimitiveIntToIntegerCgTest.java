@@ -29,7 +29,7 @@ public class PrimitiveIntToIntegerCgTest extends AbstractSingleConversionCgTest 
 
     @Test
     public void testGetConversionCode() throws Exception {
-        assertEquals("new Integer(intValue)", getConversionCode(converter, "intValue"));
+        assertEquals("Integer.valueOf(intValue)", getConversionCode(converter, "intValue"));
     }
 
 }

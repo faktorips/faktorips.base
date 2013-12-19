@@ -156,7 +156,7 @@
 «REM»Workaround entsprechend BeanChangeListenerSupportBuilder#appendFieldAccess()«ENDREM»
 «DEFINE notifyForIntOrBoolean FOR XPolicyAttribute-»
 		«IF datatype.name=="int"-»
-			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», new Integer(«oldValueVariable»), new Integer(«fieldName»)));
+			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», Integer.valueOf(«oldValueVariable»), Integer.valueOf(«fieldName»)));
 		«ELSE-»
 			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», Boolean.valueOf(«oldValueVariable»), Boolean.valueOf(«fieldName»)));
 		«ENDIF-»

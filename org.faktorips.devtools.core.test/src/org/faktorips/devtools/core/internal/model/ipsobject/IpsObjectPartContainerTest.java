@@ -70,7 +70,6 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -255,9 +254,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         Element extProp0El = XmlUtil.getFirstElement(extPropertiesEl, IpsObjectPartContainer.XML_VALUE_ELEMENT);
         String isNull = extProp0El.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
         assertFalse(Boolean.valueOf(isNull).booleanValue());
-        CDATASection valueSection = XmlUtil.getFirstCDataSection(extProp0El);
+        String valueSection = XmlUtil.getCDATAorTextContent(extProp0El);
         assertNotNull(valueSection);
-        assertEquals("default", valueSection.getData());
+        assertEquals("default", valueSection);
 
         // not null, property has been explicitly set
         container.setExtPropertyValue("org.foo.prop0", "value");
@@ -267,9 +266,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         extProp0El = XmlUtil.getFirstElement(extPropertiesEl, IpsObjectPartContainer.XML_VALUE_ELEMENT);
         isNull = extProp0El.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
         assertFalse(Boolean.valueOf(isNull).booleanValue());
-        valueSection = XmlUtil.getFirstCDataSection(extProp0El);
+        valueSection = XmlUtil.getCDATAorTextContent(extProp0El);
         assertNotNull(valueSection);
-        assertEquals("value", valueSection.getData());
+        assertEquals("value", valueSection);
 
         // null
         container.setExtPropertyValue("org.foo.prop0", null);
@@ -279,7 +278,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         extProp0El = XmlUtil.getFirstElement(extPropertiesEl, IpsObjectPartContainer.XML_VALUE_ELEMENT);
         isNull = extProp0El.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
         assertTrue(Boolean.valueOf(isNull).booleanValue());
-        valueSection = XmlUtil.getFirstCDataSection(extProp0El);
+        valueSection = XmlUtil.getCDATAorTextContent(extProp0El);
         assertNull(valueSection);
     }
 

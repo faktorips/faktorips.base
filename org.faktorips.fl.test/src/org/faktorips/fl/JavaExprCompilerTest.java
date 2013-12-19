@@ -187,7 +187,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         assertTrue(compiler.compile("1 - 1").successfull());
         CompilationResult<JavaCodeFragment> compile = compiler.compile("1+-1");
         assertTrue(compile.successfull());
-        assertEquals(SystemUtils.LINE_SEPARATOR + "new Integer(1 + -1)", compile.getCodeFragment().toString());
+        assertEquals(SystemUtils.LINE_SEPARATOR + "Integer.valueOf(1 + -1)", compile.getCodeFragment().toString());
         assertEquals(0, new Integer(1 + -1).intValue());
         assertTrue(compiler.compile("1>1").successfull());
         assertTrue(compiler.compile("1=1").successfull());

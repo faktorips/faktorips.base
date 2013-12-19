@@ -39,50 +39,6 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     private boolean containsNull = false;
 
     /**
-     * A subclass must override this method if it supports incremental steps. This method calculates
-     * the number of values hold by this range according to the step size. When this method is
-     * called it is guaranteed that the lower and upper bound are not null.
-     * 
-     * @return the number of values hold by this range
-     */
-    protected int sizeForDiscreteValuesExcludingNull() {
-        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
-    }
-
-    /**
-     * A subclass must override this method if it supports incremental steps. This method checks if
-     * the provided value actually fits in the range taking the step size into account.
-     * 
-     * @param value the value to check. The provided value is never null or the null representation
-     * @param bound one of the bound of this range. If the lower bound is not null it is provided
-     *            otherwise if the upper bound is not null it is provided. This method is not called
-     *            if both bounds are null
-     * @return true if the provided value fits into the range
-     */
-    protected boolean checkIfValueCompliesToStepIncrement(T value, T bound) {
-        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
-    }
-
-    /**
-     * A subclass must override this method if it supports incremental steps. This method calculates
-     * the next value starting from the provided value.
-     * 
-     * @param currentValue the value to use to calculate the next value
-     * @return the next value
-     */
-    protected T getNextValue(T currentValue) {
-        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
-    }
-
-    /**
-     * A subclass must override this method if it supports incremental steps. This method returns
-     * null or the null representation value of the datatype of this range.
-     */
-    protected T getNullValue() {
-        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
-    }
-
-    /**
      * Creates a new continuous AbstractRange instance that doesn't contain null.
      * 
      * @param lower bound of the range
@@ -137,6 +93,50 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         this.step = step;
         this.containsNull = containsNull;
         checkIfStepFitsIntoBounds();
+    }
+
+    /**
+     * A subclass must override this method if it supports incremental steps. This method calculates
+     * the number of values hold by this range according to the step size. When this method is
+     * called it is guaranteed that the lower and upper bound are not null.
+     * 
+     * @return the number of values hold by this range
+     */
+    protected int sizeForDiscreteValuesExcludingNull() {
+        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
+    }
+
+    /**
+     * A subclass must override this method if it supports incremental steps. This method checks if
+     * the provided value actually fits in the range taking the step size into account.
+     * 
+     * @param value the value to check. The provided value is never null or the null representation
+     * @param bound one of the bound of this range. If the lower bound is not null it is provided
+     *            otherwise if the upper bound is not null it is provided. This method is not called
+     *            if both bounds are null
+     * @return true if the provided value fits into the range
+     */
+    protected boolean checkIfValueCompliesToStepIncrement(T value, T bound) {
+        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
+    }
+
+    /**
+     * A subclass must override this method if it supports incremental steps. This method calculates
+     * the next value starting from the provided value.
+     * 
+     * @param currentValue the value to use to calculate the next value
+     * @return the next value
+     */
+    protected T getNextValue(T currentValue) {
+        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
+    }
+
+    /**
+     * A subclass must override this method if it supports incremental steps. This method returns
+     * null or the null representation value of the datatype of this range.
+     */
+    protected T getNullValue() {
+        throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
     }
 
     /**

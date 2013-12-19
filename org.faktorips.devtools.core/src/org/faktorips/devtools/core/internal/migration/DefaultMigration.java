@@ -13,14 +13,7 @@
 
 package org.faktorips.devtools.core.internal.migration;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -30,17 +23,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Element;
 
 /**
  * Default migration that loads every ips object in the source folders of the given project and call
@@ -118,35 +107,6 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
             monitor.worked(1);
         }
         monitor.done();
-    }
-
-    /**
-     * Migrate the ips source file using XSLT.
-     * 
-     * @param srcFile The ips source file to migrate
-     * @param oldContent The old content which will be transformed as new content for ips source
-     *            file
-     * @param xslFile The stylesheet which is used to process the given content via XSLT
-     * 
-     * @throws CoreException If there was an exception during the transformation
-     */
-    protected void migrateUsingTransformation(IIpsSrcFile srcFile, InputStream oldContent, String xslFile)
-            throws CoreException {
-        TransformerFactory factory = TransformerFactory.newInstance();
-        try {
-            DOMResult result = new DOMResult();
-            Transformer transformer = factory.newTransformer(new StreamSource(getClass().getClassLoader()
-                    .getResourceAsStream(xslFile)));
-            transformer.setOutputProperty(OutputKeys.ENCODING, getIpsProject().getXmlFileCharset());
-            transformer.transform(new StreamSource(oldContent), result);
-            Element firstElement = XmlUtil.getFirstElement(result.getNode());
-            firstElement.normalize();
-            IIpsSrcFileMemento memento = new IpsSrcFileMemento(srcFile, firstElement, true);
-            srcFile.setMemento(memento);
-            srcFile.markAsDirty();
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        }
     }
 
     /**

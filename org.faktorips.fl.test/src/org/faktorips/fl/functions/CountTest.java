@@ -55,7 +55,7 @@ public class CountTest extends FunctionAbstractTest {
 
     @Test
     public void testCount() throws Exception {
-        compileSuccessfull("COUNT(hsVertrag.Deckung)", "new Integer(hsVertrag.getDeckungen().size())");
+        compileSuccessfull("COUNT(hsVertrag.Deckung)", "Integer.valueOf(hsVertrag.getDeckungen().size())");
         execAndTestFail("COUNT(hsVertrag.VersSumme)", ExprCompiler.WRONG_ARGUMENT_TYPES);
     }
 }

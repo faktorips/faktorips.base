@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.model.extproperties;
 
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
 /**
@@ -35,11 +34,8 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
 
     @Override
     public Object getValueFromXml(Element valueElement) {
-        CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
-        if (cdata == null) {
-            return ""; //$NON-NLS-1$
-        }
-        return cdata.getData();
+        String content = XmlUtil.getCDATAorTextContent(valueElement);
+        return content == null ? "" : content; //$NON-NLS-1$
     }
 
     @Override

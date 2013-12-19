@@ -68,22 +68,6 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     private Map<Element, ITestPolicyCmpt> targetObjectIdMap = new HashMap<Element, ITestPolicyCmpt>();
 
-    /**
-     * Class to generate an unique object id within the input and the expected result.
-     */
-    private class ObjectId {
-        int objectId = 0;
-
-        public int nextValue() {
-            return objectId++;
-        }
-
-        @Override
-        public String toString() {
-            return "" + objectId;
-        }
-    }
-
     public TestCaseBuilder(DefaultBuilderSet builderSet) {
         super(builderSet);
     }
@@ -139,8 +123,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             if (is != null) {
                 try {
                     is.close();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     // nothing to do
+                    return;
                 }
             }
         }
@@ -423,7 +408,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                         throw new RuntimeException(e);
                     }
                 } else if (associations[i].isAccoziation()) {
-                    associationType = "association"; // @see AbstractModelObject
+                    // @see AbstractModelObject
+                    associationType = "association";
                     Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent,
                             associations[i].getTestPolicyCmptTypeParameter());
                     testPolicyCmptElem.setAttribute("target", associations[i].getTarget());
@@ -501,6 +487,22 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     @Override
     public boolean isBuildingInternalArtifacts() {
         return getBuilderSet().isGeneratePublishedInterfaces();
+    }
+
+    /**
+     * Class to generate an unique object id within the input and the expected result.
+     */
+    private class ObjectId {
+        private int objectId = 0;
+
+        public int nextValue() {
+            return objectId++;
+        }
+
+        @Override
+        public String toString() {
+            return "" + objectId;
+        }
     }
 
 }

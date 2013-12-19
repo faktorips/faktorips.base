@@ -63,37 +63,7 @@ public class XmlUtil {
     /**
      * This is a thread local variable because the document builder is not thread safe.
      */
-    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
-        @Override
-        protected DocumentBuilder initialValue() {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            factory.setExpandEntityReferences(false);
-            DocumentBuilder builder;
-            try {
-                builder = factory.newDocumentBuilder();
-            } catch (ParserConfigurationException e) {
-                throw new RuntimeException(e);
-            }
-            builder.setErrorHandler(new ErrorHandler() {
-                @Override
-                public void error(SAXParseException e) throws SAXException {
-                    throw e;
-                }
-
-                @Override
-                public void fatalError(SAXParseException e) throws SAXException {
-                    throw e;
-                }
-
-                @Override
-                public void warning(SAXParseException e) throws SAXException {
-                    throw e;
-                }
-            });
-            return builder;
-        }
-    };
+    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new DocBuilderHolder();
 
     /**
      * This is a thread local variable because the {@link Transformer} is not thread safe.
@@ -103,9 +73,10 @@ public class XmlUtil {
         protected Transformer initialValue() {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             try {
-                transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
+                transformerFactory.setAttribute("indent-number", Integer.valueOf(4)); //$NON-NLS-1$
             } catch (IllegalArgumentException e) {
                 // no problem, we're using a older version
+                IpsPlugin.log(e);
             }
             try {
                 return transformerFactory.newTransformer();
@@ -116,11 +87,15 @@ public class XmlUtil {
         }
     };
 
+    private XmlUtil() {
+        // Utility class not to be instantiated.
+    }
+
     private static Transformer getTransformer() {
         return transformerHolder.get();
     }
 
-    public final static void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {
+    public static final void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {
         if (value == null) {
             el.setAttribute(attribute, ""); //$NON-NLS-1$
         } else {
@@ -128,26 +103,26 @@ public class XmlUtil {
         }
     }
 
-    public final static String getAttributeConvertEmptyStringToNull(Element el, String attribute) {
+    public static final String getAttributeConvertEmptyStringToNull(Element el, String attribute) {
         String value = el.getAttribute(attribute);
-        if ("".equals(value)) { //$NON-NLS-1$
+        if (StringUtils.isEmpty(value)) {
             return null;
         }
         return value;
     }
 
-    public final static String dateToXmlDateString(Date date) {
+    public static final String dateToXmlDateString(Date date) {
         if (date == null) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
         return gregorianCalendarToXmlDateString(calendar);
     }
 
-    public final static String gregorianCalendarToXmlDateString(GregorianCalendar calendar) {
+    public static final String gregorianCalendarToXmlDateString(GregorianCalendar calendar) {
         if (calendar == null) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         int month = calendar.get(Calendar.MONTH) + 1;
         int date = calendar.get(Calendar.DATE);
@@ -158,8 +133,8 @@ public class XmlUtil {
     /**
      * Parses the given XML String to a Date.
      */
-    public final static Date parseXmlDateStringToDate(String s) {
-        if (s == null || s.equals("")) { //$NON-NLS-1$
+    public static final Date parseXmlDateStringToDate(String s) {
+        if (s == null || s.isEmpty()) {
             return null;
         }
         return parseXmlDateStringToGregorianCalendar(s).getTime();
@@ -175,7 +150,7 @@ public class XmlUtil {
      */
     @Deprecated
     // Deprecated since 3.0
-    public final static GregorianCalendar parseXmlDateStringToGregorianCalendar(String s) {
+    public static final GregorianCalendar parseXmlDateStringToGregorianCalendar(String s) {
         try {
             return parseGregorianCalendar(s);
         } catch (XmlParseException e) {
@@ -183,7 +158,7 @@ public class XmlUtil {
         }
     }
 
-    public final static GregorianCalendar parseGregorianCalendar(String s) throws XmlParseException {
+    public static final GregorianCalendar parseGregorianCalendar(String s) throws XmlParseException {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
@@ -193,7 +168,7 @@ public class XmlUtil {
             int month = Integer.parseInt(tokenizer.nextToken());
             int date = Integer.parseInt(tokenizer.nextToken());
             return new GregorianCalendar(year, month - 1, date);
-        } catch (RuntimeException e) {
+        } catch (NumberFormatException e) {
             throw new XmlParseException("Can't parse " + s + " to a date!", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
@@ -201,7 +176,7 @@ public class XmlUtil {
     /**
      * Transforms the given node to a String.
      */
-    public final static String nodeToString(Node node, String encoding) throws TransformerException {
+    public static final String nodeToString(Node node, String encoding) throws TransformerException {
         StringWriter writer = new StringWriter();
         nodeToWriter(node, writer, encoding);
         return writer.toString().replace("\r\r", "\r"); //workaround for Windows bug producing \r\r\n in CDATA sections //$NON-NLS-1$//$NON-NLS-2$
@@ -219,7 +194,7 @@ public class XmlUtil {
      * this method does not check, if the writer's encoding and the given encoding are the same (as
      * the encoding is not available from the writer).
      */
-    public final static void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
+    public static final void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
         Transformer transformer = getTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
@@ -237,16 +212,19 @@ public class XmlUtil {
     // Deprecated since 3.0
     @SuppressWarnings("unused")
     // Unused exception suppressed because of deprecation.
-    public final static Document getDocument(InputStream is) throws SAXException, IOException,
+    // CSOFF: ThrowsCount
+    public static final Document getDocument(InputStream is) throws SAXException, IOException,
             ParserConfigurationException {
         return getDefaultDocumentBuilder().parse(is);
     }
 
-    public final static Document parseDocument(InputStream is) throws SAXException, IOException {
+    // CSON: ThrowsCount
+
+    public static final Document parseDocument(InputStream is) throws SAXException, IOException {
         return getDefaultDocumentBuilder().parse(is);
     }
 
-    public final static DocumentBuilder getDefaultDocumentBuilder() {
+    public static final DocumentBuilder getDefaultDocumentBuilder() {
         return docBuilderHolder.get();
     }
 
@@ -304,7 +282,7 @@ public class XmlUtil {
         transformer.transform(src, res);
     }
 
-    public final static Element getFirstElement(Node parent, String tagName) {
+    public static final Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -320,7 +298,7 @@ public class XmlUtil {
     /**
      * Returns the first Element node
      */
-    public final static Element getFirstElement(Node parent) {
+    public static final Element getFirstElement(Node parent) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -344,7 +322,7 @@ public class XmlUtil {
      * 
      * @see Element#getElementsByTagName(java.lang.String)
      */
-    public final static Element getElement(Node parent, String tagName, int index) {
+    public static final Element getElement(Node parent, String tagName, int index) {
         NodeList nl = parent.getChildNodes();
         int count = 0;
         for (int i = 0; i < nl.getLength(); i++) {
@@ -370,7 +348,7 @@ public class XmlUtil {
      * 
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
      */
-    public final static Element getElement(Node parent, int index) {
+    public static final Element getElement(Node parent, int index) {
         NodeList nl = parent.getChildNodes();
         int count = 0;
         for (int i = 0; i < nl.getLength(); i++) {
@@ -387,7 +365,7 @@ public class XmlUtil {
     /**
      * Returns the node's text child node or <code>null</code> if the node hasn't got a text node.
      */
-    public final static Text getTextNode(Node node) {
+    public static final Text getTextNode(Node node) {
         node.normalize();
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -401,7 +379,7 @@ public class XmlUtil {
     /**
      * Returns the node's first CDATA section or <code>null</code> if the node hasn't got one.
      */
-    public final static CDATASection getFirstCDataSection(Node node) {
+    private static final CDATASection getFirstCDataSection(Node node) {
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i).getNodeType() == Node.CDATA_SECTION_NODE) {
@@ -415,7 +393,7 @@ public class XmlUtil {
      * Returns the node's first CDATA section if the node has one. If not, this returns the node's
      * text child node or <code>null</code> if the node hasn't got a text node.
      */
-    public final static String getCDATAorTextContent(Node node) {
+    public static final String getCDATAorTextContent(Node node) {
         if (XmlUtil.getFirstCDataSection(node) != null) {
             return XmlUtil.getFirstCDataSection(node).getData();
         } else if (XmlUtil.getTextNode(node) != null) {
@@ -427,7 +405,7 @@ public class XmlUtil {
     /**
      * Adds a child Element by the name given in childName to the parent and returns the child.
      */
-    public final static Element addNewChild(Document doc, Node parent, String childName) {
+    public static final Element addNewChild(Document doc, Node parent, String childName) {
         Element e = doc.createElement(childName);
         parent.appendChild(e);
         return e;
@@ -436,7 +414,7 @@ public class XmlUtil {
     /**
      * Adds a TextNode containing the text to the parent and returns the TextNode.
      */
-    public final static Node addNewTextChild(Document doc, Node parent, String text) {
+    public static final Node addNewTextChild(Document doc, Node parent, String text) {
         Node n = doc.createTextNode(text);
         parent.appendChild(n);
         return n;
@@ -445,7 +423,7 @@ public class XmlUtil {
     /**
      * Adds a CDATASection containing the text to the parent and returns the CDATASection.
      */
-    public final static Node addNewCDATAChild(Document doc, Node parent, String text) {
+    public static final Node addNewCDATAChild(Document doc, Node parent, String text) {
         Node n = doc.createCDATASection(text);
         parent.appendChild(n);
         return n;
@@ -455,7 +433,7 @@ public class XmlUtil {
      * Adds a TextNode or, if text contains chars>127, a CDATASection containing the text to the
      * parent and returns this new child.
      */
-    public final static Node addNewCDATAorTextChild(Document doc, Node parent, String text) {
+    public static final Node addNewCDATAorTextChild(Document doc, Node parent, String text) {
         if (text == null) {
             return null;
         }
@@ -474,9 +452,9 @@ public class XmlUtil {
      * element must has the following format:
      * 
      * <pre>
-     *   		&lt;Parent&gt;
-     *   			&lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
-     *   		&lt;/Parent&gt;
+     *   <Parent>
+     *      <Property isNull="false"</Property>
+     *   </Parent>
      * </pre>
      * 
      * @throws NullPointerException if parent or propertyName is <code>null</code> or the parent
@@ -500,8 +478,35 @@ public class XmlUtil {
         }
     }
 
-    private XmlUtil() {
-        // Utility class not to be instantiated.
-    }
+    private static final class DocBuilderHolder extends ThreadLocal<DocumentBuilder> {
+        @Override
+        protected DocumentBuilder initialValue() {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
+            DocumentBuilder builder;
+            try {
+                builder = factory.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+            builder.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void error(SAXParseException e) throws SAXException {
+                    throw e;
+                }
 
+                @Override
+                public void fatalError(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                @Override
+                public void warning(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+            });
+            return builder;
+        }
+    }
 }
