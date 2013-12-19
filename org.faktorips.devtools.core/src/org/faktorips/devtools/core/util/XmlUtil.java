@@ -73,7 +73,7 @@ public class XmlUtil {
         protected Transformer initialValue() {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             try {
-                transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
+                transformerFactory.setAttribute("indent-number", Integer.valueOf(4)); //$NON-NLS-1$
             } catch (IllegalArgumentException e) {
                 // no problem, we're using a older version
                 IpsPlugin.log(e);
@@ -105,7 +105,7 @@ public class XmlUtil {
 
     public static final String getAttributeConvertEmptyStringToNull(Element el, String attribute) {
         String value = el.getAttribute(attribute);
-        if ("".equals(value)) { //$NON-NLS-1$
+        if (StringUtils.isEmpty(value)) {
             return null;
         }
         return value;
@@ -113,7 +113,7 @@ public class XmlUtil {
 
     public static final String dateToXmlDateString(Date date) {
         if (date == null) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -122,7 +122,7 @@ public class XmlUtil {
 
     public static final String gregorianCalendarToXmlDateString(GregorianCalendar calendar) {
         if (calendar == null) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         int month = calendar.get(Calendar.MONTH) + 1;
         int date = calendar.get(Calendar.DATE);
