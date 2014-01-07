@@ -573,7 +573,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
-        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, INIT_KEY_MAPS, new String[0], new Class[0]);
+        codeBuilder.methodBegin(Modifier.PROTECTED + Modifier.FINAL, Void.TYPE, INIT_KEY_MAPS, new String[0],
+                new Class[0]);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
