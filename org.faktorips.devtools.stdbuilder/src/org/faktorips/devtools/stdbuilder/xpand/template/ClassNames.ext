@@ -182,5 +182,8 @@ RuntimeException(AbstractGeneratorModelNode this):
 IllegalArgumentException(AbstractGeneratorModelNode this):
 	addImport(IllegalArgumentException.name);
 	
+IllegalStateException(AbstractGeneratorModelNode this):
+	addImport(IllegalStateException.name);
+	
 ObjectUtil(AbstractGeneratorModelNode this):
 	addImport(ObjectUtil.name);

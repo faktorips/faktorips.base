@@ -232,7 +232,7 @@
 			        }
 			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
 			        if (newParent != null && «parentVar()» != null) {
-			            throw new «RuntimeException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
+			            throw new «IllegalStateException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
 			        }
 			        this.«fieldName» = «castToImplementation(targetClassName)» newParent;
 			        «IF typeConfigurableByProductCmptType-»
