@@ -349,7 +349,7 @@
     	super.«methodName»(objectToAdd);
     «ELSE-»
         if (objectToAdd == null) {
-            throw new NullPointerException("Can't add null to association «name» of " + this);
+            throw new IllegalArgumentException("Can't add null to association «name» of " + this);
         }
         if («fieldName».contains(objectToAdd)) {
             return;
