@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="%label"
-      version="3.10.3.qualifier"
+      version="3.10.4.qualifier"
       provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core"
       license-feature="org.faktorips.license">
