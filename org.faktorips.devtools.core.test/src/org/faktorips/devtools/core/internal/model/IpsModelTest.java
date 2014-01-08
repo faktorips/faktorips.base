@@ -39,6 +39,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
@@ -318,6 +319,28 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         object = (IPolicyCmptType)sourceFile.getIpsObject();
         attribute = object.getPolicyCmptTypeAttributes().get(0);
         assertEquals("something serious", attribute.getDescriptionText(Locale.US));
+    }
+
+    @Test
+    public void testForceReloadOfCachedIpsSrcFileContents() throws CoreException {
+        IIpsProject ipsProject = this.newIpsProject("TestProject");
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
+        IIpsSrcFile sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
+        IPolicyCmptType object = (PolicyCmptType)sourceFile.getIpsObject();
+        IPolicyCmptTypeAttribute attribute = object.newPolicyCmptTypeAttribute();
+        IDescription description = attribute.getDescription(Locale.US);
+        description.setText("blabla");
+        sourceFile.save(true, null);
+
+        IPolicyCmptTypeAttribute newAttribute = object.newPolicyCmptTypeAttribute();
+        newAttribute.setDatatype("String");
+        assertTrue(sourceFile.isDirty());
+        ipsProject.getEnclosingResource().refreshLocal(0, new NullProgressMonitor());
+        object = (IPolicyCmptType)sourceFile.getIpsObject();
+        assertEquals(2, object.getPolicyCmptTypeAttributes().size());
+        assertNotNull(object.getPolicyCmptTypeAttributes().get(1));
+        assertTrue(sourceFile.isDirty());
     }
 
     /**

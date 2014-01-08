@@ -1075,7 +1075,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private synchronized void forceReloadOfCachedIpsSrcFileContents(IProject project) {
         HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
         for (IIpsSrcFile srcFile : copyKeys) {
-            if (project == null || srcFile.getIpsProject().getProject().equals(project)) {
+            if (!srcFile.isDirty() && (project == null || srcFile.getIpsProject().getProject().equals(project))) {
                 IpsSrcFileContent contents = ipsObjectsMap.get(srcFile);
                 contents.setModificationStamp(-1);
             }
