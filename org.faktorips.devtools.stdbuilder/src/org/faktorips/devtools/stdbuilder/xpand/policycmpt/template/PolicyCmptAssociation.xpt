@@ -232,7 +232,7 @@
 			        }
 			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
 			        if (newParent != null && «parentVar()» != null) {
-			            throw new «RuntimeException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
+			            throw new «IllegalStateException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
 			        }
 			        this.«fieldName» = «castToImplementation(targetClassName)» newParent;
 			        «IF typeConfigurableByProductCmptType-»
@@ -349,7 +349,7 @@
     	super.«methodName»(objectToAdd);
     «ELSE-»
         if (objectToAdd == null) {
-            throw new NullPointerException("Can't add null to association «name» of " + this);
+            throw new IllegalArgumentException("Can't add null to association «name» of " + this);
         }
         if («fieldName».contains(objectToAdd)) {
             return;

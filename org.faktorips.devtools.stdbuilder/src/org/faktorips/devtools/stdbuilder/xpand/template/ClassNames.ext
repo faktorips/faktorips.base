@@ -179,5 +179,11 @@ FormulaExecutionException(AbstractGeneratorModelNode this):
 RuntimeException(AbstractGeneratorModelNode this):
 	addImport(RuntimeException.name);
 	
+IllegalArgumentException(AbstractGeneratorModelNode this):
+	addImport(IllegalArgumentException.name);
+	
+IllegalStateException(AbstractGeneratorModelNode this):
+	addImport(IllegalStateException.name);
+	
 ObjectUtil(AbstractGeneratorModelNode this):
 	addImport(ObjectUtil.name);
