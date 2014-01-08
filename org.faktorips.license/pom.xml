@@ -19,65 +19,6 @@
 
 	<artifactId>org.faktorips.license</artifactId>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>write-version</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<echo message="${unqualifiedVersion}" file="${license.versionfile}" />
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<id>copy-license</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<copy file="${project.build.directory}/${license.result}"
-											toFile="${project.basedir}/${deploy.license}" />
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>latex-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id></id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>latex</goal>
-								</goals>
-								<configuration>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 	<packaging>eclipse-feature</packaging>
 
 </project>

@@ -19,7 +19,6 @@
 		<!-- features org.faktorips.feature -->
 		<module>../../org.faktorips.license</module>
 		<module>../../org.faktorips.feature</module>
-		<module>../../org.faktorips.feature.source</module>
 		<module>../../org.faktorips.feature.nls1</module>
 		<module>../../org.faktorips.testdependencies</module>
 	</modules>
