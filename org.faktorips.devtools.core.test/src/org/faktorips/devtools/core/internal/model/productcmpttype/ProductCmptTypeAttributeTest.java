@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.transform.TransformerException;
@@ -32,6 +33,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -196,6 +199,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
+    @Test
     public void testValidate_invalidValueSet() throws Exception {
         productAttribute.setName("name");
         productAttribute.setDatatype("String");
@@ -204,6 +208,250 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = productAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue(null);
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3"));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNullContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue(null);
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3", null));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Visible_DefaultValueNullNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue(null);
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3"));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Visible_DefaultValueNullContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue(null);
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3", null));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue("4");
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3"));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Visible_DefaultValueNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue("4");
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3"));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Hidden_DefaultValueContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue("3");
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3"));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSet_Visible_DefaultValueContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue("3");
+        IEnumValueSet valueSet = (IEnumValueSet)productAttribute.changeValueSetType(ValueSetType.ENUM);
+        valueSet.addValues(Arrays.asList("1", "2", "3"));
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue("4");
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Visible_DefaultValueNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue("4");
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Hidden_DefaultValueContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue("3");
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Visible_DefaultValueContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue("3");
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue(null);
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+        valueSet.setContainsNull(false);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(false);
+        productAttribute.setDefaultValue(null);
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+        valueSet.setContainsNull(true);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Visible_DefaultValueNullNotContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue(null);
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+        valueSet.setContainsNull(false);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_RangeValueSet_Visible_DefaultValueNullContained() throws CoreException {
+        productAttribute.setName("productAttribute");
+        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setVisible(true);
+        productAttribute.setDefaultValue(null);
+        IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
+        valueSet.setLowerBound("1");
+        valueSet.setUpperBound("3");
+        valueSet.setStep("1");
+        valueSet.setContainsNull(true);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test

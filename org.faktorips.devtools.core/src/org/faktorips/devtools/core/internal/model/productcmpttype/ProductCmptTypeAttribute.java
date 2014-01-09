@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeAttribute extends Attribute implements IProductCmptTypeAttribute {
 
-    final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
+    static final String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private IValueSet valueSet;
 
@@ -306,11 +306,20 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
+        validateAllowedValueSetTypes(result);
+        validateOverwriteFlag(result, ipsProject);
+        validateDefaultValue(result);
+    }
+
+    private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
         if (!getAllowedValueSetTypes(getIpsProject()).contains(getValueSet().getValueSetType())) {
             result.add(Message.newError(MSGCODE_INVALID_VALUE_SET, NLS.bind(
-                    Messages.ProductCmptTypeAttribute_msg_invalidValueSet, getValueSet().getValueSetType()
-                            .getName(), getPropertyName()), this, PROPERTY_VALUE_SET));
+                    Messages.ProductCmptTypeAttribute_msg_invalidValueSet, getValueSet().getValueSetType().getName(),
+                    getPropertyName()), this, PROPERTY_VALUE_SET));
         }
+    }
+
+    private void validateOverwriteFlag(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (isOverwrite()) {
             IProductCmptTypeAttribute superAttr = (IProductCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
@@ -332,4 +341,14 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             }
         }
     }
+
+    private void validateDefaultValue(MessageList result) throws CoreException {
+        if (!isVisible() && !getValueSet().containsValue(getDefaultValue(), getIpsProject())) {
+            result.remove(result.getMessageByCode(MSGCODE_DEFAULT_NOT_IN_VALUESET));
+            result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN, NLS.bind(
+                    Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, getDefaultValue()),
+                    this, PROPERTY_DEFAULT_VALUE);
+        }
+    }
+
 }

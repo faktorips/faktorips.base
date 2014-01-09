@@ -65,35 +65,43 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
-     * Creates a new message with severity {@link Message#ERROR} with the given code, text and
-     * object properties and adds the message to the list.
+     * Creates and returns a new message with severity {@link Message#ERROR} with the given code,
+     * text and object properties and adds the message to the list.
      */
-    public void newError(String code, String text, Object invalidObject, String invalidProperty) {
-        add(Message.newError(code, text, invalidObject, invalidProperty));
+    public Message newError(String code, String text, Object invalidObject, String invalidProperty) {
+        Message newError = Message.newError(code, text, invalidObject, invalidProperty);
+        add(newError);
+        return newError;
     }
 
     /**
-     * Creates a new message with severity {@link Message#ERROR} with the given code, text and
-     * invalid object properties and adds the message to the list.
+     * Creates and returns a new message with severity {@link Message#ERROR} with the given code,
+     * text and invalid object properties and adds the message to the list.
      */
-    public void newError(String code, String text, ObjectProperty... invalidObjectProperty) {
-        add(Message.newError(code, text, invalidObjectProperty));
+    public Message newError(String code, String text, ObjectProperty... invalidObjectProperty) {
+        Message newError = Message.newError(code, text, invalidObjectProperty);
+        add(newError);
+        return newError;
     }
 
     /**
-     * Creates a new message with severity {@link Message#WARNING} with the given code, text and
-     * object properties and adds the message to the list.
+     * Creates and returns a new message with severity {@link Message#WARNING} with the given code,
+     * text and object properties and adds the message to the list.
      */
-    public void newWarning(String code, String text, Object invalidObject, String invalidProperty) {
-        add(Message.newWarning(code, text, invalidObject, invalidProperty));
+    public Message newWarning(String code, String text, Object invalidObject, String invalidProperty) {
+        Message newWarning = Message.newWarning(code, text, invalidObject, invalidProperty);
+        add(newWarning);
+        return newWarning;
     }
 
     /**
-     * Creates a new message with severity {@link Message#INFO} with the given code, text and object
-     * properties and adds the message to the list.
+     * Creates and returns a new message with severity {@link Message#INFO} with the given code,
+     * text and object properties and adds the message to the list.
      */
-    public void newInfo(String code, String text, Object invalidObject, String invalidProperty) {
-        add(Message.newInfo(code, text, invalidObject, invalidProperty));
+    public Message newInfo(String code, String text, Object invalidObject, String invalidProperty) {
+        Message newInfo = Message.newInfo(code, text, invalidObject, invalidProperty);
+        add(newInfo);
+        return newInfo;
     }
 
     /**
@@ -145,6 +153,17 @@ public class MessageList implements Iterable<Message> {
                 add(msg);
             }
         }
+    }
+
+    /**
+     * Removes the given message from this message list.
+     * <p>
+     * Does nothing if the given message is not actually contained in this message list.
+     * 
+     * @param message message to remove from this message list
+     */
+    public void remove(Message message) {
+        messages.remove(message);
     }
 
     /**

@@ -108,6 +108,27 @@ public class MessageListTest {
     }
 
     @Test
+    public void testRemove() {
+        MessageList list = new MessageList();
+        list.remove(list.newInfo("code", "text", null, null));
+
+        assertNull(list.getMessageByCode("code"));
+    }
+
+    @Test
+    public void testRemove_DoNothingIfMessageNotInList() {
+        MessageList list = new MessageList();
+        list.remove(new Message("code", "text", Message.ERROR));
+
+        assertNull(list.getMessageByCode("code"));
+    }
+
+    @Test
+    public void testRemove_DoNotThrowExceptionIfNullIsGiven() {
+        new MessageList().remove(null);
+    }
+
+    @Test
     public void testGetNoOfMessages() {
         MessageList list = new MessageList();
         assertEquals(0, list.size());
@@ -284,8 +305,9 @@ public class MessageListTest {
     @Test
     public void testNewError() {
         MessageList list = new MessageList();
-        list.newError("code", "text", this, "foo");
+        Message error = list.newError("code", "text", this, "foo");
 
+        assertSame(error, list.getFirstMessage(Message.ERROR));
         assertEquals("code", list.getFirstMessage(Message.ERROR).getCode());
         assertEquals("text", list.getFirstMessage(Message.ERROR).getText());
         assertEquals(new ObjectProperty(this, "foo"),
@@ -295,8 +317,9 @@ public class MessageListTest {
     @Test
     public void testNewWarning() {
         MessageList list = new MessageList();
-        list.newWarning("code", "text", this, "foo");
+        Message warning = list.newWarning("code", "text", this, "foo");
 
+        assertSame(warning, list.getFirstMessage(Message.WARNING));
         assertEquals("code", list.getFirstMessage(Message.WARNING).getCode());
         assertEquals("text", list.getFirstMessage(Message.WARNING).getText());
         assertEquals(new ObjectProperty(this, "foo"), list.getFirstMessage(Message.WARNING)
@@ -306,8 +329,9 @@ public class MessageListTest {
     @Test
     public void testNewInfo() {
         MessageList list = new MessageList();
-        list.newInfo("code", "text", this, "foo");
+        Message info = list.newInfo("code", "text", this, "foo");
 
+        assertSame(info, list.getFirstMessage(Message.INFO));
         assertEquals("code", list.getFirstMessage(Message.INFO).getCode());
         assertEquals("text", list.getFirstMessage(Message.INFO).getText());
         assertEquals(new ObjectProperty(this, "foo"),
@@ -315,7 +339,7 @@ public class MessageListTest {
     }
 
     @Test
-    public void testWrapUpMeesageList() {
+    public void testWrapUpMessageList() {
         MessageList list = new MessageList();
         list.newError("code", "text", new ObjectProperty("1", "foo"), "foo");
         list.newError("code", "text", new ObjectProperty("2", "foo"), "foo");
