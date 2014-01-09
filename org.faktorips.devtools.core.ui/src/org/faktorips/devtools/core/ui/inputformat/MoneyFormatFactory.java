@@ -13,17 +13,24 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
+import java.util.Currency;
+
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Factory that creates a MoneyFormat for a Datatype
+ * Factory that creates a MoneyFormat for a data type with the default currency
  * 
  */
 public class MoneyFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
-    public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
-        MoneyFormat moneyFormat = MoneyFormat.newInstance(null);
+    public IInputFormat<String> newInputFormat(ValueDatatype datatype, IIpsProject ipsProject) {
+        Currency defaultCurrency = null;
+        if (ipsProject != null) {
+            defaultCurrency = ipsProject.getReadOnlyProperties().getDefaultCurrency();
+        }
+        MoneyFormat moneyFormat = MoneyFormat.newInstance(defaultCurrency);
         moneyFormat.setAddCurrencySymbol(true);
         return moneyFormat;
     }

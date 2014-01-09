@@ -113,6 +113,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -335,12 +336,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return dndHandler;
     }
 
-    public IInputFormat<String> getInputFormat(ValueDatatype datatype) {
+    public IInputFormat<String> getInputFormat(ValueDatatype datatype, IIpsProject ipsProject) {
         if (datatypeInputFormat == null) {
             datatypeInputFormat = new DatatypeInputFormatRegistry();
             datatypeInputFormat.initDatatypeInputFormatMap(registry);
         }
-        return datatypeInputFormat.getDatatypeInputFormat(datatype);
+        return datatypeInputFormat.getDatatypeInputFormat(datatype, ipsProject);
     }
 
     private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreException {

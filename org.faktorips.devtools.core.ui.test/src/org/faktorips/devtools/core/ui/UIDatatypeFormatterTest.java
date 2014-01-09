@@ -143,7 +143,7 @@ public class UIDatatypeFormatterTest {
     private void assertValueDataTypeAndInputFormatFactoryFormatting(IDatatypeInputFormatFactory factory,
             ValueDatatype datatype,
             String expected) {
-        IInputFormat<String> localeTimeFormat = factory.newInputFormat(datatype);
+        IInputFormat<String> localeTimeFormat = factory.newInputFormat(datatype, ipsProject);
         String actual = localeTimeFormat.format(expected);
         assertValueDatatypeFormatting(datatype, expected, actual);
     }

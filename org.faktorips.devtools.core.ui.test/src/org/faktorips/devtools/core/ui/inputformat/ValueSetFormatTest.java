@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,10 +66,6 @@ public class ValueSetFormatTest {
 
     @Mock
     private IInputFormat<String> inputFormat;
-
-    private String INPUT_VALUE = "test.input";
-
-    private String OUTPUT_VALUE = "test.output";
 
     private EnumValueSet enumValueSet;
 
@@ -141,7 +138,10 @@ public class ValueSetFormatTest {
     }
 
     @Test
-    public void testParseInternalNewEnumValueSet() {
+    public void testParseInternal_NewEnumValueSet() throws Exception {
+        when(uiPlugin.getInputFormat(any(ValueDatatype.class), any(IIpsProject.class))).thenReturn(
+                new DefaultInputFormat());
+
         IValueSet parseInternal = format.parseInternal("test | test2");
         enumValueSet.addValue("test | test1");
 
@@ -155,22 +155,11 @@ public class ValueSetFormatTest {
     }
 
     @Test
-    public void testParseWithFormatter_InputFormatNotNull() throws CoreException {
+    public void testParseInternal_OldEnumValueSet() throws Exception {
         when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(uiPlugin.getInputFormat(datatype)).thenReturn(inputFormat);
-        when(inputFormat.parse(INPUT_VALUE)).thenReturn(OUTPUT_VALUE);
-        String result = format.parseWithFormater(INPUT_VALUE);
-        assertEquals(OUTPUT_VALUE, result);
-    }
+        when(uiPlugin.getInputFormat(any(ValueDatatype.class), any(IIpsProject.class))).thenReturn(
+                new DefaultInputFormat());
 
-    @Test
-    public void testParseWithFormatter_InputFormatNull() {
-        String result = format.parseWithFormater(INPUT_VALUE);
-        assertEquals(INPUT_VALUE, result);
-    }
-
-    @Test
-    public void testParseInternalOldEnumValueSet() {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
         IValueSet parseInternal = format.parseInternal("test | test1");

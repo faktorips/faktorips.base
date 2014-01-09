@@ -32,7 +32,7 @@ public class UIDatatypeFormatter {
      * @param value The value as string
      */
     public String formatValue(ValueDatatype datatype, String value) {
-        return IpsUIPlugin.getDefault().getInputFormat(datatype).format(value);
+        return IpsUIPlugin.getDefault().getInputFormat(datatype, null).format(value);
     }
 
     /**

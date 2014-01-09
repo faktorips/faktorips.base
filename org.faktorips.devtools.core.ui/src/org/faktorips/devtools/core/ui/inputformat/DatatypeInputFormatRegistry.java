@@ -26,6 +26,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.osgi.framework.Bundle;
 
@@ -104,8 +105,10 @@ public class DatatypeInputFormatRegistry {
      * Thus this method never returns <code>null</code>.
      * 
      * @param datatype the {@link ValueDatatype} to create an {@link IInputFormat} for.
+     * @param ipsProject the project provided to the input format for example to get the default
+     *            currency in money values
      */
-    public IInputFormat<String> getDatatypeInputFormat(ValueDatatype datatype) {
+    public IInputFormat<String> getDatatypeInputFormat(ValueDatatype datatype, IIpsProject ipsProject) {
         IDatatypeInputFormatFactory inputformatFactory;
         if (datatype == null) {
             inputformatFactory = null;
@@ -115,7 +118,7 @@ public class DatatypeInputFormatRegistry {
                 inputformatFactory = getNearestSupertypeFactory(datatype);
             }
         }
-        return createInputFormatOrReturnDefault(datatype, inputformatFactory);
+        return createInputFormatOrReturnDefault(datatype, ipsProject, inputformatFactory);
     }
 
     /**
@@ -170,9 +173,10 @@ public class DatatypeInputFormatRegistry {
      * given factory is <code>null</code>, a {@link DefaultInputFormat} is returned as a fall-back.
      */
     private IInputFormat<String> createInputFormatOrReturnDefault(ValueDatatype datatype,
+            IIpsProject ipsProject,
             IDatatypeInputFormatFactory inputformatFactory) {
         if (inputformatFactory != null) {
-            return inputformatFactory.newInputFormat(datatype);
+            return inputformatFactory.newInputFormat(datatype, ipsProject);
         } else {
             return new DefaultInputFormat();
         }

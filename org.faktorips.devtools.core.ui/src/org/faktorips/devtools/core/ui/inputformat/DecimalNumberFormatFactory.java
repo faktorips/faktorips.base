@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.inputformat;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * Factory that creates a DecimalNumberFormat for a Datatype
@@ -22,7 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 public class DecimalNumberFormatFactory implements IDatatypeInputFormatFactory {
 
     @Override
-    public IInputFormat<String> newInputFormat(ValueDatatype datatype) {
+    public IInputFormat<String> newInputFormat(ValueDatatype datatype, IIpsProject ipsProject) {
         return DecimalNumberFormat.newInstance(datatype);
     }
 

@@ -41,6 +41,10 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private final IpsUIPlugin uiPlugin;
 
+    private IInputFormat<String> cachedIinputFormat;
+
+    private ValueDatatype cachedValueDatatype;
+
     public ValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         this.valueSetOwner = valueSetOwner;
         this.uiPlugin = uiPlugin;
@@ -118,26 +122,21 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private List<String> parseValues(String[] split) {
         List<String> parseValues = new ArrayList<String>();
+        IInputFormat<String> inputFormat = getInputFormat();
         for (String value : split) {
-            parseValues.add(parseWithFormater(value.trim()));
+            parseValues.add(inputFormat.parse(value.trim()));
         }
         return parseValues;
     }
 
-    protected String parseWithFormater(String value) {
-        IInputFormat<String> inputFormat = uiPlugin.getInputFormat(getDatatype());
-        if (inputFormat == null) {
-            return value;
+    private IInputFormat<String> getInputFormat() {
+        ValueDatatype valueDatatype = getValueDatatype();
+        if (cachedIinputFormat == null || valueDatatype != cachedValueDatatype) {
+            cachedIinputFormat = uiPlugin.getInputFormat(valueDatatype, valueSetOwner.getIpsProject());
+            cachedValueDatatype = valueDatatype;
         }
-        return inputFormat.parse(value);
-    }
 
-    private ValueDatatype getDatatype() {
-        try {
-            return this.valueSetOwner.findValueDatatype(this.valueSetOwner.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return cachedIinputFormat;
     }
 
     private boolean isEqualContent(List<String> parsedValues) {
@@ -175,14 +174,14 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private String formatEnumValueSet(IValueSet valueSet) {
         IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
-        ValueDatatype type = getValueDatatype();
         StringBuffer buffer = new StringBuffer();
         String[] values = enumValueSet.getValues();
         if (values.length == 0) {
             return EnumValueSet.ENUM_VALUESET_EMPTRY;
         }
+        IInputFormat<String> inputFormat = getInputFormat();
         for (String id : values) {
-            String formatedEnumText = IpsUIPlugin.getDefault().getInputFormat(type).format(id);
+            String formatedEnumText = inputFormat.format(id);
             buffer.append(formatedEnumText);
             buffer.append(" " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
         }

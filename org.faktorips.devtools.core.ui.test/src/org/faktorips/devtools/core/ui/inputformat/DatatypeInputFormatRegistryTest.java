@@ -21,10 +21,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
-import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
-import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
-import org.faktorips.devtools.core.ui.inputformat.IDatatypeInputFormatFactory;
-import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +52,8 @@ public class DatatypeInputFormatRegistryTest {
     private IInputFormat<String> result2;
     @Mock
     private IInputFormat<String> subclassResult;
+    @Mock
+    private IIpsProject ipsProject;
 
     private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> map;
 
@@ -64,39 +63,39 @@ public class DatatypeInputFormatRegistryTest {
     public void initMap() {
         inputFormatMap = new DatatypeInputFormatRegistry();
         map = inputFormatMap.getInputFormatMap();
-        Mockito.when(factory1.newInputFormat(datatype1)).thenReturn(result1);
-        Mockito.when(factory2.newInputFormat(datatype2)).thenReturn(result2);
+        Mockito.when(factory1.newInputFormat(datatype1, ipsProject)).thenReturn(result1);
+        Mockito.when(factory2.newInputFormat(datatype2, ipsProject)).thenReturn(result2);
         map.put(datatype1.getClass(), factory1);
         map.put(datatype2.getClass(), factory2);
     }
 
     @Test
     public void test_getDatatypeInputFormat() {
-        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(datatype1);
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(datatype1, ipsProject);
         Assert.assertEquals(result1, actualResult);
-        IInputFormat<String> actualResult2 = inputFormatMap.getDatatypeInputFormat(datatype2);
+        IInputFormat<String> actualResult2 = inputFormatMap.getDatatypeInputFormat(datatype2, ipsProject);
         Assert.assertEquals(result2, actualResult2);
     }
 
     @Test
     public void test_getDefaultInputFormat() {
-        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(unregisteredDatatype);
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(unregisteredDatatype, ipsProject);
         Assert.assertEquals(DefaultInputFormat.class, actualResult.getClass());
     }
 
     @Test
     public void test_superclassInputFormat() {
-        Mockito.when(factory1.newInputFormat(subclassDatatype)).thenReturn(result1);
-        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subclassDatatype);
+        Mockito.when(factory1.newInputFormat(subclassDatatype, ipsProject)).thenReturn(result1);
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subclassDatatype, ipsProject);
         Assert.assertEquals(result1, actualResult);
     }
 
     @Test
     public void test_useNearestSuperclassInputFormat() {
         map.put(subclassDatatype.getClass(), subclassFactory);
-        Mockito.when(subclassFactory.newInputFormat(subsubclassDatatype)).thenReturn(subclassResult);
+        Mockito.when(subclassFactory.newInputFormat(subsubclassDatatype, ipsProject)).thenReturn(subclassResult);
 
-        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subsubclassDatatype);
+        IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subsubclassDatatype, ipsProject);
         Assert.assertEquals(subclassResult, actualResult);
     }
 
