@@ -497,7 +497,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
                     ((ValueDatatype)resultType).getWrapperType());
             return finalResult;
             // CSOFF: IllegalCatch
-        } catch (Exception pe) {
+        } catch (RuntimeException pe) {
             // CSON: IllegalCatch
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));

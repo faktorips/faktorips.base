@@ -46,11 +46,17 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
         this.targetId = targetId;
         try {
             establishMethod = sourceObj.getClass().getMethod(establishMethodName, new Class[] { targetClass });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't get method to establish association, sourceClass="
-                    + sourceObj.getClass().getName() + "method=" + establishMethodName + ", targetClass="
-                    + targetClass.getName());
+        } catch (NoSuchMethodException ne) {
+            throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
+        } catch (SecurityException e) {
+            throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
         }
+    }
+
+    private void throwNewRuntimeException(Object sourceObj, String establishMethodName, Class<?> targetClass) {
+        throw new RuntimeException("Can't get method to establish association, sourceClass="
+                + sourceObj.getClass().getName() + "method=" + establishMethodName + ", targetClass="
+                + targetClass.getName());
     }
 
     public void resolve(IObjectReferenceStore store) throws Exception {

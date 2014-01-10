@@ -12,6 +12,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -235,10 +237,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String charset = ipsProject.getXmlFileCharset();
         try {
             oldContents = StringUtil.readFromInputStream(tocFile.getContents(), charset);
-        } catch (Exception e) {
+            // CSOFF: Empty Statement
+        } catch (IOException e) {
             // if an error occurs reading the old contents, we just write the new one
             // e.g. an error can occur if the toc file isn't synchronized
         }
+        // CSON: Empty Statement
         if (newContents.equals(oldContents)) {
             return;
         }
@@ -274,7 +278,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 try {
                     DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
                     doc = builder.parse(is);
-                } catch (Exception e) {
+                } catch (IOException ioe) {
+                    // can happen if the file is deleted in the filesystem, but the workspace has
+                    // not been synchronized
+                    // nothing seriuos, we just write the file again
+                    doc = null;
+                    tocFile.refreshLocal(1, null);
+                } catch (SAXException e) {
                     // can happen if the file is deleted in the filesystem, but the workspace has
                     // not been synchronized
                     // nothing seriuos, we just write the file again
@@ -283,11 +293,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 }
                 if (doc != null) {
                     Element tocEl = doc.getDocumentElement();
-                    try {
-                        toc.initFromXml(tocEl);
-                    } catch (Exception e) {
-                        throw new CoreException(new IpsStatus("Error initializing toc from xml!", e)); //$NON-NLS-1$
-                    }
+                    toc.initFromXml(tocEl);
                 }
             }
             tocFileMap.put(tocFile, toc);
@@ -474,7 +480,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public TocEntryObject createTocEntry(IType type) throws CoreException {
         String javaImplClass;
         IPath xmlResourceName;
-        String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
+        // for model types, the qualified name is also the id.
+        String id = type.getQualifiedName();
         if (type instanceof IPolicyCmptType) {
             javaImplClass = getBuilderSet().getPolicyCmptImplClassBuilder().getQualifiedClassName(type);
             xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.POLICY_CMPT_MODEL_TYPE,

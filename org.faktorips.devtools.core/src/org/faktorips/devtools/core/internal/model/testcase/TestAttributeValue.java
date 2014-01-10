@@ -46,13 +46,13 @@ import org.w3c.dom.Element;
  */
 public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttributeValue {
 
+    public static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
+
     /**
      * Specifies the default type, will be used if the corresponding test case type parameter is not
      * specified or not found
      */
-    private static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
-
-    static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
+    private static final TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
     private String testAttribute = ""; //$NON-NLS-1$
 
@@ -191,21 +191,23 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
                 return type.equals(defaultType);
             }
 
-            ITestAttribute testAttribute = findTestAttribute(ipsProject);
+            ITestAttribute attribute = findTestAttribute(ipsProject);
             if (testAttribute == null) {
                 return type.equals(defaultType);
             }
 
             // compare the parameters type and return if the type matches the given type
-            if (testAttribute.isInputAttribute() && type.equals(TestParameterType.INPUT)) {
+            if (attribute.isInputAttribute() && type.equals(TestParameterType.INPUT)) {
                 return true;
             }
-            if (testAttribute.isExpextedResultAttribute() && type.equals(TestParameterType.EXPECTED_RESULT)) {
+            if (attribute.isExpextedResultAttribute() && type.equals(TestParameterType.EXPECTED_RESULT)) {
                 return true;
             }
-        } catch (Exception e) {
+            // CSOFF: Empty Statement
+        } catch (CoreException e) {
             // ignore exceptions
         }
+        // CSON: Empty Statement
         return false;
     }
 
@@ -223,14 +225,14 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
      */
     void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreException {
         IIpsProject ipsProject = getIpsProject();
-        ITestAttribute testAttribute = findTestAttribute(ipsProject);
-        if (testAttribute == null) {
+        ITestAttribute attribute = findTestAttribute(ipsProject);
+        if (attribute == null) {
             // the test attribute wasn't found, do nothing
             // this is an error which will be validated in the validate method
             return;
         }
 
-        IPolicyCmptTypeAttribute modelAttribute = testAttribute.findAttribute(ipsProject);
+        IPolicyCmptTypeAttribute modelAttribute = attribute.findAttribute(ipsProject);
         if (modelAttribute != null) {
             boolean defaultSet = false;
             // set default as specified in the product cmpt
@@ -252,7 +254,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         } else {
             // the model attribute (policy cmpt type attribute) wasn't found,
             // set the default using the datatype
-            ValueDatatype datatype = testAttribute.findDatatype(ipsProject);
+            ValueDatatype datatype = attribute.findDatatype(ipsProject);
             if (datatype != null) {
                 setValue(datatype.getDefaultValue());
             } else {

@@ -502,15 +502,12 @@ public class SrcFolderComposite extends Composite {
          * Folder field text can temporarily contain invalid values, because it is updated on each
          * keystroke when typed in with keyboard. That's why exceptions are ignored here.
          */
-        try {
-            IPath path = new Path(IPath.SEPARATOR + folderName);
-            IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
-            if (mergable) {
-                ipsObjectPath.setOutputFolderForMergableSources(folder);
-            } else {
-                ipsObjectPath.setOutputFolderForDerivedSources(folder);
-            }
-        } catch (Exception e) { /* ignore */
+        IPath path = new Path(IPath.SEPARATOR + folderName);
+        IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
+        if (mergable) {
+            ipsObjectPath.setOutputFolderForMergableSources(folder);
+        } else {
+            ipsObjectPath.setOutputFolderForDerivedSources(folder);
         }
 
         dataChanged = true;

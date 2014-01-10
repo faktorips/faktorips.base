@@ -11,6 +11,7 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -39,11 +40,13 @@ public class DateValueConverter extends AbstractValueConverter {
             }
             String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
             return DateFormatUtils.format(date, datePattern);
+            // CSOFF: Illegal Catch
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;
         }
+        // CSON: Illegal Catch
     }
 
     /**
@@ -59,10 +62,12 @@ public class DateValueConverter extends AbstractValueConverter {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
                 Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] { dateFormat });
                 return DateUtil.dateToIsoDateString(parseDate);
-            } catch (Exception ignored) {
+                // CSOFF: Empty Statement
+            } catch (ParseException ignored) {
                 // could not convert, so add error messages to MessageList and return unconverted
                 // value
             }
+            // CSON: Empty Statement
         }
 
         messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(

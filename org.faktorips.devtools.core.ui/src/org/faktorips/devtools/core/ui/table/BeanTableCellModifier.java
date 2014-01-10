@@ -46,7 +46,7 @@ public class BeanTableCellModifier implements ICellModifier {
     private TableViewer tableViewer;
 
     // The parent control
-    IDataChangeableReadWriteAccess parentControl;
+    private IDataChangeableReadWriteAccess parentControl;
 
     // the ips project in the context of which this object has been instantiated
     private IIpsProject ipsProject;
@@ -162,7 +162,7 @@ public class BeanTableCellModifier implements ICellModifier {
             if (pd != null) {
                 return (String)getPropertyValue(element, pd);
             }
-        } catch (Exception e) {
+        } catch (IntrospectionException e) {
             throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName()); //$NON-NLS-1$
         }
         throw new RuntimeException("Error resolving property method " + property); //$NON-NLS-1$
@@ -186,7 +186,7 @@ public class BeanTableCellModifier implements ICellModifier {
                 }
                 return;
             }
-        } catch (Exception e) {
+        } catch (IntrospectionException e) {
             throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName()); //$NON-NLS-1$
         }
         throw new RuntimeException("Error resolving property method " + property); //$NON-NLS-1$
@@ -219,9 +219,11 @@ public class BeanTableCellModifier implements ICellModifier {
             Method getter = property.getReadMethod();
             Object value = getter.invoke(element, new Object[0]);
             return value;
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
             throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
         }
+        // CSON: Illegal Catch
     }
 
     /*
@@ -231,9 +233,11 @@ public class BeanTableCellModifier implements ICellModifier {
         try {
             Method setter = property.getWriteMethod();
             setter.invoke(element, new Object[] { value });
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
             throw new RuntimeException("Error setting property value " + property.getName(), e); //$NON-NLS-1$
         }
+        // CSON: Illegal Catch
     }
 
     private void notifyColumnChangeListener(ColumnIdentifier columnIdentifier, Object value) {

@@ -49,7 +49,7 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
             int month = Integer.parseInt(tokenizer.nextToken());
             int date = Integer.parseInt(tokenizer.nextToken());
             return new GregorianCalendar(year, month - 1, date);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Can't parse " + value + " to a date!"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
