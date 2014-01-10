@@ -1,3 +1,5 @@
+// CSOFF: FileLengthCheck
+// This class is a huge ugly moloch and needs to be completely rewritten scratch.
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
@@ -583,9 +585,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     return currItem;
                 }
             }
-            currItem = searchChildsByObject(testPolicyCmpt, link, currItem.getItems());
-            if (currItem != null) {
-                return currItem;
+            TreeItem resultItem = searchChildsByObject(testPolicyCmpt, link, currItem.getItems());
+            if (resultItem != null) {
+                return resultItem;
             }
         }
         return null;
