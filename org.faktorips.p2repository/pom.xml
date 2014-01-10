@@ -19,7 +19,9 @@
 		<deploy.skript.buildComposites>${project.basedir}/buildComposites.sh</deploy.skript.buildComposites>
 		<deploy.basedir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}</deploy.basedir>
 		<deploy.deployedRepositoryZip>${deploy.basedir}/${qualifiedVersion}/${deploy.moduleVersion}-${qualifiedVersion}.zip</deploy.deployedRepositoryZip>
-		<deploy.license>Faktor-IPS_Lizenzvertrag.pdf</deploy.license>
+		<deploy.license>LICENSE.txt</deploy.license>
+		<deploy.agpl>agpl-3.0.txt</deploy.agpl>
+		<deploy.lgpl>lgpl-3.0.txt</deploy.lgpl>
 		<deploy.downloadDir>${deploy.basedir}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
 		<deploy.repositoryDir>${deploy.basedir}/${qualifiedVersion}</deploy.repositoryDir>
 	</properties>
@@ -99,6 +101,7 @@
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="**/MessageList*.class,**/Message*.class,**/MsgReplacementParameter*.class,**/ObjectProperty*.class,**/IEnumValue*.class">
 											</fileset>
+											<fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl},${deploy.lgpl}" />
 											<manifest>
 												<attribute name="Implementation-Title" value="Faktor-IPS Runtime for Java5" />
 												<attribute name="Implementation-Version" value="${qualifiedVersion}" />
@@ -111,6 +114,7 @@
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="**/MessageList*.java,**/Message*.java,**/MsgReplacementParameter*.java,**/ObjectProperty*.java,**/IEnumValue*.java">
 											</fileset>
+											<fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl},${deploy.lgpl}" />
 											<manifest>
 												<attribute name="Implementation-Title"
 													value="Faktor-IPS Runtime for Java5 Sources" />
@@ -126,10 +130,10 @@
 												includes="faktorips-runtime-client*.jar" />
 											<fileset dir="${project.build.directory}/repository/plugins"
 												includes="org.faktorips.valuetypes.java5*.jar" />
-											<fileset dir="${project.build.directory}" includes="${deploy.license}" />
+											<fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl},${deploy.lgpl}" />
 										</zip>
 										<zip update="true" destfile="${deploy.repositoryZip}">
-											<fileset dir="${project.build.directory}" includes="${deploy.license}" />
+											<fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl},${deploy.lgpl}" />
 										</zip>
 									</target>
 								</configuration>

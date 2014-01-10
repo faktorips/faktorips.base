@@ -125,18 +125,11 @@
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- 
- Alle Rechte vorbehalten.
- Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- http://www.faktorips.org/legal/cl-v01.html
- eingesehen werden kann.
- 
- Mitwirkende:
-   Faktor Zehn AG - initial API and implementation
+         Copyright (c) Faktor Zehn AG. &gt;http://www.faktorzehn.org&lt;
+
+This source code is available under the terms of the AGPL Affero General Public License version 3 and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype component under the terms of the LGPL Lesser General Public License version 3. 
+
+Please see LICENSE.txt for full license terms, including the additional permissions and the possibility of alternative license terms.
       </documentation>
    </annotation>
 

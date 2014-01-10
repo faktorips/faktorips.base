@@ -1,14 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version 3
+ * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
+ * component under the terms of the LGPL Lesser General Public License version 3.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * Please see LICENSE.txt for full license terms, including the additional permissions and the
+ * possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.csv;
@@ -60,8 +58,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
         if (!(typeToExport instanceof ITableContents)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
-                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
+                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -73,8 +70,9 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
+        IProgressMonitor localMonitor = monitor;
+        if (localMonitor == null) {
+            localMonitor = new NullProgressMonitor();
         }
 
         ITableContents contents = getTableContents(typeToExport);
@@ -88,7 +86,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         // currently, there is only one generation per table contents
         ITableContentsGeneration currentGeneration = (ITableContentsGeneration)gens[0];
 
-        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + currentGeneration.getNumOfRows());
+        localMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + currentGeneration.getNumOfRows());
 
         // first of all, check if the environment allows an export...
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
@@ -97,13 +95,13 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
-        monitor.worked(1);
+        localMonitor.worked(1);
 
         messageList.add(contents.validate(contents.getIpsProject()));
         if (messageList.containsErrorMsg()) {
             return;
         }
-        monitor.worked(1);
+        localMonitor.worked(1);
 
         messageList.add(structure.validate(contents.getIpsProject()));
         if (messageList.containsErrorMsg()) {
@@ -111,12 +109,12 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         }
 
         // if we have reached here, the environment is valid, so try to export the data
-        monitor.worked(1);
+        localMonitor.worked(1);
 
         FileOutputStream out = null;
         CSVWriter writer = null;
         try {
-            if (!monitor.isCanceled()) {
+            if (!localMonitor.isCanceled()) {
                 // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
                 // Zielordner
                 out = new FileOutputStream(new File(filename));
@@ -126,9 +124,9 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
 
                 exportHeader(writer, structure.getColumns(), exportColumnHeaderRow);
 
-                monitor.worked(1);
+                localMonitor.worked(1);
 
-                exportDataCells(writer, contents, currentGeneration, structure, monitor, exportColumnHeaderRow);
+                exportDataCells(writer, contents, currentGeneration, structure, localMonitor, exportColumnHeaderRow);
                 writer.close();
             }
         } catch (IOException e) {
@@ -139,9 +137,11 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
                 try {
 
                     out.close();
-                } catch (Exception ee) {
+                    // CSOFF: Empty Statement
+                } catch (IOException ee) {
                     // ignore
                 }
+                // CSON: Empty Statement
             }
         }
     }

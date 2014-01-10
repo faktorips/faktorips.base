@@ -1,14 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version 3
+ * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
+ * component under the terms of the LGPL Lesser General Public License version 3.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * Please see LICENSE.txt for full license terms, including the additional permissions and the
+ * possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
@@ -37,43 +35,6 @@ public class DateTime implements Comparable<DateTime>, Serializable {
      */
     private static final long serialVersionUID = 908669872768116989L;
 
-    /**
-     * Parses the given String s to a DateTime object. The string should have the ISO date format
-     * (YYYY-MM-DD). Time information is initialized with 0. Returns <code>null</code> if s if
-     * <code>null</code> or an empty String.
-     * 
-     * @throws IllegalArgumentException if s has a wrong format and can't be parsed.
-     */
-    public final static DateTime parseIso(String s) {
-        if (s == null || s.equals("")) {
-            return null;
-        }
-        try {
-            StringTokenizer tokenizer = new StringTokenizer(s, "-");
-            int year = Integer.parseInt(tokenizer.nextToken());
-            int month = Integer.parseInt(tokenizer.nextToken());
-            int date = Integer.parseInt(tokenizer.nextToken());
-            return new DateTime(year, month, date);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can't parse " + s + " to a DateTime!");
-        }
-    }
-
-    /**
-     * Creates a new date time object with the year, month and day information from the
-     * GregorianCalendar. Time information is initialized with 0. Returns <code>null</code> if
-     * calendar is<code>null</code>.
-     */
-    public final static DateTime createDateOnly(GregorianCalendar calendar) {
-        if (calendar == null) {
-            return null;
-        }
-        int year = calendar.get(GregorianCalendar.YEAR);
-        int month = calendar.get(GregorianCalendar.MONTH) + 1;
-        int date = calendar.get(GregorianCalendar.DAY_OF_MONTH);
-        return new DateTime(year, month, date);
-    }
-
     private int year;
     private int month;
     private int day;
@@ -96,6 +57,43 @@ public class DateTime implements Comparable<DateTime>, Serializable {
         this.second = second;
         hashCode = year + 17 * month + 34 * day + hour + 41 * hour;
 
+    }
+
+    /**
+     * Parses the given String s to a DateTime object. The string should have the ISO date format
+     * (YYYY-MM-DD). Time information is initialized with 0. Returns <code>null</code> if s if
+     * <code>null</code> or an empty String.
+     * 
+     * @throws IllegalArgumentException if s has a wrong format and can't be parsed.
+     */
+    public static final DateTime parseIso(String s) {
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
+        try {
+            StringTokenizer tokenizer = new StringTokenizer(s, "-");
+            int year = Integer.parseInt(tokenizer.nextToken());
+            int month = Integer.parseInt(tokenizer.nextToken());
+            int date = Integer.parseInt(tokenizer.nextToken());
+            return new DateTime(year, month, date);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a DateTime!");
+        }
+    }
+
+    /**
+     * Creates a new date time object with the year, month and day information from the
+     * GregorianCalendar. Time information is initialized with 0. Returns <code>null</code> if
+     * calendar is<code>null</code>.
+     */
+    public static final DateTime createDateOnly(GregorianCalendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+        int year = calendar.get(GregorianCalendar.YEAR);
+        int month = calendar.get(GregorianCalendar.MONTH) + 1;
+        int date = calendar.get(GregorianCalendar.DAY_OF_MONTH);
+        return new DateTime(year, month, date);
     }
 
     public int getDay() {

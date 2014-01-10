@@ -1,14 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version 3
+ * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
+ * component under the terms of the LGPL Lesser General Public License version 3.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * Please see LICENSE.txt for full license terms, including the additional permissions and the
+ * possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
@@ -61,35 +59,38 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof ITableContents)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
-                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
+                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
+        IProgressMonitor progressMonitor;
         if (monitor == null) {
-            monitor = new NullProgressMonitor();
+            progressMonitor = new NullProgressMonitor();
+        } else {
+            progressMonitor = monitor;
         }
         // Currently, there is only one generation per table contents
         ITableContents contents = getTableContents(typeToExport);
         IIpsObjectGeneration[] gens = contents.getGenerationsOrderedByValidDate();
         ITableContentsGeneration currentGeneration = (ITableContentsGeneration)gens[0];
 
-        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentGeneration.getNumOfRows());
+        progressMonitor
+                .beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentGeneration.getNumOfRows());
 
         initWorkbookAndSheet();
-        monitor.worked(1);
+        progressMonitor.worked(1);
 
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
         exportHeader(sheet, structure.getColumns(), exportColumnHeaderRow);
-        monitor.worked(1);
-        if (monitor.isCanceled()) {
+        progressMonitor.worked(1);
+        if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(sheet, currentGeneration, structure, monitor, exportColumnHeaderRow);
-        if (monitor.isCanceled()) {
+        exportDataCells(sheet, currentGeneration, structure, progressMonitor, exportColumnHeaderRow);
+        if (progressMonitor.isCanceled()) {
             return;
         }
 
@@ -101,7 +102,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
             IpsPlugin.log(e);
             messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
-        monitor.done();
+        progressMonitor.done();
     }
 
     private ITableContents getTableContents(IIpsObject ipsObject) {

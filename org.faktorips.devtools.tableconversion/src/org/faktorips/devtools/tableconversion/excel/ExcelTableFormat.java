@@ -1,20 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version 3
+ * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
+ * component under the terms of the LGPL Lesser General Public License version 3.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * Please see LICENSE.txt for full license terms, including the additional permissions and the
+ * possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +56,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             excelTableExportOperation.run(new NullProgressMonitor());
             return true;
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -90,7 +89,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -122,8 +121,12 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             fis = new FileInputStream(file);
             new HSSFWorkbook(fis);
             return true;
-        } catch (Exception e) {
+            // CSOFF: Empty Statement
+        } catch (FileNotFoundException fe) {
             // if an exception occurred, it is not a valid source, this exception can be ignored
+        } catch (IOException e) {
+            // if an exception occurred, it is not a valid source, this exception can be ignored
+            // CSON: Empty Statement
         } finally {
             if (fis != null) {
                 try {
@@ -186,7 +189,10 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         HSSFSheet sheet = null;
         try {
             sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            IpsPlugin.log(e);
+            return Collections.emptyList();
+        } catch (IOException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }

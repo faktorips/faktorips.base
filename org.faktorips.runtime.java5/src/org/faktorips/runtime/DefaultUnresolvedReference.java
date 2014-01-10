@@ -1,14 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version 3
+ * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
+ * component under the terms of the LGPL Lesser General Public License version 3.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * Please see LICENSE.txt for full license terms, including the additional permissions and the
+ * possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime;
@@ -48,11 +46,17 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
         this.targetId = targetId;
         try {
             establishMethod = sourceObj.getClass().getMethod(establishMethodName, new Class[] { targetClass });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't get method to establish association, sourceClass="
-                    + sourceObj.getClass().getName() + "method=" + establishMethodName + ", targetClass="
-                    + targetClass.getName());
+        } catch (NoSuchMethodException ne) {
+            throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
+        } catch (SecurityException e) {
+            throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
         }
+    }
+
+    private void throwNewRuntimeException(Object sourceObj, String establishMethodName, Class<?> targetClass) {
+        throw new RuntimeException("Can't get method to establish association, sourceClass="
+                + sourceObj.getClass().getName() + "method=" + establishMethodName + ", targetClass="
+                + targetClass.getName());
     }
 
     public void resolve(IObjectReferenceStore store) throws Exception {

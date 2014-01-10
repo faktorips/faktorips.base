@@ -1,18 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version 3
+ * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
+ * component under the terms of the LGPL Lesser General Public License version 3.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * Please see LICENSE.txt for full license terms, including the additional permissions and the
+ * possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -41,11 +40,13 @@ public class DateValueConverter extends AbstractValueConverter {
             }
             String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
             return DateFormatUtils.format(date, datePattern);
+            // CSOFF: Illegal Catch
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;
         }
+        // CSON: Illegal Catch
     }
 
     /**
@@ -61,10 +62,12 @@ public class DateValueConverter extends AbstractValueConverter {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
                 Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] { dateFormat });
                 return DateUtil.dateToIsoDateString(parseDate);
-            } catch (Exception ignored) {
+                // CSOFF: Empty Statement
+            } catch (ParseException ignored) {
                 // could not convert, so add error messages to MessageList and return unconverted
                 // value
             }
+            // CSON: Empty Statement
         }
 
         messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
