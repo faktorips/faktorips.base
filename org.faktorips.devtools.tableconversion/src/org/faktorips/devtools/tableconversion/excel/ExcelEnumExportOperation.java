@@ -62,8 +62,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
-                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         enumValueContainer = (IEnumValueContainer)typeToExport;
     }

@@ -58,8 +58,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
-                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -71,13 +70,14 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
+        IProgressMonitor localMonitor = monitor;
+        if (localMonitor == null) {
+            localMonitor = new NullProgressMonitor();
         }
 
         IEnumValueContainer enumContainer = getEnum(typeToExport);
 
-        monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + enumContainer.getEnumValuesCount());
+        localMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + enumContainer.getEnumValuesCount());
 
         // first of all, check if the environment allows an export...
         IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
@@ -86,13 +86,13 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
-        monitor.worked(1);
+        localMonitor.worked(1);
 
         messageList.add(enumContainer.validate(enumContainer.getIpsProject()));
         if (messageList.containsErrorMsg()) {
             return;
         }
-        monitor.worked(1);
+        localMonitor.worked(1);
 
         messageList.add(structure.validate(structure.getIpsProject()));
         if (messageList.containsErrorMsg()) {
@@ -100,12 +100,12 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         }
 
         // if we have reached here, the environment is valid, so try to export the data
-        monitor.worked(1);
+        localMonitor.worked(1);
 
         FileOutputStream out = null;
         CSVWriter writer = null;
         try {
-            if (!monitor.isCanceled()) {
+            if (!localMonitor.isCanceled()) {
                 // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
                 // Zielordner
                 out = new FileOutputStream(new File(filename));
@@ -115,9 +115,9 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
                 exportHeader(writer, structure.getEnumAttributesIncludeSupertypeCopies(true), exportColumnHeaderRow);
 
-                monitor.worked(1);
+                localMonitor.worked(1);
 
-                exportDataCells(writer, enumContainer.getEnumValues(), structure, monitor, exportColumnHeaderRow);
+                exportDataCells(writer, enumContainer.getEnumValues(), structure, localMonitor, exportColumnHeaderRow);
                 writer.close();
             }
         } catch (IOException e) {
@@ -127,9 +127,11 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             if (out != null) {
                 try {
                     out.close();
-                } catch (Exception ee) {
+                    // CSOFF: Empty Statement
+                } catch (IOException ee) {
                     // ignore
                 }
+                // CSON: Empty Statement
             }
         }
     }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,8 +44,6 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class TestCaseContentProvider implements ITreeContentProvider {
 
-    private static Object[] EMPTY_ARRAY = new Object[0];
-
     /**
      * Defines the type of the content which will be currently provided: the input objects, the
      * expected result objects, or both could be provided
@@ -54,11 +51,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     public static final int COMBINED = 0;
     public static final int INPUT = 1;
     public static final int EXPECTED_RESULT = 2;
+
+    private static final Object[] EMPTY_ARRAY = new Object[0];
+
     private int contentType = COMBINED;
-
-    public static TestPolicyCmptSorter TESTPOLICYCMPT_SORTER = new TestPolicyCmptSorter();
-    public static TestValueSorter TESTVALUE_SORTER = new TestValueSorter();
-
     /** Contains the test case for which the content will be provided */
     private ITestCase testCase;
 
@@ -252,10 +248,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         ITestCaseType testCaseType = null;
         try {
             testCaseType = testCase.findTestCaseType(ipsProject);
+            // CSOFF: Empty Statement
         } catch (CoreException e) {
             // ignore exception while retrieving the test rule parameter
         }
-
+        // CSON: Empty Statement
         if (testCaseType == null) {
             // if the test case type is missing then show the unsorted list of all existing test
             // objects
@@ -290,21 +287,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             List<ITestObject> testObjects = name2elements.get(param.getName());
             name2elements.remove(param.getName());
 
-            if (param instanceof ITestPolicyCmptTypeParameter) {
-                // dummy root node for all test policy cmpt type parameter
-                if (parameterMatchesType(param)) {
-                    resultList.add(getDummyObject(param, null));
-                }
-            } else if (param instanceof ITestRuleParameter) {
-                if (isCombined() || isExpectedResult()) {
-                    // test rule objects are not visible if the input filter is chosen
-                    resultList.add(getDummyObject(param, null));
-                }
-            } else if (testObjects != null && param instanceof ITestValueParameter) {
-                if (parameterMatchesType(param)) {
-                    resultList.addAll(testObjects);
-                }
-            }
+            addToResultList(resultList, param, testObjects);
         }
 
         // add all elements which are not in the test parameter on the end
@@ -314,6 +297,24 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
 
         return resultList.toArray(new Object[resultList.size()]);
+    }
+
+    private void addToResultList(List<Object> resultList, ITestParameter param, List<ITestObject> testObjects) {
+        if (param instanceof ITestPolicyCmptTypeParameter) {
+            // dummy root node for all test policy cmpt type parameter
+            if (parameterMatchesType(param)) {
+                resultList.add(getDummyObject(param, null));
+            }
+        } else if (param instanceof ITestRuleParameter) {
+            if (isCombined() || isExpectedResult()) {
+                // test rule objects are not visible if the input filter is chosen
+                resultList.add(getDummyObject(param, null));
+            }
+        } else if (testObjects != null && param instanceof ITestValueParameter) {
+            if (parameterMatchesType(param)) {
+                resultList.addAll(testObjects);
+            }
+        }
     }
 
     private void addElementsFor(ITestCase testCase, List<ITestObject> elements) {
@@ -378,13 +379,14 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             for (ITestPolicyCmptLink association : associations) {
                 if (association.isComposition()) {
                     try {
-                        if ((isExpectedResult() && association.findTarget().isExpectedResult())
-                                || (isInput() && association.findTarget().isInput())) {
+                        if (isExpectedResultOrInput(association)) {
                             childs.add(association.findTarget());
                         }
+                        // CSOFF: Empty Statement
                     } catch (CoreException e) {
                         // ignore exception, the failure will be displayed by the validation
                     }
+                    // CSON: Empty Statement
                 } else {
                     childs.add(association);
                 }
@@ -398,6 +400,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             }
         }
         return childs.toArray(new IIpsElement[0]);
+    }
+
+    private boolean isExpectedResultOrInput(ITestPolicyCmptLink association) throws CoreException {
+        return (isExpectedResult() && association.findTarget().isExpectedResult())
+                || (isInput() && association.findTarget().isInput());
     }
 
     /**
@@ -479,8 +486,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                 ITestPolicyCmpt target = null;
                 try {
                     target = link.findTarget();
-                    if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
-                        childTestPolicyCmpt.add(target);
+                    if (target != null) {
+                        if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
+                            childTestPolicyCmpt.add(target);
+                        }
                     }
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
@@ -534,30 +543,6 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     private boolean parameterMatchesType(ITestParameter parameter) {
         return (isExpectedResult() && parameter.isExpextedResultOrCombinedParameter())
                 || (isInput() && parameter.isInputOrCombinedParameter());
-    }
-
-    /**
-     * Helper class to sort test policy component objects.
-     */
-    private static class TestPolicyCmptSorter implements Comparator<ITestPolicyCmpt> {
-
-        @Override
-        public int compare(ITestPolicyCmpt testPolicyCmpt1, ITestPolicyCmpt testPolicyCmpt2) {
-            return testPolicyCmpt1.getProductCmpt().compareTo(testPolicyCmpt2.getProductCmpt());
-        }
-
-    }
-
-    /**
-     * Helper class to sort test value objects.
-     */
-    private static class TestValueSorter implements Comparator<ITestValue> {
-
-        @Override
-        public int compare(ITestValue testValue1, ITestValue testValue2) {
-            return testValue1.getTestValueParameter().compareTo(testValue2.getTestValueParameter());
-        }
-
     }
 
     /**
