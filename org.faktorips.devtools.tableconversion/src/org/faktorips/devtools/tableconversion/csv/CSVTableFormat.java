@@ -136,8 +136,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         try {
             reader = new CSVReader(new FileReader(file));
             return hasConstantNumberOfFieldsPerLine(reader);
-        } catch (Exception e) {
-            // ignore FileNotFoundException, IOException
+        } catch (IOException e) {
             return false;
         } finally {
             if (reader != null) {
