@@ -1241,6 +1241,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
 
             String objectName = StringUtils.EMPTY;
+            if (contextObject instanceof IIpsObject) {
+                return StringUtils.EMPTY;
+            }
             if (contextObject instanceof ILabeledElement) {
                 objectName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
             } else if (contextObject instanceof IIpsObjectPartContainer) {
