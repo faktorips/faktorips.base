@@ -4,7 +4,10 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/opencsv-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.9-20121203.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.9-20121203.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.9-20121203.jar" sourcepath="C:/Users/imaazi/.m2/repository/org/apache/poi/poi/3.9/poi-3.9-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.9-20121203.jar" sourcepath="C:/Users/imaazi/.m2/repository/org/apache/poi/poi-ooxml/3.9/poi-ooxml-3.9-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.9-20121203.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
