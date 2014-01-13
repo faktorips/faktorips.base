@@ -25,6 +25,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String Row_caption;
     public static String Row_FromValueGreaterThanToValue;
     public static String Row_MissingValueForUniqueKey;
     public static String Row_NameMustBeValidJavaIdentifier;

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -82,7 +83,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     @Override
     public String getName() {
-        return "" + rowNumber; //$NON-NLS-1$
+        return "" + (rowNumber + 1); //$NON-NLS-1$
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return NLS.bind(Messages.Row_caption, rowNumber + 1);
     }
 
     @Override

@@ -27,9 +27,9 @@ import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -405,8 +405,8 @@ public class UniqueKeyValidator {
      * Creates a unique key validation error and adds it to the give message list.
      */
     void createValidationErrorUniqueKeyViolation(MessageList list, IIndex uniqueKey, Row row) {
-        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(), uniqueKey
-                .getName());
+        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber() + 1,
+                uniqueKey.getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
         createObjectProperties(uniqueKey, row, objectProperties);
         list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, objectProperties
