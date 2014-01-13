@@ -36,6 +36,6 @@ public class Messages extends NLS {
     public static String TableContentsGeneration_dublicateEnumId;
 
     public static String UniqueKeyValidator_msgUniqueKeyViolation;
-    public static String UniqueKeyValidatorRange_msgToManyUniqueKeyViolations;
+    public static String UniqueKeyValidatorRange_msgTooManyUniqueKeyViolations;
 
 }

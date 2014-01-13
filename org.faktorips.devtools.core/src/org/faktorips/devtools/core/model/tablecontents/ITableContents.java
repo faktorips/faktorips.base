@@ -20,42 +20,42 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxSupport {
 
-    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
-    public final static String PROPERTY_NUMOFCOLUMNS = "numOfColumns"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
+    public static final String PROPERTY_NUMOFCOLUMNS = "numOfColumns"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "TABLECONTENTS-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "TABLECONTENTS-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the structure this content is based on can't be
      * found.
      */
-    public final static String MSGCODE_UNKNWON_STRUCTURE = MSGCODE_PREFIX + "UnknownStructure"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNWON_STRUCTURE = MSGCODE_PREFIX + "UnknownStructure"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the structure has a different number of columns than
      * this content.
      */
-    public final static String MSGCODE_COLUMNCOUNT_MISMATCH = MSGCODE_PREFIX + "ColumncountMismatch"; //$NON-NLS-1$
+    public static final String MSGCODE_COLUMNCOUNT_MISMATCH = MSGCODE_PREFIX + "ColumncountMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there is an unique violation.
      */
-    public final static String MSGCODE_UNIQUE_KEY_VIOLATION = MSGCODE_PREFIX + "UniqueKeyViolation"; //$NON-NLS-1$
+    public static final String MSGCODE_UNIQUE_KEY_VIOLATION = MSGCODE_PREFIX + "UniqueKeyViolation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the from value is greater the to value. TODO joerg
      * validate 'from' <= 'to', and 'from'+'to' same datatype
      */
-    public final static String MSGCODE_TWO_COLUMN_RANGE_FROM_GREATER_TO_VALUE = MSGCODE_PREFIX
+    public static final String MSGCODE_TWO_COLUMN_RANGE_FROM_GREATER_TO_VALUE = MSGCODE_PREFIX
             + "TwoColumnRangeFromGreaterToValue"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there are to many unique key violations.
      */
-    public final static String MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS = MSGCODE_PREFIX + "ToManyUniqueKeyViolations"; //$NON-NLS-1$
+    public static final String MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS = MSGCODE_PREFIX + "TooManyUniqueKeyViolations"; //$NON-NLS-1$
 
     /**
      * Returns the qualified name of the table structure this table contents is based on.

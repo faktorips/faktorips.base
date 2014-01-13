@@ -16,16 +16,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -96,8 +96,8 @@ public class UniqueKeyValidatorRange {
             ColumnRange columnRange,
             SortedMap<AbstractKeyValue, List<Row>> keyValueRangeMap) {
 
-        KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure, uniqueKeyValidator
-                .getCachedValueDatatypes(), uniqueKey, row, columnRange);
+        KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure,
+                uniqueKeyValidator.getCachedValueDatatypes(), uniqueKey, row, columnRange);
         /*
          * add the key value range, if the value is not parsable then the key value are not added to
          * the cache, otherwise the sorted map can not work correctly (compareTo method fails)
@@ -130,7 +130,7 @@ public class UniqueKeyValidatorRange {
 
             validateAllRanges(list, keyValue, columnRangeMaps);
 
-            if (list.getMessageByCode(ITableContents.MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS) != null) {
+            if (list.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS) != null) {
                 // abort validation if there to many unique key violations
                 // because of performance reasons
                 break;
@@ -174,8 +174,8 @@ public class UniqueKeyValidatorRange {
 
         MessageList uniqueKeyValidationErrors = new MessageList();
         for (Row row : rowsUniqueKeyViolation) {
-            uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors, keyValue
-                    .getUniqueKey(), row);
+            uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors,
+                    keyValue.getUniqueKey(), row);
             if (isMaxNoOfUniqueKeyViolationsReached(uniqueKeyValidationErrors)) {
                 break;
             }
@@ -345,7 +345,7 @@ public class UniqueKeyValidatorRange {
 
     private boolean isMaxNoOfUniqueKeyViolationsReached(MessageList list) {
         if (list.size() >= MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS) {
-            createValidationErrorToManyUniqueKeyViolations(list, MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS);
+            createValidationErrorTooManyUniqueKeyViolations(list, MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS);
             return true;
         }
         return false;
@@ -402,8 +402,8 @@ public class UniqueKeyValidatorRange {
 
     private boolean collisionInAllRanges(Row row1, Row row2) {
         for (ColumnRange columnRange : twoColumnRanges) {
-            if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(), uniqueKeyValidator
-                    .getCachedValueDatatypes(), columnRange, row1, row2)) {
+            if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(),
+                    uniqueKeyValidator.getCachedValueDatatypes(), columnRange, row1, row2)) {
                 return false;
             }
 
@@ -411,47 +411,40 @@ public class UniqueKeyValidatorRange {
         return true;
     }
 
-    private void createValidationErrorToManyUniqueKeyViolations(MessageList list, int numberOfValidationErrors) {
-
-        String text = NLS.bind(Messages.UniqueKeyValidatorRange_msgToManyUniqueKeyViolations, numberOfValidationErrors,
-                uniqueKey);
-        list.add(new Message(ITableContents.MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS, text, Message.ERROR));
+    private void createValidationErrorTooManyUniqueKeyViolations(MessageList list, int numberOfValidationErrors) {
+        String text = NLS.bind(Messages.UniqueKeyValidatorRange_msgTooManyUniqueKeyViolations,
+                numberOfValidationErrors, uniqueKey.getName());
+        list.add(new Message(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS, text, Message.ERROR));
     }
 
     public void printCachedContent(String offset) {
-        offset += "  "; //$NON-NLS-1$
-        System.out.println(offset + "UniqueKeyRange:" + uniqueKey.getName()); //$NON-NLS-1$
+        System.out.println(offset + " UniqueKeyRange:" + uniqueKey.getName()); //$NON-NLS-1$
         for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>>> entry : keyValueRanges
                 .entrySet()) {
-            System.out.println(offset + "KeyValue:" + entry.getKey()); //$NON-NLS-1$
-            printCachedColumnRange(offset, entry.getValue());
+            System.out.println(offset + " KeyValue:" + entry.getKey()); //$NON-NLS-1$
+            printCachedColumnRange(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }
 
     private void printCachedColumnRange(String offset,
             Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> sortedMap) {
-        offset += "  "; //$NON-NLS-1$
         for (Entry<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> entry : sortedMap.entrySet()) {
-            System.out.println(offset + "ColumnRange:" + entry.getKey().getName()); //$NON-NLS-1$
-            printCachedSordetMap(offset, entry.getValue());
+            System.out.println(offset + " ColumnRange:" + entry.getKey().getName()); //$NON-NLS-1$
+            printCachedSordetMap(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }
 
     private void printCachedSordetMap(String offset, SortedMap<AbstractKeyValue, List<Row>> map) {
-        offset += "  "; //$NON-NLS-1$
         for (Entry<AbstractKeyValue, List<Row>> entry : map.entrySet()) {
-            System.out.println(offset + "KeyValue:"); //$NON-NLS-1$
-            printCachedEntryOrList(offset, entry.getValue());
+            System.out.println(offset + " KeyValue:"); //$NON-NLS-1$
+            printCachedEntryOrList(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }
 
     private void printCachedEntryOrList(String offset, List<Row> entry) {
-        offset += "  "; //$NON-NLS-1$
-        System.out.println(offset + entry.size() + " Rows colision candidates, same from column:"); //$NON-NLS-1$
-        int i = 0;
+        System.out.println(offset + " " + entry.size() + " Rows colision candidates, same from column:"); //$NON-NLS-1$ //$NON-NLS-2$
         for (Row object : entry) {
-            i++;
-            System.out.println(offset + "  Row:" + printRow(object)); //$NON-NLS-1$
+            System.out.println(offset + "   Row:" + printRow(object)); //$NON-NLS-1$
         }
     }
 

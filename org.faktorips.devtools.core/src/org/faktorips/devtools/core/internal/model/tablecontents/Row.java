@@ -162,41 +162,23 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             return;
         }
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
-        validateThis(list, tableStructure, datatypes, true);
+        validateThis(list, tableStructure, datatypes);
     }
 
-    MessageList validateThis(ITableStructure tableStructure, ValueDatatype[] datatypes, IIpsProject ipsProject)
-            throws CoreException {
-        MessageList result = beforeValidateThis();
-        if (result != null) {
-            return result;
-        }
-
-        result = new MessageList();
-        // method was invoked by the table contents generation
-        // the table contents generation validates the unique key separately
-        validateThis(result, tableStructure, datatypes, false);
-
-        afterValidateThis(result, ipsProject);
-
-        return result;
-    }
-
-    private void validateThis(MessageList result,
-            ITableStructure tableStructure,
-            ValueDatatype[] datatypes,
-            boolean uniqueKeyCheck) {
+    private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes) {
 
         List<IIndex> indices = tableStructure.getIndices();
         validateMissingAndInvalidIndexValue(result, datatypes, tableStructure, indices);
         validateRowValue(result, tableStructure, datatypes);
-        if (uniqueKeyCheck) {
+        if (!result.containsErrorMsg()) {
             validateUniqueKey(result, tableStructure, datatypes);
         }
     }
 
     private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
-        getTableContentsGeneration().validateUniqueKeys(list, tableStructure, datatypes);
+        MessageList uniqueKeyList = new MessageList();
+        getTableContentsGeneration().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+        list.add(uniqueKeyList.getMessagesFor(this));
     }
 
     /**
