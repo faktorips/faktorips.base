@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
@@ -1239,15 +1240,32 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 contextObject = holder.getParent();
             }
 
+            String objectName = StringUtils.EMPTY;
             if (contextObject instanceof ILabeledElement) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject) + ADDITION;
+                objectName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
+            } else if (contextObject instanceof IIpsObjectPartContainer) {
+                objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
             }
-            if (contextObject instanceof IIpsObjectPartContainer) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IIpsObjectPartContainer)contextObject)
-                        + ADDITION;
+            if (StringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
+                objectName = ((IIpsElement)contextObject).getName();
             }
+            if (StringUtils.isEmpty(objectName)) {
+                return StringUtils.EMPTY;
+            } else {
+                return objectName + ADDITION;
+            }
+        }
 
-            return StringUtils.EMPTY;
+        private String getCaptionName(IIpsObjectPartContainer contextObject) {
+            String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(contextObject);
+            if (StringUtils.isEmpty(caption)) {
+                IIpsElement parent = contextObject.getParent();
+                if (parent instanceof IIpsObjectPartContainer) {
+                    IIpsObjectPartContainer parentContainer = (IIpsObjectPartContainer)parent;
+                    return getCaptionName(parentContainer);
+                }
+            }
+            return caption;
         }
 
         @Override
