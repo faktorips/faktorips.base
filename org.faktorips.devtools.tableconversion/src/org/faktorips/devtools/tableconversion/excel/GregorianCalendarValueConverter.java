@@ -49,6 +49,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
                 cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
                 error = false;
             } catch (IllegalArgumentException ignored) {
+                // ignored
             }
         }
 

@@ -13,10 +13,14 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.util.Date;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
@@ -34,11 +38,13 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
      * Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
      * to display a date as a date and not as a stupid number is to format the cell :-(
      */
-    protected HSSFCellStyle dateStyle;
+    protected CellStyle dateStyle;
 
-    protected HSSFWorkbook workbook;
+    protected Workbook workbook;
 
-    protected HSSFSheet sheet;
+    protected Sheet sheet;
+
+    private final String ENDING_OF_XLSX_FILE = ".xlsx"; //$NON-NLS-1$
 
     /**
      * 
@@ -63,7 +69,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
     }
 
     protected void initWorkbookAndSheet() {
-        workbook = new HSSFWorkbook();
+        createWorkbook();
         sheet = workbook.createSheet();
         /*
          * Create style for cells which represent a date - excel represents date as a number and has
@@ -74,6 +80,14 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
         dateStyle.setDataFormat((short)27);
     }
 
+    private void createWorkbook() {
+        if (filename.endsWith(ENDING_OF_XLSX_FILE)) {
+            workbook = new XSSFWorkbook();
+        } else {
+            workbook = new HSSFWorkbook();
+        }
+    }
+
     /**
      * Fill the content of the cell.
      * 
@@ -81,7 +95,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
      * @param ipsValue The ips-string representing the value.
      * @param datatype The datatype defined for the value.
      */
-    protected void fillCell(HSSFCell cell, String ipsValue, Datatype datatype) {
+    protected void fillCell(Cell cell, String ipsValue, Datatype datatype) {
         Object obj = format.getExternalValue(ipsValue, datatype, messageList);
         if (obj instanceof Date) {
             cell.setCellValue((Date)obj);
@@ -104,6 +118,14 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
             cell.setCellValue(obj.toString());
         } else {
             cell.setCellValue(nullRepresentationString);
+        }
+    }
+
+    protected IProgressMonitor initProgressMonitor(IProgressMonitor monitor) {
+        if (monitor == null) {
+            return new NullProgressMonitor();
+        } else {
+            return monitor;
         }
     }
 

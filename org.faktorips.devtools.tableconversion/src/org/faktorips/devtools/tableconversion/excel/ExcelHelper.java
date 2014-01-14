@@ -16,8 +16,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
  * Helper class for the Excel POI library.
@@ -30,13 +32,20 @@ public class ExcelHelper {
      * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
      * @return A workbook constructed from the given source file.
      */
-    public static HSSFWorkbook getWorkbook(String sourceFile) throws FileNotFoundException, IOException {
+    public static Workbook getWorkbook(String sourceFile) throws FileNotFoundException, IOException {
         File importFile = new File(sourceFile);
         FileInputStream fis = null;
-        HSSFWorkbook workbook = null;
+        Workbook workbook = null;
         fis = new FileInputStream(importFile);
-        workbook = new HSSFWorkbook(fis);
-        fis.close();
+        // workbook = new HSSFWorkbook(fis);
+        try {
+            workbook = WorkbookFactory.create(fis);
+
+            fis.close();
+        } catch (InvalidFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return workbook;
     }
 
@@ -44,9 +53,9 @@ public class ExcelHelper {
      * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
      * @param indexOfWorkbook The zero-based index of the desired worksheet.
      */
-    public static HSSFSheet getWorksheetFromWorkbook(String sourceFile, int indexOfWorkbook)
-            throws FileNotFoundException, IOException {
-        HSSFWorkbook workbook = getWorkbook(sourceFile);
+    public static Sheet getWorksheetFromWorkbook(String sourceFile, int indexOfWorkbook) throws FileNotFoundException,
+            IOException {
+        Workbook workbook = getWorkbook(sourceFile);
         if (workbook.getNumberOfSheets() < indexOfWorkbook + 1) {
             throw new IllegalArgumentException("The excel file '" + sourceFile //$NON-NLS-1$
                     + "' does not contain the sheet with index " + indexOfWorkbook); //$NON-NLS-1$

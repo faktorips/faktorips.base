@@ -16,12 +16,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -69,12 +68,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        IProgressMonitor progressMonitor;
-        if (monitor == null) {
-            progressMonitor = new NullProgressMonitor();
-        } else {
-            progressMonitor = monitor;
-        }
+        IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         progressMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle,
                 2 + enumValueContainer.getEnumValuesCount());
 
@@ -113,18 +107,18 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
      * @param exportColumnHeaderRow <code>true</code> if a header line containing the column names
      *            should be exported
      */
-    private void exportHeader(HSSFSheet sheet, List<IEnumAttribute> enumAttributes, boolean exportColumnHeaderRow) {
+    private void exportHeader(Sheet sheet, List<IEnumAttribute> enumAttributes, boolean exportColumnHeaderRow) {
         if (!exportColumnHeaderRow) {
             return;
         }
-        HSSFRow headerRow = sheet.createRow(0);
+        Row headerRow = sheet.createRow(0);
         for (int i = 0; i < enumAttributes.size(); i++) {
             headerRow.createCell(i).setCellValue(enumAttributes.get(i).getName());
         }
 
     }
 
-    private void exportDataCells(HSSFSheet sheet,
+    private void exportDataCells(Sheet sheet,
             List<IEnumValue> values,
             IEnumType structure,
             IProgressMonitor monitor,
@@ -140,11 +134,11 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
         int offest = exportColumnHeaderRow ? 1 : 0;
         for (int i = 0; i < values.size(); i++) {
-            HSSFRow sheetRow = sheet.createRow(i + offest);
+            Row sheetRow = sheet.createRow(i + offest);
             IEnumValue value = values.get(i);
             String[] fieldsToExport = getFieldsForEnumValue(value);
             for (int j = 0; j < value.getEnumAttributeValuesCount(); j++) {
-                HSSFCell cell = sheetRow.createCell(j);
+                Cell cell = sheetRow.createCell(j);
                 fillCell(cell, fieldsToExport[j], datatypes[j]);
             }
             if (monitor.isCanceled()) {

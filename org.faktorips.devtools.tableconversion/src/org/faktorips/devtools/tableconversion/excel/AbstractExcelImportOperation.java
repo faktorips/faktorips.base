@@ -15,15 +15,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIDocument;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
 import org.faktorips.util.message.Message;
@@ -38,9 +39,7 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
 
     public static final String MSG_CODE_FIXED_OPEN_OFFICE_DATE = "fixedOpenOfficeDate"; //$NON-NLS-1$
 
-    private static final Date FIRST_OF_MARCH_1900 = new GregorianCalendar(1900, 2, 1).getTime();
-
-    protected Workbook workbook;
+    private Workbook workbook;
     private boolean mightBeOpenOffice = false;
 
     protected Sheet sheet;
@@ -58,15 +57,27 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     private Workbook getWorkbook() throws IOException {
         File importFile = new File(sourceFile);
         FileInputStream fis = null;
-        Workbook workbook = null;
+        workbook = null;
         fis = new FileInputStream(importFile);
-        workbook = new HSSFWorkbook(fis);
-        fis.close();
-        if (((POIDocument)workbook).getSummaryInformation() == null
-                || StringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
-            mightBeOpenOffice = true;
+        try {
+            workbook = WorkbookFactory.create(fis);
+            fis.close();
+            checkForOpenOfficeFormat(workbook);
+        } catch (InvalidFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
         return workbook;
+    }
+
+    private void checkForOpenOfficeFormat(Workbook workbook) {
+        if (workbook instanceof HSSFWorkbook) {
+            if (((POIDocument)workbook).getSummaryInformation() == null
+                    || StringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
+                mightBeOpenOffice = true;
+            }
+        }
     }
 
     protected String readCell(Cell cell, Datatype datatype) {

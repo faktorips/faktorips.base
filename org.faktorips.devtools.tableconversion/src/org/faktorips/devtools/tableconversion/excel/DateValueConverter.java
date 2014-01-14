@@ -14,7 +14,6 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
@@ -42,7 +41,7 @@ public class DateValueConverter extends AbstractValueConverter {
             date = (Date)externalDataValue;
             error = false;
         } else if (externalDataValue instanceof Number) {
-            date = HSSFDateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
+            date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
             date = new Date();
             error = false;
         } else if (externalDataValue instanceof String) {
@@ -50,6 +49,7 @@ public class DateValueConverter extends AbstractValueConverter {
                 date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
                 error = false;
             } catch (IllegalArgumentException ignored) {
+                // ignored
             }
         }
 
