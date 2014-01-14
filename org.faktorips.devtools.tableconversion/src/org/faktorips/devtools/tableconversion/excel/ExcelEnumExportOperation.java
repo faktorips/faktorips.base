@@ -77,20 +77,21 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
         IEnumType structure = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
         List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
-        exportHeader(sheet, attributes, exportColumnHeaderRow);
+        exportHeader(getSheet(), attributes, exportColumnHeaderRow);
         progressMonitor.worked(1);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(sheet, enumValueContainer.getEnumValues(), structure, progressMonitor, exportColumnHeaderRow);
+        exportDataCells(getSheet(), enumValueContainer.getEnumValues(), structure, progressMonitor,
+                exportColumnHeaderRow);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
         try {
             FileOutputStream out = new FileOutputStream(new File(filename));
-            workbook.write(out);
+            getWorkbook().write(out);
             out.close();
         } catch (IOException e) {
             IpsPlugin.log(e);

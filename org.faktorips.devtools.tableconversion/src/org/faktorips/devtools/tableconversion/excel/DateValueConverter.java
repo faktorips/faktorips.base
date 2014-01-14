@@ -36,7 +36,7 @@ public class DateValueConverter extends AbstractValueConverter {
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         Date date = null;
-        boolean error = true;
+        boolean error;
         if (externalDataValue instanceof Date) {
             date = (Date)externalDataValue;
             error = false;
@@ -48,9 +48,11 @@ public class DateValueConverter extends AbstractValueConverter {
             try {
                 date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
                 error = false;
-            } catch (IllegalArgumentException ignored) {
-                // ignored
+            } catch (IllegalArgumentException e) {
+                error = true;
             }
+        } else {
+            error = true;
         }
 
         if (error) {
@@ -74,7 +76,7 @@ public class DateValueConverter extends AbstractValueConverter {
 
         try {
             return datatype.getValue(ipsValue);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;

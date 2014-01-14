@@ -18,7 +18,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIDocument;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -26,6 +25,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -40,9 +40,10 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     public static final String MSG_CODE_FIXED_OPEN_OFFICE_DATE = "fixedOpenOfficeDate"; //$NON-NLS-1$
 
     private Workbook workbook;
+
     private boolean mightBeOpenOffice = false;
 
-    protected Sheet sheet;
+    private Sheet sheet;
 
     private boolean addedMessageForOffsetCorrection;
 
@@ -54,25 +55,12 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
 
     protected abstract void initDatatypes();
 
-    private Workbook getWorkbook() throws IOException {
-        File importFile = new File(sourceFile);
-        FileInputStream fis = null;
-        workbook = null;
-        fis = new FileInputStream(importFile);
-        try {
-            workbook = WorkbookFactory.create(fis);
-            fis.close();
-            checkForOpenOfficeFormat(workbook);
-        } catch (InvalidFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return workbook;
+    protected Sheet getSheet() {
+        return sheet;
     }
 
     private void checkForOpenOfficeFormat(Workbook workbook) {
-        if (workbook instanceof HSSFWorkbook) {
+        if (workbook instanceof POIDocument) {
             if (((POIDocument)workbook).getSummaryInformation() == null
                     || StringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
                 mightBeOpenOffice = true;
@@ -118,8 +106,22 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     }
 
     protected void initWorkbookAndSheet() throws IOException {
-        workbook = getWorkbook();
+        workbook = newWorkbook();
         sheet = workbook.getSheetAt(0);
+    }
+
+    private Workbook newWorkbook() throws IOException {
+        File importFile = new File(sourceFile);
+        FileInputStream fis = null;
+        fis = new FileInputStream(importFile);
+        try {
+            workbook = WorkbookFactory.create(fis);
+            fis.close();
+            checkForOpenOfficeFormat(workbook);
+        } catch (InvalidFormatException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        return workbook;
     }
 
 }

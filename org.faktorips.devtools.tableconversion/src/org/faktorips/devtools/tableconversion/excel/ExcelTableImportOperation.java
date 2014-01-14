@@ -84,7 +84,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             // Update datatypes because the structure might be altered if this operation is reused.
             initDatatypes();
             monitor.worked(1);
-            fillGeneration(targetGeneration, sheet, monitor);
+            fillGeneration(targetGeneration, getSheet(), monitor);
 
             if (monitor.isCanceled()) {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();

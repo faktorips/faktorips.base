@@ -34,17 +34,17 @@ import org.faktorips.util.message.MessageList;
  */
 abstract class AbstractExcelExportOperation extends AbstractTableExportOperation {
 
+    private static final String XLSX_FILE_EXTENSION = ".xlsx"; //$NON-NLS-1$
+
     /**
      * Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
      * to display a date as a date and not as a stupid number is to format the cell :-(
      */
-    protected CellStyle dateStyle;
+    private CellStyle dateStyle;
 
-    protected Workbook workbook;
+    private Workbook workbook;
 
-    protected Sheet sheet;
-
-    private final String ENDING_OF_XLSX_FILE = ".xlsx"; //$NON-NLS-1$
+    private Sheet sheet;
 
     /**
      * 
@@ -68,6 +68,14 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
         this.messageList = list;
     }
 
+    protected Workbook getWorkbook() {
+        return workbook;
+    }
+
+    protected Sheet getSheet() {
+        return sheet;
+    }
+
     protected void initWorkbookAndSheet() {
         createWorkbook();
         sheet = workbook.createSheet();
@@ -81,7 +89,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
     }
 
     private void createWorkbook() {
-        if (filename.endsWith(ENDING_OF_XLSX_FILE)) {
+        if (filename.endsWith(XLSX_FILE_EXTENSION)) {
             workbook = new XSSFWorkbook();
         } else {
             workbook = new HSSFWorkbook();

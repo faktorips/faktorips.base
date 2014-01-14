@@ -77,20 +77,20 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         progressMonitor.worked(1);
 
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
-        exportHeader(sheet, structure.getColumns(), exportColumnHeaderRow);
+        exportHeader(getSheet(), structure.getColumns(), exportColumnHeaderRow);
         progressMonitor.worked(1);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(sheet, currentGeneration, structure, progressMonitor, exportColumnHeaderRow);
+        exportDataCells(getSheet(), currentGeneration, structure, progressMonitor, exportColumnHeaderRow);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
         try {
             FileOutputStream out = new FileOutputStream(new File(filename));
-            workbook.write(out);
+            getWorkbook().write(out);
             out.close();
         } catch (IOException e) {
             IpsPlugin.log(e);

@@ -122,15 +122,12 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             fis = new FileInputStream(file);
             WorkbookFactory.create(file);
             return true;
-            // CSOFF: Empty Statement
         } catch (FileNotFoundException fe) {
-            // if an exception occurred, it is not a valid source, this exception can be ignored
+            return false;
         } catch (IOException e) {
-            // if an exception occurred, it is not a valid source, this exception can be ignored
-            // CSON: Empty Statement
+            return false;
         } catch (InvalidFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return false;
         } finally {
             if (fis != null) {
                 try {
@@ -141,7 +138,6 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                 }
             }
         }
-        return false;
     }
 
     @Override
