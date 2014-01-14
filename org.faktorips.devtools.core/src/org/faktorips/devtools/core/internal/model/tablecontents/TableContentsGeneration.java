@@ -249,9 +249,11 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
-        MessageList uniqueKeyList = new MessageList();
-        validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
-        list.add(uniqueKeyList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
+        if (tableStructure != null && datatypes != null) {
+            MessageList uniqueKeyList = new MessageList();
+            validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+            list.add(uniqueKeyList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
+        }
     }
 
     /**
