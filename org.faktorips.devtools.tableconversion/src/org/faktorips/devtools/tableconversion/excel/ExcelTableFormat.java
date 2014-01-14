@@ -232,7 +232,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             if (DateUtil.isCellDateFormatted(cell)) {
                 return getIpsValue(cell.getDateCellValue(), datatype, messageList);
             }
-            return getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
+            return getIpsValue(Double.valueOf(cell.getNumericCellValue()), datatype, messageList);
         } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
             return getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {

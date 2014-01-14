@@ -116,10 +116,11 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
         fis = new FileInputStream(importFile);
         try {
             workbook = WorkbookFactory.create(fis);
-            fis.close();
             checkForOpenOfficeFormat(workbook);
         } catch (InvalidFormatException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        } finally {
+            fis.close();
         }
         return workbook;
     }

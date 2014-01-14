@@ -47,9 +47,10 @@ public class ExcelHelper {
         fis = new FileInputStream(importFile);
         try {
             workbook = WorkbookFactory.create(fis);
-            fis.close();
         } catch (InvalidFormatException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        } finally {
+            fis.close();
         }
         return workbook;
     }
