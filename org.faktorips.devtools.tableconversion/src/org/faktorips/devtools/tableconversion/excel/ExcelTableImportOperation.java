@@ -72,9 +72,12 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
-        if (monitor == null) {
+    public void run(IProgressMonitor monitorParameter) throws CoreException {
+        IProgressMonitor monitor;
+        if (monitorParameter == null) {
             monitor = new NullProgressMonitor();
+        } else {
+            monitor = monitorParameter;
         }
         try {
             initWorkbookAndSheet();
