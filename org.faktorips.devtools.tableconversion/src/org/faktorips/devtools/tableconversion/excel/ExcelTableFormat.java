@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -119,14 +120,14 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);
-            new HSSFWorkbook(fis);
+            WorkbookFactory.create(file);
             return true;
-            // CSOFF: Empty Statement
         } catch (FileNotFoundException fe) {
-            // if an exception occurred, it is not a valid source, this exception can be ignored
+            return false;
         } catch (IOException e) {
-            // if an exception occurred, it is not a valid source, this exception can be ignored
-            // CSON: Empty Statement
+            return false;
+        } catch (InvalidFormatException e) {
+            return false;
         } finally {
             if (fis != null) {
                 try {
@@ -137,7 +138,6 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                 }
             }
         }
-        return false;
     }
 
     @Override
@@ -186,7 +186,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             boolean ignoreColumnHeaderRow,
             String nullRepresentation) {
 
-        HSSFSheet sheet = null;
+        Sheet sheet = null;
         try {
             sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);
         } catch (FileNotFoundException e) {
@@ -207,7 +207,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         // the workbook can contain less rows than requested
         int linesLeft = Math.min(sheet.getLastRowNum(), maxNumberOfRows);
         for (int i = startRow;; i++) {
-            HSSFRow sheetRow = sheet.getRow(i);
+            Row sheetRow = sheet.getRow(i);
             if (linesLeft-- <= 0 || sheetRow == null) {
                 // no more rows, we are finished with this sheet.
                 break;
@@ -215,7 +215,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             int numberOfCells = sheetRow.getLastCellNum();
             String[] convertedLine = new String[numberOfCells];
             for (int j = 0; j < numberOfCells; j++) {
-                HSSFCell cell = sheetRow.getCell(j);
+                Cell cell = sheetRow.getCell(j);
                 String cellString = readCell(cell, datatypes[j], ml, nullRepresentation);
                 convertedLine[j] = cellString;
             }
@@ -227,13 +227,13 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     }
 
     // TODO rg: code duplication in AbstractExcelImportOperation
-    private String readCell(HSSFCell cell, Datatype datatype, MessageList messageList, String nullRepresentation) {
-        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-            if (HSSFDateUtil.isCellDateFormatted(cell)) {
+    private String readCell(Cell cell, Datatype datatype, MessageList messageList, String nullRepresentation) {
+        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+            if (DateUtil.isCellDateFormatted(cell)) {
                 return getIpsValue(cell.getDateCellValue(), datatype, messageList);
             }
-            return getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
-        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+            return getIpsValue(Double.valueOf(cell.getNumericCellValue()), datatype, messageList);
+        } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
             return getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
             String value = cell.getStringCellValue();

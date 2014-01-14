@@ -96,6 +96,18 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     public static final String MSGCODE_INVALID_VALUE_SET = IAttribute.MSGCODE_PREFIX + "InvalidValueSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an attribute is hidden but at the same time has a
+     * default value that is not contained in the allowed values. For hidden attributes, this
+     * <ol>
+     * <li>is an error, not just a warning
+     * <li>also applies if the default value is {@code null} because a mandatory field that has to
+     * be set by the user does not make sense for hidden attributes
+     * </ol>
+     */
+    public static final String MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN = IAttribute.MSGCODE_PREFIX
+            + "DefaultNotInValueSetWhileHidden"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type the attribute belongs to.
      */
     public IProductCmptType getProductCmptType();

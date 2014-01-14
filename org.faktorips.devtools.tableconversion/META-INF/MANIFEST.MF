@@ -15,14 +15,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: au.com.bytecode.opencsv,
- org.apache.poi.hssf.usermodel,
- org.faktorips.devtools.tableconversion,
+Export-Package: org.faktorips.devtools.tableconversion,
  org.faktorips.devtools.tableconversion.csv,
  org.faktorips.devtools.tableconversion.excel,
  org.faktorips.devtools.tableconversion.ui
 Bundle-ClassPath: .,
  lib/opencsv-1.8.jar,
- lib/poi-3.7-20101029.jar
+ lib/poi-3.9-20121203.jar,
+ lib/poi-ooxml-3.9-20121203.jar,
+ lib/poi-ooxml-schemas-3.9-20121203.jar,
+ lib/xmlbeans-2.3.0.jar,
+ lib/dom4j-1.6.1.jar
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
  org.apache.commons.lang.time;version="[2.6,2.6]"

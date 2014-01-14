@@ -86,12 +86,12 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         }
         try {
             initWorkbookAndSheet();
-            progressMonitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(sheet)); //$NON-NLS-1$
+            progressMonitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(getSheet())); //$NON-NLS-1$
 
             // Update datatypes because the structure might be altered if this operation is reused.
             initDatatypes();
             progressMonitor.worked(1);
-            fillEnum(valueContainer, sheet, progressMonitor);
+            fillEnum(valueContainer, getSheet(), progressMonitor);
 
             if (progressMonitor.isCanceled()) {
                 valueContainer.getIpsObject().getIpsSrcFile().discardChanges();

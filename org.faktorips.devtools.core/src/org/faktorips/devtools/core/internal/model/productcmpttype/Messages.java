@@ -80,5 +80,6 @@ public class Messages extends NLS {
     public static String ProductCmptTypeAttribute_msgOverwritten_singleValueMultipleValuesDifference;
     public static String ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different;
     public static String ProductCmptTypeAttribute_msgOverwritten_multilingual_different;
+    public static String ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden;
 
 }

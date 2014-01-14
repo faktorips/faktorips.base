@@ -36,7 +36,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
         GregorianCalendar cal = new GregorianCalendar();
-        boolean error = true;
+        boolean error;
         if (externalDataValue instanceof Date) {
             cal.setTime((Date)externalDataValue);
             error = false;
@@ -49,7 +49,10 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
                 cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
                 error = false;
             } catch (IllegalArgumentException ignored) {
+                error = true;
             }
+        } else {
+            error = false;
         }
 
         if (error) {
@@ -74,7 +77,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
 
         try {
             return new DateDatatype().getValue(ipsValue);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;

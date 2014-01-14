@@ -15,12 +15,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -65,12 +64,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        IProgressMonitor progressMonitor;
-        if (monitor == null) {
-            progressMonitor = new NullProgressMonitor();
-        } else {
-            progressMonitor = monitor;
-        }
+        IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         // Currently, there is only one generation per table contents
         ITableContents contents = getTableContents(typeToExport);
         IIpsObjectGeneration[] gens = contents.getGenerationsOrderedByValidDate();
@@ -83,20 +77,20 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         progressMonitor.worked(1);
 
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
-        exportHeader(sheet, structure.getColumns(), exportColumnHeaderRow);
+        exportHeader(getSheet(), structure.getColumns(), exportColumnHeaderRow);
         progressMonitor.worked(1);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(sheet, currentGeneration, structure, progressMonitor, exportColumnHeaderRow);
+        exportDataCells(getSheet(), currentGeneration, structure, progressMonitor, exportColumnHeaderRow);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
         try {
             FileOutputStream out = new FileOutputStream(new File(filename));
-            workbook.write(out);
+            getWorkbook().write(out);
             out.close();
         } catch (IOException e) {
             IpsPlugin.log(e);
@@ -119,11 +113,11 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
      * @param columns The columns defined by the structure.
      * @param exportColumnHeaderRow column header names included or not.
      */
-    private void exportHeader(HSSFSheet sheet, IColumn[] columns, boolean exportColumnHeaderRow) {
+    private void exportHeader(Sheet sheet, IColumn[] columns, boolean exportColumnHeaderRow) {
         if (!exportColumnHeaderRow) {
             return;
         }
-        HSSFRow headerRow = sheet.createRow(0);
+        Row headerRow = sheet.createRow(0);
         for (int i = 0; i < columns.length; i++) {
             headerRow.createCell(i).setCellValue(columns[i].getName());
         }
@@ -141,7 +135,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
      * @throws CoreException thrown if an error occurs during the search for the datatypes of the
      *             structure.
      */
-    private void exportDataCells(HSSFSheet sheet,
+    private void exportDataCells(Sheet sheet,
             ITableContentsGeneration generation,
             ITableStructure structure,
             IProgressMonitor monitor,
@@ -158,9 +152,9 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         IRow[] contentRows = generation.getRows();
         int offset = exportColumnHeaderRow ? 1 : 0;
         for (int i = 0; i < contentRows.length; i++) {
-            HSSFRow sheetRow = sheet.createRow(i + offset);
+            Row sheetRow = sheet.createRow(i + offset);
             for (int j = 0; j < contents.getNumOfColumns(); j++) {
-                HSSFCell cell = sheetRow.createCell(j);
+                Cell cell = sheetRow.createCell(j);
                 fillCell(cell, contentRows[i].getValue(j), datatypes[j]);
             }
             if (monitor.isCanceled()) {

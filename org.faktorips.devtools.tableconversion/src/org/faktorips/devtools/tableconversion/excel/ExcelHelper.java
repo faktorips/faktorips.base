@@ -16,8 +16,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * Helper class for the Excel POI library.
@@ -26,27 +29,41 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  */
 public class ExcelHelper {
 
-    /**
-     * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
-     * @return A workbook constructed from the given source file.
-     */
-    public static HSSFWorkbook getWorkbook(String sourceFile) throws FileNotFoundException, IOException {
-        File importFile = new File(sourceFile);
-        FileInputStream fis = null;
-        HSSFWorkbook workbook = null;
-        fis = new FileInputStream(importFile);
-        workbook = new HSSFWorkbook(fis);
-        fis.close();
-        return workbook;
+    private ExcelHelper() {
+        // do not instantiate utility class
     }
 
     /**
      * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
-     * @param indexOfWorkbook The zero-based index of the desired worksheet.
+     * @return A workbook constructed from the given source file.
+     * 
+     * @throws FileNotFoundException if the file provided by sourceFile does not exists
+     * @throws IOException if the file is not readable or accessible
      */
-    public static HSSFSheet getWorksheetFromWorkbook(String sourceFile, int indexOfWorkbook)
-            throws FileNotFoundException, IOException {
-        HSSFWorkbook workbook = getWorkbook(sourceFile);
+    public static Workbook getWorkbook(String sourceFile) throws IOException {
+        File importFile = new File(sourceFile);
+        FileInputStream fis = null;
+        Workbook workbook = null;
+        fis = new FileInputStream(importFile);
+        try {
+            workbook = WorkbookFactory.create(fis);
+        } catch (InvalidFormatException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        } finally {
+            fis.close();
+        }
+        return workbook;
+    }
+
+    /**
+     * @param sourceFile A platform-dependent String which denotes the full path to an Excel file.
+     * @param indexOfWorkbook The zero-based index of the desired worksheet.
+     * 
+     * @throws FileNotFoundException if the file provided by sourceFile does not exists
+     * @throws IOException if the file is not readable or accessible
+     */
+    public static Sheet getWorksheetFromWorkbook(String sourceFile, int indexOfWorkbook) throws IOException {
+        Workbook workbook = getWorkbook(sourceFile);
         if (workbook.getNumberOfSheets() < indexOfWorkbook + 1) {
             throw new IllegalArgumentException("The excel file '" + sourceFile //$NON-NLS-1$
                     + "' does not contain the sheet with index " + indexOfWorkbook); //$NON-NLS-1$
