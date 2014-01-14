@@ -269,7 +269,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         return new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
             @Override
             protected IIpsObjectGeneration getGeneration() {
-                return generationPropertiesPage.getActiveGeneration().getPreviousByValidDate();
+                return getGenerationPropertiesPage().getActiveGeneration().getPreviousByValidDate();
             }
         };
     }
@@ -278,7 +278,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         return new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
             @Override
             protected IIpsObjectGeneration getGeneration() {
-                return generationPropertiesPage.getActiveGeneration().getNextByValidDate();
+                return getGenerationPropertiesPage().getActiveGeneration().getNextByValidDate();
             }
         };
     }
@@ -332,39 +332,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         if (!showsNotLatestGeneration()) {
             return null;
         }
-        IMessage message = new IMessage() {
-            @Override
-            public int getMessageType() {
-                return WARNING;
-            }
-
-            @Override
-            public String getMessage() {
-                String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                        .getGenerationConceptNameSingular();
-                return NLS.bind(Messages.GenerationPropertiesPage_msg_warning_notLatestGeneration, genName);
-            }
-
-            @Override
-            public String getPrefix() {
-                return null;
-            }
-
-            @Override
-            public Object getKey() {
-                return "WARNING_MSG_NOT_LATEST"; //$NON-NLS-1$
-            }
-
-            @Override
-            public Object getData() {
-                return null;
-            }
-
-            @Override
-            public Control getControl() {
-                return null;
-            }
-        };
+        IMessage message = new NotLatestGenerationMessage();
         return message;
     }
 
@@ -433,6 +401,40 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         return isActive() && !isNewestGeneration();
     }
 
+    private final class NotLatestGenerationMessage implements IMessage {
+        @Override
+        public int getMessageType() {
+            return WARNING;
+        }
+
+        @Override
+        public String getMessage() {
+            String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular();
+            return NLS.bind(Messages.GenerationPropertiesPage_msg_warning_notLatestGeneration, genName);
+        }
+
+        @Override
+        public String getPrefix() {
+            return null;
+        }
+
+        @Override
+        public Object getKey() {
+            return "WARNING_MSG_NOT_LATEST"; //$NON-NLS-1$
+        }
+
+        @Override
+        public Object getData() {
+            return null;
+        }
+
+        @Override
+        public Control getControl() {
+            return null;
+        }
+    }
+
     /**
      * A section that shows all properties of the generation.
      * <p>
@@ -489,13 +491,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     }
 
-    private abstract class GotoGenerationAction extends Action {
+    private abstract static class GotoGenerationAction extends Action {
 
-        /**
-         * Explicit reference to outer class (avoids bug
-         * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4030374).
-         */
-        protected GenerationPropertiesPage generationPropertiesPage;
+        private final GenerationPropertiesPage generationPropertiesPage;
 
         public GotoGenerationAction(GenerationPropertiesPage generationPropertiesPage, String imageName) {
             this.generationPropertiesPage = generationPropertiesPage;
@@ -511,7 +509,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
                 setToolTipText(null);
                 setEnabled(false);
             } else {
-                String tabName = getGenerationName(getGeneration());
+                String tabName = getGenerationPropertiesPage().getGenerationName(getGeneration());
                 setText(tabName);
                 setToolTipText(tabName);
                 setEnabled(true);
@@ -520,12 +518,16 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         @Override
         public void run() {
-            BusyIndicator.showWhile(pageRoot.getDisplay(), new Runnable() {
+            BusyIndicator.showWhile(getGenerationPropertiesPage().pageRoot.getDisplay(), new Runnable() {
                 @Override
                 public void run() {
-                    (getEditor()).setActiveGeneration(getGeneration());
+                    (getGenerationPropertiesPage().getEditor()).setActiveGeneration(getGeneration());
                 }
             });
+        }
+
+        public GenerationPropertiesPage getGenerationPropertiesPage() {
+            return generationPropertiesPage;
         }
 
     }

@@ -179,7 +179,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             } else {
                 return null;
             }
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
@@ -254,10 +254,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             ipsSrcFile = new IpsSrcFileImmutable(storage.getName(), storage.getContents());
             logMethodFinished("initFromStorageEditorInput"); //$NON-NLS-1$
         } catch (CoreException e) {
-            throw new PartInitException(e.getStatus());
-        } catch (Exception e) {
             IpsPlugin.log(e);
-            throw new PartInitException(e.getMessage());
+            throw new PartInitException(e.getStatus());
         }
     }
 
@@ -327,7 +325,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             pagesForParsableSrcFileShown = true;
             logMethodFinished("addPages"); //$NON-NLS-1$
 
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
         }
     }
@@ -335,8 +333,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * This method extends the <code>addPages()</code> operation and must be implemented by
      * subclasses by adding the pages to edit the ips object with.
+     * 
+     * @throws PartInitException if there is an exception while initializing a part
+     * @throws CoreException in case of other core exceptions
      */
-    protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreException;
+    protected abstract void addPagesForParsableSrcFile() throws CoreException;
 
     protected void updatePageStructure(boolean forceRefreshInclStructuralChanges) {
         logMethodStarted("updatePageStructure"); //$NON-NLS-1$
@@ -576,7 +577,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     public void doSave(IProgressMonitor monitor) {
         try {
             ipsSrcFile.save(true, monitor);
-        } catch (Exception e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
