@@ -104,13 +104,13 @@ import org.faktorips.util.message.ObjectProperty;
 public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener,
         IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
 
-    public final static boolean TRACE = IpsPlugin.TRACE_UI;
+    public static final boolean TRACE = IpsPlugin.TRACE_UI;
 
     /**
      * Setting key for user's decision not to fix the differences between the product definition
      * structure and the model structure
      */
-    private final static String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences"; //$NON-NLS-1$
+    private static final String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences"; //$NON-NLS-1$
 
     /** The file that's being edited (if any) */
     private IIpsSrcFile ipsSrcFile;
@@ -298,7 +298,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     @Override
-    final protected void addPages() {
+    protected final void addPages() {
         if (TRACE) {
             logMethodStarted("addPages"); //$NON-NLS-1$
         }
@@ -368,7 +368,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (TRACE) {
             logMethodStarted("updatePageStructure"); //$NON-NLS-1$
         }
-
         try {
             if (getIpsSrcFile().isContentParsable() == pagesForParsableSrcFileShown) {
                 // no recreating (remove and add) of pages necessary because:
@@ -382,29 +381,24 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 if (forceRefreshInclStructuralChanges && getIpsSrcFile().isContentParsable()) {
                     refreshIncludingStructuralChanges();
                 }
-
                 return;
             }
-
             updatingPageStructure = true;
             ipsSrcFile.getIpsObject();
             // remove all pages
             for (int i = getPageCount(); i > 0; i--) {
                 removePage(0);
             }
-
             if (TRACE) {
                 System.out.println("updatePageStructure(): Existing pages removed. Must recreate."); //$NON-NLS-1$
             }
             addPages();
             updatingPageStructure = false;
-
-            super.setActivePage(0); // also triggers the refresh
-
+            // also triggers the refresh
+            super.setActivePage(0);
             if (TRACE) {
                 logMethodFinished("updatePageStructure"); //$NON-NLS-1$
             }
-
         } catch (CoreException e) {
             updatingPageStructure = false;
             IpsPlugin.log(e);
@@ -959,6 +953,76 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         return super.getAdapter(adapter);
     }
 
+    private void updateHeaderMessage() {
+        if (!isActive()) {
+            return;
+        }
+        List<IMessage> messages = getMessages();
+        int messageType = IMessageProvider.NONE;
+        for (IMessage message : messages) {
+            if (message.getMessageType() > messageType) {
+                messageType = message.getMessageType();
+            }
+        }
+        ScrolledForm form = getActiveIpsObjectEditorPage().getManagedForm().getForm();
+        if (messageType == IMessageProvider.NONE) {
+            form.setMessage(StringUtils.EMPTY, IMessageProvider.NONE);
+            return;
+        }
+        form.setMessage(createHeaderMessage(messages, messageType), messageType,
+                messages.toArray(new IMessage[messages.size()]));
+
+    }
+
+    protected String createHeaderMessage(List<IMessage> messages, int messageType) {
+        if (messages.isEmpty() || messageType == IMessageProvider.NONE) {
+            return StringUtils.EMPTY;
+        }
+        if (messages.size() > 1) {
+            return getMessageHeaderByMessageProviderType(messageType);
+        }
+        IMessage message = messages.get(0);
+        return message.getPrefix() + message.getMessage();
+    }
+
+    private String getMessageHeaderByMessageProviderType(int messageType) {
+        String binding;
+        switch (messageType) {
+            case IMessageProvider.ERROR:
+                binding = Messages.IpsObjectEditor_messagesErrors;
+                break;
+
+            case IMessageProvider.WARNING:
+                binding = Messages.IpsObjectEditor_messagesWarnings;
+                break;
+
+            case IMessageProvider.INFORMATION:
+                binding = Messages.IpsObjectEditor_messagesInformations;
+                break;
+            default:
+                // should not happen
+                return StringUtils.EMPTY;
+        }
+        return NLS.bind(Messages.IpsObjectEditor_messagesText, binding);
+    }
+
+    protected List<IMessage> getMessages() {
+        try {
+            MessageList validation = getIpsObject().validate(getIpsProject());
+
+            List<IMessage> messages = new ArrayList<IMessage>();
+            for (Message message : validation) {
+                messages.add(new MessageAdapter(message));
+            }
+
+            return messages;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return Collections.emptyList();
+        }
+
+    }
+
     /**
      * Internal part and shell activation listener.
      * <p>
@@ -1082,7 +1146,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         @Override
         public void problemsChanged(IResource[] changedResources) {
             if (ipsObjectEditor.getIpsSrcFile() == null) {
-                return; // can happen during editor init
+                // can happen during editor init
+                return;
             }
             IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource();
             if (correspondingResource != null) {
@@ -1130,79 +1195,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         public void dispose() {
             decorator.dispose();
             IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
-        }
-
-    }
-
-    private void updateHeaderMessage() {
-        if (!isActive()) {
-            return;
-        }
-
-        List<IMessage> messages = getMessages();
-
-        int messageType = IMessageProvider.NONE;
-        for (IMessage message : messages) {
-            if (message.getMessageType() > messageType) {
-                messageType = message.getMessageType();
-            }
-        }
-
-        ScrolledForm form = getActiveIpsObjectEditorPage().getManagedForm().getForm();
-        if (messageType == IMessageProvider.NONE) {
-            form.setMessage(StringUtils.EMPTY, IMessageProvider.NONE);
-            return;
-        }
-
-        form.setMessage(createHeaderMessage(messages, messageType), messageType,
-                messages.toArray(new IMessage[messages.size()]));
-
-    }
-
-    protected String createHeaderMessage(List<IMessage> messages, int messageType) {
-        if (messages.isEmpty() || messageType == IMessageProvider.NONE) {
-            return StringUtils.EMPTY;
-        }
-        if (messages.size() > 1) {
-
-            String binding;
-            switch (messageType) {
-                case IMessageProvider.ERROR:
-                    binding = Messages.IpsObjectEditor_messagesErrors;
-                    break;
-
-                case IMessageProvider.WARNING:
-                    binding = Messages.IpsObjectEditor_messagesWarnings;
-                    break;
-
-                case IMessageProvider.INFORMATION:
-                    binding = Messages.IpsObjectEditor_messagesInformations;
-                    break;
-
-                default:
-                    // should not happen
-                    return StringUtils.EMPTY;
-            }
-            return NLS.bind(Messages.IpsObjectEditor_messagesText, binding);
-        }
-
-        IMessage message = messages.get(0);
-        return message.getPrefix() + message.getMessage();
-    }
-
-    protected List<IMessage> getMessages() {
-        try {
-            MessageList validation = getIpsObject().validate(getIpsProject());
-
-            List<IMessage> messages = new ArrayList<IMessage>();
-            for (Message message : validation) {
-                messages.add(new MessageAdapter(message));
-            }
-
-            return messages;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return Collections.emptyList();
         }
 
     }

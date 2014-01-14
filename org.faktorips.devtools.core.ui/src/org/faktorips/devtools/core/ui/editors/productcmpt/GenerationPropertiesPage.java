@@ -54,7 +54,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionVie
  */
 public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
-    public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
+    public static final String PAGE_ID = "Properties"; //$NON-NLS-1$
 
     private final List<IpsSection> leftSections = new ArrayList<IpsSection>(4);
 
@@ -333,7 +333,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             return null;
         }
         IMessage message = new IMessage() {
-
             @Override
             public int getMessageType() {
                 return WARNING;
@@ -430,6 +429,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         return (IProductCmpt)getIpsObject();
     }
 
+    boolean showsNotLatestGeneration() {
+        return isActive() && !isNewestGeneration();
+    }
+
     /**
      * A section that shows all properties of the generation.
      * <p>
@@ -500,7 +503,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             update();
         }
 
-        abstract protected IIpsObjectGeneration getGeneration();
+        protected abstract IIpsObjectGeneration getGeneration();
 
         public void update() {
             if (getGeneration() == null) {
@@ -525,10 +528,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             });
         }
 
-    }
-
-    boolean showsNotLatestGeneration() {
-        return isActive() && !isNewestGeneration();
     }
 
 }

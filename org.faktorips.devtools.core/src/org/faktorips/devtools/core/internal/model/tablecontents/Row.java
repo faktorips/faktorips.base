@@ -39,8 +39,8 @@ import org.w3c.dom.Text;
 
 public class Row extends AtomicIpsObjectPart implements IRow {
 
-    final static String TAG_NAME = "Row"; //$NON-NLS-1$
-    final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
+    static final String TAG_NAME = "Row"; //$NON-NLS-1$
+    static final String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
 
     private ArrayList<String> values;
 

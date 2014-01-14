@@ -50,7 +50,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
      */
-    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
+    private static final String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     private GenerationPropertiesPage generationPropertiesPage;
 
@@ -217,7 +217,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     protected void refreshIncludingStructuralChanges() {
         try {
-            getIpsSrcFile().getIpsObject(); // Updates cache
+            // Updates cache
+            getIpsSrcFile().getIpsObject();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -268,21 +269,19 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (!getGenerationPropertiesPage().showsNotLatestGeneration()) {
             return super.createHeaderMessage(messages, messageType);
         }
+        return getHeaderMessage(messages, messageType);
+    }
 
+    private String getHeaderMessage(List<IMessage> messages, int messageType) {
         String generationName = getGenerationPropertiesPage().getGenerationName(getActiveGeneration());
-
         if (messages.size() == 1) {
             return generationName;
         }
-
         List<IMessage> filteredList = messages.subList(1, messages.size());
-
         String headerMessage = super.createHeaderMessage(filteredList, messageType);
-
         if (StringUtils.isBlank(headerMessage)) {
             return generationName;
         }
-
         return generationName + SystemUtils.LINE_SEPARATOR + headerMessage;
     }
 

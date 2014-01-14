@@ -58,7 +58,7 @@ public class UniqueKeyValidator {
     public static final int HANDLE_UNIQUEKEY_ROW_REMOVED = 1;
     public static final int HANDLE_UNIQUEKEY_ROW_CHANGED = 2;
 
-    public final static boolean TRACE_VALIDATION_CACHE;
+    public static final boolean TRACE_VALIDATION_CACHE;
 
     static {
         TRACE_VALIDATION_CACHE = Boolean.valueOf(
