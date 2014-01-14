@@ -14,7 +14,6 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
@@ -37,20 +36,23 @@ public class DateValueConverter extends AbstractValueConverter {
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         Date date = null;
-        boolean error = true;
+        boolean error;
         if (externalDataValue instanceof Date) {
             date = (Date)externalDataValue;
             error = false;
         } else if (externalDataValue instanceof Number) {
-            date = HSSFDateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
+            date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
             date = new Date();
             error = false;
         } else if (externalDataValue instanceof String) {
             try {
                 date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
                 error = false;
-            } catch (IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException e) {
+                error = true;
             }
+        } else {
+            error = true;
         }
 
         if (error) {
@@ -74,7 +76,7 @@ public class DateValueConverter extends AbstractValueConverter {
 
         try {
             return datatype.getValue(ipsValue);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;
