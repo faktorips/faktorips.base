@@ -33,7 +33,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -56,27 +55,23 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.outline.OutlinePage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 
 /**
  * Base class for all editors that want to edit IPS objects.
@@ -184,9 +179,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             } else {
                 return null;
             }
-        } catch (CoreException e) {
+        } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
-            throw new CoreRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -885,12 +880,21 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return;
         }
         List<IMessage> messages = getMessages();
+        int messageType = getHighestSeverity(messages);
+        setHeaderMessage(messages, messageType);
+    }
+
+    int getHighestSeverity(List<IMessage> messages) {
         int messageType = IMessageProvider.NONE;
         for (IMessage message : messages) {
             if (message.getMessageType() > messageType) {
                 messageType = message.getMessageType();
             }
         }
+        return messageType;
+    }
+
+    private void setHeaderMessage(List<IMessage> messages, int messageType) {
         ScrolledForm form = getActiveIpsObjectEditorPage().getManagedForm().getForm();
         if (messageType == IMessageProvider.NONE) {
             form.setMessage(StringUtils.EMPTY, IMessageProvider.NONE);
@@ -898,7 +902,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
         form.setMessage(createHeaderMessage(messages, messageType), messageType,
                 messages.toArray(new IMessage[messages.size()]));
-
     }
 
     protected String createHeaderMessage(List<IMessage> messages, int messageType) {
@@ -906,40 +909,41 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return StringUtils.EMPTY;
         }
         if (messages.size() > 1) {
-            return getMessageHeaderByMessageProviderType(messageType);
+            return getTextForMultipleMessages(messageType);
+        } else {
+            IMessage message = messages.get(0);
+            return message.getPrefix() + message.getMessage();
         }
-        IMessage message = messages.get(0);
-        return message.getPrefix() + message.getMessage();
     }
 
-    private String getMessageHeaderByMessageProviderType(int messageType) {
-        String binding;
+    private String getTextForMultipleMessages(int messageType) {
+        String messageTypeName;
         switch (messageType) {
             case IMessageProvider.ERROR:
-                binding = Messages.IpsObjectEditor_messagesErrors;
+                messageTypeName = Messages.IpsObjectEditor_messagesErrors;
                 break;
 
             case IMessageProvider.WARNING:
-                binding = Messages.IpsObjectEditor_messagesWarnings;
+                messageTypeName = Messages.IpsObjectEditor_messagesWarnings;
                 break;
 
             case IMessageProvider.INFORMATION:
-                binding = Messages.IpsObjectEditor_messagesInformations;
+                messageTypeName = Messages.IpsObjectEditor_messagesInformations;
                 break;
             default:
                 // should not happen
                 return StringUtils.EMPTY;
         }
-        return NLS.bind(Messages.IpsObjectEditor_messagesText, binding);
+        return NLS.bind(Messages.IpsObjectEditor_messagesText, messageTypeName);
     }
 
     protected List<IMessage> getMessages() {
         try {
-            MessageList validation = getIpsObject().validate(getIpsProject());
+            MessageList msgList = getIpsObject().validate(getIpsProject());
 
             List<IMessage> messages = new ArrayList<IMessage>();
-            for (Message message : validation) {
-                messages.add(new MessageAdapter(message));
+            for (Message message : msgList) {
+                messages.add(new UiMessage(message));
             }
 
             return messages;
@@ -1124,101 +1128,5 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
         }
 
-    }
-
-    private static final class MessageAdapter implements IMessage {
-        private static final String ADDITION = ": "; //$NON-NLS-1$
-        private final Message message;
-
-        private MessageAdapter(Message message) {
-            this.message = message;
-        }
-
-        @Override
-        public int getMessageType() {
-            return convertSeverity(message.getSeverity());
-        }
-
-        @Override
-        public String getMessage() {
-            return message.getText();
-        }
-
-        @Override
-        public String getPrefix() {
-            ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
-            if (invalidObjectProperties.length == 0 || invalidObjectProperties[0] == null) {
-                return StringUtils.EMPTY;
-            }
-
-            ObjectProperty invalidObjectProperty = invalidObjectProperties[0];
-
-            Object contextObject = invalidObjectProperty.getObject();
-            if (contextObject instanceof IValueHolder<?>) {
-                IValueHolder<?> holder = (IValueHolder<?>)contextObject;
-                contextObject = holder.getParent();
-            }
-
-            String objectName = StringUtils.EMPTY;
-            if (contextObject instanceof IIpsObject) {
-                return StringUtils.EMPTY;
-            }
-            if (contextObject instanceof ILabeledElement) {
-                objectName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
-            } else if (contextObject instanceof IIpsObjectPartContainer) {
-                objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
-            }
-            if (StringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
-                objectName = ((IIpsElement)contextObject).getName();
-            }
-            if (StringUtils.isEmpty(objectName)) {
-                return StringUtils.EMPTY;
-            } else {
-                return objectName + ADDITION;
-            }
-        }
-
-        private String getCaptionName(IIpsObjectPartContainer contextObject) {
-            String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(contextObject);
-            if (StringUtils.isEmpty(caption)) {
-                IIpsElement parent = contextObject.getParent();
-                if (parent instanceof IIpsObjectPartContainer) {
-                    IIpsObjectPartContainer parentContainer = (IIpsObjectPartContainer)parent;
-                    return getCaptionName(parentContainer);
-                }
-            }
-            return caption;
-        }
-
-        @Override
-        public Object getKey() {
-            return message.getCode();
-        }
-
-        @Override
-        public Object getData() {
-            return null;
-        }
-
-        @Override
-        public Control getControl() {
-            return null;
-        }
-
-        private int convertSeverity(int severity) {
-            switch (severity) {
-                case Message.INFO:
-                    return IMessageProvider.INFORMATION;
-
-                case Message.WARNING:
-                    return IMessageProvider.WARNING;
-
-                case Message.ERROR:
-                    return IMessageProvider.ERROR;
-
-                default:
-                    return IMessageProvider.NONE;
-            }
-        }
     }
 }
