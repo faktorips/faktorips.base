@@ -369,7 +369,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS));
+        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
     }
 
     @Test

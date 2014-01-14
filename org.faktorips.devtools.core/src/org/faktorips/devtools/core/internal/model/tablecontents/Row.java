@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -38,8 +39,8 @@ import org.w3c.dom.Text;
 
 public class Row extends AtomicIpsObjectPart implements IRow {
 
-    final static String TAG_NAME = "Row"; //$NON-NLS-1$
-    final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
+    static final String TAG_NAME = "Row"; //$NON-NLS-1$
+    static final String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
 
     private ArrayList<String> values;
 
@@ -82,7 +83,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     @Override
     public String getName() {
-        return "" + rowNumber; //$NON-NLS-1$
+        return "" + (rowNumber + 1); //$NON-NLS-1$
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return NLS.bind(Messages.Row_caption, rowNumber + 1);
     }
 
     @Override
@@ -162,41 +168,23 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             return;
         }
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
-        validateThis(list, tableStructure, datatypes, true);
+        validateThis(list, tableStructure, datatypes);
     }
 
-    MessageList validateThis(ITableStructure tableStructure, ValueDatatype[] datatypes, IIpsProject ipsProject)
-            throws CoreException {
-        MessageList result = beforeValidateThis();
-        if (result != null) {
-            return result;
-        }
-
-        result = new MessageList();
-        // method was invoked by the table contents generation
-        // the table contents generation validates the unique key separately
-        validateThis(result, tableStructure, datatypes, false);
-
-        afterValidateThis(result, ipsProject);
-
-        return result;
-    }
-
-    private void validateThis(MessageList result,
-            ITableStructure tableStructure,
-            ValueDatatype[] datatypes,
-            boolean uniqueKeyCheck) {
+    private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes) {
 
         List<IIndex> indices = tableStructure.getIndices();
         validateMissingAndInvalidIndexValue(result, datatypes, tableStructure, indices);
         validateRowValue(result, tableStructure, datatypes);
-        if (uniqueKeyCheck) {
+        if (!result.containsErrorMsg()) {
             validateUniqueKey(result, tableStructure, datatypes);
         }
     }
 
     private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
-        getTableContentsGeneration().validateUniqueKeys(list, tableStructure, datatypes);
+        MessageList uniqueKeyList = new MessageList();
+        getTableContentsGeneration().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+        list.add(uniqueKeyList.getMessagesFor(this));
     }
 
     /**

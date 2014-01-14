@@ -29,6 +29,10 @@ public class Messages extends NLS {
     public static String IpsObjectEditor_fileHasChangesOnDiskNoButton;
     public static String IpsObjectEditor_fileHasChangesOnDiskTitle;
     public static String IpsObjectEditor_fileHasChangesOnDiskYesButton;
+    public static String IpsObjectEditor_messagesErrors;
+    public static String IpsObjectEditor_messagesInformations;
+    public static String IpsObjectEditor_messagesText;
+    public static String IpsObjectEditor_messagesWarnings;
 
     public static String IpsPartEditDialog_tabItemLabelAndDescription;
     public static String IpsPartEditDialog_tabItemLabel;
