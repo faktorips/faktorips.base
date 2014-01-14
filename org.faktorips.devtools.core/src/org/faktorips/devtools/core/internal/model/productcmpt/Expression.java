@@ -35,12 +35,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
@@ -188,69 +186,26 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     }
 
     private void collectEnumsAllowedInFormula(Map<String, EnumDatatype> nameToTypeMap) {
-        collectEnumTypesFromAttributes(nameToTypeMap);
-        collectEnumTypesFromMethod(nameToTypeMap);
-        collectEnumTypesFromAssociationNavigation(nameToTypeMap);
+        if (getIpsProject().getReadOnlyProperties().isAssociationsInFormulas()) {
+            collectAllEnumDatatypes(nameToTypeMap);
+        } else {
+            collectEnumTypesFromAttributes(nameToTypeMap);
+            collectEnumTypesFromMethod(nameToTypeMap);
+        }
     }
 
-    private void collectEnumTypesFromAssociationNavigation(final Map<String, EnumDatatype> nameToTypeMap) {
+    private void collectAllEnumDatatypes(final Map<String, EnumDatatype> nameToTypeMap) {
         IIpsProject ipsProject = getIpsProject();
-        IBaseMethod method = findFormulaSignature(ipsProject);
-        String actualExpression = getExpression();
-        IParameter[] params = method.getParameters();
         try {
-            for (IParameter param : params) {
-                Datatype datatype = ipsProject.findDatatype(param.getDatatype());
-                if (datatype instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
-                    String paramName = param.getName() + '.';
-                    int index = -1;
-                    do {
-                        index = actualExpression.indexOf(paramName, index + 1);
-                        if (index >= 0) {
-                            String associationNavigations = actualExpression.substring(index + paramName.length());
-                            collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, policyCmptType,
-                                    associationNavigations);
-                        }
-                    } while (index >= 0);
+            Datatype[] datatypes = ipsProject.findDatatypes(true, false);
+            for (Datatype datatype : datatypes) {
+                if (datatype instanceof EnumDatatype) {
+                    EnumDatatype enumDatatyp = (EnumDatatype)datatype;
+                    nameToTypeMap.put(enumDatatyp.getName(), enumDatatyp);
                 }
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
-    }
-
-    private void collectEnumTypesFromAssociationTarget(final Map<String, EnumDatatype> nameToTypeMap,
-            final IIpsProject ipsProject,
-            final IPolicyCmptType policyCmptType,
-            final String associationNavigations) throws CoreException {
-        int indexOfOpeningBracket = associationNavigations.indexOf('[');
-        int indexOfPeriod = associationNavigations.indexOf('.');
-        if (indexOfOpeningBracket < 0 && indexOfPeriod < 0) {
-            return;
-        }
-        String associationName = associationNavigations;
-        String remainingAssociationNavigations = StringUtils.EMPTY;
-        if (indexOfOpeningBracket > 0 && (indexOfPeriod > indexOfOpeningBracket || indexOfPeriod <= 0)) {
-            associationName = associationNavigations.substring(0, indexOfOpeningBracket);
-            remainingAssociationNavigations = associationNavigations.substring(associationNavigations.indexOf(']') + 1);
-            if (remainingAssociationNavigations.startsWith(".")) { //$NON-NLS-1$
-                remainingAssociationNavigations = remainingAssociationNavigations.substring(1);
-            }
-        } else if (indexOfPeriod > 0) {
-            associationName = associationNavigations.substring(0, indexOfPeriod);
-            remainingAssociationNavigations = associationNavigations.substring(indexOfPeriod + 1);
-        }
-        final IAssociation association = policyCmptType.findAssociation(associationName, ipsProject);
-        if (association instanceof IPolicyCmptTypeAssociation) {
-            final IPolicyCmptType targetPolicyCmptType = ((IPolicyCmptTypeAssociation)association)
-                    .findTargetPolicyCmptType(ipsProject);
-            final EnumDatatypesCollector collector = new EnumDatatypesCollector(ipsProject, nameToTypeMap);
-            collector.start(targetPolicyCmptType);
-            if (StringUtils.isNotBlank(remainingAssociationNavigations)) {
-                collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, targetPolicyCmptType,
-                        remainingAssociationNavigations);
-            }
+            throw new CoreRuntimeException(e);
         }
     }
 

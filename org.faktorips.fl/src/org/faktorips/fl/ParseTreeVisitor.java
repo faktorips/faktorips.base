@@ -428,9 +428,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
 
-    // CSOFF: CyclomaticComplexityCheck
     private CompilationResult<T> generateBinaryOperation(String operator, SimpleNode node, Object data) {
-
         SimpleNode lhsNode = (SimpleNode)node.jjtGetChild(0);
         SimpleNode rhsNode = (SimpleNode)node.jjtGetChild(1);
         @SuppressWarnings("unchecked")
@@ -448,7 +446,5 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
 
         return compiler.getBinaryOperation(operator, lhsResult, rhsResult);
     }
-
-    // CSON: CyclomaticComplexityCheck
 
 }
