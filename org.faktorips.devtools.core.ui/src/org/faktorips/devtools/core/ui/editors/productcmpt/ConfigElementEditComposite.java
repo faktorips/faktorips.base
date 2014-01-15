@@ -144,8 +144,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private boolean isRangeValueEditFieldsRequired() {
-        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
-        return valueSet != null ? valueSet.isRange() : getPropertyValue().getValueSet().isRange();
+        IPolicyCmptTypeAttribute property = getProperty();
+        if (property == null) {
+            return getPropertyValue().getValueSet().isRange();
+        } else {
+            return property.getValueSet().isRange() && getPropertyValue().getValueSet().isRange();
+        }
     }
 
     private boolean isBooleanDatatype() {
