@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.runtime.internal.tableindex.TwoColumnRange;
 import org.junit.Test;
 
 public class TwoColumnRangeTest {
@@ -44,20 +43,21 @@ public class TwoColumnRangeTest {
     }
 
     @Test
-            public void testIsLowerOrEqualUpperBound() {
-                TwoColumnRange<Integer> originalKey = new TwoColumnRange<Integer>(0, 10);
-                TwoColumnRange<Integer> keyEqualRange = new TwoColumnRange<Integer>(0, 10);
-                TwoColumnRange<Integer> keySubRangeEqualUpperBound = new TwoColumnRange<Integer>(1, 10);
-                TwoColumnRange<Integer> keySubRangeEqualLowerBound = new TwoColumnRange<Integer>(0, 9);
-                TwoColumnRange<Integer> keySubRange = new TwoColumnRange<Integer>(5, 5);
-                TwoColumnRange<Integer> keyPartiallyOverlappingRange = new TwoColumnRange<Integer>(5, 15);
-                TwoColumnRange<Integer> keyDisjunctRange = new TwoColumnRange<Integer>(11, 15);
-        
-                assertTrue(keyEqualRange.isLowerOrEqualUpperBound(originalKey));
-                assertTrue(keySubRangeEqualUpperBound.isLowerOrEqualUpperBound(originalKey));
-                assertTrue(keySubRangeEqualLowerBound.isLowerOrEqualUpperBound(originalKey));
-                assertTrue(keySubRange.isLowerOrEqualUpperBound(originalKey));
-                assertFalse(keyPartiallyOverlappingRange.isLowerOrEqualUpperBound(originalKey));
-                assertFalse(keyDisjunctRange.isLowerOrEqualUpperBound(originalKey));
-            }
+    public void testIsLowerOrEqualUpperBound() {
+        TwoColumnRange<Integer> originalKey = new TwoColumnRange<Integer>(0, 10);
+        TwoColumnRange<Integer> keyEqualRange = new TwoColumnRange<Integer>(0, 10);
+        TwoColumnRange<Integer> keySubRangeEqualUpperBound = new TwoColumnRange<Integer>(1, 10);
+        TwoColumnRange<Integer> keySubRangeEqualLowerBound = new TwoColumnRange<Integer>(0, 9);
+        TwoColumnRange<Integer> keySubRange = new TwoColumnRange<Integer>(5, 5);
+        TwoColumnRange<Integer> keyPartiallyOverlappingRange = new TwoColumnRange<Integer>(5, 15);
+        TwoColumnRange<Integer> keyDisjunctRange = new TwoColumnRange<Integer>(11, 15);
+
+        assertTrue(keyEqualRange.isLowerOrEqualUpperBound(originalKey));
+        assertTrue(keySubRangeEqualUpperBound.isLowerOrEqualUpperBound(originalKey));
+        assertTrue(keySubRangeEqualLowerBound.isLowerOrEqualUpperBound(originalKey));
+        assertTrue(keySubRange.isLowerOrEqualUpperBound(originalKey));
+        assertFalse(keyPartiallyOverlappingRange.isLowerOrEqualUpperBound(originalKey));
+        assertFalse(keyDisjunctRange.isLowerOrEqualUpperBound(originalKey));
+    }
+
 }

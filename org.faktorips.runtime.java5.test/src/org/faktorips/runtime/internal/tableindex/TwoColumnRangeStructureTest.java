@@ -13,7 +13,10 @@ package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+
+import java.util.GregorianCalendar;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,4 +76,16 @@ public class TwoColumnRangeStructureTest {
         assertEquals(0, structure.get(null).get().size());
     }
 
+    /**
+     * FIPS-2595. This tests checks the correctness of the comparable generics. GregorianCalendar
+     * extends Comparable<Calendar> hence we need <em>K extends Comparable<? super K</em> instead of
+     * simply <em>K extends Comparable<K></em>
+     */
+    public void testInstantiateSuperComparable() {
+        TwoColumnRangeStructure<GregorianCalendar, ResultStructure<Object>, Object> structure = TwoColumnRangeStructure
+                .create();
+
+        // The assert is not really necessary, the real test is that the statement above compiles.
+        assertTrue(structure.get().isEmpty());
+    }
 }

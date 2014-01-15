@@ -19,7 +19,7 @@ import java.io.Serializable;
  * 
  * @see TwoColumnRangeStructure
  */
-class TwoColumnRange<K extends Comparable<K>> implements Comparable<TwoColumnRange<K>>, Serializable {
+class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoColumnRange<K>>, Serializable {
 
     private static final long serialVersionUID = 42L;
     private final K lowerBound;

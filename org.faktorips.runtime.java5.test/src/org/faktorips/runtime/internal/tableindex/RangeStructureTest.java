@@ -18,6 +18,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -201,6 +202,19 @@ public class RangeStructureTest {
         Description description = mock(Description.class);
         matcher.describeTo(description);
         verify(description).appendText("an empty Iterable");
+    }
+
+    /**
+     * FIPS-2595. This tests checks the correctness of the comparable generics. GregorianCalendar
+     * extends Comparable<Calendar> hence we need <em>K extends Comparable<? super K</em> instead of
+     * simply <em>K extends Comparable<K></em>
+     */
+    public void testInstantiateSuperComparable() {
+        RangeStructure<GregorianCalendar, ResultStructure<Object>, Object> structure = RangeStructure
+                .create(RangeType.LOWER_BOUND_EQUAL);
+
+        // The assert is not really necessary, the real test is that the statement above compiles.
+        assertTrue(structure.get().isEmpty());
     }
 
 }

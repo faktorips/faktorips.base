@@ -33,7 +33,7 @@ import java.util.TreeMap;
  * the keys 25, 50 and all in between will yield value2 respectively. Keys outside these ranges,
  * e.g. 0 or 100 will return an {@link EmptySearchStructure}.
  */
-public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
+public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
         extends AbstractMapStructure<TwoColumnRange<K>, V, R> {
 
     TwoColumnRangeStructure() {
@@ -43,14 +43,14 @@ public class TwoColumnRangeStructure<K extends Comparable<K>, V extends SearchSt
     /**
      * Creates an empty {@link TwoColumnRangeStructure}.
      */
-    public static <K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> create() {
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> create() {
         return new TwoColumnRangeStructure<K, V, R>();
     }
 
     /**
      * Creates a new {@link TwoColumnRangeStructure} and adds the given range-value pair.
      */
-    public static <K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> createWith(K lowerBound,
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> createWith(K lowerBound,
             K upperBound,
             V value) {
         TwoColumnRangeStructure<K, V, R> structure = new TwoColumnRangeStructure<K, V, R>();

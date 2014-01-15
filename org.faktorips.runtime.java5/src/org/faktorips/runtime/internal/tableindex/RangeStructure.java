@@ -32,8 +32,8 @@ import java.util.TreeMap;
  * 
  * @see RangeType
  */
-public class RangeStructure<K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> extends
-        AbstractMapStructure<K, V, R> {
+public class RangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
+        extends AbstractMapStructure<K, V, R> {
 
     private final RangeType rangeType;
 
@@ -53,14 +53,14 @@ public class RangeStructure<K extends Comparable<K>, V extends SearchStructure<R
     /**
      * Creates an empty {@link RangeStructure}.
      */
-    public static <K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> RangeStructure<K, V, R> create(RangeType keyType) {
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> RangeStructure<K, V, R> create(RangeType keyType) {
         return new RangeStructure<K, V, R>(keyType);
     }
 
     /**
      * Creates a new {@link RangeStructure} and adds the given key-value pair.
      */
-    public static <K extends Comparable<K>, V extends SearchStructure<R> & Mergeable<? super V>, R> RangeStructure<K, V, R> createWith(RangeType keyType,
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> RangeStructure<K, V, R> createWith(RangeType keyType,
             K key,
             V value) {
         RangeStructure<K, V, R> structure = new RangeStructure<K, V, R>(keyType);

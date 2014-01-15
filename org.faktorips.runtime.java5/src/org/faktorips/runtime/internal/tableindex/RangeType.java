@@ -40,7 +40,7 @@ public enum RangeType {
     @Deprecated
     LOWER_BOUND {
         @Override
-        public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
+        public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> floorEntry = tree.floorEntry(key);
             if (floorEntry == null) {
                 return null;
@@ -55,7 +55,7 @@ public enum RangeType {
     LOWER_BOUND_EQUAL {
 
         @Override
-        public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
+        public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> floorEntry = tree.floorEntry(key);
             return getValueOrNull(floorEntry);
         }
@@ -74,7 +74,7 @@ public enum RangeType {
     UPPER_BOUND {
 
         @Override
-        public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
+        public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
             if (ceilingEntry == null) {
                 return null;
@@ -88,7 +88,7 @@ public enum RangeType {
      */
     UPPER_BOUND_EQUAL {
         @Override
-        public <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key) {
+        public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
             return getValueOrNull(ceilingEntry);
         }
@@ -102,9 +102,9 @@ public enum RangeType {
      * @return the matching value in the given {@link TreeMap} or <code>null</code> if no matching
      *         value could be found.
      */
-    public abstract <K extends Comparable<K>, V> V getValue(TreeMap<K, V> tree, K key);
+    public abstract <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key);
 
-    private static <K extends Comparable<K>, V> V getLowerValueIfNeccessary(TreeMap<K, V> tree,
+    private static <K extends Comparable<? super K>, V> V getLowerValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> floorEntry) {
         if (floorEntry.getKey().compareTo(key) < 0) {
@@ -115,7 +115,7 @@ public enum RangeType {
         }
     }
 
-    private static <K extends Comparable<K>, V> V getHigherValueIfNeccessary(TreeMap<K, V> tree,
+    private static <K extends Comparable<? super K>, V> V getHigherValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> ceilingEntry) {
         if (ceilingEntry.getKey().compareTo(key) > 0) {
