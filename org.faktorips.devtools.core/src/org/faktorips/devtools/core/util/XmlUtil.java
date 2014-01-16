@@ -377,7 +377,7 @@ public class XmlUtil {
     /**
      * Returns the node's first CDATA section or <code>null</code> if the node hasn't got one.
      */
-    private static final CDATASection getFirstCDataSection(Node node) {
+    public static final CDATASection getFirstCDataSection(Node node) {
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i).getNodeType() == Node.CDATA_SECTION_NODE) {
