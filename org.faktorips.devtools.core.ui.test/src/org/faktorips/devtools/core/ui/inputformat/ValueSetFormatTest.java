@@ -178,6 +178,7 @@ public class ValueSetFormatTest {
                 Arrays.asList(ValueSetType.RANGE, ValueSetType.ENUM));
         IRangeValueSet range = mock(IRangeValueSet.class);
         when(configElement.getValueSet()).thenReturn(range);
+        when(range.isRange()).thenReturn(true);
         IValueSet parseInternal = format.parseInternal("[10..100/2]");
 
         assertNotNull(parseInternal);

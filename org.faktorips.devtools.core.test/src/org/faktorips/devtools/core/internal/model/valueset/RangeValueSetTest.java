@@ -150,6 +150,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertFalse(range.containsValue("28"));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testContainsValueSet_BothSetsAreRanges() {
         RangeValueSet range = new RangeValueSet(intEl, "50");

@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,17 +43,17 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     /**
      * Name of the xml element used in the xml conversion.
      */
-    public final static String XML_TAG = "ValueSet"; //$NON-NLS-1$
+    public static final String XML_TAG = "ValueSet"; //$NON-NLS-1$
+
+    /**
+     * Flag that defines this valueset as abstract
+     */
+    private boolean abstractFlag = false;
 
     /**
      * The type this value set is of.
      */
     private ValueSetType type;
-
-    /**
-     * Flag that defines this valueset as abstract
-     */
-    protected boolean abstractFlag = false;
 
     /**
      * Creates a new value set of the given type and with the given parent and id.
@@ -270,16 +271,10 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
             String text,
             Object invalidObject,
             String invalidProperty) {
-
-        Message msg;
-        if (invalidObject == null) {
-            msg = new Message(id, text, severity);
-        } else if (invalidProperty == null) {
-            msg = new Message(id, text, severity, invalidObject);
-        } else {
-            msg = new Message(id, text, severity, invalidObject, invalidProperty);
-        }
-
+        ObjectProperty parentObjectProperty = new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET);
+        ObjectProperty invalidObjectProperty = new ObjectProperty(invalidObject != null ? invalidObject : this,
+                invalidProperty);
+        Message msg = new Message(id, text, severity, parentObjectProperty, invalidObjectProperty);
         list.add(msg);
     }
 

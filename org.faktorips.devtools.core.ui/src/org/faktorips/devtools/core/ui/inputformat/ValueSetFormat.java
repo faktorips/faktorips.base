@@ -56,27 +56,34 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     @Override
     protected IValueSet parseInternal(String stringToBeParsed) {
-        if (isEnumValueSetAllowed()) {
-            if (getValueSet() instanceof IRangeValueSet) {
-                return getValueSet();
-            }
+        if (isEnumValueSetAllowed() && !(getValueSet().isRange())) {
             if (stringToBeParsed.isEmpty()) {
-                if (isUnrestrictedAllowed()) {
-                    return getUnrestrictedValueSet();
-                } else {
-                    return getEmptyValueSet();
-                }
+                return getParsedEmptyString();
             } else if (Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed) && isUnrestrictedAllowed()) {
                 return getUnrestrictedValueSet();
             } else if (EnumValueSet.ENUM_VALUESET_EMPTRY.equals(stringToBeParsed)) {
                 return getEmptyValueSet();
+            } else {
+                return parseEnumValue(stringToBeParsed);
             }
-            String[] split = stringToBeParsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
-            List<String> parsedValues = parseValues(split);
-            if (!isEqualContent(parsedValues)) {
-                EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
-                return enumValueSet;
-            }
+        }
+        return getValueSet();
+    }
+
+    private IValueSet getParsedEmptyString() {
+        if (isUnrestrictedAllowed()) {
+            return getUnrestrictedValueSet();
+        } else {
+            return getEmptyValueSet();
+        }
+    }
+
+    private IValueSet parseEnumValue(String stringToBeParsed) {
+        String[] split = stringToBeParsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
+        List<String> parsedValues = parseValues(split);
+        if (!isEqualContent(parsedValues)) {
+            EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
+            return enumValueSet;
         }
         return getValueSet();
     }
@@ -220,19 +227,6 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
         // do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Currently parsing range is not supported
-     */
-    @Override
-    public void verifyText(VerifyEvent e) {
-        super.verifyText(e);
-        if (getValueSet() instanceof IRangeValueSet) {
-            e.doit = false;
-        }
     }
 
     @Override

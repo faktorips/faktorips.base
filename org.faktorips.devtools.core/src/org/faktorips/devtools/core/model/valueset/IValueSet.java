@@ -178,7 +178,11 @@ public interface IValueSet extends IIpsObjectPart {
      *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
      * 
      * @throws NullPointerException If <tt>subset</tt> or <tt>list</tt> is <code>null</code>.
+     * 
+     * @deprecated This method is deprecated because it is horrible long and complex and is never
+     *             used inside of Faktor-IPS. Also it does not works correctly.
      */
+    @Deprecated
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty);
 
     /**
