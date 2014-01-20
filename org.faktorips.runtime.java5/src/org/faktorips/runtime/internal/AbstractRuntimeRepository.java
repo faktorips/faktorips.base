@@ -729,7 +729,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     public final <T> List<T> getEnumValues(Class<T> clazz) {
-        List<T> values = null;
+        List<T> values;
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
         if (lookup != null) {
             return lookup.getEnumValues();
@@ -743,12 +743,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             return Collections.unmodifiableList(allValues);
         }
         for (IRuntimeRepository repository : repositories) {
-            values = repository.getEnumValues(clazz);
-            if (values != null) {
-                return Collections.unmodifiableList(values);
+            List<T> referencedValues = repository.getEnumValues(clazz);
+            if (!referencedValues.equals(valuesFromType)) {
+                return Collections.unmodifiableList(referencedValues);
             }
         }
-        return allValues;
+        return Collections.unmodifiableList(allValues);
     }
 
     /**
