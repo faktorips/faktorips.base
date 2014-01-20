@@ -37,11 +37,11 @@ import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
-    private final IJavaClassNameProvider javaClassNameProvider;
-
     private static final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
 
     private static final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
+
+    private final IJavaClassNameProvider javaClassNameProvider;
 
     public TableRowBuilder(DefaultBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));

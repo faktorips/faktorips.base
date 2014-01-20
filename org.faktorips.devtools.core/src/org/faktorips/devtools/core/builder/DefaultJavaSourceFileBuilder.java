@@ -64,7 +64,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
      * IIpsArtefactBuilderSet instance. It specifies the type of logging framework connector.
      */
-    public final static String CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR = "loggingFrameworkConnector"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR = "loggingFrameworkConnector"; //$NON-NLS-1$
 
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
 
@@ -211,7 +211,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         ImportDeclaration existingImports = new ImportDeclaration();
         IJavaElement[] imports = container.getChildren();
         for (IJavaElement import1 : imports) {
-            String imp = ((IImportDeclaration)import1).getSource(); // example for imp: import
+            // example for imp: import
+            String imp = ((IImportDeclaration)import1).getSource();
             // java.util.Date;
             existingImports.add(imp.substring(7, imp.length() - 1));
         }
@@ -257,7 +258,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         JavaCodeFragment value = new JavaCodeFragment();
         value.append(connector.getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, value);
-        builder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, connector.getLoggerClassName(),
+        builder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, connector.getLoggerClassName(),
                 getLoggerInstanceExpession(), value);
     }
 
