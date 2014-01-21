@@ -94,6 +94,14 @@ public interface IRangeValueSet extends IValueSet {
 
     public final static String PROPERTY_STEP = "step"; //$NON-NLS-1$
 
+    public static final String RANGE_VALUESET_START = "["; //$NON-NLS-1$
+
+    public static final String RANGE_VALUESET_END = "]"; //$NON-NLS-1$
+
+    public static final String RANGE_VALUESET_POINTS = "..."; //$NON-NLS-1$
+
+    public static final String RANGE_VALUESET_SEPERATOR_WITH_WHITESPACE = " / "; //$NON-NLS-1$
+
     /**
      * Sets the lower bound. An empty string means that the range is unbounded.
      * 

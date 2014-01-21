@@ -406,7 +406,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     /**
      * Returns a string representation of a <code>ValueSet</code>. An <code>EnumValueSet</code> is
      * represented as a list of values separated by comma ("[1,5,7]"). A <code>RangeValueSet</code>
-     * is represented by its upper and lower bound ("[1..7]"). A <code>AllValuesValueSet</code> is
+     * is represented by its upper and lower bound ("[1...7]"). A <code>AllValuesValueSet</code> is
      * represented by "[all values]".
      */
     private StringBuffer getValueSetContent(IConfigElement configElement) {
@@ -424,20 +424,20 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append("]"); //$NON-NLS-1$
         } else if (set instanceof IRangeValueSet) {
             IRangeValueSet rangeSet = (IRangeValueSet)set;
-            sb.append("["); //$NON-NLS-1$
+            sb.append(IRangeValueSet.RANGE_VALUESET_START);
             String unlimited = Messages.ProductCmptCompareItem_unlimited;
             if (rangeSet.getLowerBound() == null) {
                 sb.append(unlimited);
             } else {
                 sb.append(rangeSet.getLowerBound());
             }
-            sb.append(".."); //$NON-NLS-1$
+            sb.append(IRangeValueSet.RANGE_VALUESET_POINTS);
             if (rangeSet.getUpperBound() == null) {
                 sb.append(unlimited);
             } else {
                 sb.append(rangeSet.getUpperBound());
             }
-            sb.append("]"); //$NON-NLS-1$
+            sb.append(IRangeValueSet.RANGE_VALUESET_END);
         } else if (set instanceof IUnrestrictedValueSet) {
             sb.append("["); //$NON-NLS-1$
             sb.append(Messages.ProductCmptCompareItem_AllValues);

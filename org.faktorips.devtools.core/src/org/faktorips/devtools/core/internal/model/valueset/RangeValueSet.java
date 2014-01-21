@@ -507,15 +507,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public String toShortString() {
         StringBuffer sb = new StringBuffer();
-        sb.append('[');
+        sb.append(RANGE_VALUESET_START);
         sb.append((lowerBound == null ? "unlimited" : lowerBound)); //$NON-NLS-1$
-        sb.append('-');
+        sb.append(RANGE_VALUESET_POINTS);
         sb.append((upperBound == null ? "unlimited" : upperBound)); //$NON-NLS-1$
-        sb.append(']');
+        sb.append(RANGE_VALUESET_SEPERATOR_WITH_WHITESPACE);
         if (step != null) {
             sb.append(Messages.RangeValueSet_0);
             sb.append(step);
         }
+        sb.append(RANGE_VALUESET_END);
         return sb.toString();
     }
 

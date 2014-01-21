@@ -199,17 +199,7 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private String formatRangeValueSet(IValueSet valueSet) {
         RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
-        StringBuffer sb = new StringBuffer();
-        sb.append('[');
-        sb.append((rangeValueSet.getLowerBound() == null ? "unlimited" : rangeValueSet.getLowerBound())); //$NON-NLS-1$
-        sb.append('-');
-        sb.append((rangeValueSet.getUpperBound() == null ? "unlimited" : rangeValueSet.getUpperBound())); //$NON-NLS-1$
-        sb.append(']');
-        if (rangeValueSet.getStep() != null) {
-            sb.append(org.faktorips.devtools.core.internal.model.valueset.Messages.RangeValueSet_0);
-            sb.append(rangeValueSet.getStep());
-        }
-        return sb.toString();
+        return rangeValueSet.toShortString();
     }
 
     private String formatUnrestrictedValueSet() {
