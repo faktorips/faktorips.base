@@ -19,16 +19,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -88,7 +85,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private void createEditFieldsForRange(List<EditField<?>> editFields) {
-        createValueSetEditFieldForRange(editFields);
+        createValueSetField(editFields);
         createDefaultValueEditField(editFields);
     }
 
@@ -111,7 +108,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private void createEditFieldForOthers(List<EditField<?>> editFields) {
-        createValueSetEditFieldForOtherThanRange(editFields);
+        createValueSetField(editFields);
         createDefaultValueEditField(editFields);
     }
 
@@ -158,33 +155,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
-    private void createValueSetEditFieldForRange(List<EditField<?>> editFields) {
-        RangeValueSet range = (RangeValueSet)getPropertyValue().getValueSet();
-        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                range.getValueDatatype());
-
-        createLabelWithWidthHint(Messages.ConfigElementEditComposite_minMaxStepLabel);
-        Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
-
-        // Add margin so the borders of the text controls are shown
-        ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
-        ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
-
-        EditField<String> lowerField = createRangeEditField(controlFactory, rangeComposite, range);
-        EditField<String> upperField = createRangeEditField(controlFactory, rangeComposite, range);
-        EditField<String> stepField = createRangeEditField(controlFactory, rangeComposite, range);
-
-        editFields.add(lowerField);
-        editFields.add(upperField);
-        editFields.add(stepField);
-
-        getBindingContext().bindContent(upperField, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        getBindingContext().bindContent(lowerField, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        getBindingContext().bindContent(stepField, range, IRangeValueSet.PROPERTY_STEP);
-
-        getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
-    }
-
     private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
@@ -206,25 +176,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         }
     }
 
-    private EditField<String> createRangeEditField(ValueDatatypeControlFactory controlFactory,
-            Composite rangeComposite,
-            RangeValueSet range) {
-
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), rangeComposite,
-                range.getValueDatatype(), range, range.getIpsProject());
-        initTextField(editField.getControl(), 50);
-        return editField;
-    }
-
-    private void initTextField(Control control, int widthHint) {
-        if (control.getLayoutData() instanceof GridData) {
-            ((GridData)control.getLayoutData()).widthHint = widthHint;
-        }
-    }
-
-    private void createValueSetEditFieldForOtherThanRange(List<EditField<?>> editFields) {
+    private void createValueSetField(List<EditField<?>> editFields) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
-
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
