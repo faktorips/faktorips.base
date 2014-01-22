@@ -56,7 +56,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     public static final String ENUM_VALUESET_END = "}"; //$NON-NLS-1$
 
-    public static final String ENUM_VALUESET_EMPTRY = ENUM_VALUESET_START + ENUM_VALUESET_END;
+    public static final String ENUM_VALUESET_EMPTY = ENUM_VALUESET_START + ENUM_VALUESET_END;
 
     public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
 

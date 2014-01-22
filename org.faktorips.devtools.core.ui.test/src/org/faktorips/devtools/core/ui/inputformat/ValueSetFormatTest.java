@@ -174,15 +174,70 @@ public class ValueSetFormatTest {
 
     @Test
     public void testParseInternalRange() throws CoreException {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
-                Arrays.asList(ValueSetType.RANGE, ValueSetType.ENUM));
-        IRangeValueSet range = mock(IRangeValueSet.class);
-        when(configElement.getValueSet()).thenReturn(range);
-        when(range.isRange()).thenReturn(true);
-        IValueSet parseInternal = format.parseInternal("[10..100/2]");
+        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. 100/ 2]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);
-        assertEquals(range, parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "100");
+        assertEquals(result.getStep(), "2");
     }
 
+    @Test
+    public void testParseRangeValue_StepNull() throws CoreException {
+        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. 2/]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "2");
+        assertEquals(result.getStep(), "");
+    }
+
+    @Test
+    public void testParseRangeValue_EmptyRange() throws CoreException {
+        IValueSet parseInternal = setUpParseRangeValueSet("[]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertEquals(result.getLowerBound(), null);
+        assertEquals(result.getUpperBound(), null);
+        assertEquals(result.getStep(), null);
+    }
+
+    @Test
+    public void testParseRangeValue_UpperBoundEmpty() throws CoreException {
+        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. /2]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "");
+        assertEquals(result.getStep(), "2");
+    }
+
+    @Test
+    public void testParseRangeValue_TooManyPonits() throws CoreException {
+        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. 3 ..2]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "3 ..2");
+        assertEquals(result.getStep(), null);
+    }
+
+    private IValueSet setUpParseRangeValueSet(String stringToParse) throws CoreException {
+        when(uiPlugin.getInputFormat(any(ValueDatatype.class), any(IIpsProject.class))).thenReturn(
+                new DefaultInputFormat());
+        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+                Arrays.asList(ValueSetType.RANGE, ValueSetType.ENUM));
+
+        IRangeValueSet range = mock(IRangeValueSet.class);
+
+        when(configElement.getValueSet()).thenReturn(range);
+        when(range.isRange()).thenReturn(true);
+
+        IValueSet parseInternal = format.parseRangeValue(stringToParse);
+        return parseInternal;
+    }
 }

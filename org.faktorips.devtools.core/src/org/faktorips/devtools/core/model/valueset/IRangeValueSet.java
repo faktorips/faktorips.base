@@ -55,6 +55,8 @@ public interface IRangeValueSet extends IValueSet {
 
     public static final String RANGE_STEP_SEPERATOR = " / "; //$NON-NLS-1$
 
+    public static final String RANGE_VALUESET_SEPERATOR = "/"; //$NON-NLS-1$
+
     /**
      * Sets the lower bound. An empty string means that the range is unbounded.
      * 

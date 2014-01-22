@@ -12,9 +12,11 @@
 package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
@@ -56,16 +58,16 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     @Override
     protected IValueSet parseInternal(String stringToBeParsed) {
-        if (isEnumValueSetAllowed() && !(getValueSet().isRange())) {
-            if (stringToBeParsed.isEmpty()) {
-                return getParsedEmptyString();
-            } else if (Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed) && isUnrestrictedAllowed()) {
-                return getUnrestrictedValueSet();
-            } else if (EnumValueSet.ENUM_VALUESET_EMPTRY.equals(stringToBeParsed)) {
-                return getEmptyValueSet();
-            } else {
-                return parseEnumValue(stringToBeParsed);
-            }
+        if (stringToBeParsed.isEmpty()) {
+            return getParsedEmptyString();
+        } else if (Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed) && isUnrestrictedAllowed()) {
+            return getUnrestrictedValueSet();
+        } else if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringToBeParsed) && isEnumValueSetAllowed()) {
+            return getEmptyEnumSet();
+        } else if ((isRange(stringToBeParsed) && isRangeValueSetAllowed()) || isOnlyRangeAllowed()) {
+            return parseRangeValue(stringToBeParsed);
+        } else if (isEnumValueSetAllowed()) {
+            return parseEnumValue(stringToBeParsed);
         }
         return getValueSet();
     }
@@ -73,9 +75,69 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     private IValueSet getParsedEmptyString() {
         if (isUnrestrictedAllowed()) {
             return getUnrestrictedValueSet();
+        } else if (isOnlyRangeAllowed()) {
+            return getUnlimitedRangeSet();
         } else {
-            return getEmptyValueSet();
+            return getEmptyEnumSet();
         }
+    }
+
+    protected IValueSet parseRangeValue(String stringToBeParsed) {
+        List<String> parsedValues = getParsedStringOfRangeValueSet(stringToBeParsed);
+        if (parsedValues.size() == 2 || parsedValues.size() == 3) {
+            if (!isEqualContentRange(parsedValues)) {
+                return createNewRangeValueSet(parsedValues);
+            }
+        }
+        return getValueSet();
+    }
+
+    private boolean isRange(String stringToBeParsed) {
+        return stringToBeParsed.startsWith(IRangeValueSet.RANGE_VALUESET_START)
+                && stringToBeParsed.endsWith(IRangeValueSet.RANGE_VALUESET_END);
+    }
+
+    private List<String> getParsedStringOfRangeValueSet(String stringToBeParsed) {
+        String stringWithoutBrackets = stringToBeParsed.replaceAll("(^\\[?)|(\\]?$)", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String[] splitPonits = stringWithoutBrackets.split("(\\s*\\.\\.+\\s*)", 2); //$NON-NLS-1$
+        if (splitPonits.length == 2) {
+            String[] splitSeperator = splitPonits[1].split("(\\s*/\\s*)", 2); //$NON-NLS-1$
+            String[] split = concatenateSplittedArrays(splitPonits, splitSeperator);
+            return parseValues(split);
+        }
+        return Arrays.asList(splitPonits[0]);
+    }
+
+    private String[] concatenateSplittedArrays(String[] splitPonits, String[] splitSeperator) {
+        String[] split = new String[1 + splitSeperator.length];
+        System.arraycopy(splitPonits, 0, split, 0, 1);
+        System.arraycopy(splitSeperator, 0, split, 1, splitSeperator.length);
+        return split;
+    }
+
+    private IValueSet createNewRangeValueSet(List<String> parsedValues) {
+        if (parsedValues.size() == 0) {
+            return new RangeValueSet(valueSetOwner, getNextPartId(valueSetOwner), null, null, null);
+        }
+        if (parsedValues.size() == 2) {
+            return new RangeValueSet(valueSetOwner, getNextPartId(valueSetOwner), parsedValues.get(0),
+                    parsedValues.get(1), null);
+        }
+        return new RangeValueSet(valueSetOwner, getNextPartId(valueSetOwner), parsedValues.get(0), parsedValues.get(1),
+                parsedValues.get(2));
+    }
+
+    private boolean isEqualContentRange(List<String> parsedValues) {
+        if (getValueSet() instanceof IRangeValueSet) {
+            IRangeValueSet range = (IRangeValueSet)getValueSet();
+            if (ObjectUtils.equals(range.getLowerBound(), parsedValues.get(0))
+                    && ObjectUtils.equals(range.getUpperBound(), parsedValues.get(1))
+                    && ((parsedValues.size() == 3 && ObjectUtils.equals(range.getStep(), parsedValues.get(2)) || (parsedValues
+                            .size() == 2 && StringUtils.isEmpty(range.getStep()))))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private IValueSet parseEnumValue(String stringToBeParsed) {
@@ -94,6 +156,20 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private boolean isEnumValueSetAllowed() {
         return isAllowedValueSetType(ValueSetType.ENUM);
+    }
+
+    private boolean isRangeValueSetAllowed() {
+        return isAllowedValueSetType(ValueSetType.RANGE);
+    }
+
+    private boolean isOnlyRangeAllowed() {
+        try {
+            List<ValueSetType> allowedValueSetTypes = this.valueSetOwner.getAllowedValueSetTypes(this.valueSetOwner
+                    .getIpsProject());
+            return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(ValueSetType.RANGE);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private boolean isAllowedValueSetType(ValueSetType valueSetType) {
@@ -116,13 +192,26 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         }
     }
 
-    private IValueSet getEmptyValueSet() {
+    private IValueSet getEmptyEnumSet() {
         IValueSet valueSet = getValueSet();
         if (valueSet.isEnum() && ((IEnumValueSet)valueSet).getValuesAsList().isEmpty()) {
             return valueSet;
         } else {
             return createNewEnumValueSet(new ArrayList<String>());
         }
+    }
+
+    private IValueSet getUnlimitedRangeSet() {
+        IValueSet valueSet = getValueSet();
+        if (valueSet.isRange() && isUnlimitedRange((IRangeValueSet)valueSet)) {
+            return valueSet;
+        } else {
+            return createNewRangeValueSet(new ArrayList<String>());
+        }
+    }
+
+    private boolean isUnlimitedRange(IRangeValueSet valueSet) {
+        return valueSet.getLowerBound() == null && valueSet.getUpperBound() == null;
     }
 
     private List<String> parseValues(String[] split) {
@@ -134,7 +223,7 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         return parseValues;
     }
 
-    private IInputFormat<String> getInputFormat() {
+    protected IInputFormat<String> getInputFormat() {
         ValueDatatype valueDatatype = getValueDatatype();
         if (cachedIinputFormat == null || valueDatatype != cachedValueDatatype) {
             cachedIinputFormat = uiPlugin.getInputFormat(valueDatatype, valueSetOwner.getIpsProject());
@@ -181,7 +270,7 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         StringBuffer buffer = new StringBuffer();
         String[] values = enumValueSet.getValues();
         if (values.length == 0) {
-            return EnumValueSet.ENUM_VALUESET_EMPTRY;
+            return EnumValueSet.ENUM_VALUESET_EMPTY;
         }
         IInputFormat<String> inputFormat = getInputFormat();
         for (String id : values) {
