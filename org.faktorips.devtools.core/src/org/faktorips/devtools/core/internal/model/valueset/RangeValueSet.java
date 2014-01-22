@@ -511,9 +511,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         sb.append((lowerBound == null ? "unlimited" : lowerBound)); //$NON-NLS-1$
         sb.append(RANGE_VALUESET_POINTS);
         sb.append((upperBound == null ? "unlimited" : upperBound)); //$NON-NLS-1$
-        sb.append(RANGE_VALUESET_SEPERATOR_WITH_WHITESPACE);
         if (step != null) {
-            sb.append(Messages.RangeValueSet_0);
+            sb.append(RANGE_VALUESET_SEPERATOR_WITH_WHITESPACE);
             sb.append(step);
         }
         sb.append(RANGE_VALUESET_END);

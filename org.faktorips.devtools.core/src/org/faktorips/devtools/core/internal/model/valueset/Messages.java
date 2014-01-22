@@ -40,7 +40,6 @@ public class Messages extends NLS {
     public static String Range_msgLowerboundGreaterUpperbound;
     public static String Range_msgPropertyValueNotParsable;
 
-    public static String RangeValueSet_0;
     public static String EnumValueSet__msgDatatypeUnknown;
     public static String EnumValueSet_msgDatatypeMissmatch;
     public static String EnumValueSet_msgNullNotSupported;
