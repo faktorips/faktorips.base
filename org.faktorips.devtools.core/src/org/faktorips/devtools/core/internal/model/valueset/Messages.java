@@ -37,5 +37,6 @@ public class Messages extends NLS {
     public static String RangeValueSet_msgNullNotSupported;
     public static String RangeValueSet_msgStepRangeMismatch;
     public static String RangeValueSet_msgDatatypeNotNumeric;
+    public static String RangeValueSet_unlimited;
 
 }

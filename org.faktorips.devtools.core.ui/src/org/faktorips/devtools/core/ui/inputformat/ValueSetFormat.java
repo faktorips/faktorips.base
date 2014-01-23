@@ -168,17 +168,16 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
     @Override
     protected String formatInternal(IValueSet valueSet) {
         if (valueSet instanceof IEnumValueSet) {
-            return formatEnumValueSet(valueSet);
+            return formatEnumValueSet((IEnumValueSet)valueSet);
         } else if (valueSet instanceof IRangeValueSet) {
-            return formatRangeValueSet(valueSet);
+            return formatRangeValueSet((IRangeValueSet)valueSet);
         } else if (valueSet instanceof IUnrestrictedValueSet) {
             return formatUnrestrictedValueSet();
         }
         return StringUtils.EMPTY;
     }
 
-    private String formatEnumValueSet(IValueSet valueSet) {
-        IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
+    private String formatEnumValueSet(IEnumValueSet enumValueSet) {
         StringBuffer buffer = new StringBuffer();
         String[] values = enumValueSet.getValues();
         if (values.length == 0) {
@@ -197,9 +196,21 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         return buffer.toString();
     }
 
-    private String formatRangeValueSet(IValueSet valueSet) {
-        RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
-        return rangeValueSet.toShortString();
+    private String formatRangeValueSet(IRangeValueSet valueSet) {
+        String lowerBound = valueSet.getLowerBound();
+        String upperBound = valueSet.getUpperBound();
+        String step = valueSet.getStep();
+        StringBuffer sb = new StringBuffer();
+        sb.append(RangeValueSet.RANGE_VALUESET_START);
+        sb.append((lowerBound == null ? "*" : getInputFormat().format(lowerBound))); //$NON-NLS-1$
+        sb.append(RangeValueSet.RANGE_VALUESET_POINTS);
+        sb.append((upperBound == null ? "*" : getInputFormat().format(upperBound))); //$NON-NLS-1$
+        if (step != null) {
+            sb.append(RangeValueSet.RANGE_STEP_SEPERATOR);
+            sb.append(getInputFormat().format(step));
+        }
+        sb.append(RangeValueSet.RANGE_VALUESET_END);
+        return sb.toString();
     }
 
     private String formatUnrestrictedValueSet() {

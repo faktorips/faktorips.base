@@ -394,9 +394,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     public String toShortString() {
         StringBuffer sb = new StringBuffer();
         sb.append(RANGE_VALUESET_START);
-        sb.append((lowerBound == null ? "unlimited" : lowerBound)); //$NON-NLS-1$
+        sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));
         sb.append(RANGE_VALUESET_POINTS);
-        sb.append((upperBound == null ? "unlimited" : upperBound)); //$NON-NLS-1$
+        sb.append((upperBound == null ? Messages.RangeValueSet_unlimited : upperBound));
         if (step != null) {
             sb.append(RANGE_STEP_SEPERATOR);
             sb.append(step);
