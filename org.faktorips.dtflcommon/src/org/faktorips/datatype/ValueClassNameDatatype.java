@@ -107,15 +107,6 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
 
     public boolean isParsable(String value) {
         try {
-            if ("".equals(value)) { //$NON-NLS-1$
-                /*
-                 * by default the empty space is not parsable. This has to be handled explicitly as
-                 * most value classes assume that the value of the string "" is null. This is
-                 * however more a convenience. In the IDE context it is bothering if null can be
-                 * represented by null or the string "".
-                 */
-                return false;
-            }
             if (isNull(value)) {
                 return true;
             }

@@ -222,25 +222,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return !isUnrestricted() && isAbstract();
     }
 
-    @Override
-    public final boolean containsValue(String value) {
-        return containsValue(value, new MessageList(), null, null);
-    }
-
-    @Override
-    public final boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
-        try {
-            return containsValue(value, list, invalidObject, invalidProperty, getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public final boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
-        return containsValue(value, new MessageList(), null, null, ipsProject);
-    }
-
     /**
      * Creates a new message with severity ERROR and adds the new message to the given message list.
      * 

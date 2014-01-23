@@ -14,7 +14,6 @@ package org.faktorips.devtools.core.model.valueset;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
 
 /**
  * An <tt>IValueSet</tt> is the specification of a set of values. It is assumed that all values in a
@@ -42,26 +41,6 @@ public interface IValueSet extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "VALUESET-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value is not contained in the value set.
-     */
-    public final static String MSGCODE_VALUE_NOT_CONTAINED = MSGCODE_PREFIX + "ValueNotContained"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the value subset is not of the correct type.
-     */
-    public final static String MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING = MSGCODE_PREFIX + "TypeOfValueSetNotMatching"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the value subset is of a different data type.
-     */
-    public final static String MSGCODE_DATATYPES_NOT_MATCHING = MSGCODE_PREFIX + "DatatypesNotMatching"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that one value set is not a subset of another one.
-     */
-    public final static String MSGCODE_NOT_SUBSET = MSGCODE_PREFIX + "NotSubset"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the value could not be parsed.
      */
     public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
@@ -71,12 +50,6 @@ public interface IValueSet extends IIpsObjectPart {
      * bound of this value set.
      */
     public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the data type does not support comparison for its
-     * values.
-     */
-    public final static String MSGCODE_DATATYPE_NOT_COMPARABLE = MSGCODE_PREFIX + "DatatypeNotComparable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type this value set is based on does not
@@ -99,62 +72,12 @@ public interface IValueSet extends IIpsObjectPart {
      * Returns <code>true</code> if the value set contains the indicated value, otherwise
      * <code>false</code>.
      * 
-     * @deprecated Use {@link #containsValue(String, IIpsProject)} instead.
-     * 
-     * @param value The value to check.
-     */
-    @Deprecated
-    public boolean containsValue(String value);
-
-    /**
-     * Returns <code>true</code> if the value set contains the indicated value, otherwise
-     * <code>false</code>.
-     * 
      * @param value The value to check.
      * @param ipsProject The project to look up the data type.
      * 
      * @throws CoreException If an error occurs while checking.
      */
     public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns <code>true</code> it the value set contains the indicated value, otherwise
-     * <code>false</code>. A message is stored in the message list, if the value set doesn't contain
-     * the indicated value.
-     * 
-     * @deprecated Use {@link #containsValue(String, MessageList, Object, String, IIpsProject)}
-     *             instead.
-     * 
-     * @param value The value to check.
-     * @param list The list to add messages, if any (might not be <code>null</code>).
-     * @param invalidObject The object the message refers to (can be <code>null</code>).
-     * @param invalidProperty The property of the object the message refers to. Ignored if
-     *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
-     * 
-     * @throws NullPointerException If <tt>list</tt> is <code>null</code>.
-     */
-    @Deprecated
-    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty);
-
-    /**
-     * Returns <code>true</code> it the value set contains the indicated value, otherwise
-     * <code>false</code>. A message is stored in the message list, if the value set doesn't contain
-     * the indicated value.
-     * 
-     * @param value The value to check.
-     * @param list The list to add messages, if any (might not be <code>null</code>).
-     * @param invalidObject The object the message refers to (can be <code>null</code>).
-     * @param invalidProperty The property of the object the message refers to. Ignored if
-     *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
-     * @param ipsProject The project to look up the data type.
-     * 
-     * @throws NullPointerException If <tt>list</tt> is <code>null</code>.
-     */
-    public boolean containsValue(String value,
-            MessageList list,
-            Object invalidObject,
-            String invalidProperty,
-            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if this value set contains the other value set, otherwise
@@ -165,25 +88,6 @@ public interface IValueSet extends IIpsObjectPart {
      * @throws NullPointerException If <tt>subset</tt> is <code>null</code>.
      */
     public boolean containsValueSet(IValueSet subset);
-
-    /**
-     * Returns <code>true</code> if this value set contains the other value set, otherwise
-     * <code>false</code>.
-     * 
-     * @param subset The value set to check.
-     * @param list The list to which a message is added in case the given value set is not a subset
-     *            of this value set.
-     * @param invalidObject The object the message refers to (can be <code>null</code>).
-     * @param invalidProperty The property of the object the message refers to. Ignored if
-     *            <code>invalidObject</code> is <code>null</code>. Can be <code>null</code> itself.
-     * 
-     * @throws NullPointerException If <tt>subset</tt> or <tt>list</tt> is <code>null</code>.
-     * 
-     * @deprecated This method is deprecated because it is horrible long and complex and is never
-     *             used inside of Faktor-IPS. Also it does not works correctly.
-     */
-    @Deprecated
-    public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty);
 
     /**
      * Creates a copy of this value set (type and values, parent and id are set to the given

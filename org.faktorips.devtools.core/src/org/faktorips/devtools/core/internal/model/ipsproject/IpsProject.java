@@ -54,7 +54,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
@@ -1340,9 +1339,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return types;
         }
         if (datatype instanceof NumericDatatype) {
-            return ValueSetType.getValueSetTypesAsList();
-        }
-        if (datatype instanceof MoneyDatatype) {
             return ValueSetType.getValueSetTypesAsList();
         }
         if (datatype instanceof ArrayOfValueDatatype) {

@@ -357,7 +357,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Hidden_DefaultValueContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
         productAttribute.setDefaultValue("3");
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
@@ -373,7 +373,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Visible_DefaultValueContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(true);
         productAttribute.setDefaultValue("3");
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
@@ -389,7 +389,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
         productAttribute.setDefaultValue(null);
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
@@ -406,7 +406,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
         productAttribute.setDefaultValue(null);
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
