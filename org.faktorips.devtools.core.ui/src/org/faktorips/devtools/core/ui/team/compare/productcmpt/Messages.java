@@ -28,8 +28,6 @@ public class Messages extends NLS {
     public static String ProductCmptCompareItemCreator_StructureViewer_title;
     public static String ProductCmptCompareViewer_CompareViewer_title;
 
-    public static String ProductCmptCompareItem_AllValues;
-
     public static String ProductCmptCompareItem_Attribute;
 
     public static String ProductCmptCompareItem_Formula;
@@ -39,8 +37,6 @@ public class Messages extends NLS {
     public static String ProductCmptCompareItem_Relation;
 
     public static String ProductCmptCompareItem_SourceFile;
-
-    public static String ProductCmptCompareItem_unlimited;
 
     public static String ProductCmptCompareItem_ValueSet;
 

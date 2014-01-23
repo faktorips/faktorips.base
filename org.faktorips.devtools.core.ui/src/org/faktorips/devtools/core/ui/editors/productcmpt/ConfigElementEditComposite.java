@@ -72,21 +72,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        if (isRangeValueEditFieldsRequired()) {
-            createEditFieldsForRange(editFields);
+        if (isBooleanDatatype()) {
+            createEditFieldForBoolean(editFields);
         } else {
-            if (isBooleanDatatype()) {
-                createEditFieldForBoolean(editFields);
-            } else {
-                createEditFieldForOthers(editFields);
-            }
+            createEditFieldForOthers(editFields);
         }
         createEditFieldsForExtensionProperties();
-    }
-
-    private void createEditFieldsForRange(List<EditField<?>> editFields) {
-        createValueSetField(editFields);
-        createDefaultValueEditField(editFields);
     }
 
     private void createEditFieldForBoolean(List<EditField<?>> editFields) {

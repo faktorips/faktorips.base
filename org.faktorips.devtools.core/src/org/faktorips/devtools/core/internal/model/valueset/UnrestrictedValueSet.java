@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  */
 public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
 
-    public final static String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
+    public static final String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
