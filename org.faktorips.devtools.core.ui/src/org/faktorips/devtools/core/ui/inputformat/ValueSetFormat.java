@@ -12,11 +12,9 @@
 package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
@@ -34,6 +32,8 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.inputformat.parse.EnumValueSetParser;
+import org.faktorips.devtools.core.ui.inputformat.parse.RangeValueSetParser;
 
 public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
@@ -45,9 +45,15 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private ValueDatatype cachedValueDatatype;
 
+    private RangeValueSetParser rangeValueSetParser;
+
+    private EnumValueSetParser enumValueSetParser;
+
     public ValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         this.valueSetOwner = valueSetOwner;
         this.uiPlugin = uiPlugin;
+        rangeValueSetParser = new RangeValueSetParser(valueSetOwner, getInputFormat());
+        enumValueSetParser = new EnumValueSetParser(valueSetOwner, getInputFormat());
     }
 
     public static ValueSetFormat newInstance(IValueSetOwner valueSetOwner) {
@@ -82,72 +88,28 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         }
     }
 
-    protected IValueSet parseRangeValue(String stringToBeParsed) {
-        List<String> parsedValues = getParsedStringOfRangeValueSet(stringToBeParsed);
-        if (parsedValues.size() == 2 || parsedValues.size() == 3) {
-            if (!isEqualContentRange(parsedValues)) {
-                return createNewRangeValueSet(parsedValues);
-            }
+    private IValueSet getEmptyEnumSet() {
+        IValueSet valueSet = getValueSet();
+        if (valueSet.isEnum() && ((IEnumValueSet)valueSet).getValuesAsList().isEmpty()) {
+            return valueSet;
+        } else {
+            return enumValueSetParser.createNewEnumValueSet(new ArrayList<String>());
         }
-        return getValueSet();
+    }
+
+    private IValueSet getUnrestrictedValueSet() {
+        final IValueSet valueSet = getValueSet();
+        if (valueSet.isUnrestricted()) {
+            return valueSet;
+        } else {
+            UnrestrictedValueSet newValueSet = new UnrestrictedValueSet(valueSetOwner, getNextPartId(valueSetOwner));
+            return newValueSet;
+        }
     }
 
     private boolean isRange(String stringToBeParsed) {
         return stringToBeParsed.startsWith(IRangeValueSet.RANGE_VALUESET_START)
                 && stringToBeParsed.endsWith(IRangeValueSet.RANGE_VALUESET_END);
-    }
-
-    private List<String> getParsedStringOfRangeValueSet(String stringToBeParsed) {
-        String stringWithoutBrackets = stringToBeParsed.replaceAll("(^\\[?)|(\\]?$)", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String[] splitPonits = stringWithoutBrackets.split("(\\s*\\.\\.+\\s*)", 2); //$NON-NLS-1$
-        if (splitPonits.length == 2) {
-            String[] splitSeperator = splitPonits[1].split("(\\s*/\\s*)", 2); //$NON-NLS-1$
-            String[] split = concatenateSplittedArrays(splitPonits, splitSeperator);
-            return parseValues(split);
-        }
-        return Arrays.asList(splitPonits[0]);
-    }
-
-    private String[] concatenateSplittedArrays(String[] splitPonits, String[] splitSeperator) {
-        String[] split = new String[1 + splitSeperator.length];
-        System.arraycopy(splitPonits, 0, split, 0, 1);
-        System.arraycopy(splitSeperator, 0, split, 1, splitSeperator.length);
-        return split;
-    }
-
-    private IValueSet createNewRangeValueSet(List<String> parsedValues) {
-        if (parsedValues.size() == 0) {
-            return new RangeValueSet(valueSetOwner, getNextPartId(valueSetOwner), null, null, null);
-        }
-        if (parsedValues.size() == 2) {
-            return new RangeValueSet(valueSetOwner, getNextPartId(valueSetOwner), parsedValues.get(0),
-                    parsedValues.get(1), null);
-        }
-        return new RangeValueSet(valueSetOwner, getNextPartId(valueSetOwner), parsedValues.get(0), parsedValues.get(1),
-                parsedValues.get(2));
-    }
-
-    private boolean isEqualContentRange(List<String> parsedValues) {
-        if (getValueSet() instanceof IRangeValueSet) {
-            IRangeValueSet range = (IRangeValueSet)getValueSet();
-            if (ObjectUtils.equals(range.getLowerBound(), parsedValues.get(0))
-                    && ObjectUtils.equals(range.getUpperBound(), parsedValues.get(1))
-                    && ((parsedValues.size() == 3 && ObjectUtils.equals(range.getStep(), parsedValues.get(2)) || (parsedValues
-                            .size() == 2 && StringUtils.isEmpty(range.getStep()))))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private IValueSet parseEnumValue(String stringToBeParsed) {
-        String[] split = stringToBeParsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
-        List<String> parsedValues = parseValues(split);
-        if (!isEqualContent(parsedValues)) {
-            EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
-            return enumValueSet;
-        }
-        return getValueSet();
     }
 
     private boolean isUnrestrictedAllowed() {
@@ -182,23 +144,8 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         }
     }
 
-    private IValueSet getUnrestrictedValueSet() {
-        final IValueSet valueSet = getValueSet();
-        if (valueSet.isUnrestricted()) {
-            return valueSet;
-        } else {
-            UnrestrictedValueSet newValueSet = new UnrestrictedValueSet(valueSetOwner, getNextPartId(valueSetOwner));
-            return newValueSet;
-        }
-    }
-
-    private IValueSet getEmptyEnumSet() {
-        IValueSet valueSet = getValueSet();
-        if (valueSet.isEnum() && ((IEnumValueSet)valueSet).getValuesAsList().isEmpty()) {
-            return valueSet;
-        } else {
-            return createNewEnumValueSet(new ArrayList<String>());
-        }
+    private boolean isUnlimitedRange(IRangeValueSet valueSet) {
+        return valueSet.getLowerBound() == null && valueSet.getUpperBound() == null;
     }
 
     private IValueSet getUnlimitedRangeSet() {
@@ -206,21 +153,16 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         if (valueSet.isRange() && isUnlimitedRange((IRangeValueSet)valueSet)) {
             return valueSet;
         } else {
-            return createNewRangeValueSet(new ArrayList<String>());
+            return rangeValueSetParser.createNewRangeValueSetContainingNull(new ArrayList<String>());
         }
     }
 
-    private boolean isUnlimitedRange(IRangeValueSet valueSet) {
-        return valueSet.getLowerBound() == null && valueSet.getUpperBound() == null;
+    protected IValueSet parseRangeValue(String stringToBeParsed) {
+        return rangeValueSetParser.parseValueSet(stringToBeParsed);
     }
 
-    private List<String> parseValues(String[] split) {
-        List<String> parseValues = new ArrayList<String>();
-        IInputFormat<String> inputFormat = getInputFormat();
-        for (String value : split) {
-            parseValues.add(inputFormat.parse(value.trim()));
-        }
-        return parseValues;
+    private IValueSet parseEnumValue(String stringToBeParsed) {
+        return enumValueSetParser.parseValueSet(stringToBeParsed);
     }
 
     protected IInputFormat<String> getInputFormat() {
@@ -233,21 +175,16 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
         return cachedIinputFormat;
     }
 
-    private boolean isEqualContent(List<String> parsedValues) {
-        return getValueSet() instanceof IEnumValueSet && getValuesAsList().equals(parsedValues);
-    }
-
-    private List<String> getValuesAsList() {
-        return ((IEnumValueSet)getValueSet()).getValuesAsList();
+    private ValueDatatype getValueDatatype() {
+        try {
+            return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private IValueSet getValueSet() {
         return this.valueSetOwner.getValueSet();
-    }
-
-    private EnumValueSet createNewEnumValueSet(List<String> values) {
-        EnumValueSet valueSet = new EnumValueSet(valueSetOwner, values, getNextPartId(valueSetOwner));
-        return valueSet;
     }
 
     private String getNextPartId(IIpsObjectPartContainer parent) {
@@ -304,14 +241,6 @@ public class ValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private String formatUnrestrictedValueSet() {
         return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
-    }
-
-    private ValueDatatype getValueDatatype() {
-        try {
-            return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     @Override
