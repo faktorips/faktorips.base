@@ -259,4 +259,8 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         list.add(msg);
     }
 
+    protected boolean isNullValue(String value, ValueDatatype datatype) {
+        return value == null || datatype.isNull(value);
+    }
+
 }

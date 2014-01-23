@@ -151,6 +151,21 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValue_primitiveWithStepNull() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        range.setLowerBound("1");
+        range.setUpperBound("100");
+        range.setStep(null);
+
+        assertTrue(range.containsValue("1", ipsProject));
+        assertTrue(range.containsValue("22", ipsProject));
+        assertTrue(range.containsValue("100", ipsProject));
+        assertFalse(range.containsValue("0", ipsProject));
+        assertFalse(range.containsValue("101", ipsProject));
+    }
+
+    @Test
     public void testContainsValueSet_BothSetsAreRanges() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");

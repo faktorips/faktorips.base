@@ -123,7 +123,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if (datatype.isNull(value)) {
+        if (isNullValue(value, datatype)) {
             return isContainingNull();
         }
         if (isAbstract()) {
@@ -170,19 +170,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (subset.isAbstract()) {
             return false;
         }
-        IEnumValueSet enumSubset = (IEnumValueSet)subset;
-        String[] subsetValues = enumSubset.getValues();
-
-        for (String value : subsetValues) {
-            try {
-                if (!containsValue(value, getIpsProject())) {
-                    return false;
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-        return true;
+        return containsAllValues(subset);
     }
 
     private boolean checkDatatypes(IValueSet subset, ValueDatatype datatype) {
@@ -193,6 +181,22 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
         if (!(subset instanceof EnumValueSet)) {
             return false;
+        }
+        return true;
+    }
+
+    private boolean containsAllValues(IValueSet subset) {
+        IEnumValueSet enumSubset = (IEnumValueSet)subset;
+        String[] subsetValues = enumSubset.getValues();
+    
+        for (String value : subsetValues) {
+            try {
+                if (!containsValue(value, getIpsProject())) {
+                    return false;
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
         return true;
     }
@@ -388,7 +392,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
 
-        return datatype.isNull(value);
+        return isNullValue(value, datatype);
     }
 
     private String getNotNullValue(String value) {

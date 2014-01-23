@@ -151,14 +151,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      */
     private boolean checkValueInRange(String value, ValueDatatype datatype) {
         try {
-            if (datatype.isNull(value)) {
+            if (isNullValue(value, datatype)) {
                 return isContainingNull();
             }
             if (isAbstract()) {
                 return true;
             }
-            if ((!datatype.isNull(getLowerBound()) && datatype.compare(getLowerBound(), value) > 0)
-                    || (!datatype.isNull(getUpperBound()) && datatype.compare(getUpperBound(), value) < 0)) {
+            if ((!isNullValue(getLowerBound(), datatype) && datatype.compare(getLowerBound(), value) > 0)
+                    || (!isNullValue(getUpperBound(), datatype) && datatype.compare(getUpperBound(), value) < 0)) {
                 return false;
             }
             return isValueMatchStep(value, datatype);
@@ -174,7 +174,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     private boolean isValueMatchStep(String value, ValueDatatype datatype) {
         String diff = value;
         NumericDatatype numDatatype = (NumericDatatype)datatype;
-        if (!datatype.isNull(getStep())) {
+        if (!isNullValue(getStep(), datatype)) {
             diff = numDatatype.subtract(value, getLowerBound());
             return numDatatype.divisibleWithoutRemainder(diff, getStep());
         } else {
@@ -251,17 +251,19 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     private boolean isMatchLowerBound(NumericDatatype datatype, String lower, String subLower) {
-        return !datatype.isNull(lower) && (datatype.isNull(subLower) || datatype.compare(lower, subLower) > 0);
+        return !isNullValue(lower, datatype)
+                && (isNullValue(subLower, datatype) || datatype.compare(lower, subLower) > 0);
     }
 
     private boolean isMatchUpperBound(String upper, String subUpper, NumericDatatype datatype) {
-        return !datatype.isNull(upper) && (datatype.isNull(subUpper) || datatype.compare(upper, subUpper) < 0);
+        return !isNullValue(upper, datatype)
+                && (isNullValue(subUpper, datatype) || datatype.compare(upper, subUpper) < 0);
     }
 
     private boolean isSubrangeMatchStep(IRangeValueSet other, NumericDatatype datatype) {
         String subStep = other.getStep();
 
-        if (datatype.isNull(step) && !datatype.isNull(subStep)) {
+        if (isNullValue(step, datatype) && !isNullValue(subStep, datatype)) {
             return true;
         }
         if (datatype.areValuesEqual(step, subStep)) {
@@ -315,7 +317,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         String lowerValue = getLowerBound();
         String upperValue = getUpperBound();
-        if (!datatype.isNull(lowerValue) && !datatype.isNull(upperValue)) {
+        if (!isNullValue(lowerValue, datatype) && !isNullValue(upperValue, datatype)) {
             // range is not unbounded on one side
             if (datatype.compare(lowerValue, upperValue) > 0) {
                 String text = Messages.Range_msgLowerboundGreaterUpperbound;
