@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -19,6 +20,7 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorF
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -58,7 +60,9 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     private CompilationResult<JavaCodeFragment> createNormalCompilationResult(final AttributeNode node,
             CompilationResult<JavaCodeFragment> contextCompilationResult) {
-        String attributGetterName = getAttributeGetterName(node.getAttribute(), node.isDefaultValueAccess());
+        Datatype contextDatatype = contextCompilationResult.getDatatype();
+        String attributGetterName = getAttributeGetterName(node.getAttribute(), node.isDefaultValueAccess(),
+                contextDatatype);
         JavaCodeFragment attributeFragment = createCodeFragment(attributGetterName,
                 contextCompilationResult.getCodeFragment());
         return new CompilationResultImpl(attributeFragment, node.getDatatype());
@@ -78,7 +82,8 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         Datatype conextDatatype = getBasicDatatype(contextCompilationResult);
         IAttribute attribute = node.getAttribute();
         String attributeDatatypeClassName = getDatatypeClassname(attribute);
-        String parameterAttributGetterName = getAttributeGetterName(attribute, node.isDefaultValueAccess());
+        String parameterAttributGetterName = getAttributeGetterName(attribute, node.isDefaultValueAccess(),
+                conextDatatype);
 
         JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
         getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper.class);
@@ -124,25 +129,36 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         return javaCodeFragment;
     }
 
-    protected String getAttributeGetterName(IAttribute attribute, boolean isDefaultValueAccess) {
+    protected String getAttributeGetterName(IAttribute attribute, boolean isDefaultValueAccess, Datatype contextDatatype) {
         String parameterAttributGetterName = isDefaultValueAccess ? getParameterAttributDefaultValueGetterName(attribute)
-                : getParameterAttributGetterName(attribute);
+                : getParameterAttributGetterName(attribute, contextDatatype);
         return parameterAttributGetterName;
     }
 
-    private String getParameterAttributGetterName(IAttribute attribute) {
+    private String getParameterAttributGetterName(IAttribute attribute, Datatype contextDatatype) {
         if (attribute instanceof IPolicyCmptTypeAttribute) {
             XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
             return xPolicyAttribute.getMethodNameGetter();
         } else if (attribute instanceof IProductCmptTypeAttribute) {
+            String contextAccessCode = StringUtils.EMPTY;
             XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
-            if (xProductAttribute.isChangingOverTime()) {
-                return xProductAttribute.getMethodNameGetter();
+            boolean changingOverTime = xProductAttribute.isChangingOverTime();
+            if (contextDatatype instanceof IPolicyCmptType) {
+                IPolicyCmptType contextPolicyCmptType = (IPolicyCmptType)contextDatatype;
+                XPolicyCmptClass xPolicyCmptClass = getModelNode(contextPolicyCmptType, XPolicyCmptClass.class);
+                if (changingOverTime) {
+                    contextAccessCode = xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "().";
+                } else {
+                    contextAccessCode = xPolicyCmptClass.getMethodNameGetProductCmpt() + "().";
+                }
             } else {
-                XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
-                return xProductCmptClass.getMethodNameGetProductCmpt() + "()." //$NON-NLS-1$
-                        + xProductAttribute.getMethodNameGetter();
+                if (!changingOverTime) {
+                    XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
+                    contextAccessCode = xProductCmptClass.getMethodNameGetProductCmpt() + "().";
+                }
             }
+
+            return contextAccessCode + xProductAttribute.getMethodNameGetter();
         }
         throw new GeneratorRuntimeException("This type of attribute is not supported: " + attribute.getClass()); //$NON-NLS-1$
     }

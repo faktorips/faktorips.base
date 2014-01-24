@@ -22,7 +22,9 @@ import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -85,7 +87,15 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         if (isContextTypeFormulaType()) {
             attributes = getExpression().findMatchingProductCmptTypeAttributes();
         } else {
-            attributes = getContextType().findAllAttributes(getIpsProject());
+            IType contextType = getContextType();
+            attributes = contextType.findAllAttributes(getIpsProject());
+            if (contextType instanceof IPolicyCmptType) {
+                IPolicyCmptType policyCmptType = (IPolicyCmptType)contextType;
+                IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
+                if (productCmptType != null) {
+                    attributes.addAll(productCmptType.findAllAttributes(getIpsProject()));
+                }
+            }
         }
         return attributes;
     }
