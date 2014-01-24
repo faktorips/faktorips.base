@@ -15,14 +15,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -30,7 +26,6 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -58,12 +53,6 @@ public class ValueSetFormatTest {
 
     @Mock
     private IIpsModel ipsModel;
-
-    @Mock
-    private ValueDatatype datatype;
-
-    @Mock
-    private IInputFormat<String> inputFormat;
 
     private EnumValueSet enumValueSet;
 
@@ -94,7 +83,7 @@ public class ValueSetFormatTest {
     }
 
     @Test
-    public void testParseInternalEmptyUnrestrictedValueSet_alreadyUnrestricted() throws Exception {
+    public void testParseInternalEmptyUnrestrictedValueSetAlreadyUnrestricted() throws Exception {
         IValueSet unrestrictedValueSet = new UnrestrictedValueSet(configElement, "");
         when(configElement.getValueSet()).thenReturn(unrestrictedValueSet);
         when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
@@ -106,7 +95,7 @@ public class ValueSetFormatTest {
     }
 
     @Test
-    public void testParseInternalEmptyEnumValueSet_alreadyEnumValueSet() {
+    public void testParseInternalEmptyEnumValueSetAlreadyEnumValueSet() {
         IValueSet parseInternal = format.parseInternal("");
 
         assertSame(enumValueSet, parseInternal);
@@ -133,111 +122,5 @@ public class ValueSetFormatTest {
         assertNotNull(parseInternal);
         assertTrue(parseInternal instanceof UnrestrictedValueSet);
         assertEquals(configElement, parseInternal.getParent());
-    }
-
-    @Test
-    public void testParseInternal_NewEnumValueSet() throws Exception {
-        when(uiPlugin.getInputFormat(any(ValueDatatype.class), any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat());
-
-        IValueSet parseInternal = format.parseInternal("test | test2");
-        enumValueSet.addValue("test | test1");
-
-        assertNotNull(parseInternal);
-        assertTrue(parseInternal instanceof EnumValueSet);
-        EnumValueSet enumVS = (EnumValueSet)parseInternal;
-        assertEquals(configElement, enumVS.getParent());
-        assertEquals(2, enumVS.getValuesAsList().size());
-        assertEquals("test", enumVS.getValue(0));
-        assertEquals("test2", enumVS.getValue(1));
-    }
-
-    @Test
-    public void testParseInternal_OldEnumValueSet() throws Exception {
-        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(uiPlugin.getInputFormat(any(ValueDatatype.class), any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat());
-
-        enumValueSet.addValue("test");
-        enumValueSet.addValue("test1");
-        IValueSet parseInternal = format.parseInternal("test | test1");
-
-        assertNotNull(parseInternal);
-        assertTrue(parseInternal instanceof EnumValueSet);
-        EnumValueSet enumVS = (EnumValueSet)parseInternal;
-        assertEquals(configElement, enumVS.getParent());
-        assertTrue(parseInternal.getId().equals("ID"));
-        assertEquals(2, enumVS.getValuesAsList().size());
-        assertEquals("test", enumVS.getValue(0));
-        assertEquals("test1", enumVS.getValue(1));
-    }
-
-    @Test
-    public void testParseInternalRange() throws CoreException {
-        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. 100/ 2]");
-        IRangeValueSet result = (IRangeValueSet)parseInternal;
-
-        assertNotNull(parseInternal);
-        assertEquals(result.getLowerBound(), "10");
-        assertEquals(result.getUpperBound(), "100");
-        assertEquals(result.getStep(), "2");
-    }
-
-    @Test
-    public void testParseRangeValue_StepNull() throws CoreException {
-        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. 2/]");
-        IRangeValueSet result = (IRangeValueSet)parseInternal;
-
-        assertNotNull(parseInternal);
-        assertEquals(result.getLowerBound(), "10");
-        assertEquals(result.getUpperBound(), "2");
-        assertEquals(result.getStep(), "");
-    }
-
-    @Test
-    public void testParseRangeValue_EmptyRange() throws CoreException {
-        IValueSet parseInternal = setUpParseRangeValueSet("[]");
-        IRangeValueSet result = (IRangeValueSet)parseInternal;
-
-        assertEquals(result.getLowerBound(), null);
-        assertEquals(result.getUpperBound(), null);
-        assertEquals(result.getStep(), null);
-    }
-
-    @Test
-    public void testParseRangeValue_UpperBoundEmpty() throws CoreException {
-        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. /2]");
-        IRangeValueSet result = (IRangeValueSet)parseInternal;
-
-        assertNotNull(parseInternal);
-        assertEquals(result.getLowerBound(), "10");
-        assertEquals(result.getUpperBound(), "");
-        assertEquals(result.getStep(), "2");
-    }
-
-    @Test
-    public void testParseRangeValue_TooManyPonits() throws CoreException {
-        IValueSet parseInternal = setUpParseRangeValueSet("[10 .. 3 ..2]");
-        IRangeValueSet result = (IRangeValueSet)parseInternal;
-
-        assertNotNull(parseInternal);
-        assertEquals(result.getLowerBound(), "10");
-        assertEquals(result.getUpperBound(), "3 ..2");
-        assertEquals(result.getStep(), null);
-    }
-
-    private IValueSet setUpParseRangeValueSet(String stringToParse) throws CoreException {
-        when(uiPlugin.getInputFormat(any(ValueDatatype.class), any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat());
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
-                Arrays.asList(ValueSetType.RANGE, ValueSetType.ENUM));
-
-        IRangeValueSet range = mock(IRangeValueSet.class);
-
-        when(configElement.getValueSet()).thenReturn(range);
-        when(range.isRange()).thenReturn(true);
-
-        IValueSet parseInternal = format.parseRangeValue(stringToParse);
-        return parseInternal;
     }
 }

@@ -17,16 +17,41 @@ import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
+/**
+ * Class to parse and format an {@link IRangeValueSet}.
+ * 
+ */
 public class RangeValueSetParser extends ValueSetParser {
 
-    public RangeValueSetParser(IValueSetOwner valueSetOwner, IInputFormat<String> inputFormat) {
-        super(valueSetOwner, inputFormat);
+    public RangeValueSetParser(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+        super(valueSetOwner, uiPlugin);
+    }
+
+    public String formatRangeValueSet(IRangeValueSet valueSet) {
+        String lowerBound = valueSet.getLowerBound();
+        String upperBound = valueSet.getUpperBound();
+        String step = valueSet.getStep();
+        StringBuffer sb = new StringBuffer();
+        sb.append(RangeValueSet.RANGE_VALUESET_START);
+        sb.append((lowerBound == null ? "*" : getInputFormat().format(lowerBound))); //$NON-NLS-1$
+        sb.append(RangeValueSet.RANGE_VALUESET_POINTS);
+        sb.append((upperBound == null ? "*" : getInputFormat().format(upperBound))); //$NON-NLS-1$
+        if (step != null) {
+            sb.append(RangeValueSet.RANGE_STEP_SEPERATOR);
+            sb.append(getInputFormat().format(step));
+        }
+        sb.append(RangeValueSet.RANGE_VALUESET_END);
+        return sb.toString();
     }
 
     @Override
@@ -83,7 +108,7 @@ public class RangeValueSetParser extends ValueSetParser {
         return parsedValues.size() == 2 && StringUtils.isEmpty(range.getStep());
     }
 
-    public IValueSet createNewRangeValueSetContainingNull(List<String> parsedValues) {
+    private IValueSet createNewRangeValueSetContainingNull(List<String> parsedValues) {
         IValueSet valueSet = getValueSet();
         IRangeValueSet range = createNewRangeValues(parsedValues);
         if (valueSet instanceof IRangeValueSet) {
@@ -112,5 +137,42 @@ public class RangeValueSetParser extends ValueSetParser {
             parseValues.add(inputFormat.parse(value.trim()));
         }
         return parseValues;
+    }
+
+    public IValueSet getUnlimitedRangeSet() {
+        IValueSet valueSet = getValueSet();
+        if (valueSet.isRange() && isUnlimitedRange((IRangeValueSet)valueSet)) {
+            return valueSet;
+        } else {
+            return createNewRangeValueSetContainingNull(new ArrayList<String>());
+        }
+    }
+
+    private boolean isUnlimitedRange(IRangeValueSet valueSet) {
+        return valueSet.getLowerBound() == null && valueSet.getUpperBound() == null;
+    }
+
+    @Override
+    public boolean isResponsibleFor(String stringTobeParsed) {
+        return (isRange(stringTobeParsed) && isRangeValueSetAllowed()) || isOnlyRangeAllowed();
+    }
+
+    private boolean isRange(String stringToBeParsed) {
+        return stringToBeParsed.startsWith(IRangeValueSet.RANGE_VALUESET_START)
+                && stringToBeParsed.endsWith(IRangeValueSet.RANGE_VALUESET_END);
+    }
+
+    private boolean isRangeValueSetAllowed() {
+        return isAllowedValueSetType(ValueSetType.RANGE);
+    }
+
+    public boolean isOnlyRangeAllowed() {
+        try {
+            List<ValueSetType> allowedValueSetTypes = getValueSetOwner().getAllowedValueSetTypes(
+                    getValueSetOwner().getIpsProject());
+            return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(ValueSetType.RANGE);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

@@ -18,16 +18,44 @@ import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
+/**
+ * Class to parse and format an {@link IEnumValueSet}.
+ * 
+ */
 public class EnumValueSetParser extends ValueSetParser {
 
-    public EnumValueSetParser(IValueSetOwner valueSetOwner, IInputFormat<String> inputFormat) {
-        super(valueSetOwner, inputFormat);
+    public EnumValueSetParser(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+        super(valueSetOwner, uiPlugin);
+    }
+
+    public String formatEnumValueSet(IEnumValueSet enumValueSet) {
+        StringBuffer buffer = new StringBuffer();
+        String[] values = enumValueSet.getValues();
+        if (values.length == 0) {
+            return EnumValueSet.ENUM_VALUESET_EMPTY;
+        }
+        IInputFormat<String> inputFormat = getInputFormat();
+        for (String id : values) {
+            String formatedEnumText = inputFormat.format(id);
+            buffer.append(formatedEnumText);
+            buffer.append(" " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        if (buffer.length() > 3) {
+            // Remove the separator after the last value (" | ")
+            buffer.delete(buffer.length() - 3, buffer.length());
+        }
+        return buffer.toString();
     }
 
     @Override
     public IValueSet parseValueSet(String stringTobeParsed) {
+        if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringTobeParsed)) {
+            return getEmptyEnumSet();
+        }
         String[] split = stringTobeParsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
         List<String> parsedValues = parseValues(split);
         if (!isEqualContent(parsedValues)) {
@@ -37,7 +65,7 @@ public class EnumValueSetParser extends ValueSetParser {
         return getValueSet();
     }
 
-    public EnumValueSet createNewEnumValueSet(List<String> values) {
+    private EnumValueSet createNewEnumValueSet(List<String> values) {
         EnumValueSet valueSet = new EnumValueSet(getValueSetOwner(), values, getNextPartIdOfValueSetOwner());
         return valueSet;
     }
@@ -57,5 +85,19 @@ public class EnumValueSetParser extends ValueSetParser {
             parseValues.add(inputFormat.parse(value.trim()));
         }
         return parseValues;
+    }
+
+    public IValueSet getEmptyEnumSet() {
+        IValueSet valueSet = getValueSet();
+        if (valueSet.isEnum() && ((IEnumValueSet)valueSet).getValuesAsList().isEmpty()) {
+            return valueSet;
+        } else {
+            return createNewEnumValueSet(new ArrayList<String>());
+        }
+    }
+
+    @Override
+    public boolean isResponsibleFor(String stringTobeParsed) {
+        return isAllowedValueSetType(ValueSetType.ENUM);
     }
 }
