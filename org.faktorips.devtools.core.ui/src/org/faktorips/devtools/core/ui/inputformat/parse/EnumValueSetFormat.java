@@ -89,9 +89,9 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
 
     private List<String> parseValues(String[] split) {
         List<String> parseValues = new ArrayList<String>();
-        IInputFormat<String> inputFormat = getInputFormat();
         for (String value : split) {
-            parseValues.add(inputFormat.parse(value.trim()));
+            String parsedValue = parseValue(value);
+            parseValues.add(parsedValue);
         }
         return parseValues;
     }

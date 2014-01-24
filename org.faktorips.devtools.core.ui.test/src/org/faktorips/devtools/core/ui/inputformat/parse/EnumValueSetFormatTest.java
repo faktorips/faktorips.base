@@ -55,7 +55,7 @@ public class EnumValueSetFormatTest {
 
     private IEnumValueSet enumValueSet;
 
-    private EnumValueSetFormat enumVSFormat;
+    private AbstractValueSetFormat enumVSFormat;
 
     @Before
     public void setUp() throws Exception {

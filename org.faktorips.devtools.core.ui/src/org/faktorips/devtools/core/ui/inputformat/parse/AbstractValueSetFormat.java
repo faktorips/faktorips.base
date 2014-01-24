@@ -81,4 +81,10 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
             throw new CoreRuntimeException(e);
         }
     }
+
+    protected String parseValue(String value) {
+        IInputFormat<String> inputFormat = getInputFormat();
+        String parsedValue = inputFormat.parse(value.trim());
+        return parsedValue;
+    }
 }

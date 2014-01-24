@@ -11,9 +11,6 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -24,13 +21,16 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /**
  * Class to parse and format an {@link IRangeValueSet}.
  * 
  */
 public class RangeValueSetFormat extends AbstractValueSetFormat {
+
+    private static final String REGEX_SEPERATOR = "(\\s*/\\s*)"; //$NON-NLS-1$
+    private static final String REGEX_POINTS = "(\\s*\\.\\.+\\s*)"; //$NON-NLS-1$
+    private static final String REGEX_BRACKETS = "(^\\[?)|(\\]?$)"; //$NON-NLS-1$
 
     public RangeValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
@@ -52,9 +52,9 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         String step = range.getStep();
         StringBuffer sb = new StringBuffer();
         sb.append(RangeValueSet.RANGE_VALUESET_START);
-        sb.append((lowerBound == null ? "*" : getInputFormat().format(lowerBound))); //$NON-NLS-1$
+        sb.append((lowerBound == null ? "<null>" : getInputFormat().format(lowerBound))); //$NON-NLS-1$
         sb.append(RangeValueSet.RANGE_VALUESET_POINTS);
-        sb.append((upperBound == null ? "*" : getInputFormat().format(upperBound))); //$NON-NLS-1$
+        sb.append((upperBound == null ? "<null>" : getInputFormat().format(upperBound))); //$NON-NLS-1$
         if (step != null) {
             sb.append(RangeValueSet.RANGE_STEP_SEPERATOR);
             sb.append(getInputFormat().format(step));
@@ -64,88 +64,63 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     @Override
-    protected IValueSet parseInternal(String stringToBeparsed) {
-        List<String> parsedValues = getParsedStringOfRangeValueSet(stringToBeparsed);
-        if (parsedValues.size() > 1) {
-            if (!isEqualContentRange(parsedValues)) {
-                return createNewRangeValueSetContainingNull(parsedValues);
+    protected IValueSet parseInternal(String stringToBeParsed) {
+        String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, StringUtils.EMPTY);
+        String[] splitByPoints = stringWithoutBrackets.split(REGEX_POINTS, 2);
+        String lowerBound = parseValue(splitByPoints[0]);
+        if (splitByPoints.length == 2) {
+            String[] splitSeperator = splitByPoints[1].split(REGEX_SEPERATOR, 2);
+            String upperBound = parseValue(splitSeperator[0]);
+            String step = getStep(splitSeperator);
+            if (!isEqualContentRange(lowerBound, upperBound, step)) {
+                return createNewRangeValueSetContainingNull(lowerBound, upperBound, step);
             }
         }
         return getValueSet();
     }
 
-    private List<String> getParsedStringOfRangeValueSet(String stringToBeParsed) {
-        String stringWithoutBrackets = stringToBeParsed.replaceAll("(^\\[?)|(\\]?$)", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String[] splitByPoints = stringWithoutBrackets.split("(\\s*\\.\\.+\\s*)", 2); //$NON-NLS-1$
-        ArrayList<String> parsedValueList = new ArrayList<String>();
-        parsedValueList.add(splitByPoints[0]);
-        if (splitByPoints.length == 2) {
-            String[] splitSeperator = splitByPoints[1].split("(\\s*/\\s*)", 2); //$NON-NLS-1$
-            List<String> list = Arrays.asList(splitSeperator);
-            parsedValueList.addAll(list);
+    private String getStep(String[] splitSeperator) {
+        String step;
+        if (splitSeperator.length == 2) {
+            step = splitSeperator[1];
+        } else {
+            step = null;
         }
-        return parseValues(parsedValueList);
+        return step;
     }
 
-    private boolean isEqualContentRange(List<String> parsedValues) {
+    @Override
+    protected String parseValue(String value) {
+        if ("*".equals(value) || StringUtils.isEmpty(value)) { //$NON-NLS-1$
+            return null;
+        } else {
+            return super.parseValue(value);
+        }
+    }
+
+    private boolean isEqualContentRange(String lowerBound, String upperBound, String step) {
         if (getValueSet() instanceof IRangeValueSet) {
             IRangeValueSet range = (IRangeValueSet)getValueSet();
-            if (isEqualBounds(parsedValues, range)) {
-                return true;
-            }
+            return ObjectUtils.equals(range.getLowerBound(), lowerBound)
+                    && ObjectUtils.equals(range.getUpperBound(), upperBound)
+                    && ObjectUtils.equals(step, range.getStep());
         }
         return false;
     }
 
-    private boolean isEqualBounds(List<String> parsedValues, IRangeValueSet range) {
-        if (ObjectUtils.equals(range.getLowerBound(), parsedValues.get(0))
-                && ObjectUtils.equals(range.getUpperBound(), parsedValues.get(1))) {
-            return checkStep(parsedValues, range);
-        }
-        return false;
-    }
-
-    private boolean checkStep(List<String> parsedValues, IRangeValueSet range) {
-        if (isBoundsWithoutSteps(parsedValues, range) || parsedValues.size() == 3
-                && ObjectUtils.equals(range.getStep(), parsedValues.get(2))) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isBoundsWithoutSteps(List<String> parsedValues, IRangeValueSet range) {
-        return parsedValues.size() == 2 && StringUtils.isEmpty(range.getStep());
-    }
-
-    private IValueSet createNewRangeValueSetContainingNull(List<String> parsedValues) {
+    private IValueSet createNewRangeValueSetContainingNull(String lowerBound, String upperBound, String step) {
         IValueSet valueSet = getValueSet();
-        IRangeValueSet range = createNewRangeValues(parsedValues);
+        IRangeValueSet range = new RangeValueSet(getValueSetOwner(), getNextPartIdOfValueSetOwner(), lowerBound,
+                upperBound, step);
+        setIsContainingNull(valueSet, range);
+        return range;
+    }
+
+    private void setIsContainingNull(IValueSet valueSet, IRangeValueSet range) {
         if (valueSet instanceof IRangeValueSet) {
             IRangeValueSet oldRange = (IRangeValueSet)valueSet;
             range.setContainsNull(oldRange.isContainingNull());
         }
-        return range;
-    }
-
-    private IRangeValueSet createNewRangeValues(List<String> parsedValues) {
-        if (parsedValues.size() == 0) {
-            return new RangeValueSet(getValueSetOwner(), getNextPartIdOfValueSetOwner(), null, null, null);
-        }
-        if (parsedValues.size() == 2) {
-            return new RangeValueSet(getValueSetOwner(), getNextPartIdOfValueSetOwner(), parsedValues.get(0),
-                    parsedValues.get(1), null);
-        }
-        return new RangeValueSet(getValueSetOwner(), getNextPartIdOfValueSetOwner(), parsedValues.get(0),
-                parsedValues.get(1), parsedValues.get(2));
-    }
-
-    private List<String> parseValues(List<String> listToparse) {
-        List<String> parseValues = new ArrayList<String>();
-        IInputFormat<String> inputFormat = getInputFormat();
-        for (String value : listToparse) {
-            parseValues.add(inputFormat.parse(value.trim()));
-        }
-        return parseValues;
     }
 
     public IValueSet getUnlimitedRangeSet() {
@@ -153,7 +128,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         if (valueSet.isRange() && isUnlimitedRange((IRangeValueSet)valueSet)) {
             return valueSet;
         } else {
-            return createNewRangeValueSetContainingNull(new ArrayList<String>());
+            return createNewRangeValueSetContainingNull(null, null, null);
         }
     }
 
