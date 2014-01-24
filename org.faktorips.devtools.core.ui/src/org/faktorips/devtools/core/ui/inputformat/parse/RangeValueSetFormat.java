@@ -14,16 +14,15 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
@@ -31,16 +30,26 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
  * Class to parse and format an {@link IRangeValueSet}.
  * 
  */
-public class RangeValueSetParser extends ValueSetParser {
+public class RangeValueSetFormat extends AbstractValueSetFormat {
 
-    public RangeValueSetParser(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+    public RangeValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
     }
 
-    public String formatRangeValueSet(IRangeValueSet valueSet) {
-        String lowerBound = valueSet.getLowerBound();
-        String upperBound = valueSet.getUpperBound();
-        String step = valueSet.getStep();
+    @Override
+    public String formatInternal(IValueSet value) {
+        if (value instanceof IRangeValueSet) {
+            return formatRangeValueSet(value);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private String formatRangeValueSet(IValueSet value) {
+        IRangeValueSet range = (IRangeValueSet)value;
+        String lowerBound = range.getLowerBound();
+        String upperBound = range.getUpperBound();
+        String step = range.getStep();
         StringBuffer sb = new StringBuffer();
         sb.append(RangeValueSet.RANGE_VALUESET_START);
         sb.append((lowerBound == null ? "*" : getInputFormat().format(lowerBound))); //$NON-NLS-1$
@@ -55,8 +64,8 @@ public class RangeValueSetParser extends ValueSetParser {
     }
 
     @Override
-    public IValueSet parseValueSet(String stringTobeParsed) {
-        List<String> parsedValues = getParsedStringOfRangeValueSet(stringTobeParsed);
+    protected IValueSet parseInternal(String stringToBeparsed) {
+        List<String> parsedValues = getParsedStringOfRangeValueSet(stringToBeparsed);
         if (parsedValues.size() > 1) {
             if (!isEqualContentRange(parsedValues)) {
                 return createNewRangeValueSetContainingNull(parsedValues);
@@ -153,26 +162,14 @@ public class RangeValueSetParser extends ValueSetParser {
     }
 
     @Override
-    public boolean isResponsibleFor(String stringTobeParsed) {
-        return (isRange(stringTobeParsed) && isRangeValueSetAllowed()) || isOnlyRangeAllowed();
+    protected void verifyInternal(VerifyEvent e, String resultingText) {
+        // TODO Auto-generated method stub
+
     }
 
-    private boolean isRange(String stringToBeParsed) {
-        return stringToBeParsed.startsWith(IRangeValueSet.RANGE_VALUESET_START)
-                && stringToBeParsed.endsWith(IRangeValueSet.RANGE_VALUESET_END);
-    }
+    @Override
+    protected void initFormat(Locale locale) {
+        // TODO Auto-generated method stub
 
-    private boolean isRangeValueSetAllowed() {
-        return isAllowedValueSetType(ValueSetType.RANGE);
-    }
-
-    public boolean isOnlyRangeAllowed() {
-        try {
-            List<ValueSetType> allowedValueSetTypes = getValueSetOwner().getAllowedValueSetTypes(
-                    getValueSetOwner().getIpsProject());
-            return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(ValueSetType.RANGE);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 }

@@ -31,7 +31,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RangeValueSetParserTest {
+public class RangeValueSetFormatTest {
 
     @Mock
     private IIpsObject ipsObject;
@@ -48,7 +48,7 @@ public class RangeValueSetParserTest {
     @Mock
     private IRangeValueSet range;
 
-    private RangeValueSetParser rangeParser;
+    private RangeValueSetFormat rangeVSFormat;
 
     @Mock
     private IpsUIPlugin uiPlugin;
@@ -58,7 +58,7 @@ public class RangeValueSetParserTest {
 
     @Before
     public void setUp() throws Exception {
-        rangeParser = new RangeValueSetParser(configElement, uiPlugin);
+        rangeVSFormat = new RangeValueSetFormat(configElement, uiPlugin);
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
                 new DefaultInputFormat());
@@ -70,7 +70,7 @@ public class RangeValueSetParserTest {
 
     @Test
     public void testParseInternalRange() {
-        IValueSet parseInternal = rangeParser.parseValueSet("[10 .. 100/ 2]");
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 100/ 2]");
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);
@@ -81,7 +81,7 @@ public class RangeValueSetParserTest {
 
     @Test
     public void testParseRangeValueStepNull() {
-        IValueSet parseInternal = rangeParser.parseValueSet("[10 .. 2/]");
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 2/]");
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);
@@ -92,7 +92,7 @@ public class RangeValueSetParserTest {
 
     @Test
     public void testParseRangeValueEmptyRange() {
-        IValueSet parseInternal = rangeParser.parseValueSet("[]");
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[]");
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertEquals(result.getLowerBound(), null);
@@ -102,7 +102,7 @@ public class RangeValueSetParserTest {
 
     @Test
     public void testParseRangeValueUpperBoundEmpty() {
-        IValueSet parseInternal = rangeParser.parseValueSet("[10 .. /2]");
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. /2]");
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);
@@ -113,7 +113,7 @@ public class RangeValueSetParserTest {
 
     @Test
     public void testParseRangeValueTooManyPonits() {
-        IValueSet parseInternal = rangeParser.parseValueSet("[10 .. 3 ..2]");
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 3 ..2]");
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);

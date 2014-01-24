@@ -11,10 +11,12 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
+import java.util.Locale;
+
+import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -22,18 +24,14 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * Class to parse and format an {@link UnrestrictedValueSet}.
  * 
  */
-public class UnrestrictedValueSetParser extends ValueSetParser {
+public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
 
-    public UnrestrictedValueSetParser(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+    public UnrestrictedValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
     }
 
-    public String formatUnrestrictedValueSet() {
-        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
-    }
-
     @Override
-    public IValueSet parseValueSet(String stringTobeParsed) {
+    protected IValueSet parseInternal(String stringToBeparsed) {
         final IValueSet valueSet = getValueSet();
         if (valueSet.isUnrestricted()) {
             return valueSet;
@@ -45,11 +43,23 @@ public class UnrestrictedValueSetParser extends ValueSetParser {
     }
 
     @Override
-    public boolean isResponsibleFor(String stringTobeParsed) {
-        return Messages.ValueSetFormat_unrestricted.equals(stringTobeParsed) && isUnrestrictedAllowed();
+    public String formatInternal(IValueSet value) {
+        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
     }
 
     public boolean isUnrestrictedAllowed() {
         return isAllowedValueSetType(ValueSetType.UNRESTRICTED);
+    }
+
+    @Override
+    protected void verifyInternal(VerifyEvent e, String resultingText) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    protected void initFormat(Locale locale) {
+        // TODO Auto-generated method stub
+
     }
 }

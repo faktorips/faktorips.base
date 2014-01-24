@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /***
@@ -27,7 +28,7 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
  * {@link IValueSet} is parsed according to its {@link IInputFormat} datatype.
  * 
  */
-public abstract class ValueSetParser {
+public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private final IValueSetOwner valueSetOwner;
 
@@ -37,14 +38,10 @@ public abstract class ValueSetParser {
 
     private ValueDatatype cachedValueDatatype;
 
-    public ValueSetParser(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+    public AbstractValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         this.valueSetOwner = valueSetOwner;
         this.uiPlugin = uiPlugin;
     }
-
-    public abstract IValueSet parseValueSet(String stringTobeParsed);
-
-    public abstract boolean isResponsibleFor(String stringTobeParsed);
 
     protected boolean isAllowedValueSetType(ValueSetType valueSetType) {
         try {

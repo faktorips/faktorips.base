@@ -37,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ValueSetFormatTest {
+public class AnyValueSetFormatTest {
 
     @Mock
     private IIpsObject ipsObject;
@@ -56,18 +56,18 @@ public class ValueSetFormatTest {
 
     private EnumValueSet enumValueSet;
 
-    private ValueSetFormat format;
+    private AnyValueSetFormat format;
 
     @Before
     public void setUp() throws Exception {
         enumValueSet = new EnumValueSet(configElement, "ID");
         when(configElement.getValueSet()).thenReturn(enumValueSet);
         when(configElement.getIpsProject()).thenReturn(ipsProject);
-        format = new ValueSetFormat(configElement, uiPlugin);
+        format = new AnyValueSetFormat(configElement, uiPlugin);
         when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.ENUM));
         when(configElement.getIpsModel()).thenReturn(ipsModel);
         when(configElement.getIpsObject()).thenReturn(ipsObject);
-        format = new ValueSetFormat(configElement, uiPlugin);
+        format = new AnyValueSetFormat(configElement, uiPlugin);
     }
 
     @Test

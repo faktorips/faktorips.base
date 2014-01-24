@@ -33,7 +33,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumValueSetParserTest {
+public class EnumValueSetFormatTest {
 
     @Mock
     private IIpsObject ipsObject;
@@ -55,11 +55,11 @@ public class EnumValueSetParserTest {
 
     private IEnumValueSet enumValueSet;
 
-    private EnumValueSetParser enumParser;
+    private EnumValueSetFormat enumVSFormat;
 
     @Before
     public void setUp() throws Exception {
-        enumParser = new EnumValueSetParser(configElement, uiPlugin);
+        enumVSFormat = new EnumValueSetFormat(configElement, uiPlugin);
         enumValueSet = new EnumValueSet(configElement, "ID");
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
@@ -73,7 +73,7 @@ public class EnumValueSetParserTest {
 
     @Test
     public void testParseInternalNewEnumValueSet() throws Exception {
-        IValueSet parseInternal = enumParser.parseValueSet("test | test2");
+        IValueSet parseInternal = enumVSFormat.parseInternal("test | test2");
         enumValueSet.addValue("test | test1");
         EnumValueSet enumVS = (EnumValueSet)parseInternal;
 
@@ -89,7 +89,7 @@ public class EnumValueSetParserTest {
     public void testParseInternalOldEnumValueSet() throws Exception {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        IValueSet parseInternal = enumParser.parseValueSet("test | test1");
+        IValueSet parseInternal = enumVSFormat.parseInternal("test | test1");
         EnumValueSet enumVS = (EnumValueSet)parseInternal;
 
         assertNotNull(parseInternal);

@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 
 public class ConfigElementField extends FormattingTextField<IValueSet> {
 
@@ -36,7 +36,7 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
 
     public ConfigElementField(IConfigElement configElement, AnyValueSetControl valueSetControl,
             boolean formatOnFocusLost) {
-        super(valueSetControl.getTextControl(), ValueSetFormat.newInstance(configElement), formatOnFocusLost);
+        super(valueSetControl.getTextControl(), AnyValueSetFormat.newInstance(configElement), formatOnFocusLost);
         // important: the whole value set must never be null but may contains null values
         setSupportsNullStringRepresentation(false);
         this.valueSetControl = valueSetControl;

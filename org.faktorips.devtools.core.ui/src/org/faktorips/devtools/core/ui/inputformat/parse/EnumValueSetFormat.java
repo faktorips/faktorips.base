@@ -13,12 +13,14 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
@@ -26,37 +28,44 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
  * Class to parse and format an {@link IEnumValueSet}.
  * 
  */
-public class EnumValueSetParser extends ValueSetParser {
+public class EnumValueSetFormat extends AbstractValueSetFormat {
 
-    public EnumValueSetParser(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+    public EnumValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
     }
 
-    public String formatEnumValueSet(IEnumValueSet enumValueSet) {
-        StringBuffer buffer = new StringBuffer();
+    @Override
+    public String formatInternal(IValueSet value) {
+        if (value instanceof IEnumValueSet) {
+            return formatEnumValueSet((IEnumValueSet)value);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private String formatEnumValueSet(IEnumValueSet enumValueSet) {
         String[] values = enumValueSet.getValues();
         if (values.length == 0) {
             return EnumValueSet.ENUM_VALUESET_EMPTY;
         }
         IInputFormat<String> inputFormat = getInputFormat();
+        StringBuffer buffer = new StringBuffer();
         for (String id : values) {
+            if (buffer.length() > 0) {
+                buffer.append(" " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             String formatedEnumText = inputFormat.format(id);
             buffer.append(formatedEnumText);
-            buffer.append(" " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (buffer.length() > 3) {
-            // Remove the separator after the last value (" | ")
-            buffer.delete(buffer.length() - 3, buffer.length());
         }
         return buffer.toString();
     }
 
     @Override
-    public IValueSet parseValueSet(String stringTobeParsed) {
-        if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringTobeParsed)) {
+    protected IValueSet parseInternal(String stringToBeparsed) {
+        if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringToBeparsed)) {
             return getEmptyEnumSet();
         }
-        String[] split = stringTobeParsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
+        String[] split = stringToBeparsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
         List<String> parsedValues = parseValues(split);
         if (!isEqualContent(parsedValues)) {
             EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
@@ -97,7 +106,14 @@ public class EnumValueSetParser extends ValueSetParser {
     }
 
     @Override
-    public boolean isResponsibleFor(String stringTobeParsed) {
-        return isAllowedValueSetType(ValueSetType.ENUM);
+    protected void verifyInternal(VerifyEvent e, String resultingText) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    protected void initFormat(Locale locale) {
+        // TODO Auto-generated method stub
+
     }
 }
