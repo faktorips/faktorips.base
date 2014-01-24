@@ -133,7 +133,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
         ValueDatatype datatype = findValueDatatype(ipsProject);
-        if (!isValid(ipsProject)) {
+        if (!(datatype instanceof NumericDatatype)) {
             return false;
         }
         return checkValueInRange(value, datatype);
