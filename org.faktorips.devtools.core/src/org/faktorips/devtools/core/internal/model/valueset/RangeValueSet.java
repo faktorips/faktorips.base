@@ -60,13 +60,22 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     /**
-     * Creates a range with the given bounds and and step.
+     * Creates a range with the given bounds and step.
      */
     public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step) {
+        this(parent, partId, lower, upper, step, false);
+    }
+
+    /**
+     * Creates a range with the given bounds, step and continasNull setting.
+     */
+    public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step,
+            boolean containsNull) {
         super(ValueSetType.RANGE, parent, partId);
         lowerBound = lower;
         upperBound = upper;
         this.step = step;
+        this.containsNull = containsNull;
     }
 
     /**

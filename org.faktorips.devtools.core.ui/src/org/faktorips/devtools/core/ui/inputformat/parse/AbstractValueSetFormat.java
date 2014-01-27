@@ -12,8 +12,10 @@
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -34,7 +36,7 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
 
     private final IpsUIPlugin uiPlugin;
 
-    private IInputFormat<String> cachedIinputFormat;
+    private IInputFormat<String> cachedInputFormat;
 
     private ValueDatatype cachedValueDatatype;
 
@@ -44,10 +46,22 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
     }
 
     protected boolean isAllowedValueSetType(ValueSetType valueSetType) {
+        return isAllowedValueSetType(valueSetType, false);
+    }
+
+    protected boolean isOnlyAllowedValueSetType(ValueSetType valueSetType) {
+        return isAllowedValueSetType(valueSetType, true);
+    }
+
+    private boolean isAllowedValueSetType(ValueSetType valueSetType, boolean only) {
         try {
             List<ValueSetType> allowedValueSetTypes = this.valueSetOwner.getAllowedValueSetTypes(this.valueSetOwner
                     .getIpsProject());
-            return allowedValueSetTypes.contains(valueSetType);
+            if (only) {
+                return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(valueSetType);
+            } else {
+                return allowedValueSetTypes.contains(valueSetType);
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -61,17 +75,17 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
         return this.valueSetOwner.getValueSet();
     }
 
-    protected String getNextPartIdOfValueSetOwner() {
+    protected String getNextPartId() {
         return valueSetOwner.getIpsModel().getNextPartId(valueSetOwner);
     }
 
     protected IInputFormat<String> getInputFormat() {
         ValueDatatype valueDatatype = getValueDatatype();
-        if (cachedIinputFormat == null || valueDatatype != cachedValueDatatype) {
-            cachedIinputFormat = uiPlugin.getInputFormat(valueDatatype, valueSetOwner.getIpsProject());
+        if (cachedInputFormat == null || valueDatatype != cachedValueDatatype) {
+            cachedInputFormat = uiPlugin.getInputFormat(valueDatatype, valueSetOwner.getIpsProject());
             cachedValueDatatype = valueDatatype;
         }
-        return cachedIinputFormat;
+        return cachedInputFormat;
     }
 
     private ValueDatatype getValueDatatype() {
@@ -86,5 +100,17 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
         IInputFormat<String> inputFormat = getInputFormat();
         String parsedValue = inputFormat.parse(value.trim());
         return parsedValue;
+    }
+
+    public abstract boolean isResponsibleFor(String resultingText);
+
+    @Override
+    protected void verifyInternal(VerifyEvent e, String resultingText) {
+        // nothing to verify
+    }
+
+    @Override
+    protected void initFormat(Locale locale) {
+        // nothing to init
     }
 }

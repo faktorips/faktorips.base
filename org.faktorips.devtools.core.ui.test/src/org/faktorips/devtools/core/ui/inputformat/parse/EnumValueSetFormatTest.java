@@ -73,7 +73,7 @@ public class EnumValueSetFormatTest {
 
     @Test
     public void testParseInternalNewEnumValueSet() throws Exception {
-        IValueSet parseInternal = enumVSFormat.parseInternal("test | test2");
+        IValueSet parseInternal = enumVSFormat.parse("test | test2");
         enumValueSet.addValue("test | test1");
         EnumValueSet enumVS = (EnumValueSet)parseInternal;
 
@@ -89,7 +89,7 @@ public class EnumValueSetFormatTest {
     public void testParseInternalOldEnumValueSet() throws Exception {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        IValueSet parseInternal = enumVSFormat.parseInternal("test | test1");
+        IValueSet parseInternal = enumVSFormat.parse("test | test1");
         EnumValueSet enumVS = (EnumValueSet)parseInternal;
 
         assertNotNull(parseInternal);

@@ -11,12 +11,11 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
-import java.util.Locale;
-
-import org.eclipse.swt.events.VerifyEvent;
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -36,30 +35,23 @@ public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
         if (valueSet.isUnrestricted()) {
             return valueSet;
         } else {
-            UnrestrictedValueSet newValueSet = new UnrestrictedValueSet(getValueSetOwner(),
-                    getNextPartIdOfValueSetOwner());
+            UnrestrictedValueSet newValueSet = new UnrestrictedValueSet(getValueSetOwner(), getNextPartId());
             return newValueSet;
         }
     }
 
     @Override
     public String formatInternal(IValueSet value) {
-        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
+        return Messages.ValueSetFormat_unrestricted;
     }
 
-    public boolean isUnrestrictedAllowed() {
+    @Override
+    public boolean isResponsibleFor(String stringToBeParsed) {
+        return ((StringUtils.isEmpty(stringToBeParsed) || Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed)) && isUnrestrictedAllowed())
+                || isOnlyAllowedValueSetType(ValueSetType.UNRESTRICTED);
+    }
+
+    private boolean isUnrestrictedAllowed() {
         return isAllowedValueSetType(ValueSetType.UNRESTRICTED);
-    }
-
-    @Override
-    protected void verifyInternal(VerifyEvent e, String resultingText) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    protected void initFormat(Locale locale) {
-        // TODO Auto-generated method stub
-
     }
 }

@@ -13,14 +13,13 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
@@ -63,7 +62,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
     @Override
     protected IValueSet parseInternal(String stringToBeparsed) {
         if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringToBeparsed)) {
-            return getEmptyEnumSet();
+            return createNewEnumValueSet(new ArrayList<String>());
         }
         String[] split = stringToBeparsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
         List<String> parsedValues = parseValues(split);
@@ -75,7 +74,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
     }
 
     private EnumValueSet createNewEnumValueSet(List<String> values) {
-        EnumValueSet valueSet = new EnumValueSet(getValueSetOwner(), values, getNextPartIdOfValueSetOwner());
+        EnumValueSet valueSet = new EnumValueSet(getValueSetOwner(), values, getNextPartId());
         return valueSet;
     }
 
@@ -96,24 +95,9 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         return parseValues;
     }
 
-    public IValueSet getEmptyEnumSet() {
-        IValueSet valueSet = getValueSet();
-        if (valueSet.isEnum() && ((IEnumValueSet)valueSet).getValuesAsList().isEmpty()) {
-            return valueSet;
-        } else {
-            return createNewEnumValueSet(new ArrayList<String>());
-        }
-    }
-
     @Override
-    protected void verifyInternal(VerifyEvent e, String resultingText) {
-        // TODO Auto-generated method stub
-
+    public boolean isResponsibleFor(String resultingText) {
+        return isAllowedValueSetType(ValueSetType.ENUM);
     }
 
-    @Override
-    protected void initFormat(Locale locale) {
-        // TODO Auto-generated method stub
-
-    }
 }
