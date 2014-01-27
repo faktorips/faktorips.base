@@ -14,7 +14,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -104,7 +103,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
-        createLabelWithWidthHint(Messages.ConfigElementEditComposite_defaultValue);
+        createLabel(Messages.ConfigElementEditComposite_defaultValue);
 
         ValueDatatype datatype = getProperty() == null ? null : findDatatypeForDefaultValueEditField();
         if (datatype == null) {
@@ -147,7 +146,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
-        createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
+        createLabel(Messages.ConfigElementEditComposite_valueSet);
 
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
@@ -168,7 +167,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private void createValueSetField(List<EditField<?>> editFields) {
-        createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
+        createLabel(Messages.ConfigElementEditComposite_valueSet);
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
@@ -184,21 +183,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
      * Creates a {@link Label} whose width corresponds to the width of the broadest label of this
      * section.
      */
-    private void createLabelWithWidthHint(String text) {
-        Label label = getToolkit().createLabel(this, text);
-
-        int width1 = getLabelWidthForText(label, Messages.ConfigElementEditComposite_defaultValue);
-        int width2 = getLabelWidthForText(label, Messages.ConfigElementEditComposite_minMaxStepLabel);
-        int width3 = getLabelWidthForText(label, Messages.ConfigElementEditComposite_valueSet);
-        int widthHint = Math.max(Math.max(width1, width2), width3);
-
-        label.setText(text);
-        ((GridData)label.getLayoutData()).widthHint = widthHint;
-    }
-
-    private int getLabelWidthForText(Label label, String text) {
-        label.setText(text);
-        return label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+    private void createLabel(String text) {
+        getToolkit().createLabel(this, text);
     }
 
     private void createEditFieldsForExtensionProperties() {

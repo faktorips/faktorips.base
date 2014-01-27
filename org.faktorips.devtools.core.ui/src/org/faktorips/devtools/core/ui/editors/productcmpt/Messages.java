@@ -33,8 +33,6 @@ public class Messages extends NLS {
 
     public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
 
-    public static String ConfigElementEditComposite_minMaxStepLabel;
-
     public static String ConfigElementEditComposite_valueSet;
 
     public static String ConfigElementEditComposite_defaultValue;

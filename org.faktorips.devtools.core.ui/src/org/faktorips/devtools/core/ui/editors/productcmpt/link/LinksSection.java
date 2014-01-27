@@ -162,7 +162,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             treeViewer.setContentProvider(contentProvider);
             setFilterEmptyAssociations(filterEmptyAssociations);
 
-            treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
             dropListener = new LinkSectionDropListener(editor, treeViewer, generation);
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
@@ -176,6 +175,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(
                     labelProvider, decoManager.getLabelDecorator(), new DecorationContext());
             treeViewer.setLabelProvider(decoratedLabelProvider);
+            treeViewer.setInput(generation);
 
             new TreeMessageHoverService(treeViewer) {
                 @Override
