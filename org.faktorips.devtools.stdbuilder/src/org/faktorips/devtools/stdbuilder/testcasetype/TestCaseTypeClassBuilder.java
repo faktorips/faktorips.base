@@ -69,10 +69,10 @@ import org.w3c.dom.Element;
 public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
     // property key for the Javadoc.
-    private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
-    private final static String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
-    private final static String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
-    private final static String EXECUTEBUSINESSLOGIC_JAVADOC = "EXECUTEBUSINESSLOGIC_JAVADOC";
+    private static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
+    private static final String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
+    private static final String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
+    private static final String EXECUTEBUSINESSLOGIC_JAVADOC = "EXECUTEBUSINESSLOGIC_JAVADOC";
     private static final String EXECUTEASSERTS_JAVADOC = "EXECUTEASSERTS_JAVADOC";
     private static final String EXECUTEBUSINESSLOGIC_TODO_0 = "EXECUTEBUSINESSLOGIC_TODO_0";
     private static final String ASSERT_TODO_0 = "ASSERT_TODO_0";
