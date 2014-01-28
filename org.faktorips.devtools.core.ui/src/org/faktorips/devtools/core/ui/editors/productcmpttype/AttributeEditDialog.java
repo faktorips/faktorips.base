@@ -47,7 +47,6 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -269,9 +268,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
                 currentDatatype, null, ipsProject);
-        if (defaultValueField instanceof EnumTypeDatatypeField) {
-            ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
-        }
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout(true);
