@@ -65,7 +65,7 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
     protected IValueSet parseInternal(String stringToBeParsed) {
         AbstractValueSetFormat valueSetFormat = getValueSetFormat(stringToBeParsed);
         if (valueSetFormat != null) {
-            return valueSetFormat.parse(stringToBeParsed);
+            return valueSetFormat.parse(stringToBeParsed, false);
         } else {
             return getValueSet();
         }

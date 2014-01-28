@@ -88,7 +88,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private String getStep(String[] splitSeperator) {
         if (splitSeperator.length == 2) {
-            return splitSeperator[1];
+            return parseValue(splitSeperator[1]);
         } else {
             return null;
         }
@@ -126,8 +126,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private boolean isRange(String stringToBeParsed) {
-        return stringToBeParsed.startsWith(IRangeValueSet.RANGE_VALUESET_START)
-                && stringToBeParsed.endsWith(IRangeValueSet.RANGE_VALUESET_END);
+        return stringToBeParsed.matches(".*" + REGEX_BOUND_SEPERATOR + ".*"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private IValueSet getUnlimitedRangeSet() {
