@@ -32,6 +32,10 @@ import org.faktorips.fl.functions.PowerInt;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.SqrtDecimal;
 import org.faktorips.fl.functions.WholeNumber;
+import org.faktorips.fl.functions.joda.Days;
+import org.faktorips.fl.functions.joda.Months;
+import org.faktorips.fl.functions.joda.Weeks;
+import org.faktorips.fl.functions.joda.Years;
 
 /**
  * A {@link FunctionResolver} that supports Excel functions. The functions are available in
@@ -73,6 +77,10 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new PowerInt(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
         add(new SqrtDecimal(getFctName(ExcelFunction.SQRT), getFctDescription(ExcelFunction.SQRT)));
         add(new Count(getFctName(ExcelFunction.COUNT), getFctDescription(ExcelFunction.COUNT)));
+        add(new Days(getFctName(ExcelFunction.DAYS), getFctDescription(ExcelFunction.DAYS)));
+        add(new Weeks(getFctName(ExcelFunction.WEEKS), getFctDescription(ExcelFunction.WEEKS)));
+        add(new Months(getFctName(ExcelFunction.MONTHS), getFctDescription(ExcelFunction.MONTHS)));
+        add(new Years(getFctName(ExcelFunction.YEARS), getFctDescription(ExcelFunction.YEARS)));
     }
 
     @Override
