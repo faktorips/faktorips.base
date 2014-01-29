@@ -100,11 +100,11 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
-        String[] row0 = new String[] { "true", "12.3", "1.7976931348623157E308", "1970-01-01", "2147483647",
-                "9223372036854775807", "123.45 EUR", "einfacher text" };
+        String[] row0 = new String[] { "true", "12.3", "1.79769313486231E308", "1970-01-01", "2147483647",
+                "922337203685477000", "123.45 EUR", "einfacher text" };
         assertRow(row0, importTarget.getRow(0));
-        String[] row1 = new String[] { "false", "12.3", "4.9E-324", "1970-01-01", "-2147483648",
-                "-9223372036854775808", "1.00 EUR", "�������{[]}" };
+        String[] row1 = new String[] { "false", "12.3", "4.9E-324", "1970-01-01", "-2147483648", "-922337203685477000",
+                "1.00 EUR", "�������{[]}" };
         assertRow(row1, importTarget.getRow(1));
         String[] row2 = new String[] { null, null, null, null, null, null, null, null };
         assertRow(row2, importTarget.getRow(2));
@@ -213,12 +213,13 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
 
         row1.createCell(0).setCellValue(true);
         row1.createCell(1).setCellValue(12.3);
-        row1.createCell(2).setCellValue(Double.MAX_VALUE);
+        row1.createCell(2).setCellValue(1.79769313486231E308);
         HSSFCell cell = row1.createCell(3);
         cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
         cell.setCellStyle(dateStyle);
         row1.createCell(4).setCellValue(Integer.MAX_VALUE);
-        row1.createCell(5).setCellValue(Long.MAX_VALUE);
+        // In oder to avoid floating Point problems a value of type Big Decimal is used
+        row1.createCell(5).setCellValue(922337203685477000.0);
         row1.createCell(6).setCellValue("123.45 EUR");
         row1.createCell(7).setCellValue("einfacher text");
 
@@ -229,7 +230,8 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
         cell.setCellStyle(dateStyle);
         row2.createCell(4).setCellValue(Integer.MIN_VALUE);
-        row2.createCell(5).setCellValue(Long.MIN_VALUE);
+        // In oder to avoid floating Point problems a value of type Big Decimal is used
+        row2.createCell(5).setCellValue(-922337203685477000.0);
         row2.createCell(6).setCellValue("1EUR");
         row2.createCell(7).setCellValue("�������{[]}");
 

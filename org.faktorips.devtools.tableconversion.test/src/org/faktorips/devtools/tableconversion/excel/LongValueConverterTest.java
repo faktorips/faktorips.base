@@ -16,6 +16,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -73,6 +75,22 @@ public class LongValueConverterTest {
         value = converter.getExternalDataValue(INVALID, ml);
         assertFalse(ml.isEmpty());
         assertEquals(INVALID, value);
+    }
+
+    @Test
+    public void testGetIpsValueTooBigDecimal() {
+        MessageList ml = new MessageList();
+        LongValueConverter converter = new LongValueConverter();
+        converter.getIpsValue(new BigDecimal(9.22337203685478E+180), ml);
+        assertFalse(ml.isEmpty());
+    }
+
+    @Test
+    public void testGetIpsValueTooSmallDecimal() {
+        MessageList ml = new MessageList();
+        LongValueConverter converter = new LongValueConverter();
+        converter.getIpsValue(new BigDecimal(-9.22337203685478E+180), ml);
+        assertFalse(ml.isEmpty());
     }
 
 }

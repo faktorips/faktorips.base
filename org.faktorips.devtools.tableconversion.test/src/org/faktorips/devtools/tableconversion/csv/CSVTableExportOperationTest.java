@@ -73,6 +73,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
+        System.out.println(ml.getText());
         assertTrue(ml.isEmpty());
     }
 

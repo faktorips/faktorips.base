@@ -13,6 +13,7 @@ package org.faktorips.devtools.tableconversion;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -67,10 +68,10 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         IRow row1 = exportSource.newRow();
         row1.setValue(0, "true");
         row1.setValue(1, "12.3");
-        row1.setValue(2, "" + Double.MAX_VALUE);
+        row1.setValue(2, "" + 1.79769313486231E308);
         row1.setValue(3, "2001-04-26");
         row1.setValue(4, "" + Integer.MAX_VALUE);
-        row1.setValue(5, "" + Long.MAX_VALUE);
+        row1.setValue(5, "" + new BigDecimal(922337203685477000.0));
         row1.setValue(6, "10.23EUR");
         row1.setValue(7, "simple text");
 
@@ -80,7 +81,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row2.setValue(2, "" + Double.MIN_VALUE);
         row2.setValue(3, "2001-04-26");
         row2.setValue(4, "" + Integer.MIN_VALUE);
-        row2.setValue(5, "" + Long.MIN_VALUE);
+        row2.setValue(5, "" + new BigDecimal(-922337203685477000.0));
         row2.setValue(6, "1 EUR");
         row2.setValue(7, "�������{[]}");
 
@@ -223,10 +224,11 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("SIMPLE_TEXT"));
         enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("true"));
         enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("12.3"));
-        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("" + Double.MAX_VALUE));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("" + 1.79769313486231E308));
         enumAttributeValues.get(4).setValue(ValueFactory.createStringValue("2001-04-26"));
         enumAttributeValues.get(5).setValue(ValueFactory.createStringValue("" + Integer.MAX_VALUE));
-        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("" + Long.MAX_VALUE));
+        // As Double tend to cause floating Point problems, Big Decimal is used
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("" + new BigDecimal(922337203685477000.0)));
         enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("10.23EUR"));
         enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("SimpleText"));
 
@@ -238,7 +240,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("" + Double.MIN_VALUE));
         enumAttributeValues.get(4).setValue(ValueFactory.createStringValue("2001-04-26"));
         enumAttributeValues.get(5).setValue(ValueFactory.createStringValue("" + Integer.MIN_VALUE));
-        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("" + Long.MIN_VALUE));
+        // As Double tend to cause floating Point problems, Big Decimal is used
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("" + new BigDecimal(-922337203685477000.0)));
         enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("1 EUR"));
         enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("_ValidJavaIdentifier"));
 

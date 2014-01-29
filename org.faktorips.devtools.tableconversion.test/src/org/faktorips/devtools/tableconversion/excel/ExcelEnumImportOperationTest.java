@@ -78,6 +78,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     public void testImportValid() throws Exception {
         MessageList ml = new MessageList();
         executeImport(ml, true);
+        System.out.println(ml.getText());
         assertTrue(ml.isEmpty());
     }
 
