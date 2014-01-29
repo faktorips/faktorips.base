@@ -11,6 +11,8 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import java.math.BigDecimal;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
@@ -35,6 +37,11 @@ public class DoubleValueConverter extends AbstractValueConverter {
             // inside)
             // as double (e.g. 1 will be 1.0)
             return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
+        }
+        if (externalDataValue instanceof BigDecimal) {
+            // format converted double value of BigDecimal
+            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces(((BigDecimal)externalDataValue)
+                    .doubleValue());
         }
         messageList
                 .add(ExtSystemsMessageUtil

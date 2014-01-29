@@ -14,6 +14,9 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +38,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
+public abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
 
     public static final String MSG_CODE_FIXED_OPEN_OFFICE_DATE = "fixedOpenOfficeDate"; //$NON-NLS-1$
 
@@ -77,7 +80,9 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
                 }
                 return format.getIpsValue(dateCellValue, datatype, messageList);
             }
-            return format.getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
+            double numericCellValue = cell.getNumericCellValue();
+            BigDecimal roundedResult = roundNumericCellValue(numericCellValue);
+            return format.getIpsValue(roundedResult, datatype, messageList);
         } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
             return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
@@ -87,6 +92,30 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
             }
             return format.getIpsValue(value, datatype, messageList);
         }
+    }
+
+    /**
+     * Correct rounding errors in Floating-point arithmetic caused by Excel import.
+     * <p>
+     * Floating-point numbers that are stored in excel have a precision of 15 digits. Because excel
+     * stores these numbers in floating-point representation, the imported value may differ at the
+     * 16th position. To avoid different representations, Excel always round every number after the
+     * 15th digit. Hence we need to do it like Excel in order to get the same number
+     * representations.
+     * 
+     * @see <a href="https://support.microsoft.com/kb/78113">Excel-FloatingPoints</a>
+     * @see <a href="http://support.microsoft.com/kb/269370">Excel-LongDigits</a>
+     * 
+     * @param numericCellValue the potential inaccurate cell content
+     * @return the correct rounded numericCellValue
+     */
+    BigDecimal roundNumericCellValue(double numericCellValue) {
+        BigDecimal bigDecimal = new BigDecimal(numericCellValue, new MathContext(15, RoundingMode.HALF_UP));
+        BigDecimal formattedBigDecimal = bigDecimal.stripTrailingZeros();
+        if (formattedBigDecimal.scale() < 0) {
+            formattedBigDecimal = formattedBigDecimal.setScale(0);
+        }
+        return formattedBigDecimal;
     }
 
     /**

@@ -11,6 +11,8 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
@@ -31,9 +33,9 @@ public class IntegerValueConverter extends AbstractValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof Integer) {
             return ((Integer)externalDataValue).toString();
-        } else if (externalDataValue instanceof Double) {
-            int value = ((Double)externalDataValue).intValue();
-            Double restored = new Double(value);
+        } else if (externalDataValue instanceof BigDecimal) {
+            int value = ((BigDecimal)externalDataValue).intValue();
+            BigDecimal restored = new BigDecimal(value);
             if (!restored.equals(externalDataValue)) {
                 messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(
                         externalDataValue.toString(), restored.toString()));
