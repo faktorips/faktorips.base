@@ -80,8 +80,16 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
 
     /**
      * Returns the default value for the property.
+     * 
+     * @deprecated TODO
      */
+    @Deprecated
     public Object getDefaultValue();
+
+    /**
+     * Returns the default value for the property.
+     */
+    public Object getDefaultValue(IIpsObjectPartContainer partContainer);
 
     /**
      * Stores the value in the XML element. Simple values should be appended as CDATA sections to

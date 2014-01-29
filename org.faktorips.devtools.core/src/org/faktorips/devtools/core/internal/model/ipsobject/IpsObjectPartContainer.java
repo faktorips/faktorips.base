@@ -310,7 +310,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             extPropertyValues = new HashMap<String, Object>();
             Collection<IExtensionPropertyDefinition> properties = getExtensionPropertyDefinitions();
             for (IExtensionPropertyDefinition propertie : properties) {
-                extPropertyValues.put(propertie.getPropertyId(), propertie.getDefaultValue());
+                extPropertyValues.put(propertie.getPropertyId(), propertie.getDefaultValue(this));
             }
         }
     }

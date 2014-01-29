@@ -68,6 +68,11 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         return defaultValue;
     }
 
+    @Override
+    public Object getDefaultValue(IIpsObjectPartContainer partContainer) {
+        return getDefaultValue();
+    }
+
     public void setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
     }
