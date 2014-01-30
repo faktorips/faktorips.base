@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -271,6 +272,27 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        super.validateDefaultValue(valueDatatype, result, ipsProject);
+        if (!isProductRelevant() && valueDatatype instanceof EnumTypeDatatypeAdapter) {
+            EnumTypeDatatypeAdapter enumTypeDatatype = (EnumTypeDatatypeAdapter)valueDatatype;
+            if (enumTypeDatatype.getEnumType().isExtensible()) {
+                expectNoDefaultValue(result);
+            }
+        }
+    }
+
+    private void expectNoDefaultValue(MessageList result) {
+        if (getDefaultValue() != null) {
+            result.newError(
+                    MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE,
+                    Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType,
+                    this, PROPERTY_DEFAULT_VALUE);
         }
     }
 
