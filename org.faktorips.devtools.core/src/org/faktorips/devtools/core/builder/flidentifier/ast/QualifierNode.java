@@ -11,8 +11,10 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -27,12 +29,19 @@ public class QualifierNode extends IdentifierNode {
 
     private final String runtimeId;
 
-    QualifierNode(String runtimeId, IType targetType, boolean listOfTypes) {
-        super(targetType, listOfTypes);
+    private final IProductCmpt productCmpt;
+
+    QualifierNode(IProductCmpt productCmpt, String runtimeId, IType targetType, boolean listOfTypes, Region region) {
+        super(targetType, listOfTypes, region);
+        this.productCmpt = productCmpt;
         this.runtimeId = runtimeId;
     }
 
     public String getRuntimeId() {
         return runtimeId;
+    }
+
+    public IProductCmpt getProductCmpt() {
+        return productCmpt;
     }
 }

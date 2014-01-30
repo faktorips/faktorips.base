@@ -96,6 +96,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencies, details);
         addRelatedTableContentsQualifiedNameTypes(dependencies, details);
+        addDependenciesInFormulas(dependencies, details);
     }
 
     /**
@@ -112,6 +113,17 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        }
+    }
+
+    private void addDependenciesInFormulas(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
+        IFormula[] formulas = getFormulas();
+        for (IFormula formula : formulas) {
+            if (formula instanceof Expression) {
+                Expression expression = (Expression)formula;
+                expression.dependsOn(dependencies, details);
+            }
         }
     }
 

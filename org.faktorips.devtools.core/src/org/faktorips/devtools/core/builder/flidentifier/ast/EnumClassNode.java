@@ -11,6 +11,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -25,8 +26,8 @@ import org.faktorips.datatype.EnumDatatype;
  */
 public class EnumClassNode extends IdentifierNode {
 
-    EnumClassNode(EnumClass datatype) {
-        super(datatype);
+    EnumClassNode(EnumClass datatype, Region region) {
+        super(datatype, region);
     }
 
     @Override

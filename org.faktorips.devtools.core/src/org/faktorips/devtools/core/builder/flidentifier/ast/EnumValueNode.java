@@ -11,6 +11,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 
@@ -24,8 +25,8 @@ public class EnumValueNode extends IdentifierNode {
 
     private final String enumValueName;
 
-    EnumValueNode(String enumValueName, EnumDatatype datatype) {
-        super(datatype);
+    EnumValueNode(String enumValueName, EnumDatatype datatype, Region region) {
+        super(datatype, region);
         this.enumValueName = enumValueName;
     }
 

@@ -914,7 +914,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Helper to easily add details to the given map.
+     * Helper to easily add a new {@link IDependencyDetail} to the map.
      * 
      * @param details The map of dependencies to the list of details.
      * @param dependency The dependency to add the details for
@@ -925,7 +925,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             IDependency dependency,
             IIpsObjectPartContainer part,
             String propertyName) {
+        DependencyDetail dependencyDetail = new DependencyDetail(part, propertyName);
+        addDetails(details, dependency, dependencyDetail);
+    }
 
+    /**
+     * Helper to easily add a {@link IDependencyDetail} to the list of dependencies.
+     * 
+     * @param details The map of dependencies to the list of details.
+     * @param dependency The dependency to add the details for
+     * @param dependencyDetail The {@link IDependencyDetail} that should be added
+     */
+    protected void addDetails(Map<IDependency, List<IDependencyDetail>> details,
+            IDependency dependency,
+            DependencyDetail dependencyDetail) {
         if (details == null) {
             return;
         }
@@ -934,7 +947,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             detailList = new ArrayList<IDependencyDetail>();
             details.put(dependency, detailList);
         }
-        detailList.add(new DependencyDetail(part, propertyName));
+        detailList.add(dependencyDetail);
     }
 
     private ILabel newLabel(String id) {

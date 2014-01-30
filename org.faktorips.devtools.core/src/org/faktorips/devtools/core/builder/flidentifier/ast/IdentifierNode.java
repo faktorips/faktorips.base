@@ -11,6 +11,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 
@@ -28,11 +29,14 @@ public abstract class IdentifierNode {
 
     private IdentifierNode successor;
 
-    protected IdentifierNode(Datatype datatype) {
-        this(datatype, false);
+    private final Region region;
+
+    protected IdentifierNode(Datatype datatype, Region region) {
+        this(datatype, false, region);
     }
 
-    protected IdentifierNode(Datatype datatype, boolean listOfTypes) {
+    protected IdentifierNode(Datatype datatype, boolean listOfTypes, Region region) {
+        this.region = region;
         if (listOfTypes) {
             this.datatype = new ListOfTypeDatatype(datatype);
         } else {
@@ -58,6 +62,10 @@ public abstract class IdentifierNode {
 
     public boolean isListOfTypeDatatype() {
         return datatype instanceof ListOfTypeDatatype;
+    }
+
+    public Region getRegion() {
+        return region;
     }
 
 }

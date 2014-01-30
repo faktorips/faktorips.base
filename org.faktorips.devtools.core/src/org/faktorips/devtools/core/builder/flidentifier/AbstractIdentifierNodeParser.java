@@ -11,6 +11,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -36,6 +37,8 @@ public abstract class AbstractIdentifierNodeParser {
 
     private IdentifierNode previousNode;
 
+    private Region region;
+
     /**
      * Creates the identifier parser and store the {@link IExpression} as well as the used
      * {@link IIpsProject}.
@@ -55,10 +58,11 @@ public abstract class AbstractIdentifierNodeParser {
      * @param identifierPart The part of the identifier that should be parsed
      * @param previousNode The previous node that was already parsed. May be null if there is no
      *            previous identifier part
-     * 
+     * @param region The text region which is parsed
      * @return The parsed identifier node or null if this parser is not responsible
      */
-    public IdentifierNode parse(String identifierPart, IdentifierNode previousNode) {
+    public IdentifierNode parse(String identifierPart, IdentifierNode previousNode, Region region) {
+        this.region = region;
         this.setIdentifierPart(identifierPart);
         if (previousNode == null) {
             this.setContextType(expression.findProductCmptType(getIpsProject()));
@@ -94,6 +98,10 @@ public abstract class AbstractIdentifierNodeParser {
 
     public IIpsProject getIpsProject() {
         return ipsProject;
+    }
+
+    public Region getRegion() {
+        return region;
     }
 
     public void setIdentifierPart(String identifierPart) {
@@ -136,7 +144,7 @@ public abstract class AbstractIdentifierNodeParser {
      * @return The {@link IdentifierNodeFactory} to create a new {@link IdentifierNode}
      */
     public IdentifierNodeFactory nodeFactory() {
-        return new IdentifierNodeFactory(getIdentifierPart(), getIpsProject());
+        return new IdentifierNodeFactory(getIdentifierPart(), region, getIpsProject());
     }
 
 }

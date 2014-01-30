@@ -58,7 +58,7 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_noAssociationWithoutPreviousNode() throws Exception {
-        IdentifierNode node = associationParser.parse(MY_ASSOCIATION, null);
+        IdentifierNode node = associationParser.parse(MY_ASSOCIATION, null, null);
 
         assertNull(node);
     }
@@ -67,7 +67,8 @@ public class AssociationParserTest extends AbstractParserTest {
     public void testParse_findAssociation1To1() throws Exception {
         when(assciation.is1ToMany()).thenReturn(false);
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType));
+        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType),
+                null);
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(targetType, node.getDatatype());
@@ -77,7 +78,8 @@ public class AssociationParserTest extends AbstractParserTest {
     public void testParse_findAssociation1ToMany() throws Exception {
         when(assciation.is1ToMany()).thenReturn(true);
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType));
+        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType),
+                null);
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -88,7 +90,7 @@ public class AssociationParserTest extends AbstractParserTest {
         when(assciation.is1ToMany()).thenReturn(false);
 
         AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType,
-                true));
+                true), null);
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -99,7 +101,7 @@ public class AssociationParserTest extends AbstractParserTest {
         when(assciation.is1ToMany()).thenReturn(true);
 
         AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType,
-                true));
+                true), null);
 
         assertEquals(assciation, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -108,7 +110,7 @@ public class AssociationParserTest extends AbstractParserTest {
     @Test
     public void testParse_findNoAssociation() throws Exception {
         AssociationNode node = (AssociationNode)associationParser.parse(ANY_ASSOCIATION, new TestNode(
-                getProductCmptType()));
+                getProductCmptType()), null);
 
         assertNull(node);
     }

@@ -12,6 +12,7 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,8 +33,9 @@ public class AssociationNode extends IdentifierNode {
 
     private final boolean listContext;
 
-    AssociationNode(IAssociation association, boolean listContext, IIpsProject ipsProject) throws CoreException {
-        super(association.findTarget(ipsProject), association.is1ToMany() || listContext);
+    AssociationNode(IAssociation association, boolean listContext, Region region, IIpsProject ipsProject)
+            throws CoreException {
+        super(association.findTarget(ipsProject), association.is1ToMany() || listContext, region);
         this.association = association;
         this.listContext = listContext;
         this.ipsProject = ipsProject;

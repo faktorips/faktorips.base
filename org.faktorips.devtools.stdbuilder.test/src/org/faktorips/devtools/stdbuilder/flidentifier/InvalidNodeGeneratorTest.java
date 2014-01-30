@@ -51,7 +51,7 @@ public class InvalidNodeGeneratorTest {
     @Before
     public void setUp() throws Exception {
         generator = new InvalidNodeGenerator(factory, builderSet);
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", ipsProject);
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", null, ipsProject);
         invalidNode = nodeFactory.createInvalidIdentifier(MESSAGE);
     }
 

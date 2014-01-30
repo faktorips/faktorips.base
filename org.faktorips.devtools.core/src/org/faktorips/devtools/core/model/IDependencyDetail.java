@@ -11,9 +11,11 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
  * This interface describes details of a dependency (part and property) causing the dependency.
@@ -55,5 +57,17 @@ public interface IDependencyDetail {
      * @return The name of the property causing this dependency
      */
     public String getPropertyName();
+
+    /**
+     * This method updates the value of the property this {@link IDependencyDetail} points to. It is
+     * used by the refactoring framework to update the value after a renaming or moving an
+     * {@link IIpsObject}.
+     * 
+     * 
+     * @param targetIpsPackageFragment The new package framework of the refactored
+     *            {@link IIpsObject}
+     * @param newName The new name of the refactored {@link IIpsObject}
+     */
+    public void refactorValue(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException;
 
 }

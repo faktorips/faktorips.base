@@ -12,6 +12,7 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.Region;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -41,10 +42,13 @@ public class IdentifierNodeFactory {
 
     private final String identifierPart;
 
+    private final Region region;
+
     private final IIpsProject ipsProject;
 
-    public IdentifierNodeFactory(String identifierPart, IIpsProject ipsProject) {
+    public IdentifierNodeFactory(String identifierPart, Region region, IIpsProject ipsProject) {
         this.identifierPart = identifierPart;
+        this.region = region;
         this.ipsProject = ipsProject;
     }
 
@@ -57,7 +61,7 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createParameterNode(IParameter parameter) {
         try {
-            ParameterNode parameterNode = new ParameterNode(parameter, ipsProject);
+            ParameterNode parameterNode = new ParameterNode(parameter, region, ipsProject);
             if (parameterNode.getDatatype() == null) {
                 return createInvalidNoDatatype(parameter.getDatatype());
             }
@@ -82,7 +86,8 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createAttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes) {
         try {
-            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, ipsProject);
+            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, region,
+                    ipsProject);
             if (attributeNode.getDatatype() == null) {
                 return createInvalidNoDatatype(attribute.getDatatype());
             }
@@ -116,7 +121,7 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createAssociationNode(IAssociation association, boolean listOfType) {
         try {
-            return new AssociationNode(association, listOfType, ipsProject);
+            return new AssociationNode(association, listOfType, region, ipsProject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(association.getTarget());
@@ -138,7 +143,7 @@ public class IdentifierNodeFactory {
             }
             IPolicyCmptType targetType = productCmpt.findPolicyCmptType(ipsProject);
             String runtimeId = productCmpt.getRuntimeId();
-            return new QualifierNode(runtimeId, targetType, listOfTypes);
+            return new QualifierNode(productCmpt, runtimeId, targetType, listOfTypes, region);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(productCmpt.getProductCmptType());
@@ -163,7 +168,7 @@ public class IdentifierNodeFactory {
      * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
      */
     public IdentifierNode createIndexBasedAssociationNode(int index, IType targetType) {
-        return new IndexNode(index, targetType);
+        return new IndexNode(index, targetType, region);
     }
 
     private IdentifierNode createInvalidAssociationTargetNode(String targetName) {
@@ -178,7 +183,7 @@ public class IdentifierNodeFactory {
      * @return The {@link EnumClassNode}
      */
     public EnumClassNode createEnumClassNode(EnumClass datatype) {
-        return new EnumClassNode(datatype);
+        return new EnumClassNode(datatype, region);
     }
 
     /**
@@ -189,7 +194,7 @@ public class IdentifierNodeFactory {
      * @return The {@link EnumValueNode}
      */
     public EnumValueNode createEnumValueNode(String enumValue, EnumDatatype enumDatatype) {
-        return new EnumValueNode(enumValue, enumDatatype);
+        return new EnumValueNode(enumValue, enumDatatype, region);
     }
 
     /**
@@ -199,7 +204,7 @@ public class IdentifierNodeFactory {
      * @return The new {@link InvalidIdentifierNode}
      */
     public InvalidIdentifierNode createInvalidIdentifier(Message message) {
-        return new InvalidIdentifierNode(message);
+        return new InvalidIdentifierNode(message, region);
     }
 
 }

@@ -11,8 +11,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +42,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
-import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -206,25 +203,10 @@ public final class MoveRenameIpsObjectHelper {
                 }
 
                 modifications.addBeforeChanged(part.getIpsSrcFile());
-
-                PropertyDescriptor property = BeanUtil.getPropertyDescriptor(part.getClass(), detail.getPropertyName());
-                try {
-                    String newQualifiedName = buildQualifiedName(targetIpsPackageFragment, newName);
-                    property.getWriteMethod().invoke(part, newQualifiedName);
-                } catch (IllegalAccessException e) {
-                    throw new CoreException(new IpsStatus(e));
-                } catch (IllegalArgumentException e) {
-                    throw new CoreException(new IpsStatus(e));
-                } catch (InvocationTargetException e) {
-                    throw new CoreException(new IpsStatus(e));
-                }
+                detail.refactorValue(targetIpsPackageFragment, newName);
             }
         }
         return modifications;
-    }
-
-    private String buildQualifiedName(IIpsPackageFragment ipsPackageFragment, String name) {
-        return ipsPackageFragment.isDefaultPackage() ? name : ipsPackageFragment.getName() + "." + name; //$NON-NLS-1$
     }
 
     private IIpsSrcFile moveSourceFileToTargetFile(IIpsPackageFragment targetIpsPackageFragment,

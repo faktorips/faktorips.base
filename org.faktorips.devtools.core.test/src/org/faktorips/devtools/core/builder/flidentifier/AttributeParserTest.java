@@ -72,7 +72,7 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_noAttribute() throws Exception {
-        IdentifierNode attributeNode = attributeParser.parse(MY_ATTRIBUTE, new TestNode(getProductCmptType()));
+        IdentifierNode attributeNode = attributeParser.parse(MY_ATTRIBUTE, new TestNode(getProductCmptType()), null);
 
         assertNull(attributeNode);
     }
@@ -82,7 +82,7 @@ public class AttributeParserTest extends AbstractParserTest {
         when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
 
         AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(
-                getProductCmptType()));
+                getProductCmptType()), null);
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertFalse(attributeNode.isDefaultValueAccess());
@@ -92,7 +92,7 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testParse_findAttributeInOtherType() throws Exception {
         when(otherType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(otherType));
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(otherType), null);
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertFalse(attributeNode.isDefaultValueAccess());
@@ -102,7 +102,8 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testParse_findAttributeInList() throws Exception {
         when(otherType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(otherType, true));
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(otherType, true),
+                null);
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertEquals(new ListOfTypeDatatype(Datatype.INTEGER), attributeNode.getDatatype());
@@ -114,7 +115,8 @@ public class AttributeParserTest extends AbstractParserTest {
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(identifierPart, new TestNode(policyType));
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(identifierPart, new TestNode(policyType),
+                null);
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertTrue(attributeNode.isDefaultValueAccess());
@@ -127,7 +129,7 @@ public class AttributeParserTest extends AbstractParserTest {
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(identifierPart, new TestNode(
-                policyType));
+                policyType), null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }
@@ -139,7 +141,7 @@ public class AttributeParserTest extends AbstractParserTest {
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(identifierPart, new TestNode(
-                policyType));
+                policyType), null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }

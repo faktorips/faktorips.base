@@ -11,14 +11,20 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.Region;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -26,11 +32,22 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
+import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
+import org.faktorips.devtools.core.model.DependencyDetail;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
@@ -44,6 +61,9 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.fl.JavaExprCompiler;
+import org.faktorips.fl.parser.FlParser;
+import org.faktorips.fl.parser.ParseException;
+import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -392,6 +412,101 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             return true;
         }
 
+    }
+
+    void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
+        SimpleNode rootNode;
+        try {
+            rootNode = parseExpression();
+        } catch (ParseException e) {
+            return;
+        }
+        IdentifierVisitor visitor = new IdentifierVisitor(new IdentifierParser(this, getIpsProject()));
+        visitor.visit(rootNode, null);
+        Map<IdentifierNode, SimpleNode> identifiers = visitor.identifiers;
+        for (Entry<IdentifierNode, SimpleNode> entry : identifiers.entrySet()) {
+            addDependenciesForIdentifier(entry, dependencies, details);
+        }
+    }
+
+    int getPosition(SimpleNode node) {
+        Matcher matcher = Pattern.compile("(\\r\\n)|\\r|\\n").matcher(getExpression()); //$NON-NLS-1$
+        boolean found = false;
+        for (int i = 1; i < node.getFirstToken().beginLine; i++) {
+            found = matcher.find();
+        }
+        return (found ? matcher.end() : 0) + node.getFirstToken().beginColumn - 1;
+    }
+
+    private IdentifierNode addDependenciesForIdentifier(Entry<IdentifierNode, SimpleNode> entry,
+            Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
+        IdentifierNode identifierNode = entry.getKey();
+        while (identifierNode != null) {
+            int startOffset = 0;
+            int endOffset = 0;
+            IpsObjectDependency dependency = null;
+            if (identifierNode instanceof QualifierNode) {
+                QualifierNode qualifierNode = (QualifierNode)identifierNode;
+                dependency = IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
+                        qualifierNode.getProductCmpt().getQualifiedNameType());
+                startOffset = 1;
+                endOffset = 2;
+            } else if (identifierNode instanceof EnumClassNode) {
+                EnumClassNode enumClassNode = (EnumClassNode)identifierNode;
+                dependency = IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
+                        new QualifiedNameType(enumClassNode.getDatatype().getEnumDatatype().getQualifiedName(),
+                                IpsObjectType.ENUM_TYPE));
+            }
+            if (dependency != null) {
+                dependencies.add(dependency);
+                DependencyDetail dependencyDetail = new ExpressionDependencyDetail(this,
+                        IExpression.PROPERTY_EXPRESSION, getTextRegion(entry, startOffset, endOffset));
+                addDetails(details, dependency, dependencyDetail);
+            }
+            identifierNode = identifierNode.getSuccessor();
+        }
+        return identifierNode;
+    }
+
+    private Region getTextRegion(Entry<IdentifierNode, SimpleNode> entry, int startOffset, int endOffset) {
+        int position = getPosition(entry.getValue());
+        IdentifierNode identifierNode = entry.getKey();
+        int startIndex = position + identifierNode.getRegion().getOffset() + startOffset;
+        int length = identifierNode.getRegion().getLength() - endOffset;
+        return new Region(startIndex, length);
+
+    }
+
+    private SimpleNode parseExpression() throws ParseException {
+        StringReader reader = new StringReader(getExpression());
+        FlParser parser = new FlParser(reader);
+        parser.ReInit(reader);
+        SimpleNode rootNode = parser.start();
+        return rootNode;
+    }
+
+    private static class ExpressionDependencyDetail extends DependencyDetail {
+
+        private final Region textRegion;
+
+        private ExpressionDependencyDetail(IExpression expression, String propertyName, Region textRegion) {
+            super(expression, propertyName);
+            this.textRegion = textRegion;
+        }
+
+        @Override
+        public IExpression getPart() {
+            return (IExpression)super.getPart();
+        }
+
+        @Override
+        public void refactorValue(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
+            String expressionText = getPart().getExpression();
+            String newExpressionText = expressionText.substring(0, textRegion.getOffset()) + newName
+                    + expressionText.substring(textRegion.getOffset() + textRegion.getLength());
+            getPart().setExpression(newExpressionText);
+        }
     }
 
 }

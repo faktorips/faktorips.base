@@ -77,7 +77,7 @@ public class AssociationNodeGeneratorTest {
 
     @Before
     public void setUp() throws CoreException {
-        nodeFactory = new IdentifierNodeFactory("AssociationNodeGeneratorTest", ipsProject);
+        nodeFactory = new IdentifierNodeFactory("AssociationNodeGeneratorTest", null, ipsProject);
         setUpMockAssociation();
         setUpCompilationResult();
         setUpBuilderSet();

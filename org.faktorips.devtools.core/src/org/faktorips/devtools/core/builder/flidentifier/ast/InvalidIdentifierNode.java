@@ -11,6 +11,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.util.message.Message;
 
 /**
@@ -25,8 +26,8 @@ public class InvalidIdentifierNode extends IdentifierNode {
 
     private final Message errorMessage;
 
-    InvalidIdentifierNode(Message errorMessage) {
-        super(null);
+    InvalidIdentifierNode(Message errorMessage, Region region) {
+        super(null, region);
         this.errorMessage = errorMessage;
     }
 

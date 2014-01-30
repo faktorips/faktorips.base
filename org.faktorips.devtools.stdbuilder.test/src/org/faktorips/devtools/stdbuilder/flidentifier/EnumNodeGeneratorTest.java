@@ -67,7 +67,7 @@ public class EnumNodeGeneratorTest {
     @Test
     public void testGetCompilationResultForEnumTypeDatatypeAdapter() throws Exception {
         EnumTypeDatatypeAdapter enumDatatype = mock(EnumTypeDatatypeAdapter.class);
-        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), ipsProject).createEnumValueNode(
+        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), null, ipsProject).createEnumValueNode(
                 ENUM_VALUE_NAME, enumDatatype);
         EnumTypeBuilder enumTypeBuilder = mock(EnumTypeBuilder.class);
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment(enumValueNode.getEnumValueName());
@@ -87,7 +87,7 @@ public class EnumNodeGeneratorTest {
     @Test
     public void testGetCompilationResultForEnumDatatype() throws Exception {
         EnumDatatype enumDatatype = mock(EnumDatatype.class);
-        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), ipsProject).createEnumValueNode(
+        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), null, ipsProject).createEnumValueNode(
                 ENUM_VALUE_NAME, enumDatatype);
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         when(enumNodeGenerator.getIpsProject()).thenReturn(ipsProject);

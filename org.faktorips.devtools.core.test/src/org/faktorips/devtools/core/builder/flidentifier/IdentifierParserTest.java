@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.eclipse.jface.text.Region;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -175,22 +176,29 @@ public class IdentifierParserTest {
         ParameterNode parameterNode = (ParameterNode)identifierParser.parse(MY_IDENTIFIER);
 
         assertEquals(parameter, parameterNode.getParameter());
+        assertEquals(new Region(0, 12), parameterNode.getRegion());
         AssociationNode associationNode = (AssociationNode)parameterNode.getSuccessor();
         assertEquals(association, associationNode.getAssociation());
+        assertEquals(new Region(13, 13), associationNode.getRegion());
         assertTrue(associationNode.getDatatype() instanceof ListOfTypeDatatype);
         AssociationNode qualifiedAssociationNode = (AssociationNode)associationNode.getSuccessor();
         assertEquals(associationQualified, qualifiedAssociationNode.getAssociation());
+        assertEquals(new Region(27, 14), qualifiedAssociationNode.getRegion());
         QualifierNode qualifiedNode = (QualifierNode)qualifiedAssociationNode.getSuccessor();
         assertEquals("runtimeId.abc123", qualifiedNode.getRuntimeId());
+        assertEquals(new Region(42, 9), qualifiedNode.getRegion());
         assertTrue(qualifiedNode.getDatatype() instanceof ListOfTypeDatatype);
         AssociationNode indexedAssociationNode = (AssociationNode)qualifiedNode.getSuccessor();
         assertEquals(associationIndexed, indexedAssociationNode.getAssociation());
+        assertEquals(new Region(52, 14), indexedAssociationNode.getRegion());
         IndexNode indexNode = (IndexNode)indexedAssociationNode.getSuccessor();
         assertEquals(0, indexNode.getIndex());
         assertEquals(type3, indexNode.getDatatype());
+        assertEquals(new Region(67, 2), indexNode.getRegion());
         AttributeNode attributeNode = (AttributeNode)indexNode.getSuccessor();
         assertEquals(attribute, attributeNode.getAttribute());
         assertEquals(Datatype.GREGORIAN_CALENDAR, attributeNode.getDatatype());
+        assertEquals(new Region(70, 11), attributeNode.getRegion());
     }
 
     @Test
