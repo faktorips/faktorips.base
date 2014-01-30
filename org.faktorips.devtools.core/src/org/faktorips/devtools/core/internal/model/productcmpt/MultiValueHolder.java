@@ -186,7 +186,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
     @Override
     public int compareTo(IValueHolder<List<SingleValueHolder>> o) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -278,12 +277,30 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
         @Override
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent, IValue<?> defaultValue) {
-            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
-            if (defaultValue.getContent() != null) {
+            ArrayList<SingleValueHolder> values;
+            if (defaultValue instanceof StringValue) {
+                values = splitMultiDefaultValues(parent, defaultValue);
+            } else if (defaultValue.getContent() != null) {
+                values = new ArrayList<SingleValueHolder>();
                 SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
                 values.add(singleValueHolder);
+            } else {
+                values = new ArrayList<SingleValueHolder>();
             }
             return new MultiValueHolder(parent, values);
+        }
+
+        private ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, IValue<?> defaultValue) {
+            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+            StringValue stringValue = (StringValue)defaultValue;
+            String content = stringValue.getContent();
+            if (content != null) {
+                String[] split = content.split(","); //$NON-NLS-1$
+                for (String string : split) {
+                    values.add(new SingleValueHolder(parent, new StringValue(string.trim())));
+                }
+            }
+            return values;
         }
     }
 

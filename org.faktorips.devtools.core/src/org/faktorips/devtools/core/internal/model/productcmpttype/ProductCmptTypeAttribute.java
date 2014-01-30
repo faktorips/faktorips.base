@@ -308,7 +308,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         super.validateThis(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
-        validateDefaultValue(result);
     }
 
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
@@ -339,6 +338,15 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                             PROPERTY_MULTILINGUAL));
                 }
             }
+        }
+    }
+
+    @Override
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        if (!(isMultiValueAttribute() && getDefaultValue() != null && getDefaultValue().contains(","))) { //$NON-NLS-1$
+            super.validateDefaultValue(valueDatatype, result, ipsProject);
+            validateDefaultValue(result);
         }
     }
 

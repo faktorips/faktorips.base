@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -265,10 +266,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDefaultValueEditField() {
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                currentDatatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
-                currentDatatype, null, ipsProject);
+        if (attribute.isMultiValueAttribute()) {
+            defaultValueField = new TextField(getToolkit().createText(defaultEditFieldPlaceholder));
+        } else {
+            ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    currentDatatype);
+            defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
+                    currentDatatype, null, ipsProject);
+        }
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout(true);
