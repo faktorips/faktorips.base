@@ -38,25 +38,25 @@ public interface IValueSet extends IIpsObjectPart {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "VALUESET-"; //$NON-NLS-1$
+    public final static String MSGCODE_PREFIX = "VALUESET-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value could not be parsed.
      */
-    public static final String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
+    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set.
      */
-    public static final String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
+    public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type this value set is based on does not
      * support <code>null</code>-values, but this value set is marked to contain a <code>null</code>
      * -value.
      */
-    public static final String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
+    public final static String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
 
     /**
      * Return the value set owner which is also the parent of this object.
