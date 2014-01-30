@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -92,24 +91,6 @@ public class AnyValueSetFormatTest {
         IValueSet parseInternal = format.parseInternal("");
 
         assertSame(unrestrictedValueSet, parseInternal);
-    }
-
-    @Test
-    public void testParseInternalEmptyEnumValueSetAlreadyEnumValueSet() {
-        IValueSet parseInternal = format.parseInternal("");
-
-        assertSame(enumValueSet, parseInternal);
-    }
-
-    @Test
-    public void testParseInternalEmptyEnumValueSet() {
-        IValueSet anyValueSet = new UnrestrictedValueSet(configElement, "");
-        when(configElement.getValueSet()).thenReturn(anyValueSet);
-
-        IValueSet parseInternal = format.parseInternal("");
-
-        assertTrue(parseInternal instanceof IEnumValueSet);
-        assertTrue(((IEnumValueSet)parseInternal).getValuesAsList().isEmpty());
     }
 
     @Test

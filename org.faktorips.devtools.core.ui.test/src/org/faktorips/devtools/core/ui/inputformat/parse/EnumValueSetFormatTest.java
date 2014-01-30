@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
@@ -60,7 +62,7 @@ public class EnumValueSetFormatTest {
     @Before
     public void setUp() throws Exception {
         enumVSFormat = new EnumValueSetFormat(configElement, uiPlugin);
-        enumValueSet = new EnumValueSet(configElement, "ID");
+        enumValueSet = new EnumValueSet(configElement, "");
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
                 new DefaultInputFormat());
@@ -69,6 +71,17 @@ public class EnumValueSetFormatTest {
         when(configElement.getIpsModel()).thenReturn(ipsModel);
         when(configElement.getIpsObject()).thenReturn(ipsObject);
         when(configElement.getValueSet()).thenReturn(enumValueSet);
+    }
+
+    @Test
+    public void testParseInternalEmptyEnumValueSet() {
+        IValueSet parseInternal = enumVSFormat.parse("");
+        List<String> parsedValuesAsList = ((IEnumValueSet)parseInternal).getValuesAsList();
+        String value = parsedValuesAsList.get(0);
+
+        assertTrue(parseInternal instanceof IEnumValueSet);
+        assertEquals(parsedValuesAsList.size(), 1);
+        assertTrue(value.isEmpty());
     }
 
     @Test
@@ -95,10 +108,9 @@ public class EnumValueSetFormatTest {
         assertNotNull(parseInternal);
         assertTrue(parseInternal instanceof EnumValueSet);
         assertEquals(configElement, enumVS.getParent());
-        assertTrue(("ID").equals(parseInternal.getId()));
+        assertTrue(("").equals(parseInternal.getId()));
         assertEquals(2, enumVS.getValuesAsList().size());
         assertEquals("test", enumVS.getValue(0));
         assertEquals("test1", enumVS.getValue(1));
     }
-
 }

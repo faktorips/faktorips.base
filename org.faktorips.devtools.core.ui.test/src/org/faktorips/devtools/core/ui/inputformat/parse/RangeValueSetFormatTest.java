@@ -87,7 +87,7 @@ public class RangeValueSetFormatTest {
         assertNotNull(parseInternal);
         assertEquals(result.getLowerBound(), "10");
         assertEquals(result.getUpperBound(), "2");
-        assertEquals(result.getStep(), "");
+        assertEquals(result.getStep(), null);
     }
 
     @Test

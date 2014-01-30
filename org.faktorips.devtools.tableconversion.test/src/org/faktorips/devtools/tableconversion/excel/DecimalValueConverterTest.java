@@ -94,7 +94,7 @@ public class DecimalValueConverterTest {
         final String VALID = "1234";
 
         assertTrue(Datatype.DECIMAL.isParsable(null));
-        assertFalse(Datatype.DECIMAL.isParsable(EMPTY));
+        assertTrue(Datatype.DECIMAL.isParsable(EMPTY));
         assertTrue(Datatype.DECIMAL.isParsable(DECIMAL_NULL));
         assertTrue(Datatype.DECIMAL.isParsable(VALID));
 
