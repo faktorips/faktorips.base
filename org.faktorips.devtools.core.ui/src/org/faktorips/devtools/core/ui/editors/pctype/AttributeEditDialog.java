@@ -594,7 +594,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), workArea, currentDatatype, null,
                 ipsProject);
-        if (defaultValueField instanceof EnumTypeDatatypeField) {
+        if (defaultValueField instanceof EnumTypeDatatypeField && !attribute.isProductRelevant()) {
             ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
         }
         adjustLabelWidth();
