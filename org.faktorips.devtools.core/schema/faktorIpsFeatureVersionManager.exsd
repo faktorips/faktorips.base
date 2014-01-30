@@ -136,7 +136,7 @@ Default is false for additional features and true for the core feature.
       <documentation>
          Copyright (c) Faktor Zehn AG. &gt;http://www.faktorzehn.org&lt;
 
-This source code is available under the terms of the AGPL Affero General Public License version 3 and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype component under the terms of the LGPL Lesser General Public License version 3. 
+This source code is available under the terms of the AGPL Affero General Public License version 3. 
 
 Please see LICENSE.txt for full license terms, including the additional permissions and the possibility of alternative license terms.
       </documentation>
