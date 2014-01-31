@@ -183,12 +183,18 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
             throws CoreException {
+        validateDefaultValue(getDefaultValue(), valueDatatype, result, ipsProject);
+    }
 
-        if (!valueDatatype.isParsable(defaultValue)) {
-            String defaultValueInMsg = defaultValue;
-            if (defaultValue == null) {
+    protected void validateDefaultValue(String defaultValueToValidate,
+            ValueDatatype valueDatatype,
+            MessageList result,
+            IIpsProject ipsProject) throws CoreException {
+        if (!valueDatatype.isParsable(defaultValueToValidate)) {
+            String defaultValueInMsg = defaultValueToValidate;
+            if (defaultValueToValidate == null) {
                 defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            } else if (defaultValue.equals("")) { //$NON-NLS-1$
+            } else if (defaultValueToValidate.equals("")) { //$NON-NLS-1$
                 defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
             }
             String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
@@ -197,9 +203,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
         }
         IValueSet valueSet = getValueSet();
         if (valueSet != null) {
-            if (defaultValue != null && !valueSet.containsValue(defaultValue, ipsProject)) {
+            if (defaultValueToValidate != null && !valueSet.containsValue(defaultValueToValidate, ipsProject)) {
                 result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
-                        Messages.Attribute_msg_DefaultNotInValueset, defaultValue), Message.WARNING, this,
+                        Messages.Attribute_msg_DefaultNotInValueset, defaultValueToValidate), Message.WARNING, this,
                         PROPERTY_DEFAULT_VALUE));
             }
         }

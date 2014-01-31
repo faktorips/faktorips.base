@@ -344,17 +344,35 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
             throws CoreException {
-        if (!(isMultiValueAttribute() && getDefaultValue() != null && getDefaultValue().contains(","))) { //$NON-NLS-1$
+        if (isMultiValueAttribute() && getDefaultValue() != null) {
+            validateMultiDefaultValues(valueDatatype, result, ipsProject);
+        } else {
             super.validateDefaultValue(valueDatatype, result, ipsProject);
-            validateDefaultValue(result);
         }
     }
 
-    private void validateDefaultValue(MessageList result) throws CoreException {
-        if (!isVisible() && !getValueSet().containsValue(getDefaultValue(), getIpsProject())) {
+    @Override
+    protected void validateDefaultValue(String defaultValueToValidate,
+            ValueDatatype valueDatatype,
+            MessageList result,
+            IIpsProject ipsProject) throws CoreException {
+        super.validateDefaultValue(defaultValueToValidate, valueDatatype, result, ipsProject);
+        validateDefaultValue(defaultValueToValidate, result);
+    }
+
+    private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        String[] split = getDefaultValue().split(","); //$NON-NLS-1$
+        for (String singleValue : split) {
+            validateDefaultValue(singleValue.trim(), valueDatatype, result, ipsProject);
+        }
+    }
+
+    private void validateDefaultValue(String defaultValue, MessageList result) throws CoreException {
+        if (!isVisible() && !getValueSet().containsValue(defaultValue, getIpsProject())) {
             result.remove(result.getMessageByCode(MSGCODE_DEFAULT_NOT_IN_VALUESET));
-            result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN, NLS.bind(
-                    Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, getDefaultValue()),
+            result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,
+                    NLS.bind(Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, defaultValue),
                     this, PROPERTY_DEFAULT_VALUE);
         }
     }
