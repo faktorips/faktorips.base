@@ -32,7 +32,9 @@ public enum ExcelFunction {
     DAYS("days"),
     WEEKS("weeks"),
     MONTHS("months"),
-    YEARS("years");
+    YEARS("years"),
+    DATE("date");
+
     private final String propertyKey;
 
     private ExcelFunction(String propertyKey) {

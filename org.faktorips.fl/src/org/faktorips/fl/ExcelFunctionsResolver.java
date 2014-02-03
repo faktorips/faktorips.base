@@ -33,6 +33,7 @@ import org.faktorips.fl.functions.PowerInt;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.SqrtDecimal;
 import org.faktorips.fl.functions.WholeNumber;
+import org.faktorips.fl.functions.joda.Date;
 import org.faktorips.fl.functions.joda.Days;
 import org.faktorips.fl.functions.joda.Months;
 import org.faktorips.fl.functions.joda.Weeks;
@@ -82,6 +83,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new Weeks(getFctName(ExcelFunction.WEEKS), getFctDescription(ExcelFunction.WEEKS)));
         add(new Months(getFctName(ExcelFunction.MONTHS), getFctDescription(ExcelFunction.MONTHS)));
         add(new Years(getFctName(ExcelFunction.YEARS), getFctDescription(ExcelFunction.YEARS)));
+        add(new Date(getFctName(ExcelFunction.DATE), getFctDescription(ExcelFunction.DATE)));
     }
 
     @Override
