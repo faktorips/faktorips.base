@@ -265,7 +265,8 @@ public enum FunctionSignatures {
     YEARS(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
 
     DATE(LocalDateDatatype.DATATYPE, new Datatype[] { ValueDatatype.PRIMITIVE_INT, ValueDatatype.PRIMITIVE_INT,
-            ValueDatatype.PRIMITIVE_INT });
+            ValueDatatype.PRIMITIVE_INT }),
+    DAYS360(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE });
 
     private final Datatype type;
     private final Datatype[] argTypes;
