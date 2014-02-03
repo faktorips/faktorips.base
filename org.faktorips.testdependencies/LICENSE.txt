@@ -1,4 +1,4 @@
-Faktor-IPS is available under a dual licensing scheme whereby
+﻿Faktor-IPS is available under a dual licensing scheme whereby
 the use of Faktor-IPS in projects that are licensed so as to be
 compatible with AGPL Version 3 may use Faktor-IPS under the 
 terms of the compatible license. Please see agpl-3.0.txt in the 
@@ -30,7 +30,7 @@ covered work or in the Appropriate Legal Notices.
 
 ------------------------------------------------------------------
 
-Deutsche Übersetzung (Rechtsverbindlich ist die englische version): 
+Deutsche Übersetzung: 
 
 ------------------------------------------------------------------
 
