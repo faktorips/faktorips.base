@@ -37,6 +37,9 @@ import org.faktorips.fl.functions.joda.Date;
 import org.faktorips.fl.functions.joda.Days;
 import org.faktorips.fl.functions.joda.Days360;
 import org.faktorips.fl.functions.joda.Months;
+import org.faktorips.fl.functions.joda.NrOfMonths;
+import org.faktorips.fl.functions.joda.NrOfWeeks;
+import org.faktorips.fl.functions.joda.NrOfYears;
 import org.faktorips.fl.functions.joda.Weeks;
 import org.faktorips.fl.functions.joda.Years;
 
@@ -86,6 +89,9 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new Years(getFctName(ExcelFunction.YEARS), getFctDescription(ExcelFunction.YEARS)));
         add(new Date(getFctName(ExcelFunction.DATE), getFctDescription(ExcelFunction.DATE)));
         add(new Days360(getFctName(ExcelFunction.DAYS360), getFctDescription(ExcelFunction.DAYS360)));
+        add(new NrOfWeeks(getFctName(ExcelFunction.NrOfWeeks), getFctDescription(ExcelFunction.NrOfWeeks)));
+        add(new NrOfMonths(getFctName(ExcelFunction.NrOfMonths), getFctDescription(ExcelFunction.NrOfMonths)));
+        add(new NrOfYears(getFctName(ExcelFunction.NrOfYears), getFctDescription(ExcelFunction.NrOfYears)));
     }
 
     @Override

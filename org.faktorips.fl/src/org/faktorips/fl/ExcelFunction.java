@@ -34,7 +34,10 @@ public enum ExcelFunction {
     MONTHS("months"),
     YEARS("years"),
     DATE("date"),
-    DAYS360("days360");
+    DAYS360("days360"),
+    NrOfWeeks("NrOfWeeks"),
+    NrOfMonths("NrOfMonths"),
+    NrOfYears("NrOfYears");
 
     private final String propertyKey;
 
