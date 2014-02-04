@@ -619,7 +619,9 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == targetPackageRootField) {
-            targetInput.setIpsPackageFragment(null);
+            targetInput.setIpsPckFragmentRoot(targetPackageRootControl.getIpsPackageFragmentRoot());
+            targetInput.setIpsPackageFragment(targetPackageRootControl.getIpsPackageFragmentRoot()
+                    .getDefaultIpsPackageFragment());
         } else if (e.field == checkboxFieldReplaceProductCmptManual) {
             tableViewer.getTable().setEnabled(false);
             needRecreateTarget = true;
