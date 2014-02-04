@@ -14,11 +14,13 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.Count;
 import org.faktorips.fl.functions.If;
 import org.faktorips.fl.functions.IsEmpty;
+import org.faktorips.fl.functions.MinMaxComparableDatatypes;
 import org.faktorips.fl.functions.MinMaxDecimal;
 import org.faktorips.fl.functions.MinMaxDouble;
 import org.faktorips.fl.functions.MinMaxInt;
@@ -75,6 +77,12 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new MinMaxLong(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
         add(new MinMaxDouble(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
         add(new MinMaxDouble(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
+
+        add(new MinMaxComparableDatatypes(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false,
+                LocalDateDatatype.DATATYPE));
+        add(new MinMaxComparableDatatypes(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true,
+                LocalDateDatatype.DATATYPE));
+
         add(new PowerDecimal(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
         add(new PowerInt(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
         add(new SqrtDecimal(getFctName(ExcelFunction.SQRT), getFctDescription(ExcelFunction.SQRT)));

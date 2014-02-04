@@ -53,7 +53,7 @@ public abstract class JavaExprCompilerAbstractTest {
         if (result.failed()) {
             System.out.println(result);
         }
-        assertTrue(result.successfull());
+        assertTrue(result.getMessages().toString(), result.successfull());
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression);
