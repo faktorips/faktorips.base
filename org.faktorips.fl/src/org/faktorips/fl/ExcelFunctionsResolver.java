@@ -15,11 +15,13 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.Count;
 import org.faktorips.fl.functions.If;
 import org.faktorips.fl.functions.IsEmpty;
+import org.faktorips.fl.functions.MinMaxComparableDatatypes;
 import org.faktorips.fl.functions.MinMaxDecimal;
 import org.faktorips.fl.functions.MinMaxDouble;
 import org.faktorips.fl.functions.MinMaxInt;
@@ -33,6 +35,15 @@ import org.faktorips.fl.functions.PowerInt;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.SqrtDecimal;
 import org.faktorips.fl.functions.WholeNumber;
+import org.faktorips.fl.functions.joda.Date;
+import org.faktorips.fl.functions.joda.Days;
+import org.faktorips.fl.functions.joda.Days360;
+import org.faktorips.fl.functions.joda.Months;
+import org.faktorips.fl.functions.joda.NrOfMonths;
+import org.faktorips.fl.functions.joda.NrOfWeeks;
+import org.faktorips.fl.functions.joda.NrOfYears;
+import org.faktorips.fl.functions.joda.Weeks;
+import org.faktorips.fl.functions.joda.Years;
 
 /**
  * A {@link FunctionResolver} that supports Excel functions. The functions are available in
@@ -70,10 +81,25 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new MinMaxLong(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
         add(new MinMaxDouble(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
         add(new MinMaxDouble(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
+
+        add(new MinMaxComparableDatatypes(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false,
+                LocalDateDatatype.DATATYPE));
+        add(new MinMaxComparableDatatypes(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true,
+                LocalDateDatatype.DATATYPE));
+
         add(new PowerDecimal(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
         add(new PowerInt(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
         add(new SqrtDecimal(getFctName(ExcelFunction.SQRT), getFctDescription(ExcelFunction.SQRT)));
         add(new Count(getFctName(ExcelFunction.COUNT), getFctDescription(ExcelFunction.COUNT)));
+        add(new Days(getFctName(ExcelFunction.DAYS), getFctDescription(ExcelFunction.DAYS)));
+        add(new Weeks(getFctName(ExcelFunction.WEEKS), getFctDescription(ExcelFunction.WEEKS)));
+        add(new Months(getFctName(ExcelFunction.MONTHS), getFctDescription(ExcelFunction.MONTHS)));
+        add(new Years(getFctName(ExcelFunction.YEARS), getFctDescription(ExcelFunction.YEARS)));
+        add(new Date(getFctName(ExcelFunction.DATE), getFctDescription(ExcelFunction.DATE)));
+        add(new Days360(getFctName(ExcelFunction.DAYS360), getFctDescription(ExcelFunction.DAYS360)));
+        add(new NrOfWeeks(getFctName(ExcelFunction.NrOfWeeks), getFctDescription(ExcelFunction.NrOfWeeks)));
+        add(new NrOfMonths(getFctName(ExcelFunction.NrOfMonths), getFctDescription(ExcelFunction.NrOfMonths)));
+        add(new NrOfYears(getFctName(ExcelFunction.NrOfYears), getFctDescription(ExcelFunction.NrOfYears)));
     }
 
     @Override

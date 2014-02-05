@@ -48,6 +48,10 @@
 <unit id="org.eclipse.jgit.feature.group" version="1.3.0.201202151440-r"/>
 <repository location="https://update.faktorzehn.org/p2repositories/egit/updates"/>
 </location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.faktorips.valuetypes.joda.feature.feature.group" version="1.0.0.ci_20130306-1621"/>
+<repository location="http://update.faktorzehn.org/p2repositories/fips/FaktorIPS_Valuetypes_Addons"/>
+</location>
 </locations>
 <launcherArgs>
 <vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -XX:MaxPermSize=256m</vmArgs>
