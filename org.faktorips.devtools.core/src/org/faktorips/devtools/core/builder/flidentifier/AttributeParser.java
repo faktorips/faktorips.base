@@ -82,7 +82,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         }
     }
 
-    private List<IAttribute> findAttributes() throws CoreException {
+    protected List<IAttribute> findAttributes() throws CoreException {
         List<IAttribute> attributes;
         if (isContextTypeFormulaType()) {
             attributes = getExpression().findMatchingProductCmptTypeAttributes();
