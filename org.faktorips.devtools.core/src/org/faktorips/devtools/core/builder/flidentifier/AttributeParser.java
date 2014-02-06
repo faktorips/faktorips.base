@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -17,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -31,6 +33,9 @@ import org.faktorips.util.message.Message;
 /**
  * This parser tries to match the identifier part to an attribute of the context type. In case of
  * success it will return an {@link AttributeNode} otherwise it returns <code>null</code>.
+ * <p>
+ * Allows both policy- and the corresponding product attributes if the context type is a policy
+ * component type.
  * 
  * @author dirmeier
  */
@@ -47,18 +52,26 @@ public class AttributeParser extends TypeBasedIdentifierParser {
 
     @Override
     public IdentifierNode parseInternal() {
-        boolean defaultValueAccess = isDefaultValueAccess(getIdentifierPart());
-        List<IAttribute> attributes;
         try {
-            attributes = findAttributes();
-        } catch (CoreException e) {
+            return parseToNode();
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return nodeFactory().createInvalidIdentifier(
                     Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
                             Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
         }
+
+    }
+
+    private IdentifierNode parseToNode() {
+        boolean defaultValueAccess = isDefaultValueAccess(getIdentifierPart());
+        String attributeName = getAttributeName(getIdentifierPart(), defaultValueAccess);
+        List<IAttribute> attributes = findAttributes();
+        return createNode(defaultValueAccess, attributeName, attributes);
+    }
+
+    private IdentifierNode createNode(boolean defaultValueAccess, String attributeName, List<IAttribute> attributes) {
         for (IAttribute anAttribute : attributes) {
-            String attributeName = getAttributeName(getIdentifierPart(), defaultValueAccess);
             if (attributeName.equals(anAttribute.getName())) {
                 if (isAllowd(anAttribute, defaultValueAccess)) {
                     return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isListOfTypeContext());
@@ -82,22 +95,48 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         }
     }
 
-    protected List<IAttribute> findAttributes() throws CoreException {
+    protected List<IAttribute> findAttributes() {
         List<IAttribute> attributes;
         if (isContextTypeFormulaType()) {
             attributes = getExpression().findMatchingProductCmptTypeAttributes();
         } else {
-            IType contextType = getContextType();
-            attributes = contextType.findAllAttributes(getIpsProject());
-            if (contextType instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)contextType;
-                IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
-                if (productCmptType != null) {
-                    attributes.addAll(productCmptType.findAllAttributes(getIpsProject()));
-                }
-            }
+            attributes = getPolicyAndProductAttributesFromIType();
         }
         return attributes;
+    }
+
+    private List<IAttribute> getPolicyAndProductAttributesFromIType() {
+        List<IAttribute> attributes;
+        IType contextType = getContextType();
+        attributes = findAllAttributesFor(contextType);
+        attributes.addAll(findProductAttributesIfAvailable(contextType));
+        return attributes;
+    }
+
+    private List<IAttribute> findAllAttributesFor(IType contextType) {
+        try {
+            return contextType.findAllAttributes(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private List<IAttribute> findProductAttributesIfAvailable(IType contextType) {
+        if (contextType instanceof IPolicyCmptType) {
+            IProductCmptType productCmptType = findProductCmptType((IPolicyCmptType)contextType);
+            if (productCmptType != null) {
+                return findAllAttributesFor(productCmptType);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private IProductCmptType findProductCmptType(IPolicyCmptType policyCmptType) {
+        try {
+            return policyCmptType.findProductCmptType(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private boolean isAllowd(IAttribute anAttribute, boolean isDefaultIdentifier) {

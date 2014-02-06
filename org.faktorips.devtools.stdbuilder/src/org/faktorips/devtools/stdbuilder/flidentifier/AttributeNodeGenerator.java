@@ -34,8 +34,10 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
 /**
- * JavaGenerator for an {@link AttributeNode}. Example in formula language: "policy.premium" (get
- * the value of attribute "premium" from policy).
+ * JavaGenerator for an {@link AttributeNode}. Supports both policy- and product-attributes.
+ * Examples in the formula language: "policy.premium" (gets the value of attribute "premium" from
+ * policy) and "policy.paymentMode" (gets the value "paymentMode" from the configuring product
+ * component).
  * 
  * @author widmaier
  * @since 3.11.0
@@ -137,30 +139,69 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     private String getParameterAttributGetterName(IAttribute attribute, Datatype contextDatatype) {
         if (attribute instanceof IPolicyCmptTypeAttribute) {
-            XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
-            return xPolicyAttribute.getMethodNameGetter();
+            return getPolicyAttributeGetterName((IPolicyCmptTypeAttribute)attribute);
         } else if (attribute instanceof IProductCmptTypeAttribute) {
-            String contextAccessCode = StringUtils.EMPTY;
-            XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
-            boolean changingOverTime = xProductAttribute.isChangingOverTime();
-            if (contextDatatype instanceof IPolicyCmptType) {
-                IPolicyCmptType contextPolicyCmptType = (IPolicyCmptType)contextDatatype;
-                XPolicyCmptClass xPolicyCmptClass = getModelNode(contextPolicyCmptType, XPolicyCmptClass.class);
-                if (changingOverTime) {
-                    contextAccessCode = xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "().";
-                } else {
-                    contextAccessCode = xPolicyCmptClass.getMethodNameGetProductCmpt() + "().";
-                }
-            } else {
-                if (!changingOverTime) {
-                    XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
-                    contextAccessCode = xProductCmptClass.getMethodNameGetProductCmpt() + "().";
-                }
-            }
-
-            return contextAccessCode + xProductAttribute.getMethodNameGetter();
+            return getProductAttributeAccessCode((IProductCmptTypeAttribute)attribute, contextDatatype);
         }
         throw new GeneratorRuntimeException("This type of attribute is not supported: " + attribute.getClass()); //$NON-NLS-1$
+    }
+
+    private String getPolicyAttributeGetterName(IPolicyCmptTypeAttribute attribute) {
+        XPolicyAttribute xPolicyAttribute = getModelNode(attribute, XPolicyAttribute.class);
+        return xPolicyAttribute.getMethodNameGetter();
+    }
+
+    private String getProductAttributeAccessCode(IProductCmptTypeAttribute attribute, Datatype contextDatatype) {
+        StringBuffer contextAccessCode = new StringBuffer();
+        contextAccessCode.append(getProductCmptContextCode(attribute, contextDatatype));
+        contextAccessCode.append(getProductAttributeGetterName(attribute));
+        return contextAccessCode.toString();
+    }
+
+    private String getProductCmptContextCode(IProductCmptTypeAttribute attribute, Datatype contextDatatype) {
+        if (contextDatatype instanceof IPolicyCmptType) {
+            return getProductCmptOrGenerationGetterCode(attribute, (IPolicyCmptType)contextDatatype);
+        } else {
+            return getProductCmptGetterCodeIfRequired(attribute);
+        }
+    }
+
+    /**
+     * Based on a policy component, returns the code for getting the configuring product component
+     * generation if the requested attribute is changing over time or the product component if the
+     * attribute is static.
+     */
+    private String getProductCmptOrGenerationGetterCode(IProductCmptTypeAttribute attribute, IPolicyCmptType policyType) {
+        XPolicyCmptClass xPolicyCmptClass = getModelNode(policyType, XPolicyCmptClass.class);
+        if (isChangingOverTime(attribute)) {
+            return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "().";
+        } else {
+            return xPolicyCmptClass.getMethodNameGetProductCmpt() + "().";
+        }
+    }
+
+    private boolean isChangingOverTime(IProductCmptTypeAttribute attribute) {
+        XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
+        return xProductAttribute.isChangingOverTime();
+    }
+
+    /**
+     * Based on a product component generation, returns an empty string if the requested attribute
+     * is changing over time or the code for getting the product component if the attribute is
+     * static.
+     */
+    private String getProductCmptGetterCodeIfRequired(IProductCmptTypeAttribute attribute) {
+        if (!isChangingOverTime(attribute)) {
+            XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
+            return xProductCmptClass.getMethodNameGetProductCmpt() + "().";
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private String getProductAttributeGetterName(IProductCmptTypeAttribute attribute) {
+        XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
+        return xProductAttribute.getMethodNameGetter();
     }
 
     private String getParameterAttributDefaultValueGetterName(IAttribute attribute) {
