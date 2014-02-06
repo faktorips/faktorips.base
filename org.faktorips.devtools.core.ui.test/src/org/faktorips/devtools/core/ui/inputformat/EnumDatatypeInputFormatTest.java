@@ -199,6 +199,37 @@ public class EnumDatatypeInputFormatTest {
     }
 
     @Test
+    public void testParseValueNameAndID_withParentheses() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA (xyz) (a)");
+
+        assertEquals("a", parseValueName);
+    }
+
+    /*
+     * Ensures that a string that violates the convention cannot be parsed. The pattern/convention
+     * is "<enumValue-Name>(<enumValue-ID>)". The name can contain nested parentheses, the id can
+     * not.
+     */
+    @Test
+    public void testCannotParse_whenClosingParanthesisNotFollowedByStringEnding() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a) ");
+
+        assertNull(parseValueName);
+    }
+
+    /*
+     * Ensures that a string that violates the convention cannot be parsed. The pattern/convention
+     * is "<enumValue-Name>(<enumValue-ID>)". The name can contain nested parentheses, the id can
+     * not.
+     */
+    @Test
+    public void testCannotParse_whenIdContainsNestedParantheses() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a(b)c)");
+
+        assertNull(parseValueName);
+    }
+
+    @Test
     public void testParseValueNameAndID_invalidName() throws Exception {
         String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("asdsg (agds)");
 
@@ -207,7 +238,7 @@ public class EnumDatatypeInputFormatTest {
 
     @Test
     public void testParseValueNameAndID_notNameAndId() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds");
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds (");
 
         assertNull(parseValueName);
     }
