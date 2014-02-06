@@ -200,6 +200,13 @@ public class EnumDatatypeInputFormatTest {
     }
 
     @Test
+    public void testParseValueNameAndID_withClamps() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA (xyz) (a)");
+
+        assertEquals("a", parseValueName);
+    }
+
+    @Test
     public void testParseValueNameAndID_invalidName() throws Exception {
         String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("asdsg (agds)");
 
@@ -208,7 +215,7 @@ public class EnumDatatypeInputFormatTest {
 
     @Test
     public void testParseValueNameAndID_notNameAndId() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds");
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds (");
 
         assertNull(parseValueName);
     }

@@ -76,11 +76,10 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
     }
 
     protected String parseValueNameAndID(String stringToBeparsed) {
-        Pattern pattern = Pattern.compile("(?<=\\()(.*?)(?=\\))"); //$NON-NLS-1$
+        Pattern pattern = Pattern.compile(".*\\((.*?)\\)$"); //$NON-NLS-1$
         Matcher matcher = pattern.matcher(stringToBeparsed);
-        int groupCount = matcher.groupCount();
-        if (groupCount > 0 && matcher.find()) {
-            String id = matcher.group(groupCount - 1);
+        if (matcher.find()) {
+            String id = matcher.group(1);
             return parseValueId(id);
         } else {
             return null;
