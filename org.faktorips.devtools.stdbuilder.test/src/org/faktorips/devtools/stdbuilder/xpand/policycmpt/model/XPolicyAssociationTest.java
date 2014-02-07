@@ -46,6 +46,9 @@ import org.mockito.stubbing.Answer;
 public class XPolicyAssociationTest {
 
     @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
     private IPolicyCmptTypeAssociation typeAssoc;
 
     @Mock
@@ -266,6 +269,18 @@ public class XPolicyAssociationTest {
         doReturn(true).when(assoc).isSharedAssociationImplementedInSuperclass();
 
         assertFalse(assoc.isImplementedDetailToMasterAssociation());
+    }
+
+    @Test
+    public void testIsGenerateGetter_getterForConstrainedDetailToMaster() throws Exception {
+        IPolicyCmptTypeAssociation inverseAssoc = mock(IPolicyCmptTypeAssociation.class);
+        doReturn(false).when(assoc).isDerived();
+        doReturn(true).when(assoc).hasSuperAssociationWithSameName();
+        when(typeAssoc.findInverseAssociation(ipsProject)).thenReturn(inverseAssoc);
+        when(typeAssoc.isConstrain()).thenReturn(true);
+        when(typeAssoc.isCompositionDetailToMaster()).thenReturn(true);
+
+        assertTrue(assoc.isGenerateGetter());
     }
 
 }
