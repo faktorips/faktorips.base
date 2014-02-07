@@ -191,7 +191,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
                 defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
             }
             String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
-            result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE));
+            result.newError(MSGCODE_VALUE_NOT_PARSABLE, text, this, PROPERTY_DEFAULT_VALUE);
             return;
         }
         IValueSet valueSet = getValueSet();
@@ -203,5 +203,4 @@ public abstract class Attribute extends TypePart implements IAttribute {
             }
         }
     }
-
 }
