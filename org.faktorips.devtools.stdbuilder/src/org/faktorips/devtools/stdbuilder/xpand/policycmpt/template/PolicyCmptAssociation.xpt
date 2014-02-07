@@ -164,7 +164,7 @@
 			        }
 	«REM»FIPS-1142::remove this if-else«ENDREM»	        «ELSE-»
 			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
-			        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
+			        for («targetInterfaceName» «targetClassName.toFirstLower()» : «methodNameGetter»()) {
 			        	«LET targetPolicyCmptClass AS targetClass-»
 			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
 			                result.add(«targetClassName.toFirstLower()»);
