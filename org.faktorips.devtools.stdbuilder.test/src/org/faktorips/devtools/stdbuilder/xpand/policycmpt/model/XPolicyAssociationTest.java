@@ -24,6 +24,7 @@ import static org.mockito.Mockito.withSettings;
 
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -43,6 +44,9 @@ import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XPolicyAssociationTest {
+
+    @Mock
+    private IIpsProject ipsProject;
 
     @Mock
     private IPolicyCmptTypeAssociation typeAssoc;
@@ -267,4 +271,37 @@ public class XPolicyAssociationTest {
         assertFalse(assoc.isImplementedDetailToMasterAssociation());
     }
 
+    @Test
+    public void testIsGenerateGetter_getterForConstrainedDetailToMaster() throws Exception {
+        IPolicyCmptTypeAssociation inverseAssoc = mock(IPolicyCmptTypeAssociation.class);
+
+        doReturn(false).when(assoc).isDerived();
+        doReturn(true).when(assoc).hasSuperAssociationWithSameName();
+        when(typeAssoc.findInverseAssociation(ipsProject)).thenReturn(inverseAssoc);
+        when(typeAssoc.isConstrain()).thenReturn(true);
+        when(typeAssoc.isCompositionDetailToMaster()).thenReturn(true);
+
+        assertTrue(assoc.isGenerateGetter());
+    }
+
+    @Test
+    public void testIsGenerateGetterIsDerivedAndSharedAssocuation() {
+        doReturn(true).when(assoc).isDerived();
+        when(typeAssoc.isSharedAssociation()).thenReturn(true);
+
+        assertFalse(assoc.isGenerateGetter());
+    }
+
+    @Test
+    public void testIsGenerateGetterTrue() throws CoreException {
+        IPolicyCmptTypeAssociation inverseAssoc = mock(IPolicyCmptTypeAssociation.class);
+
+        doReturn(false).when(assoc).isDerived();
+        doReturn(true).when(assoc).hasSuperAssociationWithSameName();
+        when(typeAssoc.findInverseAssociation(ipsProject)).thenReturn(inverseAssoc);
+        when(typeAssoc.isConstrain()).thenReturn(false);
+
+        assertTrue(assoc.isGenerateGetter());
+
+    }
 }
