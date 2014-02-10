@@ -99,12 +99,12 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testContainsValue() throws Exception {
         UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, "1");
-        assertFalse(allValues.containsValue("abc"));
-        assertTrue(allValues.containsValue("1EUR"));
+        assertFalse(allValues.containsValue("abc", ipsProject));
+        assertTrue(allValues.containsValue("1EUR", ipsProject));
 
         ce.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
-        assertFalse(allValues.containsValue("1EUR"));
-        assertTrue(allValues.containsValue("99"));
+        assertFalse(allValues.containsValue("1EUR", ipsProject));
+        assertTrue(allValues.containsValue("99", ipsProject));
     }
 
     @Test

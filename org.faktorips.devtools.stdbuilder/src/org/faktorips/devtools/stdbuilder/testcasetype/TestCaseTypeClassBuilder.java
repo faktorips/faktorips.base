@@ -224,10 +224,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         // it is important that the "violated" and "notViolated" will be used as variable content
         // the ui depends on this hardcoded value to enable the feature: save actual as expected
         // result
-        codeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL, String.class,
+        codeBuilder.varDeclaration(Modifier.PRIVATE + Modifier.FINAL + Modifier.STATIC, String.class,
                 violatedConstantName, new JavaCodeFragment("\"violated\""));
         codeBuilder.javaDoc("", ANNOTATION_GENERATED);
-        codeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL, String.class,
+        codeBuilder.varDeclaration(Modifier.PRIVATE + Modifier.FINAL + Modifier.STATIC, String.class,
                 notViolatedConstantName, new JavaCodeFragment("\"notViolated\""));
 
         for (int i = 0; i < testRuleParams.length; i++) {
@@ -957,7 +957,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         constName = "TESTATTR_" + constName + "_" + upperCasetestAttribute;
         JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
-        constantBuilder.varDefinition("public final static String", constName, "\"" + testAttribute + "\"");
+        constantBuilder.varDefinition("public static final String", constName, "\"" + testAttribute + "\"");
         return constName;
     }
 
@@ -969,8 +969,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
-        ITestCaseType testCaseType = (ITestCaseType)ipsObjectPartContainer;
-        IType javaType = getGeneratedJavaTypes(testCaseType).get(0);
+        IType javaType = getGeneratedJavaTypes((ITestCaseType)ipsObjectPartContainer).get(0);
         javaElements.add(javaType.getMethod(javaType.getElementName(), new String[] { stringParam() }));
         javaElements.add(javaType.getMethod(getMethodNameExecuteBusinessLogic(), new String[0]));
         javaElements.add(javaType.getMethod(getMethodNameExecuteAsserts(),

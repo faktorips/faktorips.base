@@ -236,7 +236,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     .appendClassName(getQualifiedClassName()).append(".class.getName(), ")
                     .appendClassName(getQualifiedClassName()).append(".class.getClassLoader(),")
                     .append(defaultLocaleExpr).append(")");
-            memberVarBuilder.varDeclaration(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL, MessagesHelper.class,
+            memberVarBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL | Modifier.STATIC, MessagesHelper.class,
                     VARNAME_MESSAGE_HELPER, expression);
         }
     }
@@ -292,7 +292,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) {
         IEnumType enumType = getEnumType();
         appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder); //$NON-NLS-1$
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, Long.TYPE,
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
                 "serialVersionUID", new JavaCodeFragment("1L")); //$NON-NLS-1$ //$NON-NLS-2$
         constantBuilder.appendln();
     }
@@ -1194,7 +1194,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                     appendLocalizedJavaDoc("METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), enumType, //$NON-NLS-1$
                             methodBuilder);
-                    methodBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, Boolean.TYPE.getName(),
+                    methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(),
                             getMethodNameIsValueBy(currentEnumAttribute), parameterNames, parameterClasses, methodBody,
                             null);
                 }
@@ -1255,7 +1255,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         appendLocalizedJavaDoc("METHOD_VALUES", enumType, methodBuilder); //$NON-NLS-1$
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
-        methodBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, datatypeHelper.getJavaClassName()
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName()
                 + "[]", methodName, new String[0], new String[0], methodBody, null); //$NON-NLS-1$
     }
 

@@ -177,11 +177,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiController.removeBindings(lowerfield.getControl());
         uiController.removeBindings(stepfield.getControl());
         uiController.removeBindings(containsNullField.getControl());
-        uiController.bindContent(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        uiController.bindContent(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        uiController.bindContent(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.bindContent(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
-        uiController.updateUI();
+        connectToModel();
     }
 
     public void setLower(String newText) {
