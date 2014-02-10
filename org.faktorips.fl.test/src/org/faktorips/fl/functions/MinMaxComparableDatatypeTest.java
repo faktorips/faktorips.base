@@ -16,10 +16,15 @@ import org.junit.Test;
 
 public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
 
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        registerFunction(new MinMaxComparableDatatypes("MAX", "", true, Datatype.STRING));
+        registerFunction(new MinMaxComparableDatatypes("MIN", "", false, Datatype.STRING));
+    }
+
     @Test
     public void testCompile_max() throws Exception {
-        registerFunction(new MinMaxComparableDatatypes("MAX", "", true, Datatype.STRING));
-
         execAndTestSuccessfull("MAX(\"aaa\"; \"zzz\")", "zzz", Datatype.STRING);
         execAndTestSuccessfull("MAX(\"zzz\"; \"aaa\")", "zzz", Datatype.STRING);
         execAndTestSuccessfull("MAX(\"1\"; \"1\")", "1", Datatype.STRING);
@@ -27,11 +32,15 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
 
     @Test
     public void testCompile_min() throws Exception {
-        registerFunction(new MinMaxComparableDatatypes("MIN", "", false, Datatype.STRING));
-
         execAndTestSuccessfull("MIN(\"aaa\"; \"zzz\")", "aaa", Datatype.STRING);
         execAndTestSuccessfull("MIN(\"zzz\"; \"aaa\")", "aaa", Datatype.STRING);
         execAndTestSuccessfull("MIN(\"1\"; \"1\")", "1", Datatype.STRING);
+    }
+
+    @Test
+    public void testFail() throws Exception {
+        execAndTestFail("MAX(10)", "FLC-WrongArgumentTypes");
+        execAndTestFail("MIN(\"aaa\")", "FLC-WrongArgumentTypes");
     }
 
 }
