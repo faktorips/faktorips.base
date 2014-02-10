@@ -3,12 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<properties>
 		<git.user>${user.name}</git.user>
 	</properties>
-	
-	<groupId>org.faktorips</groupId>
+
 	<artifactId>org.faktorips.aggregator</artifactId>
 	<version>3.11.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -16,9 +15,9 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>1.4.0</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
-	
+
 	<!-- These are all modules that are included in the Faktor-IPS build -->
 
 	<modules>
@@ -31,7 +30,7 @@
 	<scm>
 		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
 	</scm>
-	
+
 	<build>
 		<extensions>
 			<!-- Include this build artifact to every child's classpath. This is used 
@@ -42,10 +41,17 @@
 				<version>1.0.2</version>
 			</extension>
 		</extensions>
+		<!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY -->
+		<!-- and we have some problems with the babel dependencies because not every host is included in target -->
+		
+		<!-- <plugins> <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>target-platform-configuration</artifactId> 
+			<version>${tycho-version}</version> <configuration> <target> <artifact> <groupId>org.faktorips</groupId> 
+			<artifactId>org.faktorips.aggregator.target</artifactId> <version>3.5.2</version> 
+			</artifact> </target> </configuration> </plugin> </plugins> -->
 	</build>
-	
+
 	<profiles>
-			<profile>
+		<profile>
 			<id>tagScm</id>
 			<activation>
 				<!-- This profile should be active by default, also if there is a next 
@@ -70,8 +76,7 @@
 								</goals>
 								<configuration>
 									<tag>v${unqualifiedVersion}_${version.kind}</tag>
-									<message>Release Version
-										${unqualifiedVersion}.${buildQualifier}</message>
+									<message>Release Version ${unqualifiedVersion}.${buildQualifier}</message>
 									<connectionType>connection</connectionType>
 									<pushChanges>${scm.pushChanges}</pushChanges>
 								</configuration>
