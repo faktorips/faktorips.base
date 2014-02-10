@@ -68,10 +68,10 @@ import org.w3c.dom.Element;
 public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
     // property key for the Javadoc.
-    private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
-    private final static String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
-    private final static String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
-    private final static String EXECUTEBUSINESSLOGIC_JAVADOC = "EXECUTEBUSINESSLOGIC_JAVADOC";
+    private static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
+    private static final String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
+    private static final String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
+    private static final String EXECUTEBUSINESSLOGIC_JAVADOC = "EXECUTEBUSINESSLOGIC_JAVADOC";
     private static final String EXECUTEASSERTS_JAVADOC = "EXECUTEASSERTS_JAVADOC";
     private static final String EXECUTEBUSINESSLOGIC_TODO_0 = "EXECUTEBUSINESSLOGIC_TODO_0";
     private static final String ASSERT_TODO_0 = "ASSERT_TODO_0";
@@ -957,7 +957,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         constName = "TESTATTR_" + constName + "_" + upperCasetestAttribute;
         JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
-        constantBuilder.varDefinition("public final static String", constName, "\"" + testAttribute + "\"");
+        constantBuilder.varDefinition("public static final String", constName, "\"" + testAttribute + "\"");
         return constName;
     }
 
@@ -969,8 +969,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
-        ITestCaseType testCaseType = (ITestCaseType)ipsObjectPartContainer;
-        IType javaType = getGeneratedJavaTypes(testCaseType).get(0);
+        IType javaType = getGeneratedJavaTypes((ITestCaseType)ipsObjectPartContainer).get(0);
         javaElements.add(javaType.getMethod(javaType.getElementName(), new String[] { stringParam() }));
         javaElements.add(javaType.getMethod(getMethodNameExecuteBusinessLogic(), new String[0]));
         javaElements.add(javaType.getMethod(getMethodNameExecuteAsserts(),
