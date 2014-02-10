@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.inputformat;
@@ -76,11 +75,16 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
     }
 
     protected String parseValueNameAndID(String stringToBeparsed) {
-        Pattern pattern = Pattern.compile("(?<=\\()(.*?)(?=\\))"); //$NON-NLS-1$
+        /*
+         * The pattern provides the name of the enum value (group(0)) and the content of the last
+         * bracket (group(1)). The last bracket always contains the enum value's id, which in turn
+         * cannot contain nested brackets/parentheses. The last bracket is found by matching ")$",
+         * the closing parenthesis at the end of the string.
+         */
+        Pattern pattern = Pattern.compile(".*\\((.*?)\\)$"); //$NON-NLS-1$
         Matcher matcher = pattern.matcher(stringToBeparsed);
-        int groupCount = matcher.groupCount();
-        if (groupCount > 0 && matcher.find()) {
-            String id = matcher.group(groupCount - 1);
+        if (matcher.find()) {
+            String id = matcher.group(1);
             return parseValueId(id);
         } else {
             return null;
