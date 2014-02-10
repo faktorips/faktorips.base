@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>1.4.0</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -23,9 +23,9 @@
 
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
-		<tycho-version>0.18.0</tycho-version>
-		<tycho-extras-version>0.18.0</tycho-extras-version>
-		<checkstyle-version>2.9.1</checkstyle-version>
+		<tycho-version>0.19.0</tycho-version>
+		<tycho-extras-version>0.19.0</tycho-extras-version>
+		<checkstyle-version>2.11</checkstyle-version>
 		<findbugs-version>2.4.0</findbugs-version>
 		<version.kind>ci</version.kind>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

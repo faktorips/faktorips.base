@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Standard Code Generator
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder; singleton:=true
-Bundle-Version: 3.11.0.qualifier
+Bundle-Version: 3.11.1.qualifier
 Bundle-Activator: org.faktorips.devtools.stdbuilder.StdBuilderPlugin
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
@@ -21,28 +21,22 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtend;bundle-version="1.1.0",
  org.eclipse.jface.text;bundle-version="3.5.2"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.faktorips.devtools.stdbuilder,
- org.faktorips.devtools.stdbuilder.bf,
- org.faktorips.devtools.stdbuilder.enumtype,
- org.faktorips.devtools.stdbuilder.persistence,
- org.faktorips.devtools.stdbuilder.policycmpttype,
- org.faktorips.devtools.stdbuilder.policycmpttype.persistence,
- org.faktorips.devtools.stdbuilder.policycmpttype.validationrule,
- org.faktorips.devtools.stdbuilder.productcmpt,
- org.faktorips.devtools.stdbuilder.refactor,
- org.faktorips.devtools.stdbuilder.table,
- org.faktorips.devtools.stdbuilder.testcase,
- org.faktorips.devtools.stdbuilder.testcasetype,
- org.faktorips.devtools.stdbuilder.xpand,
- org.faktorips.devtools.stdbuilder.xpand.model,
- org.faktorips.devtools.stdbuilder.xpand.nullout,
- org.faktorips.devtools.stdbuilder.xpand.policycmpt,
- org.faktorips.devtools.stdbuilder.xpand.policycmpt.model,
- org.faktorips.devtools.stdbuilder.xpand.productcmpt,
- org.faktorips.devtools.stdbuilder.xpand.productcmpt.model,
- org.faktorips.devtools.stdbuilder.xpand.stringout,
- org.faktorips.devtools.stdbuilder.xpand.table.model,
- org.faktorips.devtools.stdbuilder.xpand.template
+Export-Package: org.faktorips.devtools.stdbuilder,org.faktorips.devtoo
+ ls.stdbuilder.bf,org.faktorips.devtools.stdbuilder.enumtype,org.fakto
+ rips.devtools.stdbuilder.persistence,org.faktorips.devtools.stdbuilde
+ r.policycmpttype,org.faktorips.devtools.stdbuilder.policycmpttype.per
+ sistence,org.faktorips.devtools.stdbuilder.policycmpttype.validationr
+ ule,org.faktorips.devtools.stdbuilder.productcmpt,org.faktorips.devto
+ ols.stdbuilder.refactor,org.faktorips.devtools.stdbuilder.table,org.f
+ aktorips.devtools.stdbuilder.testcase,org.faktorips.devtools.stdbuild
+ er.testcasetype,org.faktorips.devtools.stdbuilder.xpand,org.faktorips
+ .devtools.stdbuilder.xpand.model,org.faktorips.devtools.stdbuilder.xp
+ and.nullout,org.faktorips.devtools.stdbuilder.xpand.policycmpt,org.fa
+ ktorips.devtools.stdbuilder.xpand.policycmpt.model,org.faktorips.devt
+ ools.stdbuilder.xpand.productcmpt,org.faktorips.devtools.stdbuilder.x
+ pand.productcmpt.model,org.faktorips.devtools.stdbuilder.xpand.string
+ out,org.faktorips.devtools.stdbuilder.xpand.table.model,org.faktorips
+ .devtools.stdbuilder.xpand.template
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
  org.eclipse.jdt.core.refactoring,
