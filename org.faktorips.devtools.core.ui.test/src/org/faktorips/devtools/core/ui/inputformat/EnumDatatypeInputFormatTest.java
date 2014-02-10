@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.inputformat;
@@ -200,6 +199,37 @@ public class EnumDatatypeInputFormatTest {
     }
 
     @Test
+    public void testParseValueNameAndID_withParentheses() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA (xyz) (a)");
+
+        assertEquals("a", parseValueName);
+    }
+
+    /*
+     * Ensures that a string that violates the convention cannot be parsed. The pattern/convention
+     * is "<enumValue-Name>(<enumValue-ID>)". The name can contain nested parentheses, the id can
+     * not.
+     */
+    @Test
+    public void testCannotParse_whenClosingParanthesisNotFollowedByStringEnding() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a) ");
+
+        assertNull(parseValueName);
+    }
+
+    /*
+     * Ensures that a string that violates the convention cannot be parsed. The pattern/convention
+     * is "<enumValue-Name>(<enumValue-ID>)". The name can contain nested parentheses, the id can
+     * not.
+     */
+    @Test
+    public void testCannotParse_whenIdContainsNestedParantheses() throws Exception {
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a(b)c)");
+
+        assertNull(parseValueName);
+    }
+
+    @Test
     public void testParseValueNameAndID_invalidName() throws Exception {
         String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("asdsg (agds)");
 
@@ -208,7 +238,7 @@ public class EnumDatatypeInputFormatTest {
 
     @Test
     public void testParseValueNameAndID_notNameAndId() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds");
+        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds (");
 
         assertNull(parseValueName);
     }

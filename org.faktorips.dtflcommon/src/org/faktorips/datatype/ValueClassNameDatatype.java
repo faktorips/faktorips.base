@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.datatype;
@@ -107,15 +106,6 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
 
     public boolean isParsable(String value) {
         try {
-            if ("".equals(value)) { //$NON-NLS-1$
-                /*
-                 * by default the empty space is not parsable. This has to be handled explicitly as
-                 * most value classes assume that the value of the string "" is null. This is
-                 * however more a convenience. In the IDE context it is bothering if null can be
-                 * represented by null or the string "".
-                 */
-                return false;
-            }
             if (isNull(value)) {
                 return true;
             }

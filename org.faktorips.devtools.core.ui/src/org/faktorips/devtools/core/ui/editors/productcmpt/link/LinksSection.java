@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
@@ -162,7 +161,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             treeViewer.setContentProvider(contentProvider);
             setFilterEmptyAssociations(filterEmptyAssociations);
 
-            treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
             dropListener = new LinkSectionDropListener(editor, treeViewer, generation);
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
@@ -176,6 +174,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(
                     labelProvider, decoManager.getLabelDecorator(), new DecorationContext());
             treeViewer.setLabelProvider(decoratedLabelProvider);
+            treeViewer.setInput(generation);
 
             new TreeMessageHoverService(treeViewer) {
                 @Override

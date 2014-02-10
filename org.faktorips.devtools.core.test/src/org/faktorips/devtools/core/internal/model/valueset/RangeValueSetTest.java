@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.valueset;
@@ -121,36 +120,50 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue() {
+    public void testContainsValue() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("20");
         range.setUpperBound("25");
-        assertTrue(range.containsValue("20"));
-        assertTrue(range.containsValue("22"));
-        assertTrue(range.containsValue("25"));
+        assertTrue(range.containsValue("20", ipsProject));
+        assertTrue(range.containsValue("22", ipsProject));
+        assertTrue(range.containsValue("25", ipsProject));
 
-        assertFalse(range.containsValue("19"));
-        assertFalse(range.containsValue("26"));
-        assertFalse(range.containsValue("19"));
-        assertFalse(range.containsValue("20EUR"));
+        assertFalse(range.containsValue("19", ipsProject));
+        assertFalse(range.containsValue("26", ipsProject));
+        assertFalse(range.containsValue("19", ipsProject));
+        assertFalse(range.containsValue("20EUR", ipsProject));
 
         range.setContainsNull(false);
-        assertFalse(range.containsValue(null));
+        assertFalse(range.containsValue(null, ipsProject));
 
         range.setContainsNull(true);
-        assertTrue(range.containsValue(null));
+        assertTrue(range.containsValue(null, ipsProject));
 
         range.setStep("2");
         range.setUpperBound("26");
-        assertTrue(range.containsValue("20"));
-        assertTrue(range.containsValue("24"));
-        assertTrue(range.containsValue("26"));
-        assertFalse(range.containsValue("18"));
-        assertFalse(range.containsValue("21"));
-        assertFalse(range.containsValue("28"));
+        assertTrue(range.containsValue("20", ipsProject));
+        assertTrue(range.containsValue("24", ipsProject));
+        assertTrue(range.containsValue("26", ipsProject));
+        assertFalse(range.containsValue("18", ipsProject));
+        assertFalse(range.containsValue("21", ipsProject));
+        assertFalse(range.containsValue("28", ipsProject));
     }
 
-    @SuppressWarnings("deprecation")
+    @Test
+    public void testContainsValue_primitiveWithStepNull() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        range.setLowerBound("1");
+        range.setUpperBound("100");
+        range.setStep(null);
+
+        assertTrue(range.containsValue("1", ipsProject));
+        assertTrue(range.containsValue("22", ipsProject));
+        assertTrue(range.containsValue("100", ipsProject));
+        assertFalse(range.containsValue("0", ipsProject));
+        assertFalse(range.containsValue("101", ipsProject));
+    }
+
     @Test
     public void testContainsValueSet_BothSetsAreRanges() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
@@ -188,19 +201,14 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         subRange.setUpperBound("24");
         assertFalse(range.containsValueSet(subRange));
 
-        MessageList list = new MessageList();
-        range.containsValueSet(subRange, list, null, null);
-        assertTrue(list.containsErrorMsg());
+        assertFalse(range.containsValueSet(subRange));
 
         subRange.setUpperBound("18");
-        list.clear();
-        range.containsValueSet(subRange, list, null, null);
-        assertFalse(list.containsErrorMsg());
+        assertTrue(range.containsValueSet(subRange));
 
         range.setContainsNull(false);
         subRange.setContainsNull(true);
-        assertFalse(range.containsValueSet(subRange, list, null, null));
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NOT_SUBSET));
+        assertFalse(range.containsValueSet(subRange));
 
         range.setContainsNull(true);
         assertTrue(range.containsValueSet(subRange));

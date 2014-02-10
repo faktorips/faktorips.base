@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.fl;
@@ -40,6 +39,22 @@ import org.faktorips.fl.functions.WholeNumber;
  */
 public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeFragment> {
 
+    public static final String MIN = "min";
+    public static final String MAX = "max";
+    public static final String ISEMPTY = "isempty";
+    public static final String WHOLENUMBER = "wholenumber";
+    public static final String ROUNDDOWN = "rounddown";
+    public static final String ROUNDUP = "roundup";
+    public static final String ROUND = "round";
+    public static final String IF = "if";
+    public static final String ABS = "abs";
+    public static final String NOT = "not";
+    public static final String OR = "or";
+    public static final String AND = "and";
+    public static final String POWER = "power";
+    public static final String SQRT = "sqrt";
+    public static final String COUNT = "count";
+
     /**
      * Creates a new resolver that contains a set of functions that are similar by name and argument
      * list to those provided by Microsoft's Excel.
@@ -48,32 +63,31 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
      */
     public ExcelFunctionsResolver(Locale locale) {
         super(locale);
-        add(new Abs(getFctName(ExcelFunction.ABS), getFctDescription(ExcelFunction.ABS)));
-        add(new If(getFctName(ExcelFunction.IF), getFctDescription(ExcelFunction.IF)));
-        add(new Or(getFctName(ExcelFunction.OR), getFctDescription(ExcelFunction.OR)));
-        add(new And(getFctName(ExcelFunction.AND), getFctDescription(ExcelFunction.AND)));
-        add(new Round(getFctName(ExcelFunction.ROUND), getFctDescription(ExcelFunction.ROUND), BigDecimal.ROUND_HALF_UP));
-        add(new Round(getFctName(ExcelFunction.ROUNDUP), getFctDescription(ExcelFunction.ROUNDUP), BigDecimal.ROUND_UP));
-        add(new Round(getFctName(ExcelFunction.ROUNDDOWN), getFctDescription(ExcelFunction.ROUNDDOWN),
-                BigDecimal.ROUND_DOWN));
-        add(new WholeNumber(getFctName(ExcelFunction.WHOLENUMBER), getFctDescription(ExcelFunction.WHOLENUMBER)));
-        add(new IsEmpty(getFctName(ExcelFunction.ISEMPTY), getFctDescription(ExcelFunction.ISEMPTY)));
-        add(new Not(getFctName(ExcelFunction.NOT), getFctDescription(ExcelFunction.NOT)));
-        add(new NotBoolean(getFctName(ExcelFunction.NOT), getFctDescription(ExcelFunction.NOT)));
-        add(new MinMaxMoney(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
-        add(new MinMaxMoney(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
-        add(new MinMaxDecimal(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
-        add(new MinMaxDecimal(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
-        add(new MinMaxInt(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
-        add(new MinMaxInt(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
-        add(new MinMaxLong(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
-        add(new MinMaxLong(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
-        add(new MinMaxDouble(getFctName(ExcelFunction.MAX), getFctDescription(ExcelFunction.MAX), true));
-        add(new MinMaxDouble(getFctName(ExcelFunction.MIN), getFctDescription(ExcelFunction.MIN), false));
-        add(new PowerDecimal(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
-        add(new PowerInt(getFctName(ExcelFunction.POWER), getFctDescription(ExcelFunction.POWER)));
-        add(new SqrtDecimal(getFctName(ExcelFunction.SQRT), getFctDescription(ExcelFunction.SQRT)));
-        add(new Count(getFctName(ExcelFunction.COUNT), getFctDescription(ExcelFunction.COUNT)));
+        add(new Abs(getFctName(ABS), getFctDescription(ABS)));
+        add(new If(getFctName(IF), getFctDescription(IF)));
+        add(new Or(getFctName(OR), getFctDescription(OR)));
+        add(new And(getFctName(AND), getFctDescription(AND)));
+        add(new Round(getFctName(ROUND), getFctDescription(ROUND), BigDecimal.ROUND_HALF_UP));
+        add(new Round(getFctName(ROUNDUP), getFctDescription(ROUNDUP), BigDecimal.ROUND_UP));
+        add(new Round(getFctName(ROUNDDOWN), getFctDescription(ROUNDDOWN), BigDecimal.ROUND_DOWN));
+        add(new WholeNumber(getFctName(WHOLENUMBER), getFctDescription(WHOLENUMBER)));
+        add(new IsEmpty(getFctName(ISEMPTY), getFctDescription(ISEMPTY)));
+        add(new Not(getFctName(NOT), getFctDescription(NOT)));
+        add(new NotBoolean(getFctName(NOT), getFctDescription(NOT)));
+        add(new MinMaxMoney(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxMoney(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxDecimal(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxDecimal(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxInt(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxInt(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxLong(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxLong(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxDouble(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxDouble(getFctName(MIN), getFctDescription(MIN), false));
+        add(new PowerDecimal(getFctName(POWER), getFctDescription(POWER)));
+        add(new PowerInt(getFctName(POWER), getFctDescription(POWER)));
+        add(new SqrtDecimal(getFctName(SQRT), getFctDescription(SQRT)));
+        add(new Count(getFctName(COUNT), getFctDescription(COUNT)));
     }
 
     @Override
@@ -84,14 +98,6 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
     @Override
     protected String getLocalizationFileBaseName() {
         return "org.faktorips.fl.ExcelFunctions"; //$NON-NLS-1$
-    }
-
-    private String getFctName(ExcelFunction function) {
-        return getFctName(function.getPropertyKey());
-    }
-
-    private String getFctDescription(ExcelFunction function) {
-        return getFctDescription(function.getPropertyKey());
     }
 
 }

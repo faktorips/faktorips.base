@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.builder;
@@ -211,9 +210,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         ImportDeclaration existingImports = new ImportDeclaration();
         IJavaElement[] imports = container.getChildren();
         for (IJavaElement import1 : imports) {
-            // example for imp: import
             String imp = ((IImportDeclaration)import1).getSource();
-            // java.util.Date;
+            // example for imp: import java.util.Date;
             existingImports.add(imp.substring(7, imp.length() - 1));
         }
         return existingImports.getUncoveredImports(decl);
@@ -258,7 +256,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         JavaCodeFragment value = new JavaCodeFragment();
         value.append(connector.getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, value);
-        builder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, connector.getLoggerClassName(),
+        builder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, connector.getLoggerClassName(),
                 getLoggerInstanceExpession(), value);
     }
 

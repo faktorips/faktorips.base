@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
+
+import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
@@ -31,9 +32,9 @@ public class IntegerValueConverter extends AbstractValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof Integer) {
             return ((Integer)externalDataValue).toString();
-        } else if (externalDataValue instanceof Double) {
-            int value = ((Double)externalDataValue).intValue();
-            Double restored = new Double(value);
+        } else if (externalDataValue instanceof BigDecimal) {
+            int value = ((BigDecimal)externalDataValue).intValue();
+            BigDecimal restored = new BigDecimal(value);
             if (!restored.equals(externalDataValue)) {
                 messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(
                         externalDataValue.toString(), restored.toString()));

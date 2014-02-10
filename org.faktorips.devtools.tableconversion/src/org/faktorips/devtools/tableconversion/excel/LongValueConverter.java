@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
+
+import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
@@ -31,15 +32,8 @@ public class LongValueConverter extends AbstractValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof Long) {
             return ((Long)externalDataValue).toString();
-        } else if (externalDataValue instanceof Double) {
-            long value = ((Double)externalDataValue).longValue();
-            Double restored = new Double(value);
-            if (!restored.equals(externalDataValue)) {
-                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(
-                        "" + externalDataValue, restored.toString())); //$NON-NLS-1$
-                return externalDataValue.toString();
-            }
-            return new Long(value).toString();
+        } else if (externalDataValue instanceof BigDecimal) {
+            return convertBigDecimalToLongString((BigDecimal)externalDataValue, messageList);
         }
         if (StringUtils.isNumeric("" + externalDataValue)) { //$NON-NLS-1$
             // if the excel datatype isn't Long or Double but the value is numeric then convert
@@ -54,6 +48,19 @@ public class LongValueConverter extends AbstractValueConverter {
                                     "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
         }
         return externalDataValue.toString();
+    }
+
+    private String convertBigDecimalToLongString(BigDecimal externalValue, MessageList messageList) {
+        long longValue = externalValue.longValue();
+        BigDecimal restoredValue = new BigDecimal(longValue);
+        // check whether conversion to long would change the value
+        if (!restoredValue.equals(externalValue)) {
+            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(externalValue.toString(),
+                    restoredValue.toString()));
+            return externalValue.toString();
+        } else {
+            return Long.toString(longValue);
+        }
     }
 
     @Override

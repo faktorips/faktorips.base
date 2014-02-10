@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui;
@@ -14,7 +13,7 @@ package org.faktorips.devtools.core.ui;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 
 public class UIDatatypeFormatter {
 
@@ -34,10 +33,10 @@ public class UIDatatypeFormatter {
     }
 
     /**
-     * @see ValueSetFormat
+     * @see AnyValueSetFormat
      */
     public String formatValueSet(IValueSet valueSet) {
-        return ValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
+        return AnyValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
     }
 
 }

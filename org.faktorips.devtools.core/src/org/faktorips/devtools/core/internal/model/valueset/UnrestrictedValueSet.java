@@ -1,26 +1,22 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -31,7 +27,7 @@ import org.w3c.dom.Element;
  */
 public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
 
-    public final static String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
+    public static final String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
@@ -58,32 +54,14 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     }
 
     @Override
-    public boolean containsValue(String value,
-            MessageList list,
-            Object invalidObject,
-            String invalidProperty,
-            IIpsProject ipsProject) throws CoreException {
-
-        if (list == null) {
-            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
-        }
+    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
 
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
-            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknownDatatype,
-                    invalidObject, invalidProperty);
             return false;
         }
 
         if (!datatype.isParsable(value)) {
-            String msg = NLS.bind(
-                    org.faktorips.devtools.core.internal.model.valueset.Messages.AllValuesValueSet_msgValueNotParsable,
-                    value, datatype.getName());
-            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
-
-            // the value can not be parsed - so it is not contained, too...
-            msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotContained, datatype.getName());
-            addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, msg, invalidObject, invalidProperty);
             return false;
         }
 
@@ -91,32 +69,15 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     }
 
     @Override
-    public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
-        if (list == null) {
-            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
-        }
-
+    public boolean containsValueSet(IValueSet subset) {
         ValueDatatype datatype = getValueDatatype();
         ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
 
-        if (datatype == null || subDatatype == null) {
-            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknowndDatatype,
-                    invalidObject, invalidProperty);
+        if (datatype == null || !datatype.equals(subDatatype)) {
             return false;
         }
 
-        if (datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
-            return true;
-        }
-
-        String msg = NLS.bind(Messages.AllValuesValueSet_msgNoSubset, subset.toShortString(), toShortString());
-        addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, invalidProperty);
-        return false;
-    }
-
-    @Override
-    public boolean containsValueSet(IValueSet subset) {
-        return containsValueSet(subset, new MessageList(), null, null);
+        return true;
     }
 
     @Override

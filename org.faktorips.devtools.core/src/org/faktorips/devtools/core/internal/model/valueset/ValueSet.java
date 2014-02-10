@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.valueset;
@@ -222,25 +221,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return !isUnrestricted() && isAbstract();
     }
 
-    @Override
-    public final boolean containsValue(String value) {
-        return containsValue(value, new MessageList(), null, null);
-    }
-
-    @Override
-    public final boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
-        try {
-            return containsValue(value, list, invalidObject, invalidProperty, getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public final boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
-        return containsValue(value, new MessageList(), null, null, ipsProject);
-    }
-
     /**
      * Creates a new message with severity ERROR and adds the new message to the given message list.
      * 
@@ -276,6 +256,10 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
                 invalidProperty);
         Message msg = new Message(id, text, severity, parentObjectProperty, invalidObjectProperty);
         list.add(msg);
+    }
+
+    protected boolean isNullValue(String value, ValueDatatype datatype) {
+        return value == null || datatype.isNull(value);
     }
 
 }

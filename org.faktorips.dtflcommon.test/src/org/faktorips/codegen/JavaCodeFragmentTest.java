@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.codegen;
@@ -96,6 +95,14 @@ public class JavaCodeFragmentTest {
         fragment.appendClassName("any.package.Type<any.other.GenType, another.GenType>");
         assertEquals("Type<GenType, another.GenType>", fragment.getSourcecode()); //$NON-NLS-1$
         assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
+        assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
+    }
+
+    @Test
+    public void testAppendClassName_onlyGenerics() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName("<any.other.GenType, another.GenType>");
+        assertEquals("<GenType, another.GenType>", fragment.getSourcecode()); //$NON-NLS-1$
         assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
     }
 
@@ -196,25 +203,25 @@ public class JavaCodeFragmentTest {
     }
 
     @Test
-                        public void testSplitToplevelGenericTypesByColon_noSplit() throws Exception {
-                            String input = "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>";
-                    
-                            List<String> typeParts = new JavaCodeFragment().splitToplevelGenericTypesByColon(input);
-                    
-                            assertEquals(
-                                    "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>",
-                                    typeParts.get(0));
-                        }
+    public void testSplitToplevelGenericTypesByColon_noSplit() throws Exception {
+        String input = "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>";
+
+        List<String> typeParts = new JavaCodeFragment().splitToplevelGenericTypesByColon(input);
+
+        assertEquals(
+                "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>",
+                typeParts.get(0));
+    }
 
     @Test
-                        public void testSplitToplevelGenericTypesByColon_splits() throws Exception {
-                            String input = "any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H";
-                    
-                            List<String> typeParts = new JavaCodeFragment().splitToplevelGenericTypesByColon(input);
-                    
-                            assertEquals("any.other.GenType<ab.X,ab.Y>", typeParts.get(0));
-                            assertEquals("another.GenType2<xy.A, xy.B<any.other.GenType>, F>", typeParts.get(1));
-                            assertEquals("H", typeParts.get(2));
-                        }
+    public void testSplitToplevelGenericTypesByColon_splits() throws Exception {
+        String input = "any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H";
+
+        List<String> typeParts = new JavaCodeFragment().splitToplevelGenericTypesByColon(input);
+
+        assertEquals("any.other.GenType<ab.X,ab.Y>", typeParts.get(0));
+        assertEquals("another.GenType2<xy.A, xy.B<any.other.GenType>, F>", typeParts.get(1));
+        assertEquals("H", typeParts.get(2));
+    }
 
 }

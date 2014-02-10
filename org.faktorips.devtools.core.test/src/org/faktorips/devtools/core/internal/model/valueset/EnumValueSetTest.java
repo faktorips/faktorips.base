@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.valueset;
@@ -14,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -158,51 +156,43 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue() {
+    public void testContainsValue() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10EUR");
         set.addValue("20EUR");
         set.addValue("30EUR");
-        assertTrue(set.containsValue("10EUR"));
-        assertTrue(set.containsValue("10 EUR"));
-        assertFalse(set.containsValue("15 EUR"));
-        assertFalse(set.containsValue("abc"));
-        assertFalse(set.containsValue(null));
+        assertTrue(set.containsValue("10EUR", ipsProject));
+        assertTrue(set.containsValue("10 EUR", ipsProject));
+        assertFalse(set.containsValue("15 EUR", ipsProject));
+        assertFalse(set.containsValue("abc", ipsProject));
+        assertFalse(set.containsValue(null, ipsProject));
 
         set.addValue(null);
-        assertTrue(set.containsValue(null));
+        assertTrue(set.containsValue(null, ipsProject));
 
-        MessageList list = new MessageList();
-        set.containsValue("15 EUR", list, null, null);
-        assertTrue(list.containsErrorMsg());
+        assertFalse(set.containsValue("15 EUR", ipsProject));
 
-        list.clear();
-        set.containsValue("10 EUR", list, null, null);
-        assertFalse(list.containsErrorMsg());
+        assertTrue(set.containsValue("10 EUR", ipsProject));
     }
 
     @Test
-    public void testContainsValueInvalidSet() {
+    public void testContainsValueInvalidSet() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("1");
-        MessageList list = new MessageList();
-        set.containsValue("10 EUR", list, null, null);
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_CONTAINED));
+        assertFalse(set.containsValue("10 EUR", ipsProject));
 
-        list.clear();
         set.addValue("10EUR");
-        set.containsValue("10 EUR", list, null, null);
-        assertNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_CONTAINED));
+        assertTrue(set.containsValue("10 EUR", ipsProject));
     }
 
     @Test
     public void testContainsValueSet() throws Exception {
-        EnumValueSet superset = new EnumValueSet(ce, "50");
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
         superset.addValue("1EUR");
         superset.addValue("2EUR");
         superset.addValue("3EUR");
 
-        EnumValueSet subset = new EnumValueSet(ce, "100");
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
         assertTrue(superset.containsValueSet(subset));
 
         subset.addValue("1EUR");
@@ -212,9 +202,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         subset.addValue("3EUR");
         assertTrue(superset.containsValueSet(subset));
 
-        MessageList list = new MessageList();
-        superset.containsValueSet(subset, list, null, null);
-        assertFalse(list.containsErrorMsg());
+        assertTrue(superset.containsValueSet(subset));
 
         subset.addValue("4EUR");
         assertFalse(superset.containsValueSet(subset));
@@ -224,9 +212,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertTrue(abstractSet.containsValueSet(subset));
         assertFalse(subset.containsValueSet(abstractSet));
 
-        list.clear();
-        superset.containsValueSet(subset, list, null, null);
-        assertTrue(list.containsErrorMsg());
+        assertFalse(superset.containsValueSet(subset));
 
         subset.removeValue("4EUR");
         subset.addValue(null);
@@ -246,9 +232,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         subset = new EnumValueSet(ce2, "50");
         subset.addValue("2EUR");
 
-        list.clear();
-        assertFalse(superset.containsValueSet(subset, list, null, null));
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_DATATYPES_NOT_MATCHING));
+        assertFalse(superset.containsValueSet(subset));
     }
 
     @Test

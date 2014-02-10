@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui;
@@ -19,6 +18,7 @@ import java.util.Locale;
 
 import junit.framework.Assert;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
@@ -179,30 +179,47 @@ public class UIDatatypeFormatterTest {
     }
 
     @Test
-    public void testFormatRangeValueSet() {
-        RangeValueSet rangeValueSet = Mockito.mock(RangeValueSet.class);
+    public void testFormatRangeValueSet() throws Exception {
+        RangeValueSet rangeValueSet = mockRangeValueSet();
         Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
         Mockito.when(rangeValueSet.getUpperBound()).thenReturn("11");
         Mockito.when(rangeValueSet.getStep()).thenReturn("5");
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(rangeValueSet);
-        Assert.assertTrue("Formatted Range must start with lower and upper bound", formatString.startsWith("[1-11]"));
-        Assert.assertTrue("Formatted Range must end with step value", formatString.endsWith("5"));
+        assertEquals("[1 ... 11 / 5]", formatString);
     }
 
     @Test
-    public void testFormatRangeValueSetUnlimited() {
-        RangeValueSet rangeValueSet = Mockito.mock(RangeValueSet.class);
+    public void testFormatRangeValueSetUnlimited() throws Exception {
+        RangeValueSet rangeValueSet = mockRangeValueSet();
         Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
         Mockito.when(rangeValueSet.getUpperBound()).thenReturn(null);
         Mockito.when(rangeValueSet.getStep()).thenReturn("5");
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(rangeValueSet);
-        Assert.assertTrue("Formatted Range must start with lower and upper bound",
-                formatString.startsWith("[1-unlimited]"));
-        Assert.assertTrue("Formatted Range must end with step value", formatString.endsWith("5"));
+        assertEquals("[1 ... * / 5]", formatString);
+    }
+
+    @Test
+    public void testFormatRangeValueSet_noStep() throws CoreException {
+        RangeValueSet rangeValueSet = mockRangeValueSet();
+        Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
+        Mockito.when(rangeValueSet.getUpperBound()).thenReturn("10");
+        Mockito.when(rangeValueSet.getStep()).thenReturn(null);
+
+        UIDatatypeFormatter formatter = new UIDatatypeFormatter();
+        String formatString = formatter.formatValueSet(rangeValueSet);
+        assertEquals("[1 ... 10]", formatString);
+    }
+
+    private RangeValueSet mockRangeValueSet() throws CoreException {
+        RangeValueSet rangeValueSet = mock(RangeValueSet.class);
+        IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
+        when(rangeValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
+        when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
+        return rangeValueSet;
     }
 
 }

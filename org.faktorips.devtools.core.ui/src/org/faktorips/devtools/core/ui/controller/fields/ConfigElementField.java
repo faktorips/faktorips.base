@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controller.fields;
@@ -23,7 +22,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 
 public class ConfigElementField extends FormattingTextField<IValueSet> {
 
@@ -36,7 +35,7 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
 
     public ConfigElementField(IConfigElement configElement, AnyValueSetControl valueSetControl,
             boolean formatOnFocusLost) {
-        super(valueSetControl.getTextControl(), ValueSetFormat.newInstance(configElement), formatOnFocusLost);
+        super(valueSetControl.getTextControl(), AnyValueSetFormat.newInstance(configElement), formatOnFocusLost);
         // important: the whole value set must never be null but may contains null values
         setSupportsNullStringRepresentation(false);
         this.valueSetControl = valueSetControl;

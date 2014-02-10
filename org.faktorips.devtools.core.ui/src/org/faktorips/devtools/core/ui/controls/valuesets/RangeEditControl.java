@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controls.valuesets;
@@ -178,11 +177,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiController.removeBindings(lowerfield.getControl());
         uiController.removeBindings(stepfield.getControl());
         uiController.removeBindings(containsNullField.getControl());
-        uiController.bindContent(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        uiController.bindContent(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        uiController.bindContent(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.bindContent(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
-        uiController.updateUI();
+        connectToModel();
     }
 
     public void setLower(String newText) {

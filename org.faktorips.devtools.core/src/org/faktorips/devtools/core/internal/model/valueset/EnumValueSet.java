@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.valueset;
@@ -25,16 +24,15 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -57,7 +55,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     public static final String ENUM_VALUESET_END = "}"; //$NON-NLS-1$
 
-    public static final String ENUM_VALUESET_EMPTRY = ENUM_VALUESET_START + ENUM_VALUESET_END;
+    public static final String ENUM_VALUESET_EMPTY = ENUM_VALUESET_START + ENUM_VALUESET_END;
 
     public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
 
@@ -119,45 +117,34 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public boolean containsValue(String value,
-            MessageList list,
-            Object invalidObject,
-            String invalidProperty,
-            IIpsProject ipsProject) throws CoreException {
-
-        ArgumentCheck.notNull(list);
+    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
-            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown,
-                    invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
-            // if the value is null we can still decide if the value is part of the set
-            if (value == null && isContainingNull()) {
-                return true;
-            }
             return false;
         }
-
-        if (value == null && isContainingNull()) {
-            return true;
+        if (isNullValue(value, datatype)) {
+            return isContainingNull();
         }
-        // An abstract value set is considered containing all values. See #isAbstract()
         if (isAbstract()) {
             return true;
         }
-
         if (!datatype.isParsable(value)) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
-            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject,
-                    getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
             return false;
         }
 
+        return isValueInEnum(value, datatype);
+    }
+
+    /**
+     * Runs through all the enum values and returns true if the expected value was found. To compare
+     * the equality of the values we need to ask the datatype. For performance optimization we first
+     * check equality. If the value is not parsable, the equals check may throw a
+     * IllegalArgumentException or NullPointerException
+     */
+    private boolean isValueInEnum(String value, ValueDatatype datatype) {
         for (String each : values) {
             try {
-                // for performance optimization we first check equality. If the value is not
-                // parsable, the equals check may throw a IllegalArgumentException or
-                // NullPointerException
-                if (datatype.areValuesEqual(each, value) && datatype.isParsable(each)) {
+                if ((ObjectUtils.equals(each, value) || datatype.areValuesEqual(each, value))) {
                     return true;
                 }
             } catch (IllegalArgumentException e) {
@@ -166,74 +153,51 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
                 continue;
             }
         }
-
-        String text = Messages.EnumValueSet_msgValueNotInEnumeration;
-        addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject,
-                getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
-
         return false;
     }
 
     @Override
-    public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
-        if (list == null) {
-            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
-        }
-
+    public boolean containsValueSet(IValueSet subset) {
         ValueDatatype datatype = getValueDatatype();
-        ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
-        if (datatype == null || subDatatype == null) {
-            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown,
-                    invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
+        if (!checkDatatypes(subset, datatype)) {
             return false;
         }
 
-        if (!(subset instanceof EnumValueSet)) {
-            addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset,
-                    invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
-            return false;
-        }
-
-        if (!datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(),
-                    datatype.getQualifiedName());
-            addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject,
-                    getProperty(invalidProperty, PROPERTY_VALUES));
-            return false;
-        }
-
-        /*
-         * An abstract valueset is considered containing all values and thus all non-abstract
-         * EnumValueSets. See #isAbstract()
-         */
         if (isAbstract()) {
             return true;
         }
         if (subset.isAbstract()) {
-            // this set is concrete
             return false;
         }
-        IEnumValueSet enumSubset = (IEnumValueSet)subset;
-        String[] subsetValues = enumSubset.getValues();
-
-        boolean contains = true;
-        MessageList dummy = new MessageList();
-        for (int i = 0; i < subsetValues.length && contains; i++) {
-            contains = this.containsValue(subsetValues[i], dummy, invalidObject,
-                    getProperty(invalidProperty, PROPERTY_VALUES));
-        }
-
-        if (!contains) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgNotSubset, enumSubset.toShortString(), toShortString());
-            addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
-        }
-
-        return contains;
+        return containsAllValues(subset);
     }
 
-    @Override
-    public boolean containsValueSet(IValueSet subset) {
-        return containsValueSet(subset, new MessageList(), null, null);
+    private boolean checkDatatypes(IValueSet subset, ValueDatatype datatype) {
+        ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
+        if (datatype == null || !datatype.equals(subDatatype)) {
+            return false;
+        }
+
+        if (!(subset instanceof EnumValueSet)) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean containsAllValues(IValueSet subset) {
+        IEnumValueSet enumSubset = (IEnumValueSet)subset;
+        String[] subsetValues = enumSubset.getValues();
+    
+        for (String value : subsetValues) {
+            try {
+                if (!containsValue(value, getIpsProject())) {
+                    return false;
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -427,7 +391,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
 
-        return datatype.isNull(value);
+        return isNullValue(value, datatype);
     }
 
     private String getNotNullValue(String value) {

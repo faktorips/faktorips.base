@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
@@ -54,7 +53,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
@@ -1340,9 +1338,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return types;
         }
         if (datatype instanceof NumericDatatype) {
-            return ValueSetType.getValueSetTypesAsList();
-        }
-        if (datatype instanceof MoneyDatatype) {
             return ValueSetType.getValueSetTypesAsList();
         }
         if (datatype instanceof ArrayOfValueDatatype) {

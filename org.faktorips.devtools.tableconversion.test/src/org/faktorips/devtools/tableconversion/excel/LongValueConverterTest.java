@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
@@ -15,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
@@ -73,6 +74,22 @@ public class LongValueConverterTest {
         value = converter.getExternalDataValue(INVALID, ml);
         assertFalse(ml.isEmpty());
         assertEquals(INVALID, value);
+    }
+
+    @Test
+    public void testGetIpsValueTooBigDecimal() {
+        MessageList ml = new MessageList();
+        LongValueConverter converter = new LongValueConverter();
+        converter.getIpsValue(new BigDecimal(9.22337203685478E+180), ml);
+        assertFalse(ml.isEmpty());
+    }
+
+    @Test
+    public void testGetIpsValueTooSmallDecimal() {
+        MessageList ml = new MessageList();
+        LongValueConverter converter = new LongValueConverter();
+        converter.getIpsValue(new BigDecimal(-9.22337203685478E+180), ml);
+        assertFalse(ml.isEmpty());
     }
 
 }

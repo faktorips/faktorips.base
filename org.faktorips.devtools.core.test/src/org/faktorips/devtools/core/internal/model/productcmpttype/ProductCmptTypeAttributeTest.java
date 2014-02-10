@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
@@ -357,7 +356,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Hidden_DefaultValueContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
         productAttribute.setDefaultValue("3");
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
@@ -373,7 +372,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Visible_DefaultValueContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(true);
         productAttribute.setDefaultValue("3");
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
@@ -389,7 +388,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
         productAttribute.setDefaultValue(null);
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);
@@ -406,7 +405,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() throws CoreException {
         productAttribute.setName("productAttribute");
-        productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
         productAttribute.setDefaultValue(null);
         IRangeValueSet valueSet = (IRangeValueSet)productAttribute.changeValueSetType(ValueSetType.RANGE);

@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 3
- * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
- * component under the terms of the LGPL Lesser General Public License version 3.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
  * 
- * Please see LICENSE.txt for full license terms, including the additional permissions and the
- * possibility of alternative license terms.
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
@@ -35,9 +34,6 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
@@ -404,48 +400,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Returns a string representation of a <code>ValueSet</code>. An <code>EnumValueSet</code> is
-     * represented as a list of values separated by comma ("[1,5,7]"). A <code>RangeValueSet</code>
-     * is represented by its upper and lower bound ("[1..7]"). A <code>AllValuesValueSet</code> is
-     * represented by "[all values]".
+     * Returns a string representation of a <code>ValueSet</code>.
      */
     private StringBuffer getValueSetContent(IConfigElement configElement) {
-        StringBuffer sb = new StringBuffer();
         IValueSet set = configElement.getValueSet();
-        if (set instanceof IEnumValueSet) {
-            sb.append("["); //$NON-NLS-1$
-            String[] values = ((IEnumValueSet)set).getValues();
-            for (int i = 0; i < values.length; i++) {
-                sb.append(values[i]);
-                if (i < values.length - 1) {
-                    sb.append(COMMA);
-                }
-            }
-            sb.append("]"); //$NON-NLS-1$
-        } else if (set instanceof IRangeValueSet) {
-            IRangeValueSet rangeSet = (IRangeValueSet)set;
-            sb.append("["); //$NON-NLS-1$
-            String unlimited = Messages.ProductCmptCompareItem_unlimited;
-            if (rangeSet.getLowerBound() == null) {
-                sb.append(unlimited);
-            } else {
-                sb.append(rangeSet.getLowerBound());
-            }
-            sb.append(".."); //$NON-NLS-1$
-            if (rangeSet.getUpperBound() == null) {
-                sb.append(unlimited);
-            } else {
-                sb.append(rangeSet.getUpperBound());
-            }
-            sb.append("]"); //$NON-NLS-1$
-        } else if (set instanceof IUnrestrictedValueSet) {
-            sb.append("["); //$NON-NLS-1$
-            sb.append(Messages.ProductCmptCompareItem_AllValues);
-            sb.append("]"); //$NON-NLS-1$
-        } else {
-            sb.append("Unknown value set type " + set.getClass()); //$NON-NLS-1$
-        }
-        return sb;
+        return new StringBuffer(set.toShortString());
     }
 
     /**
