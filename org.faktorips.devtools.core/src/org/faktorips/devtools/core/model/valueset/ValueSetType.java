@@ -29,30 +29,29 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-@SuppressWarnings("deprecation")
 public class ValueSetType extends DefaultEnumValue {
 
     /**
      * Defines the value set type that does not restrict the values in the set. All values allowed
      * by the data type are allowed.
      */
-    public static final ValueSetType UNRESTRICTED;
+    public final static ValueSetType UNRESTRICTED;
 
     /**
      * Defines the value set type range.
      */
-    public static final ValueSetType RANGE;
+    public final static ValueSetType RANGE;
 
     /**
      * Defines the value set type enumeration.
      */
-    public static final ValueSetType ENUM;
+    public final static ValueSetType ENUM;
 
     /**
      * Defines a value set type that has yet to be specified (on the product side) as either
      * enumeration or range.
      */
-    private static final DefaultEnumType enumType;
+    private final static DefaultEnumType enumType;
 
     static {
         enumType = new DefaultEnumType("ValueSetType", ValueSetType.class); //$NON-NLS-1$
@@ -61,11 +60,7 @@ public class ValueSetType extends DefaultEnumValue {
         RANGE = new ValueSetType(enumType, "range", Messages.ValueSetType_range); //$NON-NLS-1$ 
     }
 
-    private ValueSetType(DefaultEnumType type, String id, String name) {
-        super(type, id, name);
-    }
-
-    public static final EnumType getEnumType() {
+    public final static EnumType getEnumType() {
         return enumType;
     }
 
@@ -73,7 +68,7 @@ public class ValueSetType extends DefaultEnumValue {
      * Returns the value set type identified by the id. Returns <code>null</code> if the id does not
      * identify a value set type.
      */
-    public static final ValueSetType getValueSetType(String id) {
+    public final static ValueSetType getValueSetType(String id) {
         return (ValueSetType)enumType.getEnumValue(id);
     }
 
@@ -81,7 +76,7 @@ public class ValueSetType extends DefaultEnumValue {
      * Returns the value set type identified by the name. Returns <code>null</code> if the name does
      * not identify a value set type.
      */
-    public static final ValueSetType getValueSetTypeByName(String name) {
+    public final static ValueSetType getValueSetTypeByName(String name) {
         ValueSetType[] types = getValueSetTypes();
         for (ValueSetType type2 : types) {
             if (type2.getName().equals(name)) {
@@ -91,20 +86,24 @@ public class ValueSetType extends DefaultEnumValue {
         return null;
     }
 
-    public static final ValueSetType[] getValueSetTypes() {
+    public final static ValueSetType[] getValueSetTypes() {
         EnumValue[] values = getEnumType().getValues();
         ValueSetType[] types = new ValueSetType[values.length];
         System.arraycopy(values, 0, types, 0, values.length);
         return types;
     }
 
-    public static final List<ValueSetType> getValueSetTypesAsList() {
+    public final static List<ValueSetType> getValueSetTypesAsList() {
         EnumValue[] values = getEnumType().getValues();
         List<ValueSetType> types = new ArrayList<ValueSetType>();
         for (EnumValue value : values) {
             types.add((ValueSetType)value);
         }
         return types;
+    }
+
+    private ValueSetType(DefaultEnumType type, String id, String name) {
+        super(type, id, name);
     }
 
     /**
