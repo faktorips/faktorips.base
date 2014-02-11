@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -220,4 +221,52 @@ public class AttributeNodeGeneratorTest {
                 defaultAccess, listOfType);
     }
 
+    @Test
+    public void testGetParameterAttributGetterNameNotChangingOverTime() throws CoreException {
+        XPolicyCmptClass xPolicyCmptClass = initMocksForTestgetParameterAttributeGetterName(false);
+        when(xPolicyCmptClass.getMethodNameGetProductCmpt()).thenReturn("getPolicyProdCmpt");
+
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
+
+        assertFalse(compilationResult.failed());
+        assertTrue(compilationResult.getCodeFragment().getSourcecode()
+                .contains(xPolicyCmptClass.getMethodNameGetProductCmpt()));
+    }
+
+    @Test
+    public void testGetParameterAttributeGetterNameChangingOverTime() throws CoreException {
+        XPolicyCmptClass xPolicyCmptClass = initMocksForTestgetParameterAttributeGetterName(true);
+        when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getMethodPolicyProdCmpt");
+
+        CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
+                .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
+
+        assertFalse(compilationResult.failed());
+        assertTrue(compilationResult.getCodeFragment().getSourcecode()
+                .contains(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()));
+    }
+
+    private XPolicyCmptClass initMocksForTestgetParameterAttributeGetterName(boolean isChangingOverTime)
+            throws CoreException {
+        attribute = mock(IProductCmptTypeAttribute.class);
+        createAttributeNode(false);
+
+        IPolicyCmptType datatypePolicy = mock(IPolicyCmptType.class);
+        IType type = mock(IType.class);
+        XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
+        XProductAttribute xProductAttribute = mock(XProductAttribute.class);
+        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
+
+        when(attribute.getType()).thenReturn(type);
+        when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
+        when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
+        when(xProductAttribute.isChangingOverTime()).thenReturn(isChangingOverTime);
+        when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
+        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
+        when(contextCompilationResult.getDatatype()).thenReturn(datatypePolicy);
+        when(builderSet.getModelNode(datatypePolicy, XPolicyCmptClass.class)).thenReturn(xPolicyCmptClass);
+
+        return xPolicyCmptClass;
+    }
 }

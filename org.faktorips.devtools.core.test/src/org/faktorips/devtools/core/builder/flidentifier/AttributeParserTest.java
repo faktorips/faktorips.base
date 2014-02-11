@@ -15,10 +15,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
@@ -27,7 +32,9 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNod
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
@@ -46,10 +53,22 @@ public class AttributeParserTest extends AbstractParserTest {
     private IAttribute attribute;
 
     @Mock
+    private IAttribute attribute2;
+
+    @Mock
+    private IAttribute attribute3;
+
+    @Mock
     private IType otherType;
 
     @Mock
     private IPolicyCmptType policyType;
+
+    @Mock
+    private IProductCmptType prodType;
+
+    @Mock
+    private IIpsProject ipsProject;
 
     @Mock
     private IdentifierFilter identifierFilter;
@@ -141,6 +160,43 @@ public class AttributeParserTest extends AbstractParserTest {
                 policyType));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
+    }
+
+    @Test
+    public void testfindAttributes() throws CoreException {
+        AttributeParser spy = spy(attributeParser);
+        ArrayList<IAttribute> arrayList = new ArrayList<IAttribute>();
+        arrayList.add(attribute);
+
+        doReturn(false).when(spy).isContextTypeFormulaType();
+        when(spy.getContextType()).thenReturn(policyType);
+        when(policyType.findAllAttributes(getIpsProject())).thenReturn(arrayList);
+        when(policyType.findProductCmptType(getIpsProject())).thenReturn(prodType);
+
+        when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
+
+        List<IAttribute> attributeList = spy.findAttributes();
+        assertEquals(3, attributeList.size());
+    }
+
+    @Test
+    public void testfindAttributes_NoProductCmpt() throws CoreException {
+        AttributeParser spy = spy(attributeParser);
+
+        doReturn(false).when(spy).isContextTypeFormulaType();
+        when(spy.getContextType()).thenReturn(policyType);
+        when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
+
+        List<IAttribute> attributeList = spy.findAttributes();
+        assertEquals(1, attributeList.size());
+    }
+
+    private ArrayList<IAttribute> listOfAttributes() {
+        ArrayList<IAttribute> list = new ArrayList<IAttribute>();
+        list.add(attribute2);
+        list.add(attribute3);
+        return list;
     }
 
 }

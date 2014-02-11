@@ -479,6 +479,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (Exception pe) {
             // CSON: IllegalCatch
+            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         }
@@ -498,6 +499,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // CSOFF: IllegalCatch
         } catch (RuntimeException pe) {
             // CSON: IllegalCatch
+            pe.printStackTrace();
             return newCompilationResultImpl(Message.newError(INTERNAL_ERROR,
                     LOCALIZED_STRINGS.getString(INTERNAL_ERROR, getLocale())));
         }
