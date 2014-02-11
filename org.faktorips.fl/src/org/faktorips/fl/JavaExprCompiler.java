@@ -133,23 +133,23 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
         // greater than operation
         register(new GreaterThanDecimalDecimal());
         register(new GreaterThanMoneyMoney());
-        register(new CompareToComparableDatatype(">", LocalDateDatatype.DATATYPE));
+        register(new CompareToComparableDatatype(BinaryOperation.GREATER_THAN, LocalDateDatatype.DATATYPE));
 
         // greater than or equal operation
         register(new GreaterThanOrEqualDecimalDecimal());
         register(new GreaterThanOrEqualMoneyMoney());
-        register(new CompareToComparableDatatype(">=", LocalDateDatatype.DATATYPE));
+        register(new CompareToComparableDatatype(BinaryOperation.GREATER_THAN_OR_EQUAL, LocalDateDatatype.DATATYPE));
 
         // less than operation
         register(new LessThanDecimalDecimal());
         register(new LessThanMoneyMoney());
-        register(new CompareToComparableDatatype("<", LocalDateDatatype.DATATYPE));
+        register(new CompareToComparableDatatype(BinaryOperation.LESSER_THAN, LocalDateDatatype.DATATYPE));
 
         // less than or equal operation
         register(new LessThanOrEqualDecimalDecimal());
         register(new LessThanOrEqualMoneyMoney());
         register(new LessThanOrEqualMoneyMoney());
-        register(new CompareToComparableDatatype("<=", LocalDateDatatype.DATATYPE));
+        register(new CompareToComparableDatatype(BinaryOperation.LESSER_THAN_OR_EQUAL, LocalDateDatatype.DATATYPE));
 
         // equals operation
         register(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT));

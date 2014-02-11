@@ -85,7 +85,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTEQNode node, Object data) {
-        return generateBinaryOperation("=", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.EQUAL, node, data);
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTNotEQNode node, Object data) {
-        return generateBinaryOperation("!=", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.NOT_EQUAL, node, data);
     }
 
     /**
@@ -105,7 +105,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTLTNode node, Object data) {
-        return generateBinaryOperation("<", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.LESSER_THAN, node, data);
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTGTNode node, Object data) {
-        return generateBinaryOperation(">", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.GREATER_THAN, node, data);
     }
 
     /**
@@ -125,7 +125,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTLENode node, Object data) {
-        return generateBinaryOperation("<=", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.LESSER_THAN_OR_EQUAL, node, data);
     }
 
     /**
@@ -135,7 +135,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTGENode node, Object data) {
-        return generateBinaryOperation(">=", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.GREATER_THAN_OR_EQUAL, node, data);
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTAddNode node, Object data) {
-        return generateBinaryOperation("+", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.PLUS, node, data);
     }
 
     /**
@@ -155,7 +155,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTSubNode node, Object data) {
-        return generateBinaryOperation("-", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.MINUS, node, data);
     }
 
     /**
@@ -165,7 +165,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTMultNode node, Object data) {
-        return generateBinaryOperation("*", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.MULTIPLY, node, data);
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTDivNode node, Object data) {
-        return generateBinaryOperation("/", node, data); //$NON-NLS-1$
+        return generateBinaryOperation(BinaryOperation.DIVIDE, node, data);
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTPlusNode node, Object data) {
-        return generateUnaryOperation("+", node, data); //$NON-NLS-1$
+        return generateUnaryOperation(BinaryOperation.PLUS, node, data);
     }
 
     /**
@@ -195,7 +195,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTMinusNode node, Object data) {
-        return generateUnaryOperation("-", node, data); //$NON-NLS-1$
+        return generateUnaryOperation(BinaryOperation.MINUS, node, data);
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTNotNode node, Object data) {
-        return generateUnaryOperation("!", node, data); //$NON-NLS-1$
+        return generateUnaryOperation(BinaryOperation.NOT, node, data);
     }
 
     /**

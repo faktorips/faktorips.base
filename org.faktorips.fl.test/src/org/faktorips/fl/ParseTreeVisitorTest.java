@@ -213,7 +213,7 @@ public class ParseTreeVisitorTest {
 
     @Test
     public void testVisitASTEQNodeObject() {
-        testVisitAstForBinaryMethod(ASTEQNode.class, "=");
+        testVisitAstForBinaryMethod(ASTEQNode.class, BinaryOperation.EQUAL);
     }
 
     private <T extends SimpleNode> void testVisitAstForBinaryMethod(Class<T> clazz, String operand) {
@@ -292,62 +292,62 @@ public class ParseTreeVisitorTest {
 
     @Test
     public void testVisitASTNotEQNodeObject() {
-        testVisitAstForBinaryMethod(ASTNotEQNode.class, "!=");
+        testVisitAstForBinaryMethod(ASTNotEQNode.class, BinaryOperation.NOT_EQUAL);
     }
 
     @Test
     public void testVisitASTLTNodeObject() {
-        testVisitAstForBinaryMethod(ASTLTNode.class, "<");
+        testVisitAstForBinaryMethod(ASTLTNode.class, BinaryOperation.LESSER_THAN);
     }
 
     @Test
     public void testVisitASTGTNodeObject() {
-        testVisitAstForBinaryMethod(ASTGTNode.class, ">");
+        testVisitAstForBinaryMethod(ASTGTNode.class, BinaryOperation.GREATER_THAN);
     }
 
     @Test
     public void testVisitASTLENodeObject() {
-        testVisitAstForBinaryMethod(ASTLENode.class, "<=");
+        testVisitAstForBinaryMethod(ASTLENode.class, BinaryOperation.LESSER_THAN_OR_EQUAL);
     }
 
     @Test
     public void testVisitASTGENodeObject() {
-        testVisitAstForBinaryMethod(ASTGENode.class, ">=");
+        testVisitAstForBinaryMethod(ASTGENode.class, BinaryOperation.GREATER_THAN_OR_EQUAL);
     }
 
     @Test
     public void testVisitASTAddNodeObject() {
-        testVisitAstForBinaryMethod(ASTAddNode.class, "+");
+        testVisitAstForBinaryMethod(ASTAddNode.class, BinaryOperation.PLUS);
     }
 
     @Test
     public void testVisitASTSubNodeObject() {
-        testVisitAstForBinaryMethod(ASTSubNode.class, "-");
+        testVisitAstForBinaryMethod(ASTSubNode.class, BinaryOperation.MINUS);
     }
 
     @Test
     public void testVisitASTMultNodeObject() {
-        testVisitAstForBinaryMethod(ASTMultNode.class, "*");
+        testVisitAstForBinaryMethod(ASTMultNode.class, BinaryOperation.MULTIPLY);
     }
 
     @Test
     public void testVisitASTDivNodeObject() {
-        testVisitAstForBinaryMethod(ASTDivNode.class, "/");
+        testVisitAstForBinaryMethod(ASTDivNode.class, BinaryOperation.DIVIDE);
     }
 
     @Test
     public void testVisitASTPlusNodeObject() {
-        testVisitAstForUnaryMethod(ASTPlusNode.class, "+");
+        testVisitAstForUnaryMethod(ASTPlusNode.class, BinaryOperation.PLUS);
     }
 
     @Test
     public void testVisitASTMinusNodeObject() {
-        testVisitAstForUnaryMethod(ASTMinusNode.class, "-");
+        testVisitAstForUnaryMethod(ASTMinusNode.class, BinaryOperation.MINUS);
     }
 
     @Test
     public void testVisitASTNotNodeObject() {
-        testVisitAstForUnaryMethod(ASTNotNode.class, "!");
+        testVisitAstForUnaryMethod(ASTNotNode.class, BinaryOperation.NOT);
     }
 
     @Test
