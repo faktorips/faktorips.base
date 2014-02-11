@@ -11,7 +11,17 @@
 
 package org.faktorips.fl.functions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
+import java.util.Set;
+
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.functions.joda.Date;
 import org.junit.Test;
 
 public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
@@ -21,6 +31,10 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
         super.setUp();
         registerFunction(new MinMaxComparableDatatypes("MAX", "", true, Datatype.STRING));
         registerFunction(new MinMaxComparableDatatypes("MIN", "", false, Datatype.STRING));
+
+        registerFunction(new MinMaxComparableDatatypes("MAX", "", true, LocalDateDatatype.DATATYPE));
+        registerFunction(new MinMaxComparableDatatypes("MIN", "", false, LocalDateDatatype.DATATYPE));
+        registerFunction(new Date("DATE", ""));
     }
 
     @Test
@@ -38,9 +52,32 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
     }
 
     @Test
-    public void testFail() throws Exception {
-        execAndTestFail("MAX(10)", "FLC-WrongArgumentTypes");
-        execAndTestFail("MIN(\"aaa\")", "FLC-WrongArgumentTypes");
+    public void testCompile_minDate() throws Exception {
+
+        CompilationResult<JavaCodeFragment> compile = compiler.compile("MIN(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
+        assertEquals(
+                "(new LocalDate(2014, 02, 01).compareTo(new LocalDate(2014, 03, 08)) < 0 ? new LocalDate(2014, 02, 01) : new LocalDate(2014, 03, 08))",
+                compile.getCodeFragment().getSourcecode());
+
+        assertThat(imports, hasItem("org.joda.time.LocalDate"));
     }
 
+    @Test
+    public void testCompile_maxDate() throws Exception {
+
+        CompilationResult<JavaCodeFragment> compile = compiler.compile("MAX(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
+        assertEquals(
+                "(new LocalDate(2014, 02, 01).compareTo(new LocalDate(2014, 03, 08)) > 0 ? new LocalDate(2014, 02, 01) : new LocalDate(2014, 03, 08))",
+                compile.getCodeFragment().getSourcecode());
+
+        assertThat(imports, hasItem("org.joda.time.LocalDate"));
+    }
+
+    @Test
+    public void testFail() throws Exception {
+        execAndTestFail("MAX(\"10\")", "FLC-WrongArgumentTypes");
+        execAndTestFail("MIN(\"aaa\")", "FLC-WrongArgumentTypes");
+    }
 }
