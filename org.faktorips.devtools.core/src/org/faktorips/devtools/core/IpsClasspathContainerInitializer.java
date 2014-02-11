@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * Returns <code>true</code> if the given groovy support bundle is available, otherwise
      * <code>false</code>.
      */
-    public final static boolean isGroovySupportAvailable() {
+    public static final boolean isGroovySupportAvailable() {
         return Platform.getBundle(GROOVY_BUNDLE) != null;
     }
 
@@ -55,14 +56,14 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * Returns <code>true</code> if the given JODA support bundle is available, otherwise
      * <code>false</code>.
      */
-    public final static boolean isJodaSupportAvailable() {
+    public static final boolean isJodaSupportAvailable() {
         return Platform.getBundle(JODA_BUNDLE) != null;
     }
 
     /**
      * Returns <code>true</code> if the given bundle is available, otherwise <code>false</code>.
      */
-    public final static boolean isPluginAvailable(String bundleId) {
+    public static final boolean isPluginAvailable(String bundleId) {
         return Platform.getBundle(bundleId) != null;
     }
 
@@ -70,7 +71,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * Returns <code>true</code> if container entry specifies that the support library for the JODA
      * library should be included, otherwise <code>false</code>.
      */
-    public final static boolean isJodaSupportIncluded(IClasspathEntry containerEntry) {
+    public static final boolean isJodaSupportIncluded(IClasspathEntry containerEntry) {
         return isAdditionalBundleIdsIncluded(containerEntry, JODA_BUNDLE);
     }
 
@@ -79,7 +80,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * evaluation formulas with Groovy should be included, otherwise <code>false</code>. Returns
      * <code>false</code> if containerEntry is <code>null</code>.
      */
-    public final static boolean isGroovySupportIncluded(IClasspathEntry containerEntry) {
+    public static final boolean isGroovySupportIncluded(IClasspathEntry containerEntry) {
         return isAdditionalBundleIdsIncluded(containerEntry, GROOVY_BUNDLE);
     }
 
@@ -88,7 +89,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * included, otherwise <code>false</code>. Returns <code>false</code> if containerEntry is
      * <code>null</code>.
      */
-    private final static boolean isAdditionalBundleIdsIncluded(IClasspathEntry containerEntry, String bundleId) {
+    private static final boolean isAdditionalBundleIdsIncluded(IClasspathEntry containerEntry, String bundleId) {
         ArgumentCheck.notNull(bundleId);
         String[] bundleIds = getAdditionalBundleIds(containerEntry);
         for (int i = 0; i < bundleIds.length; i++) {
@@ -103,7 +104,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * Returns the additional bundleIds that are specified to be included by the container entry.
      * Returns an empty array if containerEntry is <code>null</code>.
      */
-    public final static String[] getAdditionalBundleIds(IClasspathEntry containerEntry) {
+    public static final String[] getAdditionalBundleIds(IClasspathEntry containerEntry) {
         if (containerEntry == null) {
             return new String[0];
         }
@@ -114,7 +115,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * Returns the additional bundleIds that are specified to be included by the container path.
      * Returns an empty array if containerPath is <code>null</code>.
      */
-    public final static String[] getAdditionalBundleIds(IPath containerPath) {
+    public static final String[] getAdditionalBundleIds(IPath containerPath) {
         if (containerPath == null) {
             return new String[0];
         }
@@ -123,6 +124,10 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             return lastSegment.split(","); //$NON-NLS-1$
         }
         return new String[0];
+    }
+
+    public static IPath newDefaultEntryPath() {
+        return newEntryPath(isJodaSupportAvailable(), isGroovySupportAvailable());
     }
 
     /**
@@ -164,10 +169,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             path = path + additionalBundles.get(i);
         }
         return new Path(path);
-    }
-
-    public IpsClasspathContainerInitializer() {
-        // empty constructor
     }
 
     @Override
@@ -238,37 +239,32 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             }
 
             URL installLocation;
-            if (sources) {
-                try {
-                    installLocation = bundle.getEntry("src"); //$NON-NLS-1$ 
-                    String fullPath;
-                    if (installLocation != null) {
-                        URL local = FileLocator.toFileURL(installLocation);
-                        fullPath = new File(local.getPath()).getAbsolutePath();
-                    } else {
-                        fullPath = getSourceBundlePath(FileLocator.getBundleFile(bundle).getAbsolutePath(), pluginId);
-                    }
-                    return Path.fromOSString(fullPath);
-                } catch (Exception e) {
-                    IpsPlugin.log(new IpsStatus(
-                            "Error initializing classpath container for source bundle " + pluginId, e)); //$NON-NLS-1$ 
-                    return null;
+            try {
+                installLocation = getBundleEntry(bundle, sources);
+                String fullPath;
+                if (installLocation != null) {
+                    URL local = FileLocator.toFileURL(installLocation);
+                    fullPath = new File(local.getPath()).getAbsolutePath();
+                } else {
+                    fullPath = getBundleFileName(pluginId, bundle, sources);
                 }
+                return Path.fromOSString(fullPath);
+            } catch (IOException e) {
+                IpsPlugin.log(new IpsStatus("Error initializing classpath container for " //$NON-NLS-1$
+                        + (sources ? "source " : StringUtils.EMPTY) + "source bundle " + pluginId, e)); //$NON-NLS-1$//$NON-NLS-2$
+                return null;
+            }
+        }
+
+        private URL getBundleEntry(Bundle bundle, boolean sources) {
+            return bundle.getEntry(sources ? "src" : "bin"); //$NON-NLS-1$//$NON-NLS-2$
+        }
+
+        private String getBundleFileName(String pluginId, Bundle bundle, boolean sourceBundle) throws IOException {
+            if (sourceBundle) {
+                return getSourceBundlePath(FileLocator.getBundleFile(bundle).getAbsolutePath(), pluginId);
             } else {
-                try {
-                    installLocation = bundle.getEntry("bin"); //$NON-NLS-1$ 
-                    String fullPath;
-                    if (installLocation != null) {
-                        URL local = FileLocator.toFileURL(installLocation);
-                        fullPath = new File(local.getPath()).getAbsolutePath();
-                    } else {
-                        fullPath = FileLocator.getBundleFile(bundle).getAbsolutePath();
-                    }
-                    return Path.fromOSString(fullPath);
-                } catch (Exception e) {
-                    IpsPlugin.log(new IpsStatus("Error initializing classpath container for bundle " + pluginId, e)); //$NON-NLS-1$ 
-                    return null;
-                }
+                return FileLocator.getBundleFile(bundle).getAbsolutePath();
             }
         }
 
@@ -280,15 +276,15 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             if (split.length < 2) {
                 return null;
             }
-            fullPath = StringUtils.EMPTY;
+            String result = StringUtils.EMPTY;
             for (String string : split) {
                 if (!string.equals(split[split.length - 1])) {
-                    fullPath += string + pluginId;
+                    result += string + pluginId;
                 } else {
-                    fullPath += ".source" + string; //$NON-NLS-1$
+                    result += ".source" + string; //$NON-NLS-1$
                 }
             }
-            return fullPath;
+            return result;
         }
 
     }
