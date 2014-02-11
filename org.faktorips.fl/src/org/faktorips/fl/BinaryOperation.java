@@ -40,8 +40,6 @@ public interface BinaryOperation<T extends CodeFragment> {
 
     public static final String NOT_EQUAL = "!=";
 
-    public static final String NOT = "!";
-
     /**
      * Sets the compiler in which the operation is used.
      */

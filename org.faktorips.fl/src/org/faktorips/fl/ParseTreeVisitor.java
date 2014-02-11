@@ -205,7 +205,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      *      java.lang.Object)
      */
     public Object visit(ASTNotNode node, Object data) {
-        return generateUnaryOperation(BinaryOperation.NOT, node, data);
+        return generateUnaryOperation(UnaryOperation.NOT, node, data);
     }
 
     /**

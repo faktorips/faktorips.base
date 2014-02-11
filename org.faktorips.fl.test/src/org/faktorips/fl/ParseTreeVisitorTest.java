@@ -347,7 +347,7 @@ public class ParseTreeVisitorTest {
 
     @Test
     public void testVisitASTNotNodeObject() {
-        testVisitAstForUnaryMethod(ASTNotNode.class, BinaryOperation.NOT);
+        testVisitAstForUnaryMethod(ASTNotNode.class, UnaryOperation.NOT);
     }
 
     @Test
