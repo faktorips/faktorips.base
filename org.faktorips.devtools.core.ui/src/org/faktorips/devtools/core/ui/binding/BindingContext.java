@@ -108,6 +108,8 @@ public class BindingContext {
 
     private Set<String> ignoredMessageCodes = new HashSet<String>(2);
 
+    // CSOFF: IllegalCatch
+    // We need to catch all exception and only log it to update other not erroneous fields
     /**
      * Updates the UI with information from the model.
      */
@@ -127,6 +129,8 @@ public class BindingContext {
         showValidationStatus(copy);
         applyControlBindings();
     }
+
+    // CSON: IllegalCatch
 
     private void removeMappingIfControlIsDisposed(FieldPropertyMapping<?> mapping) {
         if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
@@ -663,7 +667,7 @@ public class BindingContext {
                     }
                 }
             } catch (CoreException e) {
-                // goto next
+                IpsPlugin.log(e);
             }
         }
         showValidationStatus(validationMap, propertyMappings);
@@ -694,6 +698,8 @@ public class BindingContext {
         applyControlBindings(null);
     }
 
+    // CSOFF: IllegalCatch
+    // We need to catch all exception and only log it to update other not erroneous bindings
     /**
      * Applies all bindings in this context and provides them with the given property name.
      * 
@@ -716,85 +722,11 @@ public class BindingContext {
         }
     }
 
+    // CSON: IllegalCatch
+
     private void removeBindingIfControlIsDisposed(ControlPropertyBinding binding) {
         if (binding.getControl() == null || binding.getControl().isDisposed()) {
             removeBinding(binding);
-        }
-    }
-
-    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
-
-        @Override
-        public void valueChanged(FieldValueChangedEvent e) {
-            // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-            // exceptions
-            for (FieldPropertyMapping<?> mapping : copy) {
-                if (e.field == mapping.getField()) {
-                    try {
-                        mapping.setPropertyValue();
-                    } catch (Exception ex) {
-                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void focusGained(FocusEvent e) {
-            // nothing to do
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            // broadcast outstanding change events
-            IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();
-        }
-
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-            // exceptions
-            for (FieldPropertyMapping<?> mapping : copy) {
-                if (mapping.getObject() instanceof IIpsObjectPartContainer) {
-                    if (event.isAffected((IIpsObjectPartContainer)mapping.getObject())) {
-                        try {
-                            mapping.setControlValue();
-                        } catch (Exception ex) {
-                            IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                    + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                        }
-                    }
-                }
-            }
-
-            showValidationStatus(copy);
-            applyControlBindings();
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-            // exceptions
-            for (FieldPropertyMapping<?> mapping : copy) {
-                if (mapping.getObject() == evt.getSource()) {
-                    try {
-                        mapping.setControlValue();
-                    } catch (Exception ex) {
-                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                    }
-                }
-            }
-
-            showValidationStatus(copy);
-            applyControlBindings(evt.getPropertyName());
         }
     }
 
@@ -867,6 +799,86 @@ public class BindingContext {
      */
     protected int getNumberOfMappingsAndBindings() {
         return mappings.size() + controlBindings.size();
+    }
+
+    // CSOFF: IllegalCatch
+    // We need to catch all exception and only log it to update other not erroneous fields
+    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
+
+        @Override
+        public void valueChanged(FieldValueChangedEvent e) {
+            // defensive copy to avoid concurrent modification
+            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
+
+            // exceptions
+            for (FieldPropertyMapping<?> mapping : copy) {
+                if (e.field == mapping.getField()) {
+                    try {
+                        mapping.setPropertyValue();
+                    } catch (Exception ex) {
+                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void focusGained(FocusEvent e) {
+            // nothing to do
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // broadcast outstanding change events
+            IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();
+        }
+
+        @Override
+        public void contentsChanged(ContentChangeEvent event) {
+            // defensive copy to avoid concurrent modification
+            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
+
+            // exceptions
+            for (FieldPropertyMapping<?> mapping : copy) {
+                if (mapping.getObject() instanceof IIpsObjectPartContainer) {
+                    if (event.isAffected((IIpsObjectPartContainer)mapping.getObject())) {
+                        try {
+                            mapping.setControlValue();
+                        } catch (Exception ex) {
+                            IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                    + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                        }
+                    }
+                } else {
+                    mapping.setControlValue();
+                }
+            }
+
+            showValidationStatus(copy);
+            applyControlBindings();
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            // defensive copy to avoid concurrent modification
+            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
+
+            // exceptions
+            for (FieldPropertyMapping<?> mapping : copy) {
+                if (mapping.getObject() == evt.getSource()) {
+                    try {
+                        mapping.setControlValue();
+                    } catch (Exception ex) {
+                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                    }
+                }
+            }
+
+            showValidationStatus(copy);
+            applyControlBindings(evt.getPropertyName());
+        }
     }
 
 }
