@@ -38,21 +38,21 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
     }
 
     @Test
-    public void testCompile_max() throws Exception {
+    public void testCompileMax() throws Exception {
         execAndTestSuccessfull("MAX(\"aaa\"; \"zzz\")", "zzz", Datatype.STRING);
         execAndTestSuccessfull("MAX(\"zzz\"; \"aaa\")", "zzz", Datatype.STRING);
         execAndTestSuccessfull("MAX(\"1\"; \"1\")", "1", Datatype.STRING);
     }
 
     @Test
-    public void testCompile_min() throws Exception {
+    public void testCompileMin() throws Exception {
         execAndTestSuccessfull("MIN(\"aaa\"; \"zzz\")", "aaa", Datatype.STRING);
         execAndTestSuccessfull("MIN(\"zzz\"; \"aaa\")", "aaa", Datatype.STRING);
         execAndTestSuccessfull("MIN(\"1\"; \"1\")", "1", Datatype.STRING);
     }
 
     @Test
-    public void testCompile_minDate() throws Exception {
+    public void testCompileMinDate() throws Exception {
 
         CompilationResult<JavaCodeFragment> compile = compiler.compile("MIN(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
@@ -64,7 +64,7 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
     }
 
     @Test
-    public void testCompile_maxDate() throws Exception {
+    public void testCompileMaxDate() throws Exception {
 
         CompilationResult<JavaCodeFragment> compile = compiler.compile("MAX(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
