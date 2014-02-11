@@ -39,10 +39,10 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
     private static final String SETTINGS_KEY_PREFIX = "AnyValueSetEditDialog_"; //$NON-NLS-1$
 
     /** Initial width of the dialog. */
-    private static final int INITIAL_WIDTH = 500;
+    private static final int INITIAL_WIDTH = 650;
 
     /** Initial height of the dialog. */
-    private static final int INITIAL_HEIGHT = 400;
+    private static final int INITIAL_HEIGHT = 550;
 
     /** The config element that owns the value set being shown/edited. */
     private IConfigElement configElement;

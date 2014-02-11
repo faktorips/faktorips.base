@@ -75,11 +75,16 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
     }
 
     protected String parseValueNameAndID(String stringToBeparsed) {
-        Pattern pattern = Pattern.compile("(?<=\\()(.*?)(?=\\))"); //$NON-NLS-1$
+        /*
+         * The pattern provides the name of the enum value (group(0)) and the content of the last
+         * bracket (group(1)). The last bracket always contains the enum value's id, which in turn
+         * cannot contain nested brackets/parentheses. The last bracket is found by matching ")$",
+         * the closing parenthesis at the end of the string.
+         */
+        Pattern pattern = Pattern.compile(".*\\((.*?)\\)$"); //$NON-NLS-1$
         Matcher matcher = pattern.matcher(stringToBeparsed);
-        int groupCount = matcher.groupCount();
-        if (groupCount > 0 && matcher.find()) {
-            String id = matcher.group(groupCount - 1);
+        if (matcher.find()) {
+            String id = matcher.group(1);
             return parseValueId(id);
         } else {
             return null;

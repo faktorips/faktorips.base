@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.inputformat.ValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 
 public class UIDatatypeFormatter {
 
@@ -33,10 +33,10 @@ public class UIDatatypeFormatter {
     }
 
     /**
-     * @see ValueSetFormat
+     * @see AnyValueSetFormat
      */
     public String formatValueSet(IValueSet valueSet) {
-        return ValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
+        return AnyValueSetFormat.newInstance(valueSet.getValueSetOwner()).format(valueSet);
     }
 
 }

@@ -226,7 +226,7 @@ public class JavaCodeFragment extends CodeFragment {
      * @throws NullPointerException if qualifiedClassName is null.
      */
     public JavaCodeFragment appendClassName(String qualifiedClassName) {
-        if (qualifiedClassName.indexOf('<') > 0) {
+        if (qualifiedClassName.contains("<")) { //$NON-NLS-1$
             return appendClassNameAndParseGenerics(qualifiedClassName);
         } else {
             return appendClassNameWithoutGenerics(qualifiedClassName);

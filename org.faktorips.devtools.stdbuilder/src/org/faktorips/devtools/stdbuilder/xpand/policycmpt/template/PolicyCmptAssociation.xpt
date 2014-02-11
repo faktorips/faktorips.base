@@ -21,7 +21,7 @@
 	     * 
 	     * @generated
 	     */
-	    public static final String «field(constantNamePropertyName)» = "«fieldName»";
+	    public final static String «field(constantNamePropertyName)» = "«fieldName»";
     «ENDIF-»
 «ENDDEFINE»
 

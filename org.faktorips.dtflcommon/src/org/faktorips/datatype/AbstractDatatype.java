@@ -33,7 +33,7 @@ public abstract class AbstractDatatype implements Datatype {
 
     @Override
     public int hashCode() {
-        return getName().hashCode();
+        return getQualifiedName().hashCode();
     }
 
     @Override

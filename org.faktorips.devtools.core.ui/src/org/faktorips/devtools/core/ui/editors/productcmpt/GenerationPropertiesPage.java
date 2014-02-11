@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.SashForm;
@@ -107,12 +108,12 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createAndSetStackTopControl() {
-        final Composite topControl = toolkit.createGridComposite(pageRoot, 1, true, true);
+        final Composite topControl = toolkit.createGridComposite(pageRoot, 1, false, true);
         stack.topControl = topControl;
     }
 
     private void createPageContent() {
-        SashForm sashForm = toolkit.createSashForm((Composite)stack.topControl, 2, true, true);
+        SashForm sashForm = toolkit.createSashForm((Composite)stack.topControl, 1, false, true);
         Composite left = createColumnComposite(sashForm);
         Composite right = createColumnComposite(sashForm);
 
@@ -122,8 +123,18 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         boolean reduced = reduceToOneColumnAsNecessary(left, right);
         if (!reduced) {
-            sashForm.setWeights(new int[] { 40, 60 });
+            int leftWidth = computeWidth(leftSections);
+            int rightWidth = computeWidth(rightSections);
+            sashForm.setWeights(new int[] { leftWidth, rightWidth });
         }
+    }
+
+    private int computeWidth(List<IpsSection> sections) {
+        int leftWidth = 0;
+        for (IpsSection section : sections) {
+            leftWidth = Math.max(leftWidth, section.computeSize(SWT.DEFAULT, SWT.DEFAULT).x);
+        }
+        return leftWidth;
     }
 
     private boolean reduceToOneColumnAsNecessary(Composite left, Composite right) {
