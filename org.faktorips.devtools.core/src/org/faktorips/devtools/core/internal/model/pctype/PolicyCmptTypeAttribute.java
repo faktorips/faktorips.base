@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -286,15 +285,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     private boolean isDefaultValueForbidden(ValueDatatype valueDatatype) {
-        return isDatatypeExtensibleEnum(valueDatatype) && !isProductRelevant();
-    }
-
-    private boolean isDatatypeExtensibleEnum(ValueDatatype valueDatatype) {
-        if (valueDatatype instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter enumTypeDatatype = (EnumTypeDatatypeAdapter)valueDatatype;
-            return enumTypeDatatype.getEnumType().isExtensible();
-        }
-        return false;
+        return DatatypeUtil.isExtensibleEnumType(valueDatatype) && !isProductRelevant();
     }
 
     private void expectNoDefaultValue(MessageList result) {
