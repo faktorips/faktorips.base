@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -269,8 +270,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         }
 
         /* private */String getSourceBundlePath(String fullPath, String pluginId) {
-            // looks strange but does replace every '.' with '\.' to use in split
-            String pluginIdForRegext = pluginId.replaceAll("\\.", "\\."); //$NON-NLS-1$ //$NON-NLS-2$
+            String pluginIdForRegext = Pattern.quote(pluginId);
             String[] split = fullPath.split(pluginIdForRegext);
 
             if (split.length < 2) {
