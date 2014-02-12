@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +51,7 @@ import org.w3c.dom.Element;
  */
 public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTypeAttribute {
 
-    final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
+    protected static final String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private boolean productRelevant;
 
@@ -275,6 +276,26 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        super.validateDefaultValue(valueDatatype, result, ipsProject);
+        if (isDefaultValueForbidden(valueDatatype)) {
+            expectNoDefaultValue(result);
+        }
+    }
+
+    private boolean isDefaultValueForbidden(ValueDatatype valueDatatype) {
+        return DatatypeUtil.isExtensibleEnumType(valueDatatype) && !isProductRelevant();
+    }
+
+    private void expectNoDefaultValue(MessageList result) {
+        if (getDefaultValue() != null) {
+            result.newError(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE,
+                    Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType, this, PROPERTY_DEFAULT_VALUE);
+        }
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
@@ -335,8 +356,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                     String.class);
             IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
             return result;
-        } catch (Exception e) {
-            // TODO needs to be documented properly or specialized
+        } catch (IllegalArgumentException e) {
+            IpsPlugin.log(e);
+        } catch (InstantiationException e) {
+            IpsPlugin.log(e);
+        } catch (IllegalAccessException e) {
+            IpsPlugin.log(e);
+        } catch (InvocationTargetException e) {
+            IpsPlugin.log(e);
+        } catch (SecurityException e) {
+            IpsPlugin.log(e);
+        } catch (NoSuchMethodException e) {
             IpsPlugin.log(e);
         }
         return null;

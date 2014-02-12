@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public abstract class Attribute extends TypePart implements IAttribute {
 
-    final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
+    static final String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private String datatype = ""; //$NON-NLS-1$
 
@@ -150,7 +150,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
             } else {
                 if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
                     String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, text, Message.ERROR, getValueSet()));
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, text, Message.ERROR,
+                            getValueSet()));
                 }
                 if (!getDatatype().equals(superAttr.getDatatype())) {
                     result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
@@ -174,23 +175,24 @@ public abstract class Attribute extends TypePart implements IAttribute {
         }
         IAttribute candidate = supertype.findAttribute(name, ipsProject);
         if (candidate == this) {
-            return null; // can happen if we have a cycle in the type hierarchy!
+            // can happen if we have a cycle in the type hierarchy!
+            return null;
         }
         return candidate;
     }
 
-    private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
             throws CoreException {
 
         if (!valueDatatype.isParsable(defaultValue)) {
             String defaultValueInMsg = defaultValue;
             if (defaultValue == null) {
                 defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            } else if (defaultValue.equals("")) { //$NON-NLS-1$
+            } else if (StringUtils.isEmpty(defaultValue)) {
                 defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
             }
             String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
-            result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE));
+            result.newError(MSGCODE_VALUE_NOT_PARSABLE, text, this, PROPERTY_DEFAULT_VALUE);
             return;
         }
         IValueSet valueSet = getValueSet();
@@ -202,5 +204,4 @@ public abstract class Attribute extends TypePart implements IAttribute {
             }
         }
     }
-
 }
