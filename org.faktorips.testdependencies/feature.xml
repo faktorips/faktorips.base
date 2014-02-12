@@ -17,21 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="org.faktorips.devtools.core"/>
-      <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.faktorips.fl"/>
-      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.draw2d"/>
-      <import plugin="org.eclipse.ltk.core.refactoring"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.faktorips.util" version="3.7.2" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.lang" version="2.6.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.ant"/>
-   </requires>
-
    <plugin
          id="org.faktorips.abstracttest"
          download-size="0"
