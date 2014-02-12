@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public abstract class Attribute extends TypePart implements IAttribute {
 
-    final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
+    static final String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private String datatype = ""; //$NON-NLS-1$
 
@@ -175,7 +175,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
         }
         IAttribute candidate = supertype.findAttribute(name, ipsProject);
         if (candidate == this) {
-            return null; // can happen if we have a cycle in the type hierarchy!
+            // can happen if we have a cycle in the type hierarchy!
+            return null;
         }
         return candidate;
     }
@@ -187,7 +188,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
             String defaultValueInMsg = defaultValue;
             if (defaultValue == null) {
                 defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            } else if (defaultValue.equals("")) { //$NON-NLS-1$
+            } else if (StringUtils.isEmpty(defaultValue)) {
                 defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
             }
             String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
