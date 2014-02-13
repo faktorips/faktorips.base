@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +27,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -43,7 +40,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
-import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -154,11 +150,13 @@ public final class MoveRenameIpsObjectHelper {
             MessageList validationMessageList = copiedIpsObject.validate(copiedIpsObject.getIpsProject());
 
             return validationMessageList;
-
+            // CSOFF: IllegalCatch
+            // Need to catch RuntimeException to get really every exception and set corresponding
+            // fatal error status
         } catch (RuntimeException e) {
             status.addFatalError(e.getLocalizedMessage());
             return new MessageList();
-
+            // CSON: IllegalCatch
         } finally {
             if (targetFile != null) {
                 RefactorUtil.moveIpsSrcFile(targetFile, originalFile.getIpsPackageFragment(),
@@ -196,34 +194,15 @@ public final class MoveRenameIpsObjectHelper {
                 continue;
             }
 
-            List<IDependencyDetail> details = getDependencyToProject().get(dependency)
-                    .findIpsObject(dependency.getSource()).getDependencyDetails(dependency);
+            IIpsProject ipsProject = getDependencyToProject().get(dependency);
+            List<IDependencyDetail> details = ipsProject.findIpsObject(dependency.getSource()).getDependencyDetails(
+                    dependency);
+            modifications.addBeforeChanged(ipsProject.findIpsSrcFile(dependency.getSource()));
             for (IDependencyDetail detail : details) {
-                IIpsObjectPartContainer part = detail.getPart();
-                if (part == null || detail.getPropertyName() == null) {
-                    continue;
-                }
-
-                modifications.addBeforeChanged(part.getIpsSrcFile());
-
-                PropertyDescriptor property = BeanUtil.getPropertyDescriptor(part.getClass(), detail.getPropertyName());
-                try {
-                    String newQualifiedName = buildQualifiedName(targetIpsPackageFragment, newName);
-                    property.getWriteMethod().invoke(part, newQualifiedName);
-                } catch (IllegalAccessException e) {
-                    throw new CoreException(new IpsStatus(e));
-                } catch (IllegalArgumentException e) {
-                    throw new CoreException(new IpsStatus(e));
-                } catch (InvocationTargetException e) {
-                    throw new CoreException(new IpsStatus(e));
-                }
+                detail.refactorAfterRename(targetIpsPackageFragment, newName);
             }
         }
         return modifications;
-    }
-
-    private String buildQualifiedName(IIpsPackageFragment ipsPackageFragment, String name) {
-        return ipsPackageFragment.isDefaultPackage() ? name : ipsPackageFragment.getName() + "." + name; //$NON-NLS-1$
     }
 
     private IIpsSrcFile moveSourceFileToTargetFile(IIpsPackageFragment targetIpsPackageFragment,

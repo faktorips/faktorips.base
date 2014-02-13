@@ -10,19 +10,20 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.devtools.core.builder.DependencyGraph;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
  * This interface describes details of a dependency (part and property) causing the dependency.
  * Instances are created by the {@link IIpsObject#getDependencyDetails(IDependency)}
  * <p>
  * Dependency details are not part of {@link IDependency} because the {@link IDependency} is used by
- * the {@link DependencyGraph} and is serialized. The details are not needed by the dependency graph
- * because the builder using the graph only needs to know which files are affected and not, which
- * detail is causing this dependency. To keep the graph as small as possible the details are not
- * part of the dependency itself.
+ * the {@link org.faktorips.devtools.core.builder.DependencyGraph} and is serialized. The details
+ * are not needed by the dependency graph because the builder using the graph only needs to know
+ * which files are affected and not, which detail is causing this dependency. To keep the graph as
+ * small as possible the details are not part of the dependency itself.
  * 
  * @author Thorsten Günther
  */
@@ -54,5 +55,20 @@ public interface IDependencyDetail {
      * @return The name of the property causing this dependency
      */
     public String getPropertyName();
+
+    /**
+     * Called by the refactoring framework when the target of this dependency has changed. The
+     * implementation have to refactor the referenced property content to match the new name. The
+     * rename may only affect the name of the object or the path (packageFragment) of the object,
+     * also called move refactoring.
+     * 
+     * @param targetIpsPackageFragment The new package fragment of the refactored object.
+     * @param newName The new name of the refactored object.
+     * 
+     * @throws CoreException In case of any exception while setting the new name, a
+     *             {@link CoreException} needs to be thrown. In case of throwing any
+     *             {@link RuntimeException} the whole refactoring may break
+     */
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException;
 
 }
