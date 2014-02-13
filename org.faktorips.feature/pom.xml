@@ -21,8 +21,9 @@
 				<artifactId>tycho-source-feature-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<plugin  id="joda-time" />
+						<plugin id="joda-time" />
 						<plugin id="joda-convert" />
+						<plugin id="org.aopalliance" />
 					</excludes>
 				</configuration>
 			</plugin>
