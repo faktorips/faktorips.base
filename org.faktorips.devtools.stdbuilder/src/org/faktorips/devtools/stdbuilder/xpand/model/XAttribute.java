@@ -74,6 +74,9 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
                 : getName().toUpperCase();
     }
 
+    /**
+     * Returns the source code of the default value of the chosen attribute.
+     */
     public String getDefaultValueCode() {
         JavaCodeFragment newInstance = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
         addImport(newInstance.getImportDeclaration());

@@ -19,8 +19,10 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -181,8 +183,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
 
         aInSupertype.delete();
-        assertNull(attribute.findOverwrittenAttribute(ipsProject)); // this should not return a
-        // itself!
+        assertNull(attribute.findOverwrittenAttribute(ipsProject));
+        // this should not return a itself!
     }
 
     @Test
@@ -234,7 +236,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        attribute = pcType.newPolicyCmptTypeAttribute(); // => id=1 as this is the type's 2
+        attribute = pcType.newPolicyCmptTypeAttribute();
+        // => id=1 as this is the type's 2
         // attribute
         attribute.setName("age");
         attribute.setDatatype("decimal");
@@ -300,7 +303,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_productRelevant() throws Exception {
+    public void testValidateProductRelevant() throws Exception {
         pcType.setConfigurableByProductCmptType(true);
         attribute.setProductRelevant(true);
 
@@ -315,7 +318,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_nothingToOverwrite() throws Exception {
+    public void testValidateNothingToOverwrite() throws Exception {
         attribute.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
@@ -335,7 +338,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_OverwrittenAttributeHasDifferentType() throws Exception {
+    public void testValidateOverwrittenAttributeHasDifferentType() throws Exception {
         attribute.setName("name");
         attribute.setDatatype("String");
         attribute.setOverwrite(true);
@@ -379,4 +382,22 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isPropertyFor(propertyValue));
     }
 
+    @Test
+    public void testValidateDefaultValue() throws CoreException {
+        ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.ENUM_TYPE, "TestEnum", true, null);
+        EnumType enumType = new EnumType(ipsSrcFile);
+        attribute.setName("name");
+        attribute.setDatatype(enumType.getQualifiedName());
+        attribute.setOverwrite(false);
+        attribute.setAttributeType(AttributeType.CONSTANT);
+        attribute.setDefaultValue("notNull");
+        EnumTypeDatatypeAdapter datatype = (EnumTypeDatatypeAdapter)ipsProject.findValueDatatype(enumType
+                .getQualifiedName());
+        datatype.getEnumType().setExtensible(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertFalse(ml.isEmpty());
+        assertTrue(ml.getText().contains(Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType));
+    }
 }

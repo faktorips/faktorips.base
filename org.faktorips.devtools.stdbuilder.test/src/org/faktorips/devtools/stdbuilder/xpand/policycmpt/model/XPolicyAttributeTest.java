@@ -25,7 +25,9 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -62,11 +64,13 @@ public class XPolicyAttributeTest {
 
     private XPolicyCmptClass policyClass;
 
+    private DatatypeHelper datatypeHelper;
+
     @Before
     public void createXPolicyAttribute() throws Exception {
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(attribute.getIpsProject()).thenReturn(ipsProject);
-        DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
+        datatypeHelper = mock(DatatypeHelper.class);
         when(ipsProject.findDatatypeHelper(anyString())).thenReturn(datatypeHelper);
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.BOOLEAN);
 
@@ -410,4 +414,16 @@ public class XPolicyAttributeTest {
         assertFalse(xPolicyAttribute.isOverrideGetDefaultValue());
     }
 
+    @Test
+    public void testGetDefaultValueCode() {
+        EnumTypeDatatypeAdapter adapter = mock(EnumTypeDatatypeAdapter.class);
+        EnumType enumType = mock(EnumType.class);
+
+        when(datatypeHelper.getDatatype()).thenReturn(adapter);
+        when(adapter.getEnumType()).thenReturn(enumType);
+        when(enumType.isExtensible()).thenReturn(true);
+
+        String defaultValueCode = xPolicyAttribute.getDefaultValueCode();
+        assertEquals("null", defaultValueCode);
+    }
 }
