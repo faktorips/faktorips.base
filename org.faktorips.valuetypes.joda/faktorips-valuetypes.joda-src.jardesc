@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="../runtime-integration/org.faktorips.integrationtest.java5/lib/faktorips-valuetypes.joda-src.zip"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.valuetypes.joda/faktorips-valuetypes.joda-src.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <selectedElements exportClassFiles="false" exportJavaFiles="true" exportOutputFolder="false">
+        <file path="/org.faktorips.valuetypes.joda/build.properties"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes.joda/src"/>
+        <folder path="/org.faktorips.valuetypes.joda/META-INF"/>
+    </selectedElements>
+</jardesc>

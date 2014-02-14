@@ -36,6 +36,15 @@
 	<artifactId>org.faktorips.p2repository</artifactId>
 	<packaging>eclipse-repository</packaging>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 	<profiles>
 		<profile>
 			<id>release</id>
@@ -59,7 +68,7 @@
 						<executions>
 							<execution>
 								<id>copy-license</id>
-								<phase>deploy</phase>
+								<phase>package</phase>
 								<goals>
 									<goal>unpack</goal>
 								</goals>
@@ -83,7 +92,7 @@
 						<executions>
 							<execution>
 								<id>create-runtimeAndValuetypes</id>
-								<phase>deploy</phase>
+								<phase>package</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
@@ -124,11 +133,11 @@
 
 										<zip update="true" destfile="${deploy.zipRuntimeAndValuetypes}">
 											<fileset dir="${project.build.directory}/repository/plugins"
-												includes="org.faktorips.runtime.java5*.jar" />
+												includes="org.faktorips.runtime*.jar" />
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="faktorips-runtime-client*.jar" />
 											<fileset dir="${project.build.directory}/repository/plugins"
-												includes="org.faktorips.valuetypes.java5*.jar" />
+												includes="org.faktorips.valuetypes*.jar" />
 											<fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl}" />
 										</zip>
 										<zip update="true" destfile="${deploy.repositoryZip}">

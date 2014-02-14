@@ -35,6 +35,7 @@
 		<module>../../org.faktorips.runtime.java5</module>
 		<module>../../org.faktorips.util</module>
 		<module>../../org.faktorips.valuetypes.java5</module>
+		<module>../../org.faktorips.valuetypes.joda</module>
 	</modules>
 
 </project>

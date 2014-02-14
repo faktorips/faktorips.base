@@ -14,38 +14,20 @@
 	<artifactId>org.faktorips.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 
-<!-- NOT FULLY SUPPORTED BY TYCHO (no label, no description ...
-https://bugs.eclipse.org/bugs/show_bug.cgi?id=374349
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-source-feature-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>source-feature</id>
-						<phase>package</phase>
-						<goals>
-							<goal>source-feature</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attached-p2-metadata</id>
-						<phase>package</phase>
-						<goals>
-							<goal>p2-metadata</goal>
-						</goals>
-					</execution>
-				</executions>
+				<configuration>
+					<excludes>
+						<plugin id="joda-time" />
+						<plugin id="joda-convert" />
+						<plugin id="org.aopalliance" />
+					</excludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	 -->
+
 </project>

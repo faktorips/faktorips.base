@@ -47,6 +47,10 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  */
 public class ProjectUtil {
 
+    private ProjectUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Adds the Faktor-IPS nature to the given project.
      * 
@@ -54,7 +58,7 @@ public class ProjectUtil {
      * 
      * @throws NullPointerException If project is <code>null</code>.
      */
-    public final static void addIpsNature(IProject project) throws CoreException {
+    public static final void addIpsNature(IProject project) throws CoreException {
         Util.addNature(project, IIpsProject.NATURE_ID);
     }
 
@@ -64,7 +68,7 @@ public class ProjectUtil {
      * 
      * @param project A platform project.
      */
-    public final static boolean hasIpsNature(IJavaProject project) throws CoreException {
+    public static final boolean hasIpsNature(IJavaProject project) throws CoreException {
         return hasIpsNature(project.getProject());
     }
 
@@ -74,7 +78,7 @@ public class ProjectUtil {
      * 
      * @param project A platform project.
      */
-    public final static boolean hasIpsNature(IProject project) throws CoreException {
+    public static final boolean hasIpsNature(IProject project) throws CoreException {
         return project.getDescription().hasNature(IIpsProject.NATURE_ID);
     }
 
@@ -144,6 +148,7 @@ public class ProjectUtil {
      * 
      * @since 2.6
      */
+    // CSOFF: ParameterNumber
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             boolean isProductDefinitionProject,
             boolean isModelProject,
@@ -160,6 +165,8 @@ public class ProjectUtil {
 
         return ipsProject;
     }
+
+    // CSON: TooManyParameters
 
     /**
      * Creates and returns a new project.
@@ -379,7 +386,8 @@ public class ProjectUtil {
         if (targetVersionIsAtLeast5(javaProject)) {
             IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
             System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            entries[oldEntries.length] = JavaCore.newContainerEntry(IpsClasspathContainerInitializer.ENTRY_PATH);
+            entries[oldEntries.length] = JavaCore.newContainerEntry(IpsClasspathContainerInitializer
+                    .newDefaultEntryPath());
             javaProject.setRawClasspath(entries, null);
         }
     }
@@ -408,10 +416,6 @@ public class ProjectUtil {
             return false;
         }
         return true;
-    }
-
-    private ProjectUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

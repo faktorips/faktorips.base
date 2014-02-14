@@ -41,9 +41,9 @@ public abstract class JavaExprCompilerAbstractTest {
     }
 
     /**
-     * Compiles the given expression and tests if the compilation was successfull and if the
-     * datatype is the expected one. After that the expression is executed and it is tested if it
-     * returns the expected value.
+     * Compiles the given expression and tests if the compilation was successful and if the datatype
+     * is the expected one. After that the expression is executed and it is tested if it returns the
+     * expected value.
      */
     protected CompilationResult<JavaCodeFragment> execAndTestSuccessfull(String expression,
             Object expectedValue,
@@ -53,7 +53,7 @@ public abstract class JavaExprCompilerAbstractTest {
         if (result.failed()) {
             System.out.println(result);
         }
-        assertTrue(result.successfull());
+        assertTrue(result.getMessages().toString(), result.successfull());
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression);
