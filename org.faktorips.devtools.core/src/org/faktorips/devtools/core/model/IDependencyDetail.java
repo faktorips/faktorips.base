@@ -58,7 +58,7 @@ public interface IDependencyDetail {
 
     /**
      * Called by the refactoring framework when the target of this dependency has changed. The
-     * implementation have to refactor the referenced property content to match the new name. The
+     * implementation has to refactor the referenced property content to match the new name. The
      * rename may only affect the name of the object or the path (packageFragment) of the object,
      * also called move refactoring.
      * 
