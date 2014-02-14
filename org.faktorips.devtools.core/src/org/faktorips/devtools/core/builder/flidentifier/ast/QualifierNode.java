@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -24,14 +25,19 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public class QualifierNode extends IdentifierNode {
 
-    private final String runtimeId;
+    private final IProductCmpt productCmpt;
 
-    QualifierNode(String runtimeId, IType targetType, boolean listOfTypes) {
+    QualifierNode(IProductCmpt productCmpt, IType targetType, boolean listOfTypes) {
         super(targetType, listOfTypes);
-        this.runtimeId = runtimeId;
+        this.productCmpt = productCmpt;
     }
 
     public String getRuntimeId() {
-        return runtimeId;
+        return getProductCmpt().getRuntimeId();
     }
+
+    public IProductCmpt getProductCmpt() {
+        return productCmpt;
+    }
+
 }

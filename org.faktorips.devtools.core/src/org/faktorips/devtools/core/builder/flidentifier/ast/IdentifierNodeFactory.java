@@ -136,8 +136,7 @@ public class IdentifierNodeFactory {
                 return createInvalidQualifierMessage(qualifier);
             }
             IPolicyCmptType targetType = productCmpt.findPolicyCmptType(ipsProject);
-            String runtimeId = productCmpt.getRuntimeId();
-            return new QualifierNode(runtimeId, targetType, listOfTypes);
+            return new QualifierNode(productCmpt, targetType, listOfTypes);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(productCmpt.getProductCmptType());

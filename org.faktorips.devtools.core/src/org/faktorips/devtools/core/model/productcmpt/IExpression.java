@@ -11,11 +11,15 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
+import java.util.Map;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
@@ -141,4 +145,15 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      * ist not.
      */
     boolean isFormulaMandatory();
+
+    /**
+     * Collect all dependencies according to {@link IIpsObject#dependsOn()} this expression has to
+     * other objects. These are for example other {@link IProductCmpt} that are references as
+     * qualifiers. Additional every dependency collects the corresponding {@link IDependencyDetail
+     * details} according to {@link IIpsObject#getDependencyDetails(IDependency)}.
+     * 
+     * @return The map of all dependencies found for this formula expression including the
+     *         dependency details
+     */
+    public Map<IDependency, List<IDependencyDetail>> dependsOn();
 }

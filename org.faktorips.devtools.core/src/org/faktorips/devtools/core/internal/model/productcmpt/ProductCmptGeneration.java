@@ -95,6 +95,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencies, details);
         addRelatedTableContentsQualifiedNameTypes(dependencies, details);
+        addDependenciesFromFormulaExpressions(dependencies, details);
     }
 
     /**
@@ -111,6 +112,18 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        }
+    }
+
+    private void addDependenciesFromFormulaExpressions(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
+        IFormula[] formulas = getFormulas();
+        for (IFormula formula : formulas) {
+            Map<IDependency, List<IDependencyDetail>> formulaDependencies = formula.dependsOn();
+            dependencies.addAll(formulaDependencies.keySet());
+            if (details != null) {
+                details.putAll(formulaDependencies);
+            }
         }
     }
 
@@ -186,6 +199,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newPropertyValue;
     }
 
+    /**
+     * @deprecated as of 3.4. Use {@link #newAttributeValue(IProductCmptTypeAttribute)} instead.
+     */
     @Override
     @Deprecated
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
