@@ -48,7 +48,7 @@ public class IdentifierNodeGeneratorTest {
 
     @Before
     public void setUp() throws Exception {
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", ipsProject);
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", ipsProject, null);
         invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", 0));
         @SuppressWarnings("unchecked")
         CompilationResult<JavaCodeFragment> anyCompilationResult = any(CompilationResult.class);

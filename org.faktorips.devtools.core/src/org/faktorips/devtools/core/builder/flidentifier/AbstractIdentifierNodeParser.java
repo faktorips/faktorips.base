@@ -14,6 +14,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
@@ -34,6 +35,8 @@ public abstract class AbstractIdentifierNodeParser {
     private Datatype contextType;
 
     private IdentifierNode previousNode;
+
+    private TextRegion textRegion;
 
     /**
      * Creates the identifier parser and store the {@link IExpression} as well as the used
@@ -57,7 +60,8 @@ public abstract class AbstractIdentifierNodeParser {
      * 
      * @return The parsed identifier node or null if this parser is not responsible
      */
-    public IdentifierNode parse(String identifierPart, IdentifierNode previousNode) {
+    public IdentifierNode parse(String identifierPart, IdentifierNode previousNode, TextRegion textRegion) {
+        this.textRegion = textRegion;
         this.setIdentifierPart(identifierPart);
         if (previousNode == null) {
             this.setContextType(expression.findProductCmptType(getIpsProject()));
@@ -135,7 +139,11 @@ public abstract class AbstractIdentifierNodeParser {
      * @return The {@link IdentifierNodeFactory} to create a new {@link IdentifierNode}
      */
     public IdentifierNodeFactory nodeFactory() {
-        return new IdentifierNodeFactory(getIdentifierPart(), getIpsProject());
+        return new IdentifierNodeFactory(getIdentifierPart(), getIpsProject(), getTextRegion());
+    }
+
+    public TextRegion getTextRegion() {
+        return textRegion;
     }
 
 }

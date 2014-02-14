@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -24,8 +25,8 @@ public class IndexNode extends IdentifierNode {
 
     private final int index;
 
-    IndexNode(int index, IType targetType) {
-        super(targetType, false);
+    IndexNode(int index, IType targetType, TextRegion textRegion) {
+        super(targetType, false, textRegion);
         this.index = index;
     }
 

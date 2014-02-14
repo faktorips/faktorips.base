@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
@@ -27,8 +28,8 @@ public class QualifierNode extends IdentifierNode {
 
     private final IProductCmpt productCmpt;
 
-    QualifierNode(IProductCmpt productCmpt, IType targetType, boolean listOfTypes) {
-        super(targetType, listOfTypes);
+    QualifierNode(IProductCmpt productCmpt, IType targetType, boolean listOfTypes, TextRegion textRegion) {
+        super(targetType, listOfTypes, textRegion);
         this.productCmpt = productCmpt;
     }
 

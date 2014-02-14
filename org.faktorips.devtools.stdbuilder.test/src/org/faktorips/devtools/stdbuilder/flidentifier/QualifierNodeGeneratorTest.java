@@ -73,7 +73,7 @@ public class QualifierNodeGeneratorTest {
 
     @Before
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
-        nodeFactory = new IdentifierNodeFactory("QualifiedAssociationNodeGeneratorTest", ipsProject);
+        nodeFactory = new IdentifierNodeFactory("QualifiedAssociationNodeGeneratorTest", ipsProject, null);
         qualifiedAssociationNodeGenerator = new QualifierNodeGenerator(factory, builderSet);
     }
 

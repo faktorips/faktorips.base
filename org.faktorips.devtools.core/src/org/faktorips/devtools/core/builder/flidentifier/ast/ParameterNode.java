@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 
@@ -26,8 +27,8 @@ public class ParameterNode extends IdentifierNode {
     private final IParameter parameter;
     private final IIpsProject ipsProject;
 
-    ParameterNode(IParameter parameter, IIpsProject ipsProject) throws CoreException {
-        super(parameter.findDatatype(ipsProject));
+    ParameterNode(IParameter parameter, IIpsProject ipsProject, TextRegion textRegion) throws CoreException {
+        super(parameter.findDatatype(ipsProject), textRegion);
         this.parameter = parameter;
         this.ipsProject = ipsProject;
     }

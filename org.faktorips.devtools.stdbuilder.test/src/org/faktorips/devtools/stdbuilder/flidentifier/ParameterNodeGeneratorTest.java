@@ -60,14 +60,14 @@ public class ParameterNodeGeneratorTest {
         IParameter parameter = mock(IParameter.class);
         when(parameter.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         when(parameter.getName()).thenReturn("ParamName");
-        parameterNode = (ParameterNode)new IdentifierNodeFactory(parameter.getName(), ipsProject)
+        parameterNode = (ParameterNode)new IdentifierNodeFactory(parameter.getName(), ipsProject, null)
                 .createParameterNode(parameter);
     }
 
     @Test
     public void testGetCompilationResult() throws Exception {
-        CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaGenerator.getCompilationResultForCurrentNode(
-                parameterNode, null);
+        CompilationResult<JavaCodeFragment> compilationResult = parameterNodeJavaGenerator
+                .getCompilationResultForCurrentNode(parameterNode, null);
         assertNotNull(compilationResult);
         assertNotNull(compilationResult.getCodeFragment());
         assertEquals("ParamName", compilationResult.getCodeFragment().getSourcecode());

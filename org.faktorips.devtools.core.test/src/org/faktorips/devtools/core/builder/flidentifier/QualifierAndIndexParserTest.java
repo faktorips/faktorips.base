@@ -70,7 +70,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFile();
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse(INDEX,
-                createAssociationNode(association, false));
+                createAssociationNode(association, false), null);
 
         assertEquals(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, node.getMessage().getCode());
     }
@@ -82,7 +82,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFile();
 
         QualifierNode node = (QualifierNode)qualifierAndIndexParser.parse(QUALIFIER,
-                createAssociationNode(association, false));
+                createAssociationNode(association, false), null);
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(targetSubType, node.getDatatype());
@@ -95,7 +95,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFile();
 
         QualifierNode node = (QualifierNode)qualifierAndIndexParser.parse(QUALIFIER,
-                createAssociationNode(association, false));
+                createAssociationNode(association, false), null);
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(new ListOfTypeDatatype(targetSubType), node.getDatatype());
@@ -107,7 +107,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFile();
 
         QualifierNode node = (QualifierNode)qualifierAndIndexParser.parse(QUALIFIER,
-                createAssociationNode(association, true));
+                createAssociationNode(association, true), null);
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(new ListOfTypeDatatype(targetSubType), node.getDatatype());
@@ -120,7 +120,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFileNoRuntimeID();
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse(QUALIFIER,
-                createAssociationNode(association, false));
+                createAssociationNode(association, false), null);
         assertEquals(ExprCompiler.UNKNOWN_QUALIFIER, node.getMessage().getCode());
     }
 
@@ -129,7 +129,8 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(true);
         initSourceFileNoRuntimeID();
 
-        IndexNode node = (IndexNode)qualifierAndIndexParser.parse(INDEX, createAssociationNode(association, false));
+        IndexNode node = (IndexNode)qualifierAndIndexParser.parse(INDEX, createAssociationNode(association, false),
+                null);
 
         assertEquals(MY_INDEX, node.getIndex());
         assertEquals(targetType, node.getDatatype());
@@ -140,7 +141,8 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(false);
         initSourceFileNoRuntimeID();
 
-        IndexNode node = (IndexNode)qualifierAndIndexParser.parse(INDEX, createAssociationNode(association, true));
+        IndexNode node = (IndexNode)qualifierAndIndexParser
+                .parse(INDEX, createAssociationNode(association, true), null);
 
         assertEquals(MY_INDEX, node.getIndex());
         assertEquals(targetType, node.getDatatype());
@@ -152,7 +154,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFileNoRuntimeID();
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse(INDEX,
-                createAssociationNode(association, false));
+                createAssociationNode(association, false), null);
 
         assertEquals(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, node.getMessage().getCode());
     }
@@ -163,7 +165,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFileNoRuntimeID();
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse("[asd]",
-                createAssociationNode(association, true));
+                createAssociationNode(association, true), null);
 
         assertEquals(ExprCompiler.UNKNOWN_QUALIFIER, node.getMessage().getCode());
     }
@@ -174,7 +176,8 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         when(association.is1ToManyIgnoringQualifier()).thenReturn(true);
         initSourceFileNoRuntimeID();
 
-        IndexNode node = (IndexNode)qualifierAndIndexParser.parse(INDEX, createAssociationNode(association, true));
+        IndexNode node = (IndexNode)qualifierAndIndexParser
+                .parse(INDEX, createAssociationNode(association, true), null);
 
         assertEquals(MY_INDEX, node.getIndex());
         assertEquals(targetType, node.getDatatype());
@@ -184,7 +187,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     public void testParse_findIndexAfterQualifierOnList() throws Exception {
         initSourceFile(RUNTIME_ID);
 
-        IndexNode node = (IndexNode)qualifierAndIndexParser.parse(INDEX, createQualifierNode(true));
+        IndexNode node = (IndexNode)qualifierAndIndexParser.parse(INDEX, createQualifierNode(true), null);
 
         assertEquals(MY_INDEX, node.getIndex());
         assertEquals(targetSubType, node.getDatatype());
@@ -195,7 +198,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         initSourceFile(RUNTIME_ID);
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)qualifierAndIndexParser.parse(INDEX,
-                createQualifierNode(false));
+                createQualifierNode(false), null);
 
         assertEquals(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, node.getMessage().getCode());
     }
@@ -222,12 +225,12 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     }
 
     private AssociationNode createAssociationNode(IPolicyCmptTypeAssociation association, boolean listContext) {
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", getIpsProject());
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", getIpsProject(), null);
         return (AssociationNode)nodeFactory.createAssociationNode(association, listContext);
     }
 
     private IdentifierNode createQualifierNode(boolean listOfTypes) {
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", getIpsProject());
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", getIpsProject(), null);
         return nodeFactory.createQualifierNode(productCmpt, QUALIFIER, listOfTypes);
     }
 

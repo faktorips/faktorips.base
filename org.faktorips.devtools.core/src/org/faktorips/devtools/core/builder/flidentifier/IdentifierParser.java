@@ -11,12 +11,15 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -34,13 +37,13 @@ public class IdentifierParser {
 
     private static final String IDENTIFIER_SEPERATOR_REGEX = "[\\.\\[]"; //$NON-NLS-1$
 
+    private static final Pattern IDENTIFIER_SEPERATOR_PATTERN = Pattern.compile(IDENTIFIER_SEPERATOR_REGEX);
+
     private final IIpsProject ipsProject;
 
     private final ArrayList<AbstractIdentifierNodeParser> parsers;
 
-    private String[] identifierParts;
-
-    private int currentPartIndex;
+    private IdentifierMatcher matcher;
 
     /**
      * Creates the {@link IdentifierParser} for the specified expression. The {@link IIpsProject} is
@@ -83,37 +86,66 @@ public class IdentifierParser {
      * 
      */
     public IdentifierNode parse(String identifier) {
-        identifierParts = identifier.split(IDENTIFIER_SEPERATOR_REGEX);
-        this.currentPartIndex = 0;
+        matcher = new IdentifierMatcher(identifier);
         return parseNextPart(null);
     }
 
     private IdentifierNode parseNextPart(IdentifierNode previousNode) {
+        String identifierPart = matcher.getIdentifierPart();
         for (AbstractIdentifierNodeParser parser : parsers) {
-            IdentifierNode node = parser.parse(getIdentifierPart(), previousNode);
+            IdentifierNode node = parser.parse(identifierPart, previousNode, matcher.getTextRegion());
             if (node != null) {
-                if (hasNextIdentifierPart()) {
-                    nextIdentifierPart();
+                if (matcher.hasNextIdentifierPart()) {
+                    matcher.nextIdentifierPart();
                     node.setSuccessor(parseNextPart(node));
                 }
                 return node;
             }
         }
-        return new IdentifierNodeFactory(getIdentifierPart(), ipsProject).createInvalidIdentifier(Message.newError(
-                ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, getIdentifierPart())));
+        return new IdentifierNodeFactory(identifierPart, ipsProject, matcher.getTextRegion())
+                .createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
+                        NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, identifierPart)));
     }
 
-    private String getIdentifierPart() {
-        return identifierParts[currentPartIndex];
-    }
+    private static class IdentifierMatcher {
 
-    protected boolean hasNextIdentifierPart() {
-        return identifierParts.length > currentPartIndex + 1;
-    }
+        private final String identifier;
 
-    protected void nextIdentifierPart() {
-        currentPartIndex++;
+        private final Matcher matcher;
+
+        private TextRegion textRegion;
+
+        public IdentifierMatcher(String identifier) {
+            this.identifier = identifier;
+            this.matcher = IDENTIFIER_SEPERATOR_PATTERN.matcher(identifier);
+            find(0);
+        }
+
+        public void nextIdentifierPart() {
+            int sequenceStart = matcher.end();
+            find(sequenceStart);
+        }
+
+        private void find(int sequenceStart) {
+            if (matcher.find()) {
+                textRegion = new TextRegion(sequenceStart, matcher.start() - sequenceStart);
+            } else {
+                textRegion = new TextRegion(sequenceStart, identifier.length() - sequenceStart);
+            }
+        }
+
+        public boolean hasNextIdentifierPart() {
+            return !matcher.hitEnd();
+        }
+
+        public String getIdentifierPart() {
+            return identifier.substring(textRegion.getStartPoint(), textRegion.getEndPoint());
+        }
+
+        public TextRegion getTextRegion() {
+            return textRegion;
+        }
+
     }
 
 }

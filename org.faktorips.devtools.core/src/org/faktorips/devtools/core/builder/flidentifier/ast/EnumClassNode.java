@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 
 /**
  * This node represents the first part of a enum reference, the part that identifies the enum type.
@@ -24,8 +25,8 @@ import org.faktorips.datatype.EnumDatatype;
  */
 public class EnumClassNode extends IdentifierNode {
 
-    EnumClassNode(EnumClass datatype) {
-        super(datatype);
+    EnumClassNode(EnumClass datatype, TextRegion textRegion) {
+        super(datatype, textRegion);
     }
 
     @Override

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.util.message.Message;
 
 /**
@@ -24,8 +25,8 @@ public class InvalidIdentifierNode extends IdentifierNode {
 
     private final Message errorMessage;
 
-    InvalidIdentifierNode(Message errorMessage) {
-        super(null);
+    InvalidIdentifierNode(Message errorMessage, TextRegion textRegion) {
+        super(null, textRegion);
         this.errorMessage = errorMessage;
     }
 
