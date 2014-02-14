@@ -51,16 +51,8 @@ public class DependencyDetail implements IDependencyDetail {
 
     @Override
     public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
-        if (getPart() != null && getPropertyName() != null) {
-            updateProperty(targetIpsPackageFragment, newName);
-        }
-    }
-
-    private void updateProperty(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
         try {
-            PropertyDescriptor property = BeanUtil.getPropertyDescriptor(getPart().getClass(), getPropertyName());
-            String newQualifiedName = buildQualifiedName(targetIpsPackageFragment, newName);
-            property.getWriteMethod().invoke(getPart(), newQualifiedName);
+            updateProperty(targetIpsPackageFragment, newName);
         } catch (IllegalAccessException e) {
             throw new CoreException(new IpsStatus(e));
         } catch (IllegalArgumentException e) {
@@ -68,7 +60,13 @@ public class DependencyDetail implements IDependencyDetail {
         } catch (InvocationTargetException e) {
             throw new CoreException(new IpsStatus(e));
         }
+    }
 
+    private void updateProperty(IIpsPackageFragment targetIpsPackageFragment, String newName)
+            throws IllegalAccessException, InvocationTargetException {
+        PropertyDescriptor property = BeanUtil.getPropertyDescriptor(getPart().getClass(), getPropertyName());
+        String newQualifiedName = buildQualifiedName(targetIpsPackageFragment, newName);
+        property.getWriteMethod().invoke(getPart(), newQualifiedName);
     }
 
     private String buildQualifiedName(IIpsPackageFragment ipsPackageFragment, String name) {
