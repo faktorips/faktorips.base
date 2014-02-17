@@ -431,7 +431,6 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.debug.core" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.cvs.core"/>
-      <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.codegen"/>
       <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
