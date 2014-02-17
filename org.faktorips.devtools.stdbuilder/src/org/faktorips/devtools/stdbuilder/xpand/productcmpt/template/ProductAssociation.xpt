@@ -242,7 +242,7 @@
     public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
         «IF constrain-»
         	«ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
-        	super.«methodNameSetOrAdd»((«targetInterfaceName»)target);
+        	super.«methodNameSetOrAdd»(target);
 		«ELSE-»
 			«EXPAND ProductCommons::checkRepositoryModifyable-»
 	        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
