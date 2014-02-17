@@ -294,8 +294,7 @@
         «ENDIF-»
         «fieldName» = «castToImplementation(targetClassName)» newObject;
     	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
-    «ENDIF-»
-    «IF typeAssociation-»
+    «ELSEIF typeAssociation-»
     	if (newObject == «fieldName») {
     		return;
     	}
