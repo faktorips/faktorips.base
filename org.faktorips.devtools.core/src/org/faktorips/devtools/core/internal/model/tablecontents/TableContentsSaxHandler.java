@@ -100,27 +100,28 @@ public class TableContentsSaxHandler extends DefaultHandler {
                     description = (Description)tableContents.newDescription();
                     description.setLocaleWithoutChangeEvent(locale);
                 }
-                if (textBuffer != null) {
-                    description.setTextWithoutChangeEvent(textBuffer.toString());
-                }
+                description.setTextWithoutChangeEvent(getText());
             }
             textBuffer = null;
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
             insideExtensionPropertiesNode = false;
         } else if (isColumnValueNode(qName)) {
             insideValueNode = false;
-            columns.add(textBuffer == null && nullValue ? null : textBuffer == null ? new String("") : textBuffer //$NON-NLS-1$
-                    .substring(0));
+            columns.add(getText());
             textBuffer = null;
         } else if (isExtensionPropertiesValueNode(qName)) {
             insideValueNode = false;
             if (currentGeneration == null) {
-                tableContents.addExtensionProperty(idValue, nullValue ? null : textBuffer.substring(0));
+                tableContents.addExtensionProperty(idValue, getText());
             } else {
                 throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
             }
             textBuffer = null;
         }
+    }
+
+    private String getText() {
+        return textBuffer == null && nullValue ? null : textBuffer == null ? StringUtils.EMPTY : textBuffer.toString();
     }
 
     @Override
