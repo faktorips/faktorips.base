@@ -42,17 +42,42 @@ import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.FlParserVisitor;
 import org.faktorips.fl.parser.SimpleNode;
 
+/**
+ * This implementation of {@link FlParserVisitor} visits the parsed AST and finds
+ * {@link ASTIdentifierNode identifiers} used in the parsed expression. The visitor further parses
+ * these identifiers using an {@link IdentifierParser} and remembers both, the parsed
+ * {@link IdentifierNode} returned from {@link IdentifierParser} and the {@link ASTIdentifierNode}
+ * for further processing.
+ * <p>
+ * After creating the {@link IdentifierVisitor} you could use it by providing this visitor to
+ * {@link ASTStart#jjtAccept(FlParserVisitor, Object)}. After that visiting the method
+ * {@link #getIdentifiers()} should return the map of found identifiers.
+ * 
+ */
 public class IdentifierVisitor implements FlParserVisitor {
 
-    private Map<IdentifierNode, SimpleNode> identifiers = new HashMap<IdentifierNode, SimpleNode>();
+    private Map<IdentifierNode, ASTIdentifierNode> identifiers = new HashMap<IdentifierNode, ASTIdentifierNode>();
 
     private final IdentifierParser identifierParser;
 
+    /**
+     * Creating a new {@link IdentifierVisitor} that uses the given {@link IdentifierParser} to
+     * parse found {@link ASTIdentifierNode}.
+     * 
+     * @param identifierParser the {@link IdentifierParser} to process the found identifier
+     */
     public IdentifierVisitor(IdentifierParser identifierParser) {
         this.identifierParser = identifierParser;
     }
 
-    public Map<IdentifierNode, SimpleNode> getIdentifiers() {
+    /**
+     * After the visitor was accepted by the AST nodes this method returns a map containing all
+     * found and parsed identifiers.
+     * 
+     * @return The map of parsed {@link IdentifierNode} and the corresponding
+     *         {@link ASTIdentifierNode}
+     */
+    public Map<IdentifierNode, ASTIdentifierNode> getIdentifiers() {
         return identifiers;
     }
 

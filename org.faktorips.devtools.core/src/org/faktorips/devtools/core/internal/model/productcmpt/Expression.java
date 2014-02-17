@@ -51,6 +51,7 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.fl.JavaExprCompiler;
+import org.faktorips.fl.parser.ASTIdentifierNode;
 import org.faktorips.fl.parser.FlParser;
 import org.faktorips.fl.parser.ParseException;
 import org.faktorips.fl.parser.SimpleNode;
@@ -405,8 +406,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             SimpleNode node) {
         Map<IDependency, List<IDependencyDetail>> result = new HashMap<IDependency, List<IDependencyDetail>>();
         node.jjtAccept(identifierVisitor, null);
-        Map<IdentifierNode, SimpleNode> identifiers = identifierVisitor.getIdentifiers();
-        for (Entry<IdentifierNode, SimpleNode> identifierEntry : identifiers.entrySet()) {
+        Map<IdentifierNode, ASTIdentifierNode> identifiers = identifierVisitor.getIdentifiers();
+        for (Entry<IdentifierNode, ASTIdentifierNode> identifierEntry : identifiers.entrySet()) {
             result.putAll(getDependencies(identifierEntry.getKey()));
         }
         return result;
