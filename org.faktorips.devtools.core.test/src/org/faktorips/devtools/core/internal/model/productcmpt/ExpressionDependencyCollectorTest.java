@@ -227,4 +227,22 @@ public class ExpressionDependencyCollectorTest {
         assertThat(addNode.jjtGetChild(1), instanceOf(ASTIntegerNode.class));
     }
 
+    /**
+     * A {@link QualifierNode} represents a qualifier of an association in the expression text. For
+     * example in coverage["MyCoverage 02-2014"] the qualifier node points to
+     * <code>"MyCoverage 02-2014"]</code>. Hence we need to cut off the first and the two last
+     * chars.
+     */
+    @Test
+    public void testCreateQualifiedNodeDependencyDetail() throws Exception {
+        when(identifierNode.getTextRegion()).thenReturn(new TextRegion(7, 16));
+
+        ExpressionDependencyDetail qualifiedNodeDependencyDetail = expressionDependencyCollector
+                .createQualifiedNodeDependencyDetail(identifierNode, 42);
+        TextRegion textRegion = qualifiedNodeDependencyDetail.getTextRegion();
+
+        assertEquals(50, textRegion.getStartPoint());
+        assertEquals(56, textRegion.getEndPoint());
+    }
+
 }

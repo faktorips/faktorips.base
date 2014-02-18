@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -115,14 +116,26 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
     }
 
-    private void addDependenciesFromFormulaExpressions(Set<IDependency> dependencies,
+    void addDependenciesFromFormulaExpressions(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
         IFormula[] formulas = getFormulas();
         for (IFormula formula : formulas) {
             Map<IDependency, List<IDependencyDetail>> formulaDependencies = formula.dependsOn();
             dependencies.addAll(formulaDependencies.keySet());
             if (details != null) {
-                details.putAll(formulaDependencies);
+                mergeDependencyDetails(details, formulaDependencies);
+            }
+        }
+    }
+
+    private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
+            Map<IDependency, List<IDependencyDetail>> formulaDependencies) {
+        for (Entry<IDependency, List<IDependencyDetail>> entry : formulaDependencies.entrySet()) {
+            List<IDependencyDetail> existingDependencies = details.get(entry.getKey());
+            if (existingDependencies == null) {
+                details.put(entry.getKey(), entry.getValue());
+            } else {
+                existingDependencies.addAll(entry.getValue());
             }
         }
     }

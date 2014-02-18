@@ -127,7 +127,7 @@ class ExpressionDependencyCollector {
         return getResult();
     }
 
-    protected void collectDependencies(IdentifierNode identifierNode, int identifierOffset) {
+    void collectDependencies(IdentifierNode identifierNode, int identifierOffset) {
         if (identifierNode instanceof QualifierNode) {
             IpsObjectDependency dependency = createQualifiedNodeDependency(identifierNode);
             ExpressionDependencyDetail detail = createQualifiedNodeDependencyDetail(identifierNode, identifierOffset);
@@ -145,17 +145,13 @@ class ExpressionDependencyCollector {
         return dependency;
     }
 
-    private ExpressionDependencyDetail createQualifiedNodeDependencyDetail(IdentifierNode identifierNode,
-            int identifierOffset) {
-        TextRegion textRegion = getTextRegion(identifierNode, identifierOffset, 1, 2);
+    ExpressionDependencyDetail createQualifiedNodeDependencyDetail(IdentifierNode identifierNode, int identifierOffset) {
+        TextRegion textRegion = getTextRegion(identifierNode, identifierOffset, 1, -2);
         ExpressionDependencyDetail detail = new ExpressionDependencyDetail(expression, textRegion);
         return detail;
     }
 
-    protected TextRegion getTextRegion(IdentifierNode identifierNode,
-            int identifierOffset,
-            int startOffset,
-            int endOffset) {
+    TextRegion getTextRegion(IdentifierNode identifierNode, int identifierOffset, int startOffset, int endOffset) {
         TextRegion identiferRegion = identifierNode.getTextRegion().offset(identifierOffset);
         return identiferRegion.startOffset(startOffset).endOffset(endOffset);
     }

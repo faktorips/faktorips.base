@@ -14,19 +14,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -726,6 +735,35 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         newFormula.setExpression("anyExpression");
 
         assertTrue(generation.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testAddDependenciesFromFormulaExpressions() throws Exception {
+        ProductCmptGeneration generationSpy = spy((ProductCmptGeneration)generation);
+        IDependency dependency = mock(IDependency.class);
+        IDependencyDetail dependencyDetail1 = mock(IDependencyDetail.class);
+        IDependencyDetail dependencyDetail2 = mock(IDependencyDetail.class);
+        IFormula formula1 = mock(IFormula.class);
+        IFormula formula2 = mock(IFormula.class);
+        when(generationSpy.getFormulas()).thenReturn(new IFormula[] { formula1, formula2 });
+        Map<IDependency, List<IDependencyDetail>> dependencyMap1 = new HashMap<IDependency, List<IDependencyDetail>>();
+        dependencyMap1.put(dependency, new ArrayList<IDependencyDetail>(Arrays.asList(dependencyDetail1)));
+        Map<IDependency, List<IDependencyDetail>> dependencyMap2 = new HashMap<IDependency, List<IDependencyDetail>>();
+        dependencyMap2.put(dependency, new ArrayList<IDependencyDetail>(Arrays.asList(dependencyDetail2)));
+        when(formula1.dependsOn()).thenReturn(dependencyMap1);
+        when(formula2.dependsOn()).thenReturn(dependencyMap2);
+
+        Set<IDependency> dependenciesResult = new HashSet<IDependency>();
+        Map<IDependency, List<IDependencyDetail>> detailsResult = new HashMap<IDependency, List<IDependencyDetail>>();
+        generationSpy.dependsOn(dependenciesResult, detailsResult);
+
+        assertEquals(1, dependenciesResult.size());
+        assertThat(dependenciesResult, hasItem(dependency));
+        assertEquals(1, detailsResult.size());
+        assertThat(detailsResult.keySet(), hasItem(dependency));
+        assertEquals(2, detailsResult.get(dependency).size());
+        assertThat(detailsResult.get(dependency), hasItem(dependencyDetail1));
+        assertThat(detailsResult.get(dependency), hasItem(dependencyDetail2));
     }
 
 }
