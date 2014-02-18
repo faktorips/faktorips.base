@@ -148,9 +148,10 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Collect all dependencies according to {@link IIpsObject#dependsOn()} this expression has to
-     * other objects. These are for example other {@link IProductCmpt} that are references as
-     * qualifiers. Additional every dependency collects the corresponding {@link IDependencyDetail
-     * details} according to {@link IIpsObject#getDependencyDetails(IDependency)}.
+     * other objects. These are for example other {@link IProductCmpt} that are referenced by a
+     * qualified association. Additionally every dependency collects the corresponding
+     * {@link IDependencyDetail details} according to
+     * {@link IIpsObject#getDependencyDetails(IDependency)}.
      * 
      * @return The map of all dependencies found for this formula expression including the
      *         dependency details

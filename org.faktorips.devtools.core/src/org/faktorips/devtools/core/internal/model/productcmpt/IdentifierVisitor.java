@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -45,9 +47,9 @@ import org.faktorips.fl.parser.SimpleNode;
 /**
  * This implementation of {@link FlParserVisitor} visits the parsed AST and finds
  * {@link ASTIdentifierNode identifiers} used in the parsed expression. The visitor further parses
- * these identifiers using an {@link IdentifierParser} and remembers both, the parsed
- * {@link IdentifierNode} returned from {@link IdentifierParser} and the {@link ASTIdentifierNode}
- * for further processing.
+ * these identifiers using an {@link IdentifierParser} and remembers, the parsed
+ * {@link IdentifierNode} returned from {@link IdentifierParser} and the starting point of the
+ * {@link ASTIdentifierNode} Within the expression text.
  * <p>
  * After creating the {@link IdentifierVisitor} you could use it by providing this visitor to
  * {@link ASTStart#jjtAccept(FlParserVisitor, Object)}. After that visiting the method
@@ -56,7 +58,9 @@ import org.faktorips.fl.parser.SimpleNode;
  */
 public class IdentifierVisitor implements FlParserVisitor {
 
-    private Map<IdentifierNode, ASTIdentifierNode> identifiers = new HashMap<IdentifierNode, ASTIdentifierNode>();
+    private Map<IdentifierNode, Integer> identifiers = new HashMap<IdentifierNode, Integer>();
+
+    private final String expressionText;
 
     private final IdentifierParser identifierParser;
 
@@ -64,20 +68,21 @@ public class IdentifierVisitor implements FlParserVisitor {
      * Creating a new {@link IdentifierVisitor} that uses the given {@link IdentifierParser} to
      * parse found {@link ASTIdentifierNode}.
      * 
+     * @param expressionText The text of the formula expression
      * @param identifierParser the {@link IdentifierParser} to process the found identifier
      */
-    public IdentifierVisitor(IdentifierParser identifierParser) {
+    public IdentifierVisitor(String expressionText, IdentifierParser identifierParser) {
+        this.expressionText = expressionText;
         this.identifierParser = identifierParser;
     }
 
     /**
-     * After the visitor was accepted by the AST nodes this method returns a map containing all
-     * found and parsed identifiers.
+     * After the visitor was accepted by the AST nodes, this method returns a map containing all
+     * found and parsed identifiers and the corresponding starting position of the identifier.
      * 
-     * @return The map of parsed {@link IdentifierNode} and the corresponding
-     *         {@link ASTIdentifierNode}
+     * @return The map of parsed {@link IdentifierNode} and the corresponding starting point.
      */
-    public Map<IdentifierNode, ASTIdentifierNode> getIdentifiers() {
+    public Map<IdentifierNode, Integer> getIdentifiers() {
         return identifiers;
     }
 
@@ -90,8 +95,24 @@ public class IdentifierVisitor implements FlParserVisitor {
     public Object visit(ASTIdentifierNode node, Object data) {
         String identifier = node.getLastToken().toString();
         IdentifierNode identifierNode = identifierParser.parse(identifier);
-        getIdentifiers().put(identifierNode, node);
+        getIdentifiers().put(identifierNode, getIdentifierOffset(node));
         return visit((SimpleNode)node, data);
+    }
+
+    /**
+     * Returns the starting point of the identifier token. The AST only provides the row and column
+     * of the starting point so we need to transfer these coordinates into a text position.
+     * 
+     * @param node The node of which we like to get the start of the identifier
+     * @return the position of the start of the identifier within the expression text
+     */
+    int getIdentifierOffset(SimpleNode node) {
+        Matcher matcher = Pattern.compile("(\\r\\n)|\\r|\\n").matcher(expressionText); //$NON-NLS-1$
+        boolean found = false;
+        for (int i = 1; i < node.getLastToken().beginLine; i++) {
+            found = matcher.find();
+        }
+        return (found ? matcher.end() : 0) + node.getLastToken().beginColumn - 1;
     }
 
     // -----------------------------------------------------------------------------------------

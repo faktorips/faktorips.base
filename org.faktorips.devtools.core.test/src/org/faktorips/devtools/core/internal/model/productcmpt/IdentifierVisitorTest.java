@@ -42,6 +42,7 @@ import org.faktorips.fl.parser.ASTPlusNode;
 import org.faktorips.fl.parser.ASTStart;
 import org.faktorips.fl.parser.ASTStringNode;
 import org.faktorips.fl.parser.ASTSubNode;
+import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +60,9 @@ public class IdentifierVisitorTest {
 
     @Mock
     private IdentifierParser identifierParser;
+
+    @Mock
+    private SimpleNode simpleNode;
 
     private ASTStart aSTStart;
 
@@ -225,6 +229,54 @@ public class IdentifierVisitorTest {
         assertThat(identifierVisitor.getIdentifiers().keySet(), hasItem(identifierNode2));
         assertEquals(aSTIdentifierNode1, identifierVisitor.getIdentifiers().get(identifierNode1));
         assertEquals(aSTIdentifierNode2, identifierVisitor.getIdentifiers().get(identifierNode2));
+    }
+
+    @Test
+    public void testGetIdentifierOffset_simple() throws Exception {
+        identifierVisitor = new IdentifierVisitor("Test", identifierParser);
+        mockToken(0, 2);
+
+        int position = identifierVisitor.getIdentifierOffset(simpleNode);
+
+        assertEquals(1, position);
+    }
+
+    @Test
+    public void testGetIdentifierOffset_normalLineBreak() throws Exception {
+        identifierVisitor = new IdentifierVisitor("AnyExpressionblabdaslb\n\nasdas dasd \nabc123", identifierParser);
+        mockToken(3, 2);
+
+        int position = identifierVisitor.getIdentifierOffset(simpleNode);
+
+        assertEquals(25, position);
+    }
+
+    @Test
+    public void testGetIdentifierOffset_macLineBreak() throws Exception {
+        identifierVisitor = new IdentifierVisitor("AnyExpressionblabdaslb\r\rasdas dasd \rabc123", identifierParser);
+        mockToken(3, 2);
+
+        int position = identifierVisitor.getIdentifierOffset(simpleNode);
+
+        assertEquals(25, position);
+    }
+
+    @Test
+    public void testGetIdentifierOffset_winLineBreak() throws Exception {
+        identifierVisitor = new IdentifierVisitor("AnyExpressionblabdaslb\r\n\r\nasdas dasd \r\nabc123",
+                identifierParser);
+        mockToken(3, 2);
+
+        int position = identifierVisitor.getIdentifierOffset(simpleNode);
+
+        assertEquals(27, position);
+    }
+
+    private void mockToken(int line, int column) {
+        Token token = new Token();
+        token.beginLine = line;
+        token.beginColumn = column;
+        when(simpleNode.getLastToken()).thenReturn(token);
     }
 
 }

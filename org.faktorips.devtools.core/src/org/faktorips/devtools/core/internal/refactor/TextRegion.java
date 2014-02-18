@@ -33,6 +33,41 @@ public class TextRegion {
         return endPoint;
     }
 
+    /**
+     * Creates a new text region that is moved by the specified offset. The starting position of the
+     * new text region is <code>start + offset</code> the ending position is at
+     * <code>end + offset</code>.
+     * 
+     * @param offset The offset by which the new {@link TextRegion} is moved.
+     * @return The new {@link TextRegion} moved by the offset
+     */
+    public TextRegion offset(int offset) {
+        return new TextRegion(startPoint + offset, endPoint + offset);
+    }
+
+    /**
+     * Creates a new text region thats start position is moved by the specified offset. The starting
+     * position of the new text region is <code>start + offset</code> the ending position stays the
+     * same.
+     * 
+     * @param offset The offset by which the start of the new {@link TextRegion} is moved.
+     * @return The new {@link TextRegion} with the moved starting position
+     */
+    public TextRegion startOffset(int offset) {
+        return new TextRegion(startPoint + offset, endPoint);
+    }
+
+    /**
+     * Creates a new text region thats end position is moved by the specified offset. The starting
+     * position stays the same the ending position is <code>end + offset</code>.
+     * 
+     * @param offset The offset by which the end of the new {@link TextRegion} is moved.
+     * @return The new {@link TextRegion} with the moved ending position
+     */
+    public TextRegion endOffset(int offset) {
+        return new TextRegion(startPoint, endPoint + offset);
+    }
+
     public String createFullRefactoredString(String completeIdentifierString, String newString) {
         if (!isValidStartAndEndPoint(completeIdentifierString)) {
             // invalid start ending Points should never happen
@@ -51,4 +86,5 @@ public class TextRegion {
         }
         return false;
     }
+
 }

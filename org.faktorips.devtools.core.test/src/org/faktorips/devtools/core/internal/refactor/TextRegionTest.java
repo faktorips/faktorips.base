@@ -43,4 +43,35 @@ public class TextRegionTest {
 
         assertEquals(completeIdentifierString, refactoredString);
     }
+
+    @Test
+    public void testOffset() throws Exception {
+        TextRegion textRegion = new TextRegion(13, 57);
+
+        TextRegion offsetTextRegion = textRegion.offset(42);
+
+        assertEquals(55, offsetTextRegion.getStartPoint());
+        assertEquals(99, offsetTextRegion.getEndPoint());
+    }
+
+    @Test
+    public void testStartOffset() throws Exception {
+        TextRegion textRegion = new TextRegion(13, 57);
+
+        TextRegion offsetTextRegion = textRegion.startOffset(42);
+
+        assertEquals(55, offsetTextRegion.getStartPoint());
+        assertEquals(57, offsetTextRegion.getEndPoint());
+    }
+
+    @Test
+    public void testEndOffset() throws Exception {
+        TextRegion textRegion = new TextRegion(13, 57);
+
+        TextRegion offsetTextRegion = textRegion.endOffset(42);
+
+        assertEquals(13, offsetTextRegion.getStartPoint());
+        assertEquals(99, offsetTextRegion.getEndPoint());
+    }
+
 }

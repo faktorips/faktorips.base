@@ -10,13 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -27,14 +25,10 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -51,10 +45,6 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.fl.JavaExprCompiler;
-import org.faktorips.fl.parser.ASTIdentifierNode;
-import org.faktorips.fl.parser.FlParser;
-import org.faktorips.fl.parser.ParseException;
-import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -374,58 +364,11 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     @Override
     public Map<IDependency, List<IDependencyDetail>> dependsOn() {
-        IdentifierVisitor identifierVisitor = newIdentifierVisitor();
-        SimpleNode node = parseExpression();
-        if (node != null) {
-            return visitForDependencies(identifierVisitor, node);
-        } else {
-            return new HashMap<IDependency, List<IDependencyDetail>>();
-        }
+        return createDependencyCollector().collectDependencies();
     }
 
-    protected IdentifierVisitor newIdentifierVisitor() {
-        IdentifierParser identifierParser = new IdentifierParser(this, getIpsProject());
-        IdentifierVisitor identifierVisitor = new IdentifierVisitor(identifierParser);
-        return identifierVisitor;
-    }
-
-    protected SimpleNode parseExpression() {
-        try {
-            StringReader reader = new StringReader(getExpression());
-            FlParser parser = new FlParser(reader);
-            SimpleNode rootNode = parser.start();
-            return rootNode;
-        } catch (ParseException e) {
-            // we ignore parsing exceptions because they have to be recognized by validation already
-            return null;
-        }
-
-    }
-
-    private Map<IDependency, List<IDependencyDetail>> visitForDependencies(IdentifierVisitor identifierVisitor,
-            SimpleNode node) {
-        Map<IDependency, List<IDependencyDetail>> result = new HashMap<IDependency, List<IDependencyDetail>>();
-        node.jjtAccept(identifierVisitor, null);
-        Map<IdentifierNode, ASTIdentifierNode> identifiers = identifierVisitor.getIdentifiers();
-        for (Entry<IdentifierNode, ASTIdentifierNode> identifierEntry : identifiers.entrySet()) {
-            result.putAll(getDependencies(identifierEntry.getKey()));
-        }
-        return result;
-    }
-
-    protected Map<IDependency, List<IDependencyDetail>> getDependencies(IdentifierNode identifierNode) {
-        HashMap<IDependency, List<IDependencyDetail>> result = new HashMap<IDependency, List<IDependencyDetail>>();
-        if (identifierNode instanceof QualifierNode) {
-            QualifierNode qualifierNode = (QualifierNode)identifierNode;
-            IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
-                    .getQualifiedNameType(), qualifierNode.getProductCmpt().getQualifiedNameType());
-            ExpressionDependencyDetail detail = new ExpressionDependencyDetail(this);
-            addDependencyDetail(result, dependency, detail);
-        }
-        if (identifierNode.hasSuccessor()) {
-            result.putAll(getDependencies(identifierNode.getSuccessor()));
-        }
-        return result;
+    protected ExpressionDependencyCollector createDependencyCollector() {
+        return new ExpressionDependencyCollector(this);
     }
 
     @Override
