@@ -21,28 +21,28 @@ public class TextRegionTest {
     private TextRegion region;
 
     @Test
-    public void testCreateFullRefactoredString() {
-        region = new TextRegion(0, 3);
-        String refactoredString = region.createFullRefactoredString(completeIdentifierString, newString);
-
-        assertEquals("thisIsTheNewString.oldPartOfString", refactoredString);
-    }
-
-    @Test
-    public void testCreateFullRefactoredStringEmptyString() {
-        region = new TextRegion(10, 17);
-        String refactoredString = region.createFullRefactoredString(completeIdentifierString, StringUtils.EMPTY);
-
-        assertEquals("oldString.OfString", refactoredString);
-    }
+        public void testReplaceTextRegion() {
+            region = new TextRegion(0, 3);
+            String refactoredString = region.replaceTextRegion(completeIdentifierString, newString);
+    
+            assertEquals("thisIsTheNewString.oldPartOfString", refactoredString);
+        }
 
     @Test
-    public void testCreateFullRefactoredStringInvalidStartEndPoints() {
-        region = new TextRegion(-1, -8);
-        String refactoredString = region.createFullRefactoredString(completeIdentifierString, StringUtils.EMPTY);
+        public void testReplaceTextRegionEmptyString() {
+            region = new TextRegion(10, 17);
+            String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
+    
+            assertEquals("oldString.OfString", refactoredString);
+        }
 
-        assertEquals(completeIdentifierString, refactoredString);
-    }
+    @Test
+        public void testReplaceTextRegionInvalidStartEndPoints() {
+            region = new TextRegion(-1, -8);
+            String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
+    
+            assertEquals(completeIdentifierString, refactoredString);
+        }
 
     @Test
     public void testOffset() throws Exception {
@@ -50,8 +50,8 @@ public class TextRegionTest {
 
         TextRegion offsetTextRegion = textRegion.offset(42);
 
-        assertEquals(55, offsetTextRegion.getStartPoint());
-        assertEquals(99, offsetTextRegion.getEndPoint());
+        assertEquals(55, offsetTextRegion.getStart());
+        assertEquals(99, offsetTextRegion.getEnd());
     }
 
     @Test
@@ -60,8 +60,8 @@ public class TextRegionTest {
 
         TextRegion offsetTextRegion = textRegion.startOffset(42);
 
-        assertEquals(55, offsetTextRegion.getStartPoint());
-        assertEquals(57, offsetTextRegion.getEndPoint());
+        assertEquals(55, offsetTextRegion.getStart());
+        assertEquals(57, offsetTextRegion.getEnd());
     }
 
     @Test
@@ -70,8 +70,8 @@ public class TextRegionTest {
 
         TextRegion offsetTextRegion = textRegion.endOffset(42);
 
-        assertEquals(13, offsetTextRegion.getStartPoint());
-        assertEquals(99, offsetTextRegion.getEndPoint());
+        assertEquals(13, offsetTextRegion.getStart());
+        assertEquals(99, offsetTextRegion.getEnd());
     }
 
 }

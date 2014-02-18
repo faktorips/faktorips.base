@@ -45,9 +45,9 @@ public class IdentifierNodeFactory {
 
     private final TextRegion textRegion;
 
-    public IdentifierNodeFactory(String identifierPart, IIpsProject ipsProject, TextRegion textRegion) {
-        this.textRegion = textRegion;
+    public IdentifierNodeFactory(String identifierPart, TextRegion textRegion, IIpsProject ipsProject) {
         this.identifierPart = identifierPart;
+        this.textRegion = textRegion;
         this.ipsProject = ipsProject;
     }
 
@@ -60,7 +60,7 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createParameterNode(IParameter parameter) {
         try {
-            ParameterNode parameterNode = new ParameterNode(parameter, ipsProject, textRegion);
+            ParameterNode parameterNode = new ParameterNode(parameter, textRegion, ipsProject);
             if (parameterNode.getDatatype() == null) {
                 return createInvalidNoDatatype(parameter.getDatatype());
             }
@@ -120,7 +120,7 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createAssociationNode(IAssociation association, boolean listOfType) {
         try {
-            return new AssociationNode(association, listOfType, ipsProject, textRegion);
+            return new AssociationNode(association, listOfType, textRegion, ipsProject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(association.getTarget());

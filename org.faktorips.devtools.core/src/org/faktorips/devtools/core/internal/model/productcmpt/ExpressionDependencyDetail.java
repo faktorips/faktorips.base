@@ -45,7 +45,7 @@ public class ExpressionDependencyDetail extends DependencyDetail {
 
     @Override
     public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
-        String refactoredString = getTextRegion().createFullRefactoredString(getPart().getExpression(), newName);
+        String refactoredString = getTextRegion().replaceTextRegion(getPart().getExpression(), newName);
         getPart().setExpression(refactoredString);
     }
 

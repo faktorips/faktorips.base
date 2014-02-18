@@ -68,7 +68,7 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_parseEnumDatatype() throws Exception {
-        EnumClassNode enumClassNode = new IdentifierNodeFactory("", getIpsProject(), null)
+        EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
 
         EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, enumClassNode, null);
@@ -78,7 +78,7 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_parseEnumDatatypeNotFount() throws Exception {
-        EnumClassNode enumClassNode = new IdentifierNodeFactory("", getIpsProject(), null)
+        EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
 
         InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, enumClassNode, null);

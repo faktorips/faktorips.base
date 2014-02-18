@@ -27,7 +27,7 @@ public class ParameterNode extends IdentifierNode {
     private final IParameter parameter;
     private final IIpsProject ipsProject;
 
-    ParameterNode(IParameter parameter, IIpsProject ipsProject, TextRegion textRegion) throws CoreException {
+    ParameterNode(IParameter parameter, TextRegion textRegion, IIpsProject ipsProject) throws CoreException {
         super(parameter.findDatatype(ipsProject), textRegion);
         this.parameter = parameter;
         this.ipsProject = ipsProject;

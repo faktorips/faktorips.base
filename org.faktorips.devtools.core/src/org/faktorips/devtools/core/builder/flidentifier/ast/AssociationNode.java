@@ -32,7 +32,7 @@ public class AssociationNode extends IdentifierNode {
 
     private final boolean listContext;
 
-    AssociationNode(IAssociation association, boolean listContext, IIpsProject ipsProject, TextRegion textRegion)
+    AssociationNode(IAssociation association, boolean listContext, TextRegion textRegion, IIpsProject ipsProject)
             throws CoreException {
         super(association.findTarget(ipsProject), association.is1ToMany() || listContext, textRegion);
         this.association = association;

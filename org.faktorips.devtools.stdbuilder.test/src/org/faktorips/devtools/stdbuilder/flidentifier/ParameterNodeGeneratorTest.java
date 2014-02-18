@@ -60,7 +60,7 @@ public class ParameterNodeGeneratorTest {
         IParameter parameter = mock(IParameter.class);
         when(parameter.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         when(parameter.getName()).thenReturn("ParamName");
-        parameterNode = (ParameterNode)new IdentifierNodeFactory(parameter.getName(), ipsProject, null)
+        parameterNode = (ParameterNode)new IdentifierNodeFactory(parameter.getName(), null, ipsProject)
                 .createParameterNode(parameter);
     }
 

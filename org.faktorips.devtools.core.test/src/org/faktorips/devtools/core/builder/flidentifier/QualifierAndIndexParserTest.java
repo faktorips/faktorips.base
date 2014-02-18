@@ -225,12 +225,12 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     }
 
     private AssociationNode createAssociationNode(IPolicyCmptTypeAssociation association, boolean listContext) {
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", getIpsProject(), null);
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", null, getIpsProject());
         return (AssociationNode)nodeFactory.createAssociationNode(association, listContext);
     }
 
     private IdentifierNode createQualifierNode(boolean listOfTypes) {
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", getIpsProject(), null);
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("", null, getIpsProject());
         return nodeFactory.createQualifierNode(productCmpt, QUALIFIER, listOfTypes);
     }
 

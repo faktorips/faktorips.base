@@ -204,8 +204,8 @@ public class ExpressionDependencyCollectorTest {
 
         TextRegion textRegion = expressionDependencyCollector.getTextRegion(identifierNode, 42, 13, 9);
 
-        assertEquals(58, textRegion.getStartPoint());
-        assertEquals(59, textRegion.getEndPoint());
+        assertEquals(58, textRegion.getStart());
+        assertEquals(59, textRegion.getEnd());
     }
 
     private IDependency getDependency(QualifiedNameType target) {
@@ -241,8 +241,8 @@ public class ExpressionDependencyCollectorTest {
                 .createQualifiedNodeDependencyDetail(identifierNode, 42);
         TextRegion textRegion = qualifiedNodeDependencyDetail.getTextRegion();
 
-        assertEquals(50, textRegion.getStartPoint());
-        assertEquals(56, textRegion.getEndPoint());
+        assertEquals(50, textRegion.getStart());
+        assertEquals(56, textRegion.getEnd());
     }
 
 }

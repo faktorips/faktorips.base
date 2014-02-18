@@ -35,10 +35,6 @@ import org.faktorips.util.message.Message;
  */
 public class IdentifierParser {
 
-    private static final String IDENTIFIER_SEPERATOR_REGEX = "[\\.\\[]"; //$NON-NLS-1$
-
-    private static final Pattern IDENTIFIER_SEPERATOR_PATTERN = Pattern.compile(IDENTIFIER_SEPERATOR_REGEX);
-
     private final IIpsProject ipsProject;
 
     private final ArrayList<AbstractIdentifierNodeParser> parsers;
@@ -102,12 +98,16 @@ public class IdentifierParser {
                 return node;
             }
         }
-        return new IdentifierNodeFactory(identifierPart, ipsProject, matcher.getTextRegion())
+        return new IdentifierNodeFactory(identifierPart, matcher.getTextRegion(), ipsProject)
                 .createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
                         NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, identifierPart)));
     }
 
-    private static class IdentifierMatcher {
+    protected static class IdentifierMatcher {
+
+        private static final String IDENTIFIER_SEPERATOR_REGEX = "[\\.\\[]"; //$NON-NLS-1$
+
+        private static final Pattern IDENTIFIER_SEPERATOR_PATTERN = Pattern.compile(IDENTIFIER_SEPERATOR_REGEX);
 
         private final String identifier;
 
@@ -128,9 +128,9 @@ public class IdentifierParser {
 
         private void find(int sequenceStart) {
             if (matcher.find()) {
-                textRegion = new TextRegion(sequenceStart, matcher.start() - sequenceStart);
+                textRegion = new TextRegion(sequenceStart, matcher.start());
             } else {
-                textRegion = new TextRegion(sequenceStart, identifier.length() - sequenceStart);
+                textRegion = new TextRegion(sequenceStart, identifier.length());
             }
         }
 
@@ -139,7 +139,7 @@ public class IdentifierParser {
         }
 
         public String getIdentifierPart() {
-            return identifier.substring(textRegion.getStartPoint(), textRegion.getEndPoint());
+            return identifier.substring(textRegion.getStart(), textRegion.getEnd());
         }
 
         public TextRegion getTextRegion() {

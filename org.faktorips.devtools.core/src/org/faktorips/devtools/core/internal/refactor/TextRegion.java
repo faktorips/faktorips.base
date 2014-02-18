@@ -10,27 +10,28 @@
 package org.faktorips.devtools.core.internal.refactor;
 
 /**
- * The TextRegion describes a certain range in an indexed String.
+ * The TextRegion describes a certain range in a String. The TextRegion is defined by the start and
+ * end variables. The variables don't change over time.
  * 
  */
 public class TextRegion {
 
-    private int startPoint;
+    private final int start;
 
-    private int endPoint;
+    private final int end;
 
     public TextRegion(int startPoint, int endPoint) {
         super();
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
+        this.start = startPoint;
+        this.end = endPoint;
     }
 
-    public int getStartPoint() {
-        return startPoint;
+    public int getStart() {
+        return start;
     }
 
-    public int getEndPoint() {
-        return endPoint;
+    public int getEnd() {
+        return end;
     }
 
     /**
@@ -42,7 +43,7 @@ public class TextRegion {
      * @return The new {@link TextRegion} moved by the offset
      */
     public TextRegion offset(int offset) {
-        return new TextRegion(startPoint + offset, endPoint + offset);
+        return new TextRegion(start + offset, end + offset);
     }
 
     /**
@@ -54,7 +55,7 @@ public class TextRegion {
      * @return The new {@link TextRegion} with the moved starting position
      */
     public TextRegion startOffset(int offset) {
-        return new TextRegion(startPoint + offset, endPoint);
+        return new TextRegion(start + offset, end);
     }
 
     /**
@@ -65,23 +66,28 @@ public class TextRegion {
      * @return The new {@link TextRegion} with the moved ending position
      */
     public TextRegion endOffset(int offset) {
-        return new TextRegion(startPoint, endPoint + offset);
+        return new TextRegion(start, end + offset);
     }
 
-    public String createFullRefactoredString(String completeIdentifierString, String newString) {
+    /**
+     * Replaces a part of a fully qualified String by a new String. The positions for the
+     * replacement are identified by <code>start</code> and <code>end</code>. If the positions are
+     * invalid, the method will return the fully qualified String without any changes.
+     * 
+     * @param completeIdentifierString The fully qualified String
+     * @param newString The new String that will replace (a part of) completeIdentifierString
+     * @return complete replacedString
+     */
+    public String replaceTextRegion(String completeIdentifierString, String newString) {
         if (!isValidStartAndEndPoint(completeIdentifierString)) {
-            // invalid start ending Points should never happen
             return completeIdentifierString;
         }
-        StringBuffer refactoredBuffer = new StringBuffer();
-        refactoredBuffer.append(completeIdentifierString.substring(0, startPoint) + newString);
-        refactoredBuffer.append(completeIdentifierString.substring(endPoint));
-        return refactoredBuffer.toString();
+        return completeIdentifierString.substring(0, getStart()) + newString
+                + completeIdentifierString.substring(getEnd());
     }
 
     private boolean isValidStartAndEndPoint(String completeIdentifierString) {
-        if (getStartPoint() >= 0 && getEndPoint() <= completeIdentifierString.length()
-                && getStartPoint() <= getEndPoint()) {
+        if (getStart() >= 0 && getEnd() <= completeIdentifierString.length() && getStart() <= getEnd()) {
             return true;
         }
         return false;

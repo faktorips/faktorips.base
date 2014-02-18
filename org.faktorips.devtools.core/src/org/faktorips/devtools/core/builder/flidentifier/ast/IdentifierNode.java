@@ -28,7 +28,7 @@ public abstract class IdentifierNode {
 
     private IdentifierNode successor;
 
-    private TextRegion textRegion;
+    private final TextRegion textRegion;
 
     protected IdentifierNode(Datatype datatype, TextRegion textRegion) {
         this(datatype, false, textRegion);
@@ -63,6 +63,12 @@ public abstract class IdentifierNode {
         return datatype instanceof ListOfTypeDatatype;
     }
 
+    /**
+     * The returned TextRegion defines the positions of positions of a substring in the String that
+     * should be replaced.
+     * 
+     * @return TextRegion
+     */
     public TextRegion getTextRegion() {
         return textRegion;
     }

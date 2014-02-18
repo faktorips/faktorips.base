@@ -139,7 +139,7 @@ public abstract class AbstractIdentifierNodeParser {
      * @return The {@link IdentifierNodeFactory} to create a new {@link IdentifierNode}
      */
     public IdentifierNodeFactory nodeFactory() {
-        return new IdentifierNodeFactory(getIdentifierPart(), getIpsProject(), getTextRegion());
+        return new IdentifierNodeFactory(getIdentifierPart(), getTextRegion(), getIpsProject());
     }
 
     public TextRegion getTextRegion() {
