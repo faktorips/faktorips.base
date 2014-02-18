@@ -19,7 +19,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.faktorips.datatype.EnumDatatype;
@@ -27,7 +26,6 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -121,14 +119,14 @@ public class ExpressionDependencyCollectorTest {
     public void testCollectDependencies_noParsingResult() throws Exception {
         when(expression.getExpression()).thenReturn("");
 
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector.collectDependencies();
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector.collectDependencies();
 
         assertTrue(dependencies.isEmpty());
     }
 
     @Test
     public void testCollectDependencies_noDependencies() throws Exception {
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector
                 .collectDependencies(simpleNode);
 
         assertTrue(dependencies.isEmpty());
@@ -140,7 +138,7 @@ public class ExpressionDependencyCollectorTest {
     public void testCollectDependencies_anyDependencies() throws Exception {
         identifiers.put(qualifierNode, 0);
 
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector
                 .collectDependencies(simpleNode);
 
         IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
@@ -152,7 +150,7 @@ public class ExpressionDependencyCollectorTest {
         identifiers.put(qualifierNode, 0);
         identifiers.put(qualifierNode2, 0);
 
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector
                 .collectDependencies(simpleNode);
 
         IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
@@ -164,7 +162,7 @@ public class ExpressionDependencyCollectorTest {
     @Test
     public void testCollectDependencies_simpleQualifiedNode() throws Exception {
         expressionDependencyCollector.collectDependencies(qualifierNode, 0);
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector.getResult();
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
 
         IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
         assertThat(dependencies.keySet(), hasItem(dependency));
@@ -176,7 +174,7 @@ public class ExpressionDependencyCollectorTest {
         when(identifierNode.hasSuccessor()).thenReturn(true);
 
         expressionDependencyCollector.collectDependencies(identifierNode, 0);
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector.getResult();
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
 
         IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
         assertThat(dependencies.keySet(), hasItem(dependency));
@@ -190,12 +188,40 @@ public class ExpressionDependencyCollectorTest {
         when(qualifierNode.hasSuccessor()).thenReturn(true);
 
         expressionDependencyCollector.collectDependencies(identifierNode, 0);
-        Map<IDependency, List<IDependencyDetail>> dependencies = expressionDependencyCollector.getResult();
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
 
         IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
         assertThat(dependencies.keySet(), hasItem(dependency));
         IDependency dependency2 = getDependency(targetProductCmpt2.getQualifiedNameType());
         assertThat(dependencies.keySet(), hasItem(dependency2));
+    }
+
+    @Test
+    public void testCollectDependencies_detailOneRegion() throws Exception {
+
+        expressionDependencyCollector.collectDependencies(qualifierNode, 42);
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
+        IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
+        ExpressionDependencyDetail expressionDependencyDetail = dependencies.get(dependency);
+
+        assertEquals(1, expressionDependencyDetail.getTextRegions().size());
+        assertEquals(new TextRegion(44, 47), expressionDependencyDetail.getTextRegions().first());
+    }
+
+    @Test
+    public void testCollectDependencies_detailTwoRegion() throws Exception {
+        when(qualifierNode.getSuccessor()).thenReturn(qualifierNode2);
+        when(qualifierNode.hasSuccessor()).thenReturn(true);
+        when(qualifierNode2.getProductCmpt()).thenReturn(targetProductCmpt);
+
+        expressionDependencyCollector.collectDependencies(qualifierNode, 42);
+        Map<IDependency, ExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
+        IDependency dependency = getDependency(targetProductCmpt.getQualifiedNameType());
+        ExpressionDependencyDetail expressionDependencyDetail = dependencies.get(dependency);
+
+        assertEquals(2, expressionDependencyDetail.getTextRegions().size());
+        assertEquals(new TextRegion(44, 47), expressionDependencyDetail.getTextRegions().first());
+        assertEquals(new TextRegion(51, 69), expressionDependencyDetail.getTextRegions().last());
     }
 
     @Test
@@ -225,24 +251,6 @@ public class ExpressionDependencyCollectorTest {
         assertThat(addNode.jjtGetNumChildren(), is(2));
         assertThat(addNode.jjtGetChild(0), instanceOf(ASTIntegerNode.class));
         assertThat(addNode.jjtGetChild(1), instanceOf(ASTIntegerNode.class));
-    }
-
-    /**
-     * A {@link QualifierNode} represents a qualifier of an association in the expression text. For
-     * example in coverage["MyCoverage 02-2014"] the qualifier node points to
-     * <code>"MyCoverage 02-2014"]</code>. Hence we need to cut off the first and the two last
-     * chars.
-     */
-    @Test
-    public void testCreateQualifiedNodeDependencyDetail() throws Exception {
-        when(identifierNode.getTextRegion()).thenReturn(new TextRegion(7, 16));
-
-        ExpressionDependencyDetail qualifiedNodeDependencyDetail = expressionDependencyCollector
-                .createQualifiedNodeDependencyDetail(identifierNode, 42);
-        TextRegion textRegion = qualifiedNodeDependencyDetail.getTextRegion();
-
-        assertEquals(50, textRegion.getStart());
-        assertEquals(56, textRegion.getEnd());
     }
 
 }

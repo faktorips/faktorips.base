@@ -10,9 +10,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,7 +20,6 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -41,11 +38,11 @@ import org.faktorips.fl.parser.SimpleNode;
  * 
  * @author dirmeier
  */
-class ExpressionDependencyCollector {
+public class ExpressionDependencyCollector {
 
     private final Expression expression;
 
-    private final Map<IDependency, List<IDependencyDetail>> result = new HashMap<IDependency, List<IDependencyDetail>>();
+    private final Map<IDependency, ExpressionDependencyDetail> result = new HashMap<IDependency, ExpressionDependencyDetail>();
 
     private final IdentifierVisitor identifierVisitor;
 
@@ -56,7 +53,7 @@ class ExpressionDependencyCollector {
      * @param expression The expression for which we need to get the dependencies
      * @param identifierVisitor An {@link IdentifierVisitor} that is used to find the identifiers
      */
-    public ExpressionDependencyCollector(Expression expression, IdentifierVisitor identifierVisitor) {
+    protected ExpressionDependencyCollector(Expression expression, IdentifierVisitor identifierVisitor) {
         this.expression = expression;
         this.identifierVisitor = identifierVisitor;
     }
@@ -67,7 +64,7 @@ class ExpressionDependencyCollector {
      * 
      * @param expression The expression for which we need to get the dependencies
      */
-    public ExpressionDependencyCollector(Expression expression) {
+    protected ExpressionDependencyCollector(Expression expression) {
         this(expression, newIdentifierVisitor(expression));
     }
 
@@ -78,7 +75,7 @@ class ExpressionDependencyCollector {
         return identifierVisitor;
     }
 
-    Map<IDependency, List<IDependencyDetail>> getResult() {
+    Map<IDependency, ExpressionDependencyDetail> getResult() {
         return result;
     }
 
@@ -88,12 +85,12 @@ class ExpressionDependencyCollector {
      * 
      * @return A map of found dependencies pointing to a list of corresponding dependency details.
      */
-    public Map<IDependency, List<IDependencyDetail>> collectDependencies() {
+    public Map<IDependency, ExpressionDependencyDetail> collectDependencies() {
         SimpleNode node = parseExpression();
         if (node != null) {
             return collectDependencies(node);
         } else {
-            return new HashMap<IDependency, List<IDependencyDetail>>();
+            return new HashMap<IDependency, ExpressionDependencyDetail>();
         }
     }
 
@@ -118,7 +115,7 @@ class ExpressionDependencyCollector {
      *            text.
      * @return A map of found dependencies pointing to a list of corresponding dependency details.
      */
-    public Map<IDependency, List<IDependencyDetail>> collectDependencies(SimpleNode node) {
+    public Map<IDependency, ExpressionDependencyDetail> collectDependencies(SimpleNode node) {
         node.jjtAccept(identifierVisitor, null);
         Map<IdentifierNode, Integer> identifiers = identifierVisitor.getIdentifiers();
         for (Entry<IdentifierNode, Integer> identifierEntry : identifiers.entrySet()) {
@@ -130,8 +127,8 @@ class ExpressionDependencyCollector {
     void collectDependencies(IdentifierNode identifierNode, int identifierOffset) {
         if (identifierNode instanceof QualifierNode) {
             IpsObjectDependency dependency = createQualifiedNodeDependency(identifierNode);
-            ExpressionDependencyDetail detail = createQualifiedNodeDependencyDetail(identifierNode, identifierOffset);
-            getDependencyDetails(dependency).add(detail);
+            TextRegion textRegion = getTextRegion(identifierNode, identifierOffset, 1, -2);
+            getDependencyDetail(dependency).addTextRegion(textRegion);
         }
         if (identifierNode.hasSuccessor()) {
             collectDependencies(identifierNode.getSuccessor(), identifierOffset);
@@ -145,24 +142,18 @@ class ExpressionDependencyCollector {
         return dependency;
     }
 
-    ExpressionDependencyDetail createQualifiedNodeDependencyDetail(IdentifierNode identifierNode, int identifierOffset) {
-        TextRegion textRegion = getTextRegion(identifierNode, identifierOffset, 1, -2);
-        ExpressionDependencyDetail detail = new ExpressionDependencyDetail(expression, textRegion);
-        return detail;
-    }
-
     TextRegion getTextRegion(IdentifierNode identifierNode, int identifierOffset, int startOffset, int endOffset) {
         TextRegion identiferRegion = identifierNode.getTextRegion().offset(identifierOffset);
         return identiferRegion.startOffset(startOffset).endOffset(endOffset);
     }
 
-    private List<IDependencyDetail> getDependencyDetails(IpsObjectDependency dependency) {
-        List<IDependencyDetail> list = getResult().get(dependency);
-        if (list == null) {
-            list = new ArrayList<IDependencyDetail>();
-            getResult().put(dependency, list);
+    private ExpressionDependencyDetail getDependencyDetail(IpsObjectDependency dependency) {
+        ExpressionDependencyDetail detail = getResult().get(dependency);
+        if (detail == null) {
+            detail = new ExpressionDependencyDetail(expression);
+            getResult().put(dependency, detail);
         }
-        return list;
+        return detail;
     }
 
 }

@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.DependencyDetail;
@@ -25,17 +28,16 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
  */
 public class ExpressionDependencyDetail extends DependencyDetail {
 
-    private final TextRegion textRegion;
+    private final SortedSet<TextRegion> textRegions = new TreeSet<TextRegion>();
 
     /**
-     * Creates the new dependency detail for the given expression. The property provided to the
-     * super class is always {@link IExpression#PROPERTY_EXPRESSION}.
+     * Creates a new dependency detail for the given expression. The property provided to the super
+     * class is always {@link IExpression#PROPERTY_EXPRESSION}.
      * 
      * @param expression The expression for which you build the dependency
      */
-    public ExpressionDependencyDetail(IExpression expression, TextRegion textRegion) {
+    public ExpressionDependencyDetail(IExpression expression) {
         super(expression, IExpression.PROPERTY_EXPRESSION);
-        this.textRegion = textRegion;
     }
 
     @Override
@@ -43,14 +45,24 @@ public class ExpressionDependencyDetail extends DependencyDetail {
         return (IExpression)super.getPart();
     }
 
-    @Override
-    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
-        String refactoredString = getTextRegion().replaceTextRegion(getPart().getExpression(), newName);
-        getPart().setExpression(refactoredString);
+    public void addTextRegion(TextRegion textRegion) {
+        textRegions.add(textRegion);
     }
 
-    TextRegion getTextRegion() {
-        return textRegion;
+    @Override
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
+        String expressionText = getPart().getExpression();
+        int offset = 0;
+        for (TextRegion textRegion : getTextRegions()) {
+            int expressionLength = expressionText.length();
+            expressionText = textRegion.offset(offset).replaceTextRegion(expressionText, newName);
+            offset += expressionText.length() - expressionLength;
+        }
+        getPart().setExpression(expressionText);
+    }
+
+    SortedSet<TextRegion> getTextRegions() {
+        return textRegions;
     }
 
 }

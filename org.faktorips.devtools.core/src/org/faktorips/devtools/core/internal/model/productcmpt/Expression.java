@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -363,7 +362,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     }
 
     @Override
-    public Map<IDependency, List<IDependencyDetail>> dependsOn() {
+    public Map<IDependency, ExpressionDependencyDetail> dependsOn() {
         return createDependencyCollector().collectDependencies();
     }
 

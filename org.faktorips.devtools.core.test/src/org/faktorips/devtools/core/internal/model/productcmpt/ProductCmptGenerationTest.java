@@ -741,15 +741,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testAddDependenciesFromFormulaExpressions() throws Exception {
         ProductCmptGeneration generationSpy = spy((ProductCmptGeneration)generation);
         IDependency dependency = mock(IDependency.class);
-        IDependencyDetail dependencyDetail1 = mock(IDependencyDetail.class);
-        IDependencyDetail dependencyDetail2 = mock(IDependencyDetail.class);
+        ExpressionDependencyDetail dependencyDetail1 = mock(ExpressionDependencyDetail.class);
+        ExpressionDependencyDetail dependencyDetail2 = mock(ExpressionDependencyDetail.class);
         IFormula formula1 = mock(IFormula.class);
         IFormula formula2 = mock(IFormula.class);
         when(generationSpy.getFormulas()).thenReturn(new IFormula[] { formula1, formula2 });
-        Map<IDependency, List<IDependencyDetail>> dependencyMap1 = new HashMap<IDependency, List<IDependencyDetail>>();
-        dependencyMap1.put(dependency, new ArrayList<IDependencyDetail>(Arrays.asList(dependencyDetail1)));
-        Map<IDependency, List<IDependencyDetail>> dependencyMap2 = new HashMap<IDependency, List<IDependencyDetail>>();
-        dependencyMap2.put(dependency, new ArrayList<IDependencyDetail>(Arrays.asList(dependencyDetail2)));
+        Map<IDependency, ExpressionDependencyDetail> dependencyMap1 = new HashMap<IDependency, ExpressionDependencyDetail>();
+        dependencyMap1.put(dependency, dependencyDetail1);
+        Map<IDependency, ExpressionDependencyDetail> dependencyMap2 = new HashMap<IDependency, ExpressionDependencyDetail>();
+        dependencyMap2.put(dependency, dependencyDetail2);
         when(formula1.dependsOn()).thenReturn(dependencyMap1);
         when(formula2.dependsOn()).thenReturn(dependencyMap2);
 
@@ -761,9 +761,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertThat(dependenciesResult, hasItem(dependency));
         assertEquals(1, detailsResult.size());
         assertThat(detailsResult.keySet(), hasItem(dependency));
-        assertEquals(2, detailsResult.get(dependency).size());
-        assertThat(detailsResult.get(dependency), hasItem(dependencyDetail1));
-        assertThat(detailsResult.get(dependency), hasItem(dependencyDetail2));
+        List<? extends IDependencyDetail> detailList = detailsResult.get(dependency);
+        assertEquals(2, detailList.size());
+        assertEquals(dependencyDetail1, detailList.get(0));
+        assertEquals(dependencyDetail2, detailList.get(1));
     }
 
 }

@@ -47,12 +47,15 @@ import org.faktorips.fl.parser.Token;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentifierVisitorTest {
+
+    private static final int TOKEN_1_COL = 2;
+
+    private static final int TOKEN_2_COL = 7;
 
     private static final String MY_IDENTIFIER_TEXT1 = "myIdentifierText";
 
@@ -120,8 +123,12 @@ public class IdentifierVisitorTest {
     @Mock
     private IdentifierNode identifierNode2;
 
-    @InjectMocks
     private IdentifierVisitor identifierVisitor;
+
+    @Before
+    public void setUpIdentifierVisitor() {
+        identifierVisitor = new IdentifierVisitor("my expression", identifierParser);
+    }
 
     @Before
     public void setUpNodes() {
@@ -205,9 +212,11 @@ public class IdentifierVisitorTest {
         Token newToken1 = Token.newToken(0);
         newToken1.image = MY_IDENTIFIER_TEXT1;
         when(aSTIdentifierNode1.getLastToken()).thenReturn(newToken1);
+        newToken1.beginColumn = TOKEN_1_COL;
         Token newToken2 = Token.newToken(0);
         newToken2.image = MY_IDENTIFIER_TEXT2;
         when(aSTIdentifierNode2.getLastToken()).thenReturn(newToken2);
+        newToken2.beginColumn = TOKEN_2_COL;
     }
 
     @Test
@@ -227,8 +236,8 @@ public class IdentifierVisitorTest {
 
         assertThat(identifierVisitor.getIdentifiers().keySet(), hasItem(identifierNode1));
         assertThat(identifierVisitor.getIdentifiers().keySet(), hasItem(identifierNode2));
-        assertEquals(aSTIdentifierNode1, identifierVisitor.getIdentifiers().get(identifierNode1));
-        assertEquals(aSTIdentifierNode2, identifierVisitor.getIdentifiers().get(identifierNode2));
+        assertEquals(Integer.valueOf(TOKEN_1_COL - 1), identifierVisitor.getIdentifiers().get(identifierNode1));
+        assertEquals(Integer.valueOf(TOKEN_2_COL - 1), identifierVisitor.getIdentifiers().get(identifierNode2));
     }
 
     @Test

@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.refactor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -74,4 +75,17 @@ public class TextRegionTest {
         assertEquals(99, offsetTextRegion.getEnd());
     }
 
+    @Test
+    public void testCompareTo() throws Exception {
+        TextRegion textRegion1 = new TextRegion(2, 10);
+        TextRegion textRegion2 = new TextRegion(5, 12);
+        TextRegion textRegion3 = new TextRegion(2, 5);
+
+        assertTrue(textRegion1.compareTo(textRegion1) == 0);
+        assertTrue(textRegion2.compareTo(textRegion2) == 0);
+        assertTrue(textRegion3.compareTo(textRegion3) == 0);
+        assertTrue(textRegion1.compareTo(textRegion2) < 0);
+        assertTrue(textRegion1.compareTo(textRegion3) > 0);
+        assertTrue(textRegion2.compareTo(textRegion3) > 0);
+    }
 }

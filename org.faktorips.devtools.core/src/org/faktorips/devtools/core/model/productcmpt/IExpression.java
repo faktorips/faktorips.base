@@ -15,9 +15,9 @@ import java.util.Map;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.ExpressionDependencyDetail;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -148,13 +148,16 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Collect all dependencies according to {@link IIpsObject#dependsOn()} this expression has to
-     * other objects. These are for example other {@link IProductCmpt} that are referenced by a
-     * qualified association. Additionally every dependency collects the corresponding
-     * {@link IDependencyDetail details} according to
-     * {@link IIpsObject#getDependencyDetails(IDependency)}.
+     * other objects. These are for example other {@link IProductCmpt product components} that are
+     * referenced by a qualified association. Additionally every dependency collects the
+     * corresponding {@link ExpressionDependencyDetail} according to
+     * {@link IIpsObject#getDependencyDetails(IDependency)}. For every {@link IDependency} there is
+     * only one {@link ExpressionDependencyDetail} allowed. If there are multiple parts that
+     * reference the same dependency, they need to be put together in one
+     * {@link ExpressionDependencyDetail}.
      * 
      * @return The map of all dependencies found for this formula expression including the
      *         dependency details
      */
-    public Map<IDependency, List<IDependencyDetail>> dependsOn();
+    public Map<IDependency, ExpressionDependencyDetail> dependsOn();
 }

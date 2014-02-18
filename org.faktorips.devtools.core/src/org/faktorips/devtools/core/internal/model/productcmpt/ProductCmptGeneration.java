@@ -120,7 +120,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             Map<IDependency, List<IDependencyDetail>> details) {
         IFormula[] formulas = getFormulas();
         for (IFormula formula : formulas) {
-            Map<IDependency, List<IDependencyDetail>> formulaDependencies = formula.dependsOn();
+            Map<IDependency, ExpressionDependencyDetail> formulaDependencies = formula.dependsOn();
             dependencies.addAll(formulaDependencies.keySet());
             if (details != null) {
                 mergeDependencyDetails(details, formulaDependencies);
@@ -129,14 +129,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
-            Map<IDependency, List<IDependencyDetail>> formulaDependencies) {
-        for (Entry<IDependency, List<IDependencyDetail>> entry : formulaDependencies.entrySet()) {
-            List<IDependencyDetail> existingDependencies = details.get(entry.getKey());
-            if (existingDependencies == null) {
-                details.put(entry.getKey(), entry.getValue());
-            } else {
-                existingDependencies.addAll(entry.getValue());
+            Map<IDependency, ExpressionDependencyDetail> formulaDependencies) {
+        for (Entry<IDependency, ExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
+            List<IDependencyDetail> ependenciesDetailsList = details.get(entry.getKey());
+            if (ependenciesDetailsList == null) {
+                ependenciesDetailsList = new ArrayList<IDependencyDetail>();
+                details.put(entry.getKey(), ependenciesDetailsList);
             }
+            ependenciesDetailsList.add(entry.getValue());
         }
     }
 

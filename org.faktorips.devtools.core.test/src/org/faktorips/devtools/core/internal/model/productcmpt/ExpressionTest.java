@@ -14,11 +14,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -37,10 +35,10 @@ public class ExpressionTest {
     @Test
     public void testDependsOn() throws Exception {
         doReturn(dependencyCollector).when(expression).createDependencyCollector();
-        Map<IDependency, List<IDependencyDetail>> depMap = new HashMap<IDependency, List<IDependencyDetail>>();
+        Map<IDependency, ExpressionDependencyDetail> depMap = new HashMap<IDependency, ExpressionDependencyDetail>();
         when(dependencyCollector.collectDependencies()).thenReturn(depMap);
 
-        Map<IDependency, List<IDependencyDetail>> dependsOn = expression.dependsOn();
+        Map<IDependency, ExpressionDependencyDetail> dependsOn = expression.dependsOn();
 
         assertSame(depMap, dependsOn);
     }

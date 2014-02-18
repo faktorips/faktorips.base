@@ -30,27 +30,60 @@ public class ExpressionDependencyDetailTest {
 
     private static final String NEW_EXPRESSION_TEXT = "My tiny little super expression to be replaces";
 
+    private static final String NEW_EXPRESSION_TEXT2 = "My tiny little super super to be replaces";
+
+    private static final String NEW_EXPRESSION_TEXT3 = "My tiny little super super super be replaces";
+
     @Mock
     private IExpression expression;
 
     @Mock
     private IIpsPackageFragment targetIpsPackageFragment;
 
-    private TextRegion textRegion = new TextRegion(15, 24);
+    private TextRegion textRegion1 = new TextRegion(15, 24);
+
+    private TextRegion textRegion2 = new TextRegion(25, 35);
+
+    private TextRegion textRegion3 = new TextRegion(36, 38);
 
     private ExpressionDependencyDetail expressionDependencyDetail;
 
     @Before
     public void createExpressionDependencyDetail() throws Exception {
-        expressionDependencyDetail = new ExpressionDependencyDetail(expression, textRegion);
+        expressionDependencyDetail = new ExpressionDependencyDetail(expression);
     }
 
     @Test
     public void testRefactorAfterRename() throws Exception {
+        expressionDependencyDetail.addTextRegion(textRegion1);
         when(expression.getExpression()).thenReturn(EXPRESSION_TEXT);
 
         expressionDependencyDetail.refactorAfterRename(targetIpsPackageFragment, NEW_NAME);
 
         verify(expression).setExpression(NEW_EXPRESSION_TEXT);
     }
+
+    @Test
+    public void testRefactorAfterRename_twoRegions() throws Exception {
+        expressionDependencyDetail.addTextRegion(textRegion2);
+        expressionDependencyDetail.addTextRegion(textRegion1);
+        when(expression.getExpression()).thenReturn(EXPRESSION_TEXT);
+
+        expressionDependencyDetail.refactorAfterRename(targetIpsPackageFragment, NEW_NAME);
+
+        verify(expression).setExpression(NEW_EXPRESSION_TEXT2);
+    }
+
+    @Test
+    public void testRefactorAfterRename_threeRegions() throws Exception {
+        expressionDependencyDetail.addTextRegion(textRegion2);
+        expressionDependencyDetail.addTextRegion(textRegion1);
+        expressionDependencyDetail.addTextRegion(textRegion3);
+        when(expression.getExpression()).thenReturn(EXPRESSION_TEXT);
+
+        expressionDependencyDetail.refactorAfterRename(targetIpsPackageFragment, NEW_NAME);
+
+        verify(expression).setExpression(NEW_EXPRESSION_TEXT3);
+    }
+
 }
