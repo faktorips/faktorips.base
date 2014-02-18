@@ -21,7 +21,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A section that shows parts in a single composite.
+ * A section that shows multiple parts in a single composite.
+ * 
+ * Refreshes the contained viewer
  */
 public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSection {
 
@@ -48,7 +50,6 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
      */
     protected SimpleIpsPartsSection(String id, IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site,
             String title, UIToolkit toolkit) {
-
         super(id, ipsObject, parent, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(ipsObject);
