@@ -124,6 +124,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         this.uiToolkit = uiToolkit;
         initControls(uiToolkit);
         uiToolkit.getFormToolkit().adapt(this);
+        IpsObjectPartChangeRefreshHelper.createAndInit(getIpsObject(), tableViewer);
+
     }
 
     protected IpsPartsComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
@@ -160,6 +162,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         this.uiToolkit = uiToolkit;
         initControls(uiToolkit);
         uiToolkit.getFormToolkit().adapt(this);
+        IpsObjectPartChangeRefreshHelper.createAndInit(getIpsObject(), tableViewer);
     }
 
     // CSON: ParameterNumberCheck
@@ -876,4 +879,5 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             listener.deleted(part);
         }
     }
+
 }

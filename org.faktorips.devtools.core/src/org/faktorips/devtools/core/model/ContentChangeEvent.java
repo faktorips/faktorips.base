@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.model;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -102,10 +102,7 @@ public class ContentChangeEvent {
 
     private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
         ipsSrcFile = file;
-        movedParts = new ArrayList<IIpsObjectPart>();
-        for (IIpsObjectPart part2 : parts) {
-            movedParts.add(part2);
-        }
+        movedParts = Collections.unmodifiableList(Arrays.asList(parts));
         type = TYPE_PARTS_CHANGED_POSITIONS;
     }
 
@@ -155,6 +152,12 @@ public class ContentChangeEvent {
         return movedParts.toArray(new IIpsObjectPart[movedParts.size()]);
     }
 
+    /**
+     * Checks whether the given partContainer is affected by this change event.
+     * 
+     * Returns <code>true</code> if both the affected part and the partContainer belong to the same
+     * ipsObject.
+     */
     public boolean isAffected(IIpsObjectPartContainer partContainer) {
         if (partContainer == null) {
             return false;

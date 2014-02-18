@@ -37,10 +37,10 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 public abstract class IpsObjectEditorPage extends FormPage implements IDataChangeableReadAccessWithListenerSupport {
 
     /** The horizontal space between two sections. */
-    public final static int HORIZONTAL_SECTION_SPACE = 15;
+    public static final int HORIZONTAL_SECTION_SPACE = 15;
 
     /** The vertical space between two sections. */
-    public final static int VERTICAL_SECTION_SPACE = 10;
+    public static final int VERTICAL_SECTION_SPACE = 10;
 
     private UIToolkit uiToolkit;
 

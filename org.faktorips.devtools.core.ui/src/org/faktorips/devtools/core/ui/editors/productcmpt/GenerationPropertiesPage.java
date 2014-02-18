@@ -132,7 +132,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     private int computeWidth(List<IpsSection> sections) {
         int leftWidth = 0;
         for (IpsSection section : sections) {
-            leftWidth = Math.max(leftWidth, section.computeSize(SWT.DEFAULT, SWT.DEFAULT).x);
+            if (!section.isDisposed()) {
+                leftWidth = Math.max(leftWidth, section.computeSize(SWT.DEFAULT, SWT.DEFAULT).x);
+            }
         }
         return leftWidth;
     }
