@@ -24,7 +24,12 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
  * by its name. When the product component is renamed, we need to refactor the expression and
  * replace the old name by the new one. However we cannot use the default {@link DependencyDetail}
  * because it only supports the update of a whole property not only a text region within a property.
- * 
+ * <p>
+ * To use this {@link ExpressionDependencyDetail} in refactoring context you have to add at least
+ * one {@link TextRegion} by calling {@link #addTextRegion(TextRegion)}. If you have multiple text
+ * regions that points to the same dependency, it is necessary to have only one
+ * {@link ExpressionDependencyDetail} containing all the text regions. Otherwise the refactoring
+ * will break because the first refactoring may break the position of the second one.
  */
 public class ExpressionDependencyDetail extends DependencyDetail {
 
@@ -45,6 +50,14 @@ public class ExpressionDependencyDetail extends DependencyDetail {
         return (IExpression)super.getPart();
     }
 
+    /**
+     * Add a text region which should be refactored when the dependency target is renamed. The text
+     * region points to the position within the expression text that represents the dependency.
+     * Every added text region is replaces by the new name when
+     * {@link #refactorAfterRename(IIpsPackageFragment, String)} is called.
+     * 
+     * @param textRegion A text region that points to a position within the expression text
+     */
     public void addTextRegion(TextRegion textRegion) {
         textRegions.add(textRegion);
     }
