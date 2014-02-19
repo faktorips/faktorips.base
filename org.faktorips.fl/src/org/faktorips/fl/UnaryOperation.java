@@ -20,6 +20,8 @@ import org.faktorips.datatype.Datatype;
  */
 public interface UnaryOperation<T extends CodeFragment> {
 
+    public static final String NOT = "!";
+
     /**
      * Returns the operator.
      */

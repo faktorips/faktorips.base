@@ -33,25 +33,25 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    PlusDecimal("+", DECIMAL),
+    PlusDecimal(BinaryOperation.PLUS, DECIMAL),
     /**
      * + int
      * 
      * @see Datatype#PRIMITIVE_INT
      */
-    PlusPrimitiveInt("+", PRIMITIVE_INT),
+    PlusPrimitiveInt(BinaryOperation.PLUS, PRIMITIVE_INT),
     /**
      * + Integer
      * 
      * @see Datatype#INTEGER
      */
-    PlusInteger("+", INTEGER),
+    PlusInteger(BinaryOperation.PLUS, INTEGER),
     /**
      * + Money
      * 
      * @see Datatype#MONEY
      */
-    PlusMoney("+", MONEY),
+    PlusMoney(BinaryOperation.PLUS, MONEY),
 
     // minus operation
     /**
@@ -59,25 +59,25 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    MinusDecimal("-", DECIMAL),
+    MinusDecimal(BinaryOperation.MINUS, DECIMAL),
     /**
      * - Integer
      * 
      * @see Datatype#INTEGER
      */
-    MinusInteger("-", INTEGER),
+    MinusInteger(BinaryOperation.MINUS, INTEGER),
     /**
      * - int
      * 
      * @see Datatype#PRIMITIVE_INT
      */
-    MinusPrimitiveInt("-", PRIMITIVE_INT),
+    MinusPrimitiveInt(BinaryOperation.MINUS, PRIMITIVE_INT),
     /**
      * - Money
      * 
      * @see Datatype#MONEY
      */
-    MinusMoney("-", MONEY),
+    MinusMoney(BinaryOperation.MINUS, MONEY),
 
     // add operation
     /**
@@ -85,53 +85,53 @@ public enum Operation {
      * 
      * @see Datatype#PRIMITIVE_INT
      */
-    AddIntInt(PRIMITIVE_INT, "+", PRIMITIVE_INT),
+    AddIntInt(PRIMITIVE_INT, BinaryOperation.PLUS, PRIMITIVE_INT),
     /**
      * Decimal + int
      * 
      * @see Datatype#PRIMITIVE_INT
      * @see Datatype#DECIMAL
      */
-    AddDecimalInt(DECIMAL, "+", PRIMITIVE_INT),
+    AddDecimalInt(DECIMAL, BinaryOperation.PLUS, PRIMITIVE_INT),
     /**
      * int + Decimal
      * 
      * @see Datatype#PRIMITIVE_INT
      * @see Datatype#DECIMAL
      */
-    AddIntDecimal(PRIMITIVE_INT, "+", DECIMAL),
+    AddIntDecimal(PRIMITIVE_INT, BinaryOperation.PLUS, DECIMAL),
     /**
      * Decimal + Integer
      * 
      * @see Datatype#INTEGER
      * @see Datatype#DECIMAL
      */
-    AddDecimalInteger(DECIMAL, "+", INTEGER),
+    AddDecimalInteger(DECIMAL, BinaryOperation.PLUS, INTEGER),
     /**
      * Integer + Decimal
      * 
      * @see Datatype#INTEGER
      * @see Datatype#DECIMAL
      */
-    AddIntegerDecimal(INTEGER, "+", DECIMAL),
+    AddIntegerDecimal(INTEGER, BinaryOperation.PLUS, DECIMAL),
     /**
      * Decimal + Decimal
      * 
      * @see Datatype#DECIMAL
      */
-    AddDecimalDecimal(DECIMAL, "+", DECIMAL),
+    AddDecimalDecimal(DECIMAL, BinaryOperation.PLUS, DECIMAL),
     /**
      * Money + Money
      * 
      * @see Datatype#MONEY
      */
-    AddMoneyMoney(MONEY, "+", MONEY),
+    AddMoneyMoney(MONEY, BinaryOperation.PLUS, MONEY),
     /**
      * String + String
      * 
      * @see Datatype#STRING
      */
-    AddStringString(STRING, "+", STRING),
+    AddStringString(STRING, BinaryOperation.PLUS, STRING),
 
     // subtract operation
     /**
@@ -139,19 +139,19 @@ public enum Operation {
      * 
      * @see Datatype#PRIMITIVE_INT
      */
-    SubtractIntInt(PRIMITIVE_INT, "-", PRIMITIVE_INT),
+    SubtractIntInt(PRIMITIVE_INT, BinaryOperation.MINUS, PRIMITIVE_INT),
     /**
      * Decimal - Decimal
      * 
      * @see Datatype#DECIMAL
      */
-    SubtractDecimalDecimal(DECIMAL, "-", DECIMAL),
+    SubtractDecimalDecimal(DECIMAL, BinaryOperation.MINUS, DECIMAL),
     /**
      * Money - Money
      * 
      * @see Datatype#MONEY
      */
-    SubtractMoneyMoney(MONEY, "-", MONEY),
+    SubtractMoneyMoney(MONEY, BinaryOperation.MINUS, MONEY),
 
     // multiply operation
     /**
@@ -159,34 +159,34 @@ public enum Operation {
      * 
      * @see Datatype#PRIMITIVE_INT
      */
-    MultiplyIntInt(PRIMITIVE_INT, "*", PRIMITIVE_INT),
+    MultiplyIntInt(PRIMITIVE_INT, BinaryOperation.MULTIPLY, PRIMITIVE_INT),
     /**
      * Decimal * Money
      * 
      * @see Datatype#DECIMAL
      * @see Datatype#MONEY
      */
-    MultiplyDecimalMoney(DECIMAL, "*", MONEY),
+    MultiplyDecimalMoney(DECIMAL, BinaryOperation.MULTIPLY, MONEY),
     /**
      * Money * Decimal
      * 
      * @see Datatype#DECIMAL
      * @see Datatype#MONEY
      */
-    MultiplyMoneyDecimal(MONEY, "*", DECIMAL),
+    MultiplyMoneyDecimal(MONEY, BinaryOperation.MULTIPLY, DECIMAL),
     /**
      * Integer * Money
      * 
      * @see Datatype#INTEGER
      * @see Datatype#MONEY
      */
-    MultiplyIntegerMoney(INTEGER, "*", MONEY),
+    MultiplyIntegerMoney(INTEGER, BinaryOperation.MULTIPLY, MONEY),
     /**
      * Decimal * Decimal
      * 
      * @see Datatype#DECIMAL
      */
-    MultiplyDecimalDecimal(DECIMAL, "*", DECIMAL),
+    MultiplyDecimalDecimal(DECIMAL, BinaryOperation.MULTIPLY, DECIMAL),
 
     // divide operation
     /**
@@ -194,14 +194,14 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    DivideDecimalDecimal(DECIMAL, "/", DECIMAL),
+    DivideDecimalDecimal(DECIMAL, BinaryOperation.DIVIDE, DECIMAL),
     /**
      * Money / Decimal
      * 
      * @see Datatype#MONEY
      * @see Datatype#DECIMAL
      */
-    DivideMoneyDecimal(MONEY, "/", DECIMAL),
+    DivideMoneyDecimal(MONEY, BinaryOperation.DIVIDE, DECIMAL),
 
     // greater than operation
     /**
@@ -209,13 +209,13 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    GreaterThanDecimalDecimal(DECIMAL, ">", DECIMAL),
+    GreaterThanDecimalDecimal(DECIMAL, BinaryOperation.GREATER_THAN, DECIMAL),
     /**
      * Money > Money
      * 
      * @see Datatype#MONEY
      */
-    GreaterThanMoneyMoney(MONEY, ">", MONEY),
+    GreaterThanMoneyMoney(MONEY, BinaryOperation.GREATER_THAN, MONEY),
 
     // greater than or equal operation
     /**
@@ -223,13 +223,13 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    GreaterThanOrEqualDecimalDecimal(DECIMAL, ">=", DECIMAL),
+    GreaterThanOrEqualDecimalDecimal(DECIMAL, BinaryOperation.GREATER_THAN_OR_EQUAL, DECIMAL),
     /**
      * Money >= Money
      * 
      * @see Datatype#MONEY
      */
-    GreaterThanOrEqualMoneyMoney(MONEY, ">=", MONEY),
+    GreaterThanOrEqualMoneyMoney(MONEY, BinaryOperation.GREATER_THAN_OR_EQUAL, MONEY),
 
     // less than operation
     /**
@@ -237,13 +237,13 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    LessThanDecimalDecimal(DECIMAL, "<", DECIMAL),
+    LessThanDecimalDecimal(DECIMAL, BinaryOperation.LESSER_THAN, DECIMAL),
     /**
      * Money < Money
      * 
      * @see Datatype#MONEY
      */
-    LessThanMoneyMoney(MONEY, "<", MONEY),
+    LessThanMoneyMoney(MONEY, BinaryOperation.LESSER_THAN, MONEY),
 
     // less than or equal operation
     /**
@@ -251,13 +251,13 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    LessThanOrEqualDecimalDecimal(DECIMAL, "<=", DECIMAL),
+    LessThanOrEqualDecimalDecimal(DECIMAL, BinaryOperation.LESSER_THAN_OR_EQUAL, DECIMAL),
     /**
      * Money <= Money
      * 
      * @see Datatype#MONEY
      */
-    LessThanOrEqualMoneyMoney(MONEY, "<=", MONEY),
+    LessThanOrEqualMoneyMoney(MONEY, BinaryOperation.LESSER_THAN_OR_EQUAL, MONEY),
 
     // equals operation
     /**
@@ -265,37 +265,37 @@ public enum Operation {
      * 
      * @see Datatype#PRIMITIVE_INT
      */
-    EqualsPrimtiveInt(PRIMITIVE_INT, "=", PRIMITIVE_INT),
+    EqualsPrimtiveInt(PRIMITIVE_INT, BinaryOperation.EQUAL, PRIMITIVE_INT),
     /**
      * boolean = boolean
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
      */
-    EqualsPrimtiveBoolean(PRIMITIVE_BOOLEAN, "=", PRIMITIVE_BOOLEAN),
+    EqualsPrimtiveBoolean(PRIMITIVE_BOOLEAN, BinaryOperation.EQUAL, PRIMITIVE_BOOLEAN),
     /**
      * Decimal = Decimal
      * 
      * @see Datatype#DECIMAL
      */
-    EqualsDecimal(DECIMAL, "=", DECIMAL),
+    EqualsDecimal(DECIMAL, BinaryOperation.EQUAL, DECIMAL),
     /**
      * Money = Money
      * 
      * @see Datatype#MONEY
      */
-    EqualsMoney(MONEY, "=", MONEY),
+    EqualsMoney(MONEY, BinaryOperation.EQUAL, MONEY),
     /**
      * String = String
      * 
      * @see Datatype#STRING
      */
-    EqualsString(STRING, "=", STRING),
+    EqualsString(STRING, BinaryOperation.EQUAL, STRING),
     /**
      * Object = Object
      * 
      * @see AnyDatatype
      */
-    EqualsInstance(AnyDatatype.INSTANCE, "=", AnyDatatype.INSTANCE),
+    EqualsInstance(AnyDatatype.INSTANCE, BinaryOperation.EQUAL, AnyDatatype.INSTANCE),
 
     // not equals operation
     /**
@@ -303,13 +303,13 @@ public enum Operation {
      * 
      * @see Datatype#DECIMAL
      */
-    NotEqualsDecimal(DECIMAL, "!=", DECIMAL),
+    NotEqualsDecimal(DECIMAL, BinaryOperation.NOT_EQUAL, DECIMAL),
     /**
      * Money != Money
      * 
      * @see Datatype#MONEY
      */
-    NotEqualsMoney(MONEY, "!=", MONEY),
+    NotEqualsMoney(MONEY, BinaryOperation.NOT_EQUAL, MONEY),
 
     // parenthesis operation
     /**

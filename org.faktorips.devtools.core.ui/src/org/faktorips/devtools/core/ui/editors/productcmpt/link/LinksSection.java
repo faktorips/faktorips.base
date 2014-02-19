@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.commands.IpsObjectPartTester;
 import org.faktorips.devtools.core.ui.editors.ICompositeWithSelectableViewer;
+import org.faktorips.devtools.core.ui.editors.IpsObjectPartChangeRefreshHelper;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
@@ -121,6 +122,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         this.generation = generation;
         initControls();
         setText(Messages.PropertiesPage_relations);
+        IpsObjectPartChangeRefreshHelper.createAndInit(getActiveGeneration().getIpsObject(), getViewer());
     }
 
     @Override
@@ -337,6 +339,15 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         return treeViewer;
     }
 
+    @Override
+    protected void populateToolBar(IToolBarManager toolBarManager) {
+        super.populateToolBar(toolBarManager);
+
+        if (treeViewer != null) {
+            toolBarManager.add(filterEmptyAssociationAction);
+        }
+    }
+
     /**
      * Listener for updating the cardinality triggerd by the selection of another link.
      */
@@ -358,15 +369,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     }
 
-    @Override
-    protected void populateToolBar(IToolBarManager toolBarManager) {
-        super.populateToolBar(toolBarManager);
-
-        if (treeViewer != null) {
-            toolBarManager.add(filterEmptyAssociationAction);
-        }
-    }
-
     private final class FilterEmptyAssociationsAction extends Action {
 
         FilterEmptyAssociationsAction(boolean exclude) {
@@ -380,4 +382,5 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             setFilterEmptyAssociations(isChecked());
         }
     }
+
 }

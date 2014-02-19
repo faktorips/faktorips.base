@@ -137,7 +137,8 @@ public abstract class ViewerButtonComposite extends Composite implements ICompos
 
     public void refresh() {
         if (viewer.getInput() == null) {
-            viewer.setInput(this); // if viewer's input is null, it's content provider is not asked
+            viewer.setInput(this);
+            // if viewer's input is null, it's content provider is not asked
             // for the contents!
         }
         viewer.refresh();

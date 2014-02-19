@@ -98,17 +98,19 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner;
 
-    public static String IpsClasspathContainerPage_0;
+    public static String IpsClasspathContainerPage_description;
 
-    public static String IpsClasspathContainerPage_1;
+    public static String IpsClasspathContainerPage_includeJoda;
 
-    public static String IpsClasspathContainerPage_2;
+    public static String IpsClasspathContainerPage_includeGroovy;
 
-    public static String IpsClasspathContainerPage_3;
+    public static String IpsClasspathContainerPage_disclaimer1;
 
-    public static String IpsClasspathContainerPage_4;
+    public static String IpsClasspathContainerPage_disclaimer2;
 
-    public static String IpsClasspathContainerPage_5;
+    public static String IpsClasspathContainerPage_bundleNotInstalled;
+
+    public static String IpsClasspathContainerPage_title;
 
     public static String LinkDropListener_selectAssociation;
 

@@ -202,13 +202,18 @@ public class XPolicyAssociation extends XAssociation {
      * Returns true if a <em>NORMAL</em> getter needs to be generated for this association. Maybe an
      * getter for the derived union is still generated, depending on the list of derived union
      * associations get from {@link XPolicyCmptClass#getSubsettedDerivedUnions()} or
-     * {@link XPolicyCmptClass#getDetailToMasterDerivedUnionAssociations()}
+     * {@link XPolicyCmptClass#getDetailToMasterDerivedUnionAssociations()}.
+     * <p>
+     * In case of composition-to-master associations we need a getter (for covariant return type) if
+     * the association constrains a super association but we do not want to generate a getter if
+     * there is a super association with the same name for other reasons but constraining
+     * associations.
      */
     public boolean isGenerateGetter() {
         if (isDerived() || isSharedAssociation()) {
             return false;
         } else if (isCompositionDetailToMaster()) {
-            return !hasSuperAssociationWithSameName();
+            return isConstrain() || !hasSuperAssociationWithSameName();
         } else {
             return true;
         }

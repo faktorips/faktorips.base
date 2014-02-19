@@ -23,6 +23,8 @@ import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.functions.SumBeanArrayPropertyFct;
 
 /**
@@ -251,7 +253,19 @@ public enum FunctionSignatures {
      * @see ListOfTypeDatatype
      * @see AnyDatatype
      */
-    Count(PRIMITIVE_INT, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) });
+    Count(PRIMITIVE_INT, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
+
+    DAYS(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
+
+    WEEKS(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
+
+    MONTHS(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
+
+    YEARS(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
+
+    DATE(LocalDateDatatype.DATATYPE, new Datatype[] { ValueDatatype.PRIMITIVE_INT, ValueDatatype.PRIMITIVE_INT,
+            ValueDatatype.PRIMITIVE_INT }),
+    DAYS360(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE });
 
     private final Datatype type;
     private final Datatype[] argTypes;

@@ -51,22 +51,22 @@ public class IpsClasspathContainerInitializerTest {
     }
 
     @Test
-    public void testNewEntryPath() {
-        IPath expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, false));
-
-        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
-                + IpsClasspathContainerInitializer.JODA_BUNDLE);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, false));
-
-        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
-                + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, true));
-
-        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
-                + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true));
-    }
+        public void testNewDefaultEntryPath() {
+            IPath expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID);
+            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, false));
+    
+            expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                    + IpsClasspathContainerInitializer.JODA_BUNDLE);
+            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, false));
+    
+            expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                    + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
+            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, true));
+    
+            expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                    + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
+            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true));
+        }
 
     @Test
     public void testGetSourceBundlePath() throws Exception {
@@ -77,6 +77,32 @@ public class IpsClasspathContainerInitializerTest {
                 "org.faktorips.runtime.java5");
         assertEquals(
                 "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
+                sourceBundlePath);
+    }
+
+    @Test
+    public void testGetSourceBundlePath_2() throws Exception {
+        IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
+                new Path("faktorips"));
+        String sourceBundlePath = ipsClasspathContainer
+                .getSourceBundlePath(
+                        "/home/any-folder/eclipse_test/eclipse/plugins/org/faktorips/runtime/java5/org.faktorips.runtime.java5_1.2.3.test_vla-jztd",
+                        "org.faktorips.runtime.java5");
+        assertEquals(
+                "/home/any-folder/eclipse_test/eclipse/plugins/org/faktorips/runtime/java5/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
+                sourceBundlePath);
+    }
+
+    @Test
+    public void testGetSourceBundlePath_3() throws Exception {
+        IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
+                new Path("faktorips"));
+        String sourceBundlePath = ipsClasspathContainer
+                .getSourceBundlePath(
+                        "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5/org.faktorips+.runtime.java5_1.2.3.test_vla-jztd",
+                        "org.faktorips+.runtime.java5");
+        assertEquals(
+                "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5/org.faktorips+.runtime.java5.source_1.2.3.test_vla-jztd",
                 sourceBundlePath);
     }
 

@@ -41,8 +41,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
@@ -628,7 +628,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         properties.setFormulaLanguageLocale(Locale.ENGLISH);
         ipsProject.setProperties(properties);
 
-        results = proposalProvider.getProposals("WE", 2);
+        results = proposalProvider.getProposals("WEN", 3);
         assertEquals(0, results.length);
 
         results = proposalProvider.getProposals("I", 1);

@@ -27,7 +27,14 @@ public enum ExcelFunction {
     AND("and"),
     POWER("power"),
     SQRT("sqrt"),
-    COUNT("count");
+    COUNT("count"),
+    DAYS("days"),
+    WEEKS("weeks"),
+    MONTHS("months"),
+    YEARS("years"),
+    DATE("date"),
+    DAYS360("days360");
+
     private final String propertyKey;
 
     private ExcelFunction(String propertyKey) {
