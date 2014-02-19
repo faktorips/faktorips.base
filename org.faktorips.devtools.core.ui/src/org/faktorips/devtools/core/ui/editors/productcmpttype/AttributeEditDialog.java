@@ -44,9 +44,12 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -264,16 +267,27 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDefaultValueEditField() {
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                currentDatatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
-                currentDatatype, null, ipsProject);
+        setDefaultValueField();
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout(true);
         getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
         getBindingContext().bindEnabled(defaultValueField.getControl(), attributePmo,
                 ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
+    }
+
+    private void setDefaultValueField() {
+        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                currentDatatype);
+        if (attribute.isMultiValueAttribute() && datatypeCtrlFactory instanceof EnumDatatypeControlFactory) {
+            defaultValueField = new TextField(getToolkit().createText(defaultEditFieldPlaceholder));
+        } else {
+            defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
+                    currentDatatype, null, ipsProject);
+            if (defaultValueField instanceof EnumTypeDatatypeField) {
+                ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
+            }
+        }
     }
 
     @Override
