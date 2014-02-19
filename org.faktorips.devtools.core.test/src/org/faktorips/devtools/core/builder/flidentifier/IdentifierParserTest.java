@@ -221,23 +221,22 @@ public class IdentifierParserTest {
 
     @Test
     public void testValidTextRegionInIdentifierNodeLongString() {
-        IdentifierNode node = identifierParser.parse(MY_IDENTIFIER);
+        String input = MY_PARAMETER + '.' + MY_ASSOCIATION;
+        IdentifierNode node = identifierParser.parse(input);
+        IdentifierNode successor = node.getSuccessor();
 
-        assertTrue(node.getTextRegion().isInitParametersValid());
+        assertEquals(0, node.getTextRegion().getStart());
+        assertEquals(MY_PARAMETER.length(), node.getTextRegion().getEnd());
+
+        assertEquals(MY_PARAMETER.length() + 1, successor.getTextRegion().getStart());
+        assertEquals(input.length(), successor.getTextRegion().getEnd());
     }
 
     @Test
     public void testValidTextRegionInIdentifierNodeEmptyString() {
         IdentifierNode node = identifierParser.parse(StringUtils.EMPTY);
 
-        assertTrue(node.getTextRegion().isInitParametersValid());
-    }
-
-    @Test
-    public void testValidTextRegionInIdentifierNodeAssociation() {
-        IdentifierNode node = identifierParser.parse(MY_ASSOCIATION_QUALIFIED);
-
-        assertTrue(node.getTextRegion().isInitParametersValid());
+        assertEquals(node.getTextRegion().getStart(), node.getTextRegion().getEnd());
     }
 
 }
