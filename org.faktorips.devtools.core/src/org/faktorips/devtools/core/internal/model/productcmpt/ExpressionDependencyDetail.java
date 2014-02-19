@@ -19,17 +19,22 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
 /**
- * This implementation of dependency detail supports the refactoring of dependencies that exists
- * within a formula expression. For example a formula expression may reference a product component
- * by its name. When the product component is renamed, we need to refactor the expression and
- * replace the old name by the new one. However we cannot use the default {@link DependencyDetail}
- * because it only supports the update of a whole property not only a text region within a property.
+ * This implementation of dependency detail supports the refactoring of dependencies that exist
+ * within a formula expression. For example, a qualifier in a formula expression may reference a
+ * product component by its name. When the product component is renamed, the expression must also be
+ * refactored by replacing the old product component name by the new one.
  * <p>
- * To use this {@link ExpressionDependencyDetail} in refactoring context you have to add at least
- * one {@link TextRegion} by calling {@link #addTextRegion(TextRegion)}. If you have multiple text
- * regions that points to the same dependency, it is necessary to have only one
- * {@link ExpressionDependencyDetail} containing all the text regions. Otherwise the refactoring
- * will break because the first refactoring may break the position of the second one.
+ * To use this {@link ExpressionDependencyDetail} in a refactoring context, at least one
+ * {@link TextRegion} must be added by calling {@link #addTextRegion(TextRegion)}. Each
+ * {@link TextRegion} defines a region in the expression text that will be replaced by another
+ * string (i.e. new product component name). If a single product component name is used multiple
+ * times in an expression, multiple text regions must be added to the <em>same</em>
+ * {@link ExpressionDependencyDetail}. Using multiple {@link ExpressionDependencyDetail details} in
+ * that case will cause errors.
+ * <p>
+ * A separate implementation of {@link DependencyDetail} is required to enable the selective
+ * replacement of text regions within a property string. The standard implementation only supports
+ * replacing the entire property i.e. the complete expression.
  */
 public class ExpressionDependencyDetail extends DependencyDetail {
 

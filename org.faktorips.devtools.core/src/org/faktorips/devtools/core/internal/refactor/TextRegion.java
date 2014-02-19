@@ -70,20 +70,19 @@ public class TextRegion implements Comparable<TextRegion> {
     }
 
     /**
-     * Replaces a part of a fully qualified String by a new String. The positions for the
-     * replacement are identified by <code>start</code> and <code>end</code>. If the positions are
-     * invalid, the method will return the fully qualified String without any changes.
+     * Replaces a part of the given input string with the replacement string. The region to be
+     * replaced is defined by "start" and "end" values of this {@link TextRegion}. If the positions
+     * are invalid, the method will return the input String without any changes.
      * 
-     * @param completeIdentifierString The fully qualified String
-     * @param newString The new String that will replace (a part of) completeIdentifierString
-     * @return complete replacedString
+     * @param inputString The string of which a region should be replaced
+     * @param replacementString the string that replaces a region in the input string.
+     * @return the resulting string
      */
-    public String replaceTextRegion(String completeIdentifierString, String newString) {
-        if (!isValidStartAndEndPoint(completeIdentifierString)) {
-            return completeIdentifierString;
+    public String replaceTextRegion(String inputString, String replacementString) {
+        if (!isValidStartAndEndPoint(inputString)) {
+            return inputString;
         }
-        return completeIdentifierString.substring(0, getStart()) + newString
-                + completeIdentifierString.substring(getEnd());
+        return inputString.substring(0, getStart()) + replacementString + inputString.substring(getEnd());
     }
 
     private boolean isValidStartAndEndPoint(String completeIdentifierString) {
@@ -136,6 +135,13 @@ public class TextRegion implements Comparable<TextRegion> {
     @Override
     public String toString() {
         return "TextRegion [start=" + start + ", end=" + end + "]"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    public String getSubstring(String inputString) {
+        if (!isValidStartAndEndPoint(inputString)) {
+            return inputString;
+        }
+        return inputString.substring(getStart(), getEnd());
     }
 
 }

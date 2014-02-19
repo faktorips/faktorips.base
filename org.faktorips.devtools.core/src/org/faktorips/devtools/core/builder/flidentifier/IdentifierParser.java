@@ -27,9 +27,9 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
 /**
- * The {@link IdentifierParser} is used to parse an identifier of an expression. It uses a list of
- * {@link AbstractIdentifierNodeParser node parsers} and iterates over these parser until it
- * receives an {@link IdentifierNode}.
+ * Parses the identifiers of an expression. It uses a list of {@link AbstractIdentifierNodeParser
+ * node parsers} for the different types of identifiers. Each identifier is parsed to an
+ * {@link IdentifierNode}.
  * 
  * @author dirmeier
  */
@@ -70,12 +70,15 @@ public class IdentifierParser {
     }
 
     /**
-     * Call this method to parse a identifier. An identifier may consists of several parts,
-     * separated by '.'. Every part will be represented by another {@link IdentifierNode} that are
-     * chained by their successor. This method will return the {@link IdentifierNode} that
-     * represents the first part of the identifier. You can ask this {@link IdentifierNode} for the
-     * following parts by calling {@link IdentifierNode#getSuccessor()}. If there is no following
-     * part, the successor is <code>null</code>.
+     * Call this method to parse an identifier string. An identifier may consist of several parts
+     * separated by '.','[' and ']'. Each part is parsed to an {@link IdentifierNode} that is linked
+     * to its successor, similar to a linked list.
+     * 
+     * This method will return the {@link IdentifierNode} that represents the first part of the
+     * identifier. The first {@link IdentifierNode} is also the head of the linked list of all
+     * identifier nodes. Thus the nodes for all following parts can be accessed by calling
+     * {@link IdentifierNode#getSuccessor()}. If there is no following part, the successor is
+     * <code>null</code>.
      * 
      * @param identifier The identifier, for example param1.attributeOne
      * @return The {@link IdentifierNode} of the first part of the identifier
@@ -139,7 +142,7 @@ public class IdentifierParser {
         }
 
         public String getIdentifierPart() {
-            return identifier.substring(textRegion.getStart(), textRegion.getEnd());
+            return textRegion.getSubstring(identifier);
         }
 
         public TextRegion getTextRegion() {

@@ -22,28 +22,28 @@ public class TextRegionTest {
     private TextRegion region;
 
     @Test
-        public void testReplaceTextRegion() {
-            region = new TextRegion(0, 3);
-            String refactoredString = region.replaceTextRegion(completeIdentifierString, newString);
-    
-            assertEquals("thisIsTheNewString.oldPartOfString", refactoredString);
-        }
+    public void testReplaceTextRegion() {
+        region = new TextRegion(0, 3);
+        String refactoredString = region.replaceTextRegion(completeIdentifierString, newString);
+
+        assertEquals("thisIsTheNewString.oldPartOfString", refactoredString);
+    }
 
     @Test
-        public void testReplaceTextRegionEmptyString() {
-            region = new TextRegion(10, 17);
-            String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
-    
-            assertEquals("oldString.OfString", refactoredString);
-        }
+    public void testReplaceTextRegionEmptyString() {
+        region = new TextRegion(10, 17);
+        String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
+
+        assertEquals("oldString.OfString", refactoredString);
+    }
 
     @Test
-        public void testReplaceTextRegionInvalidStartEndPoints() {
-            region = new TextRegion(-1, -8);
-            String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
-    
-            assertEquals(completeIdentifierString, refactoredString);
-        }
+    public void testReplaceTextRegionInvalidStartEndPoints() {
+        region = new TextRegion(-1, -8);
+        String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
+
+        assertEquals(completeIdentifierString, refactoredString);
+    }
 
     @Test
     public void testOffset() throws Exception {
@@ -87,5 +87,23 @@ public class TextRegionTest {
         assertTrue(textRegion1.compareTo(textRegion2) < 0);
         assertTrue(textRegion1.compareTo(textRegion3) > 0);
         assertTrue(textRegion2.compareTo(textRegion3) > 0);
+    }
+
+    @Test
+    public void testGetSubstring() throws Exception {
+        TextRegion region = new TextRegion(1, 5);
+
+        String substring = region.getSubstring("abc123");
+
+        assertEquals("bc12", substring);
+    }
+
+    @Test
+    public void testGetSubstringIllegal() throws Exception {
+        TextRegion region = new TextRegion(1, -5);
+
+        String substring = region.getSubstring("abc123");
+
+        assertEquals("abc123", substring);
     }
 }

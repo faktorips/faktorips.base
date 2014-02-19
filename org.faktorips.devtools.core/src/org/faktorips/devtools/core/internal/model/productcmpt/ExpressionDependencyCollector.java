@@ -28,12 +28,12 @@ import org.faktorips.fl.parser.ParseException;
 import org.faktorips.fl.parser.SimpleNode;
 
 /**
- * This class collects the dependencies from within a formula expression text to {@link IIpsObject
- * ips objects}. Collecting these dependencies is not that easy because we need to parse the formula
- * expression and every identifier found in the expression.
+ * This class collects the dependencies from a formula expression text to the therein specified
+ * {@link IIpsObject IPS objects}. The expression text is parsed completely to extract all
+ * identifiers that address a specific IPS object.
  * <p>
- * The dependencies are returned as {@link IpsObjectDependency}. Additionally it provides some
- * dependency detail for every dependency. These details are of type
+ * The dependencies are returned as a {@link IpsObjectDependency}. For each IPS object used in the
+ * expression a dependency detail is added. These details are of type
  * {@link ExpressionDependencyDetail} and can be used by the refactoring framework.
  * 
  * @author dirmeier
@@ -107,9 +107,9 @@ public class ExpressionDependencyCollector {
     }
 
     /**
-     * Start collecting the dependencies using the {@link SimpleNode} from previously parsed
-     * expression text. The method visits the nodes and parse the identifier nodes to search for
-     * identifier parts that reference other {@link IIpsObject}.
+     * Starts collecting the dependencies using the {@link SimpleNode} from the previously parsed
+     * expression text. The method visits the nodes and parses the identifier nodes to search for
+     * identifier parts that reference other {@link IIpsObject IPS objects}.
      * 
      * @param node The {@link SimpleNode} that is the entry point of a previously parsed expression
      *            text.
