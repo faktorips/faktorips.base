@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * The parameter node represents an parameter access. The resulting {@link Datatype} is the type of

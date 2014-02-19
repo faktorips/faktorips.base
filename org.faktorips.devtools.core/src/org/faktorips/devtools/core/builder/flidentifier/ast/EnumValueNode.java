@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * The enum value node represents the value part of an enum access. It have to follow an

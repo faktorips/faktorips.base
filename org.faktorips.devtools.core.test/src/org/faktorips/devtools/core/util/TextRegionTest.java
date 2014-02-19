@@ -7,12 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.junit.Test;
 
 public class TextRegionTest {

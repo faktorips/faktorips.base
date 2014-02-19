@@ -13,10 +13,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * This implementation of dependency detail supports the refactoring of dependencies that exist

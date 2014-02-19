@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

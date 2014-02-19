@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.util;
 
 /**
  * The TextRegion describes a certain range in a String. The TextRegion is defined by the start and
@@ -20,16 +20,32 @@ public class TextRegion implements Comparable<TextRegion> {
 
     private final int end;
 
-    public TextRegion(int startPoint, int endPoint) {
+    /**
+     * Creates a new Instance.
+     * 
+     * @param start The starting position
+     * @param end The end position
+     */
+    public TextRegion(int start, int end) {
         super();
-        this.start = startPoint;
-        this.end = endPoint;
+        this.start = start;
+        this.end = end;
     }
 
+    /**
+     * Returns the start position for an examined String
+     * 
+     * @return start
+     */
     public int getStart() {
         return start;
     }
 
+    /**
+     * Returns the end position for an examined String
+     * 
+     * @return end
+     */
     public int getEnd() {
         return end;
     }
@@ -79,14 +95,21 @@ public class TextRegion implements Comparable<TextRegion> {
      * @return the resulting string
      */
     public String replaceTextRegion(String inputString, String replacementString) {
-        if (!isValidStartAndEndPoint(inputString)) {
+        if (!isValidStartAndEnd(inputString)) {
             return inputString;
         }
         return inputString.substring(0, getStart()) + replacementString + inputString.substring(getEnd());
     }
 
-    private boolean isValidStartAndEndPoint(String completeIdentifierString) {
-        if (getStart() >= 0 && getEnd() <= completeIdentifierString.length() && getStart() <= getEnd()) {
+    private boolean isValidStartAndEnd(String completeIdentifierString) {
+        if (isInitParametersValid() && getEnd() <= completeIdentifierString.length()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInitParametersValid() {
+        if (getStart() >= 0 && getStart() <= getEnd()) {
             return true;
         }
         return false;
@@ -94,11 +117,11 @@ public class TextRegion implements Comparable<TextRegion> {
 
     @Override
     public int compareTo(TextRegion o) {
-        int compareStartPoint = getStart() - o.getStart();
-        if (compareStartPoint == 0) {
+        int compareStart = getStart() - o.getStart();
+        if (compareStart == 0) {
             return getEnd() - o.getEnd();
         } else {
-            return compareStartPoint;
+            return compareStart;
         }
     }
 
@@ -138,7 +161,7 @@ public class TextRegion implements Comparable<TextRegion> {
     }
 
     public String getSubstring(String inputString) {
-        if (!isValidStartAndEndPoint(inputString)) {
+        if (!isValidStartAndEnd(inputString)) {
             return inputString;
         }
         return inputString.substring(getStart(), getEnd());

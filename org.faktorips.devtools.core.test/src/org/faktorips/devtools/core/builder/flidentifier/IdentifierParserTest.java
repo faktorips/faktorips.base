@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -23,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser.IdentifierMatcher;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
@@ -75,8 +73,6 @@ public class IdentifierParserTest {
     private static final String MY_ENUMVALUE = "myEnumType";
 
     private IdentifierParser identifierParser;
-
-    private IdentifierMatcher identifierMatcher;
 
     @Mock
     private IExpression expression;
@@ -224,52 +220,24 @@ public class IdentifierParserTest {
     }
 
     @Test
-    public void testIdentifierMatcherTextRegion() {
-        String inputString = MY_PARAMETER + '.' + MY_ATTRIBUTE + '.' + MY_QUALIFIER;
-        identifierMatcher = new IdentifierMatcher(inputString);
+    public void testValidTextRegionInIdentifierNodeLongString() {
+        IdentifierNode node = identifierParser.parse(MY_IDENTIFIER);
 
-        assertEquals(0, identifierMatcher.getTextRegion().getStart());
-        assertEquals(MY_PARAMETER.length(), identifierMatcher.getTextRegion().getEnd());
-
-        identifierMatcher.nextIdentifierPart();
-
-        assertEquals(MY_PARAMETER.length() + 1, identifierMatcher.getTextRegion().getStart());
-        assertEquals((MY_PARAMETER + '.' + MY_ATTRIBUTE).length(), identifierMatcher.getTextRegion().getEnd());
-
-        identifierMatcher.nextIdentifierPart();
-
-        assertEquals((MY_PARAMETER + '.' + MY_ATTRIBUTE).length() + 1, identifierMatcher.getTextRegion().getStart());
-        assertEquals(inputString.length(), identifierMatcher.getTextRegion().getEnd());
+        assertTrue(node.getTextRegion().isInitParametersValid());
     }
 
     @Test
-    public void testIdentifierMatcherIdentifierPart() {
-        identifierMatcher = new IdentifierMatcher(MY_PARAMETER + '.' + MY_ATTRIBUTE);
+    public void testValidTextRegionInIdentifierNodeEmptyString() {
+        IdentifierNode node = identifierParser.parse(StringUtils.EMPTY);
 
-        assertTrue(identifierMatcher.hasNextIdentifierPart());
-        assertEquals(MY_PARAMETER, identifierMatcher.getIdentifierPart());
-
-        identifierMatcher.nextIdentifierPart();
-
-        assertFalse(identifierMatcher.hasNextIdentifierPart());
-        assertEquals(MY_ATTRIBUTE, identifierMatcher.getIdentifierPart());
-
+        assertTrue(node.getTextRegion().isInitParametersValid());
     }
 
     @Test
-    public void testIdentifierMatcherEmptyIdentifier() {
-        identifierMatcher = new IdentifierMatcher(StringUtils.EMPTY);
+    public void testValidTextRegionInIdentifierNodeAssociation() {
+        IdentifierNode node = identifierParser.parse(MY_ASSOCIATION_QUALIFIED);
 
-        assertEquals(identifierMatcher.getTextRegion().getStart(), identifierMatcher.getTextRegion().getEnd());
-        assertFalse(identifierMatcher.hasNextIdentifierPart());
+        assertTrue(node.getTextRegion().isInitParametersValid());
     }
 
-    @Test
-    public void testIdentifierMatcherNoneNextIdentifierPart() {
-        identifierMatcher = new IdentifierMatcher(MY_PARAMETER);
-
-        assertFalse(identifierMatcher.hasNextIdentifierPart());
-        assertEquals(0, identifierMatcher.getTextRegion().getStart());
-        assertEquals(MY_PARAMETER.length(), identifierMatcher.getTextRegion().getEnd());
-    }
 }

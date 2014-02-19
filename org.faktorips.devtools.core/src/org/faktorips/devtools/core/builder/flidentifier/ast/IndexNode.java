@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * The index node is a special node that follows an {@link AssociationNode}. It represents an

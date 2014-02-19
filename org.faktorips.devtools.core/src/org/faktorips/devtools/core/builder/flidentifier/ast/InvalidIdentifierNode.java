@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.util.message.Message;
 
 /**

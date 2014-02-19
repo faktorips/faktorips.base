@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * The qualified node is a special node that always follows an {@link AssociationNode}. It

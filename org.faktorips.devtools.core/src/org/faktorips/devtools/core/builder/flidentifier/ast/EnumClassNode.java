@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * This node represents the first part of a enum reference, the part that identifies the enum type.

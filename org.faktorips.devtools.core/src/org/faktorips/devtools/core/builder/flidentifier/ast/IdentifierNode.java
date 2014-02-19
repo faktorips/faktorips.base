@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.internal.refactor.TextRegion;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * An Identifier nodes represents a part of an identifier. Every identifier part have a
@@ -64,8 +64,7 @@ public abstract class IdentifierNode {
     }
 
     /**
-     * The returned TextRegion defines the positions of positions of a substring in the String that
-     * should be replaced.
+     * Defines the positions of positions of a substring
      * 
      * @return TextRegion
      */
