@@ -205,8 +205,4 @@ public class IdentifierNodeFactory {
         return new InvalidIdentifierNode(message, textRegion);
     }
 
-    public TextRegion getTextRegion() {
-        return textRegion;
-    }
-
 }

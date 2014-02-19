@@ -64,7 +64,10 @@ public abstract class IdentifierNode {
     }
 
     /**
-     * Defines the positions of positions of a substring
+     * The returned TextRegion defines the positions of the text represented by this identifier node
+     * within the whole identifier. For example in a identifier "policy.attribute" the first
+     * identifier node representing the "policy" has a text region [0-6] and the second identifier
+     * node representing the attribute has a text region [7-16].
      * 
      * @return TextRegion
      */

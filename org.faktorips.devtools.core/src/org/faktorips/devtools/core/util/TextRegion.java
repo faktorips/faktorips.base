@@ -108,11 +108,31 @@ public class TextRegion implements Comparable<TextRegion> {
         return false;
     }
 
-    public boolean isInitParametersValid() {
+    private boolean isInitParametersValid() {
         if (getStart() >= 0 && getStart() <= getEnd()) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the substring that is defined by this text region within the input string. If the
+     * text region is invalid the inputString is returned without any changes.
+     * <p>
+     * For example in string "abc123" you get the following results:
+     * <ul>
+     * <li>Text region 1 to 5: <b>bc12</b></li>
+     * <li>Text region 1 to -5: <b>abc123</b></li>
+     * </ul>
+     * 
+     * @param inputString The input from which you want to get the substring defined by this region
+     * @return The string that is the defined substring of the input string.
+     */
+    public String getSubstring(String inputString) {
+        if (!isValidStartAndEnd(inputString)) {
+            return inputString;
+        }
+        return inputString.substring(getStart(), getEnd());
     }
 
     @Override
@@ -158,13 +178,6 @@ public class TextRegion implements Comparable<TextRegion> {
     @Override
     public String toString() {
         return "TextRegion [start=" + start + ", end=" + end + "]"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-    }
-
-    public String getSubstring(String inputString) {
-        if (!isValidStartAndEnd(inputString)) {
-            return inputString;
-        }
-        return inputString.substring(getStart(), getEnd());
     }
 
 }
