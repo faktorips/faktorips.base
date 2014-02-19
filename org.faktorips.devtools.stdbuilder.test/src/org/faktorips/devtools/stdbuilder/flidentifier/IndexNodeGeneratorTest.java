@@ -60,7 +60,7 @@ public class IndexNodeGeneratorTest {
 
     @Before
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
-        nodeFactory = new IdentifierNodeFactory("IndexBasedAssociationNodeGeneratorTest", ipsProject);
+        nodeFactory = new IdentifierNodeFactory("IndexBasedAssociationNodeGeneratorTest", null, ipsProject);
         indexNodeGenerator = new IndexNodeGenerator(factory, builderSet);
     }
 

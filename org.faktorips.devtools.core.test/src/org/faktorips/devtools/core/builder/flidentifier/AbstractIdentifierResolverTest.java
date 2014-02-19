@@ -64,7 +64,7 @@ public class AbstractIdentifierResolverTest {
     public void testCompile() throws Exception {
         final CompilationResultImpl expectedResult = new CompilationResultImpl();
         when(abstractIdentifierResolver.getParser()).thenReturn(parser);
-        InvalidIdentifierNode node = new IdentifierNodeFactory(ANY_IDENTIFIER_XYZ, ipsProject)
+        InvalidIdentifierNode node = new IdentifierNodeFactory(ANY_IDENTIFIER_XYZ, null, ipsProject)
                 .createInvalidIdentifier(Message.newError("code", "text"));
         when(parser.parse(ANY_IDENTIFIER_XYZ)).thenReturn(node);
         doReturn(identifierNodeGeneratorFactory).when(abstractIdentifierResolver).getGeneratorFactory();

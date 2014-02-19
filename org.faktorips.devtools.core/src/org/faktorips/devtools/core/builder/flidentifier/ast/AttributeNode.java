@@ -17,6 +17,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * This node represents an attribute of an {@link IType}, The resulting {@link Datatype} is a
@@ -34,9 +35,9 @@ public class AttributeNode extends IdentifierNode {
 
     private final IIpsProject ipsProject;
 
-    AttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes, IIpsProject ipsProject)
-            throws CoreException {
-        super(attribute.findDatatype(ipsProject), listOfTypes);
+    AttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes, IIpsProject ipsProject,
+            TextRegion textRegion) throws CoreException {
+        super(attribute.findDatatype(ipsProject), listOfTypes, textRegion);
         this.attribute = attribute;
         this.defaultValueAccess = defaultValueAccess;
         this.ipsProject = ipsProject;

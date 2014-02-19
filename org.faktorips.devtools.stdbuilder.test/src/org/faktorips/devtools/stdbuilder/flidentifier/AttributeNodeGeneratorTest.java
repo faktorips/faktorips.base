@@ -217,8 +217,8 @@ public class AttributeNodeGeneratorTest {
     }
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
-        return (AttributeNode)new IdentifierNodeFactory(attribute.getName(), ipsProject).createAttributeNode(attribute,
-                defaultAccess, listOfType);
+        return (AttributeNode)new IdentifierNodeFactory(attribute.getName(), null, ipsProject).createAttributeNode(
+                attribute, defaultAccess, listOfType);
     }
 
     @Test

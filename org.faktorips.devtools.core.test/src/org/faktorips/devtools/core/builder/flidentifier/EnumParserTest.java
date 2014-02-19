@@ -54,34 +54,34 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_parseEnumClass() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, null);
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, null, null);
 
         assertEquals(new EnumClassNode.EnumClass(enumDatatype), enumClassNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumClassNotFound() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, null);
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, null, null);
 
         assertNull(enumClassNode);
     }
 
     @Test
     public void testParse_parseEnumDatatype() throws Exception {
-        EnumClassNode enumClassNode = new IdentifierNodeFactory("", getIpsProject())
+        EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
 
-        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, enumClassNode);
+        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, enumClassNode, null);
 
         assertEquals(enumDatatype, enumDatatypeNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumDatatypeNotFount() throws Exception {
-        EnumClassNode enumClassNode = new IdentifierNodeFactory("", getIpsProject())
+        EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, enumClassNode);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, enumClassNode, null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }

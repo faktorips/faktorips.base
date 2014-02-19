@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * The parameter node represents an parameter access. The resulting {@link Datatype} is the type of
@@ -26,8 +27,8 @@ public class ParameterNode extends IdentifierNode {
     private final IParameter parameter;
     private final IIpsProject ipsProject;
 
-    ParameterNode(IParameter parameter, IIpsProject ipsProject) throws CoreException {
-        super(parameter.findDatatype(ipsProject));
+    ParameterNode(IParameter parameter, TextRegion textRegion, IIpsProject ipsProject) throws CoreException {
+        super(parameter.findDatatype(ipsProject), textRegion);
         this.parameter = parameter;
         this.ipsProject = ipsProject;
     }

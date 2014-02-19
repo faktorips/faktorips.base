@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -42,8 +43,11 @@ public class IdentifierNodeFactory {
 
     private final IIpsProject ipsProject;
 
-    public IdentifierNodeFactory(String identifierPart, IIpsProject ipsProject) {
+    private final TextRegion textRegion;
+
+    public IdentifierNodeFactory(String identifierPart, TextRegion textRegion, IIpsProject ipsProject) {
         this.identifierPart = identifierPart;
+        this.textRegion = textRegion;
         this.ipsProject = ipsProject;
     }
 
@@ -56,7 +60,7 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createParameterNode(IParameter parameter) {
         try {
-            ParameterNode parameterNode = new ParameterNode(parameter, ipsProject);
+            ParameterNode parameterNode = new ParameterNode(parameter, textRegion, ipsProject);
             if (parameterNode.getDatatype() == null) {
                 return createInvalidNoDatatype(parameter.getDatatype());
             }
@@ -81,7 +85,8 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createAttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes) {
         try {
-            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, ipsProject);
+            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, ipsProject,
+                    textRegion);
             if (attributeNode.getDatatype() == null) {
                 return createInvalidNoDatatype(attribute.getDatatype());
             }
@@ -115,7 +120,7 @@ public class IdentifierNodeFactory {
      */
     public IdentifierNode createAssociationNode(IAssociation association, boolean listOfType) {
         try {
-            return new AssociationNode(association, listOfType, ipsProject);
+            return new AssociationNode(association, listOfType, textRegion, ipsProject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(association.getTarget());
@@ -136,8 +141,7 @@ public class IdentifierNodeFactory {
                 return createInvalidQualifierMessage(qualifier);
             }
             IPolicyCmptType targetType = productCmpt.findPolicyCmptType(ipsProject);
-            String runtimeId = productCmpt.getRuntimeId();
-            return new QualifierNode(runtimeId, targetType, listOfTypes);
+            return new QualifierNode(productCmpt, targetType, listOfTypes, textRegion);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return createInvalidAssociationTargetNode(productCmpt.getProductCmptType());
@@ -162,7 +166,7 @@ public class IdentifierNodeFactory {
      * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
      */
     public IdentifierNode createIndexBasedAssociationNode(int index, IType targetType) {
-        return new IndexNode(index, targetType);
+        return new IndexNode(index, targetType, textRegion);
     }
 
     private IdentifierNode createInvalidAssociationTargetNode(String targetName) {
@@ -177,7 +181,7 @@ public class IdentifierNodeFactory {
      * @return The {@link EnumClassNode}
      */
     public EnumClassNode createEnumClassNode(EnumClass datatype) {
-        return new EnumClassNode(datatype);
+        return new EnumClassNode(datatype, textRegion);
     }
 
     /**
@@ -188,7 +192,7 @@ public class IdentifierNodeFactory {
      * @return The {@link EnumValueNode}
      */
     public EnumValueNode createEnumValueNode(String enumValue, EnumDatatype enumDatatype) {
-        return new EnumValueNode(enumValue, enumDatatype);
+        return new EnumValueNode(enumValue, enumDatatype, textRegion);
     }
 
     /**
@@ -198,7 +202,7 @@ public class IdentifierNodeFactory {
      * @return The new {@link InvalidIdentifierNode}
      */
     public InvalidIdentifierNode createInvalidIdentifier(Message message) {
-        return new InvalidIdentifierNode(message);
+        return new InvalidIdentifierNode(message, textRegion);
     }
 
 }

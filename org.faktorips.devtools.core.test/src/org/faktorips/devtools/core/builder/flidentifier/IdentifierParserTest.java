@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -216,6 +217,26 @@ public class IdentifierParserTest {
         EnumValueNode enumDatatypeNode = enumClassNode.getSuccessor();
         assertEquals(MY_ENUMVALUE, enumDatatypeNode.getEnumValueName());
         assertEquals(enumDatatype, enumDatatypeNode.getDatatype());
+    }
+
+    @Test
+    public void testValidTextRegionInIdentifierNodeLongString() {
+        String input = MY_PARAMETER + '.' + MY_ASSOCIATION;
+        IdentifierNode node = identifierParser.parse(input);
+        IdentifierNode successor = node.getSuccessor();
+
+        assertEquals(0, node.getTextRegion().getStart());
+        assertEquals(MY_PARAMETER.length(), node.getTextRegion().getEnd());
+
+        assertEquals(MY_PARAMETER.length() + 1, successor.getTextRegion().getStart());
+        assertEquals(input.length(), successor.getTextRegion().getEnd());
+    }
+
+    @Test
+    public void testValidTextRegionInIdentifierNodeEmptyString() {
+        IdentifierNode node = identifierParser.parse(StringUtils.EMPTY);
+
+        assertEquals(node.getTextRegion().getStart(), node.getTextRegion().getEnd());
     }
 
 }

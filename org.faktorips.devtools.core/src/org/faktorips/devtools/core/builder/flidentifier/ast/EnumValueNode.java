@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.util.TextRegion;
 
 /**
  * The enum value node represents the value part of an enum access. It have to follow an
@@ -23,8 +24,8 @@ public class EnumValueNode extends IdentifierNode {
 
     private final String enumValueName;
 
-    EnumValueNode(String enumValueName, EnumDatatype datatype) {
-        super(datatype);
+    EnumValueNode(String enumValueName, EnumDatatype datatype, TextRegion textRegion) {
+        super(datatype, textRegion);
         this.enumValueName = enumValueName;
     }
 

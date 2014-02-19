@@ -10,7 +10,14 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.ArgumentCheck;
 
 public class DependencyDetail implements IDependencyDetail {
@@ -40,6 +47,30 @@ public class DependencyDetail implements IDependencyDetail {
     @Override
     public String getPropertyName() {
         return propertyName;
+    }
+
+    @Override
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
+        try {
+            updateProperty(targetIpsPackageFragment, newName);
+        } catch (IllegalAccessException e) {
+            throw new CoreException(new IpsStatus(e));
+        } catch (IllegalArgumentException e) {
+            throw new CoreException(new IpsStatus(e));
+        } catch (InvocationTargetException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }
+
+    private void updateProperty(IIpsPackageFragment targetIpsPackageFragment, String newName)
+            throws IllegalAccessException, InvocationTargetException {
+        PropertyDescriptor property = BeanUtil.getPropertyDescriptor(getPart().getClass(), getPropertyName());
+        String newQualifiedName = buildQualifiedName(targetIpsPackageFragment, newName);
+        property.getWriteMethod().invoke(getPart(), newQualifiedName);
+    }
+
+    private String buildQualifiedName(IIpsPackageFragment ipsPackageFragment, String name) {
+        return ipsPackageFragment.isDefaultPackage() ? name : ipsPackageFragment.getName() + "." + name; //$NON-NLS-1$
     }
 
     @Override

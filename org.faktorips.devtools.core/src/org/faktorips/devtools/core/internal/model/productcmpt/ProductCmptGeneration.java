@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -95,6 +96,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencies, details);
         addRelatedTableContentsQualifiedNameTypes(dependencies, details);
+        addDependenciesFromFormulaExpressions(dependencies, details);
     }
 
     /**
@@ -111,6 +113,30 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        }
+    }
+
+    void addDependenciesFromFormulaExpressions(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
+        IFormula[] formulas = getFormulas();
+        for (IFormula formula : formulas) {
+            Map<IDependency, ExpressionDependencyDetail> formulaDependencies = formula.dependsOn();
+            dependencies.addAll(formulaDependencies.keySet());
+            if (details != null) {
+                mergeDependencyDetails(details, formulaDependencies);
+            }
+        }
+    }
+
+    private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
+            Map<IDependency, ExpressionDependencyDetail> formulaDependencies) {
+        for (Entry<IDependency, ExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
+            List<IDependencyDetail> ependenciesDetailsList = details.get(entry.getKey());
+            if (ependenciesDetailsList == null) {
+                ependenciesDetailsList = new ArrayList<IDependencyDetail>();
+                details.put(entry.getKey(), ependenciesDetailsList);
+            }
+            ependenciesDetailsList.add(entry.getValue());
         }
     }
 
@@ -186,6 +212,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newPropertyValue;
     }
 
+    /**
+     * @deprecated as of 3.4. Use {@link #newAttributeValue(IProductCmptTypeAttribute)} instead.
+     */
     @Override
     @Deprecated
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
