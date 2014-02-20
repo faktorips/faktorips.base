@@ -44,11 +44,9 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
-import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
@@ -277,16 +275,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void setDefaultValueField() {
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                currentDatatype);
-        if (attribute.isMultiValueAttribute() && datatypeCtrlFactory instanceof EnumDatatypeControlFactory) {
+        if (attribute.isMultiValueAttribute() && currentDatatype.isEnum()) {
             defaultValueField = new TextField(getToolkit().createText(defaultEditFieldPlaceholder));
         } else {
+            ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    currentDatatype);
             defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
                     currentDatatype, null, ipsProject);
-            if (defaultValueField instanceof EnumTypeDatatypeField) {
-                ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
-            }
         }
     }
 
