@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -484,6 +485,18 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         List<ValueSetType> allowedValueSetTypes = productAttribute.getAllowedValueSetTypes(ipsProject);
 
         assertThat(allowedValueSetTypes, hasItem(ValueSetType.UNRESTRICTED));
+    }
+
+    @Test
+    public void testValidateMultiDefaultValue() throws CoreException {
+        MessageList list = new MessageList();
+        StringDatatype data = new StringDatatype();
+        productAttribute.setVisible(false);
+        ((ProductCmptTypeAttribute)productAttribute).validateDefaultValue("testTest", data, list, ipsProject);
+
+        assertFalse(list.isEmpty());
+        assertNotNull(list.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+
     }
 
 }

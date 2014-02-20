@@ -11,13 +11,17 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -231,4 +235,14 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNull(copy.getDefaultValue());
     }
 
+    @Test
+    public void testValidateDefaultValueStringEmpty() throws CoreException {
+        MessageList list = new MessageList();
+        IEnumType enumType = newEnumType(ipsProject, "EnumType");
+        EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
+        ((Attribute)attribute).validateDefaultValue(StringUtils.EMPTY, adapter, list, ipsProject);
+
+        assertFalse(list.isEmpty());
+        assertNotNull(list.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+    }
 }
