@@ -121,7 +121,7 @@ public enum AttributeValueType {
      *            value.
      * @param defaultValue The default value set in the new value holder. The type of the default
      *            holder is always a IValue<?>. In case of multiple values, the default value will
-     *            be set as the only one value in the list of multiple values.
+     *            be split using {@link MultiValueHolder#SEPARATOR}
      * 
      * @return Returns the new value holder with the specified default value and the attribute set
      *         as parent.

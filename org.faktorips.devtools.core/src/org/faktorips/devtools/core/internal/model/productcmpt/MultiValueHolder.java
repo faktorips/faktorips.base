@@ -44,6 +44,8 @@ import org.w3c.dom.NodeList;
  */
 public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder>> {
 
+    public static final String SEPARATOR = "|"; //$NON-NLS-1$
+
     public static final String XML_TYPE_NAME = "MultiValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
@@ -185,7 +187,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
     @Override
     public int compareTo(IValueHolder<List<SingleValueHolder>> o) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -270,6 +271,8 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     public static class Factory implements IAttributeValueHolderFactory<List<SingleValueHolder>> {
 
+        private static final String MULTI_VALUE_SPLIT_REGEX = "\\s*\\" + SEPARATOR + "\\s*"; //$NON-NLS-1$ //$NON-NLS-2$
+
         @Override
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent) {
             return new MultiValueHolder(parent);
@@ -277,13 +280,36 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
         @Override
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent, IValue<?> defaultValue) {
-            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
-            if (defaultValue.getContent() != null) {
+            ArrayList<SingleValueHolder> values;
+            if (defaultValue instanceof StringValue) {
+                values = splitMultiDefaultValues(parent, defaultValue);
+            } else if (defaultValue.getContent() != null) {
+                values = new ArrayList<SingleValueHolder>();
                 SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
                 values.add(singleValueHolder);
+            } else {
+                values = new ArrayList<SingleValueHolder>();
             }
             return new MultiValueHolder(parent, values);
         }
+
+        ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, IValue<?> defaultValue) {
+            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+            StringValue stringValue = (StringValue)defaultValue;
+            String content = stringValue.getContent();
+            if (content != null) {
+                String[] splittedMultiValues = getSplitMultiValue(content);
+                for (String string : splittedMultiValues) {
+                    values.add(new SingleValueHolder(parent, new StringValue(string)));
+                }
+            }
+            return values;
+        }
+
+        public static String[] getSplitMultiValue(String content) {
+            return content.split(MULTI_VALUE_SPLIT_REGEX);
+        }
+
     }
 
 }
