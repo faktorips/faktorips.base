@@ -275,14 +275,23 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void setDefaultValueField() {
-        if (attribute.isMultiValueAttribute() && currentDatatype.isEnum()) {
-            defaultValueField = new TextField(getToolkit().createText(defaultEditFieldPlaceholder));
+        if (attribute.isMultiValueAttribute()) {
+            createMultiValueDefaultField();
         } else {
             ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     currentDatatype);
             defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
                     currentDatatype, null, ipsProject);
         }
+    }
+
+    /**
+     * For multi values we allow multiple default values by separate single values with <en>"|"</en>
+     */
+    private void createMultiValueDefaultField() {
+        Text multiValueText = getToolkit().createText(defaultEditFieldPlaceholder);
+        defaultValueField = new TextField(multiValueText);
+        multiValueText.setToolTipText(Messages.AttributeEditDialog_hint_multiValueDefault);
     }
 
     @Override
