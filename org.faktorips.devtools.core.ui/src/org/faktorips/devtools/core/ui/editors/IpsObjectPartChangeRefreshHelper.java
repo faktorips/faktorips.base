@@ -32,12 +32,15 @@ public class IpsObjectPartChangeRefreshHelper {
 
     /**
      * Creates a helper that refreshed the given viewer when the given IPS object changes.
+     * <p>
+     * This constructor is package private because you should use the factory method
+     * {@link #createAndInit(IIpsObject, Viewer)}.
      * 
      * @param ipsObject the IPS object to observe. Must not be <code>null</code>.
      * @param viewerToRefresh the viewer that should be refreshed on changes on the IPS object. Must
      *            not be <code>null</code>.
      */
-    public IpsObjectPartChangeRefreshHelper(IIpsObject ipsObject, Viewer viewerToRefresh) {
+    IpsObjectPartChangeRefreshHelper(IIpsObject ipsObject, Viewer viewerToRefresh) {
         Assert.isNotNull(ipsObject);
         Assert.isNotNull(viewerToRefresh);
         this.viewerToRefresh = viewerToRefresh;
@@ -59,10 +62,28 @@ public class IpsObjectPartChangeRefreshHelper {
         };
     }
 
+    /**
+     * This factory method creates a new {@link IpsObjectPartChangeRefreshHelper} and initializes
+     * the refresh listener. The created helper is returned. However normally you do not need the
+     * helper because it should run and dispose totally self-sufficient.
+     * <p>
+     * If either the {@link IIpsObject} or the {@link Viewer} is null this method does nothing and
+     * returns <code>null</code>
+     * 
+     * @param ipsObject The {@link IIpsObject} for which you want to register the refresh
+     * @param viewerToRefresh The {@link Viewer} that needs to be refreshed when ipsObject has
+     *            changed
+     * @return The {@link IpsObjectPartChangeRefreshHelper} that was created and initialized or
+     *         <code>null</code> if it could not be created
+     */
     public static IpsObjectPartChangeRefreshHelper createAndInit(IIpsObject ipsObject, Viewer viewerToRefresh) {
-        IpsObjectPartChangeRefreshHelper helper = new IpsObjectPartChangeRefreshHelper(ipsObject, viewerToRefresh);
-        helper.init();
-        return helper;
+        if (ipsObject != null && viewerToRefresh != null) {
+            IpsObjectPartChangeRefreshHelper helper = new IpsObjectPartChangeRefreshHelper(ipsObject, viewerToRefresh);
+            helper.init();
+            return helper;
+        } else {
+            return null;
+        }
     }
 
     /**

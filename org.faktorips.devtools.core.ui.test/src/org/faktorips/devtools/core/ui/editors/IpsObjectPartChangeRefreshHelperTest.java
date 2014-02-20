@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -90,8 +92,21 @@ public class IpsObjectPartChangeRefreshHelperTest {
         verify(ipsModel).removeChangeListener(any(ContentsChangeListener.class));
     }
 
+    @Test
+    public void testCreateAndInit_nullArgument() throws Exception {
+        assertNull(IpsObjectPartChangeRefreshHelper.createAndInit(null, null));
+        assertNull(IpsObjectPartChangeRefreshHelper.createAndInit(ipsObject, null));
+        assertNull(IpsObjectPartChangeRefreshHelper.createAndInit(null, viewer));
+    }
+
+    @Test
+    public void testCreateAndInit() throws Exception {
+        assertNotNull(IpsObjectPartChangeRefreshHelper.createAndInit(ipsObject, viewer));
+    }
+
     @AfterClass
     public static void tearDown() {
         singletonHelper.reset();
     }
+
 }
