@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -166,7 +165,7 @@ public class MultiValueHolderTest {
     public void testSplitMultiDefaultValues_null() throws Exception {
         Factory factory = new MultiValueHolder.Factory();
         IAttributeValue parent = mock(IAttributeValue.class);
-        IValue<?> defaultValue = new StringValue(null);
+        StringValue defaultValue = new StringValue(null);
 
         ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
 
@@ -177,7 +176,7 @@ public class MultiValueHolderTest {
     public void testSplitMultiDefaultValues_empty() throws Exception {
         Factory factory = new MultiValueHolder.Factory();
         IAttributeValue parent = mock(IAttributeValue.class);
-        IValue<?> defaultValue = new StringValue("");
+        StringValue defaultValue = new StringValue("");
 
         ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
 
@@ -189,7 +188,7 @@ public class MultiValueHolderTest {
     public void testSplitMultiDefaultValues_singleValue() throws Exception {
         Factory factory = new MultiValueHolder.Factory();
         IAttributeValue parent = mock(IAttributeValue.class);
-        IValue<?> defaultValue = new StringValue("xyz");
+        StringValue defaultValue = new StringValue("xyz");
 
         ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
 
@@ -201,7 +200,7 @@ public class MultiValueHolderTest {
     public void testSplitMultiDefaultValues_multipleValues() throws Exception {
         Factory factory = new MultiValueHolder.Factory();
         IAttributeValue parent = mock(IAttributeValue.class);
-        IValue<?> defaultValue = new StringValue("abc|xyz  | 123");
+        StringValue defaultValue = new StringValue("abc|xyz  | 123");
 
         ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
 
@@ -212,29 +211,29 @@ public class MultiValueHolderTest {
     }
 
     @Test
-        public void testGetSplitMultiValue_empty() throws Exception {
-            String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("");
-    
-            assertEquals(1, multiValue.length);
-            assertEquals("", multiValue[0]);
-        }
+    public void testGetSplitMultiValue_empty() throws Exception {
+        String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("");
+
+        assertEquals(1, multiValue.length);
+        assertEquals("", multiValue[0]);
+    }
 
     @Test
-        public void testGetSplitMultiValue_singleValue() throws Exception {
-            String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("abc123");
-    
-            assertEquals(1, multiValue.length);
-            assertEquals("abc123", multiValue[0]);
-        }
+    public void testGetSplitMultiValue_singleValue() throws Exception {
+        String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("abc123");
+
+        assertEquals(1, multiValue.length);
+        assertEquals("abc123", multiValue[0]);
+    }
 
     @Test
-        public void testGetSplitMultiValue_multipleValues() throws Exception {
-            String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("abc123|xyz |  123");
-    
-            assertEquals(3, multiValue.length);
-            assertEquals("abc123", multiValue[0]);
-            assertEquals("xyz", multiValue[1]);
-            assertEquals("123", multiValue[2]);
-        }
+    public void testGetSplitMultiValue_multipleValues() throws Exception {
+        String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("abc123|xyz |  123");
+
+        assertEquals(3, multiValue.length);
+        assertEquals("abc123", multiValue[0]);
+        assertEquals("xyz", multiValue[1]);
+        assertEquals("123", multiValue[2]);
+    }
 
 }
