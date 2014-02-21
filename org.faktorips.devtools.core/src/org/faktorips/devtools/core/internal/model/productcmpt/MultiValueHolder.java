@@ -282,21 +282,26 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent, IValue<?> defaultValue) {
             ArrayList<SingleValueHolder> values;
             if (defaultValue instanceof StringValue) {
-                values = splitMultiDefaultValues(parent, defaultValue);
-            } else if (defaultValue.getContent() != null) {
-                values = new ArrayList<SingleValueHolder>();
-                SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
-                values.add(singleValueHolder);
+                values = splitMultiDefaultValues(parent, (StringValue)defaultValue);
             } else {
                 values = new ArrayList<SingleValueHolder>();
+                if (defaultValue.getContent() != null) {
+                    SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
+                    values.add(singleValueHolder);
+                }
             }
             return new MultiValueHolder(parent, values);
         }
 
-        ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, IValue<?> defaultValue) {
+        /**
+         * For {@link StringValue string values} we try to split the content using " | ". This is a
+         * kind of workaround defined in FIPS-1864 to avoid the need of fully refactoring the meta
+         * model to always use {@link IValueHolder} for default values instead of a single String
+         * field.
+         */
+        ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, StringValue defaultValue) {
             ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
-            StringValue stringValue = (StringValue)defaultValue;
-            String content = stringValue.getContent();
+            String content = defaultValue.getContent();
             if (content != null) {
                 String[] splittedMultiValues = getSplitMultiValue(content);
                 for (String string : splittedMultiValues) {
