@@ -308,7 +308,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         super.validateThis(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
-        validateDefaultValue(null, result);
     }
 
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
@@ -345,12 +344,18 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
             throws CoreException {
-        super.getDatatype();
         if (isMultiValueAttribute() && getDefaultValue() != null) {
-            super.getDatatype();
             validateMultiDefaultValues(valueDatatype, result, ipsProject);
         } else {
             super.validateDefaultValue(valueDatatype, result, ipsProject);
+        }
+    }
+
+    private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
+        for (String singleValue : split) {
+            validateDefaultValue(singleValue.trim(), valueDatatype, result, ipsProject);
         }
     }
 
@@ -363,18 +368,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         validateDefaultValue(defaultValueToValidate, result);
     }
 
-    private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreException {
-        String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
-        for (String singleValue : split) {
-            validateDefaultValue(singleValue.trim(), valueDatatype, result, ipsProject);
-        }
-    }
-
     private void validateDefaultValue(String defaultValue, MessageList result) throws CoreException {
-        if (defaultValue == null) {
-            defaultValue = getDefaultValue();
-        }
         if (!isVisible() && !getValueSet().containsValue(defaultValue, getIpsProject())) {
             result.remove(result.getMessageByCode(MSGCODE_DEFAULT_NOT_IN_VALUESET));
             result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,

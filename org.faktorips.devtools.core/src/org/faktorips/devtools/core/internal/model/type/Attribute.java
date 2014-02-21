@@ -190,11 +190,21 @@ public abstract class Attribute extends TypePart implements IAttribute {
             ValueDatatype valueDatatype,
             MessageList result,
             IIpsProject ipsProject) throws CoreException {
-        if (!valueDatatype.isParsable(defaultValueToValidate)) {
+        if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
             addMessageDatatypeMissmatch(defaultValueToValidate, result);
-        } else {
-            validateDefaultValueInValueSet(defaultValueToValidate, result, ipsProject);
+        } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)) {
+            addMessageDefaultValueNotInValueSet(defaultValueToValidate, result);
         }
+    }
+
+    private boolean isValueParsable(String defaultValueToValidate, ValueDatatype valueDatatype) {
+        return valueDatatype.isParsable(defaultValueToValidate);
+    }
+
+    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) throws CoreException {
+        IValueSet valueSet = getValueSet();
+        return valueSet == null || defaultValueToValidate == null
+                || valueSet.containsValue(defaultValueToValidate, ipsProject);
     }
 
     private void addMessageDatatypeMissmatch(String defaultValueToValidate, MessageList result) {
@@ -208,16 +218,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
         result.newError(MSGCODE_VALUE_NOT_PARSABLE, text, this, PROPERTY_DEFAULT_VALUE);
     }
 
-    private void validateDefaultValueInValueSet(String defaultValueToValidate,
-            MessageList result,
-            IIpsProject ipsProject) throws CoreException {
-        IValueSet valueSet = getValueSet();
-        if (valueSet != null) {
-            if (defaultValueToValidate != null && !valueSet.containsValue(defaultValueToValidate, ipsProject)) {
-                result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
-                        Messages.Attribute_msg_DefaultNotInValueset, defaultValueToValidate), Message.WARNING, this,
-                        PROPERTY_DEFAULT_VALUE));
-            }
-        }
+    private void addMessageDefaultValueNotInValueSet(String defaultValueToValidate, MessageList result) {
+        result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msg_DefaultNotInValueset,
+                defaultValueToValidate), Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
     }
+
 }
