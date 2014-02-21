@@ -46,8 +46,10 @@ import org.faktorips.values.LocalizedString;
  */
 public class ValueHolderToFormattedStringWrapper {
 
-    private static final String MULTI_VALUE_SEPARATOR = " | "; //$NON-NLS-1$
     public static final String PROPERTY_FORMATTED_VALUE = "formattedValue"; //$NON-NLS-1$
+
+    private static final String MULTI_VALUE_SEPARATOR = " " + MultiValueHolder.SEPARATOR + " "; //$NON-NLS-1$ //$NON-NLS-2$
+
     private final IAttributeValue attrValue;
     private final ValueDatatype datatype;
 
@@ -97,17 +99,13 @@ public class ValueHolderToFormattedStringWrapper {
     }
 
     protected String convertToString(List<String> stringValues) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("["); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder();
         for (String string : stringValues) {
+            if (sb.length() != 0) {
+                sb.append(MULTI_VALUE_SEPARATOR);
+            }
             sb.append(string);
-            sb.append(MULTI_VALUE_SEPARATOR);
         }
-        if (!stringValues.isEmpty()) {
-            // delete redundant MULTI_VALUE_SEPARATOR
-            sb.delete(sb.length() - MULTI_VALUE_SEPARATOR.length(), sb.length());
-        }
-        sb.append("]"); //$NON-NLS-1$
         return sb.toString();
     }
 

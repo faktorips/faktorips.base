@@ -44,6 +44,8 @@ import org.w3c.dom.NodeList;
  */
 public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder>> {
 
+    public static final String SEPARATOR = "|"; //$NON-NLS-1$
+
     public static final String XML_TYPE_NAME = "MultiValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
@@ -185,7 +187,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
     @Override
     public int compareTo(IValueHolder<List<SingleValueHolder>> o) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -270,6 +271,8 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     public static class Factory implements IAttributeValueHolderFactory<List<SingleValueHolder>> {
 
+        private static final String MULTI_VALUE_SPLIT_REGEX = "\\s*\\" + SEPARATOR + "\\s*"; //$NON-NLS-1$ //$NON-NLS-2$
+
         @Override
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent) {
             return new MultiValueHolder(parent);
@@ -277,13 +280,41 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
         @Override
         public IValueHolder<List<SingleValueHolder>> createValueHolder(IAttributeValue parent, IValue<?> defaultValue) {
-            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
-            if (defaultValue.getContent() != null) {
-                SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
-                values.add(singleValueHolder);
+            ArrayList<SingleValueHolder> values;
+            if (defaultValue instanceof StringValue) {
+                values = splitMultiDefaultValues(parent, (StringValue)defaultValue);
+            } else {
+                values = new ArrayList<SingleValueHolder>();
+                if (defaultValue.getContent() != null) {
+                    SingleValueHolder singleValueHolder = new SingleValueHolder(parent, defaultValue);
+                    values.add(singleValueHolder);
+                }
             }
             return new MultiValueHolder(parent, values);
         }
+
+        /**
+         * For {@link StringValue string values} we try to split the content using " | ". This is a
+         * kind of workaround defined in FIPS-1864 to avoid the need of fully refactoring the meta
+         * model to always use {@link IValueHolder} for default values instead of a single String
+         * field.
+         */
+        ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, StringValue defaultValue) {
+            ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+            String content = defaultValue.getContent();
+            if (content != null) {
+                String[] splittedMultiValues = getSplitMultiValue(content);
+                for (String string : splittedMultiValues) {
+                    values.add(new SingleValueHolder(parent, new StringValue(string)));
+                }
+            }
+            return values;
+        }
+
+        public static String[] getSplitMultiValue(String content) {
+            return content.split(MULTI_VALUE_SPLIT_REGEX);
+        }
+
     }
 
 }

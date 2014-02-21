@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder.Factory;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
@@ -157,6 +159,81 @@ public class MultiValueHolderTest {
         assertEquals(multiValueHolder.getParent(),
                 messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
         assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[1].getObject());
+    }
+
+    @Test
+    public void testSplitMultiDefaultValues_null() throws Exception {
+        Factory factory = new MultiValueHolder.Factory();
+        IAttributeValue parent = mock(IAttributeValue.class);
+        StringValue defaultValue = new StringValue(null);
+
+        ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
+
+        assertEquals(0, splitMultiDefaultValues.size());
+    }
+
+    @Test
+    public void testSplitMultiDefaultValues_empty() throws Exception {
+        Factory factory = new MultiValueHolder.Factory();
+        IAttributeValue parent = mock(IAttributeValue.class);
+        StringValue defaultValue = new StringValue("");
+
+        ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
+
+        assertEquals(1, splitMultiDefaultValues.size());
+        assertEquals("", splitMultiDefaultValues.get(0).getStringValue());
+    }
+
+    @Test
+    public void testSplitMultiDefaultValues_singleValue() throws Exception {
+        Factory factory = new MultiValueHolder.Factory();
+        IAttributeValue parent = mock(IAttributeValue.class);
+        StringValue defaultValue = new StringValue("xyz");
+
+        ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
+
+        assertEquals(1, splitMultiDefaultValues.size());
+        assertEquals("xyz", splitMultiDefaultValues.get(0).getStringValue());
+    }
+
+    @Test
+    public void testSplitMultiDefaultValues_multipleValues() throws Exception {
+        Factory factory = new MultiValueHolder.Factory();
+        IAttributeValue parent = mock(IAttributeValue.class);
+        StringValue defaultValue = new StringValue("abc|xyz  | 123");
+
+        ArrayList<SingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
+
+        assertEquals(3, splitMultiDefaultValues.size());
+        assertEquals("abc", splitMultiDefaultValues.get(0).getStringValue());
+        assertEquals("xyz", splitMultiDefaultValues.get(1).getStringValue());
+        assertEquals("123", splitMultiDefaultValues.get(2).getStringValue());
+    }
+
+    @Test
+    public void testGetSplitMultiValue_empty() throws Exception {
+        String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("");
+
+        assertEquals(1, multiValue.length);
+        assertEquals("", multiValue[0]);
+    }
+
+    @Test
+    public void testGetSplitMultiValue_singleValue() throws Exception {
+        String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("abc123");
+
+        assertEquals(1, multiValue.length);
+        assertEquals("abc123", multiValue[0]);
+    }
+
+    @Test
+    public void testGetSplitMultiValue_multipleValues() throws Exception {
+        String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("abc123|xyz |  123");
+
+        assertEquals(3, multiValue.length);
+        assertEquals("abc123", multiValue[0]);
+        assertEquals("xyz", multiValue[1]);
+        assertEquals("123", multiValue[2]);
     }
 
 }

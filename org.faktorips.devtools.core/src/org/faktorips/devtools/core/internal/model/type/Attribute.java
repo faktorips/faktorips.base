@@ -183,25 +183,44 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
             throws CoreException {
+        validateDefaultValue(defaultValue, valueDatatype, result, ipsProject);
+    }
 
-        if (!valueDatatype.isParsable(defaultValue)) {
-            String defaultValueInMsg = defaultValue;
-            if (defaultValue == null) {
-                defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            } else if (StringUtils.isEmpty(defaultValue)) {
-                defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
-            }
-            String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
-            result.newError(MSGCODE_VALUE_NOT_PARSABLE, text, this, PROPERTY_DEFAULT_VALUE);
-            return;
-        }
-        IValueSet valueSet = getValueSet();
-        if (valueSet != null) {
-            if (defaultValue != null && !valueSet.containsValue(defaultValue, ipsProject)) {
-                result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
-                        Messages.Attribute_msg_DefaultNotInValueset, defaultValue), Message.WARNING, this,
-                        PROPERTY_DEFAULT_VALUE));
-            }
+    protected void validateDefaultValue(String defaultValueToValidate,
+            ValueDatatype valueDatatype,
+            MessageList result,
+            IIpsProject ipsProject) throws CoreException {
+        if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
+            addMessageDatatypeMissmatch(defaultValueToValidate, result);
+        } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)) {
+            addMessageDefaultValueNotInValueSet(defaultValueToValidate, result);
         }
     }
+
+    private boolean isValueParsable(String defaultValueToValidate, ValueDatatype valueDatatype) {
+        return valueDatatype.isParsable(defaultValueToValidate);
+    }
+
+    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) throws CoreException {
+        IValueSet valueSet = getValueSet();
+        return valueSet == null || defaultValueToValidate == null
+                || valueSet.containsValue(defaultValueToValidate, ipsProject);
+    }
+
+    private void addMessageDatatypeMissmatch(String defaultValueToValidate, MessageList result) {
+        String defaultValueInMsg = defaultValueToValidate;
+        if (defaultValueToValidate == null) {
+            defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        } else if (StringUtils.isEmpty(defaultValueToValidate)) {
+            defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
+        }
+        String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
+        result.newError(MSGCODE_VALUE_NOT_PARSABLE, text, this, PROPERTY_DEFAULT_VALUE);
+    }
+
+    private void addMessageDefaultValueNotInValueSet(String defaultValueToValidate, MessageList result) {
+        result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msg_DefaultNotInValueset,
+                defaultValueToValidate), Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
+    }
+
 }

@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -307,7 +308,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         super.validateThis(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
-        validateDefaultValue(result);
     }
 
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
@@ -341,11 +341,38 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
-    private void validateDefaultValue(MessageList result) throws CoreException {
-        if (!isVisible() && !getValueSet().containsValue(getDefaultValue(), getIpsProject())) {
+    @Override
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        if (isMultiValueAttribute() && getDefaultValue() != null) {
+            validateMultiDefaultValues(valueDatatype, result, ipsProject);
+        } else {
+            super.validateDefaultValue(valueDatatype, result, ipsProject);
+        }
+    }
+
+    private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
+            throws CoreException {
+        String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
+        for (String singleValue : split) {
+            validateDefaultValue(singleValue, valueDatatype, result, ipsProject);
+        }
+    }
+
+    @Override
+    protected void validateDefaultValue(String defaultValueToValidate,
+            ValueDatatype valueDatatype,
+            MessageList result,
+            IIpsProject ipsProject) throws CoreException {
+        super.validateDefaultValue(defaultValueToValidate, valueDatatype, result, ipsProject);
+        validateDefaultValue(defaultValueToValidate, result);
+    }
+
+    private void validateDefaultValue(String defaultValue, MessageList result) throws CoreException {
+        if (!isVisible() && !getValueSet().containsValue(defaultValue, getIpsProject())) {
             result.remove(result.getMessageByCode(MSGCODE_DEFAULT_NOT_IN_VALUESET));
-            result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN, NLS.bind(
-                    Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, getDefaultValue()),
+            result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,
+                    NLS.bind(Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, defaultValue),
                     this, PROPERTY_DEFAULT_VALUE);
         }
     }

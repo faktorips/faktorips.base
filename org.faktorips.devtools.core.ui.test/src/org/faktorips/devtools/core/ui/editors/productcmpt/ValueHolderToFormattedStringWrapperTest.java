@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -76,7 +77,7 @@ public class ValueHolderToFormattedStringWrapperTest {
 
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.GREGORIAN_CALENDAR);
-        assertEquals("[02.04.2012 | 31.01.1999]", wrapper.getFormattedValue());
+        assertEquals("02.04.2012 | 31.01.1999", wrapper.getFormattedValue());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class ValueHolderToFormattedStringWrapperTest {
 
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.DECIMAL);
-        assertEquals("[1,23456 | 23,42]", wrapper.getFormattedValue());
+        assertEquals("1,23456 | 23,42", wrapper.getFormattedValue());
     }
 
     @Test
@@ -98,6 +99,6 @@ public class ValueHolderToFormattedStringWrapperTest {
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.DECIMAL);
         String convertedString = wrapper.convertToString(new ArrayList<String>());
-        assertEquals("[]", convertedString);
+        assertEquals(StringUtils.EMPTY, convertedString);
     }
 }

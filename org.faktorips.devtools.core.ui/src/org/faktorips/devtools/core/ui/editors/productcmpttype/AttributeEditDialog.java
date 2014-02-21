@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -264,16 +265,33 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDefaultValueEditField() {
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                currentDatatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
-                currentDatatype, null, ipsProject);
+        setDefaultValueField();
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout(true);
         getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
         getBindingContext().bindEnabled(defaultValueField.getControl(), attributePmo,
                 ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
+    }
+
+    private void setDefaultValueField() {
+        if (attribute.isMultiValueAttribute()) {
+            createMultiValueDefaultField();
+        } else {
+            ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    currentDatatype);
+            defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
+                    currentDatatype, null, ipsProject);
+        }
+    }
+
+    /**
+     * For multi values we allow multiple default values by separate single values with <en>"|"</en>
+     */
+    private void createMultiValueDefaultField() {
+        Text multiValueText = getToolkit().createText(defaultEditFieldPlaceholder);
+        defaultValueField = new TextField(multiValueText);
+        multiValueText.setToolTipText(Messages.AttributeEditDialog_hint_multiValueDefault);
     }
 
     @Override
