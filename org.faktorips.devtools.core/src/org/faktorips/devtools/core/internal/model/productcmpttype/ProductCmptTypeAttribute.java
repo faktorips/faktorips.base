@@ -355,7 +355,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             throws CoreException {
         String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
         for (String singleValue : split) {
-            validateDefaultValue(singleValue.trim(), valueDatatype, result, ipsProject);
+            validateDefaultValue(singleValue, valueDatatype, result, ipsProject);
         }
     }
 
