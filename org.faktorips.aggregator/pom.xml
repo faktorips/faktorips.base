@@ -10,7 +10,7 @@
 	
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>3.11.1-SNAPSHOT</version>
+	<version>3.11.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -31,7 +31,7 @@
 	<scm>
 		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
 	</scm>
-	
+
 	<build>
 		<extensions>
 			<!-- Include this build artifact to every child's classpath. This is used 
@@ -75,6 +75,38 @@
 									<connectionType>connection</connectionType>
 									<pushChanges>${scm.pushChanges}</pushChanges>
 								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>setNextVersion</id>
+			<activation>
+				<property>
+					<name>nextVersion</name>
+				</property>
+			</activation>
+			<properties>
+			<!-- Overwrite version for setting new version because there is a bug in currenty uses 0.18.0  -->
+				<tycho-version>0.19.0</tycho-version>
+				<tycho-extras-version>0.19.0</tycho-extras-version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-versions-plugin</artifactId>
+						<configuration>
+							<newVersion>${nextVersion}-SNAPSHOT</newVersion>
+						</configuration>
+						<executions>
+							<execution>
+								<id>setNextVersion</id>
+								<goals>
+									<goal>set-version</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>
