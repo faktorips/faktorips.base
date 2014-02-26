@@ -34,11 +34,13 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
@@ -315,6 +317,23 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(obj1.getIpsSrcFile()));
         assertTrue(result.contains(obj2.getIpsSrcFile()));
         assertTrue(result.contains(obj3.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testFindIpsSrcFile_cleanUpTest() throws Exception {
+        IIpsPackageFragmentRoot root2 = newIpsPackageFragmentRoot(ipsProject, null, "root1");
+        newIpsObject(root2, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
+        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
+
+        IIpsSrcFile ipsSrcFile1 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), visitedEntries);
+        IIpsSrcFile ipsSrcFile2 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), visitedEntries);
+        IIpsSrcFile ipsSrcFile3 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), visitedEntries);
+
+        assertSame(ipsSrcFile1, ipsSrcFile2);
+        assertSame(ipsSrcFile1, ipsSrcFile3);
     }
 
     @Test

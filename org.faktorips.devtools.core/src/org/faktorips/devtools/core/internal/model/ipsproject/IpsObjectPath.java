@@ -459,7 +459,6 @@ public class IpsObjectPath implements IIpsObjectPath {
                 return ipsSrcFile;
             }
         }
-        lookupCache.clear();
         return cachedSrcFile == null ? null : cachedSrcFile.file;
     }
 
