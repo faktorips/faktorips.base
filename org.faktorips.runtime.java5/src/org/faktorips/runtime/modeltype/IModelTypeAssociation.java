@@ -45,6 +45,10 @@ public interface IModelTypeAssociation extends IModelElement {
 
     public static final String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation";
 
+    public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName";
+
+    public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource";
+
     /**
      * Returns the model type this association belongs to.
      */
@@ -136,4 +140,34 @@ public interface IModelTypeAssociation extends IModelElement {
      */
     public List<IModelObject> getTargetObjects(IModelObject source);
 
+    /**
+     * Returns the name of the matching product respectively policy component type association or
+     * <code>null</code> if no matching association is defined for this associations.
+     * <p>
+     * Example: Taking two policy component types called 'Policy' and 'Coverage' with a composition
+     * association between them. Policy is constrained by the product component type 'Product' and
+     * coverage by 'CoverageType'. There is also an association from 'Product' to 'CoverageType'.
+     * The product association configures the policy association. If this is a model type
+     * association for the policy association this method returns the name of the matching product
+     * association and vice versa.
+     * 
+     * @return The name of the matchingAssoctiation
+     */
+    public String getMatchingAssociationName();
+
+    /**
+     * Returns the qualified target name of the matching product respectively policy component type
+     * association or <code>null</code> if no matching association is defined for component
+     * associations.
+     * <p>
+     * Example: Taking two policy component types called 'Policy' and 'Coverage' with a composition
+     * association between them. Policy is constrained by the product component type 'Product' and
+     * coverage by 'CoverageType'. There is also an association from 'Product' to 'CoverageType'.
+     * The product association configures the policy association. If this is a model type
+     * association for the policy association this method returns the source of the matching product
+     * association and vice versa. The source is the type which defines the matching association.
+     * 
+     * @return The qualified name of the matchingAssoctiation
+     */
+    public String getMatchingAssociationSource();
 }

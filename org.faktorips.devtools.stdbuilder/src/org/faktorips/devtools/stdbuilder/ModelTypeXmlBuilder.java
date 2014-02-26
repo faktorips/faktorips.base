@@ -89,6 +89,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         } catch (TransformerException e) {
             throw new CoreException(new IpsStatus(e));
         }
+
     }
 
     private Element createModelType(IType type) throws CoreException {
@@ -169,31 +170,53 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                         Boolean.toString(association.isDerivedUnion()));
                 modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_SUBSET_OF_A_DERIVED_UNION,
                         Boolean.toString(association.isSubsetOfADerivedUnion()));
-                try {
-                    boolean productRelevant = true;
-                    if (association instanceof IPolicyCmptTypeAssociation) {
-                        IPolicyCmptTypeAssociation polCmptTypeAsso = (IPolicyCmptTypeAssociation)association;
-                        productRelevant = polCmptTypeAsso.isConstrainedByProductStructure(getIpsProject())
-                                && polCmptTypeAsso.isConfigured();
-                    }
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
-                            Boolean.toString(productRelevant));
-                } catch (DOMException e) {
-                    // don't bother
-                } catch (CoreException e) {
-                    // don't bother
-                }
 
-                if (association instanceof IPolicyCmptTypeAssociation) {
-                    IPolicyCmptTypeAssociation pcTypeAsso = (IPolicyCmptTypeAssociation)association;
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_INVERSE_ASSOCIATION,
-                            pcTypeAsso.getInverseAssociation());
-                }
-
+                addProductRelevant(association, modelTypeAssociation);
+                addInverseAssociation(association, modelTypeAssociation);
+                addMatchingAssociation(association, modelTypeAssociation);
                 addDescriptions(association, modelTypeAssociation);
                 addLabels(association, modelTypeAssociation);
                 addExtensionProperties(association, modelTypeAssociation);
             }
+        }
+    }
+
+    private void addProductRelevant(IAssociation association, Element modelTypeAssociation) {
+        try {
+            boolean productRelevant = true;
+            if (association instanceof IPolicyCmptTypeAssociation) {
+                IPolicyCmptTypeAssociation polCmptTypeAsso = (IPolicyCmptTypeAssociation)association;
+                productRelevant = polCmptTypeAsso.isConstrainedByProductStructure(getIpsProject())
+                        && polCmptTypeAsso.isConfigured();
+            }
+            modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
+                    Boolean.toString(productRelevant));
+        } catch (DOMException e) {
+            // don't bother
+            return;
+        } catch (CoreException e) {
+            // don't bother
+            return;
+        }
+    }
+
+    private void addInverseAssociation(IAssociation association, Element modelTypeAssociation) {
+        if (association instanceof IPolicyCmptTypeAssociation) {
+            IPolicyCmptTypeAssociation pcTypeAsso = (IPolicyCmptTypeAssociation)association;
+            modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_INVERSE_ASSOCIATION,
+                    pcTypeAsso.getInverseAssociation());
+
+        }
+    }
+
+    /* private */void addMatchingAssociation(IAssociation association, Element modelTypeAssociation)
+            throws CoreException {
+        IAssociation matchingAssociation = association.findMatchingAssociation();
+        if (matchingAssociation != null) {
+            modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_NAME,
+                    matchingAssociation.getName());
+            modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_SOURCE,
+                    matchingAssociation.getIpsObject().getQualifiedName());
         }
     }
 
