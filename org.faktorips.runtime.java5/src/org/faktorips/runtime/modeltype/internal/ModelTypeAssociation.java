@@ -49,6 +49,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private boolean isSubsetOfADerivedUnion = false;
     private Boolean isTargetRolePluralRequired = false;
     private String inverseAssociation;
+    private String matchingAssociationName;
+    private String matchingAssociationSource;
 
     private String getterName;
 
@@ -140,30 +142,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         super.initFromXml(parser);
 
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_NAME_PLURAL)) {
-                namePlural = parser.getAttributeValue(i);
-                if (namePlural.length() == 0) {
-                    namePlural = null;
-                }
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_TARGET)) {
-                targetJavaClassName = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_MIN_CARDINALITY)) {
-                minCardinality = Integer.parseInt(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_MAX_CARDINALITY)) {
-                maxCardinality = Integer.parseInt(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_ASSOCIATION_TYPE)) {
-                associationType = AssociationType.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_PRODUCT_RELEVANT)) {
-                isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_DERIVED_UNION)) {
-                isDerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_SUBSET_OF_A_DERIVED_UNION)) {
-                isSubsetOfADerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_TARGET_ROLE_PLURAL_REQUIRED)) {
-                isTargetRolePluralRequired = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_INVERSE_ASSOCIATION)) {
-                inverseAssociation = parser.getAttributeValue(i);
-            }
+            initAttributeValuesInternal(parser, i);
         }
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
@@ -182,6 +161,96 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                     }
                     break;
             }
+        }
+    }
+
+    private void initAttributeValuesInternal(XMLStreamReader parser, int index) {
+        initNamePluralInternal(parser, index);
+        initTargetJavaClassNameInternal(parser, index);
+        initMinCardinalityInternal(parser, index);
+        initMaxCardinalityInternal(parser, index);
+        initAssociationTypeInternal(parser, index);
+        initProduktRelevantInternal(parser, index);
+        initDerivedUnionInternal(parser, index);
+        initSubsetOfDerivedUnionInternal(parser, index);
+        initTargetRolePluralRequiredInternal(parser, index);
+        initInverseAssociationInternal(parser, index);
+        initMatchingAssociationNameInternal(parser, index);
+        initMatchingAssociationSourceInternal(parser, index);
+    }
+
+    private void initNamePluralInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(IModelTypeAssociation.PROPERTY_NAME_PLURAL)) {
+            namePlural = parser.getAttributeValue(index);
+            if (namePlural.length() == 0) {
+                namePlural = null;
+            }
+        }
+    }
+
+    private void initTargetJavaClassNameInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_TARGET)) {
+            targetJavaClassName = parser.getAttributeValue(index);
+        }
+    }
+
+    private void initMinCardinalityInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_MIN_CARDINALITY)) {
+            minCardinality = Integer.parseInt(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initMaxCardinalityInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_MAX_CARDINALITY)) {
+            maxCardinality = Integer.parseInt(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initAssociationTypeInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_ASSOCIATION_TYPE)) {
+            associationType = AssociationType.valueOf(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initProduktRelevantInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_PRODUCT_RELEVANT)) {
+            isProductRelevant = Boolean.valueOf(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initDerivedUnionInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_DERIVED_UNION)) {
+            isDerivedUnion = Boolean.valueOf(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initSubsetOfDerivedUnionInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_SUBSET_OF_A_DERIVED_UNION)) {
+            isSubsetOfADerivedUnion = Boolean.valueOf(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initTargetRolePluralRequiredInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_TARGET_ROLE_PLURAL_REQUIRED)) {
+            isTargetRolePluralRequired = Boolean.valueOf(parser.getAttributeValue(index));
+        }
+    }
+
+    private void initInverseAssociationInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_INVERSE_ASSOCIATION)) {
+            inverseAssociation = parser.getAttributeValue(index);
+        }
+    }
+
+    private void initMatchingAssociationNameInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_MATCHING_ASSOCIATION_NAME)) {
+            matchingAssociationName = parser.getAttributeValue(index);
+        }
+    }
+
+    private void initMatchingAssociationSourceInternal(XMLStreamReader parser, int index) {
+        if (parser.getAttributeLocalName(index).equals(PROPERTY_MATCHING_ASSOCIATION_SOURCE)) {
+            matchingAssociationSource = parser.getAttributeValue(index);
         }
     }
 
@@ -235,4 +304,11 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return inverseAssociation;
     }
 
+    public String getMatchingAssociationName() {
+        return matchingAssociationName;
+    }
+
+    public String getMatchingAssociationSource() {
+        return matchingAssociationSource;
+    }
 }
