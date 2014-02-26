@@ -32,11 +32,19 @@ import org.w3c.dom.Element;
  */
 public abstract class ExtensionPropertyDefinition implements IExtensionPropertyDefinition2 {
 
+    // protected because setter has to be implemented in subclasses. !BAD DESIGN!
+    // CSOFF: VisibilityModifier
+    protected Object defaultValue;
+    // CSON: VisibilityModifier
+
     private Class<?> extendedType;
+
     private String propertyId;
-    protected Object defaultValue; // protected because setter has to be implemented in subclasses.
+
     private String name;
+
     private String position;
+
     private int order = DEFAULT_ORDER;
 
     public ExtensionPropertyDefinition() {
@@ -65,6 +73,11 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     @Override
     public Object getDefaultValue() {
         return defaultValue;
+    }
+
+    @Override
+    public Object getDefaultValue(IIpsObjectPartContainer ipsObjectPartContainer) {
+        return getDefaultValue();
     }
 
     public void setDefaultValue(Object defaultValue) {

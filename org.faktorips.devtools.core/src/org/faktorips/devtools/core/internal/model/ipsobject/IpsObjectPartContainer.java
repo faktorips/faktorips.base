@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -100,7 +101,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
 
     /** Map containing extension property IDs as keys and their values. */
-    private HashMap<String, Object> extPropertyValues = null;
+    private final HashMap<String, Object> extPropertyValues = new HashMap<String, Object>();
 
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
@@ -175,7 +176,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public Object getExtPropertyValue(String propertyId) {
         checkExtProperty(propertyId);
-        initExtPropertiesIfNotDoneSoFar();
+        initMissingExtProperties();
         return extPropertyValues.get(propertyId);
     }
 
@@ -192,7 +193,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             // veto to set the new value by the property definition
             return;
         }
-        initExtPropertiesIfNotDoneSoFar();
+        initMissingExtProperties();
         if (!ObjectUtils.equals(value, getExtPropertyValue(propertyId))) {
             extPropertyValues.put(propertyId, value);
             objectHasChanged();
@@ -304,13 +305,21 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
     }
 
-    private void initExtPropertiesIfNotDoneSoFar() {
-        if (extPropertyValues == null) {
-            extPropertyValues = new HashMap<String, Object>();
-            Collection<IExtensionPropertyDefinition> properties = getExtensionPropertyDefinitions();
-            for (IExtensionPropertyDefinition propertie : properties) {
-                extPropertyValues.put(propertie.getPropertyId(), propertie.getDefaultValue());
+    private void initMissingExtProperties() {
+        Collection<IExtensionPropertyDefinition> properties = getExtensionPropertyDefinitions();
+        for (IExtensionPropertyDefinition property : properties) {
+            Object defaultValue = getExtensionPropertyDefaultValue(property);
+            if (!extPropertyValues.containsKey(property.getPropertyId())) {
+                extPropertyValues.put(property.getPropertyId(), defaultValue);
             }
+        }
+    }
+
+    private Object getExtensionPropertyDefaultValue(IExtensionPropertyDefinition property) {
+        if (property instanceof IExtensionPropertyDefinition2) {
+            return ((IExtensionPropertyDefinition2)property).getDefaultValue(this);
+        } else {
+            return property.getDefaultValue();
         }
     }
 
@@ -328,7 +337,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (propertyDefinitions.isEmpty()) {
             return;
         }
-        initExtPropertiesIfNotDoneSoFar();
+        initMissingExtProperties();
         Document doc = element.getOwnerDocument();
         Element extPropertiesEl = doc.createElement(XML_EXT_PROPERTIES_ELEMENT);
         element.appendChild(extPropertiesEl);
@@ -436,7 +445,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param extPropertyValue extension property value
      */
     protected void addExtensionPropertyValue(String propertyId, String extPropertyValue) {
-        initExtPropertiesIfNotDoneSoFar();
+        initMissingExtProperties();
         Object value = null;
         if (extPropertyValue != null) {
             IExtensionPropertyDefinition property = getExtensionPropertyDefinition(propertyId);
@@ -464,13 +473,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param containerEl The &lt;ExtensionProperties&gt; element.
      */
     private void initExtPropertiesFromXml(Element containerEl) {
-        extPropertyValues = null;
-        // to make sure that new extension properties are
-        // initialized with their default.
-        initExtPropertiesIfNotDoneSoFar();
+        extPropertyValues.clear();
+        initMissingExtProperties();
         Element extPropertiesEl = XmlUtil.getFirstElement(containerEl, XML_EXT_PROPERTIES_ELEMENT);
         if (extPropertiesEl == null) {
-            extPropertyValues = null;
             return;
         }
         NodeList nl = extPropertiesEl.getChildNodes();

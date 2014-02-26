@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
-
 /**
  * This interface extends the {@link IExtensionPropertyDefinition} interface by an additional method
  * to activate or deactivate the extension property depending on the concrete
@@ -35,5 +34,17 @@ public interface IExtensionPropertyDefinition2 extends IExtensionPropertyDefinit
      * @return <code>true</code> if this extension property is active for the given part
      */
     public boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer);
+
+    /**
+     * Returns the default value for the property. The default value is set as the value of the
+     * extension property when it is created.
+     * <p>
+     * Use the given {@link IIpsObjectPartContainer} to return different default values depending on
+     * the part for which the extension property is created.
+     * 
+     * @param ipsObjectPartContainer The part for which the extension property is created
+     * @return The default value that is set when the new extension property is created
+     */
+    public Object getDefaultValue(IIpsObjectPartContainer ipsObjectPartContainer);
 
 }
