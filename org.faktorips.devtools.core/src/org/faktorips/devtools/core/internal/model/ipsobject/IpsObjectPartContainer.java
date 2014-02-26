@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -101,7 +102,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
 
     /** Map containing extension property IDs as keys and their values. */
-    private final HashMap<String, Object> extPropertyValues = new HashMap<String, Object>();
+    private final ExtensionPropertyMap extPropertyValues = new ExtensionPropertyMap();
 
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
@@ -309,9 +310,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         Collection<IExtensionPropertyDefinition> properties = getExtensionPropertyDefinitions();
         for (IExtensionPropertyDefinition property : properties) {
             Object defaultValue = getExtensionPropertyDefaultValue(property);
-            if (!extPropertyValues.containsKey(property.getPropertyId())) {
-                extPropertyValues.put(property.getPropertyId(), defaultValue);
-            }
+            extPropertyValues.putIfAbsent(property.getPropertyId(), defaultValue);
         }
     }
 
@@ -377,7 +376,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private Map<String, Object> getExtPropertyValueMapForMissingDefinitions(Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        Map<String, Object> extpropMap = new HashMap<String, Object>(extPropertyValues);
+        Map<String, Object> extpropMap = new HashMap<String, Object>(extPropertyValues.internalMap);
         for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
             extpropMap.remove(propertyDefinition.getPropertyId());
         }
@@ -1208,6 +1207,49 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         Element xmlElement = source.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
         initFromXml(xmlElement);
+    }
+
+    /**
+     * This map wraps a {@link ConcurrentHashMap} and additionally allows to add <code>null</code>
+     * as a value. This is achieved by adding a null-object instead of <code>null</code>. The getter
+     * checks for the null-object and does return real <code>null</code> instead.
+     * 
+     */
+    private static class ExtensionPropertyMap {
+
+        private static final Object EXT_PROPERTY_NULL_OBJECT = new Object();
+
+        private final ConcurrentHashMap<String, Object> internalMap = new ConcurrentHashMap<String, Object>();
+
+        public Object get(Object key) {
+            Object object = internalMap.get(key);
+            if (object == EXT_PROPERTY_NULL_OBJECT) {
+                return null;
+            } else {
+                return object;
+            }
+        }
+
+        public void clear() {
+            internalMap.clear();
+        }
+
+        public Object put(String key, Object value) {
+            if (value == null) {
+                return internalMap.put(key, EXT_PROPERTY_NULL_OBJECT);
+            } else {
+                return internalMap.put(key, value);
+            }
+        }
+
+        public Object putIfAbsent(String key, Object value) {
+            if (value == null) {
+                return internalMap.putIfAbsent(key, EXT_PROPERTY_NULL_OBJECT);
+            } else {
+                return internalMap.putIfAbsent(key, value);
+            }
+        }
+
     }
 
 }
