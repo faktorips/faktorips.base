@@ -281,7 +281,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     public Element toXml(Document doc) {
         Element newElement = createElement(doc);
         propertiesToXml(newElement);
-        extensionProperties.extPropertiesToXml(newElement);
+        extensionProperties.toXml(newElement);
         partsToXml(doc, newElement);
         return newElement;
     }
@@ -336,7 +336,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected void initFromXml(Element element, String id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
-        extensionProperties.initExtPropertiesFromXml(element);
+        extensionProperties.initFromXml(element);
     }
 
     /**
@@ -659,7 +659,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * object part container.
      */
     protected void afterValidateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
-        extensionProperties.validateExtensionProperties(result);
+        result.add(extensionProperties.validate());
         validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
             System.out.println("Validation of " + this + ": Finished, took " //$NON-NLS-1$ //$NON-NLS-2$

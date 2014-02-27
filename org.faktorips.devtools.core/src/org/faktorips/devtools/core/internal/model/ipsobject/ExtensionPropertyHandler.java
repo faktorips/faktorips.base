@@ -10,8 +10,6 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -24,6 +22,7 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -31,6 +30,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * This class is responsible for all purposes of an {@link IIpsObjectPartContainer} that relates to
+ * extension properties.
+ * <p>
+ * Extension properties are additional properties that could be registered via extension point in
+ * other plugIns. They are used to store additional information at specific parts of the model or of
+ * the product component.
+ * <p>
+ * Every {@link IpsObjectPartContainer} has to instantiate its own {@link ExtensionPropertyHandler}.
+ * 
+ * @author dirmeier
+ */
 public class ExtensionPropertyHandler {
 
     /** Map containing extension property IDs as keys and their values. */
@@ -38,24 +49,66 @@ public class ExtensionPropertyHandler {
 
     private final IpsObjectPartContainer ipsObjectPartContainer;
 
+    /**
+     * Create a new {@link ExtensionPropertyHandler} for the given {@link IIpsObjectPartContainer}
+     * 
+     */
     public ExtensionPropertyHandler(IpsObjectPartContainer ipsObjectPartContainer) {
         this.ipsObjectPartContainer = ipsObjectPartContainer;
     }
 
+    /**
+     * This gives access to the internal {@link ExtensionPropertyMap}. Normally this is not needed.
+     * It should only be used for testing the content.
+     * 
+     */
     ExtensionPropertyMap getExtPropertyValues() {
         return extPropertyValues;
     }
 
+    /**
+     * Get the value for the extension property specified by the ID. If no value is set so far, the
+     * default value is returned.
+     * 
+     * @param propertyId The id of the extension property for which you want to get the value
+     * @return The value object depending on the extension property definition
+     * @throws IllegalArgumentException if the given property id specifies no valid extension
+     *             property definition
+     */
     public Object getExtPropertyValue(String propertyId) {
         checkExtProperty(propertyId);
         initMissingExtProperties();
         return getExtPropertyValues().get(propertyId);
     }
 
+    /**
+     * Checks whether the extension property with the given ID is defined.
+     */
     public boolean isExtPropertyDefinitionAvailable(String propertyId) {
         return ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId) != null;
     }
 
+    /**
+     * Set a new value for the extension property specified by the propertyId. The kind of object
+     * depends on the extension property definition.
+     * <p>
+     * Before setting the value
+     * {@link IExtensionPropertyDefinition#beforeSetValue(IIpsObjectPartContainer, Object)} is
+     * called. If this method returns false the method does nothing more and returns.
+     * <p>
+     * The value is only set if it is not already stored, using the objects equal method to compare
+     * both objects. In case of a new value a change event is triggered on the
+     * {@link IpsObjectPartContainer}.
+     * <p>
+     * After setting the new value, also if it was not really a new one, the method
+     * {@link IExtensionPropertyDefinition#afterSetValue(IIpsObjectPartContainer, Object)} is
+     * called.
+     * 
+     * @param propertyId The id of the extension property for which the value should be set
+     * @param value The value that should be set for the extension property
+     * @throws IllegalArgumentException if the given property id specifies no valid extension
+     *             property definition
+     */
     public void setExtPropertyValue(String propertyId, Object value) {
         checkExtProperty(propertyId);
         IExtensionPropertyDefinition property = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
@@ -94,7 +147,12 @@ public class ExtensionPropertyHandler {
         }
     }
 
-    public void extPropertiesToXml(Element element) {
+    /**
+     * Stores all the extension property values to the given {@link Element}. Extension property
+     * values without a valid {@link IExtensionPropertyDefinition} are stored as they were read.
+     * 
+     */
+    public void toXml(Element element) {
         Collection<IExtensionPropertyDefinition> propertyDefinitions = ipsObjectPartContainer
                 .getExtensionPropertyDefinitions();
         if (propertyDefinitions.isEmpty()) {
@@ -105,12 +163,12 @@ public class ExtensionPropertyHandler {
         Element extPropertiesEl = doc.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
         element.appendChild(extPropertiesEl);
         for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
-            extPropertyToXml(extPropertiesEl, propertyDefinition);
+            propertyToXml(extPropertiesEl, propertyDefinition);
         }
         extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
     }
 
-    private void extPropertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
+    private void propertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
         Element valueEl = extPropertiesEl.getOwnerDocument().createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
         extPropertiesEl.appendChild(valueEl);
         String propertyId = propertyDefinition.getPropertyId();
@@ -131,20 +189,20 @@ public class ExtensionPropertyHandler {
      */
     private void extPropertiesWithMissingDefinitionsToXml(Element extPropertiesEl,
             Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        Map<String, Object> extpropMap = getExtPropertyValueMapForMissingDefinitions(propertyDefinitions);
-        for (String propertyId : extpropMap.keySet()) {
+        ExtensionPropertyMap extpropMap = getExtPropertyValueMapForMissingDefinitions(propertyDefinitions);
+        for (String propertyId : extpropMap.internalMap.keySet()) {
             ExtensionPropertyDefinition propertyDefinition = new StringExtensionPropertyDefinition();
             propertyDefinition.setPropertyId(propertyId);
-            extPropertyToXml(extPropertiesEl, propertyDefinition);
+            propertyToXml(extPropertiesEl, propertyDefinition);
         }
     }
 
-    private Map<String, Object> getExtPropertyValueMapForMissingDefinitions(Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        Map<String, Object> extpropMap = new HashMap<String, Object>(getExtPropertyValues().internalMap);
+    private ExtensionPropertyMap getExtPropertyValueMapForMissingDefinitions(Collection<IExtensionPropertyDefinition> propertyDefinitions) {
+        ExtensionPropertyMap invalidExtProps = new ExtensionPropertyMap(extPropertyValues);
         for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
-            extpropMap.remove(propertyDefinition.getPropertyId());
+            invalidExtProps.remove(propertyDefinition.getPropertyId());
         }
-        return extpropMap;
+        return invalidExtProps;
     }
 
     /**
@@ -152,7 +210,7 @@ public class ExtensionPropertyHandler {
      * property not exists as definitions then the property will be ignored.
      * <p>
      * Note: Better do not use this method. The extension property should be initialized by
-     * {@link #initExtPropertyFromXml(Element)}.
+     * {@link #initPropertyFromXml(Element)}.
      * 
      * @param propertyId id of the extension property
      * @param extPropertyValue extension property value
@@ -176,7 +234,7 @@ public class ExtensionPropertyHandler {
      * 
      * @param containerEl The &lt;ExtensionProperties&gt; element.
      */
-    public void initExtPropertiesFromXml(Element containerEl) {
+    public void initFromXml(Element containerEl) {
         getExtPropertyValues().clear();
         initMissingExtProperties();
         Element extPropertiesEl = XmlUtil.getFirstElement(containerEl,
@@ -189,7 +247,7 @@ public class ExtensionPropertyHandler {
             Node node = nl.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE
                     && node.getNodeName().equals(IpsObjectPartContainer.XML_VALUE_ELEMENT)) {
-                initExtPropertyFromXml((Element)node);
+                initPropertyFromXml((Element)node);
             }
         }
     }
@@ -198,7 +256,7 @@ public class ExtensionPropertyHandler {
      * The method is called by the initFromXml() method to retrieve the values of the extension
      * properties.
      */
-    public void initExtPropertyFromXml(Element valueElement) {
+    private void initPropertyFromXml(Element valueElement) {
         String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
         Object value = null;
         String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
@@ -221,11 +279,10 @@ public class ExtensionPropertyHandler {
     /**
      * Validates the extension property values.
      * 
-     * @param ml The message list to which messages generated during the validation are added.
-     * 
      * @throws CoreException if an error occurs while validation the extension properties.
      */
-    public void validateExtensionProperties(MessageList ml) throws CoreException {
+    public MessageList validate() throws CoreException {
+        MessageList ml = new MessageList();
         Collection<IExtensionPropertyDefinition> properties = ipsObjectPartContainer.getExtensionPropertyDefinitions();
         for (IExtensionPropertyDefinition propertie : properties) {
             Object value = getExtPropertyValue(propertie.getPropertyId());
@@ -234,6 +291,7 @@ public class ExtensionPropertyHandler {
                 ml.add(newList);
             }
         }
+        return ml;
     }
 
     /**
@@ -246,7 +304,19 @@ public class ExtensionPropertyHandler {
 
         private static final Object EXT_PROPERTY_NULL_OBJECT = new Object();
 
-        private final ConcurrentHashMap<String, Object> internalMap = new ConcurrentHashMap<String, Object>();
+        private final ConcurrentHashMap<String, Object> internalMap;
+
+        public ExtensionPropertyMap() {
+            internalMap = new ConcurrentHashMap<String, Object>();
+        }
+
+        /**
+         * Creates a new {@link ExtensionPropertyMap} by copying the values of the given
+         * {@link ExtensionPropertyMap}
+         */
+        public ExtensionPropertyMap(ExtensionPropertyMap extensionPropertyMap) {
+            internalMap = new ConcurrentHashMap<String, Object>(extensionPropertyMap.internalMap);
+        }
 
         public Object get(Object key) {
             Object object = internalMap.get(key);
@@ -275,6 +345,10 @@ public class ExtensionPropertyHandler {
             } else {
                 return internalMap.putIfAbsent(key, value);
             }
+        }
+
+        public void remove(String propertyId) {
+            internalMap.remove(propertyId);
         }
 
     }
