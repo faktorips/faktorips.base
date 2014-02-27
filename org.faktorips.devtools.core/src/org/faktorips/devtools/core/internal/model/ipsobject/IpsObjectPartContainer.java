@@ -364,7 +364,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * property not exists as definitions then the property will be ignored.
      * <p>
      * Note: Better do not use this method. The extension property should be initialized by
-     * {@link ExtensionPropertyHandler#initExtPropertyFromXml(Element)}.
+     * {@link ExtensionPropertyHandler#initFromXml(Element)}.
      * 
      * @param propertyId id of the extension property
      * @param extPropertyValue extension property value
