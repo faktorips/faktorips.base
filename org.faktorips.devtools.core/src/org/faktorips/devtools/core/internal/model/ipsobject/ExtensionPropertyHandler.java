@@ -35,8 +35,8 @@ import org.w3c.dom.NodeList;
  * extension properties.
  * <p>
  * Extension properties are additional properties that could be registered via extension point in
- * other plugIns. They are used to store additional information at specific parts of the model or of
- * the product component.
+ * other plugIns. They are used to store additional information at specific sections of the model or
+ * of the product component.
  * <p>
  * Every {@link IpsObjectPartContainer} has to instantiate its own {@link ExtensionPropertyHandler}.
  * 
@@ -100,7 +100,7 @@ public class ExtensionPropertyHandler {
      * both objects. In case of a new value a change event is triggered on the
      * {@link IpsObjectPartContainer}.
      * <p>
-     * After setting the new value, also if it was not really a new one, the method
+     * After setting the new value, even if it was not a new one, the method
      * {@link IExtensionPropertyDefinition#afterSetValue(IIpsObjectPartContainer, Object)} is
      * called.
      * 
@@ -149,7 +149,7 @@ public class ExtensionPropertyHandler {
 
     /**
      * Stores all the extension property values to the given {@link Element}. Extension property
-     * values without a valid {@link IExtensionPropertyDefinition} are stored as they were read.
+     * values without a valid {@link IExtensionPropertyDefinition} are stored as they are read.
      * 
      */
     public void toXml(Element element) {
@@ -207,7 +207,7 @@ public class ExtensionPropertyHandler {
 
     /**
      * Add the given extension property value identified by the given property id. If the extension
-     * property not exists as definitions then the property will be ignored.
+     * property doesn't exists as definitions then the property will be ignored.
      * <p>
      * Note: Better do not use this method. The extension property should be initialized by
      * {@link #initPropertyFromXml(Element)}.
@@ -232,7 +232,7 @@ public class ExtensionPropertyHandler {
      * The method is called by the initFromXml() method to retrieve the values of the extension
      * properties.
      * 
-     * @param containerEl The &lt;ExtensionProperties&gt; element.
+     * @param containerEl The &lt;ExtensionProperties&gt; element. //TODO
      */
     public void initFromXml(Element containerEl) {
         getExtPropertyValues().clear();
@@ -279,7 +279,7 @@ public class ExtensionPropertyHandler {
     /**
      * Validates the extension property values.
      * 
-     * @throws CoreException if an error occurs while validation the extension properties.
+     * @throws CoreException if an error occurs while validating the extension properties.
      */
     public MessageList validate() throws CoreException {
         MessageList ml = new MessageList();
@@ -297,7 +297,7 @@ public class ExtensionPropertyHandler {
     /**
      * This map wraps a {@link ConcurrentHashMap} and additionally allows to add <code>null</code>
      * as a value. This is achieved by adding a null-object instead of <code>null</code>. The getter
-     * checks for the null-object and does return real <code>null</code> instead.
+     * checks for the null-object and does return a real <code>null</code> instead.
      * 
      */
     static class ExtensionPropertyMap {
