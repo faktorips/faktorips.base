@@ -23,12 +23,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
@@ -38,8 +35,6 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -53,7 +48,6 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
@@ -99,8 +93,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /** List containing all descriptions attached to the object part container. */
     private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
 
-    /** Map containing extension property IDs as keys and their values. */
-    private HashMap<String, Object> extPropertyValues = null;
+    private final ExtensionPropertyHandler extensionProperties = new ExtensionPropertyHandler(this);
 
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
@@ -174,30 +167,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public Object getExtPropertyValue(String propertyId) {
-        checkExtProperty(propertyId);
-        initExtPropertiesIfNotDoneSoFar();
-        return extPropertyValues.get(propertyId);
+        return extensionProperties.getExtPropertyValue(propertyId);
     }
 
     @Override
     public boolean isExtPropertyDefinitionAvailable(String propertyId) {
-        return getExtensionPropertyDefinition(propertyId) != null;
+        return extensionProperties.isExtPropertyDefinitionAvailable(propertyId);
     }
 
     @Override
     public void setExtPropertyValue(String propertyId, Object value) {
-        checkExtProperty(propertyId);
-        IExtensionPropertyDefinition property = getExtensionPropertyDefinition(propertyId);
-        if (!property.beforeSetValue(this, value)) {
-            // veto to set the new value by the property definition
-            return;
-        }
-        initExtPropertiesIfNotDoneSoFar();
-        if (!ObjectUtils.equals(value, getExtPropertyValue(propertyId))) {
-            extPropertyValues.put(propertyId, value);
-            objectHasChanged();
-        }
-        property.afterSetValue(this, value);
+        extensionProperties.setExtPropertyValue(propertyId, value);
     }
 
     /**
@@ -297,82 +277,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     }
 
-    private void checkExtProperty(String propertyId) {
-        if (!isExtPropertyDefinitionAvailable(propertyId)) {
-            throw new IllegalArgumentException("Extension property " + propertyId + " is not defined for type " //$NON-NLS-1$ //$NON-NLS-2$
-                    + getClass().getName());
-        }
-    }
-
-    private void initExtPropertiesIfNotDoneSoFar() {
-        if (extPropertyValues == null) {
-            extPropertyValues = new HashMap<String, Object>();
-            Collection<IExtensionPropertyDefinition> properties = getExtensionPropertyDefinitions();
-            for (IExtensionPropertyDefinition propertie : properties) {
-                extPropertyValues.put(propertie.getPropertyId(), propertie.getDefaultValue());
-            }
-        }
-    }
-
     @Override
     public Element toXml(Document doc) {
         Element newElement = createElement(doc);
         propertiesToXml(newElement);
-        extPropertiesToXml(newElement);
+        extensionProperties.toXml(newElement);
         partsToXml(doc, newElement);
         return newElement;
-    }
-
-    private void extPropertiesToXml(Element element) {
-        Collection<IExtensionPropertyDefinition> propertyDefinitions = getExtensionPropertyDefinitions();
-        if (propertyDefinitions.isEmpty()) {
-            return;
-        }
-        initExtPropertiesIfNotDoneSoFar();
-        Document doc = element.getOwnerDocument();
-        Element extPropertiesEl = doc.createElement(XML_EXT_PROPERTIES_ELEMENT);
-        element.appendChild(extPropertiesEl);
-        for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
-            extPropertyToXml(extPropertiesEl, propertyDefinition);
-        }
-        extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
-    }
-
-    private void extPropertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
-        Element valueEl = extPropertiesEl.getOwnerDocument().createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
-        extPropertiesEl.appendChild(valueEl);
-        String propertyId = propertyDefinition.getPropertyId();
-        valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
-        Object value = extPropertyValues.get(propertyId);
-        valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
-        if (value != null) {
-            propertyDefinition.valueToXml(valueEl, value);
-        }
-    }
-
-    /**
-     * Writes all extension property values without {@link ExtensionPropertyDefinition} to XML. The
-     * String value is written to XML without being modified.
-     * 
-     * @param extPropertiesEl the element the ext-property values should be added to
-     * @param propertyDefinitions the list of available extension property definitions.
-     */
-    private void extPropertiesWithMissingDefinitionsToXml(Element extPropertiesEl,
-            Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        Map<String, Object> extpropMap = getExtPropertyValueMapForMissingDefinitions(propertyDefinitions);
-        for (String propertyId : extpropMap.keySet()) {
-            ExtensionPropertyDefinition propertyDefinition = new StringExtensionPropertyDefinition();
-            propertyDefinition.setPropertyId(propertyId);
-            extPropertyToXml(extPropertiesEl, propertyDefinition);
-        }
-    }
-
-    private Map<String, Object> getExtPropertyValueMapForMissingDefinitions(Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        Map<String, Object> extpropMap = new HashMap<String, Object>(extPropertyValues);
-        for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
-            extpropMap.remove(propertyDefinition.getPropertyId());
-        }
-        return extpropMap;
     }
 
     /**
@@ -425,27 +336,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected void initFromXml(Element element, String id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
-        initExtPropertiesFromXml(element);
-    }
-
-    /**
-     * Add the given extension property value identified by the given property id. If the extension
-     * property not exists as definitions then the property will be ignored.
-     * 
-     * @param propertyId id of the extension property
-     * @param extPropertyValue extension property value
-     */
-    protected void addExtensionPropertyValue(String propertyId, String extPropertyValue) {
-        initExtPropertiesIfNotDoneSoFar();
-        Object value = null;
-        if (extPropertyValue != null) {
-            IExtensionPropertyDefinition property = getExtensionPropertyDefinition(propertyId);
-            if (property == null) {
-                return;
-            }
-            value = property.getValueFromString(extPropertyValue);
-        }
-        extPropertyValues.put(propertyId, value);
+        extensionProperties.initFromXml(element);
     }
 
     /**
@@ -457,56 +348,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected abstract void initPropertiesFromXml(Element element, String id);
 
-    /**
-     * The method is called by the initFromXml() method to retrieve the values of the extension
-     * properties.
-     * 
-     * @param containerEl The &lt;ExtensionProperties&gt; element.
-     */
-    private void initExtPropertiesFromXml(Element containerEl) {
-        extPropertyValues = null;
-        // to make sure that new extension properties are
-        // initialized with their default.
-        initExtPropertiesIfNotDoneSoFar();
-        Element extPropertiesEl = XmlUtil.getFirstElement(containerEl, XML_EXT_PROPERTIES_ELEMENT);
-        if (extPropertiesEl == null) {
-            extPropertyValues = null;
-            return;
-        }
-        NodeList nl = extPropertiesEl.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node node = nl.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE
-                    && node.getNodeName().equals(IpsObjectPartContainer.XML_VALUE_ELEMENT)) {
-                initExtPropertyFromXml((Element)node);
-            }
-        }
-    }
-
-    /**
-     * The method is called by the initFromXml() method to retrieve the values of the extension
-     * properties.
-     */
-    private void initExtPropertyFromXml(Element valueElement) {
-        String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
-        Object value = null;
-        String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-        if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
-            IExtensionPropertyDefinition property = getExtensionPropertyDefinition(propertyId);
-            if (property == null) {
-                /*
-                 * Load property values even if ExtPropDefinition is missing. In that case load
-                 * values as strings without modifying or interpreting them. See jira FIPS-772.
-                 */
-                IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Extension property " + propertyId + " for " + this //$NON-NLS-1$ //$NON-NLS-2$
-                        + " is unknown")); //$NON-NLS-1$
-                property = new StringExtensionPropertyDefinition();
-            }
-            value = property.getValueFromXml(valueElement);
-        }
-        extPropertyValues.put(propertyId, value);
-    }
-
     @Override
     public Collection<IExtensionPropertyDefinition> getExtensionPropertyDefinitions() {
         Map<String, IExtensionPropertyDefinition> properties = getIpsModel().getExtensionPropertyDefinitions(this);
@@ -516,6 +357,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(String propertyId) {
         return getIpsModel().getExtensionPropertyDefinitions(this).get(propertyId);
+    }
+
+    /**
+     * Add the given extension property value identified by the given property id. If the extension
+     * property not exists as definitions then the property will be ignored.
+     * <p>
+     * Note: Better do not use this method. The extension property should be initialized by
+     * {@link ExtensionPropertyHandler#initFromXml(Element)}.
+     * 
+     * @param propertyId id of the extension property
+     * @param extPropertyValue extension property value
+     */
+    protected void addExtensionPropertyValue(String propertyId, String extPropertyValue) {
+        extensionProperties.addExtensionPropertyValue(propertyId, extPropertyValue);
     }
 
     private void initPartContainersFromXml(Element element) {
@@ -804,7 +659,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * object part container.
      */
     protected void afterValidateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
-        validateExtensionProperties(result);
+        result.add(extensionProperties.validate());
         validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
             System.out.println("Validation of " + this + ": Finished, took " //$NON-NLS-1$ //$NON-NLS-2$
@@ -866,24 +721,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         return;
-    }
-
-    /**
-     * Validates the extension property values.
-     * 
-     * @param ml The message list to which messages generated during the validation are added.
-     * 
-     * @throws CoreException if an error occurs while validation the extension properties.
-     */
-    protected void validateExtensionProperties(MessageList ml) throws CoreException {
-        Collection<IExtensionPropertyDefinition> properties = getExtensionPropertyDefinitions();
-        for (IExtensionPropertyDefinition propertie : properties) {
-            Object value = getExtPropertyValue(propertie.getPropertyId());
-            MessageList newList = propertie.validate(this, value);
-            if (newList != null) {
-                ml.add(newList);
-            }
-        }
     }
 
     @Override

@@ -1229,4 +1229,5 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
     }
+
 }
