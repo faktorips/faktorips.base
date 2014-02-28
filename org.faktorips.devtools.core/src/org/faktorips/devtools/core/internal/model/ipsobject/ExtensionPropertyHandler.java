@@ -10,6 +10,9 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -18,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.ExtensionPropertyDefinitionXMLRepresentation;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -46,6 +50,8 @@ public class ExtensionPropertyHandler {
 
     /** Map containing extension property IDs as keys and their values. */
     private final ExtensionPropertyMap extPropertyValues = new ExtensionPropertyMap();
+
+    Map<String, Object> invalidPropertiesMap = new HashMap<String, Object>();
 
     private final IpsObjectPartContainer ipsObjectPartContainer;
 
@@ -155,7 +161,7 @@ public class ExtensionPropertyHandler {
     public void toXml(Element element) {
         Collection<IExtensionPropertyDefinition> propertyDefinitions = ipsObjectPartContainer
                 .getExtensionPropertyDefinitions();
-        if (propertyDefinitions.isEmpty()) {
+        if (propertyDefinitions.isEmpty() && invalidPropertiesMap.isEmpty()) {
             return;
         }
         initMissingExtProperties();
@@ -165,7 +171,16 @@ public class ExtensionPropertyHandler {
         for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
             propertyToXml(extPropertiesEl, propertyDefinition);
         }
+        invalidPropertiestoXML(doc, extPropertiesEl);
         extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
+    }
+
+    private void invalidPropertiestoXML(Document doc, Element extPropertiesEl) {
+        for (Entry<String, Object> entry : invalidPropertiesMap.entrySet()) {
+            if (entry.getValue() instanceof ExtensionPropertyDefinitionXMLRepresentation) {
+                ((ExtensionPropertyDefinitionXMLRepresentation)entry.getValue()).saveElementInXML(doc, extPropertiesEl);
+            }
+        }
     }
 
     private void propertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
@@ -232,7 +247,7 @@ public class ExtensionPropertyHandler {
      * The method is called by the initFromXml() method to retrieve the values of the extension
      * properties.
      * 
-     * @param containerEl The &lt;ExtensionProperties&gt; element. //TODO
+     * @param containerEl The &lt;ExtensionProperties&gt; element.
      */
     public void initFromXml(Element containerEl) {
         getExtPropertyValues().clear();
@@ -258,20 +273,21 @@ public class ExtensionPropertyHandler {
      */
     private void initPropertyFromXml(Element valueElement) {
         String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
-        Object value = null;
+        IExtensionPropertyDefinition propertyDefinition = null;
         String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
+        Object value = null;
         if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
-            IExtensionPropertyDefinition property = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
-            if (property == null) {
+            propertyDefinition = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
+            if (propertyDefinition == null) {
                 /*
                  * Load property values even if ExtPropDefinition is missing. In that case load
                  * values as strings without modifying or interpreting them. See jira FIPS-772.
                  */
                 IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Extension property " + propertyId + " for " + this //$NON-NLS-1$ //$NON-NLS-2$
                         + " is unknown")); //$NON-NLS-1$
-                property = new StringExtensionPropertyDefinition();
+                propertyDefinition = new ExtensionPropertyDefinitionXMLRepresentation(valueElement);
             }
-            value = property.getValueFromXml(valueElement);
+            value = propertyDefinition.getValueFromXml(valueElement);
         }
         getExtPropertyValues().put(propertyId, value);
     }
