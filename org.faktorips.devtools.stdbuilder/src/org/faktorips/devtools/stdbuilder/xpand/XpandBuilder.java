@@ -231,8 +231,12 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
     protected String generate() throws CoreException {
         if (getGeneratorModelRoot(getIpsObject()).isValidForCodeGeneration()) {
             StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
-            evaluateTemplate(getIpsSrcFile().getIpsObject());
-            return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+            try {
+                evaluateTemplate(getIpsObject());
+                return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+            } finally {
+                outlet.clear();
+            }
         } else {
             return null;
         }
@@ -308,30 +312,27 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
     private void getGeneratedArtifacts(IIpsObject ipsObject,
             IIpsObjectPartContainer ipsObjectPartContainer,
             List<IJavaElement> javaElements) {
-        try {
-            if (getTemplateDefinition() == null) {
-                initTemplate();
-            }
+        if (getTemplateDefinition() == null) {
+            initTemplate();
+        }
 
-            getOut().addOutlet(new NullOutlet());
-            generatorModelContext.resetContext(null);
+        getOut().addOutlet(new NullOutlet());
+        generatorModelContext.resetContext(null);
 
-            evaluateTemplate(ipsObject);
+        evaluateTemplate(ipsObject);
 
-            // At the moment only one java type per generator is supported. Multiple types are only
-            // generated for adjustments implementing formulas
-            List<IType> generatedJavaTypes = getGeneratedJavaTypes(ipsObject);
-            if (generatedJavaTypes.size() > 1) {
-                throw new RuntimeException("more than one " + generatedJavaTypes);
-            }
-            IType javaType = generatedJavaTypes.get(0);
+        // At the moment only one java type per generator is supported. Multiple types are only
+        // generated for adjustments implementing formulas
+        List<IType> generatedJavaTypes = getGeneratedJavaTypes(ipsObject);
+        if (generatedJavaTypes.size() > 1) {
+            throw new IllegalArgumentException("Found more than one " + generatedJavaTypes + " for "
+                    + ipsObjectPartContainer);
+        }
+        IType javaType = generatedJavaTypes.get(0);
 
-            Set<AbstractGeneratorModelNode> allModelNodes = modelService.getAllModelNodes(ipsObjectPartContainer);
-            for (AbstractGeneratorModelNode generatorModelNode : allModelNodes) {
-                javaElements.addAll(generatorModelNode.getGeneratedJavaElements(javaType));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while parsing template for " + ipsObjectPartContainer, e);
+        Set<AbstractGeneratorModelNode> allModelNodes = modelService.getAllModelNodes(ipsObjectPartContainer);
+        for (AbstractGeneratorModelNode generatorModelNode : allModelNodes) {
+            javaElements.addAll(generatorModelNode.getGeneratedJavaElements(javaType));
         }
     }
 

@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  */
 public class IpsSrcFileContent {
 
-    private IpsObject ipsObject;
+    private final IpsObject ipsObject;
 
     /** Map containing the root properties of the source file. */
     private Map<String, String> rootProperties = null;
@@ -100,8 +100,10 @@ public class IpsSrcFileContent {
             parsable = false;
             ipsObject.markAsFromUnparsableFile();
         } finally {
-            modified = wasModified; // set back modified flag
-            setModified(newModified); // and use setter to trigger notification
+            // reset modified flag
+            modified = wasModified;
+            // and use setter to trigger notification
+            setModified(newModified);
             wholeContentChanged();
         }
     }
@@ -203,7 +205,6 @@ public class IpsSrcFileContent {
                                 + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
                 startTime = System.currentTimeMillis();
             }
-            IpsObject ipsObject = getIpsObject();
             if (ipsObject instanceof XmlSaxSupport) {
                 is = file.getContentFromEnclosingResource();
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);

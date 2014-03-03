@@ -1073,10 +1073,26 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
         for (IIpsSrcFile srcFile : copyKeys) {
             if (!srcFile.isDirty() && (project == null || srcFile.getIpsProject().getProject().equals(project))) {
-                IpsSrcFileContent contents = ipsObjectsMap.get(srcFile);
-                contents.setModificationStamp(-1);
+                releaseInCache(srcFile);
             }
         }
+    }
+
+    /**
+     * Releases a cached {@link IIpsSrcFile} from the ipsObjectMap cache.
+     * <p>
+     * Do not really remove the IpsSrcFileContent from ipsObjectMap because we want to have the same
+     * IPS object (same object reference) after reloading the file. The object identity should never
+     * change until we have no other references remaining. Instead of removing the file we simply
+     * set the modification stamp invalid and force a reload on next access.
+     * <p>
+     * Only alternative would be to use a soft reference cache.
+     * 
+     * @param srcFile The {@link IIpsSrcFile} you want to release from the cache.
+     */
+    private void releaseInCache(IIpsSrcFile srcFile) {
+        IpsSrcFileContent contents = ipsObjectsMap.get(srcFile);
+        contents.setModificationStamp(-1);
     }
 
     /**
