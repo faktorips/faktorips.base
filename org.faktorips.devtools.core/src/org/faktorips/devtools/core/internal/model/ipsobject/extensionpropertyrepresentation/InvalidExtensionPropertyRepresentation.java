@@ -10,21 +10,15 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation;
 
-import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public abstract class ExtensionPropertyRepresentation extends ExtensionPropertyDefinition {
+/**
+ * 
+ * This helper class shall save an invalid element so that invalid input isn't lost. The element
+ * should be saved adequately in the XML document.
+ */
+public abstract class InvalidExtensionPropertyRepresentation {
 
-    public abstract void saveElementInXML(Document doc, Element extPropertiesEl);
+    public abstract void saveElementInXML(Element extPropertiesEl);
 
-    @Override
-    public void setDefaultValue(String s) {
-        setDefaultValue((Object)s);
-    }
-
-    @Override
-    public Object getValueFromString(String value) {
-        return getDefaultValue().toString();
-    }
 }

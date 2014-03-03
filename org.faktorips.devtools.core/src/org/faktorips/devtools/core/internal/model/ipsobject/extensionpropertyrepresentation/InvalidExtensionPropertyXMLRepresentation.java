@@ -14,23 +14,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class ExtensionPropertyDefinitionStringRepresentation extends ExtensionPropertyRepresentation {
+/**
+ * 
+ * A concrete class extending {@link InvalidExtensionPropertyRepresentation} to save an element in
+ * an XML document.
+ */
+public class InvalidExtensionPropertyXMLRepresentation extends InvalidExtensionPropertyRepresentation {
 
-    private final String value;
+    private Element valueElement;
 
-    ExtensionPropertyDefinitionStringRepresentation(String value) {
-        this.value = value;
+    public InvalidExtensionPropertyXMLRepresentation(Element valueElement) {
+        this.valueElement = valueElement;
     }
 
     @Override
-    public void saveElementInXML(Document doc, Element extPropertiesEl) {
-        Element element = doc.createElement(value);
-        Node importedNode = doc.importNode(element, true);
+    public void saveElementInXML(Element extPropertiesEl) {
+        Document doc = valueElement.getOwnerDocument();
+        Node importedNode = doc.importNode(valueElement, true);
         extPropertiesEl.appendChild(importedNode);
-    }
-
-    @Override
-    public Object getValueFromXml(Element valueElement) {
-        return valueElement;
     }
 }

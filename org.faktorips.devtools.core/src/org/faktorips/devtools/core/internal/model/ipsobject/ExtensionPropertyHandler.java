@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -21,7 +20,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.ExtensionPropertyDefinitionXMLRepresentation;
+import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyRepresentation;
+import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyStringRepresentation;
+import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyXMLRepresentation;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -51,9 +52,14 @@ public class ExtensionPropertyHandler {
     /** Map containing extension property IDs as keys and their values. */
     private final ExtensionPropertyMap extPropertyValues = new ExtensionPropertyMap();
 
-    Map<String, Object> invalidPropertiesMap = new HashMap<String, Object>();
-
     private final IpsObjectPartContainer ipsObjectPartContainer;
+
+    /**
+     * Map containing invalid extension property IDs as keys and their values. Only used to not
+     * loose these information. They are initialized while reading the xml and stored when writing -
+     * nothing else.
+     */
+    private Map<String, InvalidExtensionPropertyRepresentation> invalidPropertiesMap = new HashMap<String, InvalidExtensionPropertyRepresentation>();
 
     /**
      * Create a new {@link ExtensionPropertyHandler} for the given {@link IIpsObjectPartContainer}
@@ -171,19 +177,17 @@ public class ExtensionPropertyHandler {
         for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
             propertyToXml(extPropertiesEl, propertyDefinition);
         }
-        invalidPropertiestoXML(doc, extPropertiesEl);
+        invalidPropertiestoXML(extPropertiesEl);
         extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
     }
 
-    private void invalidPropertiestoXML(Document doc, Element extPropertiesEl) {
-        for (Entry<String, Object> entry : invalidPropertiesMap.entrySet()) {
-            if (entry.getValue() instanceof ExtensionPropertyDefinitionXMLRepresentation) {
-                ((ExtensionPropertyDefinitionXMLRepresentation)entry.getValue()).saveElementInXML(doc, extPropertiesEl);
-            }
+    private void invalidPropertiestoXML(Element extPropertiesEl) {
+        for (InvalidExtensionPropertyRepresentation value : invalidPropertiesMap.values()) {
+            value.saveElementInXML(extPropertiesEl);
         }
     }
 
-    private void propertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
+    public void propertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
         Element valueEl = extPropertiesEl.getOwnerDocument().createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
         extPropertiesEl.appendChild(valueEl);
         String propertyId = propertyDefinition.getPropertyId();
@@ -236,6 +240,9 @@ public class ExtensionPropertyHandler {
         if (extPropertyValue != null) {
             IExtensionPropertyDefinition property = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
             if (property == null) {
+                InvalidExtensionPropertyStringRepresentation extensionProperty = new InvalidExtensionPropertyStringRepresentation(
+                        this);
+                invalidPropertiesMap.put(propertyId, extensionProperty);
                 return;
             }
             value = property.getValueFromString(extPropertyValue);
@@ -273,22 +280,25 @@ public class ExtensionPropertyHandler {
      */
     private void initPropertyFromXml(Element valueElement) {
         String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
-        IExtensionPropertyDefinition propertyDefinition = null;
-        String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
         Object value = null;
+        String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
+        IExtensionPropertyDefinition property = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
         if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
-            propertyDefinition = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
-            if (propertyDefinition == null) {
+            if (property == null) {
                 /*
                  * Load property values even if ExtPropDefinition is missing. In that case load
                  * values as strings without modifying or interpreting them. See jira FIPS-772.
                  */
                 IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Extension property " + propertyId + " for " + this //$NON-NLS-1$ //$NON-NLS-2$
                         + " is unknown")); //$NON-NLS-1$
-                propertyDefinition = new ExtensionPropertyDefinitionXMLRepresentation(valueElement);
+                InvalidExtensionPropertyXMLRepresentation invalidProperty = new InvalidExtensionPropertyXMLRepresentation(
+                        valueElement);
+                invalidPropertiesMap.put(propertyId, invalidProperty);
+                return;
             }
-            value = propertyDefinition.getValueFromXml(valueElement);
+            value = property.getValueFromXml(valueElement);
         }
+        getExtPropertyValues().put(propertyId, value);
         getExtPropertyValues().put(propertyId, value);
     }
 
