@@ -187,12 +187,19 @@ public class ExtensionPropertyHandler {
         }
     }
 
-    public void propertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
+    private void propertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
+        String propertyId = propertyDefinition.getPropertyId();
+        Object value = getExtPropertyValues().get(propertyId);
+        propertyToXml(propertyId, propertyDefinition, value, extPropertiesEl);
+    }
+
+    public static void propertyToXml(String propertyId,
+            IExtensionPropertyDefinition propertyDefinition,
+            Object value,
+            Element extPropertiesEl) {
         Element valueEl = extPropertiesEl.getOwnerDocument().createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
         extPropertiesEl.appendChild(valueEl);
-        String propertyId = propertyDefinition.getPropertyId();
         valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
-        Object value = getExtPropertyValues().get(propertyId);
         valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
         if (value != null) {
             propertyDefinition.valueToXml(valueEl, value);
@@ -241,7 +248,7 @@ public class ExtensionPropertyHandler {
             IExtensionPropertyDefinition property = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
             if (property == null) {
                 InvalidExtensionPropertyStringRepresentation extensionProperty = new InvalidExtensionPropertyStringRepresentation(
-                        this);
+                        propertyId, extPropertyValue);
                 invalidPropertiesMap.put(propertyId, extensionProperty);
                 return;
             }

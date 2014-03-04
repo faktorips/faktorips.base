@@ -16,12 +16,12 @@ import org.w3c.dom.Node;
 
 /**
  * 
- * A concrete class extending {@link InvalidExtensionPropertyRepresentation} to save an element in
- * an XML document.
+ * This implementation of {@link InvalidExtensionPropertyRepresentation} takes an {@link Element}
+ * from and is able to save the {@link Element} in a new document.
  */
 public class InvalidExtensionPropertyXMLRepresentation extends InvalidExtensionPropertyRepresentation {
 
-    private Element valueElement;
+    private final Element valueElement;
 
     public InvalidExtensionPropertyXMLRepresentation(Element valueElement) {
         this.valueElement = valueElement;
@@ -29,7 +29,7 @@ public class InvalidExtensionPropertyXMLRepresentation extends InvalidExtensionP
 
     @Override
     public void saveElementInXML(Element extPropertiesEl) {
-        Document doc = valueElement.getOwnerDocument();
+        Document doc = extPropertiesEl.getOwnerDocument();
         Node importedNode = doc.importNode(valueElement, true);
         extPropertiesEl.appendChild(importedNode);
     }

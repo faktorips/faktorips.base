@@ -15,20 +15,24 @@ import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDe
 import org.w3c.dom.Element;
 
 /**
- * 
- * A concrete class extending {@link InvalidExtensionPropertyRepresentation} to save an element in a
- * XML document by using StringextensionPropertiyDefinitions.
+ * This implementation of {@link InvalidExtensionPropertyRepresentation} takes a String from XML
+ * initialization and try to store it the same way to XML. To do so it uses a
+ * {@link StringExtensionPropertyDefinition}.
  */
 public class InvalidExtensionPropertyStringRepresentation extends InvalidExtensionPropertyRepresentation {
-    private ExtensionPropertyHandler extensionPropertyHandler;
 
-    public InvalidExtensionPropertyStringRepresentation(ExtensionPropertyHandler extensionPropertyHandler) {
-        this.extensionPropertyHandler = extensionPropertyHandler;
+    private final String propertyId;
+    private final String value;
+
+    public InvalidExtensionPropertyStringRepresentation(String propertyId, String value) {
+        this.propertyId = propertyId;
+        this.value = value;
     }
 
     @Override
     public void saveElementInXML(Element extPropertiesEl) {
         StringExtensionPropertyDefinition stringExtensionPropertyDefinition = new StringExtensionPropertyDefinition();
-        extensionPropertyHandler.propertyToXml(extPropertiesEl, stringExtensionPropertyDefinition);
+        ExtensionPropertyHandler.propertyToXml(propertyId, stringExtensionPropertyDefinition, value, extPropertiesEl);
     }
+
 }

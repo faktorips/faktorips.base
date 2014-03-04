@@ -13,9 +13,11 @@ package org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyre
 import org.w3c.dom.Element;
 
 /**
- * 
- * This helper class shall save an invalid element so that invalid input isn't lost. The element
- * should be saved adequately in the XML document.
+ * This class is used to save invalid extension properties and makes sure they could be stored to
+ * XML the same way as they were initialized.
+ * <p>
+ * The different extensions of this class could handle different kinds of input data depending on
+ * the kind of XML initialization.
  */
 public abstract class InvalidExtensionPropertyRepresentation {
 
