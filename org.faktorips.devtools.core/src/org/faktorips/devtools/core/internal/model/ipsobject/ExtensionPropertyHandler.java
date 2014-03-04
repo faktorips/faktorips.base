@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyRepresentation;
-import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyStringRepresentation;
-import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyXMLRepresentation;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -183,7 +181,7 @@ public class ExtensionPropertyHandler {
 
     private void invalidPropertiestoXML(Element extPropertiesEl) {
         for (InvalidExtensionPropertyRepresentation value : invalidPropertiesMap.values()) {
-            value.saveElementInXML(extPropertiesEl);
+            value.appendToXml(extPropertiesEl);
         }
     }
 
@@ -247,8 +245,8 @@ public class ExtensionPropertyHandler {
         if (extPropertyValue != null) {
             IExtensionPropertyDefinition property = ipsObjectPartContainer.getExtensionPropertyDefinition(propertyId);
             if (property == null) {
-                InvalidExtensionPropertyStringRepresentation extensionProperty = new InvalidExtensionPropertyStringRepresentation(
-                        propertyId, extPropertyValue);
+                InvalidExtensionPropertyRepresentation extensionProperty = InvalidExtensionPropertyRepresentation
+                        .createInvalidExtensionProperty(propertyId, extPropertyValue);
                 invalidPropertiesMap.put(propertyId, extensionProperty);
                 return;
             }
@@ -298,8 +296,8 @@ public class ExtensionPropertyHandler {
                  */
                 IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Extension property " + propertyId + " for " + this //$NON-NLS-1$ //$NON-NLS-2$
                         + " is unknown")); //$NON-NLS-1$
-                InvalidExtensionPropertyXMLRepresentation invalidProperty = new InvalidExtensionPropertyXMLRepresentation(
-                        valueElement);
+                InvalidExtensionPropertyRepresentation invalidProperty = InvalidExtensionPropertyRepresentation
+                        .createInvalidExtensionProperty(valueElement);
                 invalidPropertiesMap.put(propertyId, invalidProperty);
                 return;
             }

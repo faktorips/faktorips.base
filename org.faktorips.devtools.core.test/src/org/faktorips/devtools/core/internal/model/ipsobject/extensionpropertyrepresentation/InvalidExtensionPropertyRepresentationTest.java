@@ -12,10 +12,9 @@ package org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyre
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.CDATASection;
@@ -24,7 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InvalidExtensionPropertyStringRepresentationTest {
+public class InvalidExtensionPropertyRepresentationTest {
 
     private String ID = "myId";
 
@@ -40,25 +39,40 @@ public class InvalidExtensionPropertyStringRepresentationTest {
     private Document document;
 
     @Mock
+    private Node importedElement;
+
+    @Mock
     private CDATASection cdata;
 
-    @Captor
-    private ArgumentCaptor<Node> childCaptor;
-
-    private InvalidExtensionPropertyStringRepresentation invalidExtensionPropertyStringRepresentation = new InvalidExtensionPropertyStringRepresentation(
-            ID, VALUE);
+    @Before
+    public void setUpElement() {
+        when(extPropertiesEl.getOwnerDocument()).thenReturn(document);
+    }
 
     @Test
-    public void testSaveElementInXML() throws Exception {
-        when(extPropertiesEl.getOwnerDocument()).thenReturn(document);
+    public void testAppendToXml_string() throws Exception {
+        InvalidExtensionPropertyRepresentation invalidExtensionPropertyStringRepresentation = InvalidExtensionPropertyRepresentation
+                .createInvalidExtensionProperty(ID, VALUE);
         when(valueElement.getOwnerDocument()).thenReturn(document);
         when(document.createElement("Value")).thenReturn(valueElement);
         when(document.createCDATASection(VALUE)).thenReturn(cdata);
 
-        invalidExtensionPropertyStringRepresentation.saveElementInXML(extPropertiesEl);
+        invalidExtensionPropertyStringRepresentation.appendToXml(extPropertiesEl);
 
+        verify(extPropertiesEl).appendChild(valueElement);
         verify(valueElement).setAttribute("id", ID);
         verify(valueElement).setAttribute("isNull", "false");
         verify(valueElement).appendChild(cdata);
+    }
+
+    @Test
+    public void testAppendToXml_element() throws Exception {
+        InvalidExtensionPropertyRepresentation invalidExtensionProperty = InvalidExtensionPropertyRepresentation
+                .createInvalidExtensionProperty(valueElement);
+        when(document.importNode(valueElement, true)).thenReturn(importedElement);
+
+        invalidExtensionProperty.appendToXml(extPropertiesEl);
+
+        verify(extPropertiesEl).appendChild(importedElement);
     }
 }

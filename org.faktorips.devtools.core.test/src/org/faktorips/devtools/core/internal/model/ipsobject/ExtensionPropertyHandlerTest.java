@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -26,8 +27,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyRepresentation;
-import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyStringRepresentation;
-import org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation.InvalidExtensionPropertyXMLRepresentation;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
@@ -252,7 +251,7 @@ public class ExtensionPropertyHandlerTest {
     @Test
     public void testToXml_invalidThenValid() throws Exception {
         extensionPropertyHandler.getInvalidPropertiesMap().put(MY_ID,
-                new InvalidExtensionPropertyXMLRepresentation(xmlValueElement));
+                InvalidExtensionPropertyRepresentation.createInvalidExtensionProperty(xmlValueElement));
         doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
         extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
 
@@ -376,9 +375,9 @@ public class ExtensionPropertyHandlerTest {
         extensionPropertyHandler.toXml(xmlRootElement);
 
         verify(xmlRootElement).appendChild(xmlExtPropElement);
-        verify(invalidExtensionProperty).saveElementInXML(xmlExtPropElement);
-        verify(invalidExtensionProperty2).saveElementInXML(xmlExtPropElement);
-        verify(invalidExtensionProperty3).saveElementInXML(xmlExtPropElement);
+        verify(invalidExtensionProperty).appendToXml(xmlExtPropElement);
+        verify(invalidExtensionProperty2).appendToXml(xmlExtPropElement);
+        verify(invalidExtensionProperty3).appendToXml(xmlExtPropElement);
     }
 
     private void initMaps() {
@@ -395,7 +394,7 @@ public class ExtensionPropertyHandlerTest {
 
         Map<String, InvalidExtensionPropertyRepresentation> map = extensionPropertyHandler.getInvalidPropertiesMap();
         assertEquals(1, map.size());
-        assertTrue(map.get(INVALID_ID) instanceof InvalidExtensionPropertyStringRepresentation);
+        assertNotNull(map.get(INVALID_ID));
     }
 
     @Test
@@ -406,6 +405,6 @@ public class ExtensionPropertyHandlerTest {
 
         Map<String, InvalidExtensionPropertyRepresentation> map = extensionPropertyHandler.getInvalidPropertiesMap();
         assertEquals(1, map.size());
-        assertTrue(map.get(INVALID_ID) instanceof InvalidExtensionPropertyXMLRepresentation);
+        assertNotNull(map.get(INVALID_ID));
     }
 }
