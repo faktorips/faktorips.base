@@ -27,14 +27,19 @@ public class ContentChangeEventTest {
 
     @Mock
     private IIpsObjectPart part;
+
     @Mock
     private IIpsObjectPart partContainer;
+
     @Mock
     private IIpsObject ipsObject;
+
     @Mock
     private IIpsSrcFile srcFile;
+
     @Mock
     private IIpsObjectPart unrelatedPart;
+
     private ContentChangeEvent event;
 
     @Before
@@ -100,4 +105,25 @@ public class ContentChangeEventTest {
 
         assertTrue(event.isAffected(ipsObject));
     }
+
+    @Test
+    public void testIsAffected_wholeContentChanged() throws Exception {
+        event = ContentChangeEvent.newWholeContentChangedEvent(srcFile);
+
+        assertTrue(event.isAffected(part));
+        assertTrue(event.isAffected(partContainer));
+        assertTrue(event.isAffected(ipsObject));
+    }
+
+    @Test
+    public void testIsAffected_notWholeContentChanged() throws Exception {
+        when(partContainer.getIpsSrcFile()).thenReturn(srcFile);
+
+        event = ContentChangeEvent.newPartChangedEvent(partContainer);
+
+        assertFalse(event.isAffected(part));
+        assertTrue(event.isAffected(partContainer));
+        assertTrue(event.isAffected(ipsObject));
+    }
+
 }

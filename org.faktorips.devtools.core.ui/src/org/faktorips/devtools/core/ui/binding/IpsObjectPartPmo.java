@@ -71,6 +71,7 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(part)) {
             partHasChanged();
+            notifyListeners(event.getPropertyChangeEvent());
         }
     }
 
