@@ -172,7 +172,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
 
     @Override
     public String toString() {
-        return "ExtendedType:" + extendedType.getName() + ", PropertyId: " + propertyId; //$NON-NLS-1$ //$NON-NLS-2$
+        return "ExtendedType:" + getExtendedType().getName() + ", PropertyId: " + getPropertyId(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

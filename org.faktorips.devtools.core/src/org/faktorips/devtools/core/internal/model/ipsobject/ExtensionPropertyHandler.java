@@ -285,7 +285,7 @@ public class ExtensionPropertyHandler {
      * The method is called by the initFromXml() method to retrieve the values of the extension
      * properties.
      */
-    private void initPropertyFromXml(Element valueElement) {
+    protected void initPropertyFromXml(Element valueElement) {
         String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
         Object value = null;
         String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
@@ -325,6 +325,10 @@ public class ExtensionPropertyHandler {
             }
         }
         return ml;
+    }
+
+    protected Map<String, InvalidExtensionPropertyRepresentation> getInvalidPropertiesMap() {
+        return invalidPropertiesMap;
     }
 
     /**
