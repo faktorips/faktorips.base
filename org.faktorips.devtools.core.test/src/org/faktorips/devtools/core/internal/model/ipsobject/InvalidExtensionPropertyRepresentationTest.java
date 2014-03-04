@@ -7,11 +7,12 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation;
+package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.InvalidExtensionPropertyRepresentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

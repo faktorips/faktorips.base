@@ -8,9 +8,8 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsobject.extensionpropertyrepresentation;
+package org.faktorips.devtools.core.internal.model.ipsobject;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyHandler;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
