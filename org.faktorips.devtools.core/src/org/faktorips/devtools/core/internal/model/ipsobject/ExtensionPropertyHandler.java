@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -20,8 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -175,12 +174,15 @@ public class ExtensionPropertyHandler {
             propertyToXml(extPropertiesEl, propertyDefinition);
         }
         invalidPropertiestoXML(extPropertiesEl);
-        extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
+        // extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
     }
 
     private void invalidPropertiestoXML(Element extPropertiesEl) {
-        for (InvalidExtensionPropertyRepresentation value : invalidPropertiesMap.values()) {
-            value.appendToXml(extPropertiesEl);
+        for (Entry<String, InvalidExtensionPropertyRepresentation> entry : invalidPropertiesMap.entrySet()) {
+            Object keyInExtPropertiesValueMap = getExtPropertyValues().get(entry.getKey());
+            if (keyInExtPropertiesValueMap == null) {
+                entry.getValue().appendToXml(extPropertiesEl);
+            }
         }
     }
 
@@ -201,31 +203,6 @@ public class ExtensionPropertyHandler {
         if (value != null) {
             propertyDefinition.valueToXml(valueEl, value);
         }
-    }
-
-    /**
-     * Writes all extension property values without {@link ExtensionPropertyDefinition} to XML. The
-     * String value is written to XML without being modified.
-     * 
-     * @param extPropertiesEl the element the ext-property values should be added to
-     * @param propertyDefinitions the list of available extension property definitions.
-     */
-    private void extPropertiesWithMissingDefinitionsToXml(Element extPropertiesEl,
-            Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        ExtensionPropertyMap extpropMap = getExtPropertyValueMapForMissingDefinitions(propertyDefinitions);
-        for (String propertyId : extpropMap.internalMap.keySet()) {
-            ExtensionPropertyDefinition propertyDefinition = new StringExtensionPropertyDefinition();
-            propertyDefinition.setPropertyId(propertyId);
-            propertyToXml(extPropertiesEl, propertyDefinition);
-        }
-    }
-
-    private ExtensionPropertyMap getExtPropertyValueMapForMissingDefinitions(Collection<IExtensionPropertyDefinition> propertyDefinitions) {
-        ExtensionPropertyMap invalidExtProps = new ExtensionPropertyMap(extPropertyValues);
-        for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
-            invalidExtProps.remove(propertyDefinition.getPropertyId());
-        }
-        return invalidExtProps;
     }
 
     /**
