@@ -59,7 +59,7 @@ public class ExtensionPropertyHandler {
      * loose these information. They are initialized while reading the xml and stored when writing -
      * nothing else.
      */
-    private Map<String, InvalidExtensionPropertyRepresentation> invalidPropertiesMap = new HashMap<String, InvalidExtensionPropertyRepresentation>();
+    private final Map<String, InvalidExtensionPropertyRepresentation> invalidPropertiesMap = new HashMap<String, InvalidExtensionPropertyRepresentation>();
 
     /**
      * Create a new {@link ExtensionPropertyHandler} for the given {@link IIpsObjectPartContainer}
@@ -305,7 +305,6 @@ public class ExtensionPropertyHandler {
             }
             value = property.getValueFromXml(valueElement);
         }
-        getExtPropertyValues().put(propertyId, value);
         getExtPropertyValues().put(propertyId, value);
     }
 

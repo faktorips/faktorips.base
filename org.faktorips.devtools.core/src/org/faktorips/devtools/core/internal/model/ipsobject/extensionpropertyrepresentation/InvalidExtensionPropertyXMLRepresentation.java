@@ -15,9 +15,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * 
  * This implementation of {@link InvalidExtensionPropertyRepresentation} takes an {@link Element}
- * from and is able to save the {@link Element} in a new document.
+ * from the XML initialization and is able to save the {@link Element} in a new document.
  */
 public class InvalidExtensionPropertyXMLRepresentation extends InvalidExtensionPropertyRepresentation {
 

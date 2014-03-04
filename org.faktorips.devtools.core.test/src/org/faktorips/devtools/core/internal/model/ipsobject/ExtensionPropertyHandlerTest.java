@@ -18,6 +18,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -84,22 +85,13 @@ public class ExtensionPropertyHandlerTest {
     private ExtensionPropertyHandler extensionPropertyHandler;
 
     @Mock
-    private Element element;
-
-    @Mock
-    private Element extPropertiesEl;
-
-    @Mock
-    private Element valueEl;
-
-    @Mock
     private InvalidExtensionPropertyRepresentation invalidExtensionProperty;
 
     @Mock
-    private InvalidExtensionPropertyStringRepresentation string;
+    private InvalidExtensionPropertyRepresentation invalidExtensionProperty2;
 
     @Mock
-    private InvalidExtensionPropertyXMLRepresentation xml;
+    private InvalidExtensionPropertyRepresentation invalidExtensionProperty3;
 
     @Mock
     private StringExtensionPropertyDefinition stringPropDef;
@@ -132,6 +124,8 @@ public class ExtensionPropertyHandlerTest {
         when(xmlExtPropElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
         when(xmlValueElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_VALUE_ELEMENT);
         when(xmlValueElement.getNodeType()).thenReturn(Node.ELEMENT_NODE);
+
+        when(xmlDocument.importNode(xmlValueElement, true)).thenReturn(xmlValueElement);
     }
 
     @Test
@@ -256,6 +250,48 @@ public class ExtensionPropertyHandlerTest {
     }
 
     @Test
+    public void testToXml_invalidThenValid() throws Exception {
+        extensionPropertyHandler.getInvalidPropertiesMap().put(MY_ID,
+                new InvalidExtensionPropertyXMLRepresentation(xmlValueElement));
+        doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
+
+        extensionPropertyHandler.toXml(xmlRootElement);
+
+        verify(xmlExtPropElement).appendChild(xmlValueElement);
+        verify(xmlExtPropElement).getOwnerDocument();
+        verifyNoMoreInteractions(xmlExtPropElement);
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The extension property definition is valid (applicable) when the object ist loaded for the
+     * first time. After editing and saving the object (1) the extension property definition gets
+     * invalid (inapplicable) at (2).
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * We expect that the value element was added to the extension properties element exactly two
+     * times. First time was called by save in (1) second time is called by the real test execution.
+     */
+    @Test
+    public void testToXml_validThenInvalid() throws Exception {
+        doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        setUpXmlElementsForInit(MY_ID, false);
+        extensionPropertyHandler.initPropertyFromXml(xmlValueElement);
+        extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
+        // (1) save for the first time
+        extensionPropertyHandler.toXml(xmlRootElement);
+        // (2) definition gets invalid
+        doReturn(Arrays.asList()).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+
+        extensionPropertyHandler.toXml(xmlRootElement);
+
+        verify(xmlExtPropElement, times(2)).appendChild(xmlValueElement);
+        verify(xmlExtPropElement, times(2)).getOwnerDocument();
+        verifyNoMoreInteractions(xmlExtPropElement);
+    }
+
+    @Test
     public void testInitFromXml_emptyElementInitDefaults() throws Exception {
         NodeList nodeList = mock(NodeList.class);
         when(xmlRootElement.getChildNodes()).thenReturn(nodeList);
@@ -332,59 +368,44 @@ public class ExtensionPropertyHandlerTest {
     }
 
     @Test
-    public void toXMLSaveInvalidPropertiesToXML() {
+    public void testToXML_saveInvalidPropertiesToXML() {
         doReturn(new ArrayList<IExtensionPropertyDefinition>()).when(ipsObjectPartContainer)
                 .getExtensionPropertyDefinitions();
-        when(element.getOwnerDocument()).thenReturn(xmlDocument);
-        when(extPropertiesEl.getOwnerDocument()).thenReturn(xmlDocument);
-        when(xmlDocument.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT)).thenReturn(extPropertiesEl);
-
         initMaps();
-        extensionPropertyHandler.toXml(element);
 
-        verify(element).appendChild(extPropertiesEl);
-        verify(invalidExtensionProperty).saveElementInXML(extPropertiesEl);
-        verify(string).saveElementInXML(extPropertiesEl);
-        verify(xml).saveElementInXML(extPropertiesEl);
+        extensionPropertyHandler.toXml(xmlRootElement);
+
+        verify(xmlRootElement).appendChild(xmlExtPropElement);
+        verify(invalidExtensionProperty).saveElementInXML(xmlExtPropElement);
+        verify(invalidExtensionProperty2).saveElementInXML(xmlExtPropElement);
+        verify(invalidExtensionProperty3).saveElementInXML(xmlExtPropElement);
     }
 
     private void initMaps() {
         Map<String, InvalidExtensionPropertyRepresentation> map = extensionPropertyHandler.getInvalidPropertiesMap();
         map.put(INVALID_ID, invalidExtensionProperty);
-        map.put(INVALID_ID + 2, string);
-        map.put(INVALID_ID + 3, xml);
+        map.put(INVALID_ID + 2, invalidExtensionProperty2);
+        map.put(INVALID_ID + 3, invalidExtensionProperty3);
     }
 
     @Test
-    public void testPropertyToXmlForInvalidStringExtpropertyRepresentation() {
-        when(extPropertiesEl.getOwnerDocument()).thenReturn(xmlDocument);
-        when(xmlDocument.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(element);
+    public void testAddExtensionPropertyValue_stringRepresentation() {
 
-        ExtensionPropertyHandler.propertyToXml(INVALID_ID, stringPropDef, string, extPropertiesEl);
-
-        verify(extPropertiesEl).appendChild(element);
-        verify(stringPropDef).valueToXml(element, string);
-    }
-
-    @Test
-    public void addInvalidPropertyToMap_StringRepresentation() {
         extensionPropertyHandler.addExtensionPropertyValue(INVALID_ID, "Value");
 
         Map<String, InvalidExtensionPropertyRepresentation> map = extensionPropertyHandler.getInvalidPropertiesMap();
-
-        assertTrue(map.size() == 1);
+        assertEquals(1, map.size());
         assertTrue(map.get(INVALID_ID) instanceof InvalidExtensionPropertyStringRepresentation);
     }
 
     @Test
-    public void initPropertyFromXmlInvalidPropertyToMap_XMLRepresentation() {
-        when(extPropertiesEl.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID)).thenReturn(INVALID_ID);
-        when(extPropertiesEl.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL)).thenReturn("IS_NULL");
+    public void testInitPropertyFromXml_InvalidPropertyToMap_XMLRepresentation() {
+        setUpXmlElementsForInit(INVALID_ID, false);
 
-        extensionPropertyHandler.initPropertyFromXml(extPropertiesEl);
+        extensionPropertyHandler.initPropertyFromXml(xmlValueElement);
+
         Map<String, InvalidExtensionPropertyRepresentation> map = extensionPropertyHandler.getInvalidPropertiesMap();
-
-        assertTrue(map.size() == 1);
+        assertEquals(1, map.size());
         assertTrue(map.get(INVALID_ID) instanceof InvalidExtensionPropertyXMLRepresentation);
     }
 }

@@ -15,7 +15,7 @@ import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDe
 import org.w3c.dom.Element;
 
 /**
- * This implementation of {@link InvalidExtensionPropertyRepresentation} takes a String from XML
+ * This implementation of {@link InvalidExtensionPropertyRepresentation} takes a String from the XML
  * initialization and try to store it the same way to XML. To do so it uses a
  * {@link StringExtensionPropertyDefinition}.
  */
