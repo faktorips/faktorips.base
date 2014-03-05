@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.InvalidExtensionPropertyRepresentation;
+import org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InvalidExtensionPropertyRepresentationTest {
+public class ExtensionPropertyValueTest {
 
     private String ID = "myId";
 
@@ -52,7 +52,7 @@ public class InvalidExtensionPropertyRepresentationTest {
 
     @Test
     public void testAppendToXml_string() throws Exception {
-        InvalidExtensionPropertyRepresentation invalidExtensionPropertyStringRepresentation = InvalidExtensionPropertyRepresentation
+        ExtensionPropertyValue invalidExtensionPropertyStringRepresentation = ExtensionPropertyValue
                 .createInvalidExtensionProperty(ID, VALUE);
         when(valueElement.getOwnerDocument()).thenReturn(document);
         when(document.createElement("Value")).thenReturn(valueElement);
@@ -68,7 +68,7 @@ public class InvalidExtensionPropertyRepresentationTest {
 
     @Test
     public void testAppendToXml_element() throws Exception {
-        InvalidExtensionPropertyRepresentation invalidExtensionProperty = InvalidExtensionPropertyRepresentation
+        ExtensionPropertyValue invalidExtensionProperty = ExtensionPropertyValue
                 .createInvalidExtensionProperty(valueElement);
         when(document.importNode(valueElement, true)).thenReturn(importedElement);
 
