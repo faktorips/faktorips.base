@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -143,6 +144,25 @@ public class ExtensionPropertyHandlerTest {
     }
 
     @Test
+    public void testGetExtPropertyValue_invalidInitialized() throws Exception {
+        ExtensionPropertyValue value = spy(ExtensionPropertyValue.createExtensionPropertyValue(MY_ID, xmlValueElement,
+                ipsObjectPartContainer));
+        when(extPropDef.getValueFromXml(xmlValueElement)).thenReturn(MY_VALUE);
+        extensionPropertyHandler.getExtPropertyValuesMap().put(MY_ID, value);
+
+        Object propertyValue = extensionPropertyHandler.getExtPropertyValue(MY_ID);
+
+        assertEquals(MY_VALUE, propertyValue);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetExtPropertyValue_expectIllegalArgumentException() throws Exception {
+        doReturn(Arrays.asList()).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+
+        extensionPropertyHandler.getExtPropertyValue(MY_ID);
+    }
+
+    @Test
     public void testSetExtPropertyValue() throws Exception {
 
         extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
@@ -201,6 +221,7 @@ public class ExtensionPropertyHandlerTest {
 
     @Test
     public void testToXml_checkExtPropertyElement() throws Exception {
+        when(xmlExtPropElement.hasChildNodes()).thenReturn(true);
 
         extensionPropertyHandler.toXml(xmlRootElement);
 
@@ -249,16 +270,35 @@ public class ExtensionPropertyHandlerTest {
 
     @Test
     public void testToXml_invalidThenValid() throws Exception {
-
-        ExtensionPropertyValue propertyRepresentation = new ExtensionPropertyValue(MY_ID, xmlValueElement);
+        ExtensionPropertyValue propertyRepresentation = ExtensionPropertyValue.createExtensionPropertyValue(MY_ID,
+                xmlValueElement, ipsObjectPartContainer);
         extensionPropertyHandler.getExtPropertyValuesMap().put(MY_ID, propertyRepresentation);
         doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
         extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
 
         extensionPropertyHandler.toXml(xmlRootElement);
 
+        verify(extPropDef).valueToXml(xmlValueElement, MY_VALUE);
         verify(xmlExtPropElement).appendChild(xmlValueElement);
         verify(xmlExtPropElement).getOwnerDocument();
+        verify(xmlExtPropElement).hasChildNodes();
+        verifyNoMoreInteractions(xmlExtPropElement);
+    }
+
+    @Test
+    public void testToXml_invalidThenValidNoSet() throws Exception {
+        ExtensionPropertyValue propertyRepresentation = ExtensionPropertyValue.createExtensionPropertyValue(MY_ID,
+                xmlValueElement, ipsObjectPartContainer);
+        extensionPropertyHandler.getExtPropertyValuesMap().put(MY_ID, propertyRepresentation);
+        doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        when(extPropDef.getValueFromXml(xmlValueElement)).thenReturn(MY_VALUE);
+
+        extensionPropertyHandler.toXml(xmlRootElement);
+
+        verify(extPropDef).valueToXml(xmlValueElement, MY_VALUE);
+        verify(xmlExtPropElement).appendChild(xmlValueElement);
+        verify(xmlExtPropElement).getOwnerDocument();
+        verify(xmlExtPropElement).hasChildNodes();
         verifyNoMoreInteractions(xmlExtPropElement);
     }
 
@@ -282,12 +322,27 @@ public class ExtensionPropertyHandlerTest {
         extensionPropertyHandler.toXml(xmlRootElement);
         // (2) definition gets invalid
         doReturn(Arrays.asList()).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        when(ipsObjectPartContainer.getExtensionPropertyDefinition(MY_ID)).thenReturn(null);
 
         extensionPropertyHandler.toXml(xmlRootElement);
 
+        verify(extPropDef).valueToXml(xmlValueElement, MY_VALUE);
         verify(xmlExtPropElement, times(2)).appendChild(xmlValueElement);
         verify(xmlExtPropElement, times(2)).getOwnerDocument();
+        verify(xmlExtPropElement, times(2)).hasChildNodes();
         verifyNoMoreInteractions(xmlExtPropElement);
+    }
+
+    @Test
+    public void testToXml_noEmptyExtPropElement() throws Exception {
+        doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
+        doReturn(Arrays.asList()).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+
+        extensionPropertyHandler.toXml(xmlRootElement);
+
+        verify(xmlRootElement).getOwnerDocument();
+        verifyNoMoreInteractions(xmlRootElement);
     }
 
     @Test
@@ -356,28 +411,30 @@ public class ExtensionPropertyHandlerTest {
         assertEquals(myMessage, resultList.getMessage(0));
     }
 
-    // @Test
+    @Test
     public void testAddExtensionPropertyValue() throws Exception {
         Object mock = mock(Object.class);
         when(extPropDef.getValueFromString(MY_VALUE)).thenReturn(mock);
 
         extensionPropertyHandler.addExtensionPropertyValue(MY_ID, MY_VALUE);
 
-        assertEquals(mock, extensionPropertyHandler.getExtPropertyValuesMap().get(MY_ID));
+        assertEquals(mock, extensionPropertyHandler.getExtPropertyValuesMap().get(MY_ID).getValue());
     }
 
     @Test
     public void testToXML_saveInvalidPropertiesToXML() {
         doReturn(new ArrayList<IExtensionPropertyDefinition>()).when(ipsObjectPartContainer)
                 .getExtensionPropertyDefinitions();
+        when(invalidExtensionProperty.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
+        when(invalidExtensionProperty2.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
+        when(invalidExtensionProperty3.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
         initMaps();
 
         extensionPropertyHandler.toXml(xmlRootElement);
 
-        verify(xmlRootElement).appendChild(xmlExtPropElement);
-        verify(invalidExtensionProperty).appendToXml(ipsObjectPartContainer, xmlExtPropElement);
-        verify(invalidExtensionProperty2).appendToXml(ipsObjectPartContainer, xmlExtPropElement);
-        verify(invalidExtensionProperty3).appendToXml(ipsObjectPartContainer, xmlExtPropElement);
+        verify(invalidExtensionProperty).appendToXml(xmlExtPropElement);
+        verify(invalidExtensionProperty2).appendToXml(xmlExtPropElement);
+        verify(invalidExtensionProperty3).appendToXml(xmlExtPropElement);
     }
 
     private void initMaps() {
@@ -385,16 +442,6 @@ public class ExtensionPropertyHandlerTest {
         map.put(INVALID_ID, invalidExtensionProperty);
         map.put(INVALID_ID + 2, invalidExtensionProperty2);
         map.put(INVALID_ID + 3, invalidExtensionProperty3);
-    }
-
-    // @Test
-    public void testAddExtensionPropertyValue_stringRepresentation() {
-
-        extensionPropertyHandler.addExtensionPropertyValue(INVALID_ID, "Value");
-
-        Map<String, ExtensionPropertyValue> map = extensionPropertyHandler.getExtPropertyValuesMap();
-        assertEquals(1, map.size());
-        assertNotNull(map.get(INVALID_ID));
     }
 
     @Test
@@ -407,4 +454,5 @@ public class ExtensionPropertyHandlerTest {
         assertEquals(1, map.size());
         assertNotNull(map.get(INVALID_ID));
     }
+
 }

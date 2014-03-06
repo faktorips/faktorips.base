@@ -19,9 +19,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExtensionPropertyValueTest {
@@ -40,7 +40,10 @@ public class ExtensionPropertyValueTest {
     private Document document;
 
     @Mock
-    private Node importedElement;
+    private Element importedElement;
+
+    @Mock
+    private CDATASection cdata;
 
     @Mock
     private IpsObjectPartContainer part;
@@ -54,14 +57,16 @@ public class ExtensionPropertyValueTest {
     @Before
     public void setUpElement() {
         when(extPropertiesEl.getOwnerDocument()).thenReturn(document);
+        when(document.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(valueElement);
     }
 
     @Test
-    public void testAppendToXml_element() throws Exception {
-        ExtensionPropertyValue invalidExtensionProperty = new ExtensionPropertyValue(ID, valueElement);
+    public void testAppendToXml_invalid_element() throws Exception {
+        ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID,
+                valueElement, part);
         when(document.importNode(valueElement, true)).thenReturn(importedElement);
 
-        invalidExtensionProperty.appendToXml(part, extPropertiesEl);
+        extensionPropertyValue.appendToXml(extPropertiesEl);
 
         verify(part).getExtensionPropertyDefinition(ID);
         verify(extPropertiesEl).appendChild(importedElement);
@@ -69,19 +74,63 @@ public class ExtensionPropertyValueTest {
     }
 
     @Test
-    public void testAppendToXml_elementISNull() throws Exception {
-        ExtensionPropertyValue invalidExtensionProperty = new ExtensionPropertyValue(ID, null);
-        invalidExtensionProperty.setValue(defaultObject);
-
+    public void testAppendToXml_valid_element() throws Exception {
+        ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID,
+                valueElement, part);
+        extensionPropertyValue.setValue(VALUE);
         when(part.getExtensionPropertyDefinition(ID)).thenReturn(propertyDef);
-        when(document.importNode(valueElement, true)).thenReturn(importedElement);
+
+        extensionPropertyValue.appendToXml(extPropertiesEl);
+
+        verify(propertyDef).valueToXml(valueElement, VALUE);
+        verify(extPropertiesEl).appendChild(valueElement);
+        verify(extPropertiesEl).getOwnerDocument();
+        verifyNoMoreInteractions(extPropertiesEl);
+    }
+
+    @Test
+    public void testAppendToXml_elementISNull() throws Exception {
+        ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID,
+                (Element)null, part);
+        extensionPropertyValue.setValue(defaultObject);
+        when(document.importNode(null, true)).thenThrow(new NullPointerException());
+
+        extensionPropertyValue.appendToXml(extPropertiesEl);
+
+        verify(extPropertiesEl).getOwnerDocument();
+        verifyNoMoreInteractions(extPropertiesEl);
+    }
+
+    @Test
+    public void testAppendToXml_invalid_string() throws Exception {
+        ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID, VALUE,
+                part);
+        when(valueElement.getOwnerDocument()).thenReturn(document);
         when(document.createElement("Value")).thenReturn(valueElement);
+        when(document.createCDATASection(VALUE)).thenReturn(cdata);
 
-        invalidExtensionProperty.appendToXml(part, extPropertiesEl);
+        extensionPropertyValue.appendToXml(extPropertiesEl);
 
+        verify(part).getExtensionPropertyDefinition(ID);
+        verify(extPropertiesEl).appendChild(valueElement);
         verify(valueElement).setAttribute("id", ID);
         verify(valueElement).setAttribute("isNull", "false");
-        verify(extPropertiesEl).appendChild(valueElement);
-        verify(propertyDef).valueToXml(valueElement, defaultObject);
+        verify(valueElement).appendChild(cdata);
     }
+
+    @Test
+    public void testAppendToXml_valid_string() throws Exception {
+        ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID, "",
+                part);
+        extensionPropertyValue.setValue(VALUE);
+        when(part.getExtensionPropertyDefinition(ID)).thenReturn(propertyDef);
+
+        extensionPropertyValue.appendToXml(extPropertiesEl);
+
+        verify(propertyDef).valueToXml(valueElement, VALUE);
+        verify(extPropertiesEl).appendChild(valueElement);
+        verify(extPropertiesEl).getOwnerDocument();
+        verifyNoMoreInteractions(extPropertiesEl);
+    }
+
 }

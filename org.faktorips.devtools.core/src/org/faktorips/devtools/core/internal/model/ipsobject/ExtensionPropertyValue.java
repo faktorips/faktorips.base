@@ -10,6 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,49 +27,73 @@ import org.w3c.dom.Node;
  * The different extensions of this class could handle different kinds of input data depending on
  * the kind of XML initialization.
  */
-public class ExtensionPropertyValue {
-
-    private Object value;
-
-    private final Element valueElement;
+public abstract class ExtensionPropertyValue {
 
     private final String propertyId;
 
-    public ExtensionPropertyValue(String propertyId, Element valueElement) {
+    private final IpsObjectPartContainer part;
+
+    private boolean valueInitialized = false;
+
+    private Object value;
+
+    private ExtensionPropertyValue(String propertyId, IpsObjectPartContainer part) {
         this.propertyId = propertyId;
-        this.valueElement = valueElement;
+        this.part = part;
     }
 
-    /**
-     * This method writes the extension property content to an XML element and appends the new
-     * {@link Element} to the provided one. TODO
-     * 
-     * @param extPropertiesElement The {@link Element} to which this method adds the new
-     *            {@link Element}
-     */
-    public void appendToXml(IpsObjectPartContainer part, Element extPropertiesEl) {
-        IExtensionPropertyDefinition extensionPropertyDefinition = part.getExtensionPropertyDefinition(propertyId);
+    public static ExtensionPropertyValue createExtensionPropertyValue(String propertyId,
+            Element valueElement,
+            IpsObjectPartContainer part) {
+        return new ExtensionPropertyXmlValue(propertyId, valueElement, part);
+    }
+
+    public static ExtensionPropertyValue createExtensionPropertyValue(String propertyId,
+            String xmlStringValue,
+            IpsObjectPartContainer part) {
+        return new ExtensionPropertyStringValue(propertyId, xmlStringValue, part);
+    }
+
+    public String getPropertyId() {
+        return propertyId;
+    }
+
+    public IpsObjectPartContainer getPart() {
+        return part;
+    }
+
+    public void setValue(Object object) {
+        this.value = object;
+        valueInitialized = true;
+    }
+
+    public Object getValue() {
+        if (!valueInitialized) {
+            loadValue();
+        }
+        return value;
+    }
+
+    public void appendToXml(Element extPropertiesEl) {
+        IExtensionPropertyDefinition extensionPropertyDefinition = getExtensionPropertyDefinition();
+        Document ownerDocument = extPropertiesEl.getOwnerDocument();
+        Element valueElement;
         if (extensionPropertyDefinition == null) {
-            if (valueElement != null) {
-                Document doc = extPropertiesEl.getOwnerDocument();
-                Node importedNode = doc.importNode(valueElement, true);
-                extPropertiesEl.appendChild(importedNode);
-            }
+            valueElement = getPreviouslyStoredXml(ownerDocument);
         } else {
-            propertyToXml(propertyId, extensionPropertyDefinition, value, extPropertiesEl);
+            valueElement = createValueElement(getPropertyId(), extensionPropertyDefinition, getValue(), ownerDocument);
+        }
+        if (valueElement != null) {
+            extPropertiesEl.appendChild(valueElement);
         }
     }
 
-    private void propertyToXml(String propertyId,
-            IExtensionPropertyDefinition propertyDefinition,
-            Object value,
-            Element extPropertiesEl) {
-        Document ownerDocument = extPropertiesEl.getOwnerDocument();
-        Element valueEl = createValueElement(propertyId, propertyDefinition, value, ownerDocument);
-        extPropertiesEl.appendChild(valueEl);
+    protected IExtensionPropertyDefinition getExtensionPropertyDefinition() {
+        IExtensionPropertyDefinition extensionPropertyDefinition = part.getExtensionPropertyDefinition(getPropertyId());
+        return extensionPropertyDefinition;
     }
 
-    private Element createValueElement(String propertyId,
+    protected Element createValueElement(String propertyId,
             IExtensionPropertyDefinition propertyDefinition,
             Object value,
             Document ownerDocument) {
@@ -77,36 +106,80 @@ public class ExtensionPropertyValue {
         return valueEl;
     }
 
-    public void setValue(Object object) {
-        this.value = object;
+    protected abstract void loadValue();
+
+    protected abstract Element getPreviouslyStoredXml(Document ownerDocument);
+
+    protected void logMissingPropertyDefinition() {
+        IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Extension property " + getPropertyId() + " for " + getPart() //$NON-NLS-1$ //$NON-NLS-2$
+                + " is unknown")); //$NON-NLS-1$
     }
 
-    public Object getValue() {
-        return value;
+    private static class ExtensionPropertyXmlValue extends ExtensionPropertyValue {
+
+        private final Element valueElement;
+
+        public ExtensionPropertyXmlValue(String propertyId, Element valueElement, IpsObjectPartContainer part) {
+            super(propertyId, part);
+            this.valueElement = valueElement;
+        }
+
+        @Override
+        protected Element getPreviouslyStoredXml(Document ownerDocument) {
+            if (valueElement == null) {
+                return null;
+            } else {
+                Node importedNode = ownerDocument.importNode(valueElement, true);
+                return (Element)importedNode;
+            }
+        }
+
+        @Override
+        protected void loadValue() {
+            IExtensionPropertyDefinition propertyDefinition = getExtensionPropertyDefinition();
+            String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
+            if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
+                if (propertyDefinition == null) {
+                    logMissingPropertyDefinition();
+                } else {
+                    Object value = propertyDefinition.getValueFromXml(valueElement);
+                    setValue(value);
+                }
+            }
+        }
+
     }
 
-    // /**
-    // * This implementation of {@link ExtensionPropertyValue} takes a String from the
-    // * XML initialization and try to store it the same way to XML. To do so it uses a
-    // * {@link StringExtensionPropertyDefinition}.
-    // */
-    // static class ExtensionPropertyValueString extends ExtensionPropertyValue {
-    //
-    // private final String propertyId;
-    // private final String value;
-    //
-    // public ExtensionPropertyValueString(String propertyId, String value) {
-    // this.propertyId = propertyId;
-    // this.value = value;
-    // }
-    //
-    // @Override
-    // public void appendToXml(Element extPropertiesEl) {
-    // StringExtensionPropertyDefinition stringExtensionPropertyDefinition = new
-    // StringExtensionPropertyDefinition();
-    // ExtensionPropertyHandler.propertyToXml(propertyId, stringExtensionPropertyDefinition, value,
-    // extPropertiesEl);
-    // }
-    // }
+    /**
+     * This implementation of {@link ExtensionPropertyValue} takes a String from the XML
+     * initialization and try to store it the same way to XML. To do so it uses a
+     * {@link StringExtensionPropertyDefinition}.
+     */
+    private static class ExtensionPropertyStringValue extends ExtensionPropertyValue {
+
+        private final String xmlStringValue;
+
+        public ExtensionPropertyStringValue(String propertyId, String xmlStringValue, IpsObjectPartContainer part) {
+            super(propertyId, part);
+            this.xmlStringValue = xmlStringValue;
+        }
+
+        @Override
+        protected Element getPreviouslyStoredXml(Document ownerDocument) {
+            StringExtensionPropertyDefinition stringExtensionPropertyDefinition = new StringExtensionPropertyDefinition();
+            return createValueElement(getPropertyId(), stringExtensionPropertyDefinition, xmlStringValue, ownerDocument);
+        }
+
+        @Override
+        protected void loadValue() {
+            IExtensionPropertyDefinition extensionPropertyDefinition = getExtensionPropertyDefinition();
+            if (extensionPropertyDefinition != null) {
+                Object valueFromString = extensionPropertyDefinition.getValueFromString(xmlStringValue);
+                setValue(valueFromString);
+            } else {
+                logMissingPropertyDefinition();
+            }
+        }
+    }
 
 }
