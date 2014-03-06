@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -94,6 +95,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
 
     private final ExtensionPropertyHandler extensionProperties = new ExtensionPropertyHandler(this);
+
+    /** Version of the object part container */
+    private IVersion version;
 
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
@@ -1041,4 +1045,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         initFromXml(xmlElement);
     }
 
+    @Override
+    public void setVersion(IVersion version) {
+        this.version = version;
+        objectHasChanged();
+    }
+
+    @Override
+    public IVersion getVersion() {
+        return version;
+    }
 }
