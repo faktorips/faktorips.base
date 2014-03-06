@@ -15,7 +15,6 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.util.memento.MementoSupport;
@@ -109,20 +108,5 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      *             class of this container
      */
     public void copyFrom(IIpsObjectPartContainer source);
-
-    /**
-     * Sets the Version of an IpsObjectPartContainer
-     * 
-     * @param version The version that the user wants to set
-     */
-    public void setVersion(IVersion version);
-
-    /**
-     * Returns the version that is set by the user for an IpsObjectPartContainer. The version is
-     * mutable.
-     * 
-     * @return the version that was set
-     */
-    public IVersion getVersion();
 
 }

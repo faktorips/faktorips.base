@@ -99,8 +99,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private final ExtensionPropertyHandler extensionProperties = new ExtensionPropertyHandler(this);
 
-    /** Version of the object part container */
-    private IVersion version;
+    /** The version since which this part is available. May be <code>null</code>. */
+    private IVersion<?> sinceVersion;
 
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
@@ -334,8 +334,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Writes the version to an element
      */
     public void versionToXML(Element element) {
-        if (version != null) {
-            element.setAttribute(XML_ATTRIBUTE_VERSION, version.asString());
+        if (sinceVersion != null) {
+            element.setAttribute(XML_ATTRIBUTE_VERSION, sinceVersion.asString());
         }
     }
 
@@ -1058,14 +1058,36 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         initFromXml(xmlElement);
     }
 
-    @Override
-    public void setVersion(IVersion version) {
-        this.version = version;
-        objectHasChanged();
+    /**
+     * Sets the Version since which this part is available in the model.
+     * <p>
+     * The method is implemented in {@link IpsObjectPartContainer} because most
+     * {@link IIpsObjectPartContainer} will have a since version. However the elements that should
+     * use the since-version mechanism are marked by the interface {@link IVersionControlledElement}
+     * which also publishes this method.
+     * 
+     * @param version The version that should be set as since-version
+     * @see IVersionControlledElement#setSinceVersion(IVersion)
+     */
+    public void setSinceVersion(IVersion<?> version) {
+        IVersion<?> oldValue = this.sinceVersion;
+        this.sinceVersion = version;
+        valueChanged(oldValue, version, IVersionControlledElement.PROPERTY_SINCE_VERSION);
     }
 
-    @Override
-    public IVersion getVersion() {
-        return version;
+    /**
+     * Returns the version since which this part is available. The version was set by
+     * {@link #setSinceVersion(IVersion)}.
+     * <p>
+     * The method is implemented in {@link IpsObjectPartContainer} because most
+     * {@link IIpsObjectPartContainer} will have a since version. However the elements that should
+     * use the since-version mechanism are marked by the interface {@link IVersionControlledElement}
+     * which also publishes this method.
+     * 
+     * @return the version since which this element is available
+     * @see IVersionControlledElement#getSinceVersion()
+     */
+    public IVersion<?> getSinceVersion() {
+        return sinceVersion;
     }
 }

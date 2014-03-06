@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.Version;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersion;
@@ -927,8 +926,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXML_VersionToXml() {
-        IVersion version = new Version(ANY_ID);
-        container.setVersion(version);
+        IVersion<?> version = mock(IVersion.class);
+        when(version.asString()).thenReturn(ANY_ID);
+        ((IpsObjectPartContainer)container).setSinceVersion(version);
         Element el = container.toXml(newDocument());
         String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
 
