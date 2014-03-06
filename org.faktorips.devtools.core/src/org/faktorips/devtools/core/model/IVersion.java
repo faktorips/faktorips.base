@@ -23,6 +23,5 @@ public interface IVersion {
      * 
      * @return String containing the specified Version
      */
-    public String getVersionAsString();
-
+    String asString();
 }

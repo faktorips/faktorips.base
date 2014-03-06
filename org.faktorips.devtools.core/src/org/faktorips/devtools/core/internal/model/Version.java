@@ -16,7 +16,6 @@ import org.faktorips.devtools.core.model.IVersion;
  * This class implements {@link IVersion} in order to represent a Version adequately.
  */
 public class Version implements IVersion {
-
     private String versionAsString;
 
     public Version(String versionAsString) {
@@ -24,7 +23,7 @@ public class Version implements IVersion {
     }
 
     @Override
-    public String getVersionAsString() {
+    public String asString() {
         return versionAsString;
     }
 }

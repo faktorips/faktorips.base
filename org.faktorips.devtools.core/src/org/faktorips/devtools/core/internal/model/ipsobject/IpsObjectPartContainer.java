@@ -88,6 +88,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected static final String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
 
+    /** Name of the object part container's version */
+    protected static final String XML_ATTRIBUTE_VERSION = "since"; //$NON-NLS-1$
+
     /** List containing all labels attached to the object part container. */
     private final List<ILabel> labels = new ArrayList<ILabel>(2);
 
@@ -287,6 +290,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         propertiesToXml(newElement);
         extensionProperties.toXml(newElement);
         partsToXml(doc, newElement);
+        versionToXML(newElement);
         return newElement;
     }
 
@@ -324,6 +328,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected boolean isPartSavedToXml(IIpsObjectPart part) {
         return true;
+    }
+
+    /**
+     * Writes the version to an element
+     */
+    public void versionToXML(Element element) {
+        if (version != null) {
+            element.setAttribute(XML_ATTRIBUTE_VERSION, version.asString());
+        }
     }
 
     /**

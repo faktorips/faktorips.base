@@ -39,8 +39,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.Version;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
@@ -921,6 +923,16 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
                 .getExtensionPropertyDefinition(ANY_ID);
 
         assertNotNull(extensionPropertyDefinitions);
+    }
+
+    @Test
+    public void testToXML_VersionToXml() {
+        IVersion version = new Version(ANY_ID);
+        container.setVersion(version);
+        Element el = container.toXml(newDocument());
+        String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
+
+        assertEquals(ANY_ID, attribute);
     }
 
     private static class TestUnlabeledIpsObjectPartContainer extends IpsObjectPartContainer {
