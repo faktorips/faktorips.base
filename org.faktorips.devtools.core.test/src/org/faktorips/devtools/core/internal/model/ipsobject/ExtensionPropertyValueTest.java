@@ -10,15 +10,15 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyValue;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,7 +43,13 @@ public class ExtensionPropertyValueTest {
     private Node importedElement;
 
     @Mock
-    private CDATASection cdata;
+    private IpsObjectPartContainer part;
+
+    @Mock
+    private IExtensionPropertyDefinition propertyDef;
+
+    @Mock
+    private Object defaultObject;
 
     @Before
     public void setUpElement() {
@@ -51,29 +57,31 @@ public class ExtensionPropertyValueTest {
     }
 
     @Test
-    public void testAppendToXml_string() throws Exception {
-        ExtensionPropertyValue invalidExtensionPropertyStringRepresentation = ExtensionPropertyValue
-                .createInvalidExtensionProperty(ID, VALUE);
-        when(valueElement.getOwnerDocument()).thenReturn(document);
-        when(document.createElement("Value")).thenReturn(valueElement);
-        when(document.createCDATASection(VALUE)).thenReturn(cdata);
+    public void testAppendToXml_element() throws Exception {
+        ExtensionPropertyValue invalidExtensionProperty = new ExtensionPropertyValue(ID, valueElement);
+        when(document.importNode(valueElement, true)).thenReturn(importedElement);
 
-        invalidExtensionPropertyStringRepresentation.appendToXml(extPropertiesEl);
+        invalidExtensionProperty.appendToXml(part, extPropertiesEl);
 
-        verify(extPropertiesEl).appendChild(valueElement);
-        verify(valueElement).setAttribute("id", ID);
-        verify(valueElement).setAttribute("isNull", "false");
-        verify(valueElement).appendChild(cdata);
+        verify(part).getExtensionPropertyDefinition(ID);
+        verify(extPropertiesEl).appendChild(importedElement);
+        verifyNoMoreInteractions(part);
     }
 
     @Test
-    public void testAppendToXml_element() throws Exception {
-        ExtensionPropertyValue invalidExtensionProperty = ExtensionPropertyValue
-                .createInvalidExtensionProperty(valueElement);
+    public void testAppendToXml_elementISNull() throws Exception {
+        ExtensionPropertyValue invalidExtensionProperty = new ExtensionPropertyValue(ID, null);
+        invalidExtensionProperty.setValue(defaultObject);
+
+        when(part.getExtensionPropertyDefinition(ID)).thenReturn(propertyDef);
         when(document.importNode(valueElement, true)).thenReturn(importedElement);
+        when(document.createElement("Value")).thenReturn(valueElement);
 
-        invalidExtensionProperty.appendToXml(extPropertiesEl);
+        invalidExtensionProperty.appendToXml(part, extPropertiesEl);
 
-        verify(extPropertiesEl).appendChild(importedElement);
+        verify(valueElement).setAttribute("id", ID);
+        verify(valueElement).setAttribute("isNull", "false");
+        verify(extPropertiesEl).appendChild(valueElement);
+        verify(propertyDef).valueToXml(valueElement, defaultObject);
     }
 }
