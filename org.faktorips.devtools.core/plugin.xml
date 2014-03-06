@@ -24,6 +24,7 @@
    <extension-point id="teamOperationsFactory" name="TeamOperationsFactory" schema="schema/teamOperationsFactory.exsd"/>
    <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
+   <extension-point id="versionProvider" name="versionProvider" schema="schema/versionProvider.exsd"/>
    
    
 <!-- 
