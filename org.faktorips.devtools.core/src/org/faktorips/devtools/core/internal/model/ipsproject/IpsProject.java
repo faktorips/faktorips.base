@@ -63,10 +63,12 @@ import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.VersionProviderIpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -119,6 +121,8 @@ import org.w3c.dom.Element;
 public class IpsProject extends IpsElement implements IIpsProject {
 
     public static final boolean TRACE_IPSPROJECT_PROPERTIES;
+
+    private IVersionProvider versionProvider = new VersionProviderIpsProject();
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
@@ -1938,6 +1942,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
 
         };
+    }
+
+    @Override
+    public IVersionProvider getVersionProvider() {
+        return versionProvider;
+    }
+
+    @Override
+    public void setVersionProvider(IVersionProvider versionProvider) {
+        this.versionProvider = versionProvider;
+
     }
 
 }

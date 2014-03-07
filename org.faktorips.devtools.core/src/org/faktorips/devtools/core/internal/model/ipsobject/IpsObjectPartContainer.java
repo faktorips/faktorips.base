@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersion;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -353,7 +355,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected void initFromXml(Element element, String id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
+        initVersionFromXML(element);
         extensionProperties.initFromXml(element);
+    }
+
+    private void initVersionFromXML(Element element) {
+        String sinceVersionString = element.getAttribute(XML_ATTRIBUTE_VERSION);
+        if (StringUtils.isNotEmpty(sinceVersionString)) {
+            IVersionProvider versionProvider = getIpsProject().getVersionProvider();
+            setSinceVersion(versionProvider.getVersion(sinceVersionString));
+        }
     }
 
     /**

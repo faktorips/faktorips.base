@@ -30,10 +30,10 @@ public class VersionProviderIpsProject implements IVersionProvider {
     }
 
     @Override
-    public IVersion getModelVersion(IIpsPackageFragmentRoot packageFragmentRoot) {
+    public IVersion<?> getModelVersion(IIpsPackageFragmentRoot packageFragmentRoot) {
         IpsObjectPartContainer partContainer = getIpsObjectPartContainer(packageFragmentRoot);
         if (partContainer != null) {
-            partContainer.getVersion();
+            partContainer.getSinceVersion();
         }
         return null;
     }
@@ -42,7 +42,7 @@ public class VersionProviderIpsProject implements IVersionProvider {
     public void setModelVersion(IIpsPackageFragmentRoot packageFragmentRoot, IVersion version) {
         IpsObjectPartContainer partContainer = getIpsObjectPartContainer(packageFragmentRoot);
         if (partContainer != null) {
-            partContainer.setVersion(version);
+            partContainer.setSinceVersion(version);
         }
     }
 

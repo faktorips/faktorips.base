@@ -30,8 +30,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -888,8 +891,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * relative to the project's object path entries.
      * 
      * @param path The path of the requested resource
-     * @return <code>true</code> if the resource could be found in this project's entries, <code>false</code> if
-     *         not
+     * @return <code>true</code> if the resource could be found in this project's entries,
+     *         <code>false</code> if not
      */
     public boolean containsResource(String path);
 
@@ -924,4 +927,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     @Override
     public void delete() throws CoreException;
 
+    /**
+     * Returns the according {@link IVersionProvider} of the {@link IpsProject}. The VersionProvider
+     * handles the versions of different {@link IpsObjectPartContainer} in this {@link IpsProject}.
+     * 
+     * @return IVersionProvider for the IpsProject
+     */
+    public IVersionProvider getVersionProvider();
+
+    /**
+     * Sets the new {@link IVersionProvider} of the {@link IpsProject}.
+     */
+    public void setVersionProvider(IVersionProvider versionProvider);
 }
