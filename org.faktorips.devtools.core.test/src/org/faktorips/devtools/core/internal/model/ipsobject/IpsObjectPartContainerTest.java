@@ -38,12 +38,12 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider.Version;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.VersionProviderIpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersion;
-import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
@@ -419,19 +419,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXmlVersion() {
+    public void testInitFromXmlVersion() throws CoreException {
         Element docEl = getTestDocument().getDocumentElement();
-        docEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION, ANY_NAME);
-        IIpsProject project = container.getIpsProject();
-        IVersionProvider versionProvider = project.getVersionProvider();
-        versionProvider = mock(VersionProviderIpsProject.class);
-        IVersion<?> version = mock(IVersion.class);
-        project.setVersionProvider(versionProvider);
-        when(versionProvider.getVersion(ANY_NAME)).thenReturn(version);
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        ipsProject.setProperties(properties);
+        IVersion<Version> expectedVersion = new DefaultVersionProvider(null).getVersion("1.2.3");
 
         container.initFromXml(docEl);
 
-        assertEquals(version, container.getSinceVersion());
+        assertEquals(expectedVersion, container.getSinceVersion());
     }
 
     @Test

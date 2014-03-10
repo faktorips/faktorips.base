@@ -3,7 +3,7 @@
 <schema targetNamespace="org.faktorips.devtools.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.faktorips.devtools.core" id="VersionProvider" name="VersionProvider"/>
+         <meta.schema plugin="org.faktorips.devtools.core" id="versionProvider" name="Version Provider"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -62,7 +62,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.IVersionProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.IVersionProviderFactory"/>
                </appInfo>
             </annotation>
          </attribute>

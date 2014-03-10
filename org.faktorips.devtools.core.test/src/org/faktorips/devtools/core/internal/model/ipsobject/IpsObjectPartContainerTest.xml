@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<TestPart id="0" name="test">
+<TestPart id="0" name="test" since="1.2.3">
 	<ExtensionProperties>
 		<Value id="org.foo.prop0" isNull="false"><![CDATA[value0]]></Value>
 		<Value id="org.foo.prop1"><![CDATA[value1]]></Value>

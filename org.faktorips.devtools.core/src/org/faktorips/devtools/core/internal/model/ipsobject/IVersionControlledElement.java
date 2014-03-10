@@ -30,7 +30,7 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * 
      * @param version The version that should be set as since-version
      */
-    public void setSinceVersion(IVersion version);
+    public void setSinceVersion(IVersion<?> version);
 
     /**
      * Returns the version since which this part is available. The version was set by
@@ -38,6 +38,6 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * 
      * @return the version since which this element is available
      */
-    public IVersion getSinceVersion();
+    public IVersion<?> getSinceVersion();
 
 }

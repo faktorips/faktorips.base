@@ -362,7 +362,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private void initVersionFromXML(Element element) {
         String sinceVersionString = element.getAttribute(XML_ATTRIBUTE_VERSION);
         if (StringUtils.isNotEmpty(sinceVersionString)) {
-            IVersionProvider versionProvider = getIpsProject().getVersionProvider();
+            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             setSinceVersion(versionProvider.getVersion(sinceVersionString));
         }
     }
@@ -401,7 +401,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         extensionProperties.addExtensionPropertyValue(propertyId, extPropertyValue);
     }
 
-    private void initPartContainersFromXml(Element element) {
+    protected void initPartContainersFromXml(Element element) {
         HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
         Set<String> idSet = new HashSet<String>();
         reinitPartCollections();

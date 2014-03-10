@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -57,6 +58,8 @@ import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -2151,6 +2154,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         List<IIpsSrcFile> allIpsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
 
         assertTrue(allIpsSrcFiles.isEmpty());
+    }
+
+    @Test
+    public void testGetVersionProvider() throws Exception {
+
+        IVersionProvider<?> versionProvider = ipsProject.getVersionProvider();
+
+        assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
     }
 
 }

@@ -59,11 +59,11 @@ import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.VersionProviderIpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -103,6 +103,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -121,8 +122,6 @@ import org.w3c.dom.Element;
 public class IpsProject extends IpsElement implements IIpsProject {
 
     public static final boolean TRACE_IPSPROJECT_PROPERTIES;
-
-    private IVersionProvider versionProvider = new VersionProviderIpsProject();
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
@@ -145,6 +144,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IProject project;
 
     private IIpsProjectNamingConventions namingConventions = null;
+
+    private IVersionProvider<?> versionProvider;
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -1913,14 +1914,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getPropertiesInternal().isPersistenceSupportEnabled();
     }
 
-    @Override
-    public void delete() throws CoreException {
-        for (IIpsPackageFragmentRoot root : getIpsPackageFragmentRoots()) {
-            root.delete();
-        }
-        getCorrespondingResource().delete(true, null);
-    }
-
+    /**
+     * 
+     * {@inheritDoc}
+     * <p>
+     * 
+     * @deprecated This version format is only valid in case of a configured
+     *             {@link IReleaseAndDeploymentOperation}. Use {@link #getVersionProvider()} instead
+     *             to always get a valid {@link IVersionFormat}.
+     */
+    @Deprecated
     @Override
     public IVersionFormat getVersionFormat() throws CoreException {
         final IConfigurationElement releaseExtension = ProductReleaseProcessor.getReleaseExtensionElement(this);
@@ -1945,14 +1948,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IVersionProvider getVersionProvider() {
+    public IVersionProvider<?> getVersionProvider() {
+        if (versionProvider == null) {
+            loadVersionProvider();
+        }
         return versionProvider;
     }
 
-    @Override
-    public void setVersionProvider(IVersionProvider versionProvider) {
-        this.versionProvider = versionProvider;
+    private void loadVersionProvider() {
+        // TODO String versionProviderId = getReadOnlyProperties().getVersionProviderId();
+        versionProvider = new DefaultVersionProvider(this);
+    }
 
+    @Override
+    public void delete() throws CoreException {
+        for (IIpsPackageFragmentRoot root : getIpsPackageFragmentRoots()) {
+            root.delete();
+        }
+        getCorrespondingResource().delete(true, null);
     }
 
 }
