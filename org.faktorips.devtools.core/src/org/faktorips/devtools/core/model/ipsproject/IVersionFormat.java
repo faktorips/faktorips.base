@@ -26,7 +26,8 @@ public interface IVersionFormat {
     public boolean isCorrectVersionFormat(String version);
 
     /**
-     * Returns a user readable string representation of the version format.
+     * Returns a user readable string representation of the version format. For example
+     * "X.X.X.qualifier". It is only used to show help information to the user.
      * 
      * @return a readable version of the format
      */

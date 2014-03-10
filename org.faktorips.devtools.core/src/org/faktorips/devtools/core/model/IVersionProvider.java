@@ -9,37 +9,43 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 
 /**
+ * The {@link IVersionProvider} is able to provides versions for different uses. Its main use is to
+ * provide the version of the project its belongs to. It also is used to create a {@link IVersion}
+ * instance for a specified String. To verify the format of a version string it extends the
+ * {@link IVersionFormat} interface.
+ * <p>
+ * The generic type K specifies the type of version that is handled by this {@link IVersionProvider}
+ * . This is important to verify that the versions are not mixed within one version provider.
  * 
- * The {@link IVersionProvider} provide its callers with an adequate version of an
- * {@link IpsObjectPartContainer}.
  */
-public interface IVersionProvider {
+public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat {
 
     /**
-     * Creates a new Version by using an inputString
+     * Creates a new Version by using an parameter string.
      * 
-     * @param versionAsString The String that a user specified for a version
-     * @return the new Version
+     * @param versionAsString The String that should be converted into a version instance.
+     * @return the new Version that reflects the specified versionString
+     * 
+     * @throws IllegalArgumentException if the version string could not be parsed by this
+     *             {@link IVersionProvider}. Use {@link #isCorrectVersionFormat(String)} to make
+     *             sure to only get valid results.
      */
-    public IVersion getVersion(String versionAsString);
+    public IVersion<K> getVersion(String versionAsString);
 
     /**
-     * Returns the correct IVersion by searching through the given packageFragmentRoot
+     * Returns the version of the project this {@link IVersionProvider} belongs to.
      * 
-     * @param packageFragmentRoot containing the set of package fragment
-     * @return IVersion of the according model
+     * @return IVersion of the according project
      */
-    public IVersion getModelVersion(IIpsPackageFragmentRoot packageFragmentRoot);
+    public IVersion<K> getProjectlVersion();
 
     /**
-     * Sets the correct Version for the according model in the packageFragmentRoot
+     * Sets the correct Version in the project this {@link IVersionProvider} belongs to.
      * 
-     * @param packageFragmentRoot containing the set of package fragment
      * @param version of the according model
      */
-    public void setModelVersion(IIpsPackageFragmentRoot packageFragmentRoot, IVersion version);
+    public void setProjectVersion(IVersion<K> version);
 }
