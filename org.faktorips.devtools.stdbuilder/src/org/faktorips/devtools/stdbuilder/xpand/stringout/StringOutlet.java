@@ -142,4 +142,12 @@ public class StringOutlet extends Outlet {
         }
     }
 
+    /**
+     * Clear the internally cached string handles. After calling this method you cannot access any
+     * previously stored output!
+     */
+    public void clear() {
+        stringHandles.clear();
+    }
+
 }

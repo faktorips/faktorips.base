@@ -25,34 +25,87 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ContentChangeEvent {
 
-    public final static int TYPE_WHOLE_CONTENT_CHANGED = 1;
+    public static final int TYPE_WHOLE_CONTENT_CHANGED = 1;
 
-    public final static int TYPE_PROPERTY_CHANGED = 2;
+    public static final int TYPE_PROPERTY_CHANGED = 2;
 
-    public final static int TYPE_PART_ADDED = 4;
+    public static final int TYPE_PART_ADDED = 4;
 
-    public final static int TYPE_PART_REMOVED = 8;
+    public static final int TYPE_PART_REMOVED = 8;
 
-    public final static int TYPE_PARTS_CHANGED_POSITIONS = 16;
+    public static final int TYPE_PARTS_CHANGED_POSITIONS = 16;
 
-    public final static ContentChangeEvent newPartAddedEvent(IIpsObjectPart part) {
+    private final IIpsSrcFile ipsSrcFile;
+
+    private final IIpsObjectPart part;
+
+    private final List<IIpsObjectPart> movedParts;
+
+    private final int type;
+
+    private final PropertyChangeEvent propertyChangeEvent;
+
+    private ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
+        this.ipsSrcFile = ipsSrcFile;
+        type = TYPE_WHOLE_CONTENT_CHANGED;
+        propertyChangeEvent = new PropertyChangeEvent(ipsSrcFile, null, null, null);
+        part = null;
+        movedParts = null;
+    }
+
+    private ContentChangeEvent(IIpsObjectPart part, int eventType) {
+        ArgumentCheck.notNull(part);
+        this.part = part;
+        ipsSrcFile = part.getIpsObject().getIpsSrcFile();
+        type = eventType;
+        propertyChangeEvent = new PropertyChangeEvent(part, null, null, null);
+        movedParts = null;
+    }
+
+    private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
+        ipsSrcFile = file;
+        movedParts = Collections.unmodifiableList(Arrays.asList(parts));
+        type = TYPE_PARTS_CHANGED_POSITIONS;
+        propertyChangeEvent = new PropertyChangeEvent(file, null, null, null);
+        part = null;
+    }
+
+    private ContentChangeEvent(List<? extends IIpsObjectPart> parts) {
+        movedParts = Collections.unmodifiableList(parts);
+        type = TYPE_PARTS_CHANGED_POSITIONS;
+        ipsSrcFile = parts.get(0).getIpsSrcFile();
+        part = null;
+        propertyChangeEvent = new PropertyChangeEvent(ipsSrcFile, null, null, null);
+    }
+
+    private ContentChangeEvent(IIpsObjectPart part, PropertyChangeEvent propertyChangeEvent) {
+        ArgumentCheck.notNull(part);
+        this.part = part;
+        ipsSrcFile = part.getIpsSrcFile();
+        type = TYPE_PROPERTY_CHANGED;
+        this.propertyChangeEvent = propertyChangeEvent;
+        movedParts = null;
+    }
+
+    public static final ContentChangeEvent newPartAddedEvent(IIpsObjectPart part) {
         return new ContentChangeEvent(part, TYPE_PART_ADDED);
     }
 
-    public final static ContentChangeEvent newPartRemovedEvent(IIpsObjectPart part) {
+    public static final ContentChangeEvent newPartRemovedEvent(IIpsObjectPart part) {
         return new ContentChangeEvent(part, TYPE_PART_REMOVED);
     }
 
-    public final static ContentChangeEvent newPartChangedEvent(IIpsObjectPart part) {
+    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPart part) {
         return new ContentChangeEvent(part, TYPE_PROPERTY_CHANGED);
     }
 
-    public final static ContentChangeEvent newPartChangedEvent(IIpsObjectPart part,
+    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPart part,
             PropertyChangeEvent propertyChangeEvent) {
+        ArgumentCheck.notNull(propertyChangeEvent);
         return new ContentChangeEvent(part, propertyChangeEvent);
     }
 
-    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
+    public static final ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
         return new ContentChangeEvent(file, parts);
     }
 
@@ -64,58 +117,18 @@ public class ContentChangeEvent {
     // Deprecated since 3.0
     @SuppressWarnings("unused")
     // OK to suppress because the method is deprecated
-    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file,
+    public static final ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file,
             List<? extends IIpsObjectPart> parts) {
 
         return newPartsChangedPositionsChangedEvent(parts);
     }
 
-    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(List<? extends IIpsObjectPart> parts) {
+    public static final ContentChangeEvent newPartsChangedPositionsChangedEvent(List<? extends IIpsObjectPart> parts) {
         return new ContentChangeEvent(parts);
     }
 
-    public final static ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file) {
+    public static final ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file) {
         return new ContentChangeEvent(file);
-    }
-
-    private IIpsSrcFile ipsSrcFile;
-
-    private IIpsObjectPart part;
-
-    private List<IIpsObjectPart> movedParts = null;
-
-    private int type = TYPE_PROPERTY_CHANGED;
-
-    private PropertyChangeEvent propertyChangeEvent;
-
-    private ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
-        this.ipsSrcFile = ipsSrcFile;
-        type = TYPE_WHOLE_CONTENT_CHANGED;
-    }
-
-    private ContentChangeEvent(IIpsObjectPart part, int eventType) {
-        ArgumentCheck.notNull(part);
-        this.part = part;
-        ipsSrcFile = part.getIpsObject().getIpsSrcFile();
-        type = eventType;
-    }
-
-    private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
-        ipsSrcFile = file;
-        movedParts = Collections.unmodifiableList(Arrays.asList(parts));
-        type = TYPE_PARTS_CHANGED_POSITIONS;
-    }
-
-    private ContentChangeEvent(List<? extends IIpsObjectPart> parts) {
-        movedParts = Collections.unmodifiableList(parts);
-    }
-
-    private ContentChangeEvent(IIpsObjectPart part, PropertyChangeEvent propertyChangeEvent) {
-        ArgumentCheck.notNull(part);
-        this.part = part;
-        ipsSrcFile = part.getIpsObject().getIpsSrcFile();
-        type = TYPE_PROPERTY_CHANGED;
-        this.propertyChangeEvent = propertyChangeEvent;
     }
 
     /**
@@ -154,9 +167,18 @@ public class ContentChangeEvent {
 
     /**
      * Checks whether the given partContainer is affected by this change event.
+     * <p>
+     * Returns <code>true</code> in following cases:
+     * <ul>
+     * <li>The given partContainer is the same as the part changed by this event</li>
+     * <li>The {@link IIpsSrcFile} of the given partContainer matches the changed
+     * {@link IIpsSrcFile} of this change event and it is of type
+     * {@link #TYPE_WHOLE_CONTENT_CHANGED}</li>
+     * <li>The part changed by this event is a child of the given partContainer</li>
+     * <li>The given partContainer is affected by a move operation because it is moved directly or
+     * it is the parent of a moved part</li>
+     * </ul>
      * 
-     * Returns <code>true</code> if both the affected part and the partContainer belong to the same
-     * ipsObject.
      */
     public boolean isAffected(IIpsObjectPartContainer partContainer) {
         if (partContainer == null) {
@@ -165,18 +187,40 @@ public class ContentChangeEvent {
         if (partContainer == part) {
             return true;
         }
-        if (partContainer.getIpsSrcFile() != null && partContainer.getIpsSrcFile().equals(ipsSrcFile)) {
+        if (isAffectedIpsSrcFile(partContainer)) {
             return true;
         }
-        if (type == TYPE_WHOLE_CONTENT_CHANGED) {
+        if (isChildOf(part, partContainer)) {
             return true;
         }
         if (movedParts == null) {
             return false;
         }
-        for (IIpsObjectPart part : movedParts) {
-            if (part == partContainer) {
+        for (IIpsObjectPart movedPart : movedParts) {
+            if (movedPart == partContainer || isChildOf(movedPart, partContainer)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAffectedIpsSrcFile(IIpsObjectPartContainer partContainer) {
+        return partContainer.getIpsSrcFile() != null && partContainer.getIpsSrcFile().equals(ipsSrcFile)
+                && (type == TYPE_WHOLE_CONTENT_CHANGED);
+    }
+
+    private boolean isChildOf(IIpsObjectPart potentialChild, IIpsObjectPartContainer potentialParent) {
+        if (potentialChild == null) {
+            return false;
+        }
+        IIpsElement parent = potentialChild.getParent();
+        if (parent == null) {
+            return false;
+        } else if (potentialParent.equals(parent)) {
+            return true;
+        } else {
+            if (parent instanceof IIpsObjectPart) {
+                return isChildOf((IIpsObjectPart)parent, potentialParent);
             }
         }
         return false;
@@ -199,8 +243,8 @@ public class ContentChangeEvent {
         if (movedParts == null) {
             return false;
         }
-        for (IIpsObjectPart part : movedParts) {
-            if (type.isAssignableFrom(part.getClass())) {
+        for (IIpsObjectPart movedPart : movedParts) {
+            if (type.isAssignableFrom(movedPart.getClass())) {
                 return true;
             }
         }

@@ -26,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -801,6 +802,17 @@ public class BindingContext {
         return mappings.size() + controlBindings.size();
     }
 
+    /* private */IIpsObjectPartContainer getMappedPart(Object object) {
+        if (object instanceof IIpsObjectPartContainer) {
+            return (IIpsObjectPartContainer)object;
+        } else if (object instanceof IpsObjectPartPmo) {
+            return ((IpsObjectPartPmo)object).getIpsObjectPartContainer();
+        } else if (object instanceof IAdaptable) {
+            return (IIpsObjectPartContainer)((IAdaptable)object).getAdapter(IIpsObjectPartContainer.class);
+        }
+        return null;
+    }
+
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
     class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
@@ -841,8 +853,9 @@ public class BindingContext {
 
             // exceptions
             for (FieldPropertyMapping<?> mapping : copy) {
-                if (mapping.getObject() instanceof IIpsObjectPartContainer) {
-                    if (event.isAffected((IIpsObjectPartContainer)mapping.getObject())) {
+                IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
+                if (mappedPart != null) {
+                    if (event.isAffected(mappedPart)) {
                         try {
                             mapping.setControlValue();
                         } catch (Exception ex) {

@@ -196,7 +196,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public void clean(IProgressMonitor monitor) {
         super.clean(monitor);
-        modelService = new ModelService();
+        modelService.clear();
     }
 
     @Override

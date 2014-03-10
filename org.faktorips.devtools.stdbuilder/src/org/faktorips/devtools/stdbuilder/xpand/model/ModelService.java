@@ -32,6 +32,10 @@ public class ModelService {
     public ModelService() {
     }
 
+    public void clear() {
+        generatorModelNodes.clear();
+    }
+
     /**
      * Getting the model node for the given {@link IIpsObjectPartContainer} of the given type. The
      * object may be already instantiated and cached. If not this method will create a new object

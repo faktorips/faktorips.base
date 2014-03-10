@@ -538,6 +538,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             public void run() {
                 logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType()); //$NON-NLS-1$
 
+                updateHeaderMessage();
                 if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
                     updatePageStructure(false);
                 }

@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -485,6 +486,37 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         assertEquals(2, captor.getValue().size());
         assertNotNull(captor.getValue().getMessageByCode("code1"));
         assertNotNull(captor.getValue().getMessageByCode("code2"));
+    }
+
+    @Test
+    public void testGetMappedPart_ipsObjectPartContainer() throws Exception {
+        IIpsObjectPartContainer ipsObjectPartContainer = mock(IIpsObjectPartContainer.class);
+
+        IIpsObjectPartContainer mappedPart = bindingContext.getMappedPart(ipsObjectPartContainer);
+
+        assertSame(ipsObjectPartContainer, mappedPart);
+    }
+
+    @Test
+    public void testGetMappedPart_ipsObjectPartPmo() throws Exception {
+        IIpsObjectPartContainer ipsObjectPartContainer = mock(IIpsObjectPartContainer.class);
+        IpsObjectPartPmo pmo = mock(IpsObjectPartPmo.class);
+        when(pmo.getIpsObjectPartContainer()).thenReturn(ipsObjectPartContainer);
+
+        IIpsObjectPartContainer mappedPart = bindingContext.getMappedPart(pmo);
+
+        assertSame(ipsObjectPartContainer, mappedPart);
+    }
+
+    @Test
+    public void testGetMappedPart_adaptable() throws Exception {
+        IIpsObjectPartContainer ipsObjectPartContainer = mock(IIpsObjectPartContainer.class);
+        IAdaptable adaptable = mock(IAdaptable.class);
+        when(adaptable.getAdapter(IIpsObjectPartContainer.class)).thenReturn(ipsObjectPartContainer);
+
+        IIpsObjectPartContainer mappedPart = bindingContext.getMappedPart(adaptable);
+
+        assertSame(ipsObjectPartContainer, mappedPart);
     }
 
 }
