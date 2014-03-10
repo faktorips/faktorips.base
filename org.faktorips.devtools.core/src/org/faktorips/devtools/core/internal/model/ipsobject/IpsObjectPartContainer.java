@@ -427,6 +427,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected final void reinitPartCollections() {
         labels.clear();
         descriptions.clear();
+        extensionProperties.clear();
         reinitPartCollectionsThis();
     }
 
