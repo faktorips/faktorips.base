@@ -6,7 +6,7 @@
          <meta.schema plugin="org.faktorips.devtools.core" id="versionProvider" name="Version Provider"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         The Version Provider ExtensionPoint is used to create IVersionProviders for ipsProjects
       </documentation>
    </annotation>
 
@@ -74,7 +74,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         3.12
       </documentation>
    </annotation>
 
