@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -31,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -201,31 +203,36 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
         new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit());
 
-        TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog_tabItemLabelAndDescription);
-        item.setControl(composite);
+        createGroupVersion(composite);
 
-        return item;
+        return createTabItem(folder, composite, Messages.IpsPartEditDialog_tabItemLabelAndDescription);
     }
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
         IDescribedElement describedElement = (IDescribedElement)part;
         Composite editComposite = new DescriptionEditComposite(folder, describedElement, getToolkit());
 
-        TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog_tabItemDescription);
-        item.setControl(editComposite);
-
-        return item;
+        return createTabItem(folder, editComposite, Messages.IpsPartEditDialog_tabItemDescription);
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
         labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part, getToolkit());
 
-        TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog_tabItemLabel);
-        item.setControl(labelEditComposite);
+        return createTabItem(folder, labelEditComposite, Messages.IpsPartEditDialog_tabItemLabel);
+    }
 
+    private void createGroupVersion(Composite composite) {
+        if (part instanceof IVersionControlledElement) {
+            Group versionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupVersion);
+            versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+            new VersionsComposite(versionGroup, getToolkit());
+        }
+    }
+
+    private TabItem createTabItem(TabFolder folder, Composite composite, String message) {
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(message);
+        item.setControl(composite);
         return item;
     }
 

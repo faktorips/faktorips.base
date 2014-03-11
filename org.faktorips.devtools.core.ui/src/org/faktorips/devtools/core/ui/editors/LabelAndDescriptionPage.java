@@ -38,6 +38,7 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
         formBody.setLayout(createPageLayout(1, true));
         new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
         new DescriptionSection(getIpsObject(), formBody, toolkit);
+        new VersionSection(formBody, toolkit);
     }
 
     private static class LabelSection extends IpsSection {
@@ -94,4 +95,24 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
     }
 
+    private static class VersionSection extends IpsSection {
+
+        public VersionSection(Composite composite, UIToolkit toolkit) {
+            super(composite, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+
+            initControls();
+            setText(Messages.IpsPartEditDialog_groupVersion);
+        }
+
+        @Override
+        protected void initClientComposite(Composite client, UIToolkit toolkit) {
+            new VersionsComposite(client, toolkit);
+        }
+
+        @Override
+        protected void performRefresh() {
+            // Right now nothing has to be done. Check if implementation needed, when implementing
+            // PMO
+        }
+    }
 }
