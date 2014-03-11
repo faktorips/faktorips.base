@@ -26,7 +26,7 @@ class DescriptionPage extends IpsObjectEditorPage {
     final static String PAGEID = "Description"; //$NON-NLS-1$
 
     DescriptionPage(IpsObjectEditor editor) {
-        super(editor, PAGEID, Messages.DescriptionPage_description);
+        super(editor, PAGEID, Messages.IpsPartEditDialog_tabItemDocumentation);
     }
 
     @Override

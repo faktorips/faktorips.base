@@ -30,7 +30,7 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
     final static String PAGEID = "LabelAndDescription"; //$NON-NLS-1$
 
     LabelAndDescriptionPage(IpsObjectEditor editor) {
-        super(editor, PAGEID, Messages.LabelAndDescriptionPage_label);
+        super(editor, PAGEID, Messages.IpsPartEditDialog_tabItemDocumentation);
     }
 
     @Override

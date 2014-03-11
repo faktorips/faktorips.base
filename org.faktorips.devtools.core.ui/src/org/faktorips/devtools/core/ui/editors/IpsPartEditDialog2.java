@@ -183,45 +183,32 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         Composite composite = createWorkAreaThis(parent);
         if (isTabFolderUsed()) {
             TabFolder tabFolder = (TabFolder)parent;
-            if (part instanceof IDescribedElement && part instanceof ILabeledElement) {
-                createLabelAndDescriptionTabItem(tabFolder);
-            } else if (part instanceof IDescribedElement) {
-                createDescriptionTabItem(tabFolder);
-            } else if (part instanceof ILabeledElement) {
-                createLabelTabItem(tabFolder);
-            }
+            Composite tabFolderComposite = getToolkit().createGridComposite(tabFolder, 1, true, true);
+            createLabelGroup(tabFolderComposite);
+            createDescriptionGroup(tabFolderComposite);
+            createVersionGroup(tabFolderComposite);
+            createTabItem(tabFolder, tabFolderComposite);
         }
         return composite;
     }
 
     protected abstract Composite createWorkAreaThis(Composite parent);
 
-    private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
-        Composite composite = getToolkit().createGridComposite(folder, 1, true, true);
-        Group labelGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
-        labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part, getToolkit());
-        Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
-        new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit());
-
-        createGroupVersion(composite);
-
-        return createTabItem(folder, composite, Messages.IpsPartEditDialog_tabItemLabelAndDescription);
+    private void createLabelGroup(Composite composite) {
+        if (part instanceof ILabeledElement) {
+            Group labelGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
+            labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part, getToolkit());
+        }
     }
 
-    private TabItem createDescriptionTabItem(TabFolder folder) {
-        IDescribedElement describedElement = (IDescribedElement)part;
-        Composite editComposite = new DescriptionEditComposite(folder, describedElement, getToolkit());
-
-        return createTabItem(folder, editComposite, Messages.IpsPartEditDialog_tabItemDescription);
+    private void createDescriptionGroup(Composite composite) {
+        if (part instanceof IDescribedElement) {
+            Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
+            new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit());
+        }
     }
 
-    private TabItem createLabelTabItem(TabFolder folder) {
-        labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part, getToolkit());
-
-        return createTabItem(folder, labelEditComposite, Messages.IpsPartEditDialog_tabItemLabel);
-    }
-
-    private void createGroupVersion(Composite composite) {
+    private void createVersionGroup(Composite composite) {
         if (part instanceof IVersionControlledElement) {
             Group versionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupVersion);
             versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
@@ -229,11 +216,13 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
     }
 
-    private TabItem createTabItem(TabFolder folder, Composite composite, String message) {
-        TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(message);
-        item.setControl(composite);
-        return item;
+    private void createTabItem(TabFolder folder, Composite composite) {
+        if (part instanceof IVersionControlledElement || part instanceof ILabeledElement
+                || part instanceof IDescribedElement) {
+            TabItem item = new TabItem(folder, SWT.NONE);
+            item.setText(Messages.IpsPartEditDialog_tabItemDocumentation);
+            item.setControl(composite);
+        }
     }
 
     public IIpsObjectPart getIpsPart() {

@@ -33,6 +33,7 @@ public class Messages extends NLS {
     public static String IpsObjectEditor_messagesText;
     public static String IpsObjectEditor_messagesWarnings;
 
+    public static String IpsPartEditDialog_tabItemDocumentation;
     public static String IpsPartEditDialog_tabItemLabelAndDescription;
     public static String IpsPartEditDialog_tabItemLabel;
     public static String IpsPartEditDialog_tabItemDescription;
@@ -57,11 +58,7 @@ public class Messages extends NLS {
 
     public static String UnreachableFilePage_msgUnreachableFile;
 
-    public static String DescriptionPage_description;
-
     public static String DescriptionSection_description;
-
-    public static String LabelAndDescriptionPage_label;
 
     public static String LabelSection_label;
 
