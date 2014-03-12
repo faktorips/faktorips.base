@@ -16,8 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -66,22 +64,14 @@ public final class DescriptionEditComposite extends Composite {
 
     private boolean viewOnly;
 
-    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
+    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit,
+            BindingContext bindingContext) {
         super(parent, SWT.NONE);
 
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
         languageCodes = new LinkedHashMap<String, String>();
-        bindingContext = new BindingContext();
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (bindingContext != null) {
-                    bindingContext.dispose();
-                }
-            }
-        });
+        this.bindingContext = bindingContext;
 
         createLayout();
 
@@ -174,7 +164,7 @@ public final class DescriptionEditComposite extends Composite {
         languageCombo.removeAll();
         for (String languageName : languageCodes.keySet()) {
             String languageCode = languageCodes.get(languageName);
-            String item = languageName + " (" + languageCode + ")";//$NON-NLS-1$ //$NON-NLS-2$
+            String item = languageName + " (" + languageCode + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             languageCombo.add(item);
             if (item.equals(selectedItem)) {
                 languageCombo.select(languageCombo.getItemCount() - 1);

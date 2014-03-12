@@ -86,7 +86,8 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            descriptionEditComposite = new DescriptionEditComposite(client, describedElement, toolkit);
+            descriptionEditComposite = new DescriptionEditComposite(client, describedElement, toolkit,
+                    getBindingContext());
         }
 
         @Override
@@ -110,13 +111,12 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            new VersionsComposite(client, versionElement, toolkit);
+            new VersionsComposite(client, versionElement, toolkit, getBindingContext());
         }
 
         @Override
         protected void performRefresh() {
-            // Right now nothing has to be done. Check if implementation needed, when implementing
-            // PMO
+            // nothing to do
         }
     }
 }

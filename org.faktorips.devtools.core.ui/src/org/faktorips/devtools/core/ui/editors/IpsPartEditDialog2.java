@@ -212,7 +212,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     private void createDescriptionGroupIfRequired(Composite composite) {
         if (part instanceof IDescribedElement) {
             Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
-            new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit());
+            new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit(), getBindingContext());
         }
     }
 
@@ -220,7 +220,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         if (part instanceof IVersionControlledElement) {
             Group versionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupVersion);
             versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-            new VersionsComposite(versionGroup, (IVersionControlledElement)part, getToolkit());
+            new VersionsComposite(versionGroup, (IVersionControlledElement)part, getToolkit(), getBindingContext());
         }
     }
 

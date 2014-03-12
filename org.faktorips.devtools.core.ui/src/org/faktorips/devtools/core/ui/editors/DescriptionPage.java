@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 class DescriptionPage extends IpsObjectEditorPage {
 
-    final static String PAGEID = "Description"; //$NON-NLS-1$
+    private static final String PAGEID = "Description"; //$NON-NLS-1$
 
     DescriptionPage(IpsObjectEditor editor) {
         super(editor, PAGEID, Messages.IpsPartEditDialog_tabItemDocumentation);
@@ -50,9 +50,8 @@ class DescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            new DescriptionEditComposite(client, describedElement, toolkit);
+            new DescriptionEditComposite(client, describedElement, toolkit, getBindingContext());
         }
-
     }
 
 }

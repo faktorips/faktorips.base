@@ -12,8 +12,6 @@ package org.faktorips.devtools.core.ui.editors;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -44,20 +42,13 @@ public final class VersionsComposite {
 
     private IVersionControlledElement part;
 
-    public VersionsComposite(Composite parent, IVersionControlledElement part, UIToolkit toolkit) {
+    public VersionsComposite(Composite parent, IVersionControlledElement part, UIToolkit toolkit,
+            BindingContext bindingContext) {
         this.parent = parent;
         this.toolkit = toolkit;
         this.part = part;
-        bindingContext = new BindingContext();
+        this.bindingContext = bindingContext;
 
-        parent.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (bindingContext != null) {
-                    bindingContext.dispose();
-                }
-            }
-        });
         createLayout();
         bind();
     }
