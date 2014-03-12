@@ -101,7 +101,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
 
+    @Deprecated
     private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
+
+    private static final String VERSION_PROVIDER_ATTRIBUTE = "versionProvider"; //$NON-NLS-1$
+
+    private static final String VERSION_TAG_NAME = "Version"; //$NON-NLS-1$
 
     private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
 
@@ -166,6 +171,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Currency defaultCurrency = Currency.getInstance("EUR"); //$NON-NLS-1$
 
     private Locale formulaLanguageLocale = Locale.GERMAN;
+
+    private String versionProviderId;
 
     public IpsProjectProperties() {
         super();
@@ -656,7 +663,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initRequiredFeatures(XmlUtil.getFirstElement(element, "RequiredIpsFeatures")); //$NON-NLS-1$
         initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element,
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
-        initProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
+        initProjectVersion(XmlUtil.getFirstElement(element, VERSION_TAG_NAME));
         initAdditionalSettings(element);
         initPersistenceOptions(element);
         initSupportedLanguages(element);
@@ -772,12 +779,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private void initProductRelease(Element element) {
+    private void initProjectVersion(Element element) {
         if (element == null) {
             return;
         }
         releaseVersion = element.getAttribute(VERSION_ATTRIBUTE);
         releaseExtensionId = element.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
+        versionProviderId = element.getAttribute(VERSION_PROVIDER_ATTRIBUTE);
     }
 
     /**
@@ -1436,6 +1444,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setVersion(String version) {
         this.releaseVersion = version;
+    }
+
+    @Override
+    public String getVersionProviderId() {
+        return versionProviderId;
+    }
+
+    @Override
+    public void setVersionProviderId(String versionProviderId) {
+        this.versionProviderId = versionProviderId;
     }
 
     @Override

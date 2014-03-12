@@ -496,6 +496,16 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
+    public String getVersionProviderId() {
+        return propertiesInternal.getVersionProviderId();
+    }
+
+    @Override
+    public void setVersionProviderId(String versionProviderId) {
+        propertiesInternal.getVersionProviderId();
+    }
+
+    @Override
     public String getReleaseExtensionId() {
         return propertiesInternal.getReleaseExtensionId();
     }

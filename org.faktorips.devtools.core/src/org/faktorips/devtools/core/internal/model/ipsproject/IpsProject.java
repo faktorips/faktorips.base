@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.ICommand;
@@ -34,7 +33,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -65,7 +63,6 @@ import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCach
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IVersionProvider;
@@ -1926,38 +1923,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Deprecated
     @Override
     public IVersionFormat getVersionFormat() throws CoreException {
-        final IConfigurationElement releaseExtension = ProductReleaseProcessor.getReleaseExtensionElement(this);
-        if (releaseExtension == null) {
-            return null;
-        }
-        return new IVersionFormat() {
-
-            private Pattern versionPattern = Pattern.compile(releaseExtension.getAttribute("versionFormatRegex")); //$NON-NLS-1$
-
-            @Override
-            public boolean isCorrectVersionFormat(String version) {
-                return versionPattern.matcher(version).matches();
-            }
-
-            @Override
-            public String getVersionFormat() {
-                return releaseExtension.getAttribute("readableVersionFormat"); //$NON-NLS-1$
-            }
-
-        };
+        return getVersionProvider();
     }
 
     @Override
     public IVersionProvider<?> getVersionProvider() {
         if (versionProvider == null) {
-            loadVersionProvider();
+            initVersionProvider();
         }
         return versionProvider;
     }
 
-    private void loadVersionProvider() {
-        // TODO String versionProviderId = getReadOnlyProperties().getVersionProviderId();
-        versionProvider = new DefaultVersionProvider(this);
+    private void initVersionProvider() {
+        VersionProviderExtensionPoint versionProviderExtensionPoint = new VersionProviderExtensionPoint(this);
+        IVersionProvider<?> extendedVersionProvider = versionProviderExtensionPoint.getExtendedVersionProvider();
+        if (extendedVersionProvider != null) {
+            versionProvider = extendedVersionProvider;
+        } else {
+            versionProvider = new DefaultVersionProvider(this);
+        }
+
     }
 
     @Override

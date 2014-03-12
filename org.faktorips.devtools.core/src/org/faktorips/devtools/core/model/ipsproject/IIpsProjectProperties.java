@@ -19,8 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
 
@@ -518,19 +520,51 @@ public interface IIpsProjectProperties {
     public void removeSupportedLanguage(Locale locale);
 
     /**
-     * Return the version of this project. The version is needed in deployment process and should be
-     * updated for a new deployment.
+     * Return the version that was set in this project properties.<
+     * <p>
+     * You should never call this method directly! Instead you should get the
+     * {@link IVersionProvider} from {@link IIpsProject} by calling
+     * {@link IIpsProject#getVersionProvider()}. This method only returns the valid version if it is
+     * configured directly in the project properties. However the version of the project may come
+     * from different locations depending on its {@link IVersionProvider}.
      * 
      * @return the version string of this project
      */
     public String getVersion();
 
     /**
-     * Setting a new version for this project. This should be done by deployment process.
+     * Setting a new version that should be stored in this project properties.
+     * <p>
+     * You should never call this method directly! Instead you should use the
+     * {@link IVersionProvider} from {@link IIpsProject} by calling
+     * {@link IIpsProject#getVersionProvider()}. The version could be set in different locations
+     * depending on the {@link IVersionProvider}. Use
+     * {@link IVersionProvider#setProjectVersion(org.faktorips.devtools.core.model.IVersion)} to
+     * always write to the correct location.
+     * 
      * 
      * @param version The new version of this project
      */
     public void setVersion(String version);
+
+    /**
+     * Provides the id of the version provider that is configured in these project properties. If no
+     * version provider id is set - this method returns <code>null</code>, the
+     * {@link DefaultVersionProvider} should be used.
+     * 
+     * @return The configured {@link IVersionProvider} that should be used to handle the project's
+     *         version. Could be <code>null</code> if no explicit version provider is set and the
+     *         {@link DefaultVersionProvider} should be used.
+     */
+    public String getVersionProviderId();
+
+    /**
+     * Set the id of the version provider that should be used by the corresponding project to handle
+     * its versions. If set to <code>null</code> the {@link DefaultVersionProvider} is used.
+     * 
+     * @param versionProviderId The id of an extended {@link IVersionProvider}.
+     */
+    public void setVersionProviderId(String versionProviderId);
 
     /**
      * Getting the id of the release extension associated with this project

@@ -149,12 +149,7 @@ public class ExtensionPoints {
             Class<T> expectedType) {
 
         ArgumentCheck.notNull(pointId);
-        IExtensionPoint point = registry.getExtensionPoint(nameSpace, pointId);
-        if (point == null) {
-            IpsPlugin.log(new IpsStatus("ExtensionPoint " + pointId + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
-            throw new IllegalArgumentException("Unknown extension point " + pointId); //$NON-NLS-1$
-        }
-        IExtension[] extensions = point.getExtensions();
+        IExtension[] extensions = getExtension(pointId);
         List<T> execExtensions = new ArrayList<T>(extensions.length);
         for (int i = 0; i < extensions.length; i++) {
             execExtensions.addAll(createExecutableExtensions(extensions[i], elementName, propertyName, expectedType));
@@ -259,19 +254,40 @@ public class ExtensionPoints {
             IConfigurationElement element,
             String propertyName,
             Class<T> expectedType) {
+        return createExecutableExtension(extension.getUniqueIdentifier(), element, propertyName, expectedType);
+    }
+
+    /**
+     * Wrapper around IConfigurationElement.createExecutableExtension(propertyName) with detailed
+     * logging. If the executable extension couldn't be created, the reason is logged, no exception
+     * is thrown. The returned object is of the expected type.
+     * 
+     * @param extensionId The unique id of the extension for logging purposes
+     * @param element A {@link IConfigurationElement} of the extension that contains a property that
+     *            specifies the qualified name of the class to instantiate.
+     * @param propertyName Name of the property that contains the qualified name of the class to
+     *            instantiate.
+     * @param expectedType The expected class/type of the instance.
+     * 
+     * @see IConfigurationElement#createExecutableExtension(String)
+     */
+    public static final <T> T createExecutableExtension(String extensionId,
+            IConfigurationElement element,
+            String propertyName,
+            Class<T> expectedType) {
 
         Object object = null;
         try {
             object = element.createExecutableExtension(propertyName);
         } catch (CoreException e) {
             IpsPlugin.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier() + ". Reason: Can't instantiate " //$NON-NLS-1$
+                    + extensionId + ". Reason: Can't instantiate " //$NON-NLS-1$
                     + element.getAttribute(propertyName), e));
             return null;
         }
         if (!(expectedType.isAssignableFrom(object.getClass()))) {
             IpsPlugin.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier() + "Reason: " //$NON-NLS-1$
+                    + extensionId + "Reason: " //$NON-NLS-1$
                     + element.getAttribute(propertyName) + " is not of type " //$NON-NLS-1$
                     + expectedType));
             return null;

@@ -38,8 +38,14 @@ import org.faktorips.util.message.MessageList;
 
 public class ProductReleaseProcessor {
 
+    public static final String VERSION_FORMAT_REGEX = "versionFormatRegex"; //$NON-NLS-1$
+
+    public static final String READABLE_VERSION_FORMAT = "readableVersionFormat"; //$NON-NLS-1$
+
     private static final String RELEASE_EXTENSION_POINT_NAME = "productReleaseExtension"; //$NON-NLS-1$
+
     private static final String EXTENSION_OPERATION_PROPERTY = "operation"; //$NON-NLS-1$
+
     private ITeamOperations teamOperation;
     private final IIpsProject ipsProject;
     private final IReleaseAndDeploymentOperation releaseAndDeploymentOperation;
