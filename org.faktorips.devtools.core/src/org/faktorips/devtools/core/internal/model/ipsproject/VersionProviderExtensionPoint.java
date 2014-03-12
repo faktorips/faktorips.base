@@ -11,11 +11,14 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.IVersionProviderFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.util.message.MessageList;
 
 /**
  * This class handles the version provider extension point. Is it responsible for loading and
@@ -23,6 +26,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * <p>
  * To use this class just instantiate with your project and call
  * {@link #getExtendedVersionProvider()}.
+ * <p
+ * To only check whether the configured version provider could be found, call
+ * {@link #validateExtension()}.
  */
 public class VersionProviderExtensionPoint {
 
@@ -60,19 +66,24 @@ public class VersionProviderExtensionPoint {
     /**
      * Creates a {@link IVersionProvider} corresponding to the projects configurations. Returns
      * <code>null</code> if there is no version provider configured or the requested version
-     * provider cannot be found. In second case an error is logged.
+     * provider cannot be found.
      */
     public IVersionProvider<?> getExtendedVersionProvider() {
-        String versionProviderId = ipsProject.getReadOnlyProperties().getVersionProviderId();
-        return createExtendedVersionProvider(versionProviderId);
+        IConfigurationElement extension = getExtension();
+        if (extension != null) {
+            return instantiateVersionProvider(extension);
+        } else {
+            return null;
+        }
     }
 
-    private IVersionProvider<?> createExtendedVersionProvider(String versionProviderId) {
+    private IConfigurationElement getExtension() {
+        String versionProviderId = ipsProject.getReadOnlyProperties().getVersionProviderId();
         IConfigurationElement[] configElements = extensionRegistry.getConfigurationElementsFor(IpsPlugin.PLUGIN_ID,
                 VERSION_PROVIDER_EXTENSION);
         for (IConfigurationElement confElement : configElements) {
             if (confElement.getAttribute(EXTENSION_ATTRIBUTE_ID).equals(versionProviderId)) {
-                return instantiateVersionProvider(confElement);
+                return confElement;
             }
         }
         return null;
@@ -88,6 +99,17 @@ public class VersionProviderExtensionPoint {
             return null;
         }
 
+    }
+
+    public MessageList validateExtension() {
+        MessageList result = new MessageList();
+        if (getExtension() == null) {
+            String text = NLS.bind(Messages.VersionProviderExtensionPoint_error_invalidVersionProvider, ipsProject
+                    .getReadOnlyProperties().getVersionProviderId());
+            result.newError(IIpsProjectProperties.MSGCODE_INVALID_VERSION_SETTING, text, ipsProject.getProperties(),
+                    IIpsProjectProperties.PROPERTY_VERSION_PROVIDER_ID);
+        }
+        return result;
     }
 
 }

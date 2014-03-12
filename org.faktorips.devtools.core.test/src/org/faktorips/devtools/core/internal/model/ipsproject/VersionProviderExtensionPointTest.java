@@ -9,9 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -22,6 +23,7 @@ import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.IVersionProviderFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +54,9 @@ public class VersionProviderExtensionPointTest {
     @Mock
     private IVersionProviderFactory versionProviderFactory;
 
+    @Mock
+    private IVersionProvider<?> versionProvider;
+
     @InjectMocks
     private VersionProviderExtensionPoint versionProviderExtensionPoint;
 
@@ -59,6 +64,7 @@ public class VersionProviderExtensionPointTest {
     public void setUpProject() {
         when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
         when(properties.getVersionProviderId()).thenReturn(MY_VERSION_PROVIDER_ID);
+        doReturn(versionProvider).when(versionProviderFactory).createVersionProvider(ipsProject);
     }
 
     @Before
@@ -76,12 +82,27 @@ public class VersionProviderExtensionPointTest {
 
     @Test
     public void testGetExtendedVersionProvider() throws Exception {
-        IVersionProvider<?> versionProvider = mock(IVersionProvider.class);
-        doReturn(versionProvider).when(versionProviderFactory).createVersionProvider(ipsProject);
 
         IVersionProvider<?> extendedVersionProvider = versionProviderExtensionPoint.getExtendedVersionProvider();
 
         assertSame(versionProvider, extendedVersionProvider);
+    }
+
+    @Test
+    public void testValidateExtension_valid() throws Exception {
+
+        MessageList messageList = versionProviderExtensionPoint.validateExtension();
+
+        assertTrue(messageList.isEmpty());
+    }
+
+    @Test
+    public void testValidateExtension_invalid() throws Exception {
+        when(properties.getVersionProviderId()).thenReturn("invalid");
+
+        MessageList messageList = versionProviderExtensionPoint.validateExtension();
+
+        assertFalse(messageList.isEmpty());
     }
 
 }

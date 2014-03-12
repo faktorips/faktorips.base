@@ -88,7 +88,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
 
     private static final class DefaultVersionFormat implements IVersionFormat {
 
-        private static final Pattern versionPattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+\\.[a-z]+"); //$NON-NLS-1$
+        private static final Pattern versionPattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+(\\.[a-z]+)?"); //$NON-NLS-1$
 
         @Override
         public boolean isCorrectVersionFormat(String version) {
@@ -97,7 +97,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
 
         @Override
         public String getVersionFormat() {
-            return "for example: 2.1.4.qualifier"; //$NON-NLS-1$
+            return Messages.DefaultVersionProvider_readableVersionFormat;
         }
     }
 

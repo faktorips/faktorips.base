@@ -396,4 +396,12 @@ public interface IIpsModel extends IIpsElement {
      */
     public ExtensionFunctionResolversCache getExtensionFunctionResolverCache(IIpsProject ipsProject);
 
+    /**
+     * Returns the version provider according to {@link IIpsProject#getVersionProvider()}
+     * 
+     * @param ipsProject The {@link IIpsProject} for which you want to get the version provider.
+     * @return The version provider that is configured for this {@link IIpsProject}.
+     */
+    public IVersionProvider<?> getVersionProvider(IIpsProject ipsProject);
+
 }

@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.resources.IFile;
@@ -71,6 +71,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentDefaultSortDefinition;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.internal.model.ipsproject.VersionProviderExtensionPoint;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ICustomModelExtensions;
@@ -78,6 +79,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -160,43 +162,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * A map containing the project for every name.
      */
-    private Map<String, IpsProject> projectMap = Collections.synchronizedMap(new HashMap<String, IpsProject>());
-
-    /**
-     * A map containing the data for each ips project. The name of the project is used as the key
-     * and the value is an instance of IpsProjectData.
-     */
-    private Map<String, IpsProjectProperties> projectPropertiesMap = Collections
-            .synchronizedMap(new HashMap<String, IpsProjectProperties>());
-
-    /**
-     * a map containing a set of datatypes per ips project. The map's key is the project name.
-     */
-    private Map<String, LinkedHashMap<String, Datatype>> projectDatatypesMap = Collections
-            .synchronizedMap(new HashMap<String, LinkedHashMap<String, Datatype>>());
-
-    /**
-     * a map containing a map per ips project. The map's key is the project name. The maps contained
-     * in the map, contain the datatypes as keys and the datatype helper as values.
-     */
-    private Map<String, Map<ValueDatatype, DatatypeHelper>> projectDatatypeHelpersMap = Collections
-            .synchronizedMap(new HashMap<String, Map<ValueDatatype, DatatypeHelper>>());
-
-    private Map<IIpsProject, IIpsArtefactBuilderSet> projectToBuilderSetMap = Collections
-            .synchronizedMap(new HashMap<IIpsProject, IIpsArtefactBuilderSet>());
+    private Map<String, IpsProject> projectMap = new ConcurrentHashMap<String, IpsProject>();
 
     private List<IIpsArtefactBuilderSetInfo> builderSetInfoList = null;
 
     /** map containing all changes in time naming conventions by id. */
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
-
-    private Map<IIpsProject, DependencyGraph> dependencyGraphForProjectsMap = new HashMap<IIpsProject, DependencyGraph>();
-
-    /** map containing ClassLoaderProviders per IpsProject */
-    private Map<IIpsProject, ClassLoaderProvider> classLoaderProviderMap = new HashMap<IIpsProject, ClassLoaderProvider>();
-
-    /** maps from an IpsProject to its ExtensionFunctionResolverChache */
-    private Map<IIpsProject, ExtensionFunctionResolversCache> projectToFunctionResolverCacheMap = new HashMap<IIpsProject, ExtensionFunctionResolversCache>();
 
     /** map containing IpsSrcFileContents as values and IpsSrcFiles as keys. */
     private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<IIpsSrcFile, IpsSrcFileContent>(1000);
@@ -216,7 +187,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * A map containing project data per project.
      */
-    private Map<IIpsProject, IpsProjectData> dataPerIpsProject = new HashMap<IIpsProject, IpsProjectData>();
+    private final Map<IIpsProject, IpsProjectData> ipsProjectDatas = new ConcurrentHashMap<IIpsProject, IpsProjectData>();
 
     private IpsObjectPathContainerFactory ipsObjectPathContainerFactory = IpsObjectPathContainerFactory
             .newFactoryBasedOnExtensions();
@@ -308,10 +279,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the data for the given ips project.
      */
     private IpsProjectData getIpsProjectData(IIpsProject ipsProject) {
-        IpsProjectData data = dataPerIpsProject.get(ipsProject);
+        IpsProjectData data = ipsProjectDatas.get(ipsProject);
         if (data == null) {
             data = new IpsProjectData(ipsProject, ipsObjectPathContainerFactory);
-            dataPerIpsProject.put(ipsProject, data);
+            ipsProjectDatas.put(ipsProject, data);
         }
         return data;
     }
@@ -774,12 +745,49 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public Map<String, Datatype> getDatatypesDefinedInProjectProperties(IIpsProject ipsProject) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Map<String, Datatype> map = projectDatatypesMap.get(ipsProject.getName());
-        if (map == null) {
+        Map<String, Datatype> map = getIpsProjectData(ipsProject).getProjectDatatypesMap();
+        if (map.isEmpty()) {
             initDatatypesDefinedInProjectProperties(ipsProject);
-            map = projectDatatypesMap.get(ipsProject.getName());
+            map = getIpsProjectData(ipsProject).getProjectDatatypesMap();
         }
         return map;
+    }
+
+    /**
+     * Intializes the datatypes and their helpers for the project.
+     */
+    private void initDatatypesDefinedInProjectProperties(IIpsProject project) {
+        if (datatypes == null) {
+            initDatatypesDefinedViaExtension();
+        }
+        IpsProjectData ipsProjectData = getIpsProjectData(project);
+        LinkedHashMap<String, Datatype> projectTypes = ipsProjectData.getProjectDatatypesMap();
+        Map<ValueDatatype, DatatypeHelper> projectHelperMap = ipsProjectData.getProjectDatatypeHelpersMap();
+
+        IIpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
+        String[] datatypeIds = props.getPredefinedDatatypesUsed();
+        for (String datatypeId : datatypeIds) {
+            Datatype datatype = datatypes.get(datatypeId);
+            if (datatype == null) {
+                continue;
+            }
+            projectTypes.put(datatypeId, datatype);
+            if (datatype.isValueDatatype()) {
+                ValueDatatype valueDatatype = (ValueDatatype)datatype;
+                DatatypeHelper helper = datatypeHelpersMap.get(valueDatatype);
+                if (helper != null) {
+                    projectHelperMap.put(valueDatatype, helper);
+                }
+            }
+        }
+        List<Datatype> definedDatatypes = props.getDefinedDatatypes();
+        for (Datatype datatype : definedDatatypes) {
+            projectTypes.put(datatype.getQualifiedName(), datatype);
+            if (datatype instanceof GenericValueDatatype) {
+                GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                projectHelperMap.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
+            }
+        }
     }
 
     /**
@@ -791,7 +799,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
         ArgumentCheck.notNull(project, this);
         reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
-        IIpsArtefactBuilderSet builderSet = projectToBuilderSetMap.get(project);
+        IIpsArtefactBuilderSet builderSet = getIpsProjectData(project).getIpsArtefactBuilderSet();
         if (builderSet == null) {
             return registerBuilderSet(project);
         }
@@ -819,7 +827,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
             return emptyBuilderSet;
         }
-        projectToBuilderSetMap.put(project, builderSet);
+        getIpsProjectData(project).setIpsArtefactBuilderSet(builderSet);
         return builderSet;
     }
 
@@ -862,16 +870,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // the dependencyGraphForProjectsMap
     public DependencyGraph getDependencyGraph(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject, this);
-        DependencyGraph graph = dependencyGraphForProjectsMap.get(ipsProject);
+        DependencyGraph graph = getIpsProjectData(ipsProject).getDependencyGraph();
         if (graph == null) {
             graph = IpsPlugin.getDefault().getDependencyGraphPersistenceManager().getDependencyGraph(ipsProject);
             if (graph != null) {
-                dependencyGraphForProjectsMap.put(ipsProject, graph);
+                getIpsProjectData(ipsProject).setDependencyGraph(graph);
                 return graph;
             }
             if (ipsProject.exists()) {
                 graph = new DependencyGraph(ipsProject);
-                dependencyGraphForProjectsMap.put(ipsProject, graph);
+                getIpsProjectData(ipsProject).setDependencyGraph(graph);
             }
             return graph;
         }
@@ -887,7 +895,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * This method is not part of the published interface.
      */
     public DependencyGraph[] getCachedDependencyGraphs() {
-        Collection<DependencyGraph> graphs = dependencyGraphForProjectsMap.values();
+        ArrayList<DependencyGraph> graphs = new ArrayList<DependencyGraph>();
+        for (IpsProjectData projectData : ipsProjectDatas.values()) {
+            if (projectData.getDependencyGraph() != null) {
+                graphs.add(projectData.getDependencyGraph());
+            }
+        }
         return graphs.toArray(new DependencyGraph[graphs.size()]);
     }
 
@@ -897,10 +910,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Map<ValueDatatype, DatatypeHelper> map = projectDatatypeHelpersMap.get(ipsProject.getName());
-        if (map == null) {
+        Map<ValueDatatype, DatatypeHelper> map = getIpsProjectData(ipsProject).getProjectDatatypeHelpersMap();
+        if (map.isEmpty()) {
             initDatatypesDefinedInProjectProperties(ipsProject);
-            map = projectDatatypeHelpersMap.get(ipsProject.getName());
+            map = getIpsProjectData(ipsProject).getProjectDatatypeHelpersMap();
         }
         return map.get(datatype);
     }
@@ -912,19 +925,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
-        IpsProjectProperties data = projectPropertiesMap.get(ipsProject.getName());
-        if (data != null
+        IpsProjectProperties properties = getIpsProjectData(ipsProject).getProjectProperties();
+        if (properties != null
                 && propertyFile.exists()
-                && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(data
+                && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(properties
                         .getLastPersistentModificationTimestamp())) {
             clearProjectSpecificCaches(ipsProject);
-            data = null;
+            properties = null;
         }
-        if (data == null) {
-            data = readProjectData(ipsProject);
-            projectPropertiesMap.put(ipsProject.getName(), data);
+        if (properties == null) {
+            properties = readProjectProperties(ipsProject);
+            getIpsProjectData(ipsProject).setProjectProperties(properties);
         }
-        return data;
+        return properties;
     }
 
     private void reinitIpsProjectPropertiesIfNecessary(IpsProject ipsProject) {
@@ -938,22 +951,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * @param ipsProject whose properties and or settings changed
      */
     public void clearProjectSpecificCaches(IIpsProject ipsProject) {
-        projectDatatypesMap.remove(ipsProject.getName());
-        projectDatatypeHelpersMap.remove(ipsProject.getName());
-        projectToBuilderSetMap.remove(ipsProject);
-        clearIpsProjectPropertiesCache(ipsProject);
-        projectToFunctionResolverCacheMap.remove(ipsProject);
+        ipsProjectDatas.remove(ipsProject);
     }
 
-    private void clearIpsProjectPropertiesCache(IIpsProject ipsProject) {
-        projectPropertiesMap.remove(ipsProject.getName());
-    }
-
-    // CSOFF: IllegalCatch
     /**
      * Reads the project's data from the .ipsproject file.
      */
-    private IpsProjectProperties readProjectData(IpsProject ipsProject) {
+    private IpsProjectProperties readProjectProperties(IpsProject ipsProject) {
         IFile file = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties data = new IpsProjectProperties();
         data.setCreatedFromParsableFileContents(false);
@@ -993,46 +997,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
         return data;
-    }
-
-    // CSON: IllegalCatch
-
-    /**
-     * Intializes the datatypes and their helpers for the project.
-     */
-    private void initDatatypesDefinedInProjectProperties(IIpsProject project) {
-        if (datatypes == null) {
-            initDatatypesDefinedViaExtension();
-        }
-        LinkedHashMap<String, Datatype> projectTypes = new LinkedHashMap<String, Datatype>();
-        Map<ValueDatatype, DatatypeHelper> projectHelperMap = new HashMap<ValueDatatype, DatatypeHelper>();
-        projectDatatypesMap.put(project.getName(), projectTypes);
-        projectDatatypeHelpersMap.put(project.getName(), projectHelperMap);
-
-        IIpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
-        String[] datatypeIds = props.getPredefinedDatatypesUsed();
-        for (String datatypeId : datatypeIds) {
-            Datatype datatype = datatypes.get(datatypeId);
-            if (datatype == null) {
-                continue;
-            }
-            projectTypes.put(datatypeId, datatype);
-            if (datatype.isValueDatatype()) {
-                ValueDatatype valueDatatype = (ValueDatatype)datatype;
-                DatatypeHelper helper = datatypeHelpersMap.get(valueDatatype);
-                if (helper != null) {
-                    projectHelperMap.put(valueDatatype, helper);
-                }
-            }
-        }
-        List<Datatype> definedDatatypes = props.getDefinedDatatypes();
-        for (Datatype datatype : definedDatatypes) {
-            projectTypes.put(datatype.getQualifiedName(), datatype);
-            if (datatype instanceof GenericValueDatatype) {
-                GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
-                projectHelperMap.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
-            }
-        }
     }
 
     @Override
@@ -1313,14 +1277,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
-        ClassLoaderProvider provider = classLoaderProviderMap.get(ipsProject);
+        ClassLoaderProvider provider = getIpsProjectData(ipsProject).getClassLoaderProvider();
         if (provider == null) {
             // create a new classloader provider, make sure that the jars (inside the provided
             // classloader) will be copied, this fixed the problem if the classloader is used
             // to load classes for DynamicValueDatatype
             provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ClassLoader.getSystemClassLoader(),
                     ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes(), true);
-            classLoaderProviderMap.put(ipsProject, provider);
+            getIpsProjectData(ipsProject).setClassLoaderProvider(provider);
         }
         return provider;
     }
@@ -1334,10 +1298,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public ExtensionFunctionResolversCache getExtensionFunctionResolverCache(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
-        ExtensionFunctionResolversCache functionResolversCache = projectToFunctionResolverCacheMap.get(ipsProject);
+        ExtensionFunctionResolversCache functionResolversCache = getIpsProjectData(ipsProject).getFunctionResolver();
         if (functionResolversCache == null) {
             functionResolversCache = new ExtensionFunctionResolversCache(ipsProject);
-            projectToFunctionResolverCacheMap.put(ipsProject, functionResolversCache);
+            getIpsProjectData(ipsProject).setFunctionResolver(functionResolversCache);
         }
         return functionResolversCache;
     }
@@ -1539,6 +1503,27 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
         return null;
+    }
+
+    @Override
+    public IVersionProvider<?> getVersionProvider(IIpsProject ipsProject) {
+        IVersionProvider<?> verionProvider = getIpsProjectData(ipsProject).getVersionProvider();
+        if (verionProvider == null) {
+            verionProvider = initVersionProvider(ipsProject);
+            getIpsProjectData(ipsProject).setVersionProvider(verionProvider);
+        }
+        return verionProvider;
+    }
+
+    private IVersionProvider<?> initVersionProvider(IIpsProject ipsProject) {
+        VersionProviderExtensionPoint versionProviderExtensionPoint = new VersionProviderExtensionPoint(ipsProject);
+        IVersionProvider<?> extendedVersionProvider = versionProviderExtensionPoint.getExtendedVersionProvider();
+        if (extendedVersionProvider != null) {
+            return extendedVersionProvider;
+        } else {
+            return new DefaultVersionProvider(ipsProject);
+        }
+
     }
 
     private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {

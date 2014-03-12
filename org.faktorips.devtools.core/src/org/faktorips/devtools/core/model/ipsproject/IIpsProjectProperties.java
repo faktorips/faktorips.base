@@ -81,6 +81,12 @@ public interface IIpsProjectProperties {
 
     public static final String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
 
+    public static final String MSGCODE_INVALID_VERSION_SETTING = MSGCODE_PREFIX + "invalidVersionSetting"; //$NON-NLS-1$
+
+    public static final String PROPERTY_VERSION = "version"; //$NON-NLS-1$
+
+    public static final String PROPERTY_VERSION_PROVIDER_ID = "versionProviderId"; //$NON-NLS-1$
+
     /**
      * Returns the time stamp of the last persistent modification of this object.
      */

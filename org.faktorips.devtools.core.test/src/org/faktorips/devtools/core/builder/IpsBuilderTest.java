@@ -1055,6 +1055,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IProject spiedProject = spy(ipsProject.getProject());
         doReturn(spiedProject).when(spiedIpsProject).getProject();
         doReturn(manifestFile).when(spiedProject).getFile(IpsBundleManifest.MANIFEST_NAME);
+        // Need to mock the getReadOnlyProperty method because the spiedIpsProject would otherwise
+        // ask the ipsModel for the properties and that would fail because of
+        // spiedIpsProject.hashCode() != ipsProject.hashCode()
+        // https://code.google.com/p/mockito/issues/detail?id=241
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
+        doReturn(properties).when(spiedIpsProject).getReadOnlyProperties();
 
         MessageList messages = new MessageList();
 

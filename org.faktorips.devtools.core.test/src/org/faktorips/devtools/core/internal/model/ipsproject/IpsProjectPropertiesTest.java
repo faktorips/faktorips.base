@@ -231,6 +231,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.getPersistenceOptions().setMaxTableColumnScale(101);
         props.getPersistenceOptions().setMaxTableColumnPrecision(102);
 
+        props.setReleaseExtensionId("myReleaseExtension");
+        props.setVersion("1.2.3");
+        props.setVersionProviderId("myVersionProvider");
+
         Document doc = newDocument();
         Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
         Element propEl = doc.createElement("Property");
@@ -300,6 +304,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isResourceExcludedFromProductDefinition("a.xml"));
         assertTrue(props.isResourceExcludedFromProductDefinition("src/a"));
         assertTrue(props.isPersistenceSupportEnabled());
+
+        // product release
+        assertEquals("myReleaseExtension", props.getReleaseExtensionId());
+        // version
+        assertEquals("1.2.3", props.getVersion());
+        assertEquals("myVersionProvider", props.getVersionProviderId());
 
         assertTrue(props.isSupportedLanguage(Locale.ENGLISH));
         assertTrue(props.isSupportedLanguage(Locale.KOREAN));
@@ -401,6 +411,13 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
                 .getTableColumnNamingStrategy().getClass().getName());
         assertEquals(CamelCaseToUpperUnderscoreTableNamingStrategy.class.getName(), props.getPersistenceOptions()
                 .getTableNamingStrategy().getClass().getName());
+
+        // product release
+        assertEquals("myReleaseExtension", props.getReleaseExtensionId());
+
+        // version
+        assertEquals("1.2.3", props.getVersion());
+        assertEquals("myVersionProvider", props.getVersionProviderId());
 
         // supported languages
         Set<ISupportedLanguage> supportedLanguages = props.getSupportedLanguages();

@@ -24,6 +24,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String DefaultVersionProvider_readableVersionFormat;
     public static String TableContentsEnumDatatypeAdapter_1;
     public static String TableContentsEnumDatatypeAdapter_3;
 

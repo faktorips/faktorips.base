@@ -22,6 +22,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -57,7 +60,6 @@ import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
@@ -142,8 +144,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private IIpsProjectNamingConventions namingConventions = null;
 
-    private IVersionProvider<?> versionProvider;
-
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
      * <code>IProject.addNature()</code>.
@@ -221,7 +221,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String contents;
         try {
             contents = XmlUtil.nodeToString(doc, charset);
-        } catch (Exception e) {
+        } catch (TransformerException e) {
             throw new CoreException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
         }
         ByteArrayInputStream is = null;
@@ -1633,6 +1633,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         validateMigration(result);
         validateDuplicateTocFilePath(result);
         validateIpsObjectPathCycle(result);
+        validateVersionProvider(result);
 
         return result;
     }
@@ -1740,6 +1741,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
                             this));
                 }
             }
+        }
+    }
+
+    private void validateVersionProvider(MessageList result) {
+        if (StringUtils.isNotEmpty(getReadOnlyProperties().getVersionProviderId())) {
+            VersionProviderExtensionPoint versionProviderExtensionPoint = new VersionProviderExtensionPoint(this);
+            result.add(versionProviderExtensionPoint.validateExtension());
         }
     }
 
@@ -1928,21 +1936,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IVersionProvider<?> getVersionProvider() {
-        if (versionProvider == null) {
-            initVersionProvider();
-        }
-        return versionProvider;
-    }
-
-    private void initVersionProvider() {
-        VersionProviderExtensionPoint versionProviderExtensionPoint = new VersionProviderExtensionPoint(this);
-        IVersionProvider<?> extendedVersionProvider = versionProviderExtensionPoint.getExtendedVersionProvider();
-        if (extendedVersionProvider != null) {
-            versionProvider = extendedVersionProvider;
-        } else {
-            versionProvider = new DefaultVersionProvider(this);
-        }
-
+        return getIpsModel().getVersionProvider(this);
     }
 
     @Override
