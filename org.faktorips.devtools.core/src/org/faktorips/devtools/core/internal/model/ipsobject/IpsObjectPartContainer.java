@@ -363,7 +363,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         String sinceVersionString = element.getAttribute(XML_ATTRIBUTE_VERSION);
         if (StringUtils.isNotEmpty(sinceVersionString)) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-            setSinceVersion(versionProvider.getVersion(sinceVersionString));
+            sinceVersion = versionProvider.getVersion(sinceVersionString);
         }
     }
 

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -38,7 +39,7 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
         formBody.setLayout(createPageLayout(1, true));
         new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
         new DescriptionSection(getIpsObject(), formBody, toolkit);
-        new VersionSection(formBody, toolkit);
+        new VersionSection((IVersionControlledElement)getIpsObject(), formBody, toolkit);
     }
 
     private static class LabelSection extends IpsSection {
@@ -97,8 +98,11 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
     private static class VersionSection extends IpsSection {
 
-        public VersionSection(Composite composite, UIToolkit toolkit) {
+        private final IVersionControlledElement versionElement;
+
+        public VersionSection(IVersionControlledElement versionElement, Composite composite, UIToolkit toolkit) {
             super(composite, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+            this.versionElement = versionElement;
 
             initControls();
             setText(Messages.IpsPartEditDialog_groupVersion);
@@ -106,7 +110,7 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            new VersionsComposite(client, toolkit);
+            new VersionsComposite(client, versionElement, toolkit);
         }
 
         @Override

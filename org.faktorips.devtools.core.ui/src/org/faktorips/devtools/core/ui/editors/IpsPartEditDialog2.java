@@ -212,7 +212,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         if (part instanceof IVersionControlledElement) {
             Group versionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupVersion);
             versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-            new VersionsComposite(versionGroup, getToolkit());
+            new VersionsComposite(versionGroup, (IVersionControlledElement)part, getToolkit());
         }
     }
 
