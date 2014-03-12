@@ -73,6 +73,8 @@ public final class VersionsComposite {
 
         text.setToolTipText(Messages.IpsPartEditDialog_versionTooltip);
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        toolkit.paintBordersForComposite(sinceVersionComposite);
     }
 
     private void bind() {
