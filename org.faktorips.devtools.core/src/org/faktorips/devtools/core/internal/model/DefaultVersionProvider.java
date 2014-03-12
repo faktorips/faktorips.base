@@ -61,7 +61,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
     }
 
     @Override
-    public IVersion<DefaultVersion> getProjectlVersion() {
+    public IVersion<DefaultVersion> getProjectVersion() {
         return getVersion(ipsProject.getReadOnlyProperties().getVersion());
     }
 

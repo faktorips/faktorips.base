@@ -61,7 +61,7 @@ public class DefaultVersionProviderTest {
     public void testGetProjectlVersion() throws Exception {
         when(properties.getVersion()).thenReturn(VERSION_STRING);
 
-        IVersion<DefaultVersion> projectlVersion = defaultVersionProvider.getProjectlVersion();
+        IVersion<DefaultVersion> projectlVersion = defaultVersionProvider.getProjectVersion();
 
         assertEquals(VERSION_STRING, projectlVersion.asString());
     }

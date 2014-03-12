@@ -12,19 +12,19 @@ package org.faktorips.devtools.core.model;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 
 /**
- * The {@link IVersionProvider} is able to provides versions for different uses. Its main use is to
- * provide the version of the project its belongs to. It also is used to create a {@link IVersion}
- * instance for a specified String. To verify the format of a version string it extends the
- * {@link IVersionFormat} interface.
+ * Provides {@link IVersion versions} for different uses. Its main use is to provide the version of
+ * the project it belongs to. It can also be used to create a {@link IVersion} instance from a
+ * specified String. To verify the format of a version string it extends the {@link IVersionFormat}
+ * interface.
  * <p>
  * The generic type K specifies the type of version that is handled by this {@link IVersionProvider}
- * . This is important to verify that the versions are not mixed within one version provider.
+ * . This ensures that versions of different kinds cannot be mixed within one version provider.
  * 
  */
 public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat {
 
     /**
-     * Creates a new Version by using an parameter string.
+     * Creates a new version by using the parameter string.
      * 
      * @param versionAsString The String that should be converted into a version instance.
      * @return the new Version that reflects the specified versionString
@@ -40,10 +40,10 @@ public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat 
      * 
      * @return IVersion of the according project
      */
-    public IVersion<K> getProjectlVersion();
+    public IVersion<K> getProjectVersion();
 
     /**
-     * Sets the correct Version in the project this {@link IVersionProvider} belongs to.
+     * Sets the given Version in the project this {@link IVersionProvider} belongs to.
      * 
      * @param version of the according model
      */
