@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 
 /**
- * A composite that allows to enter the Version of an {@link IpsObjectPartContainer}. Until now it
- * only can be entered since when this version is available.
+ * A composite that allows defining since which version of the model a new
+ * {@link IpsObjectPartContainer} is available.
  * 
  */
 public final class VersionsComposite {
@@ -101,14 +101,17 @@ public final class VersionsComposite {
         }
 
         public void setSinceVersion(String newVersion) {
-            IVersion<?> version;
-            if (StringUtils.isEmpty(newVersion)) {
-                version = null;
+            IVersion<?> version = parseVersion(newVersion);
+            getIpsObjectPartContainer().setSinceVersion(version);
+        }
+
+        private IVersion<?> parseVersion(String versionString) {
+            if (!StringUtils.isEmpty(versionString)) {
+                return null;
             } else {
                 IVersionProvider<?> versionProvider = getIpsObjectPartContainer().getIpsProject().getVersionProvider();
-                version = versionProvider.getVersion(newVersion);
+                return versionProvider.getVersion(versionString);
             }
-            getIpsObjectPartContainer().setSinceVersion(version);
         }
 
         public String getSinceVersion() {
