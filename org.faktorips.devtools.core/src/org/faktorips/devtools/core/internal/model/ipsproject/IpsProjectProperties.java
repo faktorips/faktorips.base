@@ -102,7 +102,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
 
-    private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
+    private static final String PRODUCT_RELEASE_DEPRECATED = "productRelease"; //$NON-NLS-1$
+    private static final String PRODUCT_RELEASE = "ProductRelease"; //$NON-NLS-1$
 
     private static final String VERSION_PROVIDER_ATTRIBUTE = "versionProvider"; //$NON-NLS-1$
 
@@ -696,6 +697,23 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initPersistenceOptions(element);
         initSupportedLanguages(element);
         initDefaultCurrency(element);
+
+        initCompatibilityMode(element);
+    }
+
+    private void initCompatibilityMode(Element element) {
+        initCompatibilityModelProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE_DEPRECATED));
+    }
+
+    private void initCompatibilityModelProductRelease(Element productReleaseDeprecated) {
+        if (productReleaseDeprecated != null) {
+            if (StringUtils.isEmpty(version)) {
+                version = productReleaseDeprecated.getAttribute(VERSION_ATTRIBUTE);
+            }
+            if (StringUtils.isEmpty(releaseExtensionId)) {
+                releaseExtensionId = productReleaseDeprecated.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
+            }
+        }
     }
 
     private boolean isUsingManifest(Element pathEl) {
@@ -807,13 +825,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private void initReleaseExtension(Element element) {
-        if (element == null) {
+    private void initReleaseExtension(Element productReleaseElement) {
+        if (productReleaseElement == null) {
             return;
         }
-        version = element.getAttribute(VERSION_ATTRIBUTE);
-        releaseExtensionId = element.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
-        versionProviderId = element.getAttribute(VERSION_PROVIDER_ATTRIBUTE);
+        version = productReleaseElement.getAttribute(VERSION_ATTRIBUTE);
+        releaseExtensionId = productReleaseElement.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
+        versionProviderId = productReleaseElement.getAttribute(VERSION_PROVIDER_ATTRIBUTE);
     }
 
     private void initVersion(Element element) {
