@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
  */
 public class OsgiVersionFormat implements IVersionFormat {
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+\\.[a-z]+"); //$NON-NLS-1$
+    private static final Pattern VERSION_PATTERN = Pattern.compile("[0-9]+(\\.[0-9]+\\.[0-9]+\\.[A-Za-z]+)?"); //$NON-NLS-1$
 
     @Override
     public boolean isCorrectVersionFormat(String version) {
