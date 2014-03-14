@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
-    private static final String PAGEID = "LabelAndDescription"; //$NON-NLS-1$
+    private static final String PAGEID = "Documentation"; //$NON-NLS-1$
 
     LabelAndDescriptionPage(IpsObjectEditor editor) {
         super(editor, PAGEID, Messages.IpsPartEditDialog_tabItemDocumentation);

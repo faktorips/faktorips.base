@@ -49,7 +49,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
     private IVersionFormat createVersionFormat() {
         final IConfigurationElement releaseExtension = ProductReleaseProcessor.getReleaseExtensionElement(ipsProject);
         if (releaseExtension == null) {
-            return new DefaultVersionFormat();
+            return new OsgiVersionFormat();
         } else {
             return new ReleaseExtensionVersionFormat(releaseExtension);
         }
@@ -84,21 +84,6 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
     @Override
     public String getVersionFormat() {
         return versionFormat.getVersionFormat();
-    }
-
-    private static final class DefaultVersionFormat implements IVersionFormat {
-
-        private static final Pattern versionPattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+(\\.[a-z]+)?"); //$NON-NLS-1$
-
-        @Override
-        public boolean isCorrectVersionFormat(String version) {
-            return versionPattern.matcher(version).matches();
-        }
-
-        @Override
-        public String getVersionFormat() {
-            return Messages.DefaultVersionProvider_readableVersionFormat;
-        }
     }
 
     private static final class ReleaseExtensionVersionFormat implements IVersionFormat {

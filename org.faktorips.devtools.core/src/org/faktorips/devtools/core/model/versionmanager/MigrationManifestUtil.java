@@ -87,6 +87,10 @@ public class MigrationManifestUtil {
         }
     }
 
+    public Manifest getManifest() {
+        return manifest;
+    }
+
     public static class ManifestFactory {
 
         public Manifest loadManifest(IFile file) throws IOException {
