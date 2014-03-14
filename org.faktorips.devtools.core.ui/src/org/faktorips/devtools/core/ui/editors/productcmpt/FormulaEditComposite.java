@@ -67,6 +67,7 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         contentProposalAdapter = new ContentProposalAdapter(formulaEditControl.getTextControl(),
                 new TextContentAdapter(), new ExpressionProposalProvider(getPropertyValue()), keyStroke,
                 new char[] { '.' });
+        contentProposalAdapter.setAutoActivationDelay(1000);
 
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
         contentProposalListener = new ContentProposalListener(contentProposalAdapter);

@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 public class EditFieldChangesBroadcaster {
 
     private static DateFormat DEBUG_FORMAT;
-    private static int DELAY_TIME = 200;
+    private static int DELAY_TIME = 1000;
 
     private FieldValueChangedEvent lastEvent;
     private ValueChangeListener[] lastListeners;

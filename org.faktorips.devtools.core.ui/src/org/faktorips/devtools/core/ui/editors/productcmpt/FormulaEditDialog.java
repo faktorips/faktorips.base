@@ -114,6 +114,7 @@ public class FormulaEditDialog extends IpsPartEditDialog2 {
         }
         contentProposalAdapter = new ContentProposalAdapter(formulaText, new TextContentAdapter(),
                 new ExpressionProposalProvider(formula), keyStroke, autoActivationCharacters);
+        contentProposalAdapter.setAutoActivationDelay(1000);
 
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
         contentProposalListener = new ContentProposalListener(contentProposalAdapter);
