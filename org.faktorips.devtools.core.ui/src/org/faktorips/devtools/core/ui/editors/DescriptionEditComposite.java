@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -80,6 +82,26 @@ public final class DescriptionEditComposite extends Composite {
 
         refresh();
         updateDescription();
+    }
+
+    /**
+     * Constructor for backwards-compatibility. Creates a new {@link BindingContext} exclusively for
+     * this composite. To minimize binding-context instances, use
+     * {@link #DescriptionEditComposite(Composite, IDescribedElement, UIToolkit, BindingContext)}
+     * wherever possible. Pass in (and thus reuse) the binding contexts of higher-level UI
+     * constructs, like editor-pages and such.
+     */
+    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
+        this(parent, describedElement, uiToolkit, new BindingContext());
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                if (bindingContext != null) {
+                    bindingContext.dispose();
+                }
+            }
+        });
     }
 
     private void createLayout() {
