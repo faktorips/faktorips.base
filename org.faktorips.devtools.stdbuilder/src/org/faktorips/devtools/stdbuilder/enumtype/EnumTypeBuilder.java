@@ -32,7 +32,6 @@ import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -52,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.util.JavaDocTagGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.PropertiesReadingInternationalString;
@@ -92,9 +92,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * @param builderSet The IPS artefact builder set this builder shall be a part of.
      */
-    public EnumTypeBuilder(DefaultBuilderSet builderSet) {
+    public EnumTypeBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(EnumTypeBuilder.class));
         setMergeEnabled(true);
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
+    }
+
+    @Override
+    protected List<String> getJavaDocTags(IIpsObjectPartContainer element,
+            String keyPrefix,
+            JavaCodeFragmentBuilder builder) {
+        List<String> docTags = JavaDocTagGeneratorUtil.getJavaDocTags(element, getBuilderSet());
+        docTags.addAll(super.getJavaDocTags(element, keyPrefix, builder));
+        return docTags;
     }
 
     @Override
@@ -166,10 +180,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         String typeName = getJavaNamingConvention().getTypeName(enumType.getName());
         mainSection.setUnqualifiedName(typeName);
         String description = getDescriptionInGeneratorLanguage(enumType);
-        mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(enumType, getBuilderSet());
+        mainSection.getJavaDocForTypeBuilder().javaDoc(description, javaDocTags);
 
-        if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && enumType.isExtensible()
-                && !enumType.isAbstract()) {
+        if (getBuilderSet().isGenerateJaxbSupport() && enumType.isExtensible() && !enumType.isAbstract()) {
             EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER,
                     EnumXmlAdapterBuilder.class);
             mainSection.getAnnotationsForTypeBuilder().annotationClassValueLn(
@@ -729,7 +743,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                          * supertype can't be found
                          */
                         String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
-                        attributeBuilder.javaDoc(description, ANNOTATION_GENERATED);
+                        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(
+                                currentEnumAttribute, getBuilderSet());
+                        attributeBuilder.javaDoc(description, javaDocTags);
                         attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
                         attributeBuilder.appendln();
                     }
