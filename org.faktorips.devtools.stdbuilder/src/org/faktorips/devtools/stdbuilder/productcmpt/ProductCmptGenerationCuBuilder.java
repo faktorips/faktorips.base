@@ -168,7 +168,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
         Locale language = getLanguageUsedInGeneratedSourceCode();
         String genName = getChangesInTimeNamingConvention(generation).getGenerationConceptNameSingular(language);
-        String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC, genName);
+        String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC, genName);
         try {
             String className = getUnqualifiedClassName();
             String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$

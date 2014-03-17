@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -69,6 +71,7 @@ import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.osgi.framework.Bundle;
 
 /**
  * An implementation of <code>IIpsArtefactBuilder</code> that generates a java source file for a
@@ -89,7 +92,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
+    public static final String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
 
     /**
      * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
@@ -97,7 +100,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * the parts that are outside the braces defined by the markers <code>//begin-user-code</code>
      * and <code>//end-user-code</code> are regenerated with the next generation.
      */
-    public final static String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[] { "restrainedmodifiable" }; //$NON-NLS-1$
+    public static final String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[] { "restrainedmodifiable" }; //$NON-NLS-1$
 
     /**
      * This constant is supposed to be used as a Java 5 annotation. It suppresses warnings for
@@ -121,19 +124,19 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * code that a user can modify and will not be overridden by the generator at the next
      * generation.
      */
-    public final static String MARKER_BEGIN_USER_CODE = "//begin-user-code"; //$NON-NLS-1$
+    public static final String MARKER_BEGIN_USER_CODE = "//begin-user-code"; //$NON-NLS-1$
 
     /**
      * This constant is supposed to be used to indicate the end of a section within generated code
      * that a user can modify and will not be overridden by the generator at the next generation.
      */
-    public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
+    public static final String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
-    private final static String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
+    private static final String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 
-    private final static String END_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "END FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
+    private static final String END_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "END FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 
-    private final static Pattern FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN = createFeatureSectionPattern();
+    private static final Pattern FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN = createFeatureSectionPattern();
 
     private String versionSection;
 
@@ -486,26 +489,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
-     * 
-     * @deprecated Use {@link #getLocalizedToDo(IIpsElement, String)} instead as the builder is of
-     *             no relevance.
-     */
-    @Deprecated
-    // Deprecated since 3.0
-    @SuppressWarnings("unused")
-    // Suppressing warning that the parameter builder is not used since the method is deprecated
-    // because of that
-    public String getLocalizedToDo(IIpsElement element, String keyPrefix, JavaCodeFragmentBuilder builder) {
-        return getLocalizedToDo(element, keyPrefix);
-    }
-
-    /**
-     * Returns a single line comment containing a TO DO.
-     * 
-     * @param element Any IPS element used to access the IPS project and determine the language for
-     *            the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
-     *            prefix
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix) {
         return getLocalizedToDo(element, keyPrefix, new Object[0]);
@@ -534,7 +517,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param replacements Any objects to replace wild cards in the message text.
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object[] replacements) {
-        return "// TODO " + getLocalizedText(element, keyPrefix + "_TODO", replacements); //$NON-NLS-1$ //$NON-NLS-2$
+        return "// TODO " + getLocalizedText(keyPrefix + "_TODO", replacements); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -548,32 +531,47 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
      *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
+     * @param element The IPS element for which this java doc is created. It is used for getting
+     *            additional information like the since version. If the generated code part is not
+     *            for a specific model element this element could be <code>null</code>.
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
-            IIpsElement element,
+            IIpsObjectPartContainer element,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
-        String text = getLocalizedText(element, keyPrefix + "_JAVADOC"); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(element, keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
-        if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
-        }
-        builder.javaDoc(buf.toString(), annotations);
+        appendLocalizedJavaDoc(keyPrefix, modelDescription, element, builder, new Object[] {});
     }
 
     /**
-     * Like {@link #appendLocalizedJavaDoc(String, IIpsElement, String, JavaCodeFragmentBuilder)}
+     * Like
+     * {@link #appendLocalizedJavaDoc(String, IIpsObjectPartContainer, String, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
-    public void appendLocalizedJavaDoc(String keyPrefix, IIpsElement element, JavaCodeFragmentBuilder builder) {
+    public void appendLocalizedJavaDoc(String keyPrefix,
+            IIpsObjectPartContainer element,
+            JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc(keyPrefix, element, (String)null, builder);
+    }
+
+    /**
+     * Like
+     * {@link #appendLocalizedJavaDoc(String, IIpsObjectPartContainer, String, JavaCodeFragmentBuilder)}
+     * without a description and without element.
+     */
+    public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder) {
+        appendLocalizedJavaDoc(keyPrefix, null, (String)null, builder);
+    }
+
+    /**
+     * Like
+     * {@link #appendLocalizedJavaDoc(String, IIpsObjectPartContainer, String, JavaCodeFragmentBuilder)}
+     * without an element.
+     */
+    public void appendLocalizedJavaDoc(String keyPrefix, String modelDescription, JavaCodeFragmentBuilder builder) {
+        appendLocalizedJavaDoc(keyPrefix, null, modelDescription, builder);
     }
 
     /**
@@ -588,8 +586,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
      * @param replacement Object that replaces the place holder {0} in the property file
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
+     * @param element The IPS element for which this java doc is created. It is used for getting
+     *            additional information like the since version. If the generated code part is not
+     *            for a specific model element this element could be <code>null</code>.
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
@@ -597,30 +596,54 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
             String modelDescription,
-            IIpsElement element,
+            IIpsObjectPartContainer element,
             JavaCodeFragmentBuilder builder) {
-
-        String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacement); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(element, keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
-        if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
-        }
-        builder.javaDoc(buf.toString(), annotations);
+        appendLocalizedJavaDoc(keyPrefix, modelDescription, element, builder, replacement);
     }
 
     /**
      * Like
-     * {@link #appendLocalizedJavaDoc(String, Object, String, IIpsElement, JavaCodeFragmentBuilder)}
+     * {@link #appendLocalizedJavaDoc(String, Object, String, IIpsObjectPartContainer, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
-            IIpsElement element,
+            IIpsObjectPartContainer element,
             JavaCodeFragmentBuilder builder) {
-
         appendLocalizedJavaDoc(keyPrefix, replacement, null, element, builder);
+    }
+
+    /**
+     * Like
+     * {@link #appendLocalizedJavaDoc(String, String, IIpsObjectPartContainer, JavaCodeFragmentBuilder, Object[])}
+     * without a description that is expected to be provided by the model.
+     */
+    public void appendLocalizedJavaDoc(String keyPrefix,
+            IIpsElement element,
+            JavaCodeFragmentBuilder builder,
+            Object... replacements) {
+        appendLocalizedJavaDoc(keyPrefix, null, element, builder, replacements);
+    }
+
+    /**
+     * Like
+     * {@link #appendLocalizedJavaDoc(String, String, IIpsObjectPartContainer, JavaCodeFragmentBuilder, Object[])}
+     * without a description and without element.
+     */
+    public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder, Object... replacements) {
+        appendLocalizedJavaDoc(keyPrefix, null, null, builder, replacements);
+    }
+
+    /**
+     * Like
+     * {@link #appendLocalizedJavaDoc(String, String, IIpsObjectPartContainer, JavaCodeFragmentBuilder, Object[])}
+     * without a the element.
+     */
+    public void appendLocalizedJavaDoc(String keyPrefix,
+            String modelDescription,
+            JavaCodeFragmentBuilder builder,
+            Object... replacements) {
+        appendLocalizedJavaDoc(keyPrefix, modelDescription, null, builder, replacements);
     }
 
     /**
@@ -634,40 +657,48 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
      *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
-     * @param replacements Objects that replaces the place holders {0}, {1} etc. in the property
-     *            file
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
+     * @param element The IPS element for which this java doc is created. It is used for getting
+     *            additional information like the since version. If the generated code part is not
+     *            for a specific model element this element could be <code>null</code>.
      * @param builder the builder the Javadoc is appended to.
+     * @param replacements Objects that replaces the place holders {0}, {1} etc. in the property
+     *            file
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
-            Object[] replacements,
             String modelDescription,
-            IIpsElement element,
-            JavaCodeFragmentBuilder builder) {
+            IIpsObjectPartContainer element,
+            JavaCodeFragmentBuilder builder,
+            Object... replacements) {
 
-        String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(element, keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
+        String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
+        List<String> annotations = getJavaDocTags(element, keyPrefix, builder);
         StringBuffer buf = new StringBuffer();
         buf.append(text);
         if (modelDescription != null) {
             buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(buf.toString(), annotations.toArray(new String[annotations.size()]));
     }
 
     /**
-     * Like
-     * {@link #appendLocalizedJavaDoc(String, Object[], String, IIpsElement, JavaCodeFragmentBuilder)}
-     * without a description that is expected to be provided by the model.
+     * Create generic java doc tags. The default implementation searches for localized annotations
+     * with the key <code>{keyPrefix}_ANNOTATION</code>. You could overwrite this class to provide
+     * further generic java doc tags that should be appended by
+     * {@link #appendLocalizedJavaDoc(String, IIpsObjectPartContainer, JavaCodeFragmentBuilder)}
+     * 
+     * @param element The {@link IIpsElement} for which the java doc is generated
+     * @param keyPrefix The keyPrefix for messages should be found by adding _ANNOTATION
+     * @param builder The {@link JavaCodeFragmentBuilder} that is currently used. Normally you do
+     *            not need to add anything but maybe you want to provide some import statements.
+     * @return The tags that should be added to the java doc (also known as annotations)
      */
-    public void appendLocalizedJavaDoc(String keyPrefix,
-            Object[] replacements,
-            IIpsElement element,
+    protected List<String> getJavaDocTags(IIpsObjectPartContainer element,
+            String keyPrefix,
             JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc(keyPrefix, replacements, null, element, builder);
+        String localizedAnnotationText = getLocalizedText(keyPrefix + "_ANNOTATION"); //$NON-NLS-1$
+        return Arrays.asList(localizedAnnotationText);
     }
 
     /**
@@ -742,7 +773,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             try {
                 is.close();
             } catch (IOException e) {
-                // ignore
+                throw new RuntimeException(e);
             }
         }
     }
@@ -882,6 +913,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private String merge(IFile javaFile, String oldContent, String newContent) throws CoreException {
+        // CSOFF: IllegalCatch
         JMerger merger;
         try {
             merger = new JMerger(getJControlModel());
@@ -908,9 +940,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
+        // CSON: IllegalCatch
     }
 
     private void initJControlModel(IIpsProject project) throws CoreException {
+        // CSOFF: IllegalCatch
         model = new JControlModel();
         if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
             ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
@@ -924,6 +958,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }
+        // CSON: IllegalCatch
     }
 
     @SuppressWarnings("unchecked")
@@ -941,10 +976,24 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         StringBuffer mergeFileDefault = new StringBuffer();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
                 .append(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-        return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFileDefault.toString()).toExternalForm();
+        Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
+        return getFileNameFromBundle(bundle, mergeFileDefault.toString());
     }
 
-    private final static Pattern createFeatureSectionPattern() {
+    private String getFileNameFromBundle(Bundle bundle, String mergeFileName) {
+        if (bundle != null) {
+            URL resource = bundle.getResource(mergeFileName);
+            if (resource != null) {
+                return resource.toExternalForm();
+            } else {
+                throw new IllegalArgumentException("Cannot find jmerge configuration " + mergeFileName); //$NON-NLS-1$
+            }
+        } else {
+            throw new IllegalStateException("Cannot accedd Ips Plugin."); //$NON-NLS-1$
+        }
+    }
+
+    private static final Pattern createFeatureSectionPattern() {
         StringBuffer buf = new StringBuffer();
         buf.append("/\\*.*"); //$NON-NLS-1$
         buf.append(BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
@@ -1029,10 +1078,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         if (ipsObjectPartContainer instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
             try {
-                if (isBuilderFor(ipsObject.getIpsSrcFile())) {
-                    javaElements.addAll(getGeneratedJavaTypes(ipsObject));
+                if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
+                    javaElements.addAll(getGeneratedJavaTypes((IIpsObject)ipsObjectPartContainer));
                 }
             } catch (CoreException e) {
                 return new ArrayList<IJavaElement>();

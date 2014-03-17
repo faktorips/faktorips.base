@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -162,12 +161,9 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the localized text for the provided key. Calling this method is only allowed during
      * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
      * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
-     * 
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
      * @param key the key that identifies the requested text
      */
-    public String getLocalizedText(IIpsElement element, String key) {
+    public String getLocalizedText(String key) {
         if (localizedStringsSet == null) {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
@@ -186,14 +182,11 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the localized text for the provided key. Calling this method is only allowed during
      * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
      * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
-     * 
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
      * @param key the key that identifies the requested text
      * @param replacement an indicated region within the text is replaced by the string
      *            representation of this value
      */
-    public String getLocalizedText(IIpsElement element, String key, Object replacement) {
+    public String getLocalizedText(String key, Object replacement) {
         if (localizedStringsSet == null) {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
@@ -206,13 +199,11 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
      * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
      * 
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
      * @param key the key that identifies the requested text
      * @param replacements indicated regions within the text are replaced by the string
      *            representations of these values.
      */
-    public String getLocalizedText(IIpsElement element, String key, Object[] replacements) {
+    public String getLocalizedText(String key, Object... replacements) {
         if (localizedStringsSet == null) {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$

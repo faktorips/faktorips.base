@@ -117,7 +117,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
             for (ISupportedLanguage supportedLanguage : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
-                String comment = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
+                String comment = NLS.bind(getLocalizedText(MESSAGES_COMMENT), ipsProject.getName() + "/"
                         + srcRoot.getName());
                 ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(srcRoot, supportedLanguage);
                 messagesGenerator.saveIfModified(comment);

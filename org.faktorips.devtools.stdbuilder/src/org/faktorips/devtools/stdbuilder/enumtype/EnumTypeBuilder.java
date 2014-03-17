@@ -272,7 +272,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return "); //$NON-NLS-1$
         body.append(getJavaNamingConvention().getMemberVarName(identifierAttribute.getName()));
         body.append(";"); //$NON-NLS-1$
-        appendLocalizedJavaDoc("METHOD_GET_ENUM_VALUE_BY_ID", getEnumType(), methodBuilder);
+        appendLocalizedJavaDoc("METHOD_GET_ENUM_VALUE_BY_ID", methodBuilder);
         if (isJava5EnumsAvailable()) {
             methodBuilder.annotationLn(ANNOTATION_SUPPRESS_WARNINGS_UNUSED);
         }
@@ -290,8 +290,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) {
-        IEnumType enumType = getEnumType();
-        appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("SERIALVERSIONUID", constantBuilder); //$NON-NLS-1$
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
                 "serialVersionUID", new JavaCodeFragment("1L")); //$NON-NLS-1$ //$NON-NLS-2$
         constantBuilder.appendln();
@@ -334,7 +333,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         if (useClassGeneration() && !enumValues.isEmpty()) {
             String className = List.class.getName() + "<" + getQualifiedClassName() + ">";
-            appendLocalizedJavaDoc("CONSTANT_VALUES", getEnumType(), mainSection.getConstantBuilder()); //$NON-NLS-1$
+            appendLocalizedJavaDoc("CONSTANT_VALUES", mainSection.getConstantBuilder()); //$NON-NLS-1$
             mainSection.getConstantBuilder().varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                     className, CONSTANT_VALUES, getConstantValuesInitExpression(literalNames));
         }
@@ -618,7 +617,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
 
         // Create enumeration definition source fragment
-        appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("ENUMVALUE", currentEnumValue, enumDefinitionBuilder); //$NON-NLS-1$
         enumDefinitionBuilder.append(currentLiteralNameEnumAttributeValue.getValue().getLocalizedContent(
                 getLanguageUsedInGeneratedSourceCode()));
         enumDefinitionBuilder.append(" ("); //$NON-NLS-1$
@@ -648,7 +647,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttributeValue> enumAttributeValues = currentValue.getEnumAttributeValues();
         IEnumType enumType = getEnumType();
 
-        appendLocalizedJavaDoc("ENUMVALUE", enumType, constantBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("ENUMVALUE", currentValue, constantBuilder); //$NON-NLS-1$
         JavaCodeFragment initExpression = new JavaCodeFragment();
         initExpression.append("new "); //$NON-NLS-1$
         initExpression.append(enumType.getName());
@@ -1149,7 +1148,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                     body.append("return null;"); //$NON-NLS-1$
 
-                    appendLocalizedJavaDoc("METHOD_GET_VALUE_BY_XXX", parameterName, enumType, methodBuilder); //$NON-NLS-1$
+                    appendLocalizedJavaDoc(
+                            "METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
                     methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                             getQualifiedClassName(enumType), getMethodNameGetValueBy(currentEnumAttribute),
                             new String[] { parameterName }, new String[] { datatypeHelper.getJavaClassName() });
@@ -1192,7 +1192,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     String[] parameterClasses = new String[] { getDatatypeHelper(currentEnumAttribute, false)
                             .getJavaClassName() };
 
-                    appendLocalizedJavaDoc("METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), enumType, //$NON-NLS-1$
+                    appendLocalizedJavaDoc(
+                            "METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), currentEnumAttribute, //$NON-NLS-1$
                             methodBuilder);
                     methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(),
                             getMethodNameIsValueBy(currentEnumAttribute), parameterNames, parameterClasses, methodBody,
@@ -1253,7 +1254,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         methodBody.append("};"); //$NON-NLS-1$
 
-        appendLocalizedJavaDoc("METHOD_VALUES", enumType, methodBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("METHOD_VALUES", methodBuilder); //$NON-NLS-1$
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName()
                 + "[]", methodName, new String[0], new String[0], methodBody, null); //$NON-NLS-1$

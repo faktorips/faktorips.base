@@ -12,12 +12,14 @@ package org.faktorips.devtools.core.model.tablestructure;
 
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
+
 /**
  * An index is a list of key items that, given a value for each item, you can find zero, one or many
  * rows in the table. An index can be marked as unique key. There can be only one (or zero) rows for
  * a unique key in a table.
  */
-public interface IIndex extends IKey {
+public interface IIndex extends IKey, IVersionControlledElement {
 
     public static final String PROPERTY_UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
 

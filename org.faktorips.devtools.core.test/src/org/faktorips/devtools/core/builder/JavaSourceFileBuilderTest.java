@@ -175,7 +175,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetLocalizedText() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
-        String value = builder.getLocalizedText(ipsSrcFile, "key");
+        String value = builder.getLocalizedText("key");
         assertNotNull(value);
         builder.afterBuild(ipsSrcFile);
     }
