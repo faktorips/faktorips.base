@@ -15,8 +15,10 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * This simple implementation of {@link IVersion} simply takes a string argument and uses it as
- * internal representation of the version. The compare of two versions are only alphabetically.
- * Hence the version 3.0 is greater than 13.0! TODO
+ * internal representation of the version. The compare of two versions is alphanumeric. That means
+ * the comparator recognize numeric parts are compares them as numbers.
+ * 
+ * @see AlphaNumericComparator
  * 
  */
 public class DefaultVersion implements IVersion<DefaultVersion> {
