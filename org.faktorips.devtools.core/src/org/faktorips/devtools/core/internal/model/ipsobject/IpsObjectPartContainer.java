@@ -336,7 +336,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Writes the version to an element
      */
     public void versionToXML(Element element) {
-        if (sinceVersion != null) {
+        if (this instanceof IVersionControlledElement && sinceVersion != null) {
             element.setAttribute(XML_ATTRIBUTE_VERSION, sinceVersion.asString());
         }
     }
@@ -360,10 +360,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void initVersionFromXML(Element element) {
-        String sinceVersionString = element.getAttribute(XML_ATTRIBUTE_VERSION);
-        if (StringUtils.isNotEmpty(sinceVersionString)) {
-            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-            sinceVersion = versionProvider.getVersion(sinceVersionString);
+        if (this instanceof IVersionControlledElement) {
+            String sinceVersionString = element.getAttribute(XML_ATTRIBUTE_VERSION);
+            if (StringUtils.isNotEmpty(sinceVersionString)) {
+                IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+                sinceVersion = versionProvider.getVersion(sinceVersionString);
+            } else {
+                sinceVersion = null;
+            }
         }
     }
 
@@ -653,7 +657,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {
-        Class<IpsObjectPartContainer> thisClass = (Class<IpsObjectPartContainer>)getClass();
+        Class<? extends IpsObjectPartContainer> thisClass = getClass();
         Set<ICustomValidation<IpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
                 .getCustomValidations(thisClass);
         for (ICustomValidation<IpsObjectPartContainer> validation : customValidations) {

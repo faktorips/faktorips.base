@@ -22,15 +22,15 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractCustomValidation<T extends IIpsObjectPartContainer> implements ICustomValidation<T> {
 
-    private Class<T> extendedClass;
+    private Class<? extends T> extendedClass;
 
-    public AbstractCustomValidation(Class<T> extendedClass) {
+    public AbstractCustomValidation(Class<? extends T> extendedClass) {
         ArgumentCheck.notNull(extendedClass);
         this.extendedClass = extendedClass;
     }
 
     @Override
-    public Class<T> getExtendedClass() {
+    public Class<? extends T> getExtendedClass() {
         return extendedClass;
     }
 
