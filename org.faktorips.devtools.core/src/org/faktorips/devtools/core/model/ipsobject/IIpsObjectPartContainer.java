@@ -44,6 +44,12 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     public final static String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the entered version does not correspond to the valid
+     * version format
+     */
+    public final static String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
+
+    /**
      * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a
      * part, or the IPS object itself, if this <tt>IIpsObjectPartContainer</tt> is the IPS object.
      */

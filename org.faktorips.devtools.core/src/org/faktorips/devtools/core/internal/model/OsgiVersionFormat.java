@@ -35,6 +35,6 @@ public class OsgiVersionFormat implements IVersionFormat {
 
     @Override
     public String getVersionFormat() {
-        return "for example: 2.1.4.qualifier"; //$NON-NLS-1$
+        return "2.1.4.qualifier"; //$NON-NLS-1$
     }
 }

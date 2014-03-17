@@ -112,6 +112,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (this instanceof ILabeledElement || this instanceof IDescribedElement) {
             initLabelsAndDescriptions();
         }
+        setDefaultVersion();
     }
 
     /**
@@ -135,6 +136,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                     description.setLocaleWithoutChangeEvent(locale);
                 }
             }
+        }
+    }
+
+    private void setDefaultVersion() {
+        if (getIpsProject() != null) {
+            sinceVersion = getIpsProject().getVersionProvider().getProjectVersion();
         }
     }
 
@@ -633,8 +640,25 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         validateThis(result, ipsProject);
         execCustomValidations(result, ipsProject);
+
+        validateSinceVersionFormat(result);
+
         afterValidateThis(result, ipsProject);
         return result;
+    }
+
+    private void validateSinceVersionFormat(MessageList result) {
+        if (getIpsProject() != null && sinceVersion != null) {
+            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+            boolean isCorrectFormat = versionProvider.isCorrectVersionFormat(sinceVersion.asString());
+            if (!isCorrectFormat) {
+                String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidVersionFormat,
+                        versionProvider.getVersionFormat());
+                Message message = Message.newError(IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT, text,
+                        sinceVersion, IVersionControlledElement.PROPERTY_SINCE_VERSION);
+                result.add(message);
+            }
+        }
     }
 
     private void validateDescriptionCount(MessageList result, int languageCount) {

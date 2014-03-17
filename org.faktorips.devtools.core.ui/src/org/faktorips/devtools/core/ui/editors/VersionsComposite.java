@@ -97,7 +97,7 @@ public final class VersionsComposite {
         }
 
         private IVersion<?> parseVersion(String versionString) {
-            if (!StringUtils.isEmpty(versionString)) {
+            if (StringUtils.isEmpty(versionString)) {
                 return null;
             } else {
                 IVersionProvider<?> versionProvider = getIpsObjectPartContainer().getIpsProject().getVersionProvider();
