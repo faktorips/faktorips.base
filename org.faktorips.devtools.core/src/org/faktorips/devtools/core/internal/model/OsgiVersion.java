@@ -9,30 +9,46 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IVersion;
-import org.faktorips.devtools.core.util.AlphaNumericComparator;
 import org.faktorips.util.ArgumentCheck;
+import org.osgi.framework.Version;
 
 /**
  * This simple implementation of {@link IVersion} simply takes a string argument and uses it as
  * internal representation of the version.
  */
-public class BundleVersion implements IVersion<BundleVersion> {
+public class OsgiVersion implements IVersion<OsgiVersion> {
 
-    private final String versionString;
+    private Version version;
 
-    public BundleVersion(String versionString) {
+    public OsgiVersion(String versionString) {
         ArgumentCheck.notNull(versionString);
-        this.versionString = versionString;
+        version = new Version(versionString);
     }
 
     @Override
     public String asString() {
-        return versionString;
+        if (version != null) {
+            return version.toString();
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     @Override
-    public int compareTo(BundleVersion version) {
-        return new AlphaNumericComparator().compare(versionString, version.versionString);
+    public int compareTo(OsgiVersion osgiVersion) {
+        return version.compareTo(osgiVersion.version);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Version version = ((OsgiVersion)obj).version;
+        return this.version.equals(version);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.version.hashCode();
     }
 }

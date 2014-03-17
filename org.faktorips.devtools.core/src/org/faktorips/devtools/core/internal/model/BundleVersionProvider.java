@@ -17,17 +17,17 @@ import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
-import org.faktorips.devtools.core.model.versionmanager.MigrationManifestUtil;
+import org.faktorips.devtools.core.model.versionmanager.ManifestUtil;
 
 /**
  * The {@link BundleVersionProvider} is the used if the version of the model shall be configured in
  * the Manifest file.
  * 
  */
-public class BundleVersionProvider implements IVersionProvider<BundleVersion> {
+public class BundleVersionProvider implements IVersionProvider<OsgiVersion> {
 
     private IIpsProject ipsProject;
-    private MigrationManifestUtil migrationManifest;
+    private ManifestUtil migrationManifest;
     private final IVersionFormat versionFormat;
 
     public BundleVersionProvider(IIpsProject ipsProject) throws IOException {
@@ -37,7 +37,7 @@ public class BundleVersionProvider implements IVersionProvider<BundleVersion> {
     }
 
     private void initMigrationManifest() throws IOException {
-        migrationManifest = MigrationManifestUtil.createMigrationManifestUtil(ipsProject);
+        migrationManifest = ManifestUtil.createMigrationManifestUtil(ipsProject);
     }
 
     @Override
@@ -51,12 +51,12 @@ public class BundleVersionProvider implements IVersionProvider<BundleVersion> {
     }
 
     @Override
-    public IVersion<BundleVersion> getVersion(String versionAsString) {
-        return new BundleVersion(versionAsString);
+    public IVersion<OsgiVersion> getVersion(String versionAsString) {
+        return new OsgiVersion(versionAsString);
     }
 
     @Override
-    public IVersion<BundleVersion> getProjectVersion() {
+    public IVersion<OsgiVersion> getProjectVersion() {
         Attributes attributes = getManifestMainAttributes();
         String value = attributes.getValue(org.osgi.framework.Constants.BUNDLE_VERSION);
         if (value != null) {
@@ -66,7 +66,7 @@ public class BundleVersionProvider implements IVersionProvider<BundleVersion> {
     }
 
     @Override
-    public void setProjectVersion(IVersion<BundleVersion> version) {
+    public void setProjectVersion(IVersion<OsgiVersion> version) {
         try {
             Attributes attributes = getManifestMainAttributes();
             attributes.putValue(org.osgi.framework.Constants.BUNDLE_VERSION, version.asString());

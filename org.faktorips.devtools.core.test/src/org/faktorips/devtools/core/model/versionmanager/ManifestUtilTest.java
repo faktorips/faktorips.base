@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.service.resolver.VersionRange;
-import org.faktorips.devtools.core.model.versionmanager.MigrationManifestUtil.ManifestFactory;
+import org.faktorips.devtools.core.model.versionmanager.ManifestUtil.ManifestFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MigrationManifestUtilTest {
+public class ManifestUtilTest {
 
     @Mock
     private Manifest manifest;
@@ -78,25 +78,25 @@ public class MigrationManifestUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testManifestNull() throws IOException {
-        new MigrationManifestUtil(null, manifestFactory);
+        new ManifestUtil(null, manifestFactory);
     }
 
     @Test(expected = NullPointerException.class)
     public void testSetPluginDependencyPluginNull() throws IOException {
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(null, RANGE1);
     }
 
     @Test(expected = NullPointerException.class)
     public void testSetPluginDependencyVersionRangeNull() throws IOException {
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, null);
     }
 
     @Test
     public void testSetPluginDependencyIncludeMaxVersion() throws IOException {
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(MY_REQUIRE_BUNDLE_WITH_VERSION);
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE1);
         verify(attributes).putValue(Constants.REQUIRE_BUNDLE, MY_REQUIRE_BUNDLE_VERSION + "=\"[3.10.0,3.11.0]\"");
     }
@@ -105,7 +105,7 @@ public class MigrationManifestUtilTest {
     public void testSetPluginDependencyExcludeMaxVersion() throws IOException {
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(
                 MY_REQUIRE_BUNDLE_WITH_VERSION + VISIBILITY_REEXPORT);
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE2);
         verify(attributes).putValue(Constants.REQUIRE_BUNDLE,
                 MY_REQUIRE_BUNDLE_VERSION + "=\"[3.10.0,3.11.0)\"" + VISIBILITY_REEXPORT);
@@ -115,7 +115,7 @@ public class MigrationManifestUtilTest {
     public void testSetPluginDependencyInside() throws IOException {
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(
                 START_OTHER_BUNDLE + MY_REQUIRE_BUNDLE_WITH_VERSION + END_OTHER_BUNDLE);
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE2);
         verify(attributes).putValue(Constants.REQUIRE_BUNDLE,
                 START_OTHER_BUNDLE + MY_REQUIRE_BUNDLE_VERSION + "=\"[3.10.0,3.11.0)\"" + END_OTHER_BUNDLE);
@@ -124,7 +124,7 @@ public class MigrationManifestUtilTest {
     @Test
     public void testSetPluginDependencyNotfound() throws IOException {
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(OTHER_BUNDLE1_WITH_VERSION);
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE2);
         verify(attributes).putValue(Constants.REQUIRE_BUNDLE,
                 START_OTHER_BUNDLE + MY_REQUIRE_BUNDLE_VERSION + "=\"[3.10.0,3.11.0)\"");
@@ -133,14 +133,14 @@ public class MigrationManifestUtilTest {
     @Test
     public void testSetPluginDependencyEmpty() throws IOException {
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(null);
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE2);
         verify(attributes).putValue(Constants.REQUIRE_BUNDLE, MY_REQUIRE_BUNDLE_VERSION + "=\"[3.10.0,3.11.0)\"");
     }
 
     @Test
     public void testWriteManifest() throws IOException, CoreException {
-        MigrationManifestUtil migrationUtil = createMigrationManifestUtil();
+        ManifestUtil migrationUtil = createMigrationManifestUtil();
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(MY_REQUIRE_BUNDLE_WITH_VERSION);
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE1);
         migrationUtil.writeManifest();
@@ -148,7 +148,7 @@ public class MigrationManifestUtilTest {
         verify(file).setContents(any(ByteArrayInputStream.class), eq(true), eq(true), any(NullProgressMonitor.class));
     }
 
-    private MigrationManifestUtil createMigrationManifestUtil() throws IOException {
-        return new MigrationManifestUtil(file, manifestFactory);
+    private ManifestUtil createMigrationManifestUtil() throws IOException {
+        return new ManifestUtil(file, manifestFactory);
     }
 }

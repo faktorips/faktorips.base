@@ -36,7 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class BundleVersionProviderTest {
     private static final String VERSION_STRING = "1.2.3.test";
 
-    private static final String VERSION_STRING_NEW = "1.2.3.test";
+    private static final String VERSION_STRING_NEW = "1.2.4.test";
 
     private BundleVersionProvider provider;
 
@@ -72,7 +72,7 @@ public class BundleVersionProviderTest {
     @Test
     public void test_getVersion() {
 
-        IVersion<BundleVersion> version = providerSpy.getVersion(VERSION_STRING);
+        IVersion<OsgiVersion> version = providerSpy.getVersion(VERSION_STRING);
 
         assertNotNull(version);
     }
@@ -82,7 +82,7 @@ public class BundleVersionProviderTest {
         when(providerSpy.getManifestMainAttributes()).thenReturn(attributes);
         when(attributes.getValue(org.osgi.framework.Constants.BUNDLE_VERSION)).thenReturn(VERSION_STRING);
 
-        IVersion<BundleVersion> version = providerSpy.getProjectVersion();
+        IVersion<OsgiVersion> version = providerSpy.getProjectVersion();
 
         assertNotNull(version);
         assertEquals(version.asString(), VERSION_STRING);
@@ -92,7 +92,7 @@ public class BundleVersionProviderTest {
     public void test_setProjectVersion() {
         when(project.getFile(JarFile.MANIFEST_NAME)).thenReturn(file);
 
-        providerSpy.setProjectVersion(new BundleVersion(VERSION_STRING_NEW));
+        providerSpy.setProjectVersion(new OsgiVersion(VERSION_STRING_NEW));
 
         verify(attributes).putValue(org.osgi.framework.Constants.BUNDLE_VERSION, VERSION_STRING_NEW);
     }
