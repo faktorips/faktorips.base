@@ -19,23 +19,38 @@ public class OsgiVersionFormatTest {
     private OsgiVersionFormat format = new OsgiVersionFormat();
 
     @Test
-    public void testIsCorrectVersionFormat_ValidFormOnlyDigits() {
-        OsgiVersion osgiVersion = new OsgiVersion("3.9");
-        boolean correctFormat = format.isCorrectVersionFormat(osgiVersion.asString());
+    public void testIsCorrectVersionFormat_ValidFormOneDigits() {
+        boolean correctFormat = format.isCorrectVersionFormat("3");
+
+        assertTrue(correctFormat);
+    }
+
+    @Test
+    public void testIsCorrectVersionFormat_ValidFormTwoDigits() {
+        boolean correctFormat = format.isCorrectVersionFormat("3.9");
+
+        assertTrue(correctFormat);
+    }
+
+    @Test
+    public void testIsCorrectVersionFormat_ValidFormTheeDigits() {
+        boolean correctFormat = format.isCorrectVersionFormat("3.2.5");
+
         assertTrue(correctFormat);
     }
 
     @Test
     public void testIsCorrectVersionFormat_ValidFormDigitsAndLetters() {
-        OsgiVersion osgiVersion = new OsgiVersion("0.6.4.lal");
-        boolean correctFormat = format.isCorrectVersionFormat(osgiVersion.asString());
+        boolean correctFormat = format.isCorrectVersionFormat("0.6.4.lal");
+
         assertTrue(correctFormat);
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testIsCorrectVersionFormat_Invalid() {
-        OsgiVersion osgiVersion = new OsgiVersion("lal");
-        boolean correctFormat = format.isCorrectVersionFormat(osgiVersion.asString());
+        boolean correctFormat = format.isCorrectVersionFormat("lal");
+
         assertFalse(correctFormat);
     }
+
 }

@@ -27,7 +27,9 @@ import org.faktorips.devtools.core.model.versionmanager.ManifestUtil;
 public class BundleVersionProvider implements IVersionProvider<OsgiVersion> {
 
     private IIpsProject ipsProject;
+
     private ManifestUtil migrationManifest;
+
     private final IVersionFormat versionFormat;
 
     public BundleVersionProvider(IIpsProject ipsProject) throws IOException {

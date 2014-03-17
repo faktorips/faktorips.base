@@ -29,9 +29,8 @@ public class OsgiVersionFormat implements IVersionFormat {
             Version.parseVersion(version);
             return true;
         } catch (IllegalArgumentException ignored) {
-            // ignored
+            return false;
         }
-        return false;
     }
 
     @Override

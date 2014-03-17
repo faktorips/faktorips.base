@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Version;
@@ -29,11 +28,7 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
 
     @Override
     public String asString() {
-        if (version != null) {
-            return version.toString();
-        } else {
-            return StringUtils.EMPTY;
-        }
+        return version.toString();
     }
 
     @Override
@@ -51,4 +46,10 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
     public int hashCode() {
         return this.version.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "OsgiVersion [version=" + version + "]"; //$NON-NLS-1$//$NON-NLS-2$
+    }
+
 }

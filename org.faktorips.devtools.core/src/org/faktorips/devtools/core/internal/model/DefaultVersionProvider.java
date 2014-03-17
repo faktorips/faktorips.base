@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
  * The {@link DefaultVersionProvider} is the used when no other {@link IVersionProvider} is
  * configured. It simply reads the version that is specified in the {@link IpsProjectProperties}.
  * The version format could be configured by a extended productReleaseExtension. If no
- * productReleaseExtension is configured, the default version format is
- * "[0-9]+\\.[0-9]+\\.[0-9]+\\.[a-z]+"
+ * productReleaseExtension is configured, the default version format is the
+ * {@link OsgiVersionFormat}.
  */
 public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> {
 
