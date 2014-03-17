@@ -53,8 +53,6 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -164,15 +162,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private final String version;
 
-    private final AnnotationGeneratorFactory[] annotationGeneratorFactories;
-
     public StandardBuilderSet() {
-        annotationGeneratorFactories = new AnnotationGeneratorFactory[] {
-                // JPA support
-                new PolicyCmptImplClassJpaAnnGenFactory(),
-                // Jaxb support
-                new PolicyCmptImplClassJaxbAnnGenFactory() };
-
         version = "3.0.0"; //$NON-NLS-1$
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
         // Most of the time we hardwire the version of the generated code here, but from time to
@@ -252,39 +242,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     @Override
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
-        HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap = createAnnotationGeneratorMap();
         modelService = new ModelService();
-        generatorModelContext = new GeneratorModelContext(config, this, annotationGeneratorMap);
+        generatorModelContext = new GeneratorModelContext(config, this, getIpsProject());
         super.initialize(config);
-    }
-
-    private HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGeneratorMap()
-            throws CoreException {
-        HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>();
-        List<AnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
-
-        for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
-            ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<IAnnotationGenerator>();
-            for (AnnotationGeneratorFactory annotationGeneratorFactory : factories) {
-                IAnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
-                if (annotationGenerator == null) {
-                    continue;
-                }
-                annotationGenerators.add(annotationGenerator);
-            }
-            annotationGeneratorsMap.put(type, annotationGenerators);
-        }
-        return annotationGeneratorsMap;
-    }
-
-    private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
-        List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
-        for (AnnotationGeneratorFactory annotationGeneratorFactorie : annotationGeneratorFactories) {
-            if (annotationGeneratorFactorie.isRequiredFor(getIpsProject())) {
-                factories.add(annotationGeneratorFactorie);
-            }
-        }
-        return factories;
     }
 
     @Override

@@ -8,11 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 

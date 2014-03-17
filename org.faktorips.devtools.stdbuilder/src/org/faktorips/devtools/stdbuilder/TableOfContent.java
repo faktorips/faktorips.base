@@ -62,7 +62,7 @@ public class TableOfContent {
      */
     public final static String ACTUAL_XML_VERSION = "3.0";
 
-    private static Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
+    private volatile static Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
 
     private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
         if (tocEntryFactoriesByXmlTag == null) {
