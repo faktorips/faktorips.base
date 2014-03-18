@@ -34,7 +34,7 @@ public class Migration_3_12_0 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "Renames the tag \"productRelease\" to \"ProductRelease\". Introduces a new tag \"Version\". The \"productRelease\"-attribute \"version\" is moved to the new tag \"Version\""; //$NON-NLS-1$
+        return Messages.Migration_3_12_0_description;
     }
 
     @Override
