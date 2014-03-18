@@ -652,8 +652,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (!isCorrectFormat) {
                 String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidVersionFormat,
                         versionProvider.getVersionFormat());
-                Message message = Message.newError(IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT, text,
-                        sinceVersion, IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
+                Message message = Message.newError(IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT, text, this,
+                        IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
                 result.add(message);
             }
         }
