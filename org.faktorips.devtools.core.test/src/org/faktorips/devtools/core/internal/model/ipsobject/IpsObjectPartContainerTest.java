@@ -85,6 +85,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private TestIpsObjectPartContainer container;
 
+    private TestIpsObjectPartContainerWithVersion versionedContainer;
+
     private IIpsProject ipsProject;
 
     private IpsModel model;
@@ -108,6 +110,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         containerParent = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent");
         container = new TestIpsObjectPartContainer(containerParent);
+        versionedContainer = new TestIpsObjectPartContainerWithVersion(containerParent);
         model = (IpsModel)container.getIpsModel();
 
         usDescription = container.getDescription(Locale.US);
@@ -383,9 +386,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
         String expectedVersion = new String("1.2.3");
 
-        containerParent.initFromXml(docEl);
+        versionedContainer.initFromXml(docEl);
 
-        assertEquals(expectedVersion, containerParent.getSinceVersionString());
+        assertEquals(expectedVersion, versionedContainer.getSinceVersionString());
     }
 
     @Test
@@ -911,8 +914,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testToXML_VersionToXml() {
         IVersion<?> version = mock(IVersion.class);
         when(version.asString()).thenReturn(ANY_ID);
-        containerParent.setSinceVersionString(version.asString());
-        Element el = containerParent.toXml(newDocument());
+        versionedContainer.setSinceVersionString(version.asString());
+        Element el = versionedContainer.toXml(newDocument());
 
         String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
         assertEquals(ANY_ID, attribute);

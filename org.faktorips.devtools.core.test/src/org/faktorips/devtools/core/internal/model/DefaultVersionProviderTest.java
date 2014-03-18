@@ -49,16 +49,16 @@ public class DefaultVersionProviderTest {
         when(ipsProject.getProperties()).thenReturn(properties);
     }
 
-    @Test
-    public void testGetVersion() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetVersion_illegalVersion() throws Exception {
+        when(versionFormat.isCorrectVersionFormat(VERSION_STRING)).thenReturn(false);
 
-        IVersion<DefaultVersion> version = defaultVersionProvider.getVersion(VERSION_STRING);
-
-        assertEquals(VERSION_STRING, version.asString());
+        defaultVersionProvider.getVersion(VERSION_STRING);
     }
 
     @Test
     public void testGetProjectlVersion() throws Exception {
+        when(versionFormat.isCorrectVersionFormat(VERSION_STRING)).thenReturn(true);
         when(properties.getVersion()).thenReturn(VERSION_STRING);
 
         IVersion<DefaultVersion> projectlVersion = defaultVersionProvider.getProjectVersion();
@@ -68,6 +68,7 @@ public class DefaultVersionProviderTest {
 
     @Test
     public void testSetProjectVersion() throws Exception {
+        when(versionFormat.isCorrectVersionFormat(VERSION_STRING)).thenReturn(true);
         IVersion<DefaultVersion> version = defaultVersionProvider.getVersion(VERSION_STRING);
 
         defaultVersionProvider.setProjectVersion(version);
