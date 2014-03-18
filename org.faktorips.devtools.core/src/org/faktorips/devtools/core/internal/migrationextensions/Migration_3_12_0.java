@@ -10,22 +10,17 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Migration to version 3.12.0 Changes the .ipsproject settings file as follows:
@@ -67,63 +62,16 @@ public class Migration_3_12_0 extends AbstractIpsProjectMigrationOperation {
         return new MessageList();
     }
 
+    /**
+     * Simply reads and writes the properties. The properties are designed to read the old XML but
+     * only write the new correct form.
+     */
     private void migrateInternal() {
-        IpsProject ipsProject = (IpsProject)getIpsProject();
-        IFile file = ipsProject.getIpsProjectPropertiesFile();
-
-        Document doc = loadXMLDocument(file);
-        // migrateXML(doc);
-        parseAndApplyProperties(ipsProject, file, doc.getDocumentElement());
-    }
-
-    private Document loadXMLDocument(IFile file) {
-        if (!file.exists()) {
-            throw new MigrationRuntimeException("File does not exist: " + file); //$NON-NLS-1$
-        }
-        Document doc;
-        InputStream is;
+        IIpsProjectProperties properties = getIpsProject().getProperties();
         try {
-            is = file.getContents(true);
+            getIpsProject().setProperties(properties);
         } catch (CoreException e) {
-            throw new MigrationRuntimeException("Error reading file contents " + file, e); //$NON-NLS-1$
-        }
-        try {
-            doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
-        } catch (Exception e) {
-            throw new MigrationRuntimeException("Error parsing contents of file " + file, e); //$NON-NLS-1$
-        } finally {
-            try {
-                is.close();
-            } catch (Exception e) {
-                throw new MigrationRuntimeException("Error closing input stream after reading file " + file, e); //$NON-NLS-1$
-            }
-        }
-        return doc;
-    }
-
-    private void parseAndApplyProperties(IpsProject ipsProject, IFile file, Element documentElement) {
-        IpsProjectProperties projectProperties = createPropertiesFromXML(ipsProject, documentElement);
-        projectProperties.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
-        applyProjectProperties(ipsProject, projectProperties);
-    }
-
-    private IpsProjectProperties createPropertiesFromXML(IpsProject ipsProject, Element documentElement) {
-        IpsProjectProperties migratedProjectProperties = new IpsProjectProperties();
-        try {
-            migratedProjectProperties = IpsProjectProperties.createFromXml(ipsProject, documentElement);
-            migratedProjectProperties.setCreatedFromParsableFileContents(true);
-        } catch (Exception e) {
-            migratedProjectProperties.setCreatedFromParsableFileContents(false);
-            // throw new MigrationRuntimeException("Error creating properties from xml", e); //$NON-NLS-1$
-        }
-        return migratedProjectProperties;
-    }
-
-    private void applyProjectProperties(IpsProject ipsProject, IpsProjectProperties migratedProjectProperties) {
-        try {
-            ipsProject.setProperties(migratedProjectProperties);
-        } catch (CoreException e) {
-            throw new MigrationRuntimeException("Error applying project properties", e); //$NON-NLS-1$
+            throw new MigrationRuntimeException("Cannot migration prject properties for " + getIpsProject()); //$NON-NLS-1$
         }
     }
 
