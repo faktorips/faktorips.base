@@ -26,11 +26,11 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * An editor page that allows to edit the {@link ILabel}s and {@link IDescription}s of an
  * {@link IIpsObject}.
  */
-class LabelAndDescriptionPage extends IpsObjectEditorPage {
+class DocumentationPage extends IpsObjectEditorPage {
 
     private static final String PAGEID = "Documentation"; //$NON-NLS-1$
 
-    LabelAndDescriptionPage(IpsObjectEditor editor) {
+    DocumentationPage(IpsObjectEditor editor) {
         super(editor, PAGEID, Messages.IpsPartEditDialog_tabItemDocumentation);
     }
 
@@ -42,7 +42,9 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
             new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
         }
         new DescriptionSection(getIpsObject(), formBody, toolkit);
-        new VersionSection((IVersionControlledElement)getIpsObject(), formBody, toolkit);
+        if (ipsObject instanceof IVersionControlledElement) {
+            new VersionSection((IVersionControlledElement)getIpsObject(), formBody, toolkit);
+        }
     }
 
     private static class LabelSection extends IpsSection {

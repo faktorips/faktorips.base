@@ -309,10 +309,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
             logMethodStarted("addPagesForParsableSrcFile()"); //$NON-NLS-1$
             addPagesForParsableSrcFile();
-            IIpsObject ipsObject = getIpsObject();
-            if (ipsObject != null) {
-                addPage(new LabelAndDescriptionPage(this));
-            }
+            addPage(new DocumentationPage(this));
 
             logMethodFinished("addPagesForParsableSrcFile()"); //$NON-NLS-1$
 
