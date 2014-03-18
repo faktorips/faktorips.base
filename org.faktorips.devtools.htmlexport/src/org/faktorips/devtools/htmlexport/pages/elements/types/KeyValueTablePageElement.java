@@ -11,6 +11,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -25,8 +26,8 @@ public class KeyValueTablePageElement extends TablePageElement {
     private final DocumentationContext context;
 
     public KeyValueTablePageElement(DocumentationContext context) {
-        this(context, context.getMessage("KeyValueTablePageElement_headlineProperty"), context //$NON-NLS-1$
-                .getMessage("KeyValueTablePageElement_headlineValue")); //$NON-NLS-1$
+        this(context, context.getMessage(HtmlExportMessages.KeyValueTablePageElement_headlineProperty), context
+                .getMessage(HtmlExportMessages.KeyValueTablePageElement_headlineValue));
     }
 
     /**
@@ -85,8 +86,8 @@ public class KeyValueTablePageElement extends TablePageElement {
     }
 
     /**
-     * adds a row to the table with a {@link IPageElement} as key and a {@link IPageElement} as value
-     * and returns this
+     * adds a row to the table with a {@link IPageElement} as key and a {@link IPageElement} as
+     * value and returns this
      * 
      */
     public KeyValueTablePageElement addKeyValueRow(IPageElement keyPageElement, IPageElement valuePageElement) {

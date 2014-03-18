@@ -281,8 +281,9 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                     Style.CENTER);
             addHeadlineAndColumnLayout(headline,
                     getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique), Style.CENTER);
-            addHeadlineAndColumnLayout(headline, getContext()
-                    .getMessage("EnumTypeContentPageElement_headlineInherited"), Style.CENTER); //$NON-NLS-1$
+            addHeadlineAndColumnLayout(headline,
+                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineInherited),
+                    Style.CENTER);
             headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDescription));
 
             return headline;

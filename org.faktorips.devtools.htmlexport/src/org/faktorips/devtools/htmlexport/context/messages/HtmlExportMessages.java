@@ -221,5 +221,6 @@ public interface HtmlExportMessages {
     public static final String InheritedTypeAssociationsPageElement_inheritedAssociations = "InheritedTypeAssociationsPageElement_inheritedAssociations";
     public static final String ValidationRuleTablePageElement_headlineProductRelevant = "ValidationRuleTablePageElement_headlineProductRelevant";
     public static final String ValidationRuleTablePageElement_headlineActivatedByDefault = "ValidationRuleTablePageElement_headlineActivatedByDefault";
+    public static final String ProjectOverviewPageElement_version = "ProjectOverviewPageElement_version";
 
 }

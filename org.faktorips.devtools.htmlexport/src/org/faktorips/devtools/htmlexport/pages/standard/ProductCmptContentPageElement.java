@@ -107,9 +107,8 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         IIpsObjectGeneration[] generations = getDocumentedIpsObject().getGenerationsOrderedByValidDate();
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(getContext()
-                .getMessage("ProductCmptContentPageElement_generations"), //$NON-NLS-1$
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.ProductCmptContentPageElement_generations), TextType.HEADING_2));
 
         if (generations.length == 0) {
             wrapper.addPageElements(new TextPageElement("No generations")); //$NON-NLS-1$
