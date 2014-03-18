@@ -995,7 +995,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
-        data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
+        data.setLastPersistentModificationTimestamp(file.getModificationStamp());
         return data;
     }
 

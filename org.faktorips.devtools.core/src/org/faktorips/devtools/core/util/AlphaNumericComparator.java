@@ -9,13 +9,19 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
-public class AlphaNumericComparator implements Comparator<String> {
+public class AlphaNumericComparator implements Comparator<String>, Serializable {
+
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 4934515714500740839L;
 
     @Override
     public int compare(String o1, String o2) {

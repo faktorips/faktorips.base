@@ -38,8 +38,15 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
 
     @Override
     public boolean equals(Object obj) {
-        Version version = ((OsgiVersion)obj).version;
-        return this.version.equals(version);
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof OsgiVersion) {
+            OsgiVersion osgiVersion = (OsgiVersion)obj;
+            Version version = osgiVersion.version;
+            return this.version.equals(version);
+        }
+        return false;
     }
 
     @Override

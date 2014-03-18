@@ -619,10 +619,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * without a description that is expected to be provided by the model.
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
-            IIpsElement element,
+            IIpsObjectPartContainer element,
             JavaCodeFragmentBuilder builder,
             Object... replacements) {
-        appendLocalizedJavaDoc(keyPrefix, null, element, builder, replacements);
+        appendLocalizedJavaDoc(keyPrefix, (String)null, element, builder, replacements);
     }
 
     /**

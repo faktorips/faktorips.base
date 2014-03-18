@@ -50,6 +50,8 @@ public class OsgiVersionTest {
         assertEquals(new OsgiVersion("1.2.5"), new OsgiVersion("1.2.5"));
         assertEquals(new OsgiVersion("1.2.5.asd"), new OsgiVersion("1.2.5.asd"));
         assertFalse(new OsgiVersion("1").equals(new OsgiVersion("1.0.0.a")));
+        assertFalse(new OsgiVersion("1").equals(null));
+        assertFalse(new OsgiVersion("1").equals("1"));
     }
 
 }

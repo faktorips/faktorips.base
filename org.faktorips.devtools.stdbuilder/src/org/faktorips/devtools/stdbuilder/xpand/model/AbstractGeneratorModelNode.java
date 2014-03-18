@@ -593,16 +593,16 @@ public abstract class AbstractGeneratorModelNode {
      */
     public String getAnnotations(AnnotatedJavaElementType type) {
         List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
-        String result = "";
+        StringBuilder result = new StringBuilder("");
         for (IAnnotationGenerator generator : generators) {
             if (!generator.isGenerateAnnotationFor(this)) {
                 continue;
             }
             JavaCodeFragment annotationFragment = generator.createAnnotation(this);
             addImport(annotationFragment.getImportDeclaration());
-            result += annotationFragment.getSourcecode() + "\n";
+            result.append(annotationFragment.getSourcecode()).append("\n");
         }
-        return result;
+        return result.toString();
     }
 
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
