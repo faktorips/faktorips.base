@@ -201,7 +201,7 @@ public abstract class AbstractGeneratorModelNode {
     public boolean hasSinceVersion() {
         if (getIpsObjectPartContainer() instanceof IVersionControlledElement) {
             IVersionControlledElement versionControlledElement = (IVersionControlledElement)getIpsObjectPartContainer();
-            return versionControlledElement.getSinceVersion() != null;
+            return versionControlledElement.isValidSinceVersion();
         } else {
             return false;
         }

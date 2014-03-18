@@ -36,7 +36,8 @@ public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat 
     public IVersion<K> getVersion(String versionAsString);
 
     /**
-     * Returns the version of the project this {@link IVersionProvider} belongs to.
+     * Returns the version of the project this {@link IVersionProvider} belongs to. If there is no
+     * valid version this method returns <code>null</code>.
      * 
      * @return IVersion of the according project
      */

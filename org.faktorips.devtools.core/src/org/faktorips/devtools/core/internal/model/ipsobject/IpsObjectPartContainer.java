@@ -27,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.DefaultVersion;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
@@ -143,9 +142,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private void initDefaultVersion() {
         if (this instanceof IVersionControlledElement && getIpsProject() != null) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-            IVersion<?> ver = versionProvider.getProjectVersion();
-            if (ver != null) {
-                sinceVersion = ver.asString();
+            IVersion<?> version = versionProvider.getProjectVersion();
+            if (version != null) {
+                sinceVersion = version.asString();
             }
         }
     }
@@ -348,7 +347,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Writes the version to an element
      */
     public void versionToXML(Element element) {
-        if (this instanceof IVersionControlledElement && sinceVersion != null) {
+        if (this instanceof IVersionControlledElement && StringUtils.isNotEmpty(sinceVersion)) {
             element.setAttribute(XML_ATTRIBUTE_VERSION, sinceVersion);
         }
     }
@@ -373,25 +372,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private void initVersionFromXML(Element element) {
         if (this instanceof IVersionControlledElement) {
-            String sinceVersionString = element.getAttribute(XML_ATTRIBUTE_VERSION);
-            if (StringUtils.isNotEmpty(sinceVersionString)) {
-                sinceVersion = createVersion(sinceVersionString);
-            } else {
-                sinceVersion = null;
-            }
+            sinceVersion = element.getAttribute(XML_ATTRIBUTE_VERSION);
         }
-    }
-
-    private String createVersion(String inputVersionString) {
-        if (isValidVersionInput(inputVersionString)) {
-            return getIpsProject().getVersionProvider().getVersion(inputVersionString).asString();
-        }
-        return new DefaultVersion(inputVersionString).asString();
-    }
-
-    public boolean isValidVersionInput(String sinceVersionString) {
-        IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-        return versionProvider.isCorrectVersionFormat(sinceVersionString);
     }
 
     /**
@@ -664,7 +646,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void validateSinceVersionFormat(MessageList result) {
-        if (getIpsProject() != null && sinceVersion != null) {
+        if (getIpsProject() != null && StringUtils.isNotEmpty(sinceVersion)) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             boolean isCorrectFormat = versionProvider.isCorrectVersionFormat(sinceVersion);
             if (!isCorrectFormat) {
@@ -1081,6 +1063,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * representation.
      * 
      * @param version The version-string that should be set as since-version
+     * 
+     * @see IVersionControlledElement#setSinceVersionString(String)
      */
     public void setSinceVersionString(String version) {
         String oldValue = this.sinceVersion;
@@ -1094,6 +1078,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @return the version since which this element is available
      * @see #getSinceVersion()
+     * 
+     * @see IVersionControlledElement#getSinceVersionString()
      */
     public String getSinceVersionString() {
         return sinceVersion;
@@ -1101,14 +1087,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
-     * valid version according to the configured {@link IVersionProvider}
+     * valid version according to the configured {@link IVersionProvider}.
      * 
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
      *         return a valid version. Otherwise <code>false</code>.
+     * 
+     * @see IVersionControlledElement#isValidSinceVersion()
      */
     public boolean isValidSinceVersion() {
-        IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-        return versionProvider.isCorrectVersionFormat(sinceVersion);
+        if (this instanceof IVersionControlledElement && StringUtils.isNotEmpty(sinceVersion)) {
+            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+            return versionProvider.isCorrectVersionFormat(sinceVersion);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -1118,16 +1110,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @return the version since which this element is available
      * @throws IllegalArgumentException if the current since version is no valid version according
      *             to the configured {@link IVersionProvider}
+     * 
      * @see #isValidSinceVersion()
+     * @see IVersionControlledElement#getSinceVersion()
      */
     public IVersion<?> getSinceVersion() {
-        if (sinceVersion == null) {
+        if (StringUtils.isEmpty(sinceVersion)) {
             return null;
         }
-        if (isValidSinceVersion()) {
-            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-            return versionProvider.getVersion(sinceVersion);
-        }
-        throw new IllegalArgumentException(sinceVersion + "is not a valid version"); //$NON-NLS-1$
+        IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+        return versionProvider.getVersion(sinceVersion);
     }
 }

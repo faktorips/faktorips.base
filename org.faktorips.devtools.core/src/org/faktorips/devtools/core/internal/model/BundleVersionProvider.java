@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.IOException;
 import java.util.jar.Attributes;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -62,7 +63,12 @@ public class BundleVersionProvider implements IVersionProvider<OsgiVersion> {
         Attributes attributes = getManifestMainAttributes();
         String value = attributes.getValue(org.osgi.framework.Constants.BUNDLE_VERSION);
         if (value != null) {
-            return getVersion(value);
+            try {
+                return getVersion(value);
+            } catch (IllegalArgumentException e) {
+                IpsPlugin.log(e);
+                return null;
+            }
         }
         return null;
     }

@@ -56,7 +56,9 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
 
     /**
      * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
-     * valid version according to the configured {@link IVersionProvider}
+     * valid version according to the configured {@link IVersionProvider}. If there is no version (
+     * {@link #getSinceVersionString()} returns null or empty string) this method also returns
+     * <code>false</code>. That means no version is no valid version!
      * 
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
      *         return a valid version. Otherwise <code>false</code>.
