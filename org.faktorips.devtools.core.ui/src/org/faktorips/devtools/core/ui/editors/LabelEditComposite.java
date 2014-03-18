@@ -256,30 +256,40 @@ public final class LabelEditComposite extends Composite {
         }
 
         @Override
-        public void modify(Object element, String property, Object value) {
-            Object control = element;
+        public void modify(final Object element, final String property, final Object value) {
+            ILabel modifiedLabel = getModifiedLabel(element);
+            if (canModify(modifiedLabel, value)) {
+                setPropertyValue(property, (String)value, modifiedLabel);
+                updateViewer(element, property);
+            }
+        }
+
+        private boolean canModify(ILabel modifiedLabel, Object value) {
+            return modifiedLabel != null && value instanceof String;
+        }
+
+        private ILabel getModifiedLabel(Object element) {
             if (element instanceof Item) {
-                control = ((Item)element).getData();
+                Object widgetData = ((Item)element).getData();
+                if (widgetData instanceof ILabel) {
+                    return (ILabel)widgetData;
+                }
             }
-            if (!(element instanceof ILabel)) {
-                return;
-            }
-            if (!(value instanceof String)) {
-                return;
-            }
+            return null;
+        }
 
-            ILabel label = (ILabel)control;
-            String valueString = (String)value;
-
-            if (property.equals(ILabel.PROPERTY_VALUE)) {
-                label.setValue(valueString);
-            } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
-                label.setPluralValue(valueString);
-            }
-            // The locale cannot be modified
-
-            tableViewer.update(control, new String[] { property });
+        private void updateViewer(Object element, String property) {
+            tableViewer.update(element, new String[] { property });
             tableViewer.refresh(true);
+        }
+
+        private void setPropertyValue(String property, String value, ILabel label) {
+            if (property.equals(ILabel.PROPERTY_VALUE)) {
+                label.setValue(value);
+            } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
+                label.setPluralValue(value);
+            }
+            // The property locale (PROPERTY_LOCALE) cannot be modified
         }
     }
 
