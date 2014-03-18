@@ -30,7 +30,7 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
 
     private static class AlphaNumericCompare {
 
-        private static final Pattern numericPattern = Pattern.compile("\\d+"); //$NON-NLS-1$
+        private static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d+"); //$NON-NLS-1$
 
         private final String input1;
 
@@ -44,8 +44,8 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
             this.input1 = input1;
             this.input2 = input2;
 
-            input1Matcher = numericPattern.matcher(input1);
-            input2Matcher = numericPattern.matcher(input2);
+            input1Matcher = NUMERIC_PATTERN.matcher(input1);
+            input2Matcher = NUMERIC_PATTERN.matcher(input2);
         }
 
         public int compare() {

@@ -28,67 +28,67 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionControlledElement {
 
-    public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
+    public static final String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
-    public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "Type-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "Type-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the supertype hierarchy contains a cycle.
      */
-    public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInSupertypeHierarchy"; //$NON-NLS-1$
+    public static final String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists an error within the type hierarchy of
      * this type.
      */
-    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
+    public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the supertype can not be found.
      */
-    public final static String MSGCODE_SUPERTYPE_NOT_FOUND = MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_SUPERTYPE_NOT_FOUND = MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an abstract method exists in the type's supertype
      * hierarchy that must be overridden in the concrete type.
      */
-    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
+    public static final String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least one abstract method is defined, but this
      * type is not marked as abstract.
      */
-    public final static String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
+    public static final String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two properties (attribute, associations)
      * share the same name.
      */
-    public final static String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
+    public static final String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of a derived union the type must be abstract
      * or at lease one implementation of the derived union must exists in the type.
      */
-    public final static String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
+    public static final String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of an inverse derived union the type must be
      * abstract or at lease one inverse of an implementation of the derived union must exists in the
      * type.
      */
-    public final static String MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION = MSGCODE_PREFIX
+    public static final String MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION = MSGCODE_PREFIX
             + "MustSpecifyInverseDerivedUnion"; //$NON-NLS-1$
 
-    public final static String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS = MSGCODE_PREFIX
+    public static final String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS = MSGCODE_PREFIX
             + "OtherTypeWithSameNameExists"; //$NON-NLS-1$
 
-    public final static String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS = MSGCODE_PREFIX
+    public static final String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS = MSGCODE_PREFIX
             + "OtherTypeWithSameNameInDependentProjectExists"; //$NON-NLS-1$
 
     @Override
@@ -415,7 +415,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @throws NullPointerException If project is <code>null</code>.
      * @throws CoreException If an error occurs while searching.
      */
-    public IMethod findMethod(String name, String datatypes[], IIpsProject ipsProject) throws CoreException;
+    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates a new method and returns it.

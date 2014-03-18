@@ -10,12 +10,8 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
@@ -51,28 +47,15 @@ public class Migration_3_12_0 extends AbstractIpsProjectMigrationOperation {
         return false;
     }
 
-    @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-            InterruptedException {
-        try {
-            migrateInternal();
-        } catch (MigrationRuntimeException e) {
-            IpsPlugin.log(new IpsStatus(e));
-        }
-        return new MessageList();
-    }
-
     /**
      * Simply reads and writes the properties. The properties are designed to read the old XML but
      * only write the new correct form.
      */
-    private void migrateInternal() {
+    @Override
+    public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         IIpsProjectProperties properties = getIpsProject().getProperties();
-        try {
-            getIpsProject().setProperties(properties);
-        } catch (CoreException e) {
-            throw new MigrationRuntimeException("Cannot migration prject properties for " + getIpsProject()); //$NON-NLS-1$
-        }
+        getIpsProject().setProperties(properties);
+        return new MessageList();
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

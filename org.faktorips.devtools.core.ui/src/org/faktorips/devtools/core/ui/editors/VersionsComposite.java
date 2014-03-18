@@ -36,7 +36,7 @@ public final class VersionsComposite {
 
     private Composite parent;
 
-    Text text;
+    private Text text;
 
     private BindingContext bindingContext;
 

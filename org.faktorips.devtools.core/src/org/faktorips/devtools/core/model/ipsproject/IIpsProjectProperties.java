@@ -34,50 +34,50 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsProjectProperties {
 
-    public final static String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
+    public static final String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
+    public static final String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the IPS artifact builder set id is unknown.
      */
-    public final static String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a used predefined data type is unknown.
      */
-    public final static String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the minimum required version number for a specific
      * feature is missing.
      */
-    public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
+    public static final String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component naming strategy can't be
      * found.
      */
-    public final static String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
+    public static final String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
             + "InvalidProductCmptNamingStrategy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the language identifier used as locale for a
      * supported language is not a valid ISO 639 language code.
      */
-    public final static String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
+    public static final String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
             + "SupportedLanguageUnknownLocale"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that more than one supported language is marked as
      * default language.
      */
-    public final static String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
+    public static final String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
 
     public static final String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
 

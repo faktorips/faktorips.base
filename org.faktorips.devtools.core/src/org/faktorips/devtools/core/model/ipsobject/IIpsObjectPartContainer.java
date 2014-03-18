@@ -29,25 +29,25 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
         MementoSupport, Described {
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of descriptions this container has does
      * not correspond to the number of languages supported by the IPS project.
      */
-    public final static String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of labels this container has does not
      * correspond to the number of languages supported by the IPS project.
      */
-    public final static String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the entered version does not correspond to the valid
      * version format
      */
-    public final static String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
 
     /**
      * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a

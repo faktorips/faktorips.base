@@ -43,8 +43,8 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
         }
         if (obj instanceof OsgiVersion) {
             OsgiVersion osgiVersion = (OsgiVersion)obj;
-            Version version = osgiVersion.version;
-            return this.version.equals(version);
+            Version otherVersion = osgiVersion.version;
+            return this.version.equals(otherVersion);
         }
         return false;
     }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +102,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of <tt>IIpsModel</tt>.
@@ -975,13 +977,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         try {
             doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
-        } catch (Exception e) {
+        } catch (SAXException e) {
             IpsPlugin.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
+            return data;
+        } catch (IOException e) {
+            IpsPlugin.log(new IpsStatus("Error accessing project file " + file, e)); //$NON-NLS-1$
             return data;
         } finally {
             try {
                 is.close();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 IpsPlugin.log(new IpsStatus("Error closing input stream after reading project file " //$NON-NLS-1$
                         + file, e));
                 return data;
@@ -990,11 +995,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         try {
             data = IpsProjectProperties.createFromXml(ipsProject, doc.getDocumentElement());
             data.setCreatedFromParsableFileContents(true);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus("Error creating properties from xml, file:  " //$NON-NLS-1$
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
+        // CSON: IllegalCatch
         data.setLastPersistentModificationTimestamp(file.getModificationStamp());
         return data;
     }
