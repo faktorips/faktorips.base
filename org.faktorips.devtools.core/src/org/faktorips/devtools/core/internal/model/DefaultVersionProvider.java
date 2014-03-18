@@ -57,7 +57,11 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
 
     @Override
     public IVersion<DefaultVersion> getVersion(String versionAsString) {
-        return new DefaultVersion(versionAsString);
+        if (isCorrectVersionFormat(versionAsString)) {
+            return new DefaultVersion(versionAsString);
+        } else {
+            throw new IllegalArgumentException(("No valid version: " + versionAsString)); //$NON-NLS-1$
+        }
     }
 
     @Override

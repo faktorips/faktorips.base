@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersion;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
@@ -23,21 +24,43 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
  */
 public interface IVersionControlledElement extends IIpsObjectPartContainer {
 
-    public static final String PROPERTY_SINCE_VERSION = "sinceVersion"; //$NON-NLS-1$
+    public static final String PROPERTY_SINCE_VERSION_STRING = "sinceVersionString"; //$NON-NLS-1$
 
     /**
-     * Sets the Version since which this part is available in the model.
+     * Sets the Version since which this part is available in the model using a version string
+     * representation.
      * 
-     * @param version The version that should be set as since-version
+     * @param version The version-string that should be set as since-version
      */
-    public void setSinceVersion(IVersion<?> version);
+    public void setSinceVersionString(String version);
+
+    /**
+     * Returns the version since which this part is available as a string. The version was set by
+     * {@link #setSinceVersionString(String)}.
+     * 
+     * @return the version since which this element is available
+     * @see #getSinceVersion()
+     */
+    public String getSinceVersionString();
 
     /**
      * Returns the version since which this part is available. The version was set by
-     * {@link #setSinceVersion(IVersion)}.
+     * {@link #setSinceVersionString(String)}. Returns <code>null</code> if no since version is set.
      * 
      * @return the version since which this element is available
+     * @throws IllegalArgumentException if the current since version is no valid version according
+     *             to the configured {@link IVersionProvider}
+     * @see #isValidSinceVersion()
      */
     public IVersion<?> getSinceVersion();
+
+    /**
+     * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
+     * valid version according to the configured {@link IVersionProvider}
+     * 
+     * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
+     *         return a valid version. Otherwise <code>false</code>.
+     */
+    public boolean isValidSinceVersion();
 
 }

@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.DefaultVersion;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -98,6 +97,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private ILabel germanLabel;
 
+    private PolicyCmptType containerParent;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -105,7 +106,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject();
 
-        container = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent"));
+        containerParent = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent");
+        container = new TestIpsObjectPartContainer(containerParent);
         model = (IpsModel)container.getIpsModel();
 
         usDescription = container.getDescription(Locale.US);
@@ -422,11 +424,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         IIpsProjectProperties properties = ipsProject.getProperties();
         ipsProject.setProperties(properties);
-        IVersion<DefaultVersion> expectedVersion = new DefaultVersion("1.2.3");
+        String expectedVersion = new String("1.2.3");
 
-        container.initFromXml(docEl);
+        containerParent.initFromXml(docEl);
 
-        assertEquals(expectedVersion, container.getSinceVersion());
+        assertEquals(expectedVersion, containerParent.getSinceVersionString());
     }
 
     @Test
@@ -938,13 +940,24 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testToXML_VersionToXml_ignoreVersionIfNotVersionControlled() {
+        IVersion<?> version = mock(IVersion.class);
+        when(version.asString()).thenReturn(ANY_ID);
+        ((IpsObjectPartContainer)container).setSinceVersionString(version.asString());
+        Element el = container.toXml(newDocument());
+
+        String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
+        assertTrue(attribute.isEmpty());
+    }
+
+    @Test
     public void testToXML_VersionToXml() {
         IVersion<?> version = mock(IVersion.class);
         when(version.asString()).thenReturn(ANY_ID);
-        ((IpsObjectPartContainer)container).setSinceVersion(version);
-        Element el = container.toXml(newDocument());
-        String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
+        containerParent.setSinceVersionString(version.asString());
+        Element el = containerParent.toXml(newDocument());
 
+        String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
         assertEquals(ANY_ID, attribute);
     }
 
@@ -1069,6 +1082,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             objectHasChanged();
         }
 
+    }
+
+    private static class TestIpsObjectPartContainerWithVersion extends TestIpsObjectPartContainer implements
+            IVersionControlledElement {
+
+        public TestIpsObjectPartContainerWithVersion(IIpsElement parent) {
+            super(parent);
+        }
     }
 
     private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
