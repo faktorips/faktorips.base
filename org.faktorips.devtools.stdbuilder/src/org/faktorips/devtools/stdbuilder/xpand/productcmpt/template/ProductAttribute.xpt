@@ -8,6 +8,7 @@
 	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
 		public final static String «field(constantNamePropertyName)» = "«name»";
@@ -18,7 +19,7 @@
 	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("FIELD_VALUE", name.toFirstUpper())»
-	 	*
+	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
     	private «javaClassName» «field(fieldName)»;
@@ -41,7 +42,7 @@
 	«IF !overwrite-»
 		/**
 	 	* «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
-	 	*
+	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
@@ -60,7 +61,7 @@
 «DEFINE multilingualGetter FOR XProductAttribute-»
 	/**
  	* «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE_MULTILINGUAL", name, descriptionForJDoc)»
- 	*
+ 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
  	* @generated
  	*/
 	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
@@ -89,7 +90,7 @@
 	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("METHOD_SETVALUE", name, description)»
-	 	*
+	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
 		public void «method(methodNameSetter, javaClassName, "newValue")»{
@@ -103,7 +104,7 @@
 	«IF (!overwrite && !genInterface())-»
 		/**
  		* «localizedJDoc("METHOD_SETVALUE_INTERNAL", name, description)»
- 		*
+ 		* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
  		* @generated
  		*/
 		protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»{

@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -14,6 +15,7 @@
 	
 		/**
 		 * «localizedJDoc("INTERFACE", name)»
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
 		public interface «interfaceName» 

@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -15,9 +16,10 @@
 		/**
 		«IF generatePublishedInterfaces-»
 		 * «localizedJDoc("CLASS", interfaceName)»
-		«ELSE»
+		«ELSE-»
 		 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
-		«ENDIF»
+		«ENDIF-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
@@ -35,7 +37,7 @@
 
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", implClassName)»
-		     * 
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 			public «method(implClassName, IRuntimeRepository(), "repository", "String", "id", "String", "kindId", "String", "versionId")» {
@@ -107,7 +109,7 @@
 «DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-»
 		    /**
 		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_GENERATION", generationConceptNameSingular)»
-		     * 
+			 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -158,7 +160,7 @@
 	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CREATE_POLICY_CMPT", name)»
-	     * 
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	     «overrideAnnotationForPublishedMethodOrIf(!genInterface(), this.productCmptNode != currentType)-»
