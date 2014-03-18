@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,12 +42,7 @@ public class ExtensionPropertyHandler {
 
     private final IpsObjectPartContainer ipsObjectPartContainer;
 
-    /**
-     * Map containing invalid extension property IDs as keys and their values. Only used to not
-     * loose these information. They are initialized while reading the xml and stored when writing -
-     * nothing else.
-     */
-    private final Map<String, ExtensionPropertyValue> extPropertiyValuesMap = new ConcurrentHashMap<String, ExtensionPropertyValue>();
+    private ExtensionPropertyMap extPropertiyValuesMap = new ExtensionPropertyMap();
 
     /**
      * Create a new {@link ExtensionPropertyHandler} for the given {@link IIpsObjectPartContainer}
@@ -251,11 +247,57 @@ public class ExtensionPropertyHandler {
         return ml;
     }
 
-    protected Map<String, ExtensionPropertyValue> getExtPropertyValuesMap() {
+    protected ExtensionPropertyMap getExtPropertyValuesMap() {
         return extPropertiyValuesMap;
     }
 
     public void clear() {
         extPropertiyValuesMap.clear();
     }
+
+    /**
+     * This class is responsible for lazy instantiation of a map. The
+     * {@link ExtensionPropertyHandler} is instantiated for every {@link IpsObjectPartContainer}
+     * although most of them do not have any extension properties. This leads to a lot of unused
+     * memory retained by empty maps if we do not lazy instantiate them.
+     */
+    protected static class ExtensionPropertyMap {
+
+        private Map<String, ExtensionPropertyValue> internalMap;
+
+        public ExtensionPropertyValue get(String propertyId) {
+            if (internalMap == null) {
+                return null;
+            } else {
+                return internalMap.get(propertyId);
+            }
+        }
+
+        public void clear() {
+            if (internalMap != null) {
+                internalMap.clear();
+            }
+        }
+
+        public Collection<ExtensionPropertyValue> values() {
+            if (internalMap == null) {
+                return new ArrayList<ExtensionPropertyValue>();
+            } else {
+                return internalMap.values();
+            }
+        }
+
+        public boolean isEmpty() {
+            return internalMap == null || internalMap.isEmpty();
+        }
+
+        public void put(String propertyId, ExtensionPropertyValue extensionPropValue) {
+            if (internalMap == null) {
+                internalMap = new ConcurrentHashMap<String, ExtensionPropertyValue>(4);
+            }
+            internalMap.put(propertyId, extensionPropValue);
+        }
+
+    }
+
 }

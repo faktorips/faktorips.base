@@ -24,8 +24,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyHandler.ExtensionPropertyMap;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
@@ -437,7 +437,7 @@ public class ExtensionPropertyHandlerTest {
     }
 
     private void initMaps() {
-        Map<String, ExtensionPropertyValue> map = extensionPropertyHandler.getExtPropertyValuesMap();
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
         map.put(INVALID_ID, invalidExtensionProperty);
         map.put(INVALID_ID + 2, invalidExtensionProperty2);
         map.put(INVALID_ID + 3, invalidExtensionProperty3);
@@ -449,8 +449,8 @@ public class ExtensionPropertyHandlerTest {
 
         extensionPropertyHandler.initPropertyFromXml(xmlValueElement);
 
-        Map<String, ExtensionPropertyValue> map = extensionPropertyHandler.getExtPropertyValuesMap();
-        assertEquals(1, map.size());
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
+        assertEquals(1, map.values().size());
         assertNotNull(map.get(INVALID_ID));
     }
 
