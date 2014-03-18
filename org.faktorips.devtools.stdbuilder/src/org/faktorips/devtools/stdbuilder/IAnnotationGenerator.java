@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
 /**
@@ -37,5 +36,5 @@ public interface IAnnotationGenerator {
      * Returns <code>true</code> if annotations should be generated for the given IpsElement by this
      * generator. Returns <code>false</code> if no annotation should be added by this generator.
      */
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement);
+    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode ipsElement);
 }

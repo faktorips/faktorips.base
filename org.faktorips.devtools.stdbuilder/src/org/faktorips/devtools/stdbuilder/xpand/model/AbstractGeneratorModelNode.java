@@ -28,7 +28,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -192,6 +192,33 @@ public abstract class AbstractGeneratorModelNode {
     public String getDescriptionForJDoc() {
         String description = getDescription();
         return StringUtils.isEmpty(description) ? "" : "<p>\n" + description;
+    }
+
+    /**
+     * Checks whether the corresponding part has a since version or not. If the corresponding part
+     * is no {@link IVersionControlledElement} this method always returns false.
+     */
+    public boolean hasSinceVersion() {
+        if (getIpsObjectPartContainer() instanceof IVersionControlledElement) {
+            IVersionControlledElement versionControlledElement = (IVersionControlledElement)getIpsObjectPartContainer();
+            return versionControlledElement.getSinceVersion() != null;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the since version of the corresponding {@link IIpsObjectPartContainer} if there is
+     * any version. This method returns <code>null</code> if {@link #hasSinceVersion()} returns
+     * <code>false</code>.
+     * 
+     * @return The since version as string.
+     */
+    public String getSinceVersion() {
+        if (hasSinceVersion()) {
+            return ((IVersionControlledElement)getIpsObjectPartContainer()).getSinceVersion().asString();
+        }
+        return null;
     }
 
     protected <T extends AbstractGeneratorModelNode> boolean isCached(Class<T> type) {
@@ -557,33 +584,6 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Returns a string containing all annotations to the given {@link AnnotatedJavaElementType} and
-     * IpsElement using the given builder.
-     * 
-     * @param type Determines the type of annotation to generate. See
-     *            {@link AnnotatedJavaElementType} for a list of possible types.
-     * @param ipsElement The IPS element to create the annotations for. <br/>
-     *            <code>Null</code> is permitted for certain AnnotatedJavaElementTypes which do not
-     *            need further information. This is the case if <code>type</code> is
-     *            POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD.
-     * @return the string containing the annotations
-     * 
-     */
-    public String getAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
-        List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
-        String result = "";
-        for (IAnnotationGenerator generator : generators) {
-            if (!generator.isGenerateAnnotationFor(ipsElement)) {
-                continue;
-            }
-            JavaCodeFragment annotationFragment = generator.createAnnotation(this);
-            addImport(annotationFragment.getImportDeclaration());
-            result += annotationFragment.getSourcecode() + "\n";
-        }
-        return result;
-    }
-
-    /**
-     * Returns a string containing all annotations to the given {@link AnnotatedJavaElementType} and
      * the {@link IIpsObjectPartContainer} that is represented by this model node.
      * 
      * @see #getIpsObjectPartContainer()
@@ -592,7 +592,17 @@ public abstract class AbstractGeneratorModelNode {
      * @return the string containing the annotations
      */
     public String getAnnotations(AnnotatedJavaElementType type) {
-        return getAnnotations(type, getIpsObjectPartContainer());
+        List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
+        String result = "";
+        for (IAnnotationGenerator generator : generators) {
+            if (!generator.isGenerateAnnotationFor(this)) {
+                continue;
+            }
+            JavaCodeFragment annotationFragment = generator.createAnnotation(this);
+            addImport(annotationFragment.getImportDeclaration());
+            result += annotationFragment.getSourcecode() + "\n";
+        }
+        return result;
     }
 
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {

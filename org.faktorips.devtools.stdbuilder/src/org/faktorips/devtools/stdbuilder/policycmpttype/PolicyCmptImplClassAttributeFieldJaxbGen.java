@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -53,7 +52,7 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotation
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
         return true;
     }
 

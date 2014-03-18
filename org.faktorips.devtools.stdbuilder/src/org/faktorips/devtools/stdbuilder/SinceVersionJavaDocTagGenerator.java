@@ -9,12 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IVersion;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
@@ -27,29 +22,12 @@ public class SinceVersionJavaDocTagGenerator implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        String sinceVersion = getSinceVersion(modelNode);
-        return new JavaCodeFragment("@since " + sinceVersion);
-    }
-
-    private String getSinceVersion(AbstractGeneratorModelNode modelNode) {
-        IIpsObjectPartContainer ipsObjectPartContainer = modelNode.getIpsObjectPartContainer();
-        if (ipsObjectPartContainer instanceof IVersionControlledElement) {
-            IVersionControlledElement versionControlledElement = (IVersionControlledElement)ipsObjectPartContainer;
-            IVersion<?> sinceVersion = versionControlledElement.getSinceVersion();
-            if (sinceVersion != null) {
-                return sinceVersion.asString();
-            }
-        }
-        return StringUtils.EMPTY;
+        return new JavaCodeFragment("@since " + modelNode.getSinceVersion());
     }
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IVersionControlledElement) {
-            IVersionControlledElement versionControlledElement = (IVersionControlledElement)ipsElement;
-            return versionControlledElement.getSinceVersion() != null;
-        }
-        return false;
+    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
+        return modelNode.hasSinceVersion();
     }
 
     public static class Factory implements IAnnotationGeneratorFactory {
