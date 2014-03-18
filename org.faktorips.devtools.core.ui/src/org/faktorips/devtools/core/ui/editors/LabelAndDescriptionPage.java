@@ -37,7 +37,10 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, true));
-        new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
+        IIpsObject ipsObject = getIpsObject();
+        if (ipsObject instanceof ILabeledElement) {
+            new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
+        }
         new DescriptionSection(getIpsObject(), formBody, toolkit);
         new VersionSection((IVersionControlledElement)getIpsObject(), formBody, toolkit);
     }

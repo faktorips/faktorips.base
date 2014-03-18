@@ -63,7 +63,6 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.UiMessage;
@@ -312,11 +311,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             addPagesForParsableSrcFile();
             IIpsObject ipsObject = getIpsObject();
             if (ipsObject != null) {
-                if (ipsObject instanceof ILabeledElement) {
-                    addPage(new LabelAndDescriptionPage(this));
-                } else {
-                    addPage(new DescriptionPage(this));
-                }
+                addPage(new LabelAndDescriptionPage(this));
             }
 
             logMethodFinished("addPagesForParsableSrcFile()"); //$NON-NLS-1$

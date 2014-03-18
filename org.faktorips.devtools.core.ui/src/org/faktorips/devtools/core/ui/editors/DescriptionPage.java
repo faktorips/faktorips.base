@@ -20,7 +20,12 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * An editor page that allows to edit the {@link IDescription}s of an {@link IDescribedElement}.
+ * 
+ * @deprecated The same code is provided by the {@link LabelAndDescriptionPage}. In order to set the
+ *             page content by using the Description Section make use of the
+ *             {@link LabelAndDescriptionPage}.
  */
+@Deprecated
 class DescriptionPage extends IpsObjectEditorPage {
 
     private static final String PAGEID = "Description"; //$NON-NLS-1$
