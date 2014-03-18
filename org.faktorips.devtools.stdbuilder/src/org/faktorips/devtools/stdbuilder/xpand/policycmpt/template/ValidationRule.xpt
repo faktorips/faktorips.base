@@ -45,7 +45,7 @@
 «DEFINE execRuleMethod FOR XValidationRule-»
     /**
      * «localizedJDoc("EXEC_RULE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
      * @restrainedmodifiable
      */
     protected boolean «method(methodNameExecRule, MessageList(), "ml", IValidationContext(), "context")» {

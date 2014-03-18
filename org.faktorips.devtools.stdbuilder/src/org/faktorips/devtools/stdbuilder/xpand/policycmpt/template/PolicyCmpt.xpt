@@ -196,8 +196,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getAndSetProductComponent FOR XProductCmptClass-» 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
-		 *
-		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -210,8 +209,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
-		 *
-		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -229,8 +227,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-» 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, name, policyCmptClass.name)»
-		 *
-		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
