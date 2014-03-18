@@ -9,7 +9,7 @@
 	«IF !compositionDetailToMaster && !derived && !constrain-»
 	    /**
 	     * «localizedJDoc("FIELD_MAX_CARDINALITY", name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    public static final «IntegerRange()» «field(constantNameMaxCardinalityFor)» = «IntegerRange()».valueOf(«minCardinality», «maxCardinality»);
@@ -18,7 +18,7 @@
 	«IF !hasSuperAssociationWithSameName()-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION_NAME", fieldName)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    public final static String «field(constantNamePropertyName)» = "«fieldName»";
@@ -30,7 +30,7 @@
 		«IF masterToDetail || typeAssociation-»
 		    /**
 		     * «localizedJDoc("FIELD_ASSOCIATION", name)»
-		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
@@ -43,7 +43,7 @@
 		«ELSEIF compositionDetailToMaster-»
 			/**
 			 * «localizedJDoc("FIELD_PARENT", targetClassName)»
-			 *
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated	 
 			 */
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
@@ -67,7 +67,7 @@
 	«IF oneToMany && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CONTAINS_OBJECT")»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
      	«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -89,7 +89,7 @@
 		«IF oneToMany-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -105,7 +105,7 @@
 	    «ENDIF»
 		/**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
          */
 	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -122,7 +122,7 @@
 	    «ELSE-»
 		    /**
 		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name)»
-		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -141,7 +141,7 @@
     «IF generateQualifiedGetter»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -228,8 +228,7 @@
 «DEFINE generateSetter FOR XPolicyAssociation-»
 	«IF compositionDetailToMaster-»
 		«IF !sharedAssociationImplementedInSuperclass && !genInterface()-»
-			/**
-			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+			/** «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 		    «overrideAnnotationIf(constrain)-»
@@ -256,7 +255,7 @@
 		«IF !constrain || !generateInternalSetterOrAdder-»
 		    /**
 	 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_OBJECT", name)»
-		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -275,12 +274,9 @@
 		«ENDIF-»
 
     	«IF generateInternalSetterOrAdder && !genInterface()-»
-		    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
-		     «IF !typeAssociation-» 
+		    /**
 		     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
-		     * 
-		     «ENDIF-»
-		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 		     «overrideAnnotationIf(constrain)-»
@@ -324,7 +320,7 @@
 	«IF !constrain || !generateInternalSetterOrAdder-»
 		/**
 	 	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	   	«overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -344,7 +340,7 @@
 	«IF generateInternalSetterOrAdder && !genInterface()-»
 	    /**
 	     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	     «overrideAnnotationIf(constrain)»
@@ -413,7 +409,7 @@
 	«IF generateNewChildMethods-»
 	    /**
  	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD", targetName, name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 		«overrideAnnotationForPublishedMethodAndIf(!genInterface() || needOverrideForConstrainNewChildMethod)-»
@@ -428,7 +424,7 @@
 		«IF generateNewChildWithArgumentsMethod-»
 		    /**
  	     	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetName, getName(false), targetProductCmptVariableName)»
-		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
 			«overrideAnnotationForPublishedMethodAndIf(!genInterface() || needOverrideForConstrainNewChildMethod)-»
@@ -493,7 +489,7 @@
 	«IF generateAddAndRemoveMethod && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_REMOVE_OBJECT", name)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 		«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»

@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
@@ -6,7 +7,7 @@
 	«IF oneToMany && !derived && !constrain-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
-	     * 
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -24,21 +25,21 @@
 		«IF oneToMany-»
 			/**
 		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»
-			 *
+			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
 		     public «IF !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»;
 
 			/**
 		     * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
-			 *
+			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
 			 public «IF !genInterface()»abstract«ENDIF» int «method(methodNameGetNumOf)»;
 		«ELSE-»
 			/**
 		     * «localizedJDoc("METHOD_GET_ONE", name)»
-			 *
+			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
 		    public «IF !genInterface()»abstract«ENDIF» «targetInterfaceName» «method(methodNameGetter)»;

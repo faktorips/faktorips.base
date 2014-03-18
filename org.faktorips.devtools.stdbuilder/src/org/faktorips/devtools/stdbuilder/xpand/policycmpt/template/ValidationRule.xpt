@@ -45,7 +45,7 @@
 «DEFINE execRuleMethod FOR XValidationRule-»
     /**
      * «localizedJDoc("EXEC_RULE", name)»
-     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @restrainedmodifiable
      */
     protected boolean «method(methodNameExecRule, MessageList(), "ml", IValidationContext(), "context")» {
@@ -93,7 +93,7 @@
 «DEFINE createMessageFor FOR XValidationRule-»
     /**
      * «localizedJDoc("CREATE_MESSAGE", name)»
-     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {

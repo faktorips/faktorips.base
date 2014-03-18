@@ -19,7 +19,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 «ELSE-»
 	 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
 	 «ENDIF-»
-	 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 * @generated
 	 */
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
@@ -132,7 +132,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE constructors FOR XPolicyCmptClass-»
 	/**
      * «localizedJDoc("CONSTRUCTOR", implClassName)»
-     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     public «method(implClassName)» {
@@ -142,7 +142,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
     «IF configured»
 		/**
 	     * «localizedJDoc("CONSTRUCTOR", implClassName)»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    public «method(implClassName, productCmptClassName, "productCmpt")» {
@@ -156,8 +156,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	«IF !overwrite-»
 		 /**
 	     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
+	     «IF descriptionForJDoc.length > 0-»
 	     * «descriptionForJDoc»
-	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 «ENDIF-»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
@@ -173,7 +175,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getterForTables(XPolicyCmptClass policyClass) FOR XTableUsage-»
     /**
      * «localizedJDoc("METHOD_GET_TABLE_IN_POLICY", name)»
-     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     public «tableClassName» «method(methodNameGetter)» {
@@ -196,7 +198,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getAndSetProductComponent FOR XProductCmptClass-» 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
-		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -209,7 +211,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
-		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -227,7 +229,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-» 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, name, policyCmptClass.name)»
-		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»

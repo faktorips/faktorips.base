@@ -8,7 +8,7 @@
 	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("FIELD_PROPERTY_NAME", name)»
-		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+		* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
 		public final static String «field(constantNamePropertyName)» = "«name»";
