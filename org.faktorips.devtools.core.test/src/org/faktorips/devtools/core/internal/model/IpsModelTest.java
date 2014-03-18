@@ -746,11 +746,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     @Test
     public void testGetVersionProvider_extendedVersionProvider() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        // TODO
 
         IVersionProvider<?> versionProvider1 = model.getVersionProvider(ipsProject);
         IVersionProvider<?> versionProvider2 = model.getVersionProvider(ipsProject);
 
+        assertNotNull(versionProvider1);
+        assertNotNull(versionProvider2);
         assertSame(versionProvider1, versionProvider2);
     }
 
@@ -763,6 +764,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider1 = model.getVersionProvider(ipsProject);
         IVersionProvider<?> versionProvider2 = model.getVersionProvider(ipsProject);
 
+        assertNotNull(versionProvider1);
+        assertNotNull(versionProvider2);
         assertSame(versionProvider1, versionProvider2);
     }
 

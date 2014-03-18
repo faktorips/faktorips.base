@@ -1196,7 +1196,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + SystemUtils.LINE_SEPARATOR
                 + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
-                + "The version for the latest release is set in a separate element below." //$NON-NLS-1$
+                + "The version for the latest release is configured in a separate element below." //$NON-NLS-1$
                 + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
