@@ -1030,43 +1030,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         description.setText(text);
     }
 
-    // Deprecated since 3.1
-    @Deprecated
-    @Override
-    public String getDescription() {
-        String description = ""; //$NON-NLS-1$
-        if (this instanceof IDescribedElement) {
-            description = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription((IDescribedElement)this);
-        }
-        return description;
-    }
-
-    // Deprecated since 3.1
-    @Deprecated
-    @Override
-    public void setDescription(String newDescription) {
-        if (!(isDescriptionChangable())) {
-            throw new UnsupportedOperationException();
-        }
-        if (newDescription == null) {
-            // Throw exception as specified by the contract.
-            throw new IllegalArgumentException();
-        }
-
-        List<IDescription> descriptionList = getDescriptions();
-        if (descriptionList.size() == 0) {
-            return;
-        }
-        IDescription firstDescription = descriptionList.get(0);
-        firstDescription.setText(newDescription);
-    }
-
-    @Deprecated
-    @Override
-    public final boolean isDescriptionChangable() {
-        return this instanceof IDescribedElement;
-    }
-
     /**
      * This implementation always returns an empty string and should be overridden by subclasses to
      * provide the correct caption.

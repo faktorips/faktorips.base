@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.model.ipsobject;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.XmlSupport;
@@ -26,7 +25,7 @@ import org.faktorips.util.memento.MementoSupport;
  * @author Alexander Weickmann
  */
 public interface IIpsObjectPartContainer extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport,
-        MementoSupport, Described {
+        MementoSupport {
 
     /** Prefix for all message codes of this class. */
     public static final String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$

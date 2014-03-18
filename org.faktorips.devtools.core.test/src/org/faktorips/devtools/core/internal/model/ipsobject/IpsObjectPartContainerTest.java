@@ -123,49 +123,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         germanLabel.setPluralValue("bars");
     }
 
-    // OK to suppress deprecation warnings as this is a test for a deprecated method.
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testSetDescription() throws CoreException {
-        IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
-
-        policyContainer.setDescription("new description");
-        assertEquals("new description", policyContainer.getDescriptionText(Locale.GERMAN));
-        assertEquals("", policyContainer.getDescription(Locale.US).getText());
-        assertTrue(policyContainer.getIpsSrcFile().isDirty());
-        assertEquals(policyContainer.getIpsSrcFile(), getLastContentChangeEvent().getIpsSrcFile());
-
-        try {
-            container.setDescription(null);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-
-    // OK to suppress deprecation warnings as this is a test for a deprecated method.
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testGetDescriptionDeprecatedVersion() throws CoreException {
-        IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
-        assertEquals("", policyContainer.getDescription());
-
-        Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocale();
-        IDescription localizedDescription = policyContainer.getDescription(localizationLocale);
-        if (localizedDescription == null) {
-            localizedDescription = policyContainer.newDescription();
-            localizedDescription.setLocale(localizationLocale);
-        }
-        localizedDescription.setText("blub");
-        assertEquals("blub", policyContainer.getDescription());
-    }
-
-    // OK to suppress deprecation warnings as this is a test for a deprecated method.
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testIsDescriptionChangeable() {
-        assertTrue(container.isDescriptionChangable());
-    }
-
     @Test
     public void testGetExtProperty() {
         ExtensionPropertyDefinition extProperty0 = new StringExtensionPropertyDefinition();

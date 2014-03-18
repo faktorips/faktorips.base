@@ -455,14 +455,16 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testGetProductCmptGeneration() {
         IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
-        assertNotNull(newLink.getProductCmptGeneration());
-        assertEquals(generation, newLink.getProductCmptGeneration());
+
+        assertNotNull(newLink.getProductCmptLinkContainer());
+        assertEquals(generation, newLink.getProductCmptLinkContainer());
     }
 
     @Test
     public void testGetProductCmptGeneration2() {
         IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
-        assertNull(newLink.getProductCmptGeneration());
+
+        assertFalse(newLink.getProductCmptLinkContainer() instanceof IProductCmptGeneration);
     }
 
     private IProductCmptLink createLinkWithContainer(IProductCmptLinkContainer container,

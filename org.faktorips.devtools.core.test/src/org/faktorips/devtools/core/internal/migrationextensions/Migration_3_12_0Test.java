@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -107,7 +106,7 @@ public class Migration_3_12_0Test extends AbstractIpsPluginTest {
         assertEquals(oldValueVersion, versionElNew.getAttribute("version"));
     }
 
-    private Element getMigratedDocumentElement() throws CoreException, InvocationTargetException, InterruptedException {
+    private Element getMigratedDocumentElement() throws CoreException {
         Migration_3_12_0 migration = new Migration_3_12_0(ipsProject, "testFeatureId");
         migration.migrate(new NullProgressMonitor());
 
