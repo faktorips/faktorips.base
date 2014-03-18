@@ -180,7 +180,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         String typeName = getJavaNamingConvention().getTypeName(enumType.getName());
         mainSection.setUnqualifiedName(typeName);
         String description = getDescriptionInGeneratorLanguage(enumType);
-        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(enumType, getBuilderSet());
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(enumType, getBuilderSet());
         mainSection.getJavaDocForTypeBuilder().javaDoc(description, javaDocTags);
 
         if (getBuilderSet().isGenerateJaxbSupport() && enumType.isExtensible() && !enumType.isAbstract()) {
@@ -743,7 +743,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                          * supertype can't be found
                          */
                         String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
-                        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(
+                        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(
                                 currentEnumAttribute, getBuilderSet());
                         attributeBuilder.javaDoc(description, javaDocTags);
                         attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);

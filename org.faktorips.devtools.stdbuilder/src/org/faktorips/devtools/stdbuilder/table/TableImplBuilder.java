@@ -836,7 +836,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         String methodName = getMethodNameFindRow(methodNameSuffix, index.isUniqueKey());
         JavaCodeFragment methodBody = createFindMethodBody(methodName, index, "null");
         String javaDoc = getLocalizedText(FIND_JAVADOC);
-        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(index, getBuilderSet());
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index), methodName,
                 toArray(indexCodePart.getAllItemParameterNames()), toArray(indexCodePart.getAllItemParameterTypes()),
                 methodBody, javaDoc, javaDocTags);
@@ -857,7 +857,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 tableRowBuilder.getUnqualifiedClassName(getIpsSrcFile()) + "."
                         + tableRowBuilder.getFieldNameForNullRow());
         String javaDoc = getLocalizedText(FIND_RETURN_NULL_ROW_JAVADOC);
-        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(index, getBuilderSet());
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index), methodName,
                 toArray(indexCodePart.getAllItemParameterNames()), toArray(indexCodePart.getAllItemParameterTypes()),
                 methodBody, javaDoc, javaDocTags);
@@ -872,7 +872,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         IndexCodePart indexCodePart = indexCodeParts.get(index);
         JavaCodeFragment methodBody = createMethodBodyForFindMethodExistingRow(index, methodNameSuffix);
         String javaDoc = getLocalizedText(FIND_EXISTING_ROW_JAVADOC);
-        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(index, getBuilderSet());
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index),
                 getMethodNameFindExistingRow(methodNameSuffix), toArray(indexCodePart.getAllItemParameterNames()),
                 toArray(indexCodePart.getAllItemParameterTypes()), methodBody, javaDoc, javaDocTags);

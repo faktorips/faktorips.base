@@ -131,7 +131,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
         if (datatypeHelper != null) {
             attributesBuilder.javaDoc("",
-                    JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(column, getBuilderSet()));
+                    JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(column, getBuilderSet()));
             int modifiers = Modifier.PRIVATE | Modifier.FINAL;
             String datatypeName = datatypeHelper.getJavaClassName();
             String attributeName = getJavaNamingConvention().getMemberVarName(column.getName());
@@ -194,7 +194,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
             DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
             if (datatypeHelper != null) {
                 methodBuilder.javaDoc(column.getDescriptionText(getLanguageUsedInGeneratedSourceCode()),
-                        JavaDocTagGeneratorUtil.getJavaDocTagsInklGenerated(column, getBuilderSet()));
+                        JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(column, getBuilderSet()));
                 String methodName = getJavaNamingConvention().getGetterMethodName(column.getName(), datatype);
                 methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName,
                         new String[0], new String[0]);

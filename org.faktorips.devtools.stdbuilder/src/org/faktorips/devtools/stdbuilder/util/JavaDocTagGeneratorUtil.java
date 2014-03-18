@@ -25,7 +25,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
  * This class is used to create the java doc tags provided by an {@link IAnnotationGenerator} in old
  * style builder that do not use Xpand/Xtend and the {@link ModelService} yet.
  * <p>
- * This class will be deleted when it is not needed anymore.
+ * This class will be deleted when it is no longer needed.
  */
 public class JavaDocTagGeneratorUtil {
 
@@ -39,13 +39,18 @@ public class JavaDocTagGeneratorUtil {
             GenericGeneratorModelNode modelNode = builderSet.getModelNode(element, GenericGeneratorModelNode.class);
             String annotation = modelNode.getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC);
             if (StringUtils.isNotEmpty(annotation)) {
+                /*
+                 * Remove "@" from the beginning of the annotation string, as callers expect to add
+                 * their own. Works even if there are multiple annotations in the annotation string,
+                 * as only one "@" is added.
+                 */
                 javaDocTags.add(annotation.substring(1));
             }
         }
         return javaDocTags;
     }
 
-    public static String[] getJavaDocTagsInklGenerated(IIpsObjectPartContainer element, StandardBuilderSet builderSet) {
+    public static String[] getJavaDocTagsInclGenerated(IIpsObjectPartContainer element, StandardBuilderSet builderSet) {
         List<String> javaDocTags = getJavaDocTags(element, builderSet);
         javaDocTags.add(JavaSourceFileBuilder.ANNOTATION_GENERATED[0]);
         return javaDocTags.toArray(new String[javaDocTags.size()]);
