@@ -1,8 +1,10 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::ClassNames»
+
 
 «DEFINE validate FOR XValidationRule-»
         if (!«methodNameExecRule»(ml, context)) {
@@ -91,7 +93,7 @@
 «DEFINE createMessageFor FOR XValidationRule-»
     /**
      * «localizedJDoc("CREATE_MESSAGE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
      * @generated
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {

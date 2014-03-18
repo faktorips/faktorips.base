@@ -10,6 +10,7 @@
 	«IF !overwrite-»
 		/**
 		 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		public final static String «field(constantNamePropertyName)» = "«name»";
@@ -56,6 +57,7 @@
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
 		 *
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
@@ -84,6 +86,7 @@
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»
 		 *
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)-»
@@ -107,6 +110,7 @@
 		/**
 		 * «localizedJDoc("METHOD_SETVALUE_INTERNAL", name)»
 		 *
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»
@@ -121,6 +125,7 @@
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
 		 *
+		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 		 * @generated
 		 */
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)-»
