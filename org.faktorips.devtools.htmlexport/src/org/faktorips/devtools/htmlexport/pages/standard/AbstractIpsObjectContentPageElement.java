@@ -16,7 +16,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -98,12 +100,27 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? getContext().getMessage(
                         "AbstractObjectContentPageElement_noDescription") : getContext().getDescription( //$NON-NLS-1$
                         getDocumentedIpsObject()), TextType.BLOCK));
+        addVersionPageElement();
 
         if (getContext().showsValidationErrors()) {
             addValidationErrorsTable();
         }
 
         addExtensionPropertiesTable();
+    }
+
+    private void addVersionPageElement() {
+        if (getDocumentedIpsObject() instanceof IVersionControlledElement) {
+            IVersionControlledElement versionControlledElement = (IVersionControlledElement)getDocumentedIpsObject();
+            IVersion<?> sinceVersion = versionControlledElement.getSinceVersion();
+            if (sinceVersion != null) {
+                addPageElements(new TextPageElement(getContext().getMessage(
+                        HtmlExportMessages.TablePageElement_headlineSince), TextType.HEADING_2));
+                String content = getContext().getMessage(HtmlExportMessages.TablePageElement_version)
+                        + sinceVersion.asString();
+                addPageElements(new TextPageElement(content, TextType.BLOCK));
+            }
+        }
     }
 
     /**
