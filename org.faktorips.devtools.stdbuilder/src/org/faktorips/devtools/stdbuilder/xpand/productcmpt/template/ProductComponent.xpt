@@ -109,7 +109,7 @@
 «DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-»
 		    /**
 		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_GENERATION", generationConceptNameSingular)»
-			 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+		     *
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -160,7 +160,7 @@
 	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CREATE_POLICY_CMPT", name)»
-		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+		 *
 	     * @generated
 	     */
 	     «overrideAnnotationForPublishedMethodOrIf(!genInterface(), this.productCmptNode != currentType)-»

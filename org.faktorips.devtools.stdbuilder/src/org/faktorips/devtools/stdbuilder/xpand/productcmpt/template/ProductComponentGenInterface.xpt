@@ -15,7 +15,7 @@
 	
 		/**
 		 * «localizedJDoc("INTERFACE", generationConceptNameSingular, name)»
-		 «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
 		public interface «interfaceName» 

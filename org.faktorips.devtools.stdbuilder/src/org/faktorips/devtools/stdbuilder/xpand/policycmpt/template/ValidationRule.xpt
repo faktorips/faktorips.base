@@ -25,20 +25,20 @@
 «DEFINE constantMsgCode FOR XValidationRule-»
     /**
      * «localizedJDoc("FIELD_MSG_CODE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
-    public final static String «constantNameMessageCode» = "«messageCode»";
+    public final static String «field(constantNameMessageCode)» = "«messageCode»";
 «ENDDEFINE»
 
 «DEFINE constantRuleName FOR XValidationRule-»
 	«IF configured-»
 	    /**
 	     * «localizedJDoc("FIELD_RULE_NAME", name)»
-	     * 
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	    public final static String «constantNameRuleName» = "«name»";
+	    public final static String «field(constantNameRuleName)» = "«name»";
 	«ENDIF-»
 «ENDDEFINE»
 
