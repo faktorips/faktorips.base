@@ -1209,9 +1209,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void createVersionComment(Element parentEl) {
         String s = "Version" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
-                "In this section, the version for this project is specified. In alternativ to directly se a version" //$NON-NLS-1$
+                "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
-                + "it is possible to configure a versio provider." //$NON-NLS-1$
+                + "it is possible to configure a version provider." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "Examples:" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
                 + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
