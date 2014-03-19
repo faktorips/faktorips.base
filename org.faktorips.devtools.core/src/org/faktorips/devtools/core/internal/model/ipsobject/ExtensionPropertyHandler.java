@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -274,7 +274,7 @@ public class ExtensionPropertyHandler {
      * This class is responsible for lazy instantiation of a map. The
      * {@link ExtensionPropertyHandler} is instantiated for every {@link IpsObjectPartContainer}
      * although most of them do not have any extension properties. This leads to a lot of unused
-     * memory retained by empty maps if we do not lazy instantiate them.
+     * memory retained by empty maps if we do not instantiate them lazily.
      */
     protected static class ExtensionPropertyMap {
 
@@ -296,7 +296,7 @@ public class ExtensionPropertyHandler {
 
         public Collection<ExtensionPropertyValue> values() {
             if (internalMap == null) {
-                return new ArrayList<ExtensionPropertyValue>();
+                return Collections.emptyList();
             } else {
                 return internalMap.values();
             }
@@ -313,6 +313,11 @@ public class ExtensionPropertyHandler {
             internalMap.put(propertyId, extensionPropValue);
         }
 
+        /**
+         * Creates a {@link ConcurrentHashMap} with a concurrencyLevel of 1 . This allows a second
+         * thread to access the map concurrently. At the same time the memory consumption is
+         * reduced. Depending on the JVM version even major reductions are possible.
+         */
         private ConcurrentHashMap<String, ExtensionPropertyValue> newMap() {
             return new ConcurrentHashMap<String, ExtensionPropertyValue>(4, 0.9f, 1);
         }
