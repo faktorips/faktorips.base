@@ -43,7 +43,8 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 public class AggregateRootFinder {
 
     private final Set<String> nonRootCmpts = new HashSet<String>();
-    private final Map<String, IProductCmpt> potentialRootCmpts = new ConcurrentHashMap<String, IProductCmpt>();
+    private final Map<String, IProductCmpt> potentialRootCmpts = new ConcurrentHashMap<String, IProductCmpt>(64, 0.75f,
+            1);
 
     private final IIpsProject ipsProject;
 

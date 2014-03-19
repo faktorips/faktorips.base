@@ -10,12 +10,16 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -41,12 +45,13 @@ public class ExtensionPropertyHandler {
 
     private final IpsObjectPartContainer ipsObjectPartContainer;
 
+    private ExtensionPropertyMap extPropertiyValuesMap = new ExtensionPropertyMap();
+
     /**
-     * Map containing invalid extension property IDs as keys and their values. Only used to not
-     * loose these information. They are initialized while reading the xml and stored when writing -
-     * nothing else.
+     * This document is used to import the loaded xml elements so we do not store the whole original
+     * document in this object.
      */
-    private final Map<String, ExtensionPropertyValue> extPropertiyValuesMap = new ConcurrentHashMap<String, ExtensionPropertyValue>();
+    private Document internalDocument;
 
     /**
      * Create a new {@link ExtensionPropertyHandler} for the given {@link IIpsObjectPartContainer}
@@ -205,6 +210,7 @@ public class ExtensionPropertyHandler {
      */
     public void initFromXml(Element containerEl) {
         extPropertiyValuesMap.clear();
+        internalDocument = null;
         initMissingExtProperties();
         Element extPropertiesEl = XmlUtil.getFirstElement(containerEl,
                 IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
@@ -226,11 +232,23 @@ public class ExtensionPropertyHandler {
      * properties.
      */
     protected void initPropertyFromXml(Element valueElement) {
-        String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
+        Element importedElement = (Element)getInternalDocument().importNode(valueElement, true);
+        String propertyId = importedElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
         ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(propertyId,
-                valueElement, ipsObjectPartContainer);
+                importedElement, ipsObjectPartContainer);
         extensionPropertyValue.loadValue();
         extPropertiyValuesMap.put(propertyId, extensionPropertyValue);
+    }
+
+    protected DocumentBuilder getDocumentBuilder() {
+        return IpsPlugin.getDefault().getDocumentBuilder();
+    }
+
+    private Document getInternalDocument() {
+        if (internalDocument == null) {
+            internalDocument = getDocumentBuilder().newDocument();
+        }
+        return internalDocument;
     }
 
     /**
@@ -251,11 +269,66 @@ public class ExtensionPropertyHandler {
         return ml;
     }
 
-    protected Map<String, ExtensionPropertyValue> getExtPropertyValuesMap() {
+    protected ExtensionPropertyMap getExtPropertyValuesMap() {
         return extPropertiyValuesMap;
     }
 
     public void clear() {
         extPropertiyValuesMap.clear();
     }
+
+    /**
+     * This class is responsible for lazy instantiation of a map. The
+     * {@link ExtensionPropertyHandler} is instantiated for every {@link IpsObjectPartContainer}
+     * although most of them do not have any extension properties. This leads to a lot of unused
+     * memory retained by empty maps if we do not instantiate them lazily.
+     */
+    protected static class ExtensionPropertyMap {
+
+        private Map<String, ExtensionPropertyValue> internalMap;
+
+        public ExtensionPropertyValue get(String propertyId) {
+            if (internalMap == null) {
+                return null;
+            } else {
+                return internalMap.get(propertyId);
+            }
+        }
+
+        public void clear() {
+            if (internalMap != null) {
+                internalMap.clear();
+            }
+        }
+
+        public Collection<ExtensionPropertyValue> values() {
+            if (internalMap == null) {
+                return Collections.emptyList();
+            } else {
+                return internalMap.values();
+            }
+        }
+
+        public boolean isEmpty() {
+            return internalMap == null || internalMap.isEmpty();
+        }
+
+        public void put(String propertyId, ExtensionPropertyValue extensionPropValue) {
+            if (internalMap == null) {
+                internalMap = newMap();
+            }
+            internalMap.put(propertyId, extensionPropValue);
+        }
+
+        /**
+         * Creates a {@link ConcurrentHashMap} with a concurrencyLevel of 1 . This allows a second
+         * thread to access the map concurrently. At the same time the memory consumption is
+         * reduced. Depending on the JVM version even major reductions are possible.
+         */
+        private ConcurrentHashMap<String, ExtensionPropertyValue> newMap() {
+            return new ConcurrentHashMap<String, ExtensionPropertyValue>(4, 0.9f, 1);
+        }
+
+    }
+
 }

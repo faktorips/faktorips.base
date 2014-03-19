@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -24,8 +25,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+
+import org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyHandler.ExtensionPropertyMap;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
@@ -77,10 +80,10 @@ public class ExtensionPropertyHandlerTest {
     private Document xmlDocument;
 
     @Mock
-    private IpsObjectPartContainer ipsObjectPartContainer;
+    private DocumentBuilder documentBuilder;
 
-    @InjectMocks
-    private ExtensionPropertyHandler extensionPropertyHandler;
+    @Mock
+    private IpsObjectPartContainer ipsObjectPartContainer;
 
     @Mock
     private ExtensionPropertyValue invalidExtensionProperty;
@@ -93,6 +96,9 @@ public class ExtensionPropertyHandlerTest {
 
     @Mock
     private StringExtensionPropertyDefinition stringPropDef;
+
+    @InjectMocks
+    private ExtensionPropertyHandler extensionPropertyHandler;
 
     @Before
     public void setUpExtPropDefAndPart() {
@@ -124,6 +130,8 @@ public class ExtensionPropertyHandlerTest {
         when(xmlValueElement.getNodeType()).thenReturn(Node.ELEMENT_NODE);
 
         when(xmlDocument.importNode(xmlValueElement, true)).thenReturn(xmlValueElement);
+
+        when(documentBuilder.newDocument()).thenReturn(xmlDocument);
     }
 
     @Test
@@ -377,6 +385,9 @@ public class ExtensionPropertyHandlerTest {
     }
 
     private void setUpXmlElementsForInit(String propId, boolean isNull) {
+        extensionPropertyHandler = spy(extensionPropertyHandler);
+        doReturn(documentBuilder).when(extensionPropertyHandler).getDocumentBuilder();
+
         NodeList rootNodeList = mock(NodeList.class);
         when(xmlRootElement.getChildNodes()).thenReturn(rootNodeList);
         when(rootNodeList.getLength()).thenReturn(1);
@@ -437,7 +448,7 @@ public class ExtensionPropertyHandlerTest {
     }
 
     private void initMaps() {
-        Map<String, ExtensionPropertyValue> map = extensionPropertyHandler.getExtPropertyValuesMap();
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
         map.put(INVALID_ID, invalidExtensionProperty);
         map.put(INVALID_ID + 2, invalidExtensionProperty2);
         map.put(INVALID_ID + 3, invalidExtensionProperty3);
@@ -449,8 +460,8 @@ public class ExtensionPropertyHandlerTest {
 
         extensionPropertyHandler.initPropertyFromXml(xmlValueElement);
 
-        Map<String, ExtensionPropertyValue> map = extensionPropertyHandler.getExtPropertyValuesMap();
-        assertEquals(1, map.size());
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
+        assertEquals(1, map.values().size());
         assertNotNull(map.get(INVALID_ID));
     }
 
