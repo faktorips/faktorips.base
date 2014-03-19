@@ -145,8 +145,8 @@
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF generateInitPropertiesFromXML-»
-        if (propMap.containsKey("«name»")) {
-            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(\"" + name + "\")", "productRepository")»;
+        if (propMap.containsKey(«constantNamePropertyName»)) {
+            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(" + constantNamePropertyName + ")", "productRepository")»;
         }
     «ENDIF-»
 «ENDDEFINE»
