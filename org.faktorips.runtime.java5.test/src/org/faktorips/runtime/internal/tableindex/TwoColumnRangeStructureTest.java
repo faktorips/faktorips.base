@@ -29,6 +29,9 @@ public class TwoColumnRangeStructureTest {
         structure = TwoColumnRangeStructure.create();
         structure.put(0, 8, new ResultStructure<String>("A"));
         structure.put(12, 20, new ResultStructure<String>("B"));
+        structure.put(120, 200, false, false, new ResultStructure<String>("exclusiveExclusive"));
+        structure.put(220, 300, false, true, new ResultStructure<String>("exclusiveInclusive"));
+        structure.put(320, 400, true, false, new ResultStructure<String>("inclusiveExclusive"));
     }
 
     @Test
@@ -44,9 +47,42 @@ public class TwoColumnRangeStructureTest {
     }
 
     @Test
+    public void testGet_lowerBoundOfRangeExclusive() {
+        assertEquals(0, structure.get(119).get().size());
+        assertEquals(0, structure.get(120).get().size());
+        assertEquals(1, structure.get(121).get().size());
+        assertThat(structure.get(121).get(), hasItem("exclusiveExclusive"));
+
+        assertEquals(0, structure.get(220).get().size());
+        assertEquals(1, structure.get(221).get().size());
+        assertThat(structure.get(221).get(), hasItem("exclusiveInclusive"));
+
+        assertEquals(0, structure.get(319).get().size());
+        assertEquals(1, structure.get(320).get().size());
+        assertThat(structure.get(320).get(), hasItem("inclusiveExclusive"));
+    }
+
+    @Test
     public void testGet_upperBoundOfRange() {
         assertEquals(1, structure.get(8).get().size());
         assertThat(structure.get(8).get(), hasItem("A"));
+    }
+
+    @Test
+    public void testGet_upperBoundOfRangeExclusive() {
+        assertEquals(0, structure.get(200).get().size());
+        assertEquals(0, structure.get(201).get().size());
+        assertEquals(1, structure.get(199).get().size());
+        assertThat(structure.get(199).get(), hasItem("exclusiveExclusive"));
+
+        assertEquals(0, structure.get(301).get().size());
+        assertEquals(1, structure.get(300).get().size());
+        assertThat(structure.get(300).get(), hasItem("exclusiveInclusive"));
+
+        assertEquals(0, structure.get(401).get().size());
+        assertEquals(0, structure.get(400).get().size());
+        assertEquals(1, structure.get(399).get().size());
+        assertThat(structure.get(399).get(), hasItem("inclusiveExclusive"));
     }
 
     @Test

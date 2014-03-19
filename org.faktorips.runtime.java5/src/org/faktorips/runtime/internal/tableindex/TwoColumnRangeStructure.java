@@ -59,14 +59,30 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
 
     /**
      * Defines a range that maps to the given value. The keys define the upper and lower bound of
-     * the range.
+     * the range. The lower and upper bounds are inclusive.
      * 
      * @param lower the lower bound of the range (included)
      * @param upper the upper bound of the range (included)
      * @param value the nested {@link SearchStructure} to be added
      */
     public void put(K lower, K upper, V value) {
-        super.put(new TwoColumnRange<K>(lower, upper), value);
+        put(lower, upper, true, true, value);
+    }
+
+    /**
+     * Defines a range that maps to the given value. The keys define the upper and lower bound of
+     * the range.
+     * 
+     * @param lower the lower bound of the range (included)
+     * @param upper the upper bound of the range (included)
+     * @param lowerInclusive <code>true</code> if the lower bound should be inclusive,
+     *            <code>false</code> if it should be exclusive
+     * @param upperInclusive <code>true</code> if the upper bound should be inclusive,
+     *            <code>false</code> if it should be exclusive
+     * @param value the nested {@link SearchStructure} to be added
+     */
+    public void put(K lower, K upper, boolean lowerInclusive, boolean upperInclusive, V value) {
+        super.put(new TwoColumnRange<K>(lower, upper, lowerInclusive, upperInclusive), value);
     }
 
     @Override
@@ -97,8 +113,8 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * matching value can be found.
      * <p>
      * A simple get on the tree map might not yield the correct result (if any at all). This is due
-     * to the fact that {@link TwoColumnRange}'s hashCode() considers only the lowerBound. Thus you
-     * will only find a value requesting the same lower bound (when calling the
+     * to the fact that {@link TwoColumnRange}'s equals()/hashCode() considers only the lowerBound.
+     * Thus it will only find a value requesting the same lower bound (when calling the
      * {@link Map#get(Object)} method directly). Mostly though, this is not the case.
      * {@link #get(Object)} is called for values <em>within</em> such a range.
      * <p>
@@ -118,7 +134,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
     }
 
     private boolean isMatchingEntry(TwoColumnRange<K> twoColumnKey, Entry<TwoColumnRange<K>, V> floorEntry) {
-        return floorEntry != null && twoColumnKey.isLowerOrEqualUpperBound(floorEntry.getKey());
+        return floorEntry != null && twoColumnKey.isBelowUpperBoundOf(floorEntry.getKey());
     }
 
 }
