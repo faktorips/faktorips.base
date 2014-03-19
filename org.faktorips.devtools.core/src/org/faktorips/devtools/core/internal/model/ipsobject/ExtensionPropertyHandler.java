@@ -15,8 +15,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -43,6 +46,12 @@ public class ExtensionPropertyHandler {
     private final IpsObjectPartContainer ipsObjectPartContainer;
 
     private ExtensionPropertyMap extPropertiyValuesMap = new ExtensionPropertyMap();
+
+    /**
+     * This document is used to import the loaded xml elements so we do not store the whole original
+     * document in this object.
+     */
+    private Document internalDocument;
 
     /**
      * Create a new {@link ExtensionPropertyHandler} for the given {@link IIpsObjectPartContainer}
@@ -201,6 +210,7 @@ public class ExtensionPropertyHandler {
      */
     public void initFromXml(Element containerEl) {
         extPropertiyValuesMap.clear();
+        internalDocument = getDocumentBuilder().newDocument();
         initMissingExtProperties();
         Element extPropertiesEl = XmlUtil.getFirstElement(containerEl,
                 IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
@@ -222,11 +232,16 @@ public class ExtensionPropertyHandler {
      * properties.
      */
     protected void initPropertyFromXml(Element valueElement) {
-        String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
+        Element importedElement = (Element)internalDocument.importNode(valueElement, true);
+        String propertyId = importedElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
         ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(propertyId,
-                valueElement, ipsObjectPartContainer);
+                importedElement, ipsObjectPartContainer);
         extensionPropertyValue.loadValue();
         extPropertiyValuesMap.put(propertyId, extensionPropertyValue);
+    }
+
+    protected DocumentBuilder getDocumentBuilder() {
+        return IpsPlugin.getDefault().getDocumentBuilder();
     }
 
     /**
