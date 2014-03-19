@@ -41,7 +41,8 @@ class UniqueIdentifierValidator {
 
     private IEnumType enumType;
 
-    private Map<Integer, AttributeValues> columnAttributeValues = new ConcurrentHashMap<Integer, UniqueIdentifierValidator.AttributeValues>();
+    private Map<Integer, AttributeValues> columnAttributeValues = new ConcurrentHashMap<Integer, UniqueIdentifierValidator.AttributeValues>(
+            16, 0.75f, 1);
 
     public UniqueIdentifierValidator(EnumValueContainer container) {
         this.container = container;
@@ -139,7 +140,8 @@ class UniqueIdentifierValidator {
 
     private static class AttributeValues {
 
-        private Map<LocalizedString, Integer> identifierCounts = new ConcurrentHashMap<LocalizedString, Integer>();
+        private Map<LocalizedString, Integer> identifierCounts = new ConcurrentHashMap<LocalizedString, Integer>(16,
+                0.75f, 1);
 
         public void addIdentifier(LocalizedString identifier) {
             Integer count = identifierCounts.get(identifier);

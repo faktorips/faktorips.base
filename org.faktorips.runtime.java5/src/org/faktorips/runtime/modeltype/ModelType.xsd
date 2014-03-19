@@ -78,6 +78,8 @@
     		</xs:simpleType>
     	</xs:attribute>
     	<xs:attribute name="isProductRelevant" type="xs:boolean"></xs:attribute>
+    	<xs:attribute name="matchingAssociationName" type="xs:string"></xs:attribute>
+    	<xs:attribute name="matchingAssociationSource" type="xs:string"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="ExtensionProperties">

@@ -115,7 +115,7 @@
 
 «DEFINE initAttributeFromXML FOR XProductAttribute-»
 	«IF !overwrite-»
-        configElement = configMap.get("«name»");
+        configElement = configMap.get(«constantNamePropertyName»);
         if (configElement != null) {
         «IF multiValue-»
         	«EXPAND initMultiValueAttributeFromXml-»

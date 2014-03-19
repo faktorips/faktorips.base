@@ -29,7 +29,8 @@ import org.osgi.framework.Bundle;
 
 public class DatatypeInputFormatRegistry {
 
-    private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory>();
+    private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory>(
+            16, 0.75f, 1);
 
     /**
      * This method retrieves the Datatypes and the related Formats that are registered at the

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -59,9 +60,9 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
         customValidationsPerType = CustomValidationsPerType.createFromExtensions();
-        typeExtensionPropertiesMap = new ConcurrentHashMap<Class<?>, List<IExtensionPropertyDefinition>>();
+        typeExtensionPropertiesMap = new ConcurrentHashMap<Class<?>, List<IExtensionPropertyDefinition>>(8, 0.75f, 1);
         initExtensionPropertiesFromConfiguration();
-        productCmptNamingStrategies = new ConcurrentHashMap<String, IProductCmptNamingStrategyFactory>();
+        productCmptNamingStrategies = new ConcurrentHashMap<String, IProductCmptNamingStrategyFactory>(4, 0.9f, 1);
         initProductCmptNamingStrategies();
     }
 
@@ -101,7 +102,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     @Override
     public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object) {
-        ConcurrentHashMap<String, IExtensionPropertyDefinition> result = new ConcurrentHashMap<String, IExtensionPropertyDefinition>();
+        HashMap<String, IExtensionPropertyDefinition> result = new HashMap<String, IExtensionPropertyDefinition>();
 
         for (Class<?> key : typeExtensionPropertiesMap.keySet()) {
             if (key.isAssignableFrom(object.getClass())) {
