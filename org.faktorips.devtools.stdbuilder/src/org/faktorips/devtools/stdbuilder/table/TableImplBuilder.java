@@ -31,7 +31,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -47,6 +46,7 @@ import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.util.JavaDocTagGeneratorUtil;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.internal.tableindex.RangeType;
@@ -67,7 +67,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private static final String KEY_CLASS_HASHCODE_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_HASHCODE_JAVADOC";
     private static final String FIND_JAVADOC = "TABLE_IMPL_BUILDER_FIND_JAVADOC";
     private static final String FIND_RETURN_NULL_ROW_JAVADOC = "TABLE_IMPL_BUILDER_FIND_RETURN_NULL_ROW_JAVADOC";
-    private static final String KEY_CLASS_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_JAVADOC";
+    private static final String KEY_CLASS_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS";
     private static final String KEY_CLASS_CONSTRUCTOR_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_CONSTRUCTOR_JAVADOC";
     private static final String ADD_ROW_JAVADOC = "TABLE_IMPL_BUILDER_ADD_ROW_JAVADOC";
     private static final String INIT_KEY_MAPS_JAVADOC = "TABLE_IMPL_BUILDER_INIT_KEY_MAPS_JAVADOC";
@@ -87,11 +87,14 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private IndexCodePartMap indexCodeParts;
 
-    private Map<String, IColumnRange> fRanges;
-
-    public TableImplBuilder(DefaultBuilderSet builderSet) {
+    public TableImplBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableImplBuilder.class));
         setMergeEnabled(true);
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     public void setTableRowBuilder(TableRowBuilder tableRowBuilder) {
@@ -123,7 +126,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         super.afterBuild(ipsSrcFile);
-        fRanges = null;
     }
 
     /**
@@ -218,7 +220,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         List<IIndex> keys = getIndices();
         int keySize = keys.size();
-        fRanges = new HashMap<String, IColumnRange>(keySize);
         for (int i = 0; i < keySize; i++) {
             IIndex index = keys.get(i);
             IndexCodePart indexCodePart = indexCodeParts.get(index);
@@ -243,7 +244,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 } else {
                     IColumnRange range = getTableStructure().getRange(keyItem);
                     parameters.add(range.getParameterName());
-                    fRanges.put(range.getParameterName(), range);
                 }
             }
 
@@ -345,7 +345,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.appendClassName(Collections.class);
             methodBody.appendln(".unmodifiableList(rows);");
             codeBuilder.method(Modifier.PUBLIC, List.class.getName() + "<" + qualifiedTableRowName + ">", "getAllRows",
-                    new String[0], new String[0], methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC),
+                    new String[0], new String[0], methodBody, getLocalizedText(GET_ALL_ROWS_JAVADOC),
                     ANNOTATION_GENERATED, null);
         } else {
             methodBody.appendClassName(qualifiedTableRowName);
@@ -355,8 +355,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.appendln("rows.toArray(rowsArray);");
             methodBody.append("return rowsArray;");
             codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]", "getAllRows", new String[0],
-                    new String[0], methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC),
-                    ANNOTATION_GENERATED, null);
+                    new String[0], methodBody, getLocalizedText(GET_ALL_ROWS_JAVADOC), ANNOTATION_GENERATED, null);
         }
     }
 
@@ -370,7 +369,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
                 new String[] { "repository" }, new String[] { IRuntimeRepository.class.getName() }, methodBody,
-                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
+                getLocalizedText(GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void createGetInstanceMethodForMultipleContents(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -383,7 +382,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
                 new String[] { "repository", "qualifiedTableName" }, new String[] { IRuntimeRepository.class.getName(),
-                        String.class.getName() }, methodBody, getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC),
+                        String.class.getName() }, methodBody, getLocalizedText(GET_INSTANCE_JAVADOC),
                 ANNOTATION_GENERATED);
     }
 
@@ -453,7 +452,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("));");
 
         methodBody.addImport(List.class.getName());
-        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.javaDoc(getLocalizedText(ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE.getName(), "addRow", new String[] { "values",
                 "productRepository" },
@@ -465,7 +464,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean isUseTypesafeCollections() {
-        return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+        return getBuilderSet().isUseTypesafeCollections();
     }
 
     private void createFindMethods(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -495,7 +494,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         for (IIndex index : getIndices()) {
             IndexCodePart indexCodePart = indexCodeParts.get(index);
-            appendLocalizedJavaDoc("FIELD_KEY_MAP", getTableStructure(), codeBuilder);
+            appendLocalizedJavaDoc("FIELD_KEY_MAP", index, codeBuilder);
             codeBuilder.varDeclaration(Modifier.PRIVATE, indexCodePart.getKeyStructureFieldClassName(),
                     indexCodePart.getKeyStructureFieldName());
         }
@@ -511,7 +510,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (!keys.isEmpty()) {
             methodBody = createInitKeyMapsMethodBody(keys);
         }
-        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.javaDoc(getLocalizedText(INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.methodBegin(Modifier.PROTECTED | Modifier.FINAL, Void.TYPE, INIT_KEY_MAPS, new String[0],
                 new Class[0]);
@@ -719,18 +718,18 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (IIndex index : keys) {
             IndexCodePart indexCodePart = indexCodeParts.get(index);
             if (!indexCodePart.getIndexClassParameterTypes().isEmpty()) {
-                createHashKeyClass(indexCodePart.getIndexClassName(), indexCodePart.getIndexClassParameterNames(),
-                        indexCodePart.getIndexClassParameterTypes());
+                createHashKeyClass(index, indexCodePart.getIndexClassName(),
+                        indexCodePart.getIndexClassParameterNames(), indexCodePart.getIndexClassParameterTypes());
             }
         }
     }
 
-    private void createHashKeyClass(String hashKeyClassName,
+    private void createHashKeyClass(IIndex index,
+            String hashKeyClassName,
             List<String> keyClassParameterNames,
             List<String> keyClassParameterTypes) {
         TypeSection innerClassBody = createInnerClassSection();
-        innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC),
-                ANNOTATION_GENERATED);
+        appendLocalizedJavaDoc(KEY_CLASS_JAVADOC, index, innerClassBody.getJavaDocForTypeBuilder());
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         JavaCodeFragmentBuilder memberVarBuilder = innerClassBody.getMemberVarBuilder();
@@ -758,7 +757,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         // constructor
         innerClassBody.getConstructorBuilder().method(Modifier.PRIVATE, null, hashKeyClassName,
                 toArray(keyClassParameterNames), toArray(keyClassParameterTypes), constructorBody,
-                getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
+                getLocalizedText(KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
         createKeyClassCalHashCodeMethod(keyClassParameterNames, innerClassBody.getMethodBuilder());
         createKeyClassEqualsMethod(hashKeyClassName, keyClassParameterNames, innerClassBody.getMethodBuilder());
         createKeyClassHashCodeMethod(innerClassBody.getMethodBuilder());
@@ -812,7 +811,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendCloseBracket();
         methodBody.append("return false;");
 
-        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.javaDoc(getLocalizedText(KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, "equals", new String[] { "o" },
                 new Class[] { Object.class });
@@ -824,7 +823,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");
 
-        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.javaDoc(getLocalizedText(KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0]);
         codeBuilder.append(methodBody);
@@ -836,10 +835,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         IndexCodePart indexCodePart = indexCodeParts.get(index);
         String methodName = getMethodNameFindRow(methodNameSuffix, index.isUniqueKey());
         JavaCodeFragment methodBody = createFindMethodBody(methodName, index, "null");
-        String javaDoc = getLocalizedText(getIpsObject(), FIND_JAVADOC);
+        String javaDoc = getLocalizedText(FIND_JAVADOC);
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index), methodName,
                 toArray(indexCodePart.getAllItemParameterNames()), toArray(indexCodePart.getAllItemParameterTypes()),
-                methodBody, javaDoc, ANNOTATION_GENERATED);
+                methodBody, javaDoc, javaDocTags);
     }
 
     String getMethodNameFindRow(String methodNameSuffix, boolean unique) {
@@ -856,10 +856,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 index,
                 tableRowBuilder.getUnqualifiedClassName(getIpsSrcFile()) + "."
                         + tableRowBuilder.getFieldNameForNullRow());
-        String javaDoc = getLocalizedText(getIpsObject(), FIND_RETURN_NULL_ROW_JAVADOC);
+        String javaDoc = getLocalizedText(FIND_RETURN_NULL_ROW_JAVADOC);
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index), methodName,
                 toArray(indexCodePart.getAllItemParameterNames()), toArray(indexCodePart.getAllItemParameterTypes()),
-                methodBody, javaDoc, ANNOTATION_GENERATED);
+                methodBody, javaDoc, javaDocTags);
     }
 
     String getMethodNameFindRowNullRowReturned(String methodNameSuffix) {
@@ -870,10 +871,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
         IndexCodePart indexCodePart = indexCodeParts.get(index);
         JavaCodeFragment methodBody = createMethodBodyForFindMethodExistingRow(index, methodNameSuffix);
-        String javaDoc = getLocalizedText(getIpsProject(), FIND_EXISTING_ROW_JAVADOC);
+        String javaDoc = getLocalizedText(FIND_EXISTING_ROW_JAVADOC);
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index),
                 getMethodNameFindExistingRow(methodNameSuffix), toArray(indexCodePart.getAllItemParameterNames()),
-                toArray(indexCodePart.getAllItemParameterTypes()), methodBody, javaDoc, ANNOTATION_GENERATED);
+                toArray(indexCodePart.getAllItemParameterTypes()), methodBody, javaDoc, javaDocTags);
     }
 
     private JavaCodeFragment createMethodBodyForFindMethodExistingRow(IIndex index, String methodNameSuffix)
@@ -904,8 +906,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private String getExceptionMessage() throws CoreException {
-        return NLS.bind(getLocalizedText(getIpsProject(), FIND_EXISTING_ROW_EXCEPTION_MESSAGE),
-                getUnqualifiedClassName());
+        return NLS.bind(getLocalizedText(FIND_EXISTING_ROW_EXCEPTION_MESSAGE), getUnqualifiedClassName());
     }
 
     String getMethodNameFindExistingRow(String methodNameSuffix) {
@@ -990,6 +991,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         } else {
             return null;
         }
+    }
+
+    @Override
+    protected List<String> getJavaDocTags(IIpsObjectPartContainer element,
+            String keyPrefix,
+            JavaCodeFragmentBuilder builder) {
+        List<String> docTags = JavaDocTagGeneratorUtil.getJavaDocTags(element, getBuilderSet());
+        docTags.addAll(super.getJavaDocTags(element, keyPrefix, builder));
+        return docTags;
     }
 
     static Datatype findDatatype(String name, IIpsProject ipsProject) throws CoreException {

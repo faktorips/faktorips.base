@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -25,19 +26,25 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * An editor page that allows to edit the {@link ILabel}s and {@link IDescription}s of an
  * {@link IIpsObject}.
  */
-class LabelAndDescriptionPage extends IpsObjectEditorPage {
+class DocumentationPage extends IpsObjectEditorPage {
 
-    final static String PAGEID = "LabelAndDescription"; //$NON-NLS-1$
+    private static final String PAGEID = "Documentation"; //$NON-NLS-1$
 
-    LabelAndDescriptionPage(IpsObjectEditor editor) {
-        super(editor, PAGEID, Messages.LabelAndDescriptionPage_label);
+    DocumentationPage(IpsObjectEditor editor) {
+        super(editor, PAGEID, Messages.IpsPartEditDialog_tabItemDocumentation);
     }
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, true));
-        new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
+        IIpsObject ipsObject = getIpsObject();
+        if (ipsObject instanceof ILabeledElement) {
+            new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
+        }
         new DescriptionSection(getIpsObject(), formBody, toolkit);
+        if (ipsObject instanceof IVersionControlledElement) {
+            new VersionSection((IVersionControlledElement)getIpsObject(), formBody, toolkit);
+        }
     }
 
     private static class LabelSection extends IpsSection {
@@ -84,7 +91,8 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            descriptionEditComposite = new DescriptionEditComposite(client, describedElement, toolkit);
+            descriptionEditComposite = new DescriptionEditComposite(client, describedElement, toolkit,
+                    getBindingContext());
         }
 
         @Override
@@ -94,4 +102,26 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
     }
 
+    private static class VersionSection extends IpsSection {
+
+        private final IVersionControlledElement versionElement;
+
+        public VersionSection(IVersionControlledElement versionElement, Composite composite, UIToolkit toolkit) {
+            super(composite, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+            this.versionElement = versionElement;
+
+            initControls();
+            setText(Messages.IpsPartEditDialog_groupVersion);
+        }
+
+        @Override
+        protected void initClientComposite(Composite client, UIToolkit toolkit) {
+            new VersionsComposite(client, versionElement, toolkit, getBindingContext());
+        }
+
+        @Override
+        protected void performRefresh() {
+            // nothing to do
+        }
+    }
 }

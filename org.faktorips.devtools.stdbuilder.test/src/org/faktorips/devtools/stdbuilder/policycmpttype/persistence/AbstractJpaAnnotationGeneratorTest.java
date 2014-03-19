@@ -16,10 +16,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,10 @@ public class AbstractJpaAnnotationGeneratorTest {
     private AbstractJpaAnnotationGenerator jpaAnnotationGenerator;
 
     @Mock
-    private IIpsElement ipsElement;
+    private IIpsObjectPartContainer ipsPartContainer;
+
+    @Mock
+    private AbstractGeneratorModelNode modelNode;
 
     @Mock
     private IIpsProject project;
@@ -47,21 +51,22 @@ public class AbstractJpaAnnotationGeneratorTest {
 
     @Before
     public void setUp() {
-        when(ipsElement.getIpsProject()).thenReturn(project);
+        when(ipsPartContainer.getIpsProject()).thenReturn(project);
         when(project.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(modelNode.getIpsObjectPartContainer()).thenReturn(ipsPartContainer);
     }
 
     @Test
     public void testgetPersistenceProvider() {
         when(builderSet.getPersistenceProviderImplementation()).thenReturn(expectedPersistenceProvider);
-        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsElement);
+        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer);
 
         assertEquals(expectedPersistenceProvider, persistenceProvider);
     }
 
     @Test
     public void testgetPersistentProvider_returnNull() {
-        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsElement);
+        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer);
 
         assertEquals(null, persistenceProvider);
     }
@@ -69,9 +74,9 @@ public class AbstractJpaAnnotationGeneratorTest {
     @Test
     public void testIsGenerateAnnotationFor_TrueForInternal() {
         when(builderSet.getPersistenceProviderImplementation()).thenReturn(expectedPersistenceProvider);
-        doReturn(true).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsElement);
+        doReturn(true).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsPartContainer);
 
-        boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(ipsElement);
+        boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(modelNode);
 
         assertTrue(result);
     }
@@ -79,18 +84,18 @@ public class AbstractJpaAnnotationGeneratorTest {
     @Test
     public void testIsGenerateAnnotationFor__FalseForInternal() {
         when(builderSet.getPersistenceProviderImplementation()).thenReturn(expectedPersistenceProvider);
-        doReturn(false).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsElement);
+        doReturn(false).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsPartContainer);
 
-        boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(ipsElement);
+        boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(modelNode);
 
         assertFalse(result);
     }
 
     @Test
     public void testIsGenerateAnnotationFor_NoPersistenceProvider() {
-        doReturn(true).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsElement);
+        doReturn(true).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsPartContainer);
 
-        boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(ipsElement);
+        boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(modelNode);
 
         assertFalse(result);
     }

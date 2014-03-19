@@ -22,7 +22,6 @@ public class Messages extends NLS {
     public static String ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat;
     public static String ReleaserBuilderWizardSelectionPage_error_illegalVersion;
     public static String ReleaserBuilderWizardSelectionPage_error_noDeploymentExtension;
-    public static String ReleaserBuilderWizardSelectionPage_error_versionFormat;
     public static String ReleaserBuilderWizardSelectionPage_group_project;
     public static String ReleaserBuilderWizardSelectionPage_group_targetsystem;
     public static String ReleaserBuilderWizardSelectionPage_group_version;

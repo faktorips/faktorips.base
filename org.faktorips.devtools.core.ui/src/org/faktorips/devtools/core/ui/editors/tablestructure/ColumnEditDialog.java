@@ -22,9 +22,9 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
-public class ColumnEditDialog extends IpsPartEditDialog {
+public class ColumnEditDialog extends IpsPartEditDialog2 {
 
     private IColumn column;
 
@@ -64,15 +64,14 @@ public class ColumnEditDialog extends IpsPartEditDialog {
         // create fields
         nameField = new TextField(nameText);
         datatypeField = new TextButtonField(datatypeControl);
+        bind();
 
         return c;
     }
 
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(nameField, IPolicyCmptTypeAttribute.PROPERTY_NAME);
-        uiController.add(datatypeField, IPolicyCmptTypeAttribute.PROPERTY_DATATYPE);
+    private void bind() {
+        getBindingContext().bindContent(nameField, column, IPolicyCmptTypeAttribute.PROPERTY_NAME);
+        getBindingContext().bindContent(datatypeField, column, IPolicyCmptTypeAttribute.PROPERTY_DATATYPE);
     }
 
 }

@@ -11,12 +11,19 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.devtools.core.internal.model.DefaultVersion;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
@@ -68,4 +75,71 @@ public class AbstractGeneratorModelNodeTest {
         String localizedComment = xClass.localizedComment("key");
         assertEquals("// GenericComment", localizedComment);
     }
+
+    @Test
+    public void testHasSinceVersion_true() throws Exception {
+        IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
+        doReturn(new DefaultVersion("1.2.3")).when(versionControlledElement).getSinceVersion();
+        when(versionControlledElement.isValidSinceVersion()).thenReturn(true);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
+
+        boolean hasSinceVersion = modelNode.hasSinceVersion();
+
+        assertTrue(hasSinceVersion);
+    }
+
+    @Test
+    public void testHasSinceVersion_noVersion() throws Exception {
+        IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
+
+        boolean hasSinceVersion = modelNode.hasSinceVersion();
+
+        assertFalse(hasSinceVersion);
+    }
+
+    @Test
+    public void testHasSinceVersion_noVersionControlledElement() throws Exception {
+        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
+        doReturn(new DefaultVersion("1.2.3")).when(part).getSinceVersion();
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, null, null);
+
+        boolean hasSinceVersion = modelNode.hasSinceVersion();
+
+        assertFalse(hasSinceVersion);
+    }
+
+    @Test
+    public void testGetSinceVersion() throws Exception {
+        IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
+        doReturn(new DefaultVersion("1.2.3")).when(versionControlledElement).getSinceVersion();
+        when(versionControlledElement.isValidSinceVersion()).thenReturn(true);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
+
+        String sinceVersion = modelNode.getSinceVersion();
+
+        assertEquals("1.2.3", sinceVersion);
+    }
+
+    @Test
+    public void testGetSinceVersion_noVersion() throws Exception {
+        IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
+
+        String sinceVersion = modelNode.getSinceVersion();
+
+        assertNull(sinceVersion);
+    }
+
+    @Test
+    public void testGetSinceVersion_noVersionControlledElement() throws Exception {
+        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
+        doReturn(new DefaultVersion("1.2.3")).when(part).getSinceVersion();
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, null, null);
+
+        String sinceVersion = modelNode.getSinceVersion();
+
+        assertNull(sinceVersion);
+    }
+
 }

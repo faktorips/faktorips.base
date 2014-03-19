@@ -29,9 +29,11 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -48,6 +50,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -888,8 +891,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * relative to the project's object path entries.
      * 
      * @param path The path of the requested resource
-     * @return <code>true</code> if the resource could be found in this project's entries, <code>false</code> if
-     *         not
+     * @return <code>true</code> if the resource could be found in this project's entries,
+     *         <code>false</code> if not
      */
     public boolean containsResource(String path);
 
@@ -915,8 +918,24 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @return The {@link IVersionFormat} that is configured for this project
      * @throws CoreException in case of exception
+     * @deprecated This version format is only valid in case of a configured
+     *             {@link IReleaseAndDeploymentOperation}. Use {@link #getVersionProvider()} instead
+     *             to always get a valid {@link IVersionFormat}.
      */
+    @Deprecated
     public IVersionFormat getVersionFormat() throws CoreException;
+
+    /**
+     * Returns the {@link IVersionProvider} that is configured for this project. This may be an
+     * {@link IVersionProvider} extended via extension point or if none is configured it is the
+     * {@link DefaultVersionProvider} reading the version directly from
+     * {@link IIpsProjectProperties#getVersion()}. In case of extended {@link IVersionProvider} the
+     * one configured in {@link IIpsProjectProperties#getVersionProviderId()} is used.
+     * 
+     * @return The version provider that is configured to use by this project. If none is configured
+     *         the {@link DefaultVersionProvider} is returned.
+     */
+    public IVersionProvider<?> getVersionProvider();
 
     /**
      * Deletes all contained {@link IIpsPackageFragmentRoot}s and the corresponding project folder.

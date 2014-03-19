@@ -10,20 +10,18 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 
-public class PolicyCmptImplClassJpaAnnGenFactory implements AnnotationGeneratorFactory {
+public class PolicyCmptImplClassJpaAnnGenFactory implements IAnnotationGeneratorFactory {
 
     public PolicyCmptImplClassJpaAnnGenFactory() {
     }
 
     @Override
-    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
+    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         switch (type) {
             case POLICY_CMPT_IMPL_CLASS:
                 return new PolicyCmptImplClassJpaAnnGen();
@@ -38,7 +36,7 @@ public class PolicyCmptImplClassJpaAnnGenFactory implements AnnotationGeneratorF
             case POLICY_CMPT_IMPL_CLASS_ASSOCIATION:
                 return new PolicyCmptImplClassAssociationJpaAnnGen();
             default:
-                throw new CoreException(new IpsStatus("Could not find an annotation generator for " + type));
+                return null;
         }
     }
 

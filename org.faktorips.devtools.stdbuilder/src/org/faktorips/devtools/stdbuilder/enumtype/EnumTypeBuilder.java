@@ -32,7 +32,6 @@ import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -52,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.util.JavaDocTagGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.PropertiesReadingInternationalString;
@@ -92,9 +92,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * @param builderSet The IPS artefact builder set this builder shall be a part of.
      */
-    public EnumTypeBuilder(DefaultBuilderSet builderSet) {
+    public EnumTypeBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(EnumTypeBuilder.class));
         setMergeEnabled(true);
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
+    }
+
+    @Override
+    protected List<String> getJavaDocTags(IIpsObjectPartContainer element,
+            String keyPrefix,
+            JavaCodeFragmentBuilder builder) {
+        List<String> docTags = JavaDocTagGeneratorUtil.getJavaDocTags(element, getBuilderSet());
+        docTags.addAll(super.getJavaDocTags(element, keyPrefix, builder));
+        return docTags;
     }
 
     @Override
@@ -166,10 +180,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         String typeName = getJavaNamingConvention().getTypeName(enumType.getName());
         mainSection.setUnqualifiedName(typeName);
         String description = getDescriptionInGeneratorLanguage(enumType);
-        mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
+        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(enumType, getBuilderSet());
+        mainSection.getJavaDocForTypeBuilder().javaDoc(description, javaDocTags);
 
-        if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && enumType.isExtensible()
-                && !enumType.isAbstract()) {
+        if (getBuilderSet().isGenerateJaxbSupport() && enumType.isExtensible() && !enumType.isAbstract()) {
             EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER,
                     EnumXmlAdapterBuilder.class);
             mainSection.getAnnotationsForTypeBuilder().annotationClassValueLn(
@@ -272,7 +286,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return "); //$NON-NLS-1$
         body.append(getJavaNamingConvention().getMemberVarName(identifierAttribute.getName()));
         body.append(";"); //$NON-NLS-1$
-        appendLocalizedJavaDoc("METHOD_GET_ENUM_VALUE_BY_ID", getEnumType(), methodBuilder);
+        appendLocalizedJavaDoc("METHOD_GET_ENUM_VALUE_BY_ID", methodBuilder);
         if (isJava5EnumsAvailable()) {
             methodBuilder.annotationLn(ANNOTATION_SUPPRESS_WARNINGS_UNUSED);
         }
@@ -290,8 +304,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) {
-        IEnumType enumType = getEnumType();
-        appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("SERIALVERSIONUID", constantBuilder); //$NON-NLS-1$
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
                 "serialVersionUID", new JavaCodeFragment("1L")); //$NON-NLS-1$ //$NON-NLS-2$
         constantBuilder.appendln();
@@ -334,7 +347,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         if (useClassGeneration() && !enumValues.isEmpty()) {
             String className = List.class.getName() + "<" + getQualifiedClassName() + ">";
-            appendLocalizedJavaDoc("CONSTANT_VALUES", getEnumType(), mainSection.getConstantBuilder()); //$NON-NLS-1$
+            appendLocalizedJavaDoc("CONSTANT_VALUES", mainSection.getConstantBuilder()); //$NON-NLS-1$
             mainSection.getConstantBuilder().varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                     className, CONSTANT_VALUES, getConstantValuesInitExpression(literalNames));
         }
@@ -618,7 +631,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         currentEnumAttributeValues.remove(currentLiteralNameEnumAttributeValue);
 
         // Create enumeration definition source fragment
-        appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("ENUMVALUE", currentEnumValue, enumDefinitionBuilder); //$NON-NLS-1$
         enumDefinitionBuilder.append(currentLiteralNameEnumAttributeValue.getValue().getLocalizedContent(
                 getLanguageUsedInGeneratedSourceCode()));
         enumDefinitionBuilder.append(" ("); //$NON-NLS-1$
@@ -648,7 +661,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttributeValue> enumAttributeValues = currentValue.getEnumAttributeValues();
         IEnumType enumType = getEnumType();
 
-        appendLocalizedJavaDoc("ENUMVALUE", enumType, constantBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("ENUMVALUE", currentValue, constantBuilder); //$NON-NLS-1$
         JavaCodeFragment initExpression = new JavaCodeFragment();
         initExpression.append("new "); //$NON-NLS-1$
         initExpression.append(enumType.getName());
@@ -730,7 +743,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                          * supertype can't be found
                          */
                         String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
-                        attributeBuilder.javaDoc(description, ANNOTATION_GENERATED);
+                        String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(
+                                currentEnumAttribute, getBuilderSet());
+                        attributeBuilder.javaDoc(description, javaDocTags);
                         attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
                         attributeBuilder.appendln();
                     }
@@ -1149,7 +1164,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                     body.append("return null;"); //$NON-NLS-1$
 
-                    appendLocalizedJavaDoc("METHOD_GET_VALUE_BY_XXX", parameterName, enumType, methodBuilder); //$NON-NLS-1$
+                    appendLocalizedJavaDoc(
+                            "METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
                     methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                             getQualifiedClassName(enumType), getMethodNameGetValueBy(currentEnumAttribute),
                             new String[] { parameterName }, new String[] { datatypeHelper.getJavaClassName() });
@@ -1192,7 +1208,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     String[] parameterClasses = new String[] { getDatatypeHelper(currentEnumAttribute, false)
                             .getJavaClassName() };
 
-                    appendLocalizedJavaDoc("METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), enumType, //$NON-NLS-1$
+                    appendLocalizedJavaDoc(
+                            "METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), currentEnumAttribute, //$NON-NLS-1$
                             methodBuilder);
                     methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(),
                             getMethodNameIsValueBy(currentEnumAttribute), parameterNames, parameterClasses, methodBody,
@@ -1253,7 +1270,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         methodBody.append("};"); //$NON-NLS-1$
 
-        appendLocalizedJavaDoc("METHOD_VALUES", enumType, methodBuilder); //$NON-NLS-1$
+        appendLocalizedJavaDoc("METHOD_VALUES", methodBuilder); //$NON-NLS-1$
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName()
                 + "[]", methodName, new String[0], new String[0], methodBody, null); //$NON-NLS-1$

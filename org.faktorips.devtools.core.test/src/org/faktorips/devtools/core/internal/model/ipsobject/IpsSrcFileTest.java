@@ -151,7 +151,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertNotNull(ipsObject);
         assertTrue(ipsObject.isFromParsableFile());
 
-        ipsObject.setDescription("blabla");
         assertSame(ipsObject, parsableFile.getIpsObject());
 
         ipsObject = unparsableFile.getIpsObject();

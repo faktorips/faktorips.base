@@ -11,8 +11,18 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.DependencyGraph;
+import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.model.IVersionProvider;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -26,8 +36,32 @@ import org.faktorips.util.ArgumentCheck;
 public class IpsProjectData {
 
     private IIpsProject ipsProject;
+
     private IpsObjectPathContainerFactory containerFactory;
+
     private Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new HashMap<ContainerTypeAndPath, IIpsObjectPathContainer>();
+
+    private IIpsArtefactBuilderSet ipsArtefactBuilderSet;
+
+    private DependencyGraph dependencyGraph;
+
+    private ClassLoaderProvider classLoaderProvider;
+
+    private ExtensionFunctionResolversCache functionResolver;
+
+    private IpsProjectProperties projectProperties;
+
+    /**
+     * a map containing a set of datatypes.
+     */
+    private final LinkedHashMap<String, Datatype> projectDatatypesMap = new LinkedHashMap<String, Datatype>();
+
+    /**
+     * A map contain the datatypes as keys and the datatype helper as values.
+     */
+    private final Map<ValueDatatype, DatatypeHelper> projectDatatypeHelpersMap = new ConcurrentHashMap<ValueDatatype, DatatypeHelper>();
+
+    private IVersionProvider<?> versionFormat;
 
     public IpsProjectData(IIpsProject ipsProject, IpsObjectPathContainerFactory containerFactory) {
         ArgumentCheck.notNull(ipsProject);
@@ -61,6 +95,62 @@ public class IpsProjectData {
     @Override
     public String toString() {
         return "IpsProjectData [project=" + ipsProject.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet() {
+        return ipsArtefactBuilderSet;
+    }
+
+    public void setIpsArtefactBuilderSet(IIpsArtefactBuilderSet ipsArtefactBuilderSet) {
+        this.ipsArtefactBuilderSet = ipsArtefactBuilderSet;
+    }
+
+    public DependencyGraph getDependencyGraph() {
+        return dependencyGraph;
+    }
+
+    public void setDependencyGraph(DependencyGraph dependencyGraph) {
+        this.dependencyGraph = dependencyGraph;
+    }
+
+    public ClassLoaderProvider getClassLoaderProvider() {
+        return classLoaderProvider;
+    }
+
+    public void setClassLoaderProvider(ClassLoaderProvider classLoaderProvider) {
+        this.classLoaderProvider = classLoaderProvider;
+    }
+
+    public ExtensionFunctionResolversCache getFunctionResolver() {
+        return functionResolver;
+    }
+
+    public void setFunctionResolver(ExtensionFunctionResolversCache functionResolver) {
+        this.functionResolver = functionResolver;
+    }
+
+    public IpsProjectProperties getProjectProperties() {
+        return projectProperties;
+    }
+
+    public void setProjectProperties(IpsProjectProperties projectProperties) {
+        this.projectProperties = projectProperties;
+    }
+
+    public LinkedHashMap<String, Datatype> getProjectDatatypesMap() {
+        return projectDatatypesMap;
+    }
+
+    public Map<ValueDatatype, DatatypeHelper> getProjectDatatypeHelpersMap() {
+        return projectDatatypeHelpersMap;
+    }
+
+    public IVersionProvider<?> getVersionProvider() {
+        return versionFormat;
+    }
+
+    public void setVersionProvider(IVersionProvider<?> versionProvider) {
+        this.versionFormat = versionProvider;
     }
 
     static class ContainerTypeAndPath {

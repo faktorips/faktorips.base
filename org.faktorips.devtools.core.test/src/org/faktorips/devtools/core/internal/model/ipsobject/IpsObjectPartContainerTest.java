@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
@@ -84,6 +85,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private TestIpsObjectPartContainer container;
 
+    private TestIpsObjectPartContainerWithVersion versionedContainer;
+
     private IIpsProject ipsProject;
 
     private IpsModel model;
@@ -96,6 +99,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private ILabel germanLabel;
 
+    private PolicyCmptType containerParent;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -103,7 +108,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject();
 
-        container = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent"));
+        containerParent = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent");
+        container = new TestIpsObjectPartContainer(containerParent);
+        versionedContainer = new TestIpsObjectPartContainerWithVersion(containerParent);
         model = (IpsModel)container.getIpsModel();
 
         usDescription = container.getDescription(Locale.US);
@@ -117,49 +124,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         germanLabel = container.getLabel(Locale.GERMAN);
         germanLabel.setValue("bar");
         germanLabel.setPluralValue("bars");
-    }
-
-    // OK to suppress deprecation warnings as this is a test for a deprecated method.
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testSetDescription() throws CoreException {
-        IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
-
-        policyContainer.setDescription("new description");
-        assertEquals("new description", policyContainer.getDescriptionText(Locale.GERMAN));
-        assertEquals("", policyContainer.getDescription(Locale.US).getText());
-        assertTrue(policyContainer.getIpsSrcFile().isDirty());
-        assertEquals(policyContainer.getIpsSrcFile(), getLastContentChangeEvent().getIpsSrcFile());
-
-        try {
-            container.setDescription(null);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-
-    // OK to suppress deprecation warnings as this is a test for a deprecated method.
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testGetDescriptionDeprecatedVersion() throws CoreException {
-        IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
-        assertEquals("", policyContainer.getDescription());
-
-        Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocale();
-        IDescription localizedDescription = policyContainer.getDescription(localizationLocale);
-        if (localizedDescription == null) {
-            localizedDescription = policyContainer.newDescription();
-            localizedDescription.setLocale(localizationLocale);
-        }
-        localizedDescription.setText("blub");
-        assertEquals("blub", policyContainer.getDescription());
-    }
-
-    // OK to suppress deprecation warnings as this is a test for a deprecated method.
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testIsDescriptionChangeable() {
-        assertTrue(container.isDescriptionChangable());
     }
 
     @Test
@@ -413,6 +377,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         } catch (IllegalArgumentException e) {
             // because property doesn't exist
         }
+    }
+
+    @Test
+    public void testInitFromXmlVersion() throws CoreException {
+        Element docEl = getTestDocument().getDocumentElement();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        ipsProject.setProperties(properties);
+        String expectedVersion = new String("1.2.3");
+
+        versionedContainer.initFromXml(docEl);
+
+        assertEquals(expectedVersion, versionedContainer.getSinceVersionString());
     }
 
     @Test
@@ -923,6 +899,28 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNotNull(extensionPropertyDefinitions);
     }
 
+    @Test
+    public void testToXML_VersionToXml_ignoreVersionIfNotVersionControlled() {
+        IVersion<?> version = mock(IVersion.class);
+        when(version.asString()).thenReturn(ANY_ID);
+        ((IpsObjectPartContainer)container).setSinceVersionString(version.asString());
+        Element el = container.toXml(newDocument());
+
+        String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
+        assertTrue(attribute.isEmpty());
+    }
+
+    @Test
+    public void testToXML_VersionToXml() {
+        IVersion<?> version = mock(IVersion.class);
+        when(version.asString()).thenReturn(ANY_ID);
+        versionedContainer.setSinceVersionString(version.asString());
+        Element el = versionedContainer.toXml(newDocument());
+
+        String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);
+        assertEquals(ANY_ID, attribute);
+    }
+
     private static class TestUnlabeledIpsObjectPartContainer extends IpsObjectPartContainer {
 
         private int numOfUpdateSrcFileCalls;
@@ -1044,6 +1042,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             objectHasChanged();
         }
 
+    }
+
+    private static class TestIpsObjectPartContainerWithVersion extends TestIpsObjectPartContainer implements
+            IVersionControlledElement {
+
+        public TestIpsObjectPartContainerWithVersion(IIpsElement parent) {
+            super(parent);
+        }
     }
 
     private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,

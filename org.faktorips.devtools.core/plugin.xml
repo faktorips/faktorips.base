@@ -24,6 +24,7 @@
    <extension-point id="teamOperationsFactory" name="TeamOperationsFactory" schema="schema/teamOperationsFactory.exsd"/>
    <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
+   <extension-point id="versionProvider" name="Version Provider" schema="schema/versionProvider.exsd"/>
    
    
 <!-- 
@@ -492,6 +493,10 @@
             class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_11_0$Factory"
             targetVersion="3.11.0">
       </migrationOperation>
+      <migrationOperation
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_12_0$Factory"
+            targetVersion="3.12.0">
+      </migrationOperation>
    </extension>
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
@@ -512,5 +517,12 @@
       <factory
             class="org.faktorips.devtools.core.internal.productrelease.CvsTeamOperationsFactory">
       </factory>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.versionProvider">
+      <versionProvider
+            class="org.faktorips.devtools.core.internal.model.BundleVersionProviderFactory"
+            id="BundleVersionProviderFactory">
+      </versionProvider>
    </extension>
 </plugin>

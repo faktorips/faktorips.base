@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -6,16 +7,15 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE formulaMethod FOR XMethod-»
-    /**
-     * «inheritDocOrTextIf(genInterface(), description)»
+    /** «inheritDocOrTextIf(genInterface(), description)»
     «IF formulaOptional && (!published || genInterface())-»
     «IF description.length > 0-»
      * <p>
     «ENDIF-»
      * «localizedJDoc("METHOD_GETFORMULAR")»
      * @see #«methodNameIsFormulaAvailable» 
-     *
-    «ENDIF-»
+     «ENDIF-»
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
@@ -59,7 +59,7 @@
     	«ELSE-»
      	* «localizedJDoc("METHOD_IS_FORMULAR_AVAILABLE")»
     	«ENDIF-»
-    	* 
+    	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
     	* @generated
     	*/
     	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
@@ -76,10 +76,10 @@
     /**
     «IF published && !genInterface()-»
      * «inheritDoc()»
-     * 
     «ELSEIF description.length > 0-»
      * «description»
     «ENDIF-»
+	 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»

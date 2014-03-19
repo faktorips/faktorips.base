@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
@@ -21,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
  * 
  * @author Alexander Weickmann
  */
-public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledElement {
+public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledElement, IVersionControlledElement {
 
     public static final String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
 

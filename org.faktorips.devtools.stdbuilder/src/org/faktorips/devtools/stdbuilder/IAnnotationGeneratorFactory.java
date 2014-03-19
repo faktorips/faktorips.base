@@ -10,10 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public interface AnnotationGeneratorFactory {
+public interface IAnnotationGeneratorFactory {
 
     /**
      * Returns <code>true</code> if the factory is required for the given project, as the
@@ -22,11 +21,11 @@ public interface AnnotationGeneratorFactory {
      * Note: This method is called during initialization of the builder set. Hence you cannot ask
      * the IpsProject for its builder set!
      * 
-     * @param ipsProject The {@link IIpsProject} for which the {@link AnnotationGeneratorFactory}
+     * @param ipsProject The {@link IIpsProject} for which the {@link IAnnotationGeneratorFactory}
      *            may be required.
      */
     public boolean isRequiredFor(IIpsProject ipsProject);
 
-    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException;
+    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type);
 
 }

@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT  org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
@@ -11,7 +12,7 @@
 	«IF !derivedUnion && !constrain-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
-	     * 
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 		«IF oneToMany-»
@@ -45,7 +46,7 @@
 «DEFINE getterProductCmpt FOR XProductAssociation-»
     /**
      * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), getName(oneToMany))»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -81,7 +82,7 @@
 «DEFINE getterProductCmptGen FOR XProductAssociation-»
     /**
      * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany))»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -122,7 +123,7 @@
 	«IF oneToMany-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CMPT_AT_INDEX", name)»
-	     * 
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
@@ -150,7 +151,7 @@
 «DEFINE getterLinksFor FOR XProductAssociation-»
     /**
      * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany))»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -174,7 +175,7 @@
 «DEFINE getterSingleLinkFor FOR XProductAssociation-»
     /**
      * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CMPT_LINK_AT_INDEX", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
@@ -194,7 +195,7 @@
 	«IF oneToMany-»
     /**
      * «localizedJDoc("METHOD_ADD_CMPT")»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationIf(constrain)»
@@ -215,7 +216,7 @@
 	«IF oneToMany-»
     /**
      * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationIf(constrain)»
@@ -235,7 +236,7 @@
 	«IF !oneToMany-»
     /**
      * «localizedJDoc("METHOD_SET_CMPT", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
      «overrideAnnotationIf(constrain)»
@@ -255,7 +256,7 @@
 	«IF hasMatchingAssociation()-»
 	    /**
 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CARDINALITY_FOR", nameOfMatchingAssociation)»
-	     * 
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»

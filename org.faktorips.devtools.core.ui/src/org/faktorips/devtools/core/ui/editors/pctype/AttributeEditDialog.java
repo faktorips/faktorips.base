@@ -97,7 +97,7 @@ import org.faktorips.util.message.MessageList;
 public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     /** the attribute being edited. */
-    private IPolicyCmptTypeAttribute attribute;
+    private final IPolicyCmptTypeAttribute attribute;
 
     /** Keep track of the content of the name field to be able to determine whether it has changed. */
     private final String initialName;
@@ -666,7 +666,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private boolean isOverwriteEvent(ContentChangeEvent event) {
-        return event.getPropertyChangeEvent() != null && event.getPart().equals(attribute) && attribute.isOverwrite()
+        return event.getPropertyChangeEvent() != null && attribute.equals(event.getPart()) && attribute.isOverwrite()
                 && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName());
     }
 

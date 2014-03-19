@@ -68,11 +68,13 @@ public class Messages extends NLS {
     public static String IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject;
     public static String IpsSrcFolderEntry_msgMissingFolder;
 
+    public static String IpsProjectProperties_err_versionOrVersionProvider;
     public static String IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed;
     public static String IpsProjectProperties_msgUnknownDatatype;
     public static String IpsProjectProperties_msgUnknownBuilderSetId;
     public static String IpsProjectProperties_msgSupportedLanguageUnknownLocale;
     public static String IpsProjectProperties_msgMoreThanOneDefaultLanguage;
     public static String IpsProjectProperties_unknownNamingStrategy;
+    public static String VersionProviderExtensionPoint_error_invalidVersionProvider;
 
 }

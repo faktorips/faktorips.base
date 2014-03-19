@@ -15,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -47,7 +48,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @since 2.3
  */
-public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
+public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionControlledElement {
 
     /** The XML tag for this IPS object. */
     public static final String XML_TAG = "EnumType"; //$NON-NLS-1$

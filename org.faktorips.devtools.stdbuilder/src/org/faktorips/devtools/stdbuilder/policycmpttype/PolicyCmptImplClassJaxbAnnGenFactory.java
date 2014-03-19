@@ -10,24 +10,22 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.AnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.PolicyCmptImplClassJaxbAnnGen;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class PolicyCmptImplClassJaxbAnnGenFactory implements AnnotationGeneratorFactory {
+public class PolicyCmptImplClassJaxbAnnGenFactory implements IAnnotationGeneratorFactory {
 
     public PolicyCmptImplClassJaxbAnnGenFactory() {
     }
 
     @Override
-    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
+    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         switch (type) {
             case POLICY_CMPT_IMPL_CLASS:
                 return new PolicyCmptImplClassJaxbAnnGen();

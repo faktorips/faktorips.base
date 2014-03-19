@@ -130,14 +130,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
-        inputPrefix = getLocalizedText(getIpsSrcFile(), INPUT_PREFIX);
-        expectedResultPrefix = getLocalizedText(getIpsSrcFile(), EXPECTED_RESULT_PREFIX);
-        violationTypePrefixViolated = getLocalizedText(getIpsSrcFile(), RULE_VIOLATED_PREFIX);
-        violationTypePrefixNotViolated = getLocalizedText(getIpsSrcFile(), RULE_NOT_VIOLATED_PREFIX);
-        violatedConstantName = getLocalizedText(getIpsSrcFile(), VIOLATED_CONSTANT_NAME);
-        notViolatedConstantName = getLocalizedText(getIpsSrcFile(), NOT_VIOLATED_CONSTANT_NAME);
-        assertFailNoValidationExpected = getLocalizedText(getIpsSrcFile(), ASSERT_FAIL_NO_VIOLATION_EXPECTED);
-        assertFailViolationExpected = getLocalizedText(getIpsSrcFile(), ASSERT_FAIL_VIOLATION_EXPECTED);
+        inputPrefix = getLocalizedText(INPUT_PREFIX);
+        expectedResultPrefix = getLocalizedText(EXPECTED_RESULT_PREFIX);
+        violationTypePrefixViolated = getLocalizedText(RULE_VIOLATED_PREFIX);
+        violationTypePrefixNotViolated = getLocalizedText(RULE_NOT_VIOLATED_PREFIX);
+        violatedConstantName = getLocalizedText(VIOLATED_CONSTANT_NAME);
+        notViolatedConstantName = getLocalizedText(NOT_VIOLATED_CONSTANT_NAME);
+        assertFailNoValidationExpected = getLocalizedText(ASSERT_FAIL_NO_VIOLATION_EXPECTED);
+        assertFailViolationExpected = getLocalizedText(ASSERT_FAIL_VIOLATION_EXPECTED);
 
         testCaseType = (ITestCaseType)getIpsObject();
         project = testCaseType.getIpsProject();
@@ -324,7 +324,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         String className = getUnqualifiedClassName();
-        String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC);
+        String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
         String[] argNames = new String[] { "qualifiedName" };
         String[] argClassNames = new String[] { "java.lang.String" };
         JavaCodeFragment body = new JavaCodeFragment();
@@ -356,7 +356,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMethodInitInputFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
             throws CoreException {
-        String javaDoc = getLocalizedText(getIpsSrcFile(), INITINPUTFROMXML_JAVADOC);
+        String javaDoc = getLocalizedText(INITINPUTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
         body.appendln(MARKER_END_USER_CODE);
@@ -372,7 +372,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMethodInitExpectedResultFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
             throws CoreException {
-        String javaDoc = getLocalizedText(getIpsSrcFile(), INITEXPECTEDRESULTFROMXML_JAVADOC);
+        String javaDoc = getLocalizedText(INITEXPECTEDRESULTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
         body.appendln(MARKER_END_USER_CODE);
@@ -637,10 +637,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * executeBusinessLogic() throws Exception { } </pre>
      */
     private void buildMethodExecuteBusinessLogic(JavaCodeFragmentBuilder codeBuilder) {
-        String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_JAVADOC);
+        String javaDoc = getLocalizedText(EXECUTEBUSINESSLOGIC_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
-        body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO_0));
+        body.appendln("// TODO " + getLocalizedText(EXECUTEBUSINESSLOGIC_TODO_0));
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
         appendOverrideAnnotation(codeBuilder, false);
@@ -659,26 +659,26 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder) {
         StringBuffer javaDoc = new StringBuffer();
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), EXECUTEASSERTS_JAVADOC));
+        appendln(javaDoc, getLocalizedText(EXECUTEASSERTS_JAVADOC));
         appendln(javaDoc, " ");
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_1));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_2));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_3));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_4));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_5));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_6));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_7));
-        appendln(javaDoc, getLocalizedText(getIpsSrcFile(), ASSERT_TODO_8));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_1));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_2));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_3));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_4));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_5));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_6));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_7));
+        appendln(javaDoc, getLocalizedText(ASSERT_TODO_8));
 
         JavaCodeFragment body = new JavaCodeFragment();
 
         // generate dummy assert with todo remark
         body.appendln(MARKER_BEGIN_USER_CODE);
-        body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO_0));
+        body.appendln("// TODO " + getLocalizedText(ASSERT_TODO_0));
         body.append("throw new ");
         body.appendClassName(RuntimeException.class);
         body.append("(\"");
-        body.append(getLocalizedText(getIpsSrcFile(), RUNTIME_EXCEPTION_NO_ASSERTS));
+        body.append(getLocalizedText(RUNTIME_EXCEPTION_NO_ASSERTS));
         body.appendln("\");");
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc.toString(), ANNOTATION_RESTRAINED_MODIFIABLE);
@@ -738,7 +738,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 + StringUtils.capitalize(ruleName);
 
         String methodName = "executeAssertsFor" + ruleName;
-        String javaDoc = getLocalizedText(getIpsSrcFile(), ASSERT_RULE_METHOD_JAVADOC);
+        String javaDoc = getLocalizedText(ASSERT_RULE_METHOD_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
 
         String[] ruleListNames = new String[] { ruleContainerNameViolated, ruleContainerNameNotViolated };
@@ -810,7 +810,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // class definition
             String testParamName = StringUtils.capitalize(parameter.getName());
             String className = testParamName + "XmlCallback";
-            javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_CLASS_JAVADOC, testParamName);
+            javaDoc = getLocalizedText(XML_CALLBACK_CLASS_JAVADOC, testParamName);
             policyTypeParamsWithExtensionAttr.add(parameter);
             builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
             builder.append("private class " + className);
@@ -819,12 +819,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             builder.appendln("{");
 
             // boolean input/expected result indicator
-            javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_BOOLEAN_FIELD_JAVADOC);
+            javaDoc = getLocalizedText(XML_CALLBACK_BOOLEAN_FIELD_JAVADOC);
             builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
             builder.varDeclaration(Modifier.PRIVATE, "boolean", "input");
 
             // constructor
-            javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_CONSTRUCTOR_JAVADOC, testParamName);
+            javaDoc = getLocalizedText(XML_CALLBACK_CONSTRUCTOR_JAVADOC, testParamName);
             JavaCodeFragment constructorBody = new JavaCodeFragment();
             constructorBody.appendln("this.input = input;");
             JavaCodeFragmentBuilder method = new JavaCodeFragmentBuilder();

@@ -33,12 +33,12 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author frank
  */
-public class MigrationManifestUtil {
+public class ManifestUtil {
 
     private final Manifest manifest;
     private final IFile file;
 
-    MigrationManifestUtil(IFile file, ManifestFactory manifestFactory) throws IOException {
+    ManifestUtil(IFile file, ManifestFactory manifestFactory) throws IOException {
         ArgumentCheck.notNull(file);
         ArgumentCheck.notNull(manifestFactory);
         this.file = file;
@@ -52,11 +52,11 @@ public class MigrationManifestUtil {
      * @return MigrationUtil
      * @throws IOException if the manifest-file not exists
      */
-    public static MigrationManifestUtil createMigrationManifestUtil(IIpsProject ipsProject) throws IOException {
+    public static ManifestUtil createMigrationManifestUtil(IIpsProject ipsProject) throws IOException {
         ArgumentCheck.notNull(ipsProject);
         ArgumentCheck.notNull(ipsProject.getProject());
         IFile file = ipsProject.getProject().getFile(JarFile.MANIFEST_NAME);
-        return new MigrationManifestUtil(file, new ManifestFactory());
+        return new ManifestUtil(file, new ManifestFactory());
     }
 
     /**
@@ -85,6 +85,10 @@ public class MigrationManifestUtil {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public Manifest getManifest() {
+        return manifest;
     }
 
     public static class ManifestFactory {

@@ -16,7 +16,7 @@
 «DEFINE defaultField FOR XPolicyAttribute-»
     /**
      * «localizedJDoc("FIELD_DEFAULTVALUE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     private «javaClassName» «field(fieldNameDefaultValue)» = «defaultValueCode»;
@@ -25,7 +25,7 @@
 «DEFINE allowedValueSetField FOR XPolicyAttribute-»
     /**
      * «localizedJDoc(getJavadocKey("FIELD"), name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     private «valueSetJavaClassName» «field(fieldNameValueSet)»;
@@ -41,7 +41,7 @@
 «DEFINE getterDefaultValue FOR XPolicyAttribute-»
     /**
      * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_DEFAULTVALUE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
 	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)-»
@@ -56,7 +56,7 @@
 «DEFINE getterAllowedValues FOR XPolicyAttribute-»
     /**
      * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
 	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)-»

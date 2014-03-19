@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -34,7 +36,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -64,9 +65,9 @@ import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCach
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -101,6 +102,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -219,7 +221,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String contents;
         try {
             contents = XmlUtil.nodeToString(doc, charset);
-        } catch (Exception e) {
+        } catch (TransformerException e) {
             throw new CoreException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
         }
         ByteArrayInputStream is = null;
@@ -1631,6 +1633,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         validateMigration(result);
         validateDuplicateTocFilePath(result);
         validateIpsObjectPathCycle(result);
+        validateVersionProvider(result);
 
         return result;
     }
@@ -1738,6 +1741,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
                             this));
                 }
             }
+        }
+    }
+
+    private void validateVersionProvider(MessageList result) {
+        if (StringUtils.isNotEmpty(getReadOnlyProperties().getVersionProviderId())) {
+            VersionProviderExtensionPoint versionProviderExtensionPoint = new VersionProviderExtensionPoint(this);
+            result.add(versionProviderExtensionPoint.validateExtension());
         }
     }
 
@@ -1909,35 +1919,32 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getPropertiesInternal().isPersistenceSupportEnabled();
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     * <p>
+     * 
+     * @deprecated This version format is only valid in case of a configured
+     *             {@link IReleaseAndDeploymentOperation}. Use {@link #getVersionProvider()} instead
+     *             to always get a valid {@link IVersionFormat}.
+     */
+    @Deprecated
+    @Override
+    public IVersionFormat getVersionFormat() throws CoreException {
+        return getVersionProvider();
+    }
+
+    @Override
+    public IVersionProvider<?> getVersionProvider() {
+        return getIpsModel().getVersionProvider(this);
+    }
+
     @Override
     public void delete() throws CoreException {
         for (IIpsPackageFragmentRoot root : getIpsPackageFragmentRoots()) {
             root.delete();
         }
         getCorrespondingResource().delete(true, null);
-    }
-
-    @Override
-    public IVersionFormat getVersionFormat() throws CoreException {
-        final IConfigurationElement releaseExtension = ProductReleaseProcessor.getReleaseExtensionElement(this);
-        if (releaseExtension == null) {
-            return null;
-        }
-        return new IVersionFormat() {
-
-            private Pattern versionPattern = Pattern.compile(releaseExtension.getAttribute("versionFormatRegex")); //$NON-NLS-1$
-
-            @Override
-            public boolean isCorrectVersionFormat(String version) {
-                return versionPattern.matcher(version).matches();
-            }
-
-            @Override
-            public String getVersionFormat() {
-                return releaseExtension.getAttribute("readableVersionFormat"); //$NON-NLS-1$
-            }
-
-        };
     }
 
 }

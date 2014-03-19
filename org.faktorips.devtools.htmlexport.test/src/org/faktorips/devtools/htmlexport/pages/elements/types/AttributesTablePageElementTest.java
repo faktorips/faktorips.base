@@ -152,10 +152,10 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
 
         assertXPathExists(objectContentPage, getXPathAttributeTable()
                 + "/tr[td/a/@id='Vertrag.PolicyCmptTypeAttribute.Stringname']/td[count(../td) - "
-                + anzahlExtensionProperties + "][. = '-']");
+                + (anzahlExtensionProperties + 1) + "][. = '-']");
         assertXPathExists(objectContentPage, getXPathAttributeTable()
                 + "/tr[td/a/@id='BasisVertrag.PolicyCmptTypeAttribute.Geerbt']/td[count(../td) - "
-                + anzahlExtensionProperties + "]/a[contains(., 'BasisVertrag')]");
+                + (anzahlExtensionProperties + 1) + "]/a[contains(., 'BasisVertrag')]");
 
         assertXPathNotExists(objectContentPage, "//h3[starts-with(., 'Geerbte Attribute')]");
     }

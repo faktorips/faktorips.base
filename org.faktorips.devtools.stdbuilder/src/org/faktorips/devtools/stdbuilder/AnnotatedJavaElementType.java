@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import org.faktorips.devtools.core.model.IIpsElement;
+
 /**
  * Java element types that can be annotated.
  * 
@@ -27,5 +29,10 @@ public enum AnnotatedJavaElementType {
 
     POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD,
 
-    POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
+    POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
+
+    /**
+     * Using this type the annotation generator provides java doc tags for any {@link IIpsElement}.
+     */
+    ELEMENT_JAVA_DOC;
 }

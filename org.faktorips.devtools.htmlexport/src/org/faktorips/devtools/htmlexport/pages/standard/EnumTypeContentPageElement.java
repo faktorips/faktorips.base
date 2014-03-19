@@ -59,9 +59,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         super(object, context);
     }
 
-    private List<IEnumAttribute> findAllEnumAttributes() throws CoreException {
-        return getDocumentedIpsObject().findAllEnumAttributesIncludeSupertypeOriginals(true,
-                getDocumentedIpsObject().getIpsProject());
+    private List<IEnumAttribute> findAllEnumAttributes() {
+        return getDocumentedIpsObject().getEnumAttributesIncludeSupertypeCopies(true);
     }
 
     @Override
@@ -164,14 +163,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      */
     protected void addAttributesTable() {
         EnumAttributesTablePageElement enumAttributesTable;
-        try {
-            enumAttributesTable = new EnumAttributesTablePageElement(findAllEnumAttributes(), getContext());
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.WARNING,
-                            "Could not find EnumAttributes of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
-            return;
-        }
+        enumAttributesTable = new EnumAttributesTablePageElement(findAllEnumAttributes(), getContext());
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
@@ -281,8 +273,9 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                     Style.CENTER);
             addHeadlineAndColumnLayout(headline,
                     getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique), Style.CENTER);
-            addHeadlineAndColumnLayout(headline, getContext()
-                    .getMessage("EnumTypeContentPageElement_headlineInherited"), Style.CENTER); //$NON-NLS-1$
+            addHeadlineAndColumnLayout(headline,
+                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineInherited),
+                    Style.CENTER);
             headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDescription));
 
             return headline;

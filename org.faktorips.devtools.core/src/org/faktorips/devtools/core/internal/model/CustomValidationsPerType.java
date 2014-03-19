@@ -124,7 +124,7 @@ public class CustomValidationsPerType {
      * @param type A model class or interface that derives from {@link IIpsObjectPartContainer}
      * @return the set of custom validations.
      */
-    public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type) {
+    public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<? extends T> type) {
         // see class Javadoc
         @SuppressWarnings("unchecked")
         Set<ICustomValidation<T>> validations = resolvedMap.get(type);

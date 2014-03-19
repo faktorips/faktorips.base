@@ -298,8 +298,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     protected void contentsChangedInternal(ContentChangeEvent event) {
         super.contentsChangedInternal(event);
         try {
-            if (event.getPropertyChangeEvent() != null && event.getPart().equals(attribute) && attribute.isOverwrite()
-                    && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName())) {
+            if (isOverwriteEvent(event)) {
                 final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
@@ -339,6 +338,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             throw new CoreRuntimeException(e);
         }
 
+    }
+
+    private boolean isOverwriteEvent(ContentChangeEvent event) {
+        return event.getPropertyChangeEvent() != null && attribute.equals(event.getPart()) && attribute.isOverwrite()
+                && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName());
     }
 
     private void updateValueSetTypes() throws CoreException {

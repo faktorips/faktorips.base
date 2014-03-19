@@ -59,6 +59,7 @@ import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -101,7 +102,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
 
-    private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
+    private static final String PRODUCT_RELEASE_DEPRECATED = "productRelease"; //$NON-NLS-1$
+    private static final String PRODUCT_RELEASE = "ProductRelease"; //$NON-NLS-1$
+
+    private static final String VERSION_PROVIDER_ATTRIBUTE = "versionProvider"; //$NON-NLS-1$
+
+    private static final String VERSION_TAG_NAME = "Version"; //$NON-NLS-1$
 
     private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
 
@@ -116,7 +122,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * the version of this project, used for release
      */
-    private String releaseVersion;
+    private String version;
     /**
      * The id of the release extension that is associatied with this project
      */
@@ -167,6 +173,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private Locale formulaLanguageLocale = Locale.GERMAN;
 
+    private String versionProviderId;
+
     public IpsProjectProperties() {
         super();
     }
@@ -203,6 +211,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 list.add(valuetype.checkReadyToUse());
             }
             validatePersistenceOption(list);
+            validateVersion(list);
             validateSupportedLanguages(list);
             return list;
         } catch (RuntimeException e) {
@@ -276,6 +285,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     private void validateIpsObjectPath(MessageList list) throws CoreException {
         list.add(path.validate());
+    }
+
+    private void validateVersion(MessageList list) {
+        if (StringUtils.isNotEmpty(getVersion()) && StringUtils.isNotEmpty(getVersionProviderId())) {
+            list.newError(MSGCODE_INVALID_VERSION_SETTING, Messages.IpsProjectProperties_err_versionOrVersionProvider,
+                    new ObjectProperty(this, PROPERTY_VERSION), new ObjectProperty(this, PROPERTY_VERSION_PROVIDER_ID));
+        }
     }
 
     private void validateSupportedLanguages(MessageList list) {
@@ -525,12 +541,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
         }
 
-        // product definition release
-        createProductReleaseComment(projectEl);
-        Element release = doc.createElement(PRODUCT_RELEASE);
-        release.setAttribute(VERSION_ATTRIBUTE, releaseVersion);
-        release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
-        projectEl.appendChild(release);
+        toXmlProductRelease(doc, projectEl);
+        toXmlVersion(doc, projectEl);
 
         // optional constraints
         createAdditionalSettingsDescriptionComment(projectEl);
@@ -599,6 +611,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return projectEl;
     }
 
+    private void toXmlProductRelease(Document doc, Element projectEl) {
+        createProductReleaseComment(projectEl);
+        if (StringUtils.isNotEmpty(releaseExtensionId)) {
+            Element release = doc.createElement(PRODUCT_RELEASE);
+            release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
+            projectEl.appendChild(release);
+        }
+    }
+
+    private void toXmlVersion(Document doc, Element projectEl) {
+        createVersionComment(projectEl);
+        if (StringUtils.isNotEmpty(versionProviderId) || StringUtils.isNotEmpty(version)) {
+            Element release = doc.createElement(VERSION_TAG_NAME);
+            if (StringUtils.isNotEmpty(versionProviderId)) {
+                release.setAttribute(VERSION_PROVIDER_ATTRIBUTE, versionProviderId);
+            }
+            if (StringUtils.isNotEmpty(version)) {
+                release.setAttribute(VERSION_ATTRIBUTE, version);
+            }
+            projectEl.appendChild(release);
+        }
+    }
+
     private Element createSettingElement(Document doc, String name, boolean enable) {
         return createSettingElement(doc, name, Boolean.toString(enable));
     }
@@ -656,11 +691,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initRequiredFeatures(XmlUtil.getFirstElement(element, "RequiredIpsFeatures")); //$NON-NLS-1$
         initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element,
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
-        initProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
+        initReleaseExtension(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
+        initVersion(XmlUtil.getFirstElement(element, VERSION_TAG_NAME));
         initAdditionalSettings(element);
         initPersistenceOptions(element);
         initSupportedLanguages(element);
         initDefaultCurrency(element);
+
+        initCompatibilityMode(element);
+    }
+
+    private void initCompatibilityMode(Element element) {
+        initCompatibilityModelProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE_DEPRECATED));
+    }
+
+    private void initCompatibilityModelProductRelease(Element productReleaseDeprecated) {
+        if (productReleaseDeprecated != null) {
+            if (StringUtils.isEmpty(version)) {
+                version = productReleaseDeprecated.getAttribute(VERSION_ATTRIBUTE);
+            }
+            if (StringUtils.isEmpty(releaseExtensionId)) {
+                releaseExtensionId = productReleaseDeprecated.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
+            }
+        }
     }
 
     private boolean isUsingManifest(Element pathEl) {
@@ -772,12 +825,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private void initProductRelease(Element element) {
+    private void initReleaseExtension(Element productReleaseElement) {
+        if (productReleaseElement == null) {
+            return;
+        }
+        version = productReleaseElement.getAttribute(VERSION_ATTRIBUTE);
+        releaseExtensionId = productReleaseElement.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
+        versionProviderId = productReleaseElement.getAttribute(VERSION_PROVIDER_ATTRIBUTE);
+    }
+
+    private void initVersion(Element element) {
         if (element == null) {
             return;
         }
-        releaseVersion = element.getAttribute(VERSION_ATTRIBUTE);
-        releaseExtensionId = element.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
+        version = element.getAttribute(VERSION_ATTRIBUTE);
+        versionProviderId = element.getAttribute(VERSION_PROVIDER_ATTRIBUTE);
     }
 
     /**
@@ -1065,7 +1127,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "                                                              to a String (that can be parsed via the valueOfMethod)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        getAllValuesMethod=\"getAllPaymentModes\"            For enums only: The name of the method that returns all values" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        isSupportingNames=\"true\"                           For enums only: True indicates that a string" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             representation for the user other than the one defined by the valueToStringMethod exists. + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$" //$NON-NLS-1$
+                + "                                                             representation for the user other than the one defined by the valueToStringMethod exists." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        getNameMethod=\"getName\">                           For enums only: The name of the method that returns" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                                             the string representation for the user, if" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                                             isSupportingNames=true" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1134,14 +1196,28 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + SystemUtils.LINE_SEPARATOR
                 + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
+                + "The version for the latest release is configured in a separate element below." //$NON-NLS-1$
                 + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$
                 "<" //$NON-NLS-1$
-                + PRODUCT_RELEASE
-                + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\" " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR;
+        createDescriptionComment(s, parentEl);
+    }
+
+    private void createVersionComment(Element parentEl) {
+        String s = "Version" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
+                "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "it is possible to configure a version provider." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "Examples:" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+                + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+                + SystemUtils.LINE_SEPARATOR
+                + "or" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "<" + VERSION_TAG_NAME + " " + VERSION_PROVIDER_ATTRIBUTE + "=\"org.faktorips.devtools.core.bundleVersionProvider\"/>" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
     }
@@ -1430,12 +1506,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public String getVersion() {
-        return releaseVersion;
+        return version;
     }
 
     @Override
     public void setVersion(String version) {
-        this.releaseVersion = version;
+        this.version = version;
+    }
+
+    @Override
+    public String getVersionProviderId() {
+        return versionProviderId;
+    }
+
+    @Override
+    public void setVersionProviderId(String versionProviderId) {
+        this.versionProviderId = versionProviderId;
     }
 
     @Override

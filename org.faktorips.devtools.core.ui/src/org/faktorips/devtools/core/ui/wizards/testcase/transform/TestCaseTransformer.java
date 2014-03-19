@@ -169,7 +169,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         initTestPolicyCmpts(XmlUtil.getFirstElement(testCaseElem, "Input"), newTestCase, true); //$NON-NLS-1$
         initTestPolicyCmpts(XmlUtil.getFirstElement(testCaseElem, "ExpectedResult"), newTestCase, false); //$NON-NLS-1$
 
-        newTestCase.setDescription(DescriptionHelper.getDescription(testCaseElem));
+        IpsPlugin.getMultiLanguageSupport().setDefaultDescription(newTestCase,
+                DescriptionHelper.getDescription(testCaseElem));
 
         newTestCase.getIpsSrcFile().save(true, null);
 

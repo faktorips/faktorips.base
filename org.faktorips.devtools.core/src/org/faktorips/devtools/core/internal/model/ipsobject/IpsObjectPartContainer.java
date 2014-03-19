@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -35,6 +36,8 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IVersion;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -87,6 +90,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected static final String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
 
+    /** Name of the object part container's version */
+    protected static final String XML_ATTRIBUTE_VERSION = "since"; //$NON-NLS-1$
+
     /** List containing all labels attached to the object part container. */
     private final List<ILabel> labels = new ArrayList<ILabel>(2);
 
@@ -94,6 +100,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
 
     private final ExtensionPropertyHandler extensionProperties = new ExtensionPropertyHandler(this);
+
+    /** The version since which this part is available. May be <code>null</code>. */
+    private String sinceVersion;
 
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
@@ -103,6 +112,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (this instanceof ILabeledElement || this instanceof IDescribedElement) {
             initLabelsAndDescriptions();
         }
+        initDefaultVersion();
     }
 
     /**
@@ -125,6 +135,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                     Description description = (Description)newDescription();
                     description.setLocaleWithoutChangeEvent(locale);
                 }
+            }
+        }
+    }
+
+    private void initDefaultVersion() {
+        if (this instanceof IVersionControlledElement && getIpsProject() != null) {
+            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+            IVersion<?> version = versionProvider.getProjectVersion();
+            if (version != null) {
+                sinceVersion = version.asString();
             }
         }
     }
@@ -283,6 +303,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         propertiesToXml(newElement);
         extensionProperties.toXml(newElement);
         partsToXml(doc, newElement);
+        versionToXML(newElement);
         return newElement;
     }
 
@@ -323,6 +344,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
+     * Writes the version to an element
+     */
+    public void versionToXML(Element element) {
+        if (this instanceof IVersionControlledElement && StringUtils.isNotEmpty(sinceVersion)) {
+            element.setAttribute(XML_ATTRIBUTE_VERSION, sinceVersion);
+        }
+    }
+
+    /**
      * The method is called by the toXml() method, so that subclasses can store their properties in
      * the xml element passed as parameter.
      */
@@ -336,7 +366,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected void initFromXml(Element element, String id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
+        initVersionFromXML(element);
         extensionProperties.initFromXml(element);
+    }
+
+    private void initVersionFromXML(Element element) {
+        if (this instanceof IVersionControlledElement) {
+            sinceVersion = element.getAttribute(XML_ATTRIBUTE_VERSION);
+        }
     }
 
     /**
@@ -373,7 +410,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         extensionProperties.addExtensionPropertyValue(propertyId, extPropertyValue);
     }
 
-    private void initPartContainersFromXml(Element element) {
+    protected void initPartContainersFromXml(Element element) {
         HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
         Set<String> idSet = new HashSet<String>();
         reinitPartCollections();
@@ -602,8 +639,25 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         validateThis(result, ipsProject);
         execCustomValidations(result, ipsProject);
+
+        validateSinceVersionFormat(result);
+
         afterValidateThis(result, ipsProject);
         return result;
+    }
+
+    private void validateSinceVersionFormat(MessageList result) {
+        if (getIpsProject() != null && StringUtils.isNotEmpty(sinceVersion)) {
+            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+            boolean isCorrectFormat = versionProvider.isCorrectVersionFormat(sinceVersion);
+            if (!isCorrectFormat) {
+                String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidVersionFormat,
+                        versionProvider.getVersionFormat());
+                Message message = Message.newError(IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT, text, this,
+                        IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
+                result.add(message);
+            }
+        }
     }
 
     private void validateDescriptionCount(MessageList result, int languageCount) {
@@ -626,7 +680,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {
-        Class<IpsObjectPartContainer> thisClass = (Class<IpsObjectPartContainer>)getClass();
+        Class<? extends IpsObjectPartContainer> thisClass = getClass();
         Set<ICustomValidation<IpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
                 .getCustomValidations(thisClass);
         for (ICustomValidation<IpsObjectPartContainer> validation : customValidations) {
@@ -959,43 +1013,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         description.setText(text);
     }
 
-    // Deprecated since 3.1
-    @Deprecated
-    @Override
-    public String getDescription() {
-        String description = ""; //$NON-NLS-1$
-        if (this instanceof IDescribedElement) {
-            description = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription((IDescribedElement)this);
-        }
-        return description;
-    }
-
-    // Deprecated since 3.1
-    @Deprecated
-    @Override
-    public void setDescription(String newDescription) {
-        if (!(isDescriptionChangable())) {
-            throw new UnsupportedOperationException();
-        }
-        if (newDescription == null) {
-            // Throw exception as specified by the contract.
-            throw new IllegalArgumentException();
-        }
-
-        List<IDescription> descriptionList = getDescriptions();
-        if (descriptionList.size() == 0) {
-            return;
-        }
-        IDescription firstDescription = descriptionList.get(0);
-        firstDescription.setText(newDescription);
-    }
-
-    @Deprecated
-    @Override
-    public final boolean isDescriptionChangable() {
-        return this instanceof IDescribedElement;
-    }
-
     /**
      * This implementation always returns an empty string and should be overridden by subclasses to
      * provide the correct caption.
@@ -1042,4 +1059,67 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         initFromXml(xmlElement);
     }
 
+    /**
+     * Sets the Version since which this part is available in the model using a version string
+     * representation.
+     * 
+     * @param version The version-string that should be set as since-version
+     * 
+     * @see IVersionControlledElement#setSinceVersionString(String)
+     */
+    public void setSinceVersionString(String version) {
+        String oldValue = this.sinceVersion;
+        this.sinceVersion = version;
+        valueChanged(oldValue, version, IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
+    }
+
+    /**
+     * Returns the version since which this part is available as a string. The version was set by
+     * {@link #setSinceVersionString(String)}.
+     * 
+     * @return the version since which this element is available
+     * @see #getSinceVersion()
+     * 
+     * @see IVersionControlledElement#getSinceVersionString()
+     */
+    public String getSinceVersionString() {
+        return sinceVersion;
+    }
+
+    /**
+     * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
+     * valid version according to the configured {@link IVersionProvider}.
+     * 
+     * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
+     *         return a valid version. Otherwise <code>false</code>.
+     * 
+     * @see IVersionControlledElement#isValidSinceVersion()
+     */
+    public boolean isValidSinceVersion() {
+        if (this instanceof IVersionControlledElement && StringUtils.isNotEmpty(sinceVersion)) {
+            IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+            return versionProvider.isCorrectVersionFormat(sinceVersion);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the version since which this part is available. The version was set by
+     * {@link #setSinceVersionString(String)}. Returns <code>null</code> if no since version is set.
+     * 
+     * @return the version since which this element is available
+     * @throws IllegalArgumentException if the current since version is no valid version according
+     *             to the configured {@link IVersionProvider}
+     * 
+     * @see #isValidSinceVersion()
+     * @see IVersionControlledElement#getSinceVersion()
+     */
+    public IVersion<?> getSinceVersion() {
+        if (StringUtils.isEmpty(sinceVersion)) {
+            return null;
+        }
+        IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
+        return versionProvider.getVersion(sinceVersion);
+    }
 }

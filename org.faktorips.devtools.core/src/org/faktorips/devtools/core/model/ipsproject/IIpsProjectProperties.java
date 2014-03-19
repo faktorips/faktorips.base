@@ -19,8 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
 
@@ -32,52 +34,58 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsProjectProperties {
 
-    public final static String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
+    public static final String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
+    public static final String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the IPS artifact builder set id is unknown.
      */
-    public final static String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a used predefined data type is unknown.
      */
-    public final static String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the minimum required version number for a specific
      * feature is missing.
      */
-    public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
+    public static final String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component naming strategy can't be
      * found.
      */
-    public final static String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
+    public static final String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
             + "InvalidProductCmptNamingStrategy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the language identifier used as locale for a
      * supported language is not a valid ISO 639 language code.
      */
-    public final static String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
+    public static final String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
             + "SupportedLanguageUnknownLocale"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that more than one supported language is marked as
      * default language.
      */
-    public final static String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
+    public static final String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
 
     public static final String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
+
+    public static final String MSGCODE_INVALID_VERSION_SETTING = MSGCODE_PREFIX + "invalidVersionSetting"; //$NON-NLS-1$
+
+    public static final String PROPERTY_VERSION = "version"; //$NON-NLS-1$
+
+    public static final String PROPERTY_VERSION_PROVIDER_ID = "versionProviderId"; //$NON-NLS-1$
 
     /**
      * Returns the time stamp of the last persistent modification of this object.
@@ -518,19 +526,51 @@ public interface IIpsProjectProperties {
     public void removeSupportedLanguage(Locale locale);
 
     /**
-     * Return the version of this project. The version is needed in deployment process and should be
-     * updated for a new deployment.
+     * Return the version that was set in this project properties.<
+     * <p>
+     * You should never call this method directly! Instead you should get the
+     * {@link IVersionProvider} from {@link IIpsProject} by calling
+     * {@link IIpsProject#getVersionProvider()}. This method only returns the valid version if it is
+     * configured directly in the project properties. However the version of the project may come
+     * from different locations depending on its {@link IVersionProvider}.
      * 
      * @return the version string of this project
      */
     public String getVersion();
 
     /**
-     * Setting a new version for this project. This should be done by deployment process.
+     * Setting a new version that should be stored in this project properties.
+     * <p>
+     * You should never call this method directly! Instead you should use the
+     * {@link IVersionProvider} from {@link IIpsProject} by calling
+     * {@link IIpsProject#getVersionProvider()}. The version could be set in different locations
+     * depending on the {@link IVersionProvider}. Use
+     * {@link IVersionProvider#setProjectVersion(org.faktorips.devtools.core.model.IVersion)} to
+     * always write to the correct location.
+     * 
      * 
      * @param version The new version of this project
      */
     public void setVersion(String version);
+
+    /**
+     * Provides the id of the version provider that is configured in these project properties. If no
+     * version provider id is set - this method returns <code>null</code>, the
+     * {@link DefaultVersionProvider} should be used.
+     * 
+     * @return The configured {@link IVersionProvider} that should be used to handle the project's
+     *         version. Could be <code>null</code> if no explicit version provider is set and the
+     *         {@link DefaultVersionProvider} should be used.
+     */
+    public String getVersionProviderId();
+
+    /**
+     * Set the id of the version provider that should be used by the corresponding project to handle
+     * its versions. If set to <code>null</code> the {@link DefaultVersionProvider} is used.
+     * 
+     * @param versionProviderId The id of an extended {@link IVersionProvider}.
+     */
+    public void setVersionProviderId(String versionProviderId);
 
     /**
      * Getting the id of the release extension associated with this project

@@ -11,10 +11,12 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
 /**
  * Abstract base class for annotation generators.
@@ -22,7 +24,8 @@ import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 public abstract class AbstractJpaAnnotationGenerator extends AbstractAnnotationGenerator {
 
     @Override
-    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
+        IIpsObjectPartContainer ipsElement = modelNode.getIpsObjectPartContainer();
         return (getPersistenceProvider(ipsElement) != null) && isGenerateAnnotationForInternal(ipsElement);
     }
 

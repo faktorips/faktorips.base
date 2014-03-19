@@ -77,25 +77,25 @@ public final class LabelEditComposite extends Composite {
     }
 
     private TableViewer createTableViewer() {
-        TableViewer tableViewer = new TableViewer(this, SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
-        tableViewer.setColumnProperties(new String[] { ILabel.PROPERTY_LOCALE, ILabel.PROPERTY_VALUE,
+        TableViewer viewer = new TableViewer(this, SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
+        viewer.setColumnProperties(new String[] { ILabel.PROPERTY_LOCALE, ILabel.PROPERTY_VALUE,
                 ILabel.PROPERTY_PLURAL_VALUE });
 
-        createTableColumns(tableViewer);
+        createTableColumns(viewer);
 
-        tableViewer.setContentProvider(new TableContentProvider());
-        tableViewer.setLabelProvider(new TableLabelProvider());
+        viewer.setContentProvider(new TableContentProvider());
+        viewer.setLabelProvider(new TableLabelProvider());
 
-        tableViewer.setUseHashlookup(true);
-        tableViewer.setInput(labeledElement);
+        viewer.setUseHashlookup(true);
+        viewer.setInput(labeledElement);
 
-        tableViewer.setCellModifier(new TableCellModifier());
+        viewer.setCellModifier(new TableCellModifier());
 
-        createTableCellEditors(tableViewer);
+        createTableCellEditors(viewer);
 
-        createTableHoverService(tableViewer);
+        createTableHoverService(viewer);
 
-        return tableViewer;
+        return viewer;
     }
 
     private void createTableHoverService(TableViewer tableViewer) {
@@ -256,30 +256,40 @@ public final class LabelEditComposite extends Composite {
         }
 
         @Override
-        public void modify(Object element, String property, Object value) {
+        public void modify(final Object element, final String property, final Object value) {
+            ILabel modifiedLabel = getModifiedLabel(element);
+            if (canModify(modifiedLabel, value)) {
+                setPropertyValue(property, (String)value, modifiedLabel);
+                updateViewer(element, property);
+            }
+        }
+
+        private boolean canModify(ILabel modifiedLabel, Object value) {
+            return modifiedLabel != null && value instanceof String;
+        }
+
+        private ILabel getModifiedLabel(Object element) {
             if (element instanceof Item) {
-                element = ((Item)element).getData();
+                Object widgetData = ((Item)element).getData();
+                if (widgetData instanceof ILabel) {
+                    return (ILabel)widgetData;
+                }
             }
-            if (!(element instanceof ILabel)) {
-                return;
-            }
-            if (!(value instanceof String)) {
-                return;
-            }
+            return null;
+        }
 
-            ILabel label = (ILabel)element;
-            String valueString = (String)value;
-
-            if (property.equals(ILabel.PROPERTY_LOCALE)) {
-                // The locale cannot be modified
-            } else if (property.equals(ILabel.PROPERTY_VALUE)) {
-                label.setValue(valueString);
-            } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
-                label.setPluralValue(valueString);
-            }
-
+        private void updateViewer(Object element, String property) {
             tableViewer.update(element, new String[] { property });
             tableViewer.refresh(true);
+        }
+
+        private void setPropertyValue(String property, String value, ILabel label) {
+            if (property.equals(ILabel.PROPERTY_VALUE)) {
+                label.setValue(value);
+            } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
+                label.setPluralValue(value);
+            }
+            // The property locale (PROPERTY_LOCALE) cannot be modified
         }
     }
 

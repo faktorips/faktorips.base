@@ -2,6 +2,7 @@
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -9,13 +10,10 @@
 
 «DEFINE method FOR XMethod-»
 	«IF published || !genInterface()-»
-	    /**
-	    «IF published && !genInterface()-»
-	     * «inheritDocOrText(description)»
-	     *
-	«REM»TODO Simple else would be enough«ENDREM»     «ELSEIF description.length > 0-» 
-	     * «description» 
-	    «ENDIF-»
+	    /**«IF published && !genInterface()-»«inheritDocOrText(description)»
+	     * «ELSEIF description.length > 0-» 
+	      «description»
+	     * «ENDIF-»«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
 	     «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»

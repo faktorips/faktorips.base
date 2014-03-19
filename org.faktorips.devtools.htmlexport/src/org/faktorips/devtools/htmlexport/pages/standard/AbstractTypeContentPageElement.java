@@ -158,8 +158,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addSuperTypeHierarchy() {
         if (superTypes.size() == 1) {
-            addPageElements(new TextPageElement(getContext()
-                    .getMessage("AbstractTypeContentPageElement_noSuperclasses"))); //$NON-NLS-1$
+            addPageElements(new TextPageElement(getContext().getMessage(
+                    HtmlExportMessages.AbstractTypeContentPageElement_noSuperclasses)));
             return;
         }
 
@@ -252,9 +252,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     protected void addAttributesTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
-        wrapper.addPageElements(new TextPageElement(getContext()
-                .getMessage("AbstractTypeContentPageElement_attributes"), //$NON-NLS-1$
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.AbstractTypeContentPageElement_attributes), TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(getAttributesTablePageElement(),
                 getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_noAttributes)));

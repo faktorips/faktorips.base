@@ -10,14 +10,18 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -47,6 +51,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
@@ -725,6 +730,31 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testDelete() throws CoreException {
         IpsPlugin.getDefault().getIpsModel().delete();
+    }
+
+    @Test
+    public void testGetVersionProvider_defaultVersionProvider() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+
+        IVersionProvider<?> versionProvider = model.getVersionProvider(ipsProject);
+
+        assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
+    }
+
+    @Test
+    public void testGetVersionProvider_cachedVersionProvider() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+
+        IVersionProvider<?> versionProvider1 = model.getVersionProvider(ipsProject);
+        IVersionProvider<?> versionProvider2 = model.getVersionProvider(ipsProject);
+
+        assertNotNull(versionProvider1);
+        assertNotNull(versionProvider2);
+        assertSame(versionProvider1, versionProvider2);
     }
 
 }

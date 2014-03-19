@@ -66,13 +66,33 @@ public final class DescriptionEditComposite extends Composite {
 
     private boolean viewOnly;
 
-    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
+    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit,
+            BindingContext bindingContext) {
         super(parent, SWT.NONE);
 
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
         languageCodes = new LinkedHashMap<String, String>();
-        bindingContext = new BindingContext();
+        this.bindingContext = bindingContext;
+
+        createLayout();
+
+        languageCombo = createLanguageCombo();
+        textArea = createTextArea();
+
+        refresh();
+        updateDescription();
+    }
+
+    /**
+     * Constructor for backwards-compatibility. Creates a new {@link BindingContext} exclusively for
+     * this composite. To minimize binding-context instances, use
+     * {@link #DescriptionEditComposite(Composite, IDescribedElement, UIToolkit, BindingContext)}
+     * wherever possible. Pass in (and thus reuse) the binding contexts of higher-level UI
+     * constructs, like editor-pages and such.
+     */
+    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
+        this(parent, describedElement, uiToolkit, new BindingContext());
         addDisposeListener(new DisposeListener() {
 
             @Override
@@ -82,14 +102,6 @@ public final class DescriptionEditComposite extends Composite {
                 }
             }
         });
-
-        createLayout();
-
-        languageCombo = createLanguageCombo();
-        textArea = createTextArea();
-
-        refresh();
-        updateDescription();
     }
 
     private void createLayout() {
@@ -174,7 +186,7 @@ public final class DescriptionEditComposite extends Composite {
         languageCombo.removeAll();
         for (String languageName : languageCodes.keySet()) {
             String languageCode = languageCodes.get(languageName);
-            String item = languageName + " (" + languageCode + ")";//$NON-NLS-1$ //$NON-NLS-2$
+            String item = languageName + " (" + languageCode + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             languageCombo.add(item);
             if (item.equals(selectedItem)) {
                 languageCombo.select(languageCombo.getItemCount() - 1);

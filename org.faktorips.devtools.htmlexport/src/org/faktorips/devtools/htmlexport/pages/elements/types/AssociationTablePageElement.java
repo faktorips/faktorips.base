@@ -113,8 +113,9 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         addHeadlineAndColumnLayout(headline,
                 getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineMaxCardinality),
                 Style.CENTER);
-        addHeadlineAndColumnLayout(headline, getContext()
-                .getMessage("AssociationTablePageElement_headlineDerivedUnion"), Style.CENTER); //$NON-NLS-1$
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineDerivedUnion),
+                Style.CENTER);
         addHeadlineAndColumnLayout(headline,
                 getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineSubsettedDerivedUnion),
                 Style.CENTER);

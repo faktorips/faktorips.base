@@ -227,7 +227,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     @Override
-    public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type) {
+    public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<? extends T> type) {
         return customValidationsPerType.getCustomValidations(type);
     }
 

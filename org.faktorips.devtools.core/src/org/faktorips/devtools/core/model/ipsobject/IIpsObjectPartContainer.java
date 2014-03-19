@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.model.ipsobject;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.XmlSupport;
@@ -26,22 +25,28 @@ import org.faktorips.util.memento.MementoSupport;
  * @author Alexander Weickmann
  */
 public interface IIpsObjectPartContainer extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport,
-        MementoSupport, Described {
+        MementoSupport {
 
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of descriptions this container has does
      * not correspond to the number of languages supported by the IPS project.
      */
-    public final static String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of labels this container has does not
      * correspond to the number of languages supported by the IPS project.
      */
-    public final static String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the entered version does not correspond to the valid
+     * version format
+     */
+    public static final String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
 
     /**
      * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a

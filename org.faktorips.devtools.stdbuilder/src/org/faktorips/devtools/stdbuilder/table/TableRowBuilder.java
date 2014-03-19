@@ -21,7 +21,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
@@ -31,18 +30,20 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.util.JavaDocTagGeneratorUtil;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
-    private static final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
+    private static final String KEY_CLASS_PREFIX = "TABLE_ROW_BUILDER_CLASS";
 
-    private static final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
+    private static final String KEY_CONSTRUCTOR_PREFIX = "TABLE_ROW_BUILDER_CONSTRUCTOR";
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
-    public TableRowBuilder(DefaultBuilderSet builderSet) {
+    public TableRowBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
         javaClassNameProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
@@ -51,6 +52,11 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
                 return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
             }
         };
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     @Override
@@ -73,8 +79,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setEnum(false);
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
-        mainSection.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsSrcFile(), KEY_CLASS_JAVADOC),
-                ANNOTATION_GENERATED);
+        appendLocalizedJavaDoc(KEY_CLASS_PREFIX, getTableStructure(), mainSection.getJavaDocForTypeBuilder());
     }
 
     private void generateCodeForConstants() throws CoreException {
@@ -125,7 +130,8 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
         ValueDatatype datatype = column.findValueDatatype(getIpsProject());
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
         if (datatypeHelper != null) {
-            attributesBuilder.javaDoc("", ANNOTATION_GENERATED);
+            attributesBuilder.javaDoc("",
+                    JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(column, getBuilderSet()));
             int modifiers = Modifier.PRIVATE | Modifier.FINAL;
             String datatypeName = datatypeHelper.getJavaClassName();
             String attributeName = getJavaNamingConvention().getMemberVarName(column.getName());
@@ -140,7 +146,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = generateBodyForConstructor(parameterNames, parameterClasses);
 
         JavaCodeFragmentBuilder constructorBuilder = getMainTypeSection().getConstructorBuilder();
-        constructorBuilder.javaDoc(getLocalizedText(getIpsSrcFile(), KEY_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
+        appendLocalizedJavaDoc(KEY_CONSTRUCTOR_PREFIX, getTableStructure(), constructorBuilder);
         constructorBuilder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 parameterNames.toArray(new String[parameterNames.size()]),
                 parameterClasses.toArray(new String[parameterClasses.size()]));
@@ -188,7 +194,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
             DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
             if (datatypeHelper != null) {
                 methodBuilder.javaDoc(column.getDescriptionText(getLanguageUsedInGeneratedSourceCode()),
-                        ANNOTATION_GENERATED);
+                        JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(column, getBuilderSet()));
                 String methodName = getJavaNamingConvention().getGetterMethodName(column.getName(), datatype);
                 methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName,
                         new String[0], new String[0]);
@@ -220,6 +226,15 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
         methodBuilder.append(';');
         methodBuilder.appendln();
         methodBuilder.methodEnd();
+    }
+
+    @Override
+    protected List<String> getJavaDocTags(IIpsObjectPartContainer element,
+            String keyPrefix,
+            JavaCodeFragmentBuilder builder) {
+        List<String> docTags = JavaDocTagGeneratorUtil.getJavaDocTags(element, getBuilderSet());
+        docTags.addAll(super.getJavaDocTags(element, keyPrefix, builder));
+        return docTags;
     }
 
     @Override

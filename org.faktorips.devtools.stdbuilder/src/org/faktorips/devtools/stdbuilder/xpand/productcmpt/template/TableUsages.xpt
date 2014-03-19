@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -8,7 +9,7 @@
 «DEFINE memberField FOR XTableUsage-»
     /**
      * «localizedJDoc("FIELD_TABLE_USAGE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     protected String «field(fieldName)» = null;
@@ -22,7 +23,7 @@
 «DEFINE getter FOR XTableUsage-»
     /**
      * «localizedJDoc("METHOD_GET_TABLE", name)»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     public «tableClassName» «method(methodNameGetter)» {
@@ -36,7 +37,7 @@
 «DEFINE setter FOR XTableUsage-»
     /**
      * «localizedJDoc("METHOD_SET_TABLE_NAME", fieldName.toFirstUpper())»
-     * 
+     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
     public void «method(methodNameSetter, "String", "tableName")» {

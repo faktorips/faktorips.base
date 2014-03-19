@@ -209,17 +209,11 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                     // only overwrite the text if the label has the default value
                     newVersionText.setText(oldVersion);
                     IVersionFormat versionFormat;
-                    try {
-                        if (ipsProject != null) {
-                            versionFormat = ipsProject.getVersionFormat();
-                            if (versionFormat != null) {
-                                versionFormatLabel.setText(versionFormat.getVersionFormat());
-                            }
+                    if (ipsProject != null) {
+                        versionFormat = ipsProject.getVersionProvider();
+                        if (versionFormat != null) {
+                            versionFormatLabel.setText(versionFormat.getVersionFormat());
                         }
-                    } catch (CoreException e) {
-                        setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_versionFormat + e.getMessage(),
-                                DialogPage.ERROR);
-                        IpsPlugin.log(e);
                     }
                 }
             }
@@ -273,25 +267,18 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         }
         if (newVersionText != null && !newVersionText.isDisposed()) {
             String newVersion = newVersionText.getText();
-            try {
-                IVersionFormat versionFormat = ipsProject.getVersionFormat();
-                if (versionFormat == null) {
-                    setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat,
-                            DialogPage.ERROR);
-                    return;
-                }
-                correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
-                if (!correctVersionFormat) {
-                    setMessage(NLS.bind(Messages.ReleaserBuilderWizardSelectionPage_error_illegalVersion, newVersion,
-                            ipsProject.getVersionFormat().getVersionFormat()), DialogPage.ERROR);
-                } else if (newVersion.equals(ipsProject.getReadOnlyProperties().getVersion())) {
-                    setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.ERROR);
-                    return;
-                }
-            } catch (CoreException e) {
-                setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_versionFormat + e.getMessage(),
-                        DialogPage.ERROR);
-                IpsPlugin.log(e);
+            IVersionFormat versionFormat = ipsProject.getVersionProvider();
+            if (versionFormat == null) {
+                setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat, DialogPage.ERROR);
+                return;
+            }
+            correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
+            if (!correctVersionFormat) {
+                setMessage(NLS.bind(Messages.ReleaserBuilderWizardSelectionPage_error_illegalVersion, newVersion,
+                        ipsProject.getVersionProvider().getVersionFormat()), DialogPage.ERROR);
+            } else if (newVersion.equals(ipsProject.getReadOnlyProperties().getVersion())) {
+                setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.ERROR);
+                return;
             }
         }
     }

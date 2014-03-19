@@ -49,7 +49,7 @@ public class TableOfContent {
     /**
      * the name of the attribute specifying the actual xml version @see {@link #ACTUAL_XML_VERSION}
      */
-    public final static String VERSION_XML_ATTRIBUTE = "xmlversion";
+    public static final String VERSION_XML_ATTRIBUTE = "xmlversion";
 
     /**
      * This is the version of the table of contents XML file. If change the XML format that old xml
@@ -60,9 +60,21 @@ public class TableOfContent {
      * The version is only interesting while building the XML file, especially in
      * {@link #initFromXml(Element)} for incremental build. It is not considered at runtime.
      */
-    public final static String ACTUAL_XML_VERSION = "3.0";
+    public static final String ACTUAL_XML_VERSION = "3.0";
 
-    private static Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
+    private static volatile Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
+
+    /**
+     * Modified is true if there was any change since last initFromXml or toXml call (or
+     * resetModified)
+     */
+    private boolean modified;
+
+    private Map<QualifiedNameType, TocEntryObject> entriesMap = new HashMap<QualifiedNameType, TocEntryObject>(100);
+
+    public TableOfContent() {
+        super();
+    }
 
     private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
         if (tocEntryFactoriesByXmlTag == null) {
@@ -80,18 +92,6 @@ public class TableOfContent {
             }
         }
         return tocEntryFactoriesByXmlTag;
-    }
-
-    /**
-     * Modified is true if there was any change since last initFromXml or toXml call (or
-     * resetModified)
-     */
-    private boolean modified;
-
-    private Map<QualifiedNameType, TocEntryObject> entriesMap = new HashMap<QualifiedNameType, TocEntryObject>(100);
-
-    public TableOfContent() {
-        super();
     }
 
     /**

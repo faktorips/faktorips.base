@@ -11,6 +11,10 @@ package org.faktorips.devtools.htmlexport.context.messages;
 
 @SuppressWarnings("nls")
 public interface HtmlExportMessages {
+
+    public static final String TablePageElement_headlineSince = "TablePageElement_headlineSince";
+    public static final String TablePageElement_version = "TablePageElement_version";
+
     public static final String AssociationTablePageElement_headlineAggregationKind = "AssociationTablePageElement_headlineAggregationKind";
     public static final String AssociationTablePageElement_headlineAssociationType = "AssociationTablePageElement_headlineAssociationType";
     public static final String AssociationTablePageElement_headlineDerivedUnion = "AssociationTablePageElement_headlineDerivedUnion";
@@ -217,5 +221,6 @@ public interface HtmlExportMessages {
     public static final String InheritedTypeAssociationsPageElement_inheritedAssociations = "InheritedTypeAssociationsPageElement_inheritedAssociations";
     public static final String ValidationRuleTablePageElement_headlineProductRelevant = "ValidationRuleTablePageElement_headlineProductRelevant";
     public static final String ValidationRuleTablePageElement_headlineActivatedByDefault = "ValidationRuleTablePageElement_headlineActivatedByDefault";
+    public static final String ProjectOverviewPageElement_version = "ProjectOverviewPageElement_version";
 
 }

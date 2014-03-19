@@ -10,13 +10,14 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * A key item is a part of an index. There are two kind of key items: columns and ranges.
  */
-public interface IKeyItem extends IIpsObjectPart, IDescribedElement {
+public interface IKeyItem extends IIpsObjectPart, IDescribedElement, IVersionControlledElement {
 
     /**
      * Returns the item's name.
