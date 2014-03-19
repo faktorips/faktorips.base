@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
  */
 public class ModelExplorerSorter extends ViewerSorter {
 
-    private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new ConcurrentHashMap<IpsObjectType, ModelExplorerCategory>();
+    private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new HashMap<IpsObjectType, ModelExplorerCategory>();
 
     static {
         TYPE_TO_CATEGORY.put(IpsObjectType.POLICY_CMPT_TYPE, ModelExplorerCategory.CAT_POLICY_CMPT_TYPE);

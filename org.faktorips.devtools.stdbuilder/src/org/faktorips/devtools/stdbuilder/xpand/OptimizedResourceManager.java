@@ -22,7 +22,7 @@ public class OptimizedResourceManager extends ResourceManagerDefaultImpl {
 
     private Set<String> invalidNames = new HashSet<String>();
 
-    private Map<String, Resource> resourceByQName = new ConcurrentHashMap<String, Resource>();
+    private Map<String, Resource> resourceByQName = new ConcurrentHashMap<String, Resource>(64, 0.75f, 1);
 
     @Override
     public Resource loadResource(String fullyQualifiedName, String extension) {

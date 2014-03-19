@@ -52,7 +52,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * Maps values of the identifier attribute to concrete {@link IEnumValue}s. Used for quick
      * {@link IEnumValue} access by identifier value.
      */
-    private final Map<String, IEnumValue> enumValuesByIdentifier = new ConcurrentHashMap<String, IEnumValue>();
+    private final Map<String, IEnumValue> enumValuesByIdentifier = new ConcurrentHashMap<String, IEnumValue>(16, 0.75f,
+            1);
 
     /**
      * The {@link IEnumAttribute} that is marked as default identifier. Values for this attribute
@@ -367,7 +368,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public Map<String, ValueTypeMismatch> checkAllEnumAttributeValueTypeMismatch() {
-        Map<String, ValueTypeMismatch> map = new ConcurrentHashMap<String, ValueTypeMismatch>();
+        Map<String, ValueTypeMismatch> map = new ConcurrentHashMap<String, ValueTypeMismatch>(16, 0.9f, 1);
         IEnumType enumType = findEnumType(getIpsProject());
         if (enumType != null) {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);

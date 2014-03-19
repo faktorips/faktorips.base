@@ -308,9 +308,13 @@ public class ExtensionPropertyHandler {
 
         public void put(String propertyId, ExtensionPropertyValue extensionPropValue) {
             if (internalMap == null) {
-                internalMap = new ConcurrentHashMap<String, ExtensionPropertyValue>(4);
+                internalMap = newMap();
             }
             internalMap.put(propertyId, extensionPropValue);
+        }
+
+        private ConcurrentHashMap<String, ExtensionPropertyValue> newMap() {
+            return new ConcurrentHashMap<String, ExtensionPropertyValue>(4, 0.9f, 1);
         }
 
     }
