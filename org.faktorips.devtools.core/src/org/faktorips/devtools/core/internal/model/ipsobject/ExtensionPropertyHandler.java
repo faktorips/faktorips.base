@@ -210,7 +210,7 @@ public class ExtensionPropertyHandler {
      */
     public void initFromXml(Element containerEl) {
         extPropertiyValuesMap.clear();
-        internalDocument = getDocumentBuilder().newDocument();
+        internalDocument = null;
         initMissingExtProperties();
         Element extPropertiesEl = XmlUtil.getFirstElement(containerEl,
                 IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
@@ -232,7 +232,7 @@ public class ExtensionPropertyHandler {
      * properties.
      */
     protected void initPropertyFromXml(Element valueElement) {
-        Element importedElement = (Element)internalDocument.importNode(valueElement, true);
+        Element importedElement = (Element)getInternalDocument().importNode(valueElement, true);
         String propertyId = importedElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
         ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(propertyId,
                 importedElement, ipsObjectPartContainer);
@@ -242,6 +242,13 @@ public class ExtensionPropertyHandler {
 
     protected DocumentBuilder getDocumentBuilder() {
         return IpsPlugin.getDefault().getDocumentBuilder();
+    }
+
+    private Document getInternalDocument() {
+        if (internalDocument == null) {
+            internalDocument = getDocumentBuilder().newDocument();
+        }
+        return internalDocument;
     }
 
     /**
