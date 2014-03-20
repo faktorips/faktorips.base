@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import java.io.Serializable;
+import java.util.TreeMap;
 
 /**
  * An immutable data object defining a range between two columns. It is used by the
@@ -55,6 +56,18 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
         this.upperInclusive = upperInclusive;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Comparing two {@link TwoColumnRange} always means to only compare the lower bound. The upper
+     * bound needs to be compared manually by calling {@link #isLowerInclusive()} or
+     * {@link #compareToUpperBound(TwoColumnRange)}. This is useful because when storing the
+     * {@link TwoColumnRange} in {@link TreeMap} we need to have a distinct order which is only
+     * achieved by comparing one bound.
+     * <p>
+     * This method is called by {@link TwoColumnRangeStructure#get(Object)} and hence needs to be
+     * performance optimized!
+     */
     public int compareTo(TwoColumnRange<K> other) {
         int compareLowerBound = lowerBound.compareTo(other.lowerBound);
         if (lowerInclusive == other.lowerInclusive || compareLowerBound != 0) {
@@ -62,6 +75,40 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
         } else {
             // lowerInclusive != otherKey.lowerInclusive && compareLowerBound == 0
             return lowerInclusive ? -1 : 1;
+        }
+    }
+
+    /**
+     * Compares this {@link TwoColumnRange} to the other {@link TwoColumnRange} according to their
+     * upper bounds.
+     * <p>
+     * Returns a negative number if the upper bound of this range is below the upper bound of the
+     * specified other range, returns positive number if the upper bound of this range is above the
+     * other range. If both upper bounds are equal the result depends on the upper bound inclusive
+     * flags:
+     * <ul>
+     * <li>both inclusive or both exclusive: 0</li>
+     * <li>this upper bound exclusive: -1</li>
+     * <li>this upper bound inclusive: 1</li>
+     * </ul>
+     * <p>
+     * In {@link #compareTo(TwoColumnRange)} and {@link #equals(Object)} only the lower bound is
+     * checked. Using this method we could check the upper bound is also matching.
+     * <p>
+     * This method is called by {@link TwoColumnRangeStructure#get(Object)} and hence needs to be
+     * performance optimized! Thats why we do not simply use {@link #isContained(Comparable)}
+     * 
+     * @param otherKey The other key that's upper bound is compared to this one
+     * @return <code>true</code> if this upper bound is below other's upper bound
+     * 
+     */
+    public int compareToUpperBound(TwoColumnRange<K> otherKey) {
+        int compareUpperBound = getUpperBound().compareTo(otherKey.getUpperBound());
+        if (upperInclusive == otherKey.upperInclusive || compareUpperBound != 0) {
+            return compareUpperBound;
+        } else {
+            // upperInclusive != otherKey.upperInclusive && compareUpperBound == 0
+            return upperInclusive ? 1 : -1;
         }
     }
 
@@ -128,26 +175,22 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
     }
 
     /**
-     * Returns <code>true</code> if the upper bound of this range is below the upper bound of the
-     * specified other range. If both ranges defines the upper bound as inclusive or both exclusive
-     * the method returns <code>true</code> in case of equal upper bounds. Otherwise it only returns
-     * <code>true</code> if this upper bound is less than the other upper bound.
-     * <p>
-     * In {@link #compareTo(TwoColumnRange)} and {@link #equals(Object)} only the lower bound is
-     * checked. Using this method we could check the upper bound is also matching.
+     * Checks whether the value is within this range's bounds. Respects {@link #lowerInclusive} and
+     * {@link #upperInclusive}.
      * 
-     * @param otherKey The other key that's upper bound is compared to this one
-     * @return <code>true</code> if this upper bound is below other's upper bound
-     * 
+     * @param value The value that should be checked if it is contained in this range.
+     * @return <code>true</code> if the value is contained in this range
      */
-    public boolean isBelowUpperBoundOf(TwoColumnRange<K> otherKey) {
-        int compareUpperBound = getUpperBound().compareTo(otherKey.getUpperBound());
-
-        if (upperInclusive == otherKey.upperInclusive || compareUpperBound != 0) {
-            return compareUpperBound <= 0;
-        } else {
-            // upperInclusive != otherKey.upperInclusive && compareUpperBound == 0
-            return otherKey.upperInclusive;
+    public boolean isContained(K value) {
+        int lowerCompare = getLowerBound().compareTo(value);
+        if (lowerInclusive ? lowerCompare > 0 : lowerCompare >= 0) {
+            return false;
         }
+        int upperCompare = getUpperBound().compareTo(value);
+        if (upperInclusive ? upperCompare < 0 : upperCompare <= 0) {
+            return false;
+        }
+        return true;
     }
+
 }

@@ -43,37 +43,6 @@ public class TwoColumnRangeTest {
     }
 
     @Test
-            public void testIsBelowUpperBoundOf() {
-                TwoColumnRange<Integer> originalKey = new TwoColumnRange<Integer>(0, 10);
-                TwoColumnRange<Integer> keyEqualRange = new TwoColumnRange<Integer>(0, 10);
-                TwoColumnRange<Integer> keySubRangeEqualUpperBound = new TwoColumnRange<Integer>(1, 10);
-                TwoColumnRange<Integer> keySubRangeEqualLowerBound = new TwoColumnRange<Integer>(0, 9);
-                TwoColumnRange<Integer> keySubRange = new TwoColumnRange<Integer>(5, 5);
-                TwoColumnRange<Integer> keyPartiallyOverlappingRange = new TwoColumnRange<Integer>(5, 15);
-                TwoColumnRange<Integer> keyDisjunctRange = new TwoColumnRange<Integer>(11, 15);
-        
-                assertTrue(keyEqualRange.isBelowUpperBoundOf(originalKey));
-                assertTrue(keySubRangeEqualUpperBound.isBelowUpperBoundOf(originalKey));
-                assertTrue(keySubRangeEqualLowerBound.isBelowUpperBoundOf(originalKey));
-                assertTrue(keySubRange.isBelowUpperBoundOf(originalKey));
-                assertFalse(keyPartiallyOverlappingRange.isBelowUpperBoundOf(originalKey));
-                assertFalse(keyDisjunctRange.isBelowUpperBoundOf(originalKey));
-            }
-
-    @Test
-            public void testIsBelowUpperBoundOf_exclusive() {
-                TwoColumnRange<Integer> originalKeyExcl = new TwoColumnRange<Integer>(0, 10, false, false);
-                TwoColumnRange<Integer> originalKeyIncl = new TwoColumnRange<Integer>(0, 10, true, true);
-                TwoColumnRange<Integer> keyEqualUpperIncl = new TwoColumnRange<Integer>(0, 10, false, true);
-                TwoColumnRange<Integer> keyEqualUpperExcl = new TwoColumnRange<Integer>(0, 10, true, false);
-        
-                assertFalse(keyEqualUpperIncl.isBelowUpperBoundOf(originalKeyExcl));
-                assertTrue(keyEqualUpperIncl.isBelowUpperBoundOf(originalKeyIncl));
-                assertTrue(keyEqualUpperExcl.isBelowUpperBoundOf(originalKeyExcl));
-                assertTrue(keyEqualUpperExcl.isBelowUpperBoundOf(originalKeyIncl));
-            }
-
-    @Test
     public void testTwoColumnRangeKKBooleanBoolean() throws Exception {
         TwoColumnRange<String> twoColumnRange = new TwoColumnRange<String>("a", "b", false, false);
 
@@ -119,6 +88,76 @@ public class TwoColumnRangeTest {
                 false)) < 0);
         assertTrue(new TwoColumnRange<Integer>(3, 12, false, false).compareTo(new TwoColumnRange<Integer>(3, 5, false,
                 false)) == 0);
+    }
+
+    @Test
+    public void testCompareToUpperBound() throws Exception {
+        assertTrue(new TwoColumnRange<Integer>(2, 5).compareToUpperBound(new TwoColumnRange<Integer>(2, 6)) < 0);
+        assertTrue(new TwoColumnRange<Integer>(4, 6).compareToUpperBound(new TwoColumnRange<Integer>(5, 5)) > 0);
+        assertTrue(new TwoColumnRange<Integer>(3, 12).compareToUpperBound(new TwoColumnRange<Integer>(5, 12)) == 0);
+        assertTrue(new TwoColumnRange<Integer>(3, 5).compareToUpperBound(new TwoColumnRange<Integer>(3, 5)) == 0);
+    }
+
+    @Test
+    public void testcompareToUpperBoundUpperBound_lowerExclusive() throws Exception {
+        assertTrue(new TwoColumnRange<Integer>(2, 5, true, false).compareToUpperBound(new TwoColumnRange<Integer>(3, 6,
+                false, false)) < 0);
+        assertTrue(new TwoColumnRange<Integer>(4, 6, false, false).compareToUpperBound(new TwoColumnRange<Integer>(3,
+                5, false, false)) > 0);
+        assertTrue(new TwoColumnRange<Integer>(1, 5, false, false).compareToUpperBound(new TwoColumnRange<Integer>(3,
+                5, false, true)) < 0);
+        assertTrue(new TwoColumnRange<Integer>(1, 5, false, true).compareToUpperBound(new TwoColumnRange<Integer>(3, 5,
+                false, false)) > 0);
+        assertTrue(new TwoColumnRange<Integer>(1, 5, false, false).compareToUpperBound(new TwoColumnRange<Integer>(3,
+                5, false, false)) == 0);
+    }
+
+    @Test
+    public void testIsContained_excl() throws Exception {
+        TwoColumnRange<Integer> range = new TwoColumnRange<Integer>(5, 10, false, false);
+
+        assertFalse(range.isContained(4));
+        assertFalse(range.isContained(5));
+        assertTrue(range.isContained(6));
+        assertTrue(range.isContained(9));
+        assertFalse(range.isContained(10));
+        assertFalse(range.isContained(11));
+    }
+
+    @Test
+    public void testIsContained_inkl() throws Exception {
+        TwoColumnRange<Integer> range = new TwoColumnRange<Integer>(5, 10, true, true);
+
+        assertFalse(range.isContained(4));
+        assertTrue(range.isContained(5));
+        assertTrue(range.isContained(6));
+        assertTrue(range.isContained(9));
+        assertTrue(range.isContained(10));
+        assertFalse(range.isContained(11));
+    }
+
+    @Test
+    public void testIsContained_inklexcl() throws Exception {
+        TwoColumnRange<Integer> range = new TwoColumnRange<Integer>(5, 10, true, false);
+
+        assertFalse(range.isContained(4));
+        assertTrue(range.isContained(5));
+        assertTrue(range.isContained(6));
+        assertTrue(range.isContained(9));
+        assertFalse(range.isContained(10));
+        assertFalse(range.isContained(11));
+    }
+
+    @Test
+    public void testIsContained_exklinkl() throws Exception {
+        TwoColumnRange<Integer> range = new TwoColumnRange<Integer>(5, 10, false, true);
+
+        assertFalse(range.isContained(4));
+        assertFalse(range.isContained(5));
+        assertTrue(range.isContained(6));
+        assertTrue(range.isContained(9));
+        assertTrue(range.isContained(10));
+        assertFalse(range.isContained(11));
     }
 
 }
