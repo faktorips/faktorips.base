@@ -87,6 +87,274 @@ public class TwoColumnRangeStructureTest {
     }
 
     @Test
+    public void testPutOverlappingMap() {
+        structure.getMap().clear();
+        structure.put(500, 600, new ResultStructure<String>("A"));
+        // [500 - 600] : A
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 600)));
+        assertEquals(1, structure.getMap().size());
+
+        structure.put(400, 550, new ResultStructure<String>("B"));
+        // [400 - 500[ : B
+        // [500 - 550] : A,B
+        // ]550 - 600] : A
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertEquals(3, structure.getMap().size());
+
+        structure.put(550, 700, new ResultStructure<String>("C"));
+        // [400 - 500[ : B
+        // [500 - 550[ : A,B
+        // [550 - 550] : A,B,C
+        // ]550 - 600] : A,C
+        // ]600 - 700] : C
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertEquals(5, structure.getMap().size());
+
+        structure.put(500, 700, new ResultStructure<String>("D"));
+        // [400 - 500[ : B
+        // [500 - 550[ : A,B,D
+        // [550 - 550] : A,B,C,D
+        // ]550 - 600] : A,C,D
+        // ]600 - 700] : C,D
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertEquals(5, structure.getMap().size());
+
+        structure.put(300, 900, new ResultStructure<String>("E"));
+        // resulting ranges:
+        // [300 - 400[ : E
+        // [400 - 500[ : B,E
+        // [500 - 550[ : A,B,D,E
+        // [550 - 550] : A,B,C,D,E
+        // ]550 - 600] : A,C,D,E
+        // ]600 - 700] : C,D,E
+        // ]700 - 900] : E
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(300, 400, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(700, 900, false, true)));
+        assertEquals(7, structure.getMap().size());
+
+        structure.put(750, 800, new ResultStructure<String>("F"));
+        // resulting ranges:
+        // [300 - 400[ : E
+        // [400 - 500[ : B,E
+        // [500 - 550[ : A,B,D,E
+        // [550 - 550] : A,B,C,D,E
+        // ]550 - 600] : A,C,D,E
+        // ]600 - 700] : C,D,E
+        // ]700 - 750[ : E
+        // [750 - 800] : E,F
+        // ]800 - 900] : E
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(300, 400, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(700, 750, false, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(750, 800, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(800, 900, false, true)));
+        assertEquals(9, structure.getMap().size());
+
+        structure.put(null, null, new ResultStructure<String>("X"));
+        // resulting ranges:
+        // ]null - 300[ : X
+        // [300 - 400[ : E,X
+        // [400 - 500[ : B,E,X
+        // [500 - 550[ : A,B,D,E,X
+        // [550 - 550] : A,B,C,D,E,X
+        // ]550 - 600] : A,C,D,E,X
+        // ]600 - 700] : C,D,E,X
+        // ]700 - 750[ : E,X
+        // [750 - 800] : E,F,X
+        // ]800 - 900] : E,X
+        // ]900 - null[ : X
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(null, 300, false, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(300, 400, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(700, 750, false, false)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(750, 800, true, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(800, 900, false, true)));
+        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(900, null, false, false)));
+        assertEquals(11, structure.getMap().size());
+    }
+
+    public void initOverlappingMap() {
+        structure.getMap().clear();
+        structure.put(500, 600, new ResultStructure<String>("A"));
+        structure.put(400, 550, new ResultStructure<String>("B"));
+        structure.put(550, 700, new ResultStructure<String>("C"));
+        structure.put(500, 700, new ResultStructure<String>("D"));
+        structure.put(300, 900, new ResultStructure<String>("E"));
+        structure.put(750, 800, new ResultStructure<String>("F"));
+        // resulting ranges:
+        // [300 - 400[ : E
+        // [400 - 500[ : B,E
+        // [500 - 550[ : A,B,D,E
+        // [550 - 550] : A,B,C,D,E
+        // ]550 - 600] : A,C,D,E
+        // ]600 - 700] : C,D,E
+        // ]700 - 750[ : E
+        // [750 - 800] : E,F
+        // ]800 - 900] : E
+    }
+
+    @Test
+    public void testGet_overlapping_belowValues() {
+        initOverlappingMap();
+
+        assertEquals(0, structure.get(1299).get().size());
+    }
+
+    @Test
+    public void testGet_overlapping_1() {
+        initOverlappingMap();
+
+        assertEquals(1, structure.get(300).get().size());
+        assertThat(structure.get(300).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_2() {
+        initOverlappingMap();
+
+        assertEquals(2, structure.get(400).get().size());
+        assertThat(structure.get(400).get(), hasItem("B"));
+        assertThat(structure.get(400).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_3() {
+        initOverlappingMap();
+
+        assertEquals(4, structure.get(500).get().size());
+        assertThat(structure.get(500).get(), hasItem("A"));
+        assertThat(structure.get(500).get(), hasItem("B"));
+        assertThat(structure.get(500).get(), hasItem("D"));
+        assertThat(structure.get(500).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_4() {
+        initOverlappingMap();
+
+        assertEquals(5, structure.get(550).get().size());
+        assertThat(structure.get(550).get(), hasItem("A"));
+        assertThat(structure.get(550).get(), hasItem("B"));
+        assertThat(structure.get(550).get(), hasItem("C"));
+        assertThat(structure.get(550).get(), hasItem("D"));
+        assertThat(structure.get(550).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_5() {
+        initOverlappingMap();
+
+        assertEquals(4, structure.get(600).get().size());
+        assertThat(structure.get(600).get(), hasItem("A"));
+        assertThat(structure.get(600).get(), hasItem("C"));
+        assertThat(structure.get(600).get(), hasItem("D"));
+        assertThat(structure.get(600).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_6() {
+        initOverlappingMap();
+
+        assertEquals(3, structure.get(700).get().size());
+        assertThat(structure.get(700).get(), hasItem("C"));
+        assertThat(structure.get(700).get(), hasItem("D"));
+        assertThat(structure.get(700).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_7() {
+        initOverlappingMap();
+
+        assertEquals(1, structure.get(749).get().size());
+        assertThat(structure.get(749).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_8() {
+        initOverlappingMap();
+
+        assertEquals(2, structure.get(750).get().size());
+        assertThat(structure.get(750).get(), hasItem("E"));
+        assertThat(structure.get(750).get(), hasItem("F"));
+    }
+
+    @Test
+    public void testGet_overlapping_9() {
+        initOverlappingMap();
+
+        assertEquals(2, structure.get(800).get().size());
+        assertThat(structure.get(800).get(), hasItem("E"));
+        assertThat(structure.get(800).get(), hasItem("F"));
+    }
+
+    @Test
+    public void testGet_overlapping_10() {
+        initOverlappingMap();
+
+        assertEquals(1, structure.get(900).get().size());
+        assertThat(structure.get(900).get(), hasItem("E"));
+    }
+
+    @Test
+    public void testGet_overlapping_negativeInf() {
+        initOverlappingMap();
+        structure.put(null, 500, new ResultStructure<String>("X"));
+
+        assertEquals(1, structure.get(0).get().size());
+        assertThat(structure.get(0).get(), hasItem("X"));
+    }
+
+    @Test
+    public void testGet_overlapping_positiveInf() {
+        initOverlappingMap();
+        structure.put(500, null, new ResultStructure<String>("X"));
+
+        assertEquals(1, structure.get(1000).get().size());
+        assertThat(structure.get(1000).get(), hasItem("X"));
+    }
+
+    @Test
+    public void testGet_overlapping_infInf() {
+        initOverlappingMap();
+        structure.put(null, null, new ResultStructure<String>("X"));
+
+        assertEquals(1, structure.get(0).get().size());
+        assertThat(structure.get(0).get(), hasItem("X"));
+        assertEquals(1, structure.get(1000).get().size());
+        assertThat(structure.get(1000).get(), hasItem("X"));
+    }
+
+    @Test
+    public void testGet_overlapping_overLastValue() {
+        initOverlappingMap();
+
+        assertEquals(0, structure.get(1801).get().size());
+    }
+
+    @Test
     public void testGet_NextValue() {
         assertEquals(1, structure.get(12).get().size());
         assertThat(structure.get(12).get(), hasItem("B"));
@@ -125,7 +393,6 @@ public class TwoColumnRangeStructureTest {
         assertTrue(structure.get().isEmpty());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testCopy() {
         structure = new TwoColumnRangeStructure<Integer, ResultStructure<String>, String>();
@@ -136,4 +403,15 @@ public class TwoColumnRangeStructureTest {
                 structure.getMap());
         assertNotSame(copiedStructure, structure);
     }
+
+    @Test
+    public void testPutKKBooleanBooleanV_normal() throws Exception {
+        structure.put(1000, 8000, new ResultStructure<String>("A"));
+
+        assertEquals(1, structure.get(1000).get().size());
+        assertThat(structure.get(1000).get(), hasItem("A"));
+        assertEquals(1, structure.get(8000).get().size());
+        assertThat(structure.get(8000).get(), hasItem("A"));
+    }
+
 }

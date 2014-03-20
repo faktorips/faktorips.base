@@ -23,13 +23,9 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
 
     private static final long serialVersionUID = 42L;
 
-    private final K lowerBound;
+    private final Bound<K> lowerBound;
 
-    private final boolean lowerInclusive;
-
-    private final K upperBound;
-
-    private final boolean upperInclusive;
+    private final Bound<K> upperBound;
 
     /**
      * @param lowerBound The lowerBound of this TwoColumnRange.
@@ -45,15 +41,15 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      */
     TwoColumnRange(K lowerBound, K upperBound, boolean lowerInclusive, boolean upperInclusive) {
         if (lowerBound == null) {
-            throw new NullPointerException();
+            this.lowerBound = Bound.negativeInfinity();
+        } else {
+            this.lowerBound = new Bound<K>(lowerBound, IntervalDirection.getLowerBoundDirection(lowerInclusive));
         }
         if (upperBound == null) {
-            throw new NullPointerException();
+            this.upperBound = Bound.positiveInfinity();
+        } else {
+            this.upperBound = new Bound<K>(upperBound, IntervalDirection.getUpperBoundDirection(upperInclusive));
         }
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-        this.lowerInclusive = lowerInclusive;
-        this.upperInclusive = upperInclusive;
     }
 
     /**
@@ -69,13 +65,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * performance optimized!
      */
     public int compareTo(TwoColumnRange<K> other) {
-        int compareLowerBound = lowerBound.compareTo(other.lowerBound);
-        if (lowerInclusive == other.lowerInclusive || compareLowerBound != 0) {
-            return compareLowerBound;
-        } else {
-            // lowerInclusive != otherKey.lowerInclusive && compareLowerBound == 0
-            return lowerInclusive ? -1 : 1;
-        }
+        return lowerBound.compareTo(other.lowerBound);
     }
 
     /**
@@ -96,22 +86,41 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * checked. Using this method we could check the upper bound is also matching.
      * <p>
      * This method is called by {@link TwoColumnRangeStructure#get(Object)} and hence needs to be
-     * performance optimized! Thats why we do not simply use {@link #isContained(Comparable)}
+     * performance optimized! Thats why we do not simply use {@link #isOverlapping(TwoColumnRange)}
      * 
      * @param otherKey The other key that's upper bound is compared to this one
      * @return <code>true</code> if this upper bound is below other's upper bound
      * 
      */
     public int compareToUpperBound(TwoColumnRange<K> otherKey) {
-        int compareUpperBound = getUpperBound().compareTo(otherKey.getUpperBound());
-        if (upperInclusive == otherKey.upperInclusive || compareUpperBound != 0) {
-            return compareUpperBound;
-        } else {
-            // upperInclusive != otherKey.upperInclusive && compareUpperBound == 0
-            return upperInclusive ? 1 : -1;
-        }
+        return upperBound.compareTo(otherKey.upperBound);
     }
 
+    /**
+     * Checks whether this range overlaps with the other range.
+     * <p>
+     * For example:
+     * <ul>
+     * <li>
+     * [0..10] and [5..20] overlap</li>
+     * <li>
+     * [3..5] and [5..8] overlap</li>
+     * <li>
+     * [3..5[ and [5..8] do not overlap, however, as [3..5[ does not include 5.</li>
+     * </ul>
+     * 
+     * @param otherRange The other range that is tested to overlaps this range
+     * @return <code>true</code> if the ranges overlap, <code>false</code> if they are disjoint
+     */
+    public boolean isOverlapping(TwoColumnRange<K> otherRange) {
+        return lowerBound.compareTo(otherRange.upperBound) < 0 && upperBound.compareTo(otherRange.lowerBound) > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Two {@link TwoColumnRange ranges} are always equal when their lower bounds are equal.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -124,21 +133,14 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
             return false;
         }
         TwoColumnRange<?> other = (TwoColumnRange<?>)obj;
-        if (lowerBound == null) {
-            if (other.lowerBound != null) {
-                return false;
-            }
-        } else if (!lowerBound.equals(other.lowerBound)) {
-            return false;
-        }
-        return lowerInclusive == other.lowerInclusive;
+        return lowerBound.equals(other.lowerBound);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((lowerBound == null) ? 0 : lowerBound.hashCode());
+        result = prime * result + lowerBound.hashCode();
         return result;
     }
 
@@ -146,7 +148,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * @return Returns the lowerBound.
      */
     public K getLowerBound() {
-        return lowerBound;
+        return lowerBound.boundaryValue;
     }
 
     /**
@@ -155,14 +157,14 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * @return <code>true</code> if the lower bound is inclusive otherwise <code>false</code>
      */
     public boolean isLowerInclusive() {
-        return lowerInclusive;
+        return lowerBound.direction.isLowerInclulsive();
     }
 
     /**
      * @return Returns the upperBound.
      */
     public K getUpperBound() {
-        return upperBound;
+        return upperBound.boundaryValue;
     }
 
     /**
@@ -171,26 +173,148 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * @return <code>true</code> if the upper bound is inclusive otherwise <code>false</code>
      */
     public boolean isUpperInclusive() {
-        return upperInclusive;
+        return upperBound.direction.isUpperInclulsive();
     }
 
-    /**
-     * Checks whether the value is within this range's bounds. Respects {@link #lowerInclusive} and
-     * {@link #upperInclusive}.
-     * 
-     * @param value The value that should be checked if it is contained in this range.
-     * @return <code>true</code> if the value is contained in this range
-     */
-    public boolean isContained(K value) {
-        int lowerCompare = getLowerBound().compareTo(value);
-        if (lowerInclusive ? lowerCompare > 0 : lowerCompare >= 0) {
-            return false;
+    @Override
+    public String toString() {
+        return "TwoColumnRange " + lowerBound.direction + lowerBound.boundaryValue + "," + upperBound.boundaryValue
+                + upperBound.direction;
+    }
+
+    private static final class Bound<K extends Comparable<? super K>> implements Comparable<Bound<K>> {
+
+        private static final Bound<?> NEGATIVE_INFINITY = new Bound<Comparable<Object>>(null, IntervalDirection.LEFT);
+
+        private static final Bound<?> POSITIVE_INFINITY = new Bound<Comparable<Object>>(null, IntervalDirection.RIGHT);
+
+        private final K boundaryValue;
+
+        private final IntervalDirection direction;
+
+        public Bound(K boundaryValue, IntervalDirection direction) {
+            this.boundaryValue = boundaryValue;
+            this.direction = direction;
         }
-        int upperCompare = getUpperBound().compareTo(value);
-        if (upperInclusive ? upperCompare < 0 : upperCompare <= 0) {
-            return false;
+
+        /**
+         * Returns the bound constant representing the negative infinity. The generic type cast is
+         * safe because the boundaryValue is null.
+         */
+        @SuppressWarnings("unchecked")
+        public static <K extends Comparable<? super K>> Bound<K> negativeInfinity() {
+            return (Bound<K>)NEGATIVE_INFINITY;
         }
-        return true;
+
+        /**
+         * Returns the bound constant representing the positive infinity. The generic type cast is
+         * safe because the boundaryValue is null.
+         */
+        @SuppressWarnings("unchecked")
+        public static <K extends Comparable<? super K>> Bound<K> positiveInfinity() {
+            return (Bound<K>)POSITIVE_INFINITY;
+        }
+
+        public int compareTo(Bound<K> otherBound) {
+            if (boundaryValue == null) {
+                return direction == IntervalDirection.LEFT ? -1 : 1;
+            }
+            if (otherBound.boundaryValue == null) {
+                return otherBound.direction == IntervalDirection.RIGHT ? -1 : 1;
+            }
+            int compareLowerBound = boundaryValue.compareTo(otherBound.boundaryValue);
+            if (direction == otherBound.direction || compareLowerBound != 0) {
+                return compareLowerBound;
+            } else {
+                return direction == IntervalDirection.RIGHT ? -1 : 1;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((boundaryValue == null) ? 0 : boundaryValue.hashCode());
+            result = prime * result + ((direction == null) ? 0 : direction.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            Bound<?> other = (Bound<?>)obj;
+            if (boundaryValue == null) {
+                if (other.boundaryValue != null) {
+                    return false;
+                }
+            } else if (!boundaryValue.equals(other.boundaryValue)) {
+                return false;
+            }
+            if (direction != other.direction) {
+                return false;
+            }
+            return true;
+        }
+
+    }
+
+    private static enum IntervalDirection {
+
+        /**
+         * Indicates that the interval bound is opened to the left side. For example: "]1..2]" both
+         * bounds are opened on the left-hand side.
+         */
+        LEFT("]"),
+
+        /**
+         * Indicates that the interval bound is opened to the right side. For example: "[1..2[" both
+         * bounds are opened on the right-hand side.
+         */
+        RIGHT("[");
+
+        private final String toStringRepresentation;
+
+        private IntervalDirection(String toStringRepresentation) {
+            this.toStringRepresentation = toStringRepresentation;
+        }
+
+        public static IntervalDirection getLowerBoundDirection(boolean inclusive) {
+            if (inclusive) {
+                return RIGHT;
+            } else {
+                return LEFT;
+            }
+        }
+
+        public static IntervalDirection getUpperBoundDirection(boolean inclusive) {
+            if (inclusive) {
+                return LEFT;
+            } else {
+                return RIGHT;
+            }
+        }
+
+        public boolean isLowerInclulsive() {
+            return this == RIGHT;
+        }
+
+        public boolean isUpperInclulsive() {
+            return this == LEFT;
+        }
+
+        @Override
+        public String toString() {
+            return toStringRepresentation;
+        }
+
     }
 
 }

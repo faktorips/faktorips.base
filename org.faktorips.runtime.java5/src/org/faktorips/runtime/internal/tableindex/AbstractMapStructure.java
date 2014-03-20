@@ -138,7 +138,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
      */
     Mergeable<AbstractMapStructure<K, V, R>> copyOriginalMap(AbstractMapStructure<K, V, R> copiedStructure) {
         for (Entry<K, V> entry : getMap().entrySet()) {
-            V value = entry.getValue();
+            V value = (V)entry.getValue().copy();
             copiedStructure.put(entry.getKey(), value);
         }
         return copiedStructure;

@@ -72,6 +72,9 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
     /**
      * Defines a range that maps to the given value. The keys define the upper and lower bound of
      * the range.
+     * <p>
+     * If the lower bound is greater than upper bound, the lower and upper bound are automatically
+     * switched (including lower- and upper-inclusive parameter).
      * 
      * @param lower the lower bound of the range (included)
      * @param upper the upper bound of the range (included)
@@ -82,7 +85,8 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * @param value the nested {@link SearchStructure} to be added
      */
     public void put(K lower, K upper, boolean lowerInclusive, boolean upperInclusive, V value) {
-        super.put(new TwoColumnRange<K>(lower, upper, lowerInclusive, upperInclusive), value);
+        TwoColumnRange<K> key = new TwoColumnRange<K>(lower, upper, lowerInclusive, upperInclusive);
+        new OverlappingRangePutter<K, V>(getMap()).put(key, value);
     }
 
     @Override
@@ -134,12 +138,157 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
     }
 
     private boolean isMatchingEntry(TwoColumnRange<K> twoColumnKey, Entry<TwoColumnRange<K>, V> floorEntry) {
-        return floorEntry != null && twoColumnKey.isBelowUpperBoundOf(floorEntry.getKey());
+        return floorEntry != null && twoColumnKey.compareToUpperBound(floorEntry.getKey()) <= 0;
     }
 
     public Mergeable<AbstractMapStructure<TwoColumnRange<K>, V, R>> copy() {
         TwoColumnRangeStructure<K, V, R> twoColumnRangeStructure = new TwoColumnRangeStructure<K, V, R>();
         return copyOriginalMap(twoColumnRangeStructure);
+    }
+
+    private static class OverlappingRangePutter<K extends Comparable<? super K>, V extends Mergeable<? super V>> {
+
+        private TreeMap<TwoColumnRange<K>, V> treeMap;
+
+        private KeyValuePair<K, V> overlappedEntry;
+
+        private KeyValuePair<K, V> lo;
+
+        private KeyValuePair<K, V> mid;
+
+        private KeyValuePair<K, V> hi;
+
+        private KeyValuePair<K, V> newEntry;
+
+        public OverlappingRangePutter(TreeMap<TwoColumnRange<K>, V> treeMap) {
+            this.treeMap = treeMap;
+        }
+
+        public void put(TwoColumnRange<K> key, V value) {
+            putRespectingOverlapping(new KeyValuePair<K, V>(key, value));
+        }
+
+        private void putRespectingOverlapping(KeyValuePair<K, V> entry) {
+            this.newEntry = entry;
+            if (findOverlapping()) {
+                putOverlappingEntry();
+            } else {
+                putNonOverlappingEntry(entry);
+            }
+        }
+
+        private void putOverlappingEntry() {
+            createLoMidHi();
+            removeOverlappedEntry();
+            if (lo != null) {
+                putNonOverlappingEntry(lo);
+            }
+            putNonOverlappingEntry(mid);
+            if (hi != null) {
+                putRespectingOverlapping(hi);
+            }
+        }
+
+        private void createLoMidHi() {
+            int compareLowerBound = newEntry.key.compareTo(overlappedEntry.key);
+            int compareUpperBound = newEntry.key.compareToUpperBound(overlappedEntry.key);
+            if (compareLowerBound < 0) {
+                // e.g. newEntry = [1..?] and overlappedEntry = [4..?]
+                createLoMidHi(compareUpperBound, newEntry, overlappedEntry);
+            } else {
+                // e.g. newEntry = [4..?] and overlappedEntry = [1..?]
+                createLoMidHi(-compareUpperBound, overlappedEntry, newEntry);
+            }
+            if (compareLowerBound == 0) {
+                // the created range is invalid, e.g. [1 - 1[
+                lo = null;
+            }
+        }
+
+        private void createLoMidHi(int compareUpperBound, KeyValuePair<K, V> lowerEntry, KeyValuePair<K, V> higherEntry) {
+            createLo(lowerEntry, higherEntry);
+            if (compareUpperBound < 0) {
+                // e.g. lowerEntry = [1..6] and upperEntry = [4..10]
+                createMid(lowerEntry, higherEntry);
+                createHi(lowerEntry, higherEntry);
+            } else {
+                // e.g. lowerEntry = [1..10] and upperEntry = [4..6]
+                mergedMid(higherEntry, lowerEntry.value);
+                if (compareUpperBound == 0) {
+                    hi = null;
+                } else {
+                    createHi(higherEntry, lowerEntry);
+                }
+            }
+        }
+
+        private void createLo(KeyValuePair<K, V> lowerPair, KeyValuePair<K, V> upperPair) {
+            TwoColumnRange<K> keyBelow = new TwoColumnRange<K>(lowerPair.key.getLowerBound(),
+                    upperPair.key.getLowerBound(), lowerPair.key.isLowerInclusive(), !upperPair.key.isLowerInclusive());
+            lo = new KeyValuePair<K, V>(keyBelow, lowerPair.value);
+        }
+
+        private void createMid(KeyValuePair<K, V> loPair, KeyValuePair<K, V> upPair) {
+            TwoColumnRange<K> keyBelow = new TwoColumnRange<K>(upPair.key.getLowerBound(), loPair.key.getUpperBound(),
+                    upPair.key.isLowerInclusive(), loPair.key.isUpperInclusive());
+            V mergedValue = (V)upPair.value.copy();
+            mergedValue.merge(loPair.value);
+            mid = new KeyValuePair<K, V>(keyBelow, mergedValue);
+        }
+
+        private void mergedMid(KeyValuePair<K, V> keyValuePair, V newValue) {
+            V mergedValue = (V)keyValuePair.value.copy();
+            mergedValue.merge(newValue);
+            mid = new KeyValuePair<K, V>(keyValuePair.key, mergedValue);
+        }
+
+        private void createHi(KeyValuePair<K, V> lowerPair, KeyValuePair<K, V> upperPair) {
+            TwoColumnRange<K> keyAbove = new TwoColumnRange<K>(lowerPair.key.getUpperBound(),
+                    upperPair.key.getUpperBound(), !lowerPair.key.isUpperInclusive(), upperPair.key.isUpperInclusive());
+            hi = new KeyValuePair<K, V>(keyAbove, upperPair.value);
+        }
+
+        private void removeOverlappedEntry() {
+            treeMap.remove(overlappedEntry.key);
+        }
+
+        private void putNonOverlappingEntry(KeyValuePair<K, V> pair) {
+            treeMap.put(pair.key, pair.value);
+        }
+
+        private boolean findOverlapping() {
+            Entry<TwoColumnRange<K>, V> floorEntry = treeMap.floorEntry(newEntry.key);
+            if (floorEntry != null && floorEntry.getKey().isOverlapping(newEntry.key)) {
+                overlappedEntry = new KeyValuePair<K, V>(floorEntry.getKey(), floorEntry.getValue());
+                return true;
+            } else {
+                Entry<TwoColumnRange<K>, V> ceilingEntry = treeMap.ceilingEntry(newEntry.key);
+                if (ceilingEntry != null && newEntry.key.isOverlapping(ceilingEntry.getKey())) {
+                    overlappedEntry = new KeyValuePair<K, V>(ceilingEntry.getKey(), ceilingEntry.getValue());
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        private static class KeyValuePair<K extends Comparable<? super K>, V extends Mergeable<? super V>> {
+
+            private final TwoColumnRange<K> key;
+
+            private final V value;
+
+            public KeyValuePair(TwoColumnRange<K> key, V value) {
+                this.key = key;
+                this.value = value;
+            }
+
+            @Override
+            public String toString() {
+                return "KeyValuePair [key=" + key + ", value=" + value + "]";
+            }
+
+        }
     }
 
 }

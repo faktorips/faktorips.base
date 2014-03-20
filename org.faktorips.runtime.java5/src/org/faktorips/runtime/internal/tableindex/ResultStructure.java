@@ -35,7 +35,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements Mergeable<
     }
 
     ResultStructure(Set<R> result) {
-        resultSet = result;
+        resultSet = new HashSet<R>(result);
     }
 
     /**
