@@ -15,22 +15,42 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * A {@link SearchStructure} that maps ranges to nested {@link SearchStructure SearchStructures}. A
- * {@link TwoColumnRangeStructure} allows for defining ranges by lower and upper bound. Because of
- * this there might be "gaps" in between ranges, however ranges cannot overlap. There are no
- * boundless/infinite ranges (in contrast to a {@link RangeStructure}).
+ * A {@link SearchStructure} that maps ranges (keys) to nested {@link SearchStructure
+ * SearchStructures} i.e. sets of values. Each {@link TwoColumnRange range} in a
+ * {@link TwoColumnRangeStructure} is defined by lower and upper bound. Thus there might be "gaps"
+ * in between ranges, in contrast to {@link RangeStructure RangeStructures}. The
+ * {@link TwoColumnRangeStructure} also supports overlapping ranges, as well as "infinite" ranges.
  * <p>
- * Ranges are setup by putting one or more key-key-value tuples into this structure. The keys are of
- * a comparable data type (of course, as they define a range). The value is a nested
+ * Ranges are set up by putting one or more key-key-value tuples into this structure. The keys are
+ * of a comparable data type (of course, as they define a range). The value is a nested
  * {@link SearchStructure}. The first key defines the lower bound, the second the upper bound of the
  * range (which includes the bounds). The value can be retrieved by calling {@link #get(Object)}
  * with a key inside the defined range.
  * <p>
- * Example: In a {@link TwoColumnRangeStructure} by calling <code>put(10, 24, value1)</code> and
- * <code>put(25, 50, value2)</code>, two ranges are defined. Calls to {@link #get(Object)} with the
- * keys 10, 24 and all in between will yield value1 as a result. Calls to {@link #get(Object)} with
- * the keys 25, 50 and all in between will yield value2 respectively. Keys outside these ranges,
- * e.g. 0 or 100 will return an {@link EmptySearchStructure}.
+ * Example: In a {@link TwoColumnRangeStructure} by calling <code>put(10, 24, "AAA")</code> and
+ * <code>put(25, 50, "BBB")</code>, two ranges are defined. Calls to {@link #get(Object)} with the:
+ * <ul>
+ * <li>keys 10, 24 and all in between will yield {"AAA"} as a result</li>
+ * <li>keys 25, 50 and all in between will yield {"BBB"} respectively</li>
+ * <li>keys outside these ranges, e.g. 0 or 100 will return an {@link EmptySearchStructure}.</li>
+ * </ul>
+ * </ul>
+ * <p>
+ * Overlapping ranges: In a {@link TwoColumnRangeStructure} by calling
+ * <code>put(0, 100, "AAA")</code> and <code>put(50, 200, "BBB")</code>, two ranges are defined.
+ * Calls to {@link #get(Object)} with keys:
+ * <ul>
+ * <li>keys 0, 49 and all in between will yield {"AAA"} as a result</li>
+ * <li>keys 101, 200 and all in between will yield {"BBB"} respectively</li>
+ * <li>keys in the overlapping, 50, 100 and all in between, will yield the set union {"AAA", "BBB"}
+ * as a result</li>
+ * <li>keys outside these ranges, e.g. -100 or 500 will return an {@link EmptySearchStructure}.</li>
+ * </ul>
+ * <p>
+ * Calling <code>put(null, 100, "AAA")</code> defines a range from negative infinity to 100, that
+ * maps to {"AAA"}. This range includes all values less than and equal to 100. Calling
+ * <code>put(0, null, "BBB")</code> in turn defines a range from 0 to positive infinity. This range
+ * includes all values greater than and equal to 0.
  */
 public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
         extends AbstractMapStructure<TwoColumnRange<K>, V, R> {

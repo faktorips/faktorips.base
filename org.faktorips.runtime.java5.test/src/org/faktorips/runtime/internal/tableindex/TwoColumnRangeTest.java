@@ -85,6 +85,8 @@ public class TwoColumnRangeTest {
                 false)) < 0);
         assertTrue(new TwoColumnRange<Integer>(3, 12, false, false).compareTo(new TwoColumnRange<Integer>(3, 5, false,
                 false)) == 0);
+        assertTrue(new TwoColumnRange<Integer>(3, 12, true, false).compareTo(new TwoColumnRange<Integer>(3, 5, true,
+                false)) == 0);
     }
 
     @Test
@@ -123,6 +125,8 @@ public class TwoColumnRangeTest {
                 false, false)) > 0);
         assertTrue(new TwoColumnRange<Integer>(1, 5, false, false).compareToUpperBound(new TwoColumnRange<Integer>(3,
                 5, false, false)) == 0);
+        assertTrue(new TwoColumnRange<Integer>(1, 5, true, true).compareToUpperBound(new TwoColumnRange<Integer>(3, 5,
+                false, true)) == 0);
     }
 
     @Test
