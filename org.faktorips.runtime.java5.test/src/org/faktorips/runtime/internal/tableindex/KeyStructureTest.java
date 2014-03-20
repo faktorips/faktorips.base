@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -114,6 +115,26 @@ public class KeyStructureTest {
         assertThat(resultNestedStructure.get(), hasItem(321));
         assertEquals(123, resultNestedStructure.get("abc").getUnique().intValue());
         assertEquals(321, resultNestedStructure.get("xyz").getUnique().intValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testCopy() {
+        AbstractMapStructure<String, ResultStructure<Integer>, Integer> structure = KeyStructure.create();
+        initKeyStructureMap(structure);
+
+        Mergeable<AbstractMapStructure<String, ResultStructure<Integer>, Integer>> copyStructure = structure.copy();
+
+        assertEquals(((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure).getMap(),
+                structure.getMap());
+        assertNotSame(copyStructure, structure);
+    }
+
+    private void initKeyStructureMap(AbstractMapStructure<String, ResultStructure<Integer>, Integer> structure) {
+        ResultStructure<Integer> first = new ResultStructure<Integer>(1);
+        ResultStructure<Integer> second = new ResultStructure<Integer>(2);
+        structure.put("ID_1", first);
+        structure.put("ID_2", second);
     }
 
 }

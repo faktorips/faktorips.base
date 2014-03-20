@@ -52,4 +52,9 @@ public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>
             return getValidResult(result);
         }
     }
+
+    public Mergeable<AbstractMapStructure<K, V, R>> copy() {
+        KeyStructure<K, V, R> newKeyStructure = new KeyStructure<K, V, R>();
+        return copyOriginalMap(newKeyStructure);
+    }
 }

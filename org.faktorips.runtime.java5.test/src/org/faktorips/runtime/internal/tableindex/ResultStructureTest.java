@@ -10,11 +10,14 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -73,4 +76,24 @@ public class ResultStructureTest {
         assertTrue(resultStructure.get().isEmpty());
     }
 
+    @Test
+    public void testCopy() {
+        resultStructure = new ResultStructure<Integer>(initResultSet());
+        Mergeable<ResultStructure<Integer>> copiedStructure = resultStructure.copy();
+        Set<Integer> set = ((ResultStructure<Integer>)copiedStructure).get();
+        Set<Integer> copiedSet = resultStructure.get();
+
+        assertEquals(copiedStructure, resultStructure);
+        assertEquals(copiedSet, set);
+        assertNotSame(copiedStructure, resultStructure);
+
+    }
+
+    private Set<Integer> initResultSet() {
+        Set<Integer> resultSet1 = new HashSet<Integer>();
+        for (int i = 0; i < 10; i++) {
+            resultSet1.add(i);
+        }
+        return resultSet1;
+    }
 }

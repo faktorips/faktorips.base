@@ -137,4 +137,9 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         return floorEntry != null && twoColumnKey.isBelowUpperBoundOf(floorEntry.getKey());
     }
 
+    public Mergeable<AbstractMapStructure<TwoColumnRange<K>, V, R>> copy() {
+        TwoColumnRangeStructure<K, V, R> twoColumnRangeStructure = new TwoColumnRangeStructure<K, V, R>();
+        return copyOriginalMap(twoColumnRangeStructure);
+    }
+
 }

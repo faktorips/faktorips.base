@@ -31,4 +31,12 @@ public interface Mergeable<T> {
      */
     public void merge(T otherMergeable);
 
+    /**
+     * This method copies the object which calls it. The newly created object has the same
+     * properties like the object calling {@link #copy()}.
+     * 
+     * @return Mergeable<T> that is an identic copy of the calling object
+     */
+    public Mergeable<T> copy();
+
 }

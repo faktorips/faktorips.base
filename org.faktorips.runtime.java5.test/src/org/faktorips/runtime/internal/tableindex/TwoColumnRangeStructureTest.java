@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -122,5 +123,17 @@ public class TwoColumnRangeStructureTest {
 
         // The assert is not really necessary, the real test is that the statement above compiles.
         assertTrue(structure.get().isEmpty());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testCopy() {
+        structure = new TwoColumnRangeStructure<Integer, ResultStructure<String>, String>();
+        Mergeable<AbstractMapStructure<TwoColumnRange<Integer>, ResultStructure<String>, String>> copiedStructure = structure
+                .copy();
+
+        assertEquals(((TwoColumnRangeStructure<Integer, ResultStructure<String>, String>)copiedStructure).getMap(),
+                structure.getMap());
+        assertNotSame(copiedStructure, structure);
     }
 }

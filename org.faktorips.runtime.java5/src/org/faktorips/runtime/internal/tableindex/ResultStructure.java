@@ -102,4 +102,8 @@ public class ResultStructure<R> extends SearchStructure<R> implements Mergeable<
         return "ResultStructure [resultSet=" + resultSet + "]";
     }
 
+    public Mergeable<ResultStructure<R>> copy() {
+        return new ResultStructure<R>(this.resultSet);
+    }
+
 }

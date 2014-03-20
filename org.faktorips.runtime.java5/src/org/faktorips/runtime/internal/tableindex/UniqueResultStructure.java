@@ -98,4 +98,8 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements Merg
         return "UniqueResultStructure [" + uniqueResult + "]";
     }
 
+    public Mergeable<UniqueResultStructure<R>> copy() {
+        return new UniqueResultStructure<R>(this.uniqueResult);
+    }
+
 }

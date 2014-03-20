@@ -128,4 +128,19 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
         return (SearchStructure<R>)EMPTY;
     }
 
+    /**
+     * This method was generated to support the copy methods of all subclasses. By using
+     * {@link #copyOriginalMap(AbstractMapStructure)} the copiedStructure will copy all map Entries
+     * of that original AbstractMapStructure which called the method {@link #copy()}.
+     * 
+     * @param copiedStructure the empty AbstractMapStructure<K, V, R>
+     * @return copiedStructure filled with mapEntries of this object
+     */
+    Mergeable<AbstractMapStructure<K, V, R>> copyOriginalMap(AbstractMapStructure<K, V, R> copiedStructure) {
+        for (Entry<K, V> entry : getMap().entrySet()) {
+            V value = entry.getValue();
+            copiedStructure.put(entry.getKey(), value);
+        }
+        return copiedStructure;
+    }
 }

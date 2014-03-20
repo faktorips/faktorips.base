@@ -10,7 +10,9 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -216,4 +218,17 @@ public class RangeStructureTest {
         assertTrue(structure.get().isEmpty());
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testCopy() {
+        RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
+                .create(RangeType.LOWER_BOUND_EQUAL);
+        structure.put(1, new ResultStructure<String>("testString"));
+
+        Mergeable<AbstractMapStructure<Integer, ResultStructure<String>, String>> copiedStructure = structure.copy();
+
+        assertEquals(structure.getMap(),
+                ((RangeStructure<Integer, ResultStructure<String>, String>)copiedStructure).getMap());
+        assertNotSame(copiedStructure, structure);
+    }
 }

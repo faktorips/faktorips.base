@@ -84,4 +84,9 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
         return (TreeMap<K, V>)super.getMap();
     }
 
+    public Mergeable<AbstractMapStructure<K, V, R>> copy() {
+        RangeStructure<K, V, R> rangeStructure = new RangeStructure<K, V, R>(this.rangeType);
+        return copyOriginalMap(rangeStructure);
+    }
+
 }
