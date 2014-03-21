@@ -16,6 +16,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -117,13 +119,26 @@ public class KeyStructureTest {
         assertEquals(321, resultNestedStructure.get("xyz").getUnique().intValue());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testCopy() {
-        AbstractMapStructure<String, ResultStructure<Integer>, Integer> structure = KeyStructure.create();
+    public void testCopy_DeepCopyForMap() {
+        KeyStructure<String, ResultStructure<Integer>, Integer> structure = KeyStructure.create();
         initKeyStructureMap(structure);
+        KeyStructure<String, ResultStructure<Integer>, Integer> copyStructure = structure.copy();
+        Map<String, ResultStructure<Integer>> structureMap = structure.getMap();
+        Map<String, ResultStructure<Integer>> copiedMap = ((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure)
+                .getMap();
 
-        Mergeable<AbstractMapStructure<String, ResultStructure<Integer>, Integer>> copyStructure = structure.copy();
+        assertEquals(structureMap.get("ID_1"), copiedMap.get("ID_1"));
+        assertNotSame(structureMap.get("ID_1"), copiedMap.get("ID_1"));
+        assertEquals(structureMap.get("ID_2"), copiedMap.get("ID_2"));
+        assertNotSame(structureMap.get("ID_2"), copiedMap.get("ID_2"));
+    }
+
+    @Test
+    public void testCopy_CopyOfObject() {
+        KeyStructure<String, ResultStructure<Integer>, Integer> structure = KeyStructure.create();
+        initKeyStructureMap(structure);
+        KeyStructure<String, ResultStructure<Integer>, Integer> copyStructure = structure.copy();
 
         assertEquals(((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure).getMap(),
                 structure.getMap());

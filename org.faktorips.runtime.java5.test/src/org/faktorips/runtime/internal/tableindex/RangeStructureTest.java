@@ -218,17 +218,30 @@ public class RangeStructureTest {
         assertTrue(structure.get().isEmpty());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testCopy() {
+    public void testCopy_DeepCopyOfMapContent() {
         RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
                 .create(RangeType.LOWER_BOUND_EQUAL);
-        structure.put(1, new ResultStructure<String>("testString"));
+        structure.put(1, new ResultStructure<String>("ONE"));
+        structure.put(2, new ResultStructure<String>("TWO"));
 
-        Mergeable<AbstractMapStructure<Integer, ResultStructure<String>, String>> copiedStructure = structure.copy();
+        RangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
 
-        assertEquals(structure.getMap(),
-                ((RangeStructure<Integer, ResultStructure<String>, String>)copiedStructure).getMap());
+        assertEquals(copiedStructure.getMap().get(1), structure.getMap().get(1));
+        assertNotSame(copiedStructure.getMap().get(1), structure.getMap().get(1));
+        assertEquals(copiedStructure.getMap().get(2), structure.getMap().get(2));
+        assertNotSame(copiedStructure.getMap().get(2), structure.getMap().get(2));
+    }
+
+    @Test
+    public void testCopy_CopyOfObject() {
+        RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
+                .create(RangeType.LOWER_BOUND_EQUAL);
+        structure.put(1, new ResultStructure<String>("ONE"));
+
+        RangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
+
+        assertEquals(structure.getMap(), copiedStructure.getMap());
         assertNotSame(copiedStructure, structure);
     }
 }

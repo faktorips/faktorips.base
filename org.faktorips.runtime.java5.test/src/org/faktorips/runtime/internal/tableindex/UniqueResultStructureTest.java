@@ -10,7 +10,7 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
@@ -21,10 +21,10 @@ public class UniqueResultStructureTest {
     @Test
     public void testCopy() {
         UniqueResultStructure<Integer> structure = new UniqueResultStructure<Integer>(resultValue);
-        Mergeable<UniqueResultStructure<Integer>> copyStructure = structure.copy();
+        UniqueResultStructure<Integer> copyStructure = structure.copy();
 
         assertEquals(copyStructure, structure);
-        assertEquals(((UniqueResultStructure<Integer>)copyStructure).getUnique(), structure.getUnique());
-        assertNotSame(copyStructure, structure);
+        assertEquals(copyStructure.getUnique(), structure.getUnique());
+        assertSame(copyStructure, structure);
     }
 }

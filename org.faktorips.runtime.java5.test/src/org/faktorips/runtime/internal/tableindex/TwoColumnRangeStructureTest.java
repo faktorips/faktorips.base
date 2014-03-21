@@ -394,13 +394,13 @@ public class TwoColumnRangeStructureTest {
     }
 
     @Test
-    public void testCopy() {
+    public void testCopy_DeepCopyForMapContent() {
         structure = new TwoColumnRangeStructure<Integer, ResultStructure<String>, String>();
-        Mergeable<AbstractMapStructure<TwoColumnRange<Integer>, ResultStructure<String>, String>> copiedStructure = structure
-                .copy();
+        structure.put(new TwoColumnRange<Integer>(1, 4), new ResultStructure<String>("OneToFour"));
 
-        assertEquals(((TwoColumnRangeStructure<Integer, ResultStructure<String>, String>)copiedStructure).getMap(),
-                structure.getMap());
+        TwoColumnRangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
+
+        assertEquals(copiedStructure.getMap(), structure.getMap());
         assertNotSame(copiedStructure, structure);
     }
 
@@ -412,6 +412,20 @@ public class TwoColumnRangeStructureTest {
         assertThat(structure.get(1000).get(), hasItem("A"));
         assertEquals(1, structure.get(8000).get().size());
         assertThat(structure.get(8000).get(), hasItem("A"));
+    }
+
+    @Test
+    public void testCopy() {
+        structure = new TwoColumnRangeStructure<Integer, ResultStructure<String>, String>();
+        TwoColumnRange<Integer> firstInput = new TwoColumnRange<Integer>(1, 4);
+        TwoColumnRange<Integer> secondInput = new TwoColumnRange<Integer>(5, 6);
+        structure.put(firstInput, new ResultStructure<String>("OneToFour"));
+        structure.put(secondInput, new ResultStructure<String>("FiveToSix"));
+
+        TwoColumnRangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
+
+        assertEquals(copiedStructure.get(1), structure.get(1));
+        assertNotSame(copiedStructure.get(1), structure.get(1));
     }
 
 }

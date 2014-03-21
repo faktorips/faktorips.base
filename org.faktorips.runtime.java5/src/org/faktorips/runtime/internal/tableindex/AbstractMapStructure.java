@@ -32,17 +32,17 @@ import java.util.Set;
  *            which must:
  *            <ul>
  *            <li> have the same result type <code>R</code> as this {@link AbstractMapStructure}
- *            </li> <li> implement the {@link Mergeable} interface. The class definition enforces
- *            the implementation of {@link Mergeable} without restricting the type V to a specific
- *            {@link SearchStructure}. Therefore the mergable type is bound to <code>? super V
- *            </code>. </li>
+ *            </li> <li> implement the {@link MergeAndCopyStructure} interface. The class definition
+ *            enforces the implementation of {@link MergeAndCopyStructure} without restricting the
+ *            type V to a specific {@link SearchStructure}. Therefore the mergable type is bound to
+ *            <code>? super V </code>. </li>
  *            </ul>
  * @param <R> The type of the result values. The result type must be the same in every nested
  *            structure.
  * 
  */
-public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mergeable<? super V>, R> extends
-        SearchStructure<R> implements Mergeable<AbstractMapStructure<K, V, R>> {
+public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> extends
+        SearchStructure<R> {
 
     private static final SearchStructure<?> EMPTY = new EmptySearchStructure<Object>();
 
@@ -75,8 +75,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
         }
     }
 
-    @Override
-    public void merge(AbstractMapStructure<K, V, R> otherMap) {
+    protected void merge(AbstractMapStructure<K, V, R> otherMap) {
         Map<K, V> otherUnderlyingMap = otherMap.getMap();
         for (Entry<K, V> entry : otherUnderlyingMap.entrySet()) {
             if (getMap().containsKey(entry.getKey())) {
@@ -87,6 +86,14 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
                 getMap().put(entry.getKey(), entry.getValue());
             }
         }
+    }
+
+    protected AbstractMapStructure<K, V, R> fillCopy(AbstractMapStructure<K, V, R> structure) {
+        for (Entry<K, V> entry : getMap().entrySet()) {
+            V value = entry.getValue().copy();
+            structure.put(entry.getKey(), value);
+        }
+        return structure;
     }
 
     @Override
@@ -126,21 +133,5 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
     @SuppressWarnings("unchecked")
     protected SearchStructure<R> emptyResult() {
         return (SearchStructure<R>)EMPTY;
-    }
-
-    /**
-     * This method was generated to support the copy methods of all subclasses. By using
-     * {@link #copyOriginalMap(AbstractMapStructure)} the copiedStructure will copy all map Entries
-     * of that original AbstractMapStructure which called the method {@link #copy()}.
-     * 
-     * @param copiedStructure the empty AbstractMapStructure<K, V, R>
-     * @return copiedStructure filled with mapEntries of this object
-     */
-    Mergeable<AbstractMapStructure<K, V, R>> copyOriginalMap(AbstractMapStructure<K, V, R> copiedStructure) {
-        for (Entry<K, V> entry : getMap().entrySet()) {
-            V value = (V)entry.getValue().copy();
-            copiedStructure.put(entry.getKey(), value);
-        }
-        return copiedStructure;
     }
 }

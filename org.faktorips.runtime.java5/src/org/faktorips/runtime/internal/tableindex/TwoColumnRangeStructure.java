@@ -52,8 +52,9 @@ import java.util.TreeMap;
  * <code>put(0, null, "BBB")</code> in turn defines a range from 0 to positive infinity. This range
  * includes all values greater than and equal to 0.
  */
-public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
-        extends AbstractMapStructure<TwoColumnRange<K>, V, R> {
+public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R>
+        extends AbstractMapStructure<TwoColumnRange<K>, V, R> implements
+        MergeAndCopyStructure<TwoColumnRangeStructure<K, V, R>> {
 
     TwoColumnRangeStructure() {
         super(new TreeMap<TwoColumnRange<K>, V>());
@@ -62,14 +63,14 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
     /**
      * Creates an empty {@link TwoColumnRangeStructure}.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> create() {
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> TwoColumnRangeStructure<K, V, R> create() {
         return new TwoColumnRangeStructure<K, V, R>();
     }
 
     /**
      * Creates a new {@link TwoColumnRangeStructure} and adds the given range-value pair.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> TwoColumnRangeStructure<K, V, R> createWith(K lowerBound,
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> TwoColumnRangeStructure<K, V, R> createWith(K lowerBound,
             K upperBound,
             V value) {
         TwoColumnRangeStructure<K, V, R> structure = new TwoColumnRangeStructure<K, V, R>();
@@ -161,15 +162,21 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         return floorEntry != null && twoColumnKey.compareToUpperBound(floorEntry.getKey()) <= 0;
     }
 
-    public Mergeable<AbstractMapStructure<TwoColumnRange<K>, V, R>> copy() {
-        TwoColumnRangeStructure<K, V, R> twoColumnRangeStructure = new TwoColumnRangeStructure<K, V, R>();
-        return copyOriginalMap(twoColumnRangeStructure);
+    @Override
+    public void merge(TwoColumnRangeStructure<K, V, R> map) {
+        super.merge(map);
+    }
+
+    @Override
+    public TwoColumnRangeStructure<K, V, R> copy() {
+        return (TwoColumnRangeStructure<K, V, R>)super.fillCopy(new TwoColumnRangeStructure<K, V, R>());
     }
 
     /**
      * Helper class managing overlapping ranges when putting into a {@link TwoColumnRangeStructure}.
-     * When an overlapping occurs this {@link OverlappingRangePutter} splits the overlapping ranges
-     * into multiple non-overlapping ranges.
+     * When an overlapping occurs this
+     * {@link org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure.OverlappingRangePutter}
+     * splits the overlapping ranges into multiple non-overlapping ranges.
      * <p>
      * Example: A range structure contains several ranges (for example rangeA), and rangeB is added.
      * The algorithm executes the following steps:
@@ -231,7 +238,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * set containing the strings "X" and "Y".</li>
      * </ul>
      * Assuming rangeA exists in a {@link TwoColumnRangeStructure} and rangeB is added by calling
-     * {@link #put(TwoColumnRange, Mergeable)}:
+     * {@link #put(TwoColumnRange, MergeAndCopyStructure)}:
      * <ul>
      * <li>search for a range lower than [10..50]. This finds rangeA, as the lower bound (0) is less
      * than rangeB's lower bound (10).</li>
@@ -266,7 +273,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * </ul>
      * </ul> </li> </ul>
      */
-    private static class OverlappingRangePutter<K extends Comparable<? super K>, V extends Mergeable<? super V>> {
+    private static class OverlappingRangePutter<K extends Comparable<? super K>, V extends MergeAndCopyStructure<V>> {
 
         private TreeMap<TwoColumnRange<K>, V> treeMap;
 
@@ -292,10 +299,14 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         }
 
         /**
-         * Adds a {@link RangeEntry} to this {@link TwoColumnRangeStructure} and takes care of
-         * overlapping ranges by splitting them up into multiple non-overlapping, smaller ranges.
+         * Adds a
+         * {@link org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure.OverlappingRangePutter.RangeEntry}
+         * to this {@link TwoColumnRangeStructure} and takes care of overlapping ranges by splitting
+         * them up into multiple non-overlapping, smaller ranges.
          * 
-         * @param entry the {@link RangeEntry} to be added.
+         * @param entry the
+         *            {@link org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure.OverlappingRangePutter.RangeEntry}
+         *            to be added.
          */
         private void putRespectingOverlapping(RangeEntry<K, V> entry) {
             this.newEntry = entry;
@@ -372,7 +383,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
             TwoColumnRange<K> keyBelow = new TwoColumnRange<K>(upperEntry.key.getLowerBound(),
                     lowerEntry.key.getUpperBound(), upperEntry.key.isLowerInclusive(),
                     lowerEntry.key.isUpperInclusive());
-            V mergedValue = (V)upperEntry.value.copy();
+            V mergedValue = upperEntry.value.copy();
             mergedValue.merge(lowerEntry.value);
             mid = new RangeEntry<K, V>(keyBelow, mergedValue);
         }
@@ -383,7 +394,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
          * is a strict subset of the added range, or vice versa.
          */
         private void mergedMiddle(RangeEntry<K, V> rangeEntry, V newValue) {
-            V mergedValue = (V)rangeEntry.value.copy();
+            V mergedValue = rangeEntry.value.copy();
             mergedValue.merge(newValue);
             mid = new RangeEntry<K, V>(rangeEntry.key, mergedValue);
         }
@@ -429,8 +440,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
          * Entry class holding a range and the value it maps to in a single object.
          * 
          */
-        private static class RangeEntry<K extends Comparable<? super K>, V extends Mergeable<? super V>> {
-
+        private static class RangeEntry<K extends Comparable<? super K>, V extends MergeAndCopyStructure<V>> {
             private final TwoColumnRange<K> key;
 
             private final V value;

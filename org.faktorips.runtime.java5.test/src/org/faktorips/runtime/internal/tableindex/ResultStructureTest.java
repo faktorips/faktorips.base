@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -77,16 +78,23 @@ public class ResultStructureTest {
     }
 
     @Test
-    public void testCopy() {
+    public void testCopy_equalNotSame() {
         resultStructure = new ResultStructure<Integer>(initResultSet());
-        Mergeable<ResultStructure<Integer>> copiedStructure = resultStructure.copy();
-        Set<Integer> set = ((ResultStructure<Integer>)copiedStructure).get();
-        Set<Integer> copiedSet = resultStructure.get();
+        ResultStructure<Integer> copiedStructure = resultStructure.copy();
 
         assertEquals(copiedStructure, resultStructure);
-        assertEquals(copiedSet, set);
         assertNotSame(copiedStructure, resultStructure);
+    }
 
+    @Test
+    public void testCopy_deepCopy() {
+        resultStructure = new ResultStructure<Integer>(initResultSet());
+        ResultStructure<Integer> copiedStructure = resultStructure.copy();
+        HashSet<Integer> newSet = new HashSet<Integer>();
+        newSet.add(123);
+        copiedStructure.merge(new ResultStructure<Integer>(newSet));
+
+        assertThat(resultStructure.get(), not(hasItem(123)));
     }
 
     private Set<Integer> initResultSet() {

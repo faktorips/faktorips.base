@@ -18,10 +18,10 @@ import java.util.Set;
 /**
  * {@link ResultStructure ResultStructures} are the leaves in the tree of nested
  * {@link SearchStructure SearchStructures}. Each {@link ResultStructure} defines a result of a
- * search and thus holds a set of values. It also implements the {@link Mergeable} interface to be
- * able to combine the values of two result structures.
+ * search and thus holds a set of values. It also implements the {@link MergeAndCopyStructure}
+ * interface to be able to combine the values of two result structures.
  */
-public class ResultStructure<R> extends SearchStructure<R> implements Mergeable<ResultStructure<R>> {
+public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCopyStructure<ResultStructure<R>> {
 
     private final Set<R> resultSet;
 
@@ -102,7 +102,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements Mergeable<
         return "ResultStructure [resultSet=" + resultSet + "]";
     }
 
-    public Mergeable<ResultStructure<R>> copy() {
+    public ResultStructure<R> copy() {
         return new ResultStructure<R>(this.resultSet);
     }
 

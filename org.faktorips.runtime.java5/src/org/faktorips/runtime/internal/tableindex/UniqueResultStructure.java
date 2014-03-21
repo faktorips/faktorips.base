@@ -23,7 +23,8 @@ import java.util.Set;
  * {@link SearchStructure} with ambiguous results provokes an exception, even before it is put to
  * use.
  */
-public class UniqueResultStructure<R> extends SearchStructure<R> implements Mergeable<UniqueResultStructure<R>> {
+public class UniqueResultStructure<R> extends SearchStructure<R> implements
+        MergeAndCopyStructure<UniqueResultStructure<R>> {
 
     private final R uniqueResult;
 
@@ -98,8 +99,8 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements Merg
         return "UniqueResultStructure [" + uniqueResult + "]";
     }
 
-    public Mergeable<UniqueResultStructure<R>> copy() {
-        return new UniqueResultStructure<R>(this.uniqueResult);
+    public UniqueResultStructure<R> copy() {
+        return this;
     }
 
 }
