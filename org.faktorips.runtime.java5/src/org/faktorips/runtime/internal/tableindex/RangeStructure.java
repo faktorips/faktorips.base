@@ -91,7 +91,7 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
 
     @Override
     public RangeStructure<K, V, R> copy() {
-        return (RangeStructure<K, V, R>)super.fillCopy(new RangeStructure<K, V, R>(rangeType));
+        return fillCopy(new RangeStructure<K, V, R>(rangeType));
     }
 
 }

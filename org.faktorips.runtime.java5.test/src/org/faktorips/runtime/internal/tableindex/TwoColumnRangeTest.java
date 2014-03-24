@@ -95,14 +95,16 @@ public class TwoColumnRangeTest {
         assertTrue(new TwoColumnRange<Integer>(4, 5).compareTo(new TwoColumnRange<Integer>(null, 5)) > 0);
         assertTrue(new TwoColumnRange<Integer>(3, null).compareTo(new TwoColumnRange<Integer>(3, 5)) == 0);
         assertTrue(new TwoColumnRange<Integer>(3, 5).compareTo(new TwoColumnRange<Integer>(3, null)) == 0);
+        assertTrue(new TwoColumnRange<Integer>(null, 5).compareTo(new TwoColumnRange<Integer>(null, 123)) == 0);
     }
 
     @Test
     public void testCompareToUpperBound_infinity() throws Exception {
         assertTrue(new TwoColumnRange<Integer>(4, 5).compareToUpperBound(new TwoColumnRange<Integer>(3, null)) < 0);
-        assertTrue(new TwoColumnRange<Integer>(4, null).compareToUpperBound(new TwoColumnRange<Integer>(2, null)) > 0);
+        assertTrue(new TwoColumnRange<Integer>(4, null).compareToUpperBound(new TwoColumnRange<Integer>(null, 5)) > 0);
         assertTrue(new TwoColumnRange<Integer>(null, 5).compareToUpperBound(new TwoColumnRange<Integer>(3, 5)) == 0);
         assertTrue(new TwoColumnRange<Integer>(3, 5).compareToUpperBound(new TwoColumnRange<Integer>(null, 5)) == 0);
+        assertTrue(new TwoColumnRange<Integer>(123, null).compareToUpperBound(new TwoColumnRange<Integer>(3, null)) == 0);
     }
 
     @Test

@@ -17,13 +17,20 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.GregorianCalendar;
+import java.util.Map;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 
 public class TwoColumnRangeStructureTest {
 
     private TwoColumnRangeStructure<Integer, ResultStructure<String>, String> structure;
+
+    private TwoColumnRangeStructure<Integer, ResultStructure<String>, String> structure2;
 
     @Before
     public void setUp() {
@@ -33,6 +40,7 @@ public class TwoColumnRangeStructureTest {
         structure.put(120, 200, false, false, new ResultStructure<String>("exclusiveExclusive"));
         structure.put(220, 300, false, true, new ResultStructure<String>("exclusiveInclusive"));
         structure.put(320, 400, true, false, new ResultStructure<String>("inclusiveExclusive"));
+        structure2 = TwoColumnRangeStructure.create();
     }
 
     @Test
@@ -91,16 +99,16 @@ public class TwoColumnRangeStructureTest {
         structure.getMap().clear();
         structure.put(500, 600, new ResultStructure<String>("A"));
         // [500 - 600] : A
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 600)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 600)));
         assertEquals(1, structure.getMap().size());
 
         structure.put(400, 550, new ResultStructure<String>("B"));
         // [400 - 500[ : B
         // [500 - 550] : A,B
         // ]550 - 600] : A
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
         assertEquals(3, structure.getMap().size());
 
         structure.put(550, 700, new ResultStructure<String>("C"));
@@ -109,11 +117,11 @@ public class TwoColumnRangeStructureTest {
         // [550 - 550] : A,B,C
         // ]550 - 600] : A,C
         // ]600 - 700] : C
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(600, 700, false, true)));
         assertEquals(5, structure.getMap().size());
 
         structure.put(500, 700, new ResultStructure<String>("D"));
@@ -122,11 +130,11 @@ public class TwoColumnRangeStructureTest {
         // [550 - 550] : A,B,C,D
         // ]550 - 600] : A,C,D
         // ]600 - 700] : C,D
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(600, 700, false, true)));
         assertEquals(5, structure.getMap().size());
 
         structure.put(300, 900, new ResultStructure<String>("E"));
@@ -138,13 +146,13 @@ public class TwoColumnRangeStructureTest {
         // ]550 - 600] : A,C,D,E
         // ]600 - 700] : C,D,E
         // ]700 - 900] : E
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(300, 400, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(700, 900, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(300, 400, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(700, 900, false, true)));
         assertEquals(7, structure.getMap().size());
 
         structure.put(750, 800, new ResultStructure<String>("F"));
@@ -158,15 +166,15 @@ public class TwoColumnRangeStructureTest {
         // ]700 - 750[ : E
         // [750 - 800] : E,F
         // ]800 - 900] : E
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(300, 400, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(700, 750, false, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(750, 800, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(800, 900, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(300, 400, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(700, 750, false, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(750, 800, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(800, 900, false, true)));
         assertEquals(9, structure.getMap().size());
 
         structure.put(null, null, new ResultStructure<String>("X"));
@@ -182,18 +190,46 @@ public class TwoColumnRangeStructureTest {
         // [750 - 800] : E,F,X
         // ]800 - 900] : E,X
         // ]900 - null[ : X
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(null, 300, false, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(300, 400, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(400, 500, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(500, 550, true, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 550, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(550, 600, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(600, 700, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(700, 750, false, false)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(750, 800, true, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(800, 900, false, true)));
-        assertThat(structure.getMap().keySet(), hasItem(new TwoColumnRange<Integer>(900, null, false, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(null, 300, false, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(300, 400, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(600, 700, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(700, 750, false, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(750, 800, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(800, 900, false, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(900, null, false, false)));
         assertEquals(11, structure.getMap().size());
+    }
+
+    @Test
+    public void testPutKeyValue() {
+        structure.getMap().clear();
+        structure.put(new TwoColumnRange<Integer>(500, 600), new ResultStructure<String>("A"));
+        // [500 - 600] : A
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 600)));
+        assertEquals(1, structure.getMap().size());
+
+        structure.put(new TwoColumnRange<Integer>(400, 550), new ResultStructure<String>("B"));
+        // [400 - 500[ : B
+        // [500 - 550] : A,B
+        // ]550 - 600] : A
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(400, 500, true, false)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(500, 550, true, true)));
+        assertThat(structure.getMap().keySet(), hasRange(new TwoColumnRange<Integer>(550, 600, false, true)));
+        assertEquals(3, structure.getMap().size());
+    }
+
+    @Test
+    public void testPutKKBooleanBooleanV_normal() throws Exception {
+        structure.put(1000, 8000, new ResultStructure<String>("A"));
+
+        assertEquals(1, structure.get(1000).get().size());
+        assertThat(structure.get(1000).get(), hasItem("A"));
+        assertEquals(1, structure.get(8000).get().size());
+        assertThat(structure.get(8000).get(), hasItem("A"));
     }
 
     public void initOverlappingMap() {
@@ -402,16 +438,8 @@ public class TwoColumnRangeStructureTest {
 
         assertEquals(copiedStructure.getMap(), structure.getMap());
         assertNotSame(copiedStructure, structure);
-    }
-
-    @Test
-    public void testPutKKBooleanBooleanV_normal() throws Exception {
-        structure.put(1000, 8000, new ResultStructure<String>("A"));
-
-        assertEquals(1, structure.get(1000).get().size());
-        assertThat(structure.get(1000).get(), hasItem("A"));
-        assertEquals(1, structure.get(8000).get().size());
-        assertThat(structure.get(8000).get(), hasItem("A"));
+        assertEquals(copiedStructure.get(1), structure.get(1));
+        assertNotSame(copiedStructure.get(1), structure.get(1));
     }
 
     @Test
@@ -424,8 +452,54 @@ public class TwoColumnRangeStructureTest {
 
         TwoColumnRangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
 
-        assertEquals(copiedStructure.get(1), structure.get(1));
-        assertNotSame(copiedStructure.get(1), structure.get(1));
+        assertEquals(copiedStructure.getMap(), structure.getMap());
+        assertNotSame(copiedStructure, structure);
+    }
+
+    @Test
+    public void testMerge() throws Exception {
+        structure.getMap().clear();
+        structure.put(0, 100, new ResultStructure<String>("A"));
+        structure2.put(50, 150, new ResultStructure<String>("B"));
+
+        structure.merge(structure2);
+
+        Map<TwoColumnRange<Integer>, ResultStructure<String>> resultMap = structure.getMap();
+        assertEquals(3, resultMap.size());
+        assertThat(resultMap.keySet(), hasRange(new TwoColumnRange<Integer>(0, 50, true, false)));
+        assertThat(resultMap.keySet(), hasRange(new TwoColumnRange<Integer>(50, 100)));
+    }
+
+    /**
+     * hasItem with {@link TwoColumnRange} would only check the lower bound because the equals
+     * method in {@link TwoColumnRange} is designed like that. Using
+     * {@link #hasRange(TwoColumnRange)} we introduce an own matcher that checks lower and upper
+     * bounds.
+     */
+    public static <K extends Comparable<? super K>> Matcher<java.lang.Iterable<TwoColumnRange<K>>> hasRange(TwoColumnRange<K> element) {
+        TwoColumnRangeMatcher<K> elementMatcher = new TwoColumnRangeMatcher<K>(element);
+        return JUnitMatchers.hasItem(elementMatcher);
+    }
+
+    private static class TwoColumnRangeMatcher<K extends Comparable<? super K>> extends BaseMatcher<TwoColumnRange<K>> {
+
+        private final TwoColumnRange<K> range;
+
+        public TwoColumnRangeMatcher(TwoColumnRange<K> range) {
+            this.range = range;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            // no description
+        }
+
+        @Override
+        public boolean matches(Object obj) {
+            @SuppressWarnings("unchecked")
+            TwoColumnRange<K> item = (TwoColumnRange<K>)obj;
+            return range.compareTo(item) == 0 && range.compareToUpperBound(item) == 0;
+        }
     }
 
 }

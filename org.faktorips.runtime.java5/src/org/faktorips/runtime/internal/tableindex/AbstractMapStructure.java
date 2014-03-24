@@ -78,17 +78,11 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
     protected void merge(AbstractMapStructure<K, V, R> otherMap) {
         Map<K, V> otherUnderlyingMap = otherMap.getMap();
         for (Entry<K, V> entry : otherUnderlyingMap.entrySet()) {
-            if (getMap().containsKey(entry.getKey())) {
-                V myValue = getMap().get(entry.getKey());
-                V otherValue = entry.getValue();
-                myValue.merge(otherValue);
-            } else {
-                getMap().put(entry.getKey(), entry.getValue());
-            }
+            put(entry.getKey(), entry.getValue());
         }
     }
 
-    protected AbstractMapStructure<K, V, R> fillCopy(AbstractMapStructure<K, V, R> structure) {
+    protected <T extends AbstractMapStructure<K, V, R>> T fillCopy(T structure) {
         for (Entry<K, V> entry : getMap().entrySet()) {
             V value = entry.getValue().copy();
             structure.put(entry.getKey(), value);

@@ -60,6 +60,6 @@ public class KeyStructure<K, V extends SearchStructure<R> & MergeAndCopyStructur
 
     @Override
     public KeyStructure<K, V, R> copy() {
-        return (KeyStructure<K, V, R>)super.fillCopy(new KeyStructure<K, V, R>());
+        return fillCopy(new KeyStructure<K, V, R>());
     }
 }

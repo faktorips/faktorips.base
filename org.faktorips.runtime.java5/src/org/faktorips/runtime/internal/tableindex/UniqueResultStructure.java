@@ -99,6 +99,11 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
         return "UniqueResultStructure [" + uniqueResult + "]";
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The {@link UniqueResultStructure} is immutable. Hence it is not needed to create a copy.
+     */
     public UniqueResultStructure<R> copy() {
         return this;
     }

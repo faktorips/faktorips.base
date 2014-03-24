@@ -107,6 +107,11 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      */
     public void put(K lower, K upper, boolean lowerInclusive, boolean upperInclusive, V value) {
         TwoColumnRange<K> key = new TwoColumnRange<K>(lower, upper, lowerInclusive, upperInclusive);
+        put(key, value);
+    }
+
+    @Override
+    public void put(TwoColumnRange<K> key, V value) {
         new OverlappingRangePutter<K, V>(getMap()).put(key, value);
     }
 
@@ -169,7 +174,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
 
     @Override
     public TwoColumnRangeStructure<K, V, R> copy() {
-        return (TwoColumnRangeStructure<K, V, R>)super.fillCopy(new TwoColumnRangeStructure<K, V, R>());
+        return fillCopy(new TwoColumnRangeStructure<K, V, R>());
     }
 
     /**

@@ -266,6 +266,13 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
         }
 
         public int compareTo(Bound<K> otherBound) {
+            if (boundaryValue == null && otherBound.boundaryValue == null) {
+                if (direction == otherBound.direction) {
+                    return 0;
+                } else {
+                    return direction == IntervalDirection.LEFT ? -1 : 1;
+                }
+            }
             if (boundaryValue == null) {
                 return direction == IntervalDirection.LEFT ? -1 : 1;
             }

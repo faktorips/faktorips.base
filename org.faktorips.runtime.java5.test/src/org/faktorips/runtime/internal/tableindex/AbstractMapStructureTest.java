@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal.tableindex;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -109,6 +110,22 @@ public class AbstractMapStructureTest {
         assertThat(resultMap.keySet(), hasItem("xyz"));
         assertEquals(createResultSet(123), resultMap.get("abc"));
         assertEquals(createResultSet(321), resultMap.get("xyz"));
+    }
+
+    /**
+     * This test verifies that merge simply calls the put method for deep merge. This is important
+     * because the put method may be overridden (like in {@link TwoColumnRangeStructure}) and may
+     * implements own merging strategies.
+     */
+    @Test
+    public void testMerge_callsPut() throws Exception {
+        map.put("abc", new ResultStructure<Integer>(123));
+        ResultStructure<Integer> value2 = new ResultStructure<Integer>(321);
+        map2.put("xyz", value2);
+
+        abstractMapStructure.merge(abstractMapStructure2);
+
+        verify(abstractMapStructure).put("xyz", value2);
     }
 
     private ResultStructure<Integer> createResultSet(Integer... values) {
