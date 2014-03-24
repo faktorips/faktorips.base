@@ -146,7 +146,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
-
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
         booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
@@ -158,10 +157,21 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
         getBindingContext().bindContent(trueField, pmo, BooleanValueSetPMO.PROPERTY_TRUE);
         getBindingContext().bindContent(falseField, pmo, BooleanValueSetPMO.PROPERTY_FALSE);
+        getBindingContext().bindProblemMarker(trueField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+        getBindingContext().bindProblemMarker(falseField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+
+        createAndBindNullCheckBoxIfRequired(editFields, pmo, booleanValueSetControl);
+
+    }
+
+    private void createAndBindNullCheckBoxIfRequired(final List<EditField<?>> editFields,
+            BooleanValueSetPMO pmo,
+            BooleanValueSetControl booleanValueSetControl) {
         if (booleanValueSetControl.getNullCheckBox() != null) {
             CheckboxField nullField = new CheckboxField(booleanValueSetControl.getNullCheckBox());
             editFields.add(nullField);
             getBindingContext().bindContent(nullField, pmo, BooleanValueSetPMO.PROPERTY_NULL);
+            getBindingContext().bindProblemMarker(nullField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
         }
     }
 
