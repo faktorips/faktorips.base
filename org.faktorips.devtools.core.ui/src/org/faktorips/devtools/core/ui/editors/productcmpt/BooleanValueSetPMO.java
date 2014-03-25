@@ -59,7 +59,7 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
     }
 
     public void setTrueInValueSet(boolean b) {
-        modifyValue(Boolean.TRUE.toString(), b);
+        modifyValue(Boolean.TRUE.toString(), b, propertyValue);
     }
 
     public boolean isFalseInValueSet() {
@@ -71,7 +71,7 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
     }
 
     public void setFalseInValueSet(boolean b) {
-        modifyValue(Boolean.FALSE.toString(), b);
+        modifyValue(Boolean.FALSE.toString(), b, propertyValue);
     }
 
     public boolean isNullInValueSet() {
@@ -83,7 +83,7 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
     }
 
     public void setNullInValueSet(boolean b) {
-        modifyValue(null, b);
+        modifyValue(null, b, propertyValue);
     }
 
     /**
@@ -93,10 +93,11 @@ public class BooleanValueSetPMO extends IpsObjectPartPmo {
      * @param value the value to add or remove
      * @param add if true, the value is added, otherwise, the value is removed
      */
-    private void modifyValue(String value, boolean add) {
+    public static void modifyValue(String value, boolean add, IConfigElement propertyValue) {
         try {
             IValueSet valueSet = propertyValue.getValueSet();
-            if (add && !valueSet.containsValue(value, ipsProject) || !add && valueSet.containsValue(value, ipsProject)) {
+            if (add && !valueSet.containsValue(value, propertyValue.getIpsProject()) || !add
+                    && valueSet.containsValue(value, propertyValue.getIpsProject())) {
                 if (valueSet instanceof IUnrestrictedValueSet) {
                     valueSet = propertyValue.convertValueSetToEnumType();
                 }

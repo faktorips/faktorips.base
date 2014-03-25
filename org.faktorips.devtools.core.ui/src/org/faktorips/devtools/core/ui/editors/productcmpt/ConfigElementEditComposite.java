@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -31,7 +32,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.BooleanValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -80,7 +81,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     private void createEditFieldForBoolean(List<EditField<?>> editFields) {
         final BooleanValueSetPMO pmo = new BooleanValueSetPMO(getPropertyValue());
-        createValueSetEditFieldForBoolean(editFields, pmo);
+        createValueSetEditFieldForBoolean();
         EditField<String> editField = createDefaultValueEditField(editFields);
         if (editField instanceof RadioButtonGroupField) {
             final RadioButtonGroupField<String> radioButtonGroupField = (RadioButtonGroupField<String>)editField;
@@ -144,35 +145,15 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
-    private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
+    private void createValueSetEditFieldForBoolean() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
         booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
 
-        CheckboxField trueField = new CheckboxField(booleanValueSetControl.getTrueCheckBox());
-        CheckboxField falseField = new CheckboxField(booleanValueSetControl.getFalseCheckBox());
-        editFields.add(trueField);
-        editFields.add(falseField);
+        BooleanValueSetField field = new BooleanValueSetField((ConfigElement)getPropertyValue(), booleanValueSetControl);
 
-        getBindingContext().bindContent(trueField, pmo, BooleanValueSetPMO.PROPERTY_TRUE);
-        getBindingContext().bindContent(falseField, pmo, BooleanValueSetPMO.PROPERTY_FALSE);
-        getBindingContext().bindProblemMarker(trueField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
-        getBindingContext().bindProblemMarker(falseField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
-
-        createAndBindNullCheckBoxIfRequired(editFields, pmo, booleanValueSetControl);
-
-    }
-
-    private void createAndBindNullCheckBoxIfRequired(final List<EditField<?>> editFields,
-            BooleanValueSetPMO pmo,
-            BooleanValueSetControl booleanValueSetControl) {
-        if (booleanValueSetControl.getNullCheckBox() != null) {
-            CheckboxField nullField = new CheckboxField(booleanValueSetControl.getNullCheckBox());
-            editFields.add(nullField);
-            getBindingContext().bindContent(nullField, pmo, BooleanValueSetPMO.PROPERTY_NULL);
-            getBindingContext().bindProblemMarker(nullField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
-        }
+        getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
 
     private void createValueSetField(List<EditField<?>> editFields) {

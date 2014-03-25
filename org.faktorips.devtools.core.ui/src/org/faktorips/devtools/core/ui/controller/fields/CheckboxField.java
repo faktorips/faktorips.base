@@ -75,8 +75,6 @@ public class CheckboxField extends DefaultEditField<Boolean> {
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
-
         });
     }
-
 }
