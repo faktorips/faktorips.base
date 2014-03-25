@@ -16,9 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
-
-import javax.imageio.spi.ServiceRegistry;
 
 import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
@@ -31,61 +30,61 @@ import org.w3c.dom.Element;
 public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 
     /**
-     * A map that contains the runtime id of product components as key and the toc entry as value.
+     * A map that contains the runtime id of product components as key and the TOC entry as value.
      */
-    protected Map<String, ProductCmptTocEntry> pcIdTocEntryMap;
+    private Map<String, ProductCmptTocEntry> pcIdTocEntryMap;
 
     /**
-     * A map that contains the fully qualified name of product components as key and the toc entry
+     * A map that contains the fully qualified name of product components as key and the TOC entry
      * as value.
      */
-    protected Map<String, ProductCmptTocEntry> pcNameTocEntryMap;
+    private Map<String, ProductCmptTocEntry> pcNameTocEntryMap;
 
-    /** A map that contains per kindId the list of product component ids that are of the kind. */
-    protected Map<String, List<VersionIdTocEntry>> kindIdTocEntryListMap;
+    /** A map that contains per kindId the list of product component IDs that are of the kind. */
+    private Map<String, List<VersionIdTocEntry>> kindIdTocEntryListMap;
 
     /**
-     * Maps a table class to the toc entry that contains information about a table object
+     * Maps a table class to the TOC entry that contains information about a table object
      * represented by this class.
      */
-    protected Map<String, TableContentTocEntry> tableImplClassTocEntryMap;
+    private Map<String, TableContentTocEntry> tableImplClassTocEntryMap;
 
-    /** Maps a qualified table name to the toc entry that contains information about a table object. */
-    protected Map<String, TableContentTocEntry> tableContentNameTocEntryMap;
+    /** Maps a qualified table name to the TOC entry that contains information about a table object. */
+    private Map<String, TableContentTocEntry> tableContentNameTocEntryMap;
 
     /**
-     * Maps a qualified test case name to the toc entry that contains information about a test case
+     * Maps a qualified test case name to the TOC entry that contains information about a test case
      * object.
      */
-    protected Map<String, TestCaseTocEntry> testCaseNameTocEntryMap;
+    private Map<String, TestCaseTocEntry> testCaseNameTocEntryMap;
 
     /**
-     * Maps a qualified model type name to the toc entry that contains information about the model
+     * Maps a qualified model type name to the TOC entry that contains information about the model
      * type.
      */
-    protected Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap;
+    private Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap;
 
-    /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
-    protected Map<String, EnumContentTocEntry> enumContentImplClassTocEntryMap;
+    /** A map that contains the runtime id of enum contents as key and the TOC entry as value. */
+    private Map<String, EnumContentTocEntry> enumContentImplClassTocEntryMap;
 
     /**
-     * Maps the qualified name of an enumtype to a toc entry of an XmlAdapter. Only for enum type
-     * that defer their content XmlAdapters and hence entries into this map are created.
+     * Maps the qualified name of an enumeration type to a TOC entry of an XmlAdapter. Only for enum
+     * type that defer their content XmlAdapters and hence entries into this map are created.
      */
-    protected Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap;
+    private Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap;
 
-    protected Map<Class<?>, Map<String, CustomTocEntryObject<?>>> otherTocEntryMaps;
+    private Map<Class<?>, Map<String, CustomTocEntryObject<?>>> otherTocEntryMaps;
 
     /**
-     * Creats a new toc.
+     * Creates a new TOC.
      */
     public ReadonlyTableOfContents() {
         super(ReadonlyTableOfContents.class.getClassLoader());
     }
 
     /**
-     * Creats a new toc that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
-     * implementations via {@link ServiceRegistry}.
+     * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
+     * implementations via {@link ServiceLoader}.
      * 
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations
@@ -266,18 +265,6 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return new HashSet<EnumXmlAdapterTocEntry>(enumXmlAdapterTocEntryMap.values());
     }
 
-    private class VersionIdTocEntry {
-
-        private String versionId;
-        private ProductCmptTocEntry tocEntry;
-
-        public VersionIdTocEntry(String versionId, ProductCmptTocEntry entry) {
-            this.versionId = versionId;
-            this.tocEntry = entry;
-        }
-
-    }
-
     public List<TocEntryObject> getEntries() {
         List<TocEntryObject> results = new ArrayList<TocEntryObject>();
         results.addAll(pcIdTocEntryMap.values());
@@ -316,6 +303,18 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             }
         }
         return list;
+    }
+
+    private class VersionIdTocEntry {
+
+        private String versionId;
+        private ProductCmptTocEntry tocEntry;
+
+        public VersionIdTocEntry(String versionId, ProductCmptTocEntry entry) {
+            this.versionId = versionId;
+            this.tocEntry = entry;
+        }
+
     }
 
 }

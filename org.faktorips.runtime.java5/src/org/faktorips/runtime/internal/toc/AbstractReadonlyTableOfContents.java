@@ -14,16 +14,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
-
-import javax.imageio.spi.ServiceRegistry;
 
 import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * A table contents for the runtime repository.
+ * A table of contents for the runtime repository.
  * <p>
  * The table of contents contains a list of toc entries that contain the information needed to
  * identify and load the objects stored in the repository.
@@ -53,13 +52,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
                     for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
                         tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }
-                    @SuppressWarnings("rawtypes")
-                    Iterator<ITocEntryFactory> tocEntryFactories = ServiceRegistry.lookupProviders(
-                            ITocEntryFactory.class, classLoader);
-                    for (; tocEntryFactories.hasNext();) {
-                        ITocEntryFactory<?> tocEntryFactory = tocEntryFactories.next();
-                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
-                    }
+                    loadExtendedTocEntryFactories();
                 }
 
             }
@@ -68,8 +61,31 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     }
 
     /**
-     * Creats a new toc that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
-     * implementations via {@link ServiceRegistry}.
+     * Loads additional TOC entry factories registered via META-INF/services. To register a
+     * {@link ITocEntryFactory}, a file called
+     * META-INF/services/org.faktorips.runtime.internal.toc.ITocEntryFactory must be created, with
+     * the qualified class names of the respective implementations as a content (one implementation
+     * per line).
+     * <p>
+     * The method is marked with <code>@SuppressWarnings("rawtypes")</code> because
+     * {@link ITocEntryFactory} has a generic type which cannot not be inferred when using the
+     * service loader.
+     * 
+     * @see ServiceLoader
+     */
+    @SuppressWarnings("rawtypes")
+    private void loadExtendedTocEntryFactories() {
+        ServiceLoader<ITocEntryFactory> serviceLoader = ServiceLoader.load(ITocEntryFactory.class, classLoader);
+        Iterator<ITocEntryFactory> tocEntryFactories = serviceLoader.iterator();
+        for (; tocEntryFactories.hasNext();) {
+            ITocEntryFactory<?> tocEntryFactory = tocEntryFactories.next();
+            tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+        }
+    }
+
+    /**
+     * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
+     * implementations via {@link ServiceLoader}.
      * 
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations
