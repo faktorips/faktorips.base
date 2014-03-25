@@ -10,7 +10,9 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -216,4 +218,30 @@ public class RangeStructureTest {
         assertTrue(structure.get().isEmpty());
     }
 
+    @Test
+    public void testCopy_DeepCopyOfMapContent() {
+        RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
+                .create(RangeType.LOWER_BOUND_EQUAL);
+        structure.put(1, new ResultStructure<String>("ONE"));
+        structure.put(2, new ResultStructure<String>("TWO"));
+
+        RangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
+
+        assertEquals(copiedStructure.getMap().get(1), structure.getMap().get(1));
+        assertNotSame(copiedStructure.getMap().get(1), structure.getMap().get(1));
+        assertEquals(copiedStructure.getMap().get(2), structure.getMap().get(2));
+        assertNotSame(copiedStructure.getMap().get(2), structure.getMap().get(2));
+    }
+
+    @Test
+    public void testCopy_CopyOfObject() {
+        RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
+                .create(RangeType.LOWER_BOUND_EQUAL);
+        structure.put(1, new ResultStructure<String>("ONE"));
+
+        RangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
+
+        assertEquals(structure.getMap(), copiedStructure.getMap());
+        assertNotSame(copiedStructure, structure);
+    }
 }

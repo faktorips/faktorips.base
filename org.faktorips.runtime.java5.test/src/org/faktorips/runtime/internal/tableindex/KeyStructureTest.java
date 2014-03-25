@@ -11,9 +11,12 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,6 +117,39 @@ public class KeyStructureTest {
         assertThat(resultNestedStructure.get(), hasItem(321));
         assertEquals(123, resultNestedStructure.get("abc").getUnique().intValue());
         assertEquals(321, resultNestedStructure.get("xyz").getUnique().intValue());
+    }
+
+    @Test
+    public void testCopy_DeepCopyForMap() {
+        KeyStructure<String, ResultStructure<Integer>, Integer> structure = KeyStructure.create();
+        initKeyStructureMap(structure);
+        KeyStructure<String, ResultStructure<Integer>, Integer> copyStructure = structure.copy();
+        Map<String, ResultStructure<Integer>> structureMap = structure.getMap();
+        Map<String, ResultStructure<Integer>> copiedMap = ((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure)
+                .getMap();
+
+        assertEquals(structureMap.get("ID_1"), copiedMap.get("ID_1"));
+        assertNotSame(structureMap.get("ID_1"), copiedMap.get("ID_1"));
+        assertEquals(structureMap.get("ID_2"), copiedMap.get("ID_2"));
+        assertNotSame(structureMap.get("ID_2"), copiedMap.get("ID_2"));
+    }
+
+    @Test
+    public void testCopy_CopyOfObject() {
+        KeyStructure<String, ResultStructure<Integer>, Integer> structure = KeyStructure.create();
+        initKeyStructureMap(structure);
+        KeyStructure<String, ResultStructure<Integer>, Integer> copyStructure = structure.copy();
+
+        assertEquals(((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure).getMap(),
+                structure.getMap());
+        assertNotSame(copyStructure, structure);
+    }
+
+    private void initKeyStructureMap(AbstractMapStructure<String, ResultStructure<Integer>, Integer> structure) {
+        ResultStructure<Integer> first = new ResultStructure<Integer>(1);
+        ResultStructure<Integer> second = new ResultStructure<Integer>(2);
+        structure.put("ID_1", first);
+        structure.put("ID_2", second);
     }
 
 }

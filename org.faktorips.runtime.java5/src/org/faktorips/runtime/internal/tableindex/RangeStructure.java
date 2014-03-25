@@ -31,8 +31,8 @@ import java.util.TreeMap;
  * 
  * @see RangeType
  */
-public class RangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R>
-        extends AbstractMapStructure<K, V, R> {
+public class RangeStructure<K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R>
+        extends AbstractMapStructure<K, V, R> implements MergeAndCopyStructure<RangeStructure<K, V, R>> {
 
     private final RangeType rangeType;
 
@@ -52,14 +52,14 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
     /**
      * Creates an empty {@link RangeStructure}.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> RangeStructure<K, V, R> create(RangeType keyType) {
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> create(RangeType keyType) {
         return new RangeStructure<K, V, R>(keyType);
     }
 
     /**
      * Creates a new {@link RangeStructure} and adds the given key-value pair.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & Mergeable<? super V>, R> RangeStructure<K, V, R> createWith(RangeType keyType,
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> createWith(RangeType keyType,
             K key,
             V value) {
         RangeStructure<K, V, R> structure = new RangeStructure<K, V, R>(keyType);
@@ -82,6 +82,16 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
     @Override
     protected TreeMap<K, V> getMap() {
         return (TreeMap<K, V>)super.getMap();
+    }
+
+    @Override
+    public void merge(RangeStructure<K, V, R> map) {
+        super.merge(map);
+    }
+
+    @Override
+    public RangeStructure<K, V, R> copy() {
+        return fillCopy(new RangeStructure<K, V, R>(rangeType));
     }
 
 }

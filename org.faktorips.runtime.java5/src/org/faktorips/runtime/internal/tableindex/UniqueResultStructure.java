@@ -23,7 +23,8 @@ import java.util.Set;
  * {@link SearchStructure} with ambiguous results provokes an exception, even before it is put to
  * use.
  */
-public class UniqueResultStructure<R> extends SearchStructure<R> implements Mergeable<UniqueResultStructure<R>> {
+public class UniqueResultStructure<R> extends SearchStructure<R> implements
+        MergeAndCopyStructure<UniqueResultStructure<R>> {
 
     private final R uniqueResult;
 
@@ -96,6 +97,15 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements Merg
     @Override
     public String toString() {
         return "UniqueResultStructure [" + uniqueResult + "]";
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The {@link UniqueResultStructure} is immutable. Hence it is not needed to create a copy.
+     */
+    public UniqueResultStructure<R> copy() {
+        return this;
     }
 
 }

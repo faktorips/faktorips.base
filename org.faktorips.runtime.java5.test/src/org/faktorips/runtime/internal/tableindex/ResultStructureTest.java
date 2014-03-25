@@ -10,11 +10,15 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -73,4 +77,31 @@ public class ResultStructureTest {
         assertTrue(resultStructure.get().isEmpty());
     }
 
+    @Test
+    public void testCopy_equalNotSame() {
+        resultStructure = new ResultStructure<Integer>(initResultSet());
+        ResultStructure<Integer> copiedStructure = resultStructure.copy();
+
+        assertEquals(copiedStructure, resultStructure);
+        assertNotSame(copiedStructure, resultStructure);
+    }
+
+    @Test
+    public void testCopy_deepCopy() {
+        resultStructure = new ResultStructure<Integer>(initResultSet());
+        ResultStructure<Integer> copiedStructure = resultStructure.copy();
+        HashSet<Integer> newSet = new HashSet<Integer>();
+        newSet.add(123);
+        copiedStructure.merge(new ResultStructure<Integer>(newSet));
+
+        assertThat(resultStructure.get(), not(hasItem(123)));
+    }
+
+    private Set<Integer> initResultSet() {
+        Set<Integer> resultSet1 = new HashSet<Integer>();
+        for (int i = 0; i < 10; i++) {
+            resultSet1.add(i);
+        }
+        return resultSet1;
+    }
 }
