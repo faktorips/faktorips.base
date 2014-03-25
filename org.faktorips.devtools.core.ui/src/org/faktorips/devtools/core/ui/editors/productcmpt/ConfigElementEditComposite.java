@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -81,7 +80,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     private void createEditFieldForBoolean(List<EditField<?>> editFields) {
         final BooleanValueSetPMO pmo = new BooleanValueSetPMO(getPropertyValue());
-        createValueSetEditFieldForBoolean();
+        createValueSetEditFieldForBoolean(editFields);
         EditField<String> editField = createDefaultValueEditField(editFields);
         if (editField instanceof RadioButtonGroupField) {
             final RadioButtonGroupField<String> radioButtonGroupField = (RadioButtonGroupField<String>)editField;
@@ -145,13 +144,13 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
-    private void createValueSetEditFieldForBoolean() {
+    private void createValueSetEditFieldForBoolean(List<EditField<?>> editFields) {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
         booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
-
-        BooleanValueSetField field = new BooleanValueSetField((ConfigElement)getPropertyValue(), booleanValueSetControl);
+        BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
+        editFields.add(field);
 
         getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }

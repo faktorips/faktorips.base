@@ -119,7 +119,11 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
         trueBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(true)));
         falseBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(false)));
         if (nullBox != null) {
-            nullBox.setEnabled(dataChangeable);
+            if (!property.getValueSet().isContainingNull()) {
+                nullBox.setEnabled(false);
+            } else {
+                nullBox.setEnabled(dataChangeable);
+            }
             nullBox.setChecked(allowedValues.contains(null));
         }
     }
@@ -147,5 +151,9 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
 
     public Checkbox getNullCheckBox() {
         return nullBox;
+    }
+
+    public IPolicyCmptTypeAttribute getAttribute() {
+        return property;
     }
 }
