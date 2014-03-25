@@ -78,10 +78,6 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
 
     @Override
     protected IEnumValueSet parseContent() {
-        // boolean containsNull =
-        // booleanValueSetControl.getAttribute().getValueSet().isContainingNull();
-        // booleanValueSetControl.getNullCheckBox().setEnabled(containsNull);
-
         List<String> valuesAsList = createValuesAsList();
 
         IValueSetOwner valueSetOwner = propertyValue.getValueSet().getValueSetOwner();
