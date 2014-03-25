@@ -266,18 +266,8 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
         }
 
         public int compareTo(Bound<K> otherBound) {
-            if (boundaryValue == null && otherBound.boundaryValue == null) {
-                if (direction == otherBound.direction) {
-                    return 0;
-                } else {
-                    return direction == IntervalDirection.LEFT ? -1 : 1;
-                }
-            }
-            if (boundaryValue == null) {
-                return direction == IntervalDirection.LEFT ? -1 : 1;
-            }
-            if (otherBound.boundaryValue == null) {
-                return otherBound.direction == IntervalDirection.RIGHT ? -1 : 1;
+            if (isInfinity() || otherBound.isInfinity()) {
+                return compareInfinity(otherBound);
             }
             int compareLowerBound = boundaryValue.compareTo(otherBound.boundaryValue);
             if (direction == otherBound.direction || compareLowerBound != 0) {
@@ -285,6 +275,24 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
             } else {
                 return direction == IntervalDirection.RIGHT ? -1 : 1;
             }
+        }
+
+        private int compareInfinity(Bound<K> otherBound) {
+            if (isInfinity() && otherBound.isInfinity()) {
+                if (direction == otherBound.direction) {
+                    return 0;
+                } else {
+                    return direction == IntervalDirection.LEFT ? -1 : 1;
+                }
+            } else if (isInfinity()) {
+                return direction == IntervalDirection.LEFT ? -1 : 1;
+            } else {
+                return otherBound.direction == IntervalDirection.RIGHT ? -1 : 1;
+            }
+        }
+
+        private boolean isInfinity() {
+            return boundaryValue == null;
         }
 
         @Override
