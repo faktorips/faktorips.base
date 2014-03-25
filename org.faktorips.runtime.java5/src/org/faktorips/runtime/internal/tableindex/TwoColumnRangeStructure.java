@@ -276,7 +276,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * rangeStructure. Recursively call the {@link #putRespectingOverlapping(RangeEntry)} to let
      * this putter handle further overlappings.</li>
      * </ul>
-     * </ul> </li> </ul>
+     * </ul> </li> </ul> See also FIPS-2451.
      */
     private static class OverlappingRangePutter<K extends Comparable<? super K>, V extends MergeAndCopyStructure<V>> {
 
