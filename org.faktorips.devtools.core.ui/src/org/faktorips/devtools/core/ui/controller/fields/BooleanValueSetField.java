@@ -40,6 +40,15 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
     }
 
     @Override
+    protected Control getControlForDecoration() {
+        if (booleanValueSetControl.getNullCheckBox() != null) {
+            return booleanValueSetControl.getNullCheckBox();
+        } else {
+            return super.getControlForDecoration();
+        }
+    }
+
+    @Override
     public void setValue(IEnumValueSet newValue) {
         try {
             booleanValueSetControl.getTrueCheckBox().setChecked(

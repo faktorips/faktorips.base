@@ -86,8 +86,7 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     @Override
     protected T parseContent() throws Exception {
-        T selectedOption = radioButtonGroup.getSelectedOption();
-        return selectedOption == null ? null : selectedOption;
+        return radioButtonGroup.getSelectedOption();
     }
 
     @Override

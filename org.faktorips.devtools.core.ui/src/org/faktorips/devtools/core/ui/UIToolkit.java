@@ -803,25 +803,6 @@ public class UIToolkit {
         return newCombo;
     }
 
-    public RadioButtonGroup<String> createRadioSetForBoolean(Composite parent,
-            boolean inclNull,
-            String trueRepresentation,
-            String falseRepresentation) {
-        LinkedHashMap<String, String> optionsMap = new LinkedHashMap<String, String>();
-        optionsMap.put(Boolean.toString(true), trueRepresentation);
-        optionsMap.put(Boolean.toString(false), falseRepresentation);
-        if (inclNull) {
-            optionsMap.put(null, Messages.DefaultValueRepresentatiion_RadioButtonGroup);
-        }
-
-        Composite newComposite = createGridComposite(parent, inclNull ? 3 : 2, false, false, new GridData(SWT.LEAD,
-                SWT.TOP, false, false));
-        ((GridLayout)newComposite.getLayout()).horizontalSpacing = 20;
-        RadioButtonGroup<String> radioGroup = createRadioButtonGroup(newComposite, optionsMap);
-
-        return radioGroup;
-    }
-
     public Composite createCheckboxSetForBoolean(Composite parent, String trueRepresentation, String falseRepresentation) {
         Composite newComposite = createGridComposite(parent, 3, true, true);
         createCheckbox(newComposite, trueRepresentation);
@@ -926,7 +907,10 @@ public class UIToolkit {
      *            label. For each option, a radio button is created
      */
     public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent, LinkedHashMap<T, String> options) {
-        return new RadioButtonGroup<T>(parent, options, this);
+        Composite newComposite = createGridComposite(parent, options.size(), false, false, new GridData(SWT.LEAD,
+                SWT.TOP, false, false));
+        ((GridLayout)newComposite.getLayout()).horizontalSpacing = 20;
+        return new RadioButtonGroup<T>(newComposite, options, this);
     }
 
     public Group createGridGroup(Composite parent, String text, int numOfColumns, boolean equalSize) {
