@@ -47,5 +47,5 @@ public interface FieldPropertyMapping<T> {
      * 
      * @return The current value of the property in the object
      */
-    public Object getPropertyValue();
+    public T getPropertyValue();
 }
