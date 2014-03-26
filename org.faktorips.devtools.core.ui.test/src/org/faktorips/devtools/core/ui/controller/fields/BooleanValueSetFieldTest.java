@@ -19,8 +19,6 @@ import java.util.List;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
 import org.junit.Before;
@@ -45,20 +43,12 @@ public class BooleanValueSetFieldTest {
     private Checkbox nullBox;
 
     @Mock
-    private IConfigElement element;
-
-    @Mock
-    private IValueSet valueSet;
-
-    @Mock
-    private IValueSetOwner valueSetOwner;
+    private IConfigElement configElement;
 
     @Mock
     private IIpsModel ipsModel;
 
     private String id = "ID";
-
-    private String nullString = null;
 
     private BooleanValueSetField field;
 
@@ -67,26 +57,40 @@ public class BooleanValueSetFieldTest {
         when(control.getTrueCheckBox()).thenReturn(trueBox);
         when(control.getFalseCheckBox()).thenReturn(falseBox);
         when(control.getNullCheckBox()).thenReturn(nullBox);
-        when(element.getValueSet()).thenReturn(valueSet);
-        when(valueSet.getValueSetOwner()).thenReturn(valueSetOwner);
-        when(valueSetOwner.getIpsModel()).thenReturn(ipsModel);
-        when(ipsModel.getNextPartId(valueSetOwner)).thenReturn(id);
+        when(configElement.getIpsModel()).thenReturn(ipsModel);
+        when(ipsModel.getNextPartId(configElement)).thenReturn(id);
 
     }
 
     @Test
-    public void testParseContent() {
+    public void testParseContent() throws Exception {
         when(trueBox.isChecked()).thenReturn(true);
         when(falseBox.isChecked()).thenReturn(false);
         when(nullBox.isChecked()).thenReturn(true);
 
-        field = new BooleanValueSetField(element, control);
+        field = new BooleanValueSetField(configElement, control);
 
         IEnumValueSet fieldValueSet = field.parseContent();
         List<String> valuesAsList = fieldValueSet.getValuesAsList();
 
-        assertThat(valuesAsList, hasItem("true"));
-        assertThat(valuesAsList, hasItem(nullString));
+        assertThat(valuesAsList, hasItem(Boolean.TRUE.toString()));
+        assertThat(valuesAsList, hasItem((String)null));
         assertEquals(2, valuesAsList.size());
     }
+
+    @Test
+    public void testParseContent_noNullCheckbox() throws Exception {
+        when(trueBox.isChecked()).thenReturn(false);
+        when(falseBox.isChecked()).thenReturn(true);
+        nullBox = null;
+
+        field = new BooleanValueSetField(configElement, control);
+
+        IEnumValueSet fieldValueSet = field.parseContent();
+        List<String> valuesAsList = fieldValueSet.getValuesAsList();
+
+        assertThat(valuesAsList, hasItem(Boolean.FALSE.toString()));
+        assertEquals(1, valuesAsList.size());
+    }
+
 }

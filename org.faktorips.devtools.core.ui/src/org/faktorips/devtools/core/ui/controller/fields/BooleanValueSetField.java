@@ -20,19 +20,17 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
 
 public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
 
-    private IConfigElement propertyValue;
+    private IConfigElement configElement;
 
     private BooleanValueSetControl booleanValueSetControl;
 
-    public BooleanValueSetField(IConfigElement propertyValue, BooleanValueSetControl booleanValueSetControl) {
-        this.propertyValue = propertyValue;
-        propertyValue.getIpsProject();
+    public BooleanValueSetField(IConfigElement configElement, BooleanValueSetControl booleanValueSetControl) {
+        this.configElement = configElement;
         this.booleanValueSetControl = booleanValueSetControl;
     }
 
@@ -58,31 +56,28 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
 
     @Override
     public String getText() {
-        // There is no need to use the getText method.
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setText(String newText) {
-        // There is no need to use the setText method.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void insertText(String text) {
-        // There is no need to use the insertText method.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void selectAll() {
-        // There is no need to use the insertText method.
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected IEnumValueSet parseContent() {
         List<String> valuesAsList = createValuesAsList();
-        IValueSetOwner valueSetOwner = propertyValue.getValueSet().getValueSetOwner();
-        return new EnumValueSet(valueSetOwner, valuesAsList, valueSetOwner.getIpsModel().getNextPartId(valueSetOwner));
+        return new EnumValueSet(configElement, valuesAsList, configElement.getIpsModel().getNextPartId(configElement));
     }
 
     private List<String> createValuesAsList() {
@@ -117,7 +112,7 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
 
                 @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
-                    // no default selection is needed
+                    // no default selection
                 }
             });
         }
