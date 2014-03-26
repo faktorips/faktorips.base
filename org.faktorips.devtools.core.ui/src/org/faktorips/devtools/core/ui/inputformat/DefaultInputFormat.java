@@ -13,12 +13,28 @@ package org.faktorips.devtools.core.ui.inputformat;
 import java.util.Locale;
 
 import org.eclipse.swt.events.VerifyEvent;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.DatatypeFormatter;
+import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * Fallback inputformat. Simply passes through the given string in {@link #parse(String)} and
  * {@link #format(String)}.
  */
 public class DefaultInputFormat extends AbstractInputFormat<String> {
+
+    private ValueDatatype datatype;
+
+    private DatatypeFormatter formatter;
+
+    public DefaultInputFormat(ValueDatatype datatype) {
+        this(datatype, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter());
+    }
+
+    public DefaultInputFormat(ValueDatatype datatype, DatatypeFormatter formatter) {
+        this.datatype = datatype;
+        this.formatter = formatter;
+    }
 
     @Override
     protected String parseInternal(String stringToBeparsed) {
@@ -27,7 +43,7 @@ public class DefaultInputFormat extends AbstractInputFormat<String> {
 
     @Override
     protected String formatInternal(String value) {
-        return value;
+        return formatter.formatValue(datatype, value);
     }
 
     @Override

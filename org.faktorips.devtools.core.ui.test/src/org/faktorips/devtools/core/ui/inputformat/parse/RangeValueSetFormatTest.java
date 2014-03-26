@@ -61,7 +61,7 @@ public class RangeValueSetFormatTest {
         rangeVSFormat = new RangeValueSetFormat(configElement, uiPlugin);
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat());
+                new DefaultInputFormat(null));
         when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
         when(configElement.getValueSet()).thenReturn(range);
         when(configElement.getIpsModel()).thenReturn(ipsModel);

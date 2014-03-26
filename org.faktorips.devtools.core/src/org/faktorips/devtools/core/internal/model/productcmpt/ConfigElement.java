@@ -189,7 +189,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
         ValueDatatype valueDatatype = validateValueVsDatatype(attribute, ipsProject, list);
         if (valueDatatype != null) {
-            validateValueVsValueSet(ipsProject, list);
+            validateValueVsValueSet(valueDatatype, ipsProject, list);
             validateValueSetVsAttributeValueSet(attribute, ipsProject, list);
         }
     }
@@ -271,11 +271,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
     }
 
-    private void validateValueVsValueSet(IIpsProject ipsProject, MessageList list) throws CoreException {
+    private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)
+            throws CoreException {
         if (StringUtils.isNotEmpty(value)) {
             if (!valueSet.containsValue(value, ipsProject)) {
+                String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(valueDatatype, value);
                 list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-                        Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
+                        Messages.ConfigElement_msgValueNotInValueset, formattedValue), Message.ERROR, this,
+                        PROPERTY_VALUE));
             }
         }
     }

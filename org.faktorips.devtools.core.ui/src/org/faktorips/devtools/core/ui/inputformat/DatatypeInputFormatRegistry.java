@@ -176,7 +176,7 @@ public class DatatypeInputFormatRegistry {
         if (inputformatFactory != null) {
             return inputformatFactory.newInputFormat(datatype, ipsProject);
         } else {
-            return new DefaultInputFormat();
+            return new DefaultInputFormat(datatype);
         }
     }
 

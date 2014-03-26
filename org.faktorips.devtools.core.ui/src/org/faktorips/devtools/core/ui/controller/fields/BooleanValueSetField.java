@@ -52,6 +52,7 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
         } catch (CoreException e) {
             e.printStackTrace();
         }
+        booleanValueSetControl.updateEnabledState();
     }
 
     @Override

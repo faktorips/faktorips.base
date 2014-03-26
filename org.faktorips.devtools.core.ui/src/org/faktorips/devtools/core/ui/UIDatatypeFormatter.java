@@ -25,7 +25,8 @@ public class UIDatatypeFormatter {
      * <p>
      * Supports the null-presentation mechanism.
      * 
-     * @param datatype The data type the value is a value of.
+     * @param datatype The data type the value is a value of. If datatype is null the method returns
+     *            the value unchanged.
      * @param value The value as string
      */
     public String formatValue(ValueDatatype datatype, String value) {
