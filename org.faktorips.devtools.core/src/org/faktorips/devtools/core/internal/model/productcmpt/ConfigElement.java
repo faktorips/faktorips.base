@@ -45,6 +45,7 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -258,18 +259,16 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             throw new RuntimeException();
         }
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
-        String[] invalidProperties = null;
-        Object invalidObject = this;
-        if (valueSet instanceof IEnumValueSet) {
-            invalidProperties = new String[] { IConfigElement.PROPERTY_VALUE_SET };
-        } else if (valueSet instanceof IRangeValueSet) {
-            invalidObject = valueSet;
-            invalidProperties = new String[] { IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND,
-                    IRangeValueSet.PROPERTY_STEP };
-        } else {
-            invalidProperties = new String[] { PROPERTY_VALUE };
+        List<ObjectProperty> invalidObjectProperties = new ArrayList<ObjectProperty>();
+        invalidObjectProperties.add(new ObjectProperty(this, IConfigElement.PROPERTY_VALUE_SET));
+        if (valueSet instanceof IRangeValueSet) {
+            invalidObjectProperties.add(new ObjectProperty(valueSet, IRangeValueSet.PROPERTY_LOWERBOUND));
+            invalidObjectProperties.add(new ObjectProperty(valueSet, IRangeValueSet.PROPERTY_UPPERBOUND));
+            invalidObjectProperties.add(new ObjectProperty(valueSet, IRangeValueSet.PROPERTY_STEP));
         }
-        list.add(new Message(msgCode, text, Message.ERROR, invalidObject, invalidProperties));
+        ObjectProperty[] invalidOP = invalidObjectProperties
+                .toArray(new ObjectProperty[invalidObjectProperties.size()]);
+        list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
     }
 
     private void validateValueVsValueSet(IIpsProject ipsProject, MessageList list) throws CoreException {
