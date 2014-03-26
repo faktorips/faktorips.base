@@ -811,7 +811,7 @@ public class UIToolkit {
         optionsMap.put(Boolean.toString(true), trueRepresentation);
         optionsMap.put(Boolean.toString(false), falseRepresentation);
         if (inclNull) {
-            optionsMap.put(null, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+            optionsMap.put(null, Messages.DefaultValueRepresentatiion_RadioButtonGroup);
         }
 
         Composite newComposite = createGridComposite(parent, inclNull ? 3 : 2, false, false, new GridData(SWT.LEAD,

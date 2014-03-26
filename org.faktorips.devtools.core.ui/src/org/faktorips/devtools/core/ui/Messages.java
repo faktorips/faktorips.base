@@ -28,6 +28,8 @@ public class Messages extends NLS {
 
     public static String DefaultLabelProvider_labelDefaultPackage;
 
+    public static String DefaultValueRepresentatiion_RadioButtonGroup;
+
     public static String FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer;
 
     public static String FaktorIpsPreferencePage_simpleContextMenu;
