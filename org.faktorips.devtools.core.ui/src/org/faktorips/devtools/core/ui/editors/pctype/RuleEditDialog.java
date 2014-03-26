@@ -18,13 +18,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.util.message.MessageList;
 
 public class RuleEditDialog extends IpsPartEditDialog2 {
 
@@ -120,21 +117,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
                 IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         getBindingContext().bindContent(specifiedInSrcField, rule,
                 IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
-    }
-
-    class UIController extends IpsObjectUIController {
-
-        public UIController(IIpsObjectPartContainer ipsObjectPartContainer) {
-            super(ipsObjectPartContainer);
-            setEnableWholeIpsObjectValidation(true);
-        }
-
-        @Override
-        protected MessageList validatePartContainerAndUpdateUI() {
-            MessageList list = super.validatePartContainerAndUpdateUI();
-            rfControl.updateValidationStatus();
-            return list;
-        }
     }
 
 }
