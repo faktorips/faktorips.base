@@ -48,7 +48,9 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
                     newValue.containsValue(Boolean.TRUE.toString(), newValue.getIpsProject()));
             booleanValueSetControl.getFalseCheckBox().setChecked(
                     newValue.containsValue(Boolean.FALSE.toString(), newValue.getIpsProject()));
-            booleanValueSetControl.getNullCheckBox().setChecked(newValue.isContainingNull());
+            if (booleanValueSetControl.getNullCheckBox() != null) {
+                booleanValueSetControl.getNullCheckBox().setChecked(newValue.isContainingNull());
+            }
         } catch (CoreException e) {
             e.printStackTrace();
         }
@@ -79,26 +81,21 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
     @Override
     protected IEnumValueSet parseContent() {
         List<String> valuesAsList = createValuesAsList();
-
         IValueSetOwner valueSetOwner = propertyValue.getValueSet().getValueSetOwner();
         return new EnumValueSet(valueSetOwner, valuesAsList, valueSetOwner.getIpsModel().getNextPartId(valueSetOwner));
     }
 
     private List<String> createValuesAsList() {
         List<String> valuesAsList = new ArrayList<String>();
-        addValueToList(booleanValueSetControl.getTrueCheckBox(), valuesAsList, false);
-        addValueToList(booleanValueSetControl.getFalseCheckBox(), valuesAsList, false);
-        addValueToList(booleanValueSetControl.getNullCheckBox(), valuesAsList, true);
+        addValue(valuesAsList, booleanValueSetControl.getTrueCheckBox(), Boolean.TRUE.toString());
+        addValue(valuesAsList, booleanValueSetControl.getFalseCheckBox(), Boolean.FALSE.toString());
+        addValue(valuesAsList, booleanValueSetControl.getNullCheckBox(), null);
         return valuesAsList;
     }
 
-    private void addValueToList(Checkbox checkbox, List<String> valuesAsList, boolean isNull) {
-        if (checkbox.isChecked()) {
-            if (isNull) {
-                valuesAsList.add(null);
-            } else {
-                valuesAsList.add(checkbox.getText());
-            }
+    private void addValue(List<String> valuesAsList, Checkbox checkbox, String nameOfCheckbox) {
+        if (checkbox != null && checkbox.isChecked()) {
+            valuesAsList.add(nameOfCheckbox);
         }
     }
 
@@ -110,19 +107,20 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
     }
 
     private void addListenerToCheckbox(Checkbox checkBox) {
-        checkBox.getButton().addSelectionListener(new SelectionListener() {
+        if (checkBox != null) {
+            checkBox.getButton().addSelectionListener(new SelectionListener() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(BooleanValueSetField.this));
-                parseContent();
-            }
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    notifyChangeListeners(new FieldValueChangedEvent(BooleanValueSetField.this));
+                }
 
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // no default selection is needed
-            }
-        });
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // no default selection is needed
+                }
+            });
+        }
     }
 
 }
