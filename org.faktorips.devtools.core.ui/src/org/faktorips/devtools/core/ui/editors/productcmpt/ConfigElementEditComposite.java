@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
@@ -33,7 +32,6 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.BooleanValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
-import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -71,34 +69,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
         if (isBooleanDatatype()) {
-            createEditFieldForBoolean(editFields);
+            createValueSetEditFieldForBoolean(editFields);
         } else {
-            createEditFieldForOthers(editFields);
+            createValueSetField(editFields);
         }
-        createEditFieldsForExtensionProperties();
-    }
-
-    private void createEditFieldForBoolean(List<EditField<?>> editFields) {
-        final BooleanValueSetPMO pmo = new BooleanValueSetPMO(getPropertyValue());
-        createValueSetEditFieldForBoolean(editFields);
-        EditField<String> editField = createDefaultValueEditField(editFields);
-        if (editField instanceof RadioButtonGroupField) {
-            final RadioButtonGroupField<String> radioButtonGroupField = (RadioButtonGroupField<String>)editField;
-
-            getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.TRUE.toString()), pmo,
-                    BooleanValueSetPMO.PROPERTY_TRUE);
-            getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.FALSE.toString()), pmo,
-                    BooleanValueSetPMO.PROPERTY_FALSE);
-            Button nullButton = radioButtonGroupField.getButton(null);
-            if (nullButton != null) {
-                getBindingContext().bindEnabled(nullButton, pmo, BooleanValueSetPMO.PROPERTY_NULL);
-            }
-        }
-    }
-
-    private void createEditFieldForOthers(List<EditField<?>> editFields) {
-        createValueSetField(editFields);
         createDefaultValueEditField(editFields);
+        createEditFieldsForExtensionProperties();
     }
 
     private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
