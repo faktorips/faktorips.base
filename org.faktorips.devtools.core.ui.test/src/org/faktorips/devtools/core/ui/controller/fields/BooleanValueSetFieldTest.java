@@ -12,11 +12,15 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -48,6 +52,12 @@ public class BooleanValueSetFieldTest {
     @Mock
     private IIpsModel ipsModel;
 
+    @Mock
+    private IEnumValueSet enumValue;
+
+    @Mock
+    private IIpsProject ipsProject;
+
     private String id = "ID";
 
     private BooleanValueSetField field;
@@ -60,6 +70,7 @@ public class BooleanValueSetFieldTest {
         when(configElement.getIpsModel()).thenReturn(ipsModel);
         when(ipsModel.getNextPartId(configElement)).thenReturn(id);
 
+        field = new BooleanValueSetField(configElement, control);
     }
 
     @Test
@@ -67,8 +78,6 @@ public class BooleanValueSetFieldTest {
         when(trueBox.isChecked()).thenReturn(true);
         when(falseBox.isChecked()).thenReturn(false);
         when(nullBox.isChecked()).thenReturn(true);
-
-        field = new BooleanValueSetField(configElement, control);
 
         IEnumValueSet fieldValueSet = field.parseContent();
         List<String> valuesAsList = fieldValueSet.getValuesAsList();
@@ -93,4 +102,30 @@ public class BooleanValueSetFieldTest {
         assertEquals(1, valuesAsList.size());
     }
 
+    @Test
+    public void testSetValue() throws CoreException {
+        when(enumValue.getIpsProject()).thenReturn(ipsProject);
+        when(enumValue.containsValue(Boolean.TRUE.toString(), ipsProject)).thenReturn(true);
+        when(enumValue.containsValue(Boolean.FALSE.toString(), ipsProject)).thenReturn(true);
+        when(enumValue.isContainingNull()).thenReturn(true);
+
+        field.setValue(enumValue);
+
+        verify(trueBox).setChecked(true);
+        verify(falseBox).setChecked(true);
+        verify(nullBox).setChecked(true);
+    }
+
+    @Test
+    public void testSetValue_NullCheckboxIsNull() throws CoreException {
+        when(enumValue.getIpsProject()).thenReturn(ipsProject);
+        when(enumValue.containsValue(Boolean.TRUE.toString(), ipsProject)).thenReturn(false);
+        when(enumValue.containsValue(Boolean.FALSE.toString(), ipsProject)).thenReturn(true);
+        when(control.getNullCheckBox()).thenReturn(null);
+
+        field.setValue(enumValue);
+
+        verify(falseBox).setChecked(true);
+        verifyZeroInteractions(nullBox);
+    }
 }
