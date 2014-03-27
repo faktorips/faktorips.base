@@ -1021,7 +1021,7 @@
              id="org.faktorips.devtools"
              name="%org.faktorips.devtools.importWizard.category">
        </category>
-     	<wizard
+            	<wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
             icon="icons/ImportTableContents.gif"
@@ -1030,14 +1030,6 @@
     	   <description>%TableImportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
-		<wizard
-        category="org.faktorips.devtools"
-        class="org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard"
-        icon="icons/ImportTestCase.gif"
-        id="transformRuntimeTestCase"
-        name="%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard">
-	 	   <description>%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard.description</description>
- 	    </wizard>
   <wizard
         category="org.faktorips.devtools"
         class="org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"

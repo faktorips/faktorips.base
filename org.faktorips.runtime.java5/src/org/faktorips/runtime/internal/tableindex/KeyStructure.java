@@ -19,8 +19,8 @@ import java.util.HashMap;
  * 
  * @see AbstractMapStructure
  */
-public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>, R> extends
-        AbstractMapStructure<K, V, R> {
+public class KeyStructure<K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> extends
+        AbstractMapStructure<K, V, R> implements MergeAndCopyStructure<KeyStructure<K, V, R>> {
 
     KeyStructure() {
         super(new HashMap<K, V>());
@@ -29,14 +29,14 @@ public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>
     /**
      * Creates a new empty {@link KeyStructure}.
      */
-    public static <K, V extends SearchStructure<R> & Mergeable<? super V>, R> KeyStructure<K, V, R> create() {
+    public static <K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> KeyStructure<K, V, R> create() {
         return new KeyStructure<K, V, R>();
     }
 
     /**
      * Creates a new {@link KeyStructure} and put the given key value pair.
      */
-    public static <K, V extends SearchStructure<R> & Mergeable<? super V>, R> KeyStructure<K, V, R> createWith(K key,
+    public static <K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> KeyStructure<K, V, R> createWith(K key,
             V value) {
         KeyStructure<K, V, R> structure = new KeyStructure<K, V, R>();
         structure.put(key, value);
@@ -51,5 +51,15 @@ public class KeyStructure<K, V extends SearchStructure<R> & Mergeable<? super V>
             V result = getMap().get(key);
             return getValidResult(result);
         }
+    }
+
+    @Override
+    public void merge(KeyStructure<K, V, R> map) {
+        super.merge(map);
+    }
+
+    @Override
+    public KeyStructure<K, V, R> copy() {
+        return fillCopy(new KeyStructure<K, V, R>());
     }
 }

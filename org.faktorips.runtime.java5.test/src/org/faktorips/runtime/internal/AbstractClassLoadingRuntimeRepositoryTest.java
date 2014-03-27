@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -21,8 +22,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.junit.Before;
@@ -119,5 +123,15 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         repo.createProductCmptGeneration(genEntry);
 
         verify(helper).initProductComponentGenerationVariation(repo, genEntry, genElement);
+    }
+
+    @Test
+    public void testCreateEnumValues() throws Exception {
+        EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
+        when(tocEntry.getXmlResourceName()).thenReturn("org/faktorips/runtime/internal/EmptyEnum.xml");
+
+        List<Object> enumValues = repo.createEnumValues(tocEntry, Object.class);
+
+        assertTrue(enumValues.isEmpty());
     }
 }

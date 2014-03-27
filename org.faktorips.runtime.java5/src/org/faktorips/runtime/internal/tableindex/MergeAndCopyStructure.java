@@ -11,24 +11,31 @@
 package org.faktorips.runtime.internal.tableindex;
 
 /**
- * Defines the ability to merge other objects into this {@link Mergeable mergable}. Used for data
- * structures.
+ * Defines the ability to merge or copy other objects into this {@link MergeAndCopyStructure}. Used
+ * for data structures.
  * <p>
  * An example of the use of this interface are the subclasses of {@link SearchStructure}. They are
- * defined to be mergable with objects of the same class (or at least similar classes). Merging a
- * {@link SearchStructure} deletes no content, instead equal values are being merged recursively.
+ * defined to be mergeable with objects of the same class (or at least similar classes).
  * 
- * @param <T> the type of object that can be merged into this object
- * @See {@link AbstractMapStructure}
+ * @param <T> the type of object that can be copied or merged into this object
  */
-public interface Mergeable<T> {
+public interface MergeAndCopyStructure<T extends MergeAndCopyStructure<T>> {
 
     /**
      * Merging adds the contents of the otherMergable to this object. This object then contains the
-     * combined content. The other object remains unchanged.
+     * combined content. The other object remains unchanged.Merging a {@link SearchStructure}
+     * deletes no content, instead equal values are being merged recursively.
      * 
      * @param otherMergeable The object that should be merged into this object
      */
     public void merge(T otherMergeable);
+
+    /**
+     * This method copies the object which calls it. The newly created object has the same
+     * properties like the object calling {@link #copy()}.
+     * 
+     * @return T that is a copy of the calling object
+     */
+    public T copy();
 
 }

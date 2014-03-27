@@ -10,7 +10,7 @@
 
 package org.faktorips.runtime.internal.toc;
 
-import javax.imageio.spi.ServiceRegistry;
+import java.util.ServiceLoader;
 
 import org.w3c.dom.Element;
 
@@ -22,12 +22,13 @@ import org.w3c.dom.Element;
  * {@code org.faktorips.devtools.stdbuilder.tocEntryFactory} extension point.
  * </p>
  * <p>
- * At runtime, the extension point mechanism is not available and the {@link ServiceRegistry} is
- * used. For the {@link ServiceRegistry} to find the implementation, the full qualified name of the
- * implementation class must be put in the file
- * {@code META-INF/services/org.faktorips.runtime.internal.toc.ITocEntryFactory}. <strong>That file
- * and the implementation class need to be found by the {@link ClassLoader} provided to the
- * {@link AbstractReadonlyTableOfContents}'s constructor.</strong>
+ * At runtime, the extension point mechanism is not available, instead the {@link ServiceLoader} is
+ * used. For the {@link ServiceLoader} to find the implementation, the full qualified name of the
+ * implementation class must be specified in the file
+ * {@code META-INF/services/org.faktorips.runtime.internal.toc.ITocEntryFactory}.
+ * <p>
+ * <strong>The file and the implementation class must be accessible by the {@link ClassLoader}
+ * provided to the {@link AbstractReadonlyTableOfContents}'s constructor.</strong>
  * </p>
  * 
  * @author schwering

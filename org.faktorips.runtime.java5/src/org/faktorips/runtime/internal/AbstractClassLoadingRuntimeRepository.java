@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -123,9 +124,13 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     @Override
     protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
         List<List<Object>> enumValueList = getEnumValueListFromSaxHandler(tocEntry);
-        Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
-                getParameterSize(enumValueList));
-        return getCreatedEnumValueList(tocEntry, enumValueList, constructor);
+        if (enumValueList.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
+                    getParameterSize(enumValueList));
+            return getCreatedEnumValueList(tocEntry, enumValueList, constructor);
+        }
     }
 
     private <T> List<T> getCreatedEnumValueList(EnumContentTocEntry tocEntry,
