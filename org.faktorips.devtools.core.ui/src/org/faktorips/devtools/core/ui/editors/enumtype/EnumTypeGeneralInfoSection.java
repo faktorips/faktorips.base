@@ -128,7 +128,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         toolkit.createHorizontalSpacer(composite, 0);
         toolkit.createHorizontalSpacer(composite, 0);
         createEnumContentSpecificationAndBoundary(composite, toolkit);
-        registerFocusHandling();
         createExtensionControl(toolkit, composite);
     }
 
@@ -202,13 +201,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         getBindingContext().bindEnabled(enumContentNameControl.getControl(), pmo,
                 EnumTypePmo.PROPERTY_ENUM_CONTENT_NAME_CONTROL);
         getBindingContext().bindEnabled(boundaryText, pmo, EnumTypePmo.PROPERTY_BOUNDARY_TEXT);
-    }
-
-    private void registerFocusHandling() {
-        addFocusControl(supertypeRefControl);
-        addFocusControl(isAbstractCheckbox);
-        addFocusControl(extensibleCheckbox);
-        addFocusControl(enumContentNameControl.getTextControl());
     }
 
     private void createExtensionControl(UIToolkit toolkit, Composite composite) {

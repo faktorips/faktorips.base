@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -64,7 +65,7 @@ public class GeneralInfoSection extends IpsSection {
                     if (supertype != null) {
                         IpsUIPlugin.getDefault().openEditor(supertype);
                     }
-                } catch (Exception e) {
+                } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
 
@@ -109,7 +110,7 @@ public class GeneralInfoSection extends IpsSection {
                     if (productCmptType != null) {
                         IpsUIPlugin.getDefault().openEditor(productCmptType);
                     }
-                } catch (Exception e) {
+                } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
 
@@ -125,12 +126,6 @@ public class GeneralInfoSection extends IpsSection {
                 IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
         getBindingContext().bindEnabled(productCmptTypeRefControl, policyCmptType,
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
-
-        // Register controls for focus handling.
-        addFocusControl(supertypeRefControl);
-        addFocusControl(abstractCheckbox);
-        addFocusControl(productCmptTypeRefControl);
-        addFocusControl(refCheckbox);
 
         extFactory.createControls(composite, toolkit, policyCmptType, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());

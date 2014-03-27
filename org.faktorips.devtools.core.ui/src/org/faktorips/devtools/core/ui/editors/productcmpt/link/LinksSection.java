@@ -192,7 +192,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             cardinalityPanel.setDataChangeable(isDataChangeable());
             cardinalityPanel.deactivate();
 
-            addFocusControl(treeViewer.getTree());
             registerDoubleClickListener();
             treeViewer.refresh(true);
         }
