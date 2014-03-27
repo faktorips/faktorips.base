@@ -131,13 +131,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
-        // Register controls for focus handling
-        addFocusControl(supertypeRefControl);
-        addFocusControl(abstractCheckbox);
-        addFocusControl(valuesArePartOfModelCheckbox);
-        addFocusControl(enumContentNameControl.getTextControl());
-
-        // Extension properties
         extFactory.createControls(composite, toolkit, enumType);
         extFactory.bind(getBindingContext());
     }

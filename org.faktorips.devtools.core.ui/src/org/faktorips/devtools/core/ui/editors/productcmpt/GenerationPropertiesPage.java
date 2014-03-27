@@ -122,7 +122,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         Composite right = createColumnComposite(sashForm);
 
         createSections(left, right);
-        setFocusSuccessors();
         registerSelectionProviderActivation(stack.topControl);
 
         boolean reduced = reduceToOneColumnAsNecessary(left, right);
@@ -243,18 +242,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     private void createLinksSection(Composite right) {
         IpsSection linksSection = new LinksSection(getEditor(), getActiveGeneration(), right, toolkit);
         rightSections.add(linksSection);
-    }
-
-    private void setFocusSuccessors() {
-        for (int i = 0; i < leftSections.size() - 1; i++) {
-            leftSections.get(i).setFocusSuccessor(leftSections.get(i + 1));
-        }
-        for (int i = 0; i < rightSections.size() - 1; i++) {
-            rightSections.get(i).setFocusSuccessor(rightSections.get(i + 1));
-        }
-        if (!leftSections.isEmpty()) {
-            leftSections.get(leftSections.size() - 1).setFocusSuccessor(rightSections.get(0));
-        }
     }
 
     private void createToolbar() {
