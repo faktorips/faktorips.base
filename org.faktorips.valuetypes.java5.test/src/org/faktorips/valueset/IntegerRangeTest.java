@@ -76,6 +76,9 @@ public class IntegerRangeTest {
         assertTrue(range.contains(10));
         assertFalse(range.contains(-10));
         assertFalse(range.contains(44));
+
+        range = IntegerRange.valueOf(10, 100, 10, true);
+        assertTrue(range.contains(null));
     }
 
     @Test
@@ -98,7 +101,6 @@ public class IntegerRangeTest {
         range = IntegerRange.valueOf(0, 100, 20, true);
         values = range.getValues(false);
         assertEquals(7, range.size());
-        assertTrue(values.contains(null));
     }
 
     @Test

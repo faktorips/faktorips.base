@@ -276,11 +276,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     public boolean contains(T value) {
-        if (value == null) {
-            if (containsNull()) {
-                return true;
-            }
-            return false;
+        if (isNullValue(value)) {
+            return containsNull();
         }
 
         boolean withinBounds = (isLowerBoundNull() || value.compareTo(lowerBound) >= 0)
@@ -298,6 +295,11 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             return true;
         }
         return false;
+    }
+
+    private boolean isNullValue(T value) {
+        return value == null || value instanceof NullObject
+                || (value instanceof NullObjectSupport && ((NullObjectSupport)value).isNull());
     }
 
     /**

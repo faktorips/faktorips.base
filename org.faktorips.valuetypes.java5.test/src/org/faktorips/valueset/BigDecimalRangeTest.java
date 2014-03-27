@@ -85,6 +85,14 @@ public class BigDecimalRangeTest {
     }
 
     @Test
+    public void testContainsNull() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(0)),
+                BigDecimal.valueOf(new Integer(100)), BigDecimal.valueOf(new Integer(10)), true);
+
+        assertTrue(range.contains(null));
+    }
+
+    @Test
     public void testGetValues() {
 
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)),

@@ -137,4 +137,10 @@ public class DecimalRangeTest {
         TestUtil.testSerializable(range);
     }
 
+    @Test
+    public void testContainsNull() {
+        DecimalRange allowedValues = DecimalRange.valueOf("0", "5", "1", true);
+
+        assertTrue(allowedValues.contains(Decimal.NULL));
+    }
 }
