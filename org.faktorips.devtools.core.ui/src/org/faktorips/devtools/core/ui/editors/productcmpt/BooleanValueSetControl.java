@@ -106,21 +106,33 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
     }
 
     public void updateEnabledState() {
-        IValueSet valueSet = attribute.getValueSet();
-        try {
-            trueBox.setEnabled(dataChangeable && (trueBox.isChecked() || isEnabled(valueSet, Boolean.TRUE.toString())));
-            falseBox.setEnabled(dataChangeable
-                    && (falseBox.isChecked() || isEnabled(valueSet, Boolean.FALSE.toString())));
-            if (nullBox != null) {
-                nullBox.setEnabled(dataChangeable && (nullBox.isChecked() || valueSet.isContainingNull()));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        updateEnabledState(trueBox, Boolean.TRUE.toString());
+        updateEnabledState(falseBox, Boolean.FALSE.toString());
+        if (nullBox != null) {
+            updateEnabledState(nullBox, null);
         }
     }
 
-    private boolean isEnabled(IValueSet valueSet, String trueValue) throws CoreException {
-        return valueSet.containsValue(trueValue, attribute.getIpsProject());
+    private void updateEnabledState(Checkbox checkbox, String valueId) {
+        checkbox.setEnabled(dataChangeable && isCheckedOrValueAvailable(checkbox, valueId));
+    }
+
+    /**
+     * Returns <code>true</code> if the check box is checked, and/or if the respective value is
+     * available. Enabling selected check boxes, even if the value is illegal/unavailable, is
+     * necessary to let the user correct errors.
+     */
+    private boolean isCheckedOrValueAvailable(Checkbox checkbox, String valueID) {
+        return checkbox.isChecked() || isValueAvailable(valueID);
+    }
+
+    private boolean isValueAvailable(String valueID) {
+        IValueSet valueSet = attribute.getValueSet();
+        try {
+            return valueSet.containsValue(valueID, attribute.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
