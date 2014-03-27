@@ -87,7 +87,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     private String getUndefinedLabel(IValueSet valueSet) {
         if (isControlForDefaultValue(valueSet)) {
-            return Messages.DefaultValueRepresentatiion_RadioButtonGroup;
+            return Messages.DefaultValueRepresentation_RadioButtonGroup;
         } else {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
