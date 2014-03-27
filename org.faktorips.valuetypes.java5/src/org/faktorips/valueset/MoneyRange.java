@@ -91,24 +91,6 @@ public class MoneyRange extends DefaultRange<Money> {
         return currentValue.add(getStep());
     }
 
-    /**
-     * Returns true if the value is in the range. The borders are considered to be in the range.
-     * Returns false if the passed value is null.
-     */
-    @Override
-    public boolean contains(Money value) {
-        if (value == null) {
-            return false;
-        }
-        if (value.isNull()) {
-            if (containsNull()) {
-                return true;
-            }
-            return false;
-        }
-        return super.contains(value);
-    }
-
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         Decimal upperAmount = getUpperBound().getAmount();
