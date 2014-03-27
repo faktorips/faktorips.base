@@ -93,15 +93,21 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         }
     }
 
+    private boolean isControlForDefaultValue(IValueSet valueSet) {
+        return valueSet == null || valueSet.getValueSetOwner() instanceof IConfigElement;
+    }
+
     private void updateButtonEnablement(IValueSet valueSet, RadioButtonGroup<String> radioButtonGroup) {
-        if (valueSet != null && !isControlForDefaultValue(valueSet)) {
-            disableIfNotAvailable(valueSet, radioButtonGroup, Boolean.TRUE.toString());
-            disableIfNotAvailable(valueSet, radioButtonGroup, Boolean.FALSE.toString());
-            disableIfNotAvailable(valueSet, radioButtonGroup, null);
+        if (!isControlForDefaultValue(valueSet)) {
+            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.TRUE.toString());
+            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.FALSE.toString());
+            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, null);
         }
     }
 
-    private void disableIfNotAvailable(IValueSet valueSet, RadioButtonGroup<String> radioButtonGroup, String valueId) {
+    private void disableButtonIfValueNotAvailable(IValueSet valueSet,
+            RadioButtonGroup<String> radioButtonGroup,
+            String valueId) {
         Button buttonForId = radioButtonGroup.getRadioButton(valueId);
         if (buttonForId != null) {
             buttonForId.setEnabled(valueSetContainsId(valueSet, valueId));
@@ -124,10 +130,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         return parent;
-    }
-
-    private boolean isControlForDefaultValue(IValueSet valueSet) {
-        return valueSet == null || valueSet.getValueSetOwner() instanceof IConfigElement;
     }
 
     private Combo createComboControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype) {
