@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
@@ -31,9 +30,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.BooleanValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
-import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -71,34 +69,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
         if (isBooleanDatatype()) {
-            createEditFieldForBoolean(editFields);
+            createValueSetEditFieldForBoolean(editFields);
         } else {
-            createEditFieldForOthers(editFields);
+            createValueSetField(editFields);
         }
-        createEditFieldsForExtensionProperties();
-    }
-
-    private void createEditFieldForBoolean(List<EditField<?>> editFields) {
-        final BooleanValueSetPMO pmo = new BooleanValueSetPMO(getPropertyValue());
-        createValueSetEditFieldForBoolean(editFields, pmo);
-        EditField<String> editField = createDefaultValueEditField(editFields);
-        if (editField instanceof RadioButtonGroupField) {
-            final RadioButtonGroupField<String> radioButtonGroupField = (RadioButtonGroupField<String>)editField;
-
-            getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.TRUE.toString()), pmo,
-                    BooleanValueSetPMO.PROPERTY_TRUE);
-            getBindingContext().bindEnabled(radioButtonGroupField.getButton(Boolean.FALSE.toString()), pmo,
-                    BooleanValueSetPMO.PROPERTY_FALSE);
-            Button nullButton = radioButtonGroupField.getButton(null);
-            if (nullButton != null) {
-                getBindingContext().bindEnabled(nullButton, pmo, BooleanValueSetPMO.PROPERTY_NULL);
-            }
-        }
-    }
-
-    private void createEditFieldForOthers(List<EditField<?>> editFields) {
-        createValueSetField(editFields);
         createDefaultValueEditField(editFields);
+        createEditFieldsForExtensionProperties();
     }
 
     private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
@@ -144,25 +120,15 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
-    private void createValueSetEditFieldForBoolean(final List<EditField<?>> editFields, BooleanValueSetPMO pmo) {
+    private void createValueSetEditFieldForBoolean(List<EditField<?>> editFields) {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
-
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
         booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
+        BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
+        editFields.add(field);
 
-        CheckboxField trueField = new CheckboxField(booleanValueSetControl.getTrueCheckBox());
-        CheckboxField falseField = new CheckboxField(booleanValueSetControl.getFalseCheckBox());
-        editFields.add(trueField);
-        editFields.add(falseField);
-
-        getBindingContext().bindContent(trueField, pmo, BooleanValueSetPMO.PROPERTY_TRUE);
-        getBindingContext().bindContent(falseField, pmo, BooleanValueSetPMO.PROPERTY_FALSE);
-        if (booleanValueSetControl.getNullCheckBox() != null) {
-            CheckboxField nullField = new CheckboxField(booleanValueSetControl.getNullCheckBox());
-            editFields.add(nullField);
-            getBindingContext().bindContent(nullField, pmo, BooleanValueSetPMO.PROPERTY_NULL);
-        }
+        getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
 
     private void createValueSetField(List<EditField<?>> editFields) {

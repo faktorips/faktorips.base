@@ -16,9 +16,11 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -48,19 +50,36 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 
     @Override
     protected List<String> getDatatypeValueIds() {
-        List<String> ids = new ArrayList<String>();
         IValueSet newValueSet = valueSetOwner.getValueSet();
-        fillList(ids, newValueSet);
-        return ids;
+        return fillList(newValueSet);
     }
 
-    private void fillList(List<String> ids, IValueSet newValueSet) {
+    private List<String> fillList(IValueSet newValueSet) {
+        List<String> ids = new ArrayList<String>();
         if (newValueSet instanceof IEnumValueSet) {
             IEnumValueSet newEnumValueSet = (IEnumValueSet)newValueSet;
             ids.addAll(Arrays.asList(newEnumValueSet.getValues()));
         }
+        if (!ids.contains(null) && isDefaultValueField()) {
+            // For default values there is always the option of 'no default' value
+            ids.add(null);
+        }
         if (ids.isEmpty()) {
             ids.add(null);
+        }
+        return ids;
+    }
+
+    private boolean isDefaultValueField() {
+        return valueSetOwner instanceof IConfigElement;
+    }
+
+    @Override
+    public String getDisplayTextForValue(String id) {
+        if (id == null && isDefaultValueField()) {
+            return Messages.DefaultValueRepresentation_Combobox;
+        } else {
+            return super.getDisplayTextForValue(id);
         }
     }
 

@@ -71,9 +71,11 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     private void updateControlVisibility(Control containerControl, IProductCmptProperty property) {
         boolean filtered = isFiltered(property);
         for (Control control : propertyControlMappings.get(containerControl).get(property)) {
-            control.setVisible(!filtered);
-            Object layoutData = control.getLayoutData();
-            ((GridData)layoutData).exclude = filtered;
+            if (!control.isDisposed()) {
+                control.setVisible(!filtered);
+                Object layoutData = control.getLayoutData();
+                ((GridData)layoutData).exclude = filtered;
+            }
         }
     }
 
@@ -82,7 +84,9 @@ public class PropertyVisibleController implements IPropertyVisibleController {
         for (Control containerControl : propertyControlMappings.keySet()) {
             for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
                 for (Control control : propertyControlMappings.get(containerControl).get(property)) {
-                    parents.add(control.getParent());
+                    if (!control.isDisposed()) {
+                        parents.add(control.getParent());
+                    }
                 }
             }
         }

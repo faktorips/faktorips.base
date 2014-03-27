@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import java.util.LinkedHashMap;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -20,10 +23,13 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -34,9 +40,8 @@ import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
 /**
- * A control factory for the data types boolean and primitive boolean.
- * 
- * @author Joerg Ortmann
+ * A control factory for the data types boolean and primitive boolean. Creates radio buttons and a
+ * {@link RadioButtonGroupField}.
  */
 public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
@@ -46,7 +51,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.BOOLEAN.equals(datatype) || Datatype.PRIMITIVE_BOOLEAN.equals(datatype);
+        return Datatype.BOOLEAN.equals(datatype) || isPrimitiveBoolean(datatype);
     }
 
     @Override
@@ -55,21 +60,67 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        RadioButtonGroup<String> radioButtonGroup = createRadioGroup(toolkit, parent, datatype);
-        if (valueSet instanceof IEnumValueSet) {
-            for (Button b : radioButtonGroup.getRadioButtons()) {
-                b.setEnabled(false);
-            }
-            for (String value : ((IEnumValueSet)valueSet).getValues()) {
-                for (Button b : radioButtonGroup.getRadioButtons()) {
-                    if (b.getText()
-                            .equals(IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, value))) {
-                        b.setEnabled(true);
-                    }
-                }
-            }
-        }
+        RadioButtonGroup<String> radioButtonGroup = createControls(toolkit, parent, valueSet,
+                isPrimitiveBoolean(datatype));
         return new RadioButtonGroupField<String>(radioButtonGroup);
+    }
+
+    private RadioButtonGroup<String> createControls(UIToolkit toolkit,
+            Composite parent,
+            IValueSet valueSet,
+            boolean primitiveBoolean) {
+        LinkedHashMap<String, String> optionsMap = initOptions(valueSet, primitiveBoolean);
+        RadioButtonGroup<String> radioButtonGroup = toolkit.createRadioButtonGroup(parent, optionsMap);
+        updateButtonEnablement(valueSet, radioButtonGroup);
+        return radioButtonGroup;
+    }
+
+    protected LinkedHashMap<String, String> initOptions(IValueSet valueSet, boolean primitiveBoolean) {
+        LinkedHashMap<String, String> optionsMap = new LinkedHashMap<String, String>();
+        optionsMap.put(Boolean.TRUE.toString(), getTrueValue());
+        optionsMap.put(Boolean.FALSE.toString(), getFalseValue());
+        if (!primitiveBoolean) {
+            optionsMap.put(null, getUndefinedLabel(valueSet));
+        }
+        return optionsMap;
+    }
+
+    private String getUndefinedLabel(IValueSet valueSet) {
+        if (isControlForDefaultValue(valueSet)) {
+            return Messages.DefaultValueRepresentation_RadioButtonGroup;
+        } else {
+            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        }
+    }
+
+    private boolean isControlForDefaultValue(IValueSet valueSet) {
+        return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
+    }
+
+    private void updateButtonEnablement(IValueSet valueSet, RadioButtonGroup<String> radioButtonGroup) {
+        if (!isControlForDefaultValue(valueSet) && valueSet != null) {
+            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.TRUE.toString());
+            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.FALSE.toString());
+            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, null);
+        }
+    }
+
+    private void disableButtonIfValueNotAvailable(IValueSet valueSet,
+            RadioButtonGroup<String> radioButtonGroup,
+            String valueId) {
+        Button buttonForId = radioButtonGroup.getRadioButton(valueId);
+        if (buttonForId != null) {
+            buttonForId.setEnabled(valueSetContainsId(valueSet, valueId));
+        }
+    }
+
+    private boolean valueSetContainsId(IValueSet valueSet, String valueId) {
+        IIpsProject ipsProject = valueSet.getIpsProject();
+        try {
+            return valueSet.containsValue(valueId, ipsProject);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -81,12 +132,12 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         return parent;
     }
 
-    private RadioButtonGroup<String> createRadioGroup(UIToolkit toolkit, Composite parent, ValueDatatype datatype) {
-        return toolkit.createRadioSetForBoolean(parent, !datatype.isPrimitive(), getTrueValue(), getFalseValue());
+    private Combo createComboControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype) {
+        return toolkit.createComboForBoolean(parent, isNullIncluded(datatype), getTrueValue(), getFalseValue());
     }
 
-    private Combo createComboControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype) {
-        return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), getTrueValue(), getFalseValue());
+    private boolean isNullIncluded(ValueDatatype datatype) {
+        return !isPrimitiveBoolean(datatype);
     }
 
     /**
@@ -129,12 +180,16 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         IpsCellEditor tableCellEditor = new ComboCellEditor(comboControl);
         // stores the boolean datatype object as data object in the combo,
         // to indicate that the to be displayed data will be mapped as boolean
-        if (Datatype.PRIMITIVE_BOOLEAN.equals(dataType)) {
+        if (isPrimitiveBoolean(dataType)) {
             comboControl.setData(new PrimitiveBooleanDatatype());
         } else {
             comboControl.setData(new BooleanDatatype());
         }
         return tableCellEditor;
+    }
+
+    private boolean isPrimitiveBoolean(ValueDatatype dataType) {
+        return Datatype.PRIMITIVE_BOOLEAN.equals(dataType);
     }
 
     @Override
@@ -144,11 +199,11 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     public static String getTrueValue() {
         return IpsUIPlugin.getDefault().getDatatypeFormatter()
-                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.toString(true));
+                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.TRUE.toString());
     }
 
     public static String getFalseValue() {
         return IpsUIPlugin.getDefault().getDatatypeFormatter()
-                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.toString(false));
+                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.FALSE.toString());
     }
 }

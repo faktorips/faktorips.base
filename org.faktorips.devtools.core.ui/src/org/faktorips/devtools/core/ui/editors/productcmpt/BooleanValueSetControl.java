@@ -10,19 +10,16 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -50,45 +47,39 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
     private Checkbox falseBox;
     private Checkbox nullBox;
 
-    private final IPolicyCmptTypeAttribute property;
+    private final IPolicyCmptTypeAttribute attribute;
 
     /**
-     * Creates a new control to show and edit the value set owned by the config element.
+     * Creates a new control to show and edit the value set owned by the {@link IConfigElement}.
      * 
      * @param parent The parent composite to add this control to.
      * @param toolkit The toolkit used to create controls.
-     * @param configElement The config element that contains the value set.
+     * @param configElement The {@link IConfigElement} that contains the value set.
      */
-    public BooleanValueSetControl(Composite parent, UIToolkit toolkit, IPolicyCmptTypeAttribute property,
+    public BooleanValueSetControl(Composite parent, UIToolkit toolkit, IPolicyCmptTypeAttribute attribute,
             IConfigElement configElement) {
         super(parent, SWT.NONE);
-        this.property = property;
+        this.attribute = attribute;
 
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
+        initControls(toolkit);
 
+    }
+
+    private void initControls(UIToolkit toolkit) {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
-        IValueSet valueSet = configElement.getValueSet();
-        ValueDatatype valueDatatype = valueSet instanceof ValueSet ? ((ValueSet)valueSet).getValueDatatype() : null;
-
-        int components;
-        if (valueDatatype != null) {
-            trueBox = toolkit
-                    .createCheckbox(this, datatypeFormatter.formatValue(valueDatatype, Boolean.toString(true)));
-            falseBox = toolkit.createCheckbox(this,
-                    datatypeFormatter.formatValue(valueDatatype, Boolean.toString(false)));
-            if (!valueDatatype.isPrimitive()) {
-                nullBox = toolkit
-                        .createCheckbox(this, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-            }
-            components = valueDatatype.isPrimitive() ? 2 : 3;
-        } else {
-            // Fallback to default formatting for true/false
-            trueBox = toolkit.createCheckbox(this, "True"); //$NON-NLS-1$
-            falseBox = toolkit.createCheckbox(this, "False"); //$NON-NLS-1$
+        ValueDatatype valueDatatype = getDatatype(attribute);
+        int components = 2;
+        trueBox = toolkit.createCheckbox(this, datatypeFormatter.formatValue(valueDatatype, Boolean.TRUE.toString()));
+        falseBox = toolkit.createCheckbox(this, datatypeFormatter.formatValue(valueDatatype, Boolean.FALSE.toString()));
+        if (valueDatatype != null && !valueDatatype.isPrimitive()) {
             nullBox = toolkit.createCheckbox(this, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-            components = 3;
+            components++;
         }
+        initLayout(components);
+    }
 
+    private void initLayout(int components) {
         GridLayout layout = new GridLayout(components, false);
         layout.horizontalSpacing = 20;
         layout.marginHeight = 0;
@@ -96,31 +87,51 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
         setLayout(layout);
 
         setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+    }
 
+    public ValueDatatype getDatatype(IPolicyCmptTypeAttribute attribute) {
+        ValueDatatype valueDatatype;
+        try {
+            valueDatatype = attribute.findDatatype(attribute.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return valueDatatype;
     }
 
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
-        Set<String> allowedValues = new HashSet<String>();
-        if (property.getValueSet() instanceof IEnumValueSet) {
-            IEnumValueSet policyCmptRestrictions = (IEnumValueSet)property.getValueSet();
-            for (String s : policyCmptRestrictions.getValues()) {
-                allowedValues.add(s);
-            }
-        }
-        if (allowedValues.isEmpty()) {
-            // Either, the property is unrestricted, or no restriction values are defined. In both
-            // cases, all values are allowed.
-            allowedValues.add(Boolean.toString(true));
-            allowedValues.add(Boolean.toString(false));
-            allowedValues.add(null);
-        }
-        trueBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(true)));
-        falseBox.setEnabled(dataChangeable && allowedValues.contains(Boolean.toString(false)));
+        updateEnabledState();
+    }
+
+    public void updateEnabledState() {
+        updateEnabledState(trueBox, Boolean.TRUE.toString());
+        updateEnabledState(falseBox, Boolean.FALSE.toString());
         if (nullBox != null) {
-            nullBox.setEnabled(dataChangeable);
-            nullBox.setChecked(allowedValues.contains(null));
+            updateEnabledState(nullBox, null);
+        }
+    }
+
+    private void updateEnabledState(Checkbox checkbox, String valueId) {
+        checkbox.setEnabled(dataChangeable && isCheckedOrValueAvailable(checkbox, valueId));
+    }
+
+    /**
+     * Returns <code>true</code> if the check box is checked, and/or if the respective value is
+     * available. Enabling selected check boxes, even if the value is illegal/unavailable, is
+     * necessary to let the user correct errors.
+     */
+    private boolean isCheckedOrValueAvailable(Checkbox checkbox, String valueID) {
+        return checkbox.isChecked() || isValueAvailable(valueID);
+    }
+
+    private boolean isValueAvailable(String valueID) {
+        IValueSet valueSet = attribute.getValueSet();
+        try {
+            return valueSet.containsValue(valueID, attribute.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -148,4 +159,5 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
     public Checkbox getNullCheckBox() {
         return nullBox;
     }
+
 }

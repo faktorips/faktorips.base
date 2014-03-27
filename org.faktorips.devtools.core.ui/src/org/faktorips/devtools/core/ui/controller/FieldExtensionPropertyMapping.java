@@ -10,75 +10,33 @@
 
 package org.faktorips.devtools.core.ui.controller;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 
-public class FieldExtensionPropertyMapping<T> implements FieldPropertyMapping<T> {
-
-    protected EditField<T> field;
-    protected IExtensionPropertyAccess object;
-    protected String propertyId;
+public class FieldExtensionPropertyMapping<T> extends AbstractFieldPropertyMapping<T> {
 
     public FieldExtensionPropertyMapping(EditField<T> edit, IExtensionPropertyAccess object, String extensionPropertyId) {
-        this.field = edit;
-        this.object = object;
-        this.propertyId = extensionPropertyId;
+        super(edit, object, extensionPropertyId);
     }
 
     @Override
-    public EditField<T> getField() {
-        return field;
+    public IExtensionPropertyAccess getObject() {
+        return (IExtensionPropertyAccess)super.getObject();
     }
 
     @Override
-    public Object getObject() {
-        return object;
+    protected void setPropertyValueInternal() {
+        getObject().setExtPropertyValue(getPropertyName(), getField().getValue());
     }
 
     @Override
-    public String getPropertyName() {
-        return propertyId;
-    }
-
-    @Override
-    public void setPropertyValue() {
-        if (field.getControl().isDisposed()) {
-            return;
-        }
-        if (!field.isTextContentParsable()) {
-            return;
-        }
-        if (ObjectUtils.equals(getPropertyValue(), field.getValue())) {
-            return; // value hasn't changed
-        }
-        object.setExtPropertyValue(propertyId, field.getValue());
-    }
-
-    @Override
-    public void setControlValue() {
-        if (field.getControl().isDisposed()) {
-            return;
-        }
-        try {
-            @SuppressWarnings("unchecked")
-            // the property is get by reflection - cannot cast safely
-            T propertyValue = (T)getPropertyValue();
-            if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
-                return;
-            }
-            field.setValue(propertyValue, false);
-        } catch (Exception e) {
-            throw new RuntimeException("Error setting value in control for property " + getPropertyName(), e); //$NON-NLS-1$            
-        }
-    }
-
-    @Override
-    public Object getPropertyValue() {
-        return object.getExtPropertyValue(propertyId);
+    public T getPropertyValue() {
+        @SuppressWarnings("unchecked")
+        T extPropertyValue = (T)getObject().getExtPropertyValue(getPropertyName());
+        return extPropertyValue;
     }
 
     @Override
     public String toString() {
-        return object.getClass().getName() + '.' + propertyId + '-' + field;
+        return getObject().getClass().getName() + '.' + getPropertyName() + '-' + getField();
     }
 }

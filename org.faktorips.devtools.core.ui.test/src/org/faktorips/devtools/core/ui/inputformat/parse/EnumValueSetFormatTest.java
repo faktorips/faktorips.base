@@ -65,7 +65,7 @@ public class EnumValueSetFormatTest {
         enumValueSet = new EnumValueSet(configElement, "");
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat());
+                new DefaultInputFormat(null));
         when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
         when(configElement.getIpsProject()).thenReturn(ipsProject);
         when(configElement.getIpsModel()).thenReturn(ipsModel);
