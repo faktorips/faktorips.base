@@ -55,7 +55,8 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
             return;
         }
         if (ObjectUtils.equals(getPropertyValue(), getField().getValue())) {
-            return; // value hasn't changed
+            // value hasn't changed
+            return;
         }
         setPropertyValueInternal();
     }
@@ -100,10 +101,11 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
                 }
             }
             getField().setValue(propertyValue, false);
-
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException("Error setting value in control for property " + getPropertyName(), e); //$NON-NLS-1$
         }
+        // CSON: IllegalCatch
     }
 
 }

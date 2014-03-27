@@ -49,8 +49,11 @@ public class FieldPropertyMappingByPropertyDescriptor<T> extends AbstractFieldPr
             @SuppressWarnings("unchecked")
             T result = (T)getter.invoke(getObject(), new Object[0]);
             return result;
+
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException("Error getting property value " + property.getName(), e); //$NON-NLS-1$
         }
+        // CSON: IllegalCatch
     }
 }
