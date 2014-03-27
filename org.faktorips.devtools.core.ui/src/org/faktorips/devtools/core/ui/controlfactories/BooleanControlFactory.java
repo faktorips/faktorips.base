@@ -94,11 +94,11 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     }
 
     private boolean isControlForDefaultValue(IValueSet valueSet) {
-        return valueSet == null || valueSet.getValueSetOwner() instanceof IConfigElement;
+        return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
     }
 
     private void updateButtonEnablement(IValueSet valueSet, RadioButtonGroup<String> radioButtonGroup) {
-        if (!isControlForDefaultValue(valueSet)) {
+        if (!isControlForDefaultValue(valueSet) && valueSet != null) {
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.TRUE.toString());
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.FALSE.toString());
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, null);
