@@ -1110,120 +1110,110 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
             if (currentEnumAttribute.isValid(getIpsProject())) {
-                if (currentEnumAttribute.findIsUnique(getIpsProject()) && !currentEnumAttribute.isMultilingual()) {
-                    JavaCodeFragment body = new JavaCodeFragment();
-                    String parameterName = currentEnumAttribute.getName();
-                    DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
-
-                    JavaCodeFragment forLoop = generateGetValueByIdForLoop(currentEnumAttribute, datatypeHelper,
-                            parameterName);
-                    body.append(forLoop);
-
-                    appendLocalizedJavaDoc(
-                            "METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
-                    methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                            getQualifiedClassName(enumType), getMethodNameGetValueBy(currentEnumAttribute),
-                            new String[] { parameterName }, new String[] { datatypeHelper.getJavaClassName() });
-                    methodBuilder.append(body);
-                    methodBuilder.methodEnd();
+                if (currentEnumAttribute.findIsUnique(getIpsProject())) {
+                    generateMethodGetValueBy(methodBuilder, enumType, currentEnumAttribute);
                 }
             }
         }
     }
 
+    private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder,
+            IEnumType enumType,
+            IEnumAttribute currentEnumAttribute) throws CoreException {
+        String parameterName = currentEnumAttribute.getName();
+        DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
+
+        String[] parameterClasses;
+        String[] parameterNames;
+        if (currentEnumAttribute.isMultilingual()) {
+            parameterNames = new String[] { parameterName, "locale" };
+            parameterClasses = new String[] { datatypeHelper.getJavaClassName(), Locale.class.getName() };
+        } else {
+            parameterNames = new String[] { parameterName };
+            parameterClasses = new String[] { datatypeHelper.getJavaClassName() };
+        }
+        appendLocalizedJavaDoc("METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
+        methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, getQualifiedClassName(enumType),
+                getMethodNameGetValueBy(currentEnumAttribute), parameterNames, parameterClasses);
+
+        JavaCodeFragment forLoop = generateGetValueByForLoop(currentEnumAttribute, datatypeHelper, parameterName);
+        methodBuilder.append(forLoop);
+
+        methodBuilder.methodEnd();
+    }
+
     /**
+     * Primitive datatypes:
+     * 
      * <pre>
-     * for (Enum1 value : values()) {
-     *     if (value.id.equals(id)) {
-     *         return value;
+     * for (Enum1 currentValue : values()) {
+     *     if (currentValue.id == primitiveId)) {
+     *         return currentValue;
+     *     }
+     * }
+     * return null;
+     * </pre>
+     * 
+     * Multilingual Strings:
+     * 
+     * <pre>
+     * for (Enum1 currentValue : values()) {
+     *     if (currentValue.getMultiLingual(locale).equals(id)) {
+     *         return currentValue;
+     *     }
+     * }
+     * return null;
+     * </pre>
+     * 
+     * Other datatypes:
+     * 
+     * <pre>
+     * for (Enum1 currentValue : values()) {
+     *     if (currentValue.id.equals(id)) {
+     *         return currentValue;
      *     }
      * }
      * return null;
      * </pre>
      */
-    private JavaCodeFragment generateGetValueByIdForLoop(IEnumAttribute currentEnumAttribute,
+    private JavaCodeFragment generateGetValueByForLoop(IEnumAttribute currentEnumAttribute,
             DatatypeHelper datatypeHelper,
             String parameterName) throws CoreException {
         JavaCodeFragment loopCode = new JavaCodeFragment();
         loopCode.append("for(");
         loopCode.appendClassName(getQualifiedClassName(getEnumType()));
-        loopCode.append(" value:values()){");
+        loopCode.append(" currentValue:values()){");
         loopCode.append("if(");
-        loopCode.append(generateGetValueByKeyCompare(currentEnumAttribute, datatypeHelper, parameterName));
-        loopCode.append("){return value;}}");
+        loopCode.append(generateGetValueByCompare(currentEnumAttribute, datatypeHelper, parameterName));
+        loopCode.append("){return currentValue;}}");
 
         loopCode.append("return null;"); //$NON-NLS-1$
         return loopCode;
     }
 
-    private JavaCodeFragment generateGetValueByKeyCompare(IEnumAttribute currentEnumAttribute,
+    private JavaCodeFragment generateGetValueByCompare(IEnumAttribute currentEnumAttribute,
             DatatypeHelper datatypeHelper,
             String parameterName) {
         boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
         JavaCodeFragment compareCode = new JavaCodeFragment();
-        compareCode.append("value.");
-        compareCode.append(currentEnumAttribute.getName());
-        if (primitiveDatatype) {
-            compareCode.append(" == "); //$NON-NLS-1$
-            compareCode.append(parameterName);
-        } else {
-            compareCode.append(".equals(");
+        compareCode.append("currentValue.");
+        if (currentEnumAttribute.isMultilingual()) {
+            compareCode.append(getMethodNameGetter(currentEnumAttribute));
+            compareCode.append("(locale).equals(");
             compareCode.append(parameterName);
             compareCode.append(")");
+        } else {
+            compareCode.append(currentEnumAttribute.getName());
+            if (primitiveDatatype) {
+                compareCode.append(" == "); //$NON-NLS-1$
+                compareCode.append(parameterName);
+            } else {
+                compareCode.append(".equals(");
+                compareCode.append(parameterName);
+                compareCode.append(")");
+            }
         }
         return compareCode;
-    }
-
-    private DatatypeHelper oldCode(List<IEnumValue> enumValues,
-            IEnumAttribute currentEnumAttribute,
-            JavaCodeFragment body,
-            String parameterName) throws CoreException {
-        DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
-        boolean primitiveType = datatypeHelper.getDatatype().isPrimitive();
-        if (!(primitiveType)) {
-            body.append("if("); //$NON-NLS-1$
-            body.append(parameterName);
-            body.append(" == null)"); //$NON-NLS-1$
-            body.appendOpenBracket();
-            body.appendln("return null;"); //$NON-NLS-1$
-            body.appendCloseBracket();
-        }
-
-        for (IEnumValue currentEnumValue : enumValues) {
-            if (!(currentEnumValue.isValid(getIpsProject()))) {
-                continue;
-            }
-
-            IEnumAttributeValue attributeValue = currentEnumValue.getEnumAttributeValue(currentEnumAttribute);
-            if (primitiveType) {
-                body.append("if ("); //$NON-NLS-1$
-                body.append(parameterName);
-                body.append(" == "); //$NON-NLS-1$
-                body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
-                        getLanguageUsedInGeneratedSourceCode())));
-                body.append(")"); //$NON-NLS-1$
-                body.appendOpenBracket();
-                body.append("return "); //$NON-NLS-1$
-                body.append(getConstantNameForEnumAttributeValue(currentEnumValue
-                        .getEnumAttributeValue(literalNameAttribute)));
-                body.append(";"); //$NON-NLS-1$
-                body.appendCloseBracket();
-            } else {
-                body.append("if ("); //$NON-NLS-1$
-                body.append(parameterName);
-                body.append(".equals("); //$NON-NLS-1$
-                body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
-                        getLanguageUsedInGeneratedSourceCode())));
-                body.append("))"); //$NON-NLS-1$
-                body.appendOpenBracket();
-                body.append("return "); //$NON-NLS-1$
-                body.append(getConstantNameForEnumAttributeValue(currentEnumValue
-                        .getEnumAttributeValue(literalNameAttribute)));
-                body.append(";"); //$NON-NLS-1$
-                body.appendCloseBracket();
-            }
-        }
-        return datatypeHelper;
     }
 
     /**
@@ -1244,9 +1234,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute.isValid(getIpsProject())) {
-                if (currentEnumAttribute.findIsUnique(getIpsProject())) {
-                    JavaCodeFragment methodBody = new JavaCodeFragment();
+            if (currentEnumAttribute.isValid(getIpsProject()) && currentEnumAttribute.findIsUnique(getIpsProject())) {
+                String[] parameterNames;
+                String[] parameterClasses;
+                JavaCodeFragment methodBody = new JavaCodeFragment();
+                if (currentEnumAttribute.isMultilingual()) {
+                    methodBody.append("return "); //$NON-NLS-1$
+                    methodBody.append(getMethodNameGetValueBy(currentEnumAttribute));
+                    methodBody.append("("); //$NON-NLS-1$
+                    methodBody.append(currentEnumAttribute.getName());
+                    methodBody.append(", locale)"); //$NON-NLS-1$
+                    methodBody.append(" != null;"); //$NON-NLS-1$
+
+                    parameterNames = new String[] { currentEnumAttribute.getName(), "locale" };
+                    parameterClasses = new String[] {
+                            getDatatypeHelper(currentEnumAttribute, false).getJavaClassName(), Locale.class.getName() };
+
+                } else {
                     methodBody.append("return "); //$NON-NLS-1$
                     methodBody.append(getMethodNameGetValueBy(currentEnumAttribute));
                     methodBody.append("("); //$NON-NLS-1$
@@ -1254,17 +1258,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     methodBody.append(")"); //$NON-NLS-1$
                     methodBody.append(" != null;"); //$NON-NLS-1$
 
-                    String[] parameterNames = new String[] { currentEnumAttribute.getName() };
-                    String[] parameterClasses = new String[] { getDatatypeHelper(currentEnumAttribute, false)
-                            .getJavaClassName() };
-
-                    appendLocalizedJavaDoc(
-                            "METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), currentEnumAttribute, //$NON-NLS-1$
-                            methodBuilder);
-                    methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(),
-                            getMethodNameIsValueBy(currentEnumAttribute), parameterNames, parameterClasses, methodBody,
-                            null);
+                    parameterNames = new String[] { currentEnumAttribute.getName() };
+                    parameterClasses = new String[] { getDatatypeHelper(currentEnumAttribute, false).getJavaClassName() };
                 }
+                appendLocalizedJavaDoc("METHOD_IS_VALUE_BY_XXX", currentEnumAttribute.getName(), currentEnumAttribute, //$NON-NLS-1$
+                        methodBuilder);
+                methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(),
+                        getMethodNameIsValueBy(currentEnumAttribute), parameterNames, parameterClasses, methodBody,
+                        null);
             }
         }
     }
