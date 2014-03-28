@@ -146,7 +146,7 @@
 «DEFINE writeAttributeToXML FOR XProductAttribute-»
 	«IF !overwrite-»
         attributeElement = element.getOwnerDocument().createElement("AttributeValue");
-        attributeElement.setAttribute("attribute", "«name»");
+        attributeElement.setAttribute("attribute", «constantNamePropertyName»);
         «IF multiValue-»
             «IF multiValueDirectXmlHandling-»
                 «MultiValueXmlHelper()».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
