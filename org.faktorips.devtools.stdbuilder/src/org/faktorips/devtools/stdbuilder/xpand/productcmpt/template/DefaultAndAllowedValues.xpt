@@ -70,7 +70,7 @@
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
-        configElement = configMap.get("«name»");
+        configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
@@ -107,7 +107,7 @@
 «DEFINE writeAttributeToXML FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
         configElement = element.getOwnerDocument().createElement("ConfigElement");
-        configElement.setAttribute("attribute", "«name»");
+        configElement.setAttribute("attribute", «policyCmptNode.implClassName».«constantNamePropertyName»);
         «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", "\"Value\"")»;
         valueSetElement = element.getOwnerDocument().createElement("ValueSet");
         valueSetElement.setAttribute("abstract", "false");
