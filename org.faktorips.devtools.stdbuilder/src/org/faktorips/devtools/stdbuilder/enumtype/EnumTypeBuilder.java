@@ -1104,65 +1104,20 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         List<IEnumAttribute> uniqueAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
-        List<IEnumValue> enumValues = enumType.getEnumValues();
         if (literalNameAttribute == null) {
             return;
         }
 
         for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
             if (currentEnumAttribute.isValid(getIpsProject())) {
-                if (currentEnumAttribute.findIsUnique(getIpsProject())) {
+                if (currentEnumAttribute.findIsUnique(getIpsProject()) && !currentEnumAttribute.isMultilingual()) {
                     JavaCodeFragment body = new JavaCodeFragment();
                     String parameterName = currentEnumAttribute.getName();
-
                     DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
-                    boolean primitiveType = datatypeHelper.getDatatype().isPrimitive();
-                    if (!(primitiveType)) {
-                        body.append("if("); //$NON-NLS-1$
-                        body.append(parameterName);
-                        body.append(" == null)"); //$NON-NLS-1$
-                        body.appendOpenBracket();
-                        body.appendln("return null;"); //$NON-NLS-1$
-                        body.appendCloseBracket();
-                    }
 
-                    for (IEnumValue currentEnumValue : enumValues) {
-                        if (!(currentEnumValue.isValid(getIpsProject()))) {
-                            continue;
-                        }
-
-                        IEnumAttributeValue attributeValue = currentEnumValue
-                                .getEnumAttributeValue(currentEnumAttribute);
-                        if (primitiveType) {
-                            body.append("if ("); //$NON-NLS-1$
-                            body.append(parameterName);
-                            body.append(" == "); //$NON-NLS-1$
-                            body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
-                                    getLanguageUsedInGeneratedSourceCode())));
-                            body.append(")"); //$NON-NLS-1$
-                            body.appendOpenBracket();
-                            body.append("return "); //$NON-NLS-1$
-                            body.append(getConstantNameForEnumAttributeValue(currentEnumValue
-                                    .getEnumAttributeValue(literalNameAttribute)));
-                            body.append(";"); //$NON-NLS-1$
-                            body.appendCloseBracket();
-                        } else {
-                            body.append("if ("); //$NON-NLS-1$
-                            body.append(parameterName);
-                            body.append(".equals("); //$NON-NLS-1$
-                            body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
-                                    getLanguageUsedInGeneratedSourceCode())));
-                            body.append("))"); //$NON-NLS-1$
-                            body.appendOpenBracket();
-                            body.append("return "); //$NON-NLS-1$
-                            body.append(getConstantNameForEnumAttributeValue(currentEnumValue
-                                    .getEnumAttributeValue(literalNameAttribute)));
-                            body.append(";"); //$NON-NLS-1$
-                            body.appendCloseBracket();
-                        }
-                    }
-
-                    body.append("return null;"); //$NON-NLS-1$
+                    JavaCodeFragment forLoop = generateGetValueByIdForLoop(currentEnumAttribute, datatypeHelper,
+                            parameterName);
+                    body.append(forLoop);
 
                     appendLocalizedJavaDoc(
                             "METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
@@ -1174,6 +1129,101 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 }
             }
         }
+    }
+
+    /**
+     * <pre>
+     * for (Enum1 value : values()) {
+     *     if (value.id.equals(id)) {
+     *         return value;
+     *     }
+     * }
+     * return null;
+     * </pre>
+     */
+    private JavaCodeFragment generateGetValueByIdForLoop(IEnumAttribute currentEnumAttribute,
+            DatatypeHelper datatypeHelper,
+            String parameterName) throws CoreException {
+        JavaCodeFragment loopCode = new JavaCodeFragment();
+        loopCode.append("for(");
+        loopCode.appendClassName(getQualifiedClassName(getEnumType()));
+        loopCode.append(" value:values()){");
+        loopCode.append("if(");
+        loopCode.append(generateGetValueByKeyCompare(currentEnumAttribute, datatypeHelper, parameterName));
+        loopCode.append("){return value;}}");
+
+        loopCode.append("return null;"); //$NON-NLS-1$
+        return loopCode;
+    }
+
+    private JavaCodeFragment generateGetValueByKeyCompare(IEnumAttribute currentEnumAttribute,
+            DatatypeHelper datatypeHelper,
+            String parameterName) {
+        boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
+        JavaCodeFragment compareCode = new JavaCodeFragment();
+        compareCode.append("value.");
+        compareCode.append(currentEnumAttribute.getName());
+        if (primitiveDatatype) {
+            compareCode.append(" == "); //$NON-NLS-1$
+            compareCode.append(parameterName);
+        } else {
+            compareCode.append(".equals(");
+            compareCode.append(parameterName);
+            compareCode.append(")");
+        }
+        return compareCode;
+    }
+
+    private DatatypeHelper oldCode(List<IEnumValue> enumValues,
+            IEnumAttribute currentEnumAttribute,
+            JavaCodeFragment body,
+            String parameterName) throws CoreException {
+        DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
+        boolean primitiveType = datatypeHelper.getDatatype().isPrimitive();
+        if (!(primitiveType)) {
+            body.append("if("); //$NON-NLS-1$
+            body.append(parameterName);
+            body.append(" == null)"); //$NON-NLS-1$
+            body.appendOpenBracket();
+            body.appendln("return null;"); //$NON-NLS-1$
+            body.appendCloseBracket();
+        }
+
+        for (IEnumValue currentEnumValue : enumValues) {
+            if (!(currentEnumValue.isValid(getIpsProject()))) {
+                continue;
+            }
+
+            IEnumAttributeValue attributeValue = currentEnumValue.getEnumAttributeValue(currentEnumAttribute);
+            if (primitiveType) {
+                body.append("if ("); //$NON-NLS-1$
+                body.append(parameterName);
+                body.append(" == "); //$NON-NLS-1$
+                body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
+                        getLanguageUsedInGeneratedSourceCode())));
+                body.append(")"); //$NON-NLS-1$
+                body.appendOpenBracket();
+                body.append("return "); //$NON-NLS-1$
+                body.append(getConstantNameForEnumAttributeValue(currentEnumValue
+                        .getEnumAttributeValue(literalNameAttribute)));
+                body.append(";"); //$NON-NLS-1$
+                body.appendCloseBracket();
+            } else {
+                body.append("if ("); //$NON-NLS-1$
+                body.append(parameterName);
+                body.append(".equals("); //$NON-NLS-1$
+                body.append(datatypeHelper.newInstance(attributeValue.getValue().getLocalizedContent(
+                        getLanguageUsedInGeneratedSourceCode())));
+                body.append("))"); //$NON-NLS-1$
+                body.appendOpenBracket();
+                body.append("return "); //$NON-NLS-1$
+                body.append(getConstantNameForEnumAttributeValue(currentEnumValue
+                        .getEnumAttributeValue(literalNameAttribute)));
+                body.append(";"); //$NON-NLS-1$
+                body.appendCloseBracket();
+            }
+        }
+        return datatypeHelper;
     }
 
     /**
