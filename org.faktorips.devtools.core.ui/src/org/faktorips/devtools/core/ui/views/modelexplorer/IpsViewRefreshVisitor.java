@@ -55,14 +55,12 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         if (resource.isTeamPrivateMember()) {
             return handlePrivateTeamMember(resource);
         }
-        if (isJavaResource(resource)) {
-            return false;
-        }
         IIpsElement element = getIpsElement(resource);
         if (element == null) {
             return handleResource(delta);
+        } else {
+            return handleIpsElement(delta, element);
         }
-        return handleIpsElement(delta, element);
     }
 
     private boolean isJavaResource(IResource resource) {
@@ -71,7 +69,6 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         }
         IProject project = resource.getProject();
         if (project == null || !project.isAccessible()) {
-            // At least the workspace root does return null as project!
             return false;
         }
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
@@ -129,6 +126,9 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
 
     private boolean handleResource(IResourceDelta delta) {
         IResource resource = delta.getResource();
+        if (isJavaResource(resource)) {
+            return false;
+        }
         if (isIpsProjectPropertiesFile(resource)) {
             // we have to return the ips-model here, as a change might lead to removal or addition
             // of the project. Also before the ips nature is added to a project, the element

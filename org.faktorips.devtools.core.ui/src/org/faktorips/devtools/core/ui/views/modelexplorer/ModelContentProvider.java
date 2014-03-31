@@ -166,12 +166,14 @@ public class ModelContentProvider implements ITreeContentProvider {
         return projectChildrenProvider.getChildren(project);
     }
 
-    /*
-     * Filters the contents of the given <code>IFolder</code> using the javaproject's classpath
-     * entries and outputlocations the folder is contained in. If the given folder does not contain
-     * any children an empty array is returned. If the <code>IProject</code> returned by
-     * <code>IResource#getProject()</code> is null or does not have java nature, an empty array is
-     * returned.<br> And filter ips archive files which are specified in the ips object path.
+    /**
+     * Returns the resources in the given folder. Filters the resources using the javaproject's
+     * classpath entries and output locations the folder is contained in. Java Resources and IPS
+     * archives will not be returned.
+     * <p>
+     * If the given folder does not contain any children an empty array is returned. If the
+     * <code>IProject</code> returned by <code>IResource#getProject()</code> is null or does not
+     * have java nature, an empty array is returned.
      */
     private Object[] getNonJavaResourcesAndNonActiveIpsArchives(IFolder folder) {
         try {
@@ -240,32 +242,35 @@ public class ModelContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Examins the given <code>JavaProject</code> and its relation to the given
+     * Examines the given <code>JavaProject</code> and its relation to the given
      * <code>IResource</code>. Returns true if the given resource corresponds to a classpath entry
-     * of the javaproject. Returns true if the given resource corresponds to a folder that is either
-     * the javaprojects default output location or the output location of one of the projects
-     * classpathentries. False otherwise.
+     * of the java project. Returns true if the given resource corresponds to a folder that is
+     * either the java projects default output location or the output location of one of the
+     * project's classpath entries. False otherwise.
      */
     public boolean isJavaResource(IJavaProject jProject, IResource resource) {
+        if (isJavaOutput(jProject, resource)) {
+            return true;
+        }
+        if (jProject.isOnClasspath(resource)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isJavaOutput(IJavaProject jProject, IResource resource) {
         try {
             IPath outputPath = jProject.getOutputLocation();
-            IClasspathEntry[] entries = jProject.getResolvedClasspath(true);
             if (resource.getFullPath().equals(outputPath)) {
                 return true;
             }
-
+            IClasspathEntry[] entries = jProject.getResolvedClasspath(true);
             for (IClasspathEntry entrie : entries) {
                 if (resource.getFullPath().equals(entrie.getOutputLocation())) {
                     return true;
                 }
             }
-
-            if (jProject.isOnClasspath(resource)) {
-                return true;
-            }
-
             return false;
-
         } catch (JavaModelException e) {
             IpsPlugin.log(e);
             return false;
