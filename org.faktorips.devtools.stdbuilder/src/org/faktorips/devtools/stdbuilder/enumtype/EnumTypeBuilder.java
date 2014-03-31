@@ -1099,15 +1099,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!enumType.isInextensibleEnum()) {
+        if (!enumType.isInextensibleEnum() || literalNameAttribute == null) {
             return;
         }
-
         List<IEnumAttribute> uniqueAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
-        if (literalNameAttribute == null) {
-            return;
-        }
-
         for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
             if (currentEnumAttribute.isValid(getIpsProject())) {
                 if (currentEnumAttribute.findIsUnique(getIpsProject())) {
@@ -1132,6 +1127,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             parameterNames = new String[] { parameterName };
             parameterClasses = new String[] { datatypeHelper.getJavaClassName() };
         }
+
         appendLocalizedJavaDoc("METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
         methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, getQualifiedClassName(enumType),
                 getMethodNameGetValueBy(currentEnumAttribute), parameterNames, parameterClasses);
@@ -1194,24 +1190,36 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private JavaCodeFragment generateGetValueByCompare(IEnumAttribute currentEnumAttribute,
             DatatypeHelper datatypeHelper,
             String parameterName) {
-        boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
         JavaCodeFragment compareCode = new JavaCodeFragment();
         compareCode.append("currentValue.");
         if (currentEnumAttribute.isMultilingual()) {
-            compareCode.append(getMethodNameGetter(currentEnumAttribute));
-            compareCode.append("(locale).equals(");
+            return editCodeFragmentForMultilingual(currentEnumAttribute, parameterName, compareCode);
+        }
+        return editCodeFragmentForNonMultilingual(currentEnumAttribute, parameterName, datatypeHelper, compareCode);
+    }
+
+    private JavaCodeFragment editCodeFragmentForMultilingual(IEnumAttribute currentEnumAttribute,
+            String parameterName,
+            JavaCodeFragment compareCode) {
+        compareCode.append(getMethodNameGetter(currentEnumAttribute));
+        compareCode.append("(locale).equals(");
+        compareCode.append(parameterName);
+        return compareCode.append(")");
+    }
+
+    private JavaCodeFragment editCodeFragmentForNonMultilingual(IEnumAttribute currentEnumAttribute,
+            String parameterName,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragment compareCode) {
+        boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
+        compareCode.append(currentEnumAttribute.getName());
+        if (primitiveDatatype) {
+            compareCode.append(" == "); //$NON-NLS-1$
+            compareCode.append(parameterName);
+        } else {
+            compareCode.append(".equals(");
             compareCode.append(parameterName);
             compareCode.append(")");
-        } else {
-            compareCode.append(currentEnumAttribute.getName());
-            if (primitiveDatatype) {
-                compareCode.append(" == "); //$NON-NLS-1$
-                compareCode.append(parameterName);
-            } else {
-                compareCode.append(".equals(");
-                compareCode.append(parameterName);
-                compareCode.append(")");
-            }
         }
         return compareCode;
     }
