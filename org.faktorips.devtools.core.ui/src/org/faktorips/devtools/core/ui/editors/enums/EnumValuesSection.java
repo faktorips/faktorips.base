@@ -467,11 +467,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** Updates the enabled states of the table and the tool bar actions. */
     private void updateEnabledStates() {
         boolean enabled;
-        try {
-            enabled = enumValueContainer.isCapableOfContainingValues();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        enabled = enumValueContainer.isCapableOfContainingValues();
         newEnumValueAction.setEnabled(enabled);
         deleteEnumValueAction.setEnabled(enabled);
         if (enumTypeEditing) {

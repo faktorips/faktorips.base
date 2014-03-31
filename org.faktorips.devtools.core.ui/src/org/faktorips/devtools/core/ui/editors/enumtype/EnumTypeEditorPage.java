@@ -133,11 +133,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
      */
     protected void updateToolbarActionEnabledStates() {
         boolean enableImportExportActions;
-        try {
-            enableImportExportActions = enumType.isCapableOfContainingValues();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        enableImportExportActions = enumType.isCapableOfContainingValues();
         if (importAction != null) {
             importAction.setEnabled(enableImportExportActions);
         }

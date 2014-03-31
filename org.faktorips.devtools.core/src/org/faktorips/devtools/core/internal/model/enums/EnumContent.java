@@ -325,8 +325,12 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * <tt>IEnumContent</tt> is consistent with this base <tt>IEnumType</tt>.
      */
     @Override
-    public boolean isCapableOfContainingValues() throws CoreException {
-        return (findEnumType(getIpsProject()) == null) ? false : !(isFixToModelRequired());
+    public boolean isCapableOfContainingValues() {
+        try {
+            return (findEnumType(getIpsProject()) == null) ? false : !(isFixToModelRequired());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

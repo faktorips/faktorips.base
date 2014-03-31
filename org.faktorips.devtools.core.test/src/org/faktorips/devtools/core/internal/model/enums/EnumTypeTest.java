@@ -1314,7 +1314,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testIsCapableOfContainingValues() throws CoreException {
+    public void testIsCapableOfContainingValues() {
         assertTrue(genderEnumType.isCapableOfContainingValues());
         genderEnumType.setAbstract(true);
         genderEnumType.setAbstract(true);
