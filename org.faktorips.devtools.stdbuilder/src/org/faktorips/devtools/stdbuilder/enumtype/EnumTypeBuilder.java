@@ -75,6 +75,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private static final String VARNAME_MESSAGE_HELPER = "messageHelper";
 
+    private static final String VARNAME_ID_MAP = "idMap";
+
     private static final String VARNAME_INDEX = "index";
 
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
@@ -234,6 +236,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 // in case of class generation the message helper is already generated before enum
                 // values!
                 generateMessageHelperVar(mainSection.getConstantBuilder());
+                generateStaticIdMap(mainSection.getConstantBuilder());
             }
             generateCodeForEnumAttributes(mainSection.getMemberVarBuilder());
             generateCodeForConstructor(mainSection.getConstructorBuilder());
@@ -256,7 +259,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean isMessageHelperNeeded() {
-        if (getEnumType().containsValues()) {
+        if (getEnumType().isCapableOfContainingValues()) {
             List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributes(false);
             for (IEnumAttribute enumAttribute : enumAttributes) {
                 if (enumAttribute.isMultilingual()) {
@@ -265,6 +268,39 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
         return false;
+    }
+
+    private void generateStaticIdMap(JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+        appendLocalizedJavaDoc("ID_MAP", constantBuilder);
+        JavaCodeFragment expression = new JavaCodeFragment();
+        expression.append("new ").appendClassName(HashMap.class.getName() + getIdMapGenerics()).append("()");
+        String varType = Map.class.getName() + getIdMapGenerics();
+        constantBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL | Modifier.STATIC, varType, VARNAME_ID_MAP,
+                expression);
+        generateIdMapValues(constantBuilder);
+    }
+
+    private String getIdMapGenerics() throws CoreException {
+        ValueDatatype datatype = getDatatypeForIdentifierAttribute(getEnumType(), getIpsProject());
+        if (datatype.isPrimitive()) {
+            datatype = datatype.getWrapperType();
+        }
+        DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<").append(datatypeHelper.getJavaClassName()).append(", ")
+                .append(getUnqualifiedClassName()).append(">");
+        return stringBuilder.toString();
+    }
+
+    private void generateIdMapValues(JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+        IEnumAttribute identifierAttribute = getIdentifierAttribute(getEnumType());
+        appendLocalizedJavaDoc("STATIC", constantBuilder);
+        constantBuilder.appendln("static").openBracket();
+        constantBuilder.append("for (").append(getUnqualifiedClassName()).appendln(" value : values())").openBracket();
+        constantBuilder.append(VARNAME_ID_MAP).append(".put(value.").append(getMemberVarName(identifierAttribute))
+                .append(", ").appendln("value);");
+        constantBuilder.closeBracket();
+        constantBuilder.closeBracket();
     }
 
     private void generateMethodGetEnumValueId(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
@@ -731,8 +767,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
-            String attributeName = currentEnumAttribute.getName();
-            String codeName = getMemberVarName(attributeName);
+            String codeName = getMemberVarName(currentEnumAttribute);
 
             if (currentEnumAttribute.isValid(getIpsProject()) && isGenerateFieldFor(currentEnumAttribute)) {
                 if (isGenerateAttributeCode(currentEnumAttribute)) {
@@ -1031,7 +1066,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     // Build method body
                     JavaCodeFragment methodBody = new JavaCodeFragment();
                     methodBody.append("return "); //$NON-NLS-1$
-                    appendGetterReturnStatement(currentEnumAttribute, attributeName, argNames, methodBody);
+                    appendGetterReturnStatement(currentEnumAttribute, argNames, methodBody);
 
                     methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, argNames,
                             argClasses);
@@ -1057,16 +1092,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void appendGetterReturnStatement(IEnumAttribute currentEnumAttribute,
-            String attributeName,
             String[] argNames,
             JavaCodeFragment methodBody) {
         if (!isGenerateFieldFor(currentEnumAttribute)) {
             IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
             String idGetterName = getMethodNameGetter(identifierAttribute);
-            methodBody.append(VARNAME_MESSAGE_HELPER).append(".getMessage(\"").append(attributeName).append("_\" + ")
-                    .append(idGetterName).append("(), ").append(argNames[0]).append(")");
+            methodBody.append(VARNAME_MESSAGE_HELPER).append(".getMessage(\"").append(currentEnumAttribute.getName())
+                    .append("_\" + ").append(idGetterName).append("(), ").append(argNames[0]).append(")");
         } else {
-            methodBody.append(getMemberVarName(attributeName));
+            methodBody.append(getMemberVarName(currentEnumAttribute));
             if (currentEnumAttribute.isMultilingual()) {
                 methodBody.append(".get(").append(argNames[0]).append(")");
             }
@@ -1099,15 +1133,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!enumType.isInextensibleEnum()) {
+        if (!enumType.isInextensibleEnum() || literalNameAttribute == null) {
             return;
         }
-
         List<IEnumAttribute> uniqueAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
-        if (literalNameAttribute == null) {
-            return;
-        }
-
         for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
             if (currentEnumAttribute.isValid(getIpsProject())) {
                 if (currentEnumAttribute.findIsUnique(getIpsProject())) {
@@ -1132,14 +1161,30 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             parameterNames = new String[] { parameterName };
             parameterClasses = new String[] { datatypeHelper.getJavaClassName() };
         }
+
         appendLocalizedJavaDoc("METHOD_GET_VALUE_BY_XXX", parameterName, currentEnumAttribute, methodBuilder); //$NON-NLS-1$
         methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, getQualifiedClassName(enumType),
                 getMethodNameGetValueBy(currentEnumAttribute), parameterNames, parameterClasses);
-
-        JavaCodeFragment forLoop = generateGetValueByForLoop(currentEnumAttribute, datatypeHelper, parameterName);
-        methodBuilder.append(forLoop);
-
+        methodBuilder.append(generateGetValueByExpression(currentEnumAttribute, parameterName, datatypeHelper));
         methodBuilder.methodEnd();
+    }
+
+    private JavaCodeFragment generateGetValueByExpression(IEnumAttribute currentEnumAttribute,
+            String parameterName,
+            DatatypeHelper datatypeHelper) throws CoreException {
+        if (currentEnumAttribute.findIsIdentifier(getIpsProject())) {
+            return generateGetValueByIdHashmap(currentEnumAttribute);
+        } else {
+            return generateGetValueByForLoop(currentEnumAttribute, datatypeHelper, parameterName);
+        }
+    }
+
+    private JavaCodeFragment generateGetValueByIdHashmap(IEnumAttribute currentEnumAttribute) {
+        JavaCodeFragment getValueExpression;
+        getValueExpression = new JavaCodeFragment();
+        getValueExpression.append("return ").append(VARNAME_ID_MAP).append(".get(")
+                .append(getMemberVarName(currentEnumAttribute)).append(");");
+        return getValueExpression;
     }
 
     /**
@@ -1194,24 +1239,36 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private JavaCodeFragment generateGetValueByCompare(IEnumAttribute currentEnumAttribute,
             DatatypeHelper datatypeHelper,
             String parameterName) {
-        boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
         JavaCodeFragment compareCode = new JavaCodeFragment();
         compareCode.append("currentValue.");
         if (currentEnumAttribute.isMultilingual()) {
-            compareCode.append(getMethodNameGetter(currentEnumAttribute));
-            compareCode.append("(locale).equals(");
+            return editCodeFragmentForMultilingual(currentEnumAttribute, parameterName, compareCode);
+        }
+        return editCodeFragmentForNonMultilingual(currentEnumAttribute, parameterName, datatypeHelper, compareCode);
+    }
+
+    private JavaCodeFragment editCodeFragmentForMultilingual(IEnumAttribute currentEnumAttribute,
+            String parameterName,
+            JavaCodeFragment compareCode) {
+        compareCode.append(getMethodNameGetter(currentEnumAttribute));
+        compareCode.append("(locale).equals(");
+        compareCode.append(parameterName);
+        return compareCode.append(")");
+    }
+
+    private JavaCodeFragment editCodeFragmentForNonMultilingual(IEnumAttribute currentEnumAttribute,
+            String parameterName,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragment compareCode) {
+        boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
+        compareCode.append(currentEnumAttribute.getName());
+        if (primitiveDatatype) {
+            compareCode.append(" == "); //$NON-NLS-1$
+            compareCode.append(parameterName);
+        } else {
+            compareCode.append(".equals(");
             compareCode.append(parameterName);
             compareCode.append(")");
-        } else {
-            compareCode.append(currentEnumAttribute.getName());
-            if (primitiveDatatype) {
-                compareCode.append(" == "); //$NON-NLS-1$
-                compareCode.append(parameterName);
-            } else {
-                compareCode.append(".equals(");
-                compareCode.append(parameterName);
-                compareCode.append(")");
-            }
         }
         return compareCode;
     }
@@ -1444,7 +1501,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("\""); //$NON-NLS-1$
         methodBody.append(enumType.getName());
         methodBody.append(": \" + "); //$NON-NLS-1$
-        methodBody.append(getJavaNamingConvention().getMemberVarName(idAttribute.getName()));
+        methodBody.append(getMemberVarName(idAttribute));
         IEnumAttribute displayName = enumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
         if (displayName == null || !(displayName.isValid(getIpsProject()))) {
             methodBody.append(";"); //$NON-NLS-1$
@@ -1455,7 +1512,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         .getLocaleCodeFragment(getLanguageUsedInGeneratedSourceCode());
                 methodBody.append(getMethodNameGetter(displayName)).append("(").append(defaultLocale).append(")");
             } else {
-                methodBody.append(getJavaNamingConvention().getMemberVarName(displayName.getName()));
+                methodBody.append(getMemberVarName(displayName));
             }
             methodBody.append(" + ')';"); //$NON-NLS-1$
         }
@@ -1603,7 +1660,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private String getMemberVarName(IEnumAttribute enumAttribute) {
-        return getJavaNamingConvention().getMemberVarName(enumAttribute.getName());
+        return getMemberVarName(enumAttribute.getName());
     }
 
     private DatatypeHelper getDatatypeHelper(IEnumAttribute enumAttribute, boolean mapMultilingual) {

@@ -163,9 +163,8 @@ public interface IEnumValueContainer extends IIpsObject {
      * Returns whether this {@link IEnumValueContainer} is currently capable of holding
      * {@link IEnumValue}s ({@code true}) or not ({@code false}).
      * 
-     * @throws CoreException May throw this exception at any time.
      */
-    public boolean isCapableOfContainingValues() throws CoreException;
+    public boolean isCapableOfContainingValues();
 
     /**
      * Fix the {@link ValueType} in {@link IEnumAttributeValue enum attribute values} for the
