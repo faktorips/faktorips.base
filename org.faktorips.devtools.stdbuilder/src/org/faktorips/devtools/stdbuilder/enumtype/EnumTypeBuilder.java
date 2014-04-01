@@ -282,6 +282,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private String getIdMapGenerics() throws CoreException {
         ValueDatatype datatype = getDatatypeForIdentifierAttribute(getEnumType(), getIpsProject());
+        if (datatype.isPrimitive()) {
+            datatype = datatype.getWrapperType();
+        }
         DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<").append(datatypeHelper.getJavaClassName()).append(", ")
