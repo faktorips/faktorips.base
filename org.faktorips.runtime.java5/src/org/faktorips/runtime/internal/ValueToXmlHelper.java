@@ -24,23 +24,26 @@ import org.w3c.dom.Text;
  */
 public class ValueToXmlHelper {
 
+    /**
+     * Used for both the value of a config element and the values of an enum value set.
+     */
+    public static final String XML_TAG_VALUE = "Value"; //$NON-NLS-1$
+    public static final String XML_TAG_VALUE_SET = "ValueSet"; //$NON-NLS-1$
+    public static final String XML_TAG_DATA = "Data"; //$NON-NLS-1$
+
+    public static final String XML_TAG_CONFIG_ELEMENT = "ConfigElement";
+    public static final String XML_TAG_ATTRIBUTE_VALUE = "AttributeValue";
+    public static final String XML_ATTRIBUTE_ATTRIBUTE = "attribute";
+
+    public static final String XML_TAG_ALL_VALUES = "AllValues"; //$NON-NLS-1$
+    public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
+    public static final String XML_TAG_RANGE = "Range"; //$NON-NLS-1$
+    public static final String XML_TAG_STEP = "Step"; //$NON-NLS-1$
+    public static final String XML_TAG_UPPER_BOUND = "UpperBound"; //$NON-NLS-1$
+    public static final String XML_TAG_LOWER_BOUND = "LowerBound"; //$NON-NLS-1$
+
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
-
-    public static final String XML_TAGNAME_VALUE = "Value"; //$NON-NLS-1$
-
-    private static final String XML_ELEMENT_DATA = "Data"; //$NON-NLS-1$
-
-    private static final String XML_ELEMENT_ENUM = "Enum"; //$NON-NLS-1$
-
-    private static final String XML_ELEMENT_STEP = "Step"; //$NON-NLS-1$
-
-    private static final String XML_ELEMENT_UPPER_BOUND = "UpperBound"; //$NON-NLS-1$
-
-    private static final String XML_ELEMENT_LOWER_BOUND = "LowerBound"; //$NON-NLS-1$
-
-    private static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
-
-    private static final String XML_ELEMENT_RANGE = "Range"; //$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
 
     private ValueToXmlHelper() {
         // Utility class not to be instantiated.
@@ -59,8 +62,8 @@ public class ValueToXmlHelper {
     }
 
     /**
-     * Adds the {@link DefaultInternationalString} to the given xml element. Takes care of proper null
-     * handling.
+     * Adds the {@link DefaultInternationalString} to the given xml element. Takes care of proper
+     * null handling.
      * 
      * @param value the {@link DefaultInternationalString} to be added.
      * @param el the xml element.
@@ -101,15 +104,17 @@ public class ValueToXmlHelper {
 
     /**
      * Adds the {@link DefaultInternationalString} to the given xml element as does
-     * {@link #addInternationalStringToElement(DefaultInternationalString, Element, String)}. The created
-     * element then is returned.
+     * {@link #addInternationalStringToElement(DefaultInternationalString, Element, String)}. The
+     * created element then is returned.
      * 
      * @param value the {@link DefaultInternationalString} to be added.
      * @param el the XML element to add the value to.
      * @param tagName the tag name for the element that stored the value.
      * @return the created element with the given tag name, that contains the given value.
      */
-    private static Element addInternationalStringAndReturnElement(DefaultInternationalString value, Element el, String tagName) {
+    private static Element addInternationalStringAndReturnElement(DefaultInternationalString value,
+            Element el,
+            String tagName) {
         Document ownerDocument = el.getOwnerDocument();
         Element valueEl = ownerDocument.createElement(tagName);
         Element internationalStringEl = InternationalStringXmlReaderWriter.toXml(ownerDocument, value);
@@ -170,9 +175,9 @@ public class ValueToXmlHelper {
     }
 
     /**
-     * Returns the {@link DefaultInternationalString} stored in the child element of the given element with
-     * the indicated name. Returns an empty DefaultInternationalString if the value is null or no such
-     * child element exists.
+     * Returns the {@link DefaultInternationalString} stored in the child element of the given
+     * element with the indicated name. Returns an empty DefaultInternationalString if the value is
+     * null or no such child element exists.
      * 
      * @param el The xml element that is the parent of the element storing the international string.
      * @param tagName The name of the child
@@ -227,14 +232,14 @@ public class ValueToXmlHelper {
         if (valueSetEl == null) {
             return null;
         }
-        Element rangeEl = XmlUtil.getFirstElement(valueSetEl, XML_ELEMENT_RANGE);
+        Element rangeEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_RANGE);
         if (rangeEl == null) {
             return null;
         }
         boolean containsNull = Boolean.valueOf(rangeEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
-        String lowerBound = getValueFromElement(rangeEl, XML_ELEMENT_LOWER_BOUND);
-        String upperBound = getValueFromElement(rangeEl, XML_ELEMENT_UPPER_BOUND);
-        String step = getValueFromElement(rangeEl, XML_ELEMENT_STEP);
+        String lowerBound = getValueFromElement(rangeEl, XML_TAG_LOWER_BOUND);
+        String upperBound = getValueFromElement(rangeEl, XML_TAG_UPPER_BOUND);
+        String step = getValueFromElement(rangeEl, XML_TAG_STEP);
 
         return new Range(lowerBound, upperBound, step, containsNull);
     }
@@ -244,18 +249,18 @@ public class ValueToXmlHelper {
         if (valueSetEl == null) {
             return null;
         }
-        Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_ELEMENT_ENUM);
+        Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ENUM);
         if (enumEl == null) {
             return null;
         }
 
-        NodeList valueElements = enumEl.getElementsByTagName(XML_TAGNAME_VALUE);
+        NodeList valueElements = enumEl.getElementsByTagName(XML_TAG_VALUE);
 
         String[] values = new String[valueElements.getLength()];
         boolean containsNull = false;
         for (int i = 0; i < valueElements.getLength(); i++) {
             Element valueEl = (Element)valueElements.item(i);
-            values[i] = getValueFromElement(valueEl, XML_ELEMENT_DATA);
+            values[i] = getValueFromElement(valueEl, XML_TAG_DATA);
             if (values[i] == null) {
                 containsNull = true;
             }

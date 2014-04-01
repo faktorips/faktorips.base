@@ -385,7 +385,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     protected void writeFormulaToXml(Element element) {
         for (Entry<String, String> expressionEntry : availableFormulars.entrySet()) {
             Element formula = element.getOwnerDocument().createElement(ProductComponentXmlUtil.XML_TAG_FORMULA);
-            formula.setAttribute(ProductComponentXmlUtil.XML_ATTR_FORMULA_SIGNATURE, expressionEntry.getKey());
+            formula.setAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE, expressionEntry.getKey());
             ValueToXmlHelper.addValueToElement(expressionEntry.getValue(), formula,
                     ProductComponentXmlUtil.XML_TAG_EXPRESSION);
 

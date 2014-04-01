@@ -120,7 +120,7 @@
         «IF multiValue-»
         	«EXPAND initMultiValueAttributeFromXml-»
         «ELSE-»
-            «xmlValueType()» value = «ValueToXmlHelper()».«getFromElement("configElement", "\"Value\"")»;
+            «xmlValueType()» value = «ValueToXmlHelper()».«getFromElement("configElement", XML_TAG_VALUE())»;
            	this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
         «ENDIF-»
         }
@@ -145,7 +145,7 @@
 
 «DEFINE writeAttributeToXML FOR XProductAttribute-»
 	«IF !overwrite-»
-        attributeElement = element.getOwnerDocument().createElement("AttributeValue");
+        attributeElement = element.getOwnerDocument().createElement(«XML_TAG_ATTRIBUTE_VALUE()»);
         attributeElement.setAttribute("attribute", «constantNamePropertyName»);
         «IF multiValue-»
             «IF multiValueDirectXmlHandling-»
@@ -161,7 +161,7 @@
 		        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList" + fieldName.toFirstUpper())»;
 	        «ENDIF-»
 	    «ELSE-»
-       		«ValueToXmlHelper()».«addToElement(getToStringExpression(fieldName), "attributeElement", "\"Value\"")»;
+       		«ValueToXmlHelper()».«addToElement(getToStringExpression(fieldName), "attributeElement", XML_TAG_VALUE())»;
         «ENDIF-»
         element.appendChild(attributeElement);
 	«ENDIF-»

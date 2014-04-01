@@ -29,9 +29,12 @@ import org.w3c.dom.NodeList;
  */
 final class ProductComponentXmlUtil {
 
+    /*
+     * Package private so ProductComponentGeneration can access the constants.
+     */
     static final String XML_TAG_FORMULA = "Formula";
-    static final String XML_ATTR_FORMULA_SIGNATURE = "formulaSignature";
     static final String XML_TAG_EXPRESSION = "Expression";
+    static final String XML_ATTRIBUTE_FORMULA_SIGNATURE = "formulaSignature";
 
     private ProductComponentXmlUtil() {
         // do not instantiate
@@ -82,12 +85,12 @@ final class ProductComponentXmlUtil {
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if ("ConfigElement".equals(node.getNodeName())) {
+                if (ValueToXmlHelper.XML_TAG_CONFIG_ELEMENT.equals(node.getNodeName())) {
                     Element childElement = (Element)nl.item(i);
-                    elementMap.put(childElement.getAttribute("attribute"), childElement);
-                } else if ("AttributeValue".equals(node.getNodeName())) {
+                    elementMap.put(childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE), childElement);
+                } else if (ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE.equals(node.getNodeName())) {
                     Element childElement = (Element)nl.item(i);
-                    elementMap.put(childElement.getAttribute("attribute"), childElement);
+                    elementMap.put(childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE), childElement);
                 } else if ("TableContentUsage".equals(node.getNodeName())) {
                     Element childElement = (Element)nl.item(i);
                     String structureUsage = childElement.getAttribute("structureUsage");
@@ -114,7 +117,7 @@ final class ProductComponentXmlUtil {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element aFormula = (Element)node;
                 if (XML_TAG_FORMULA.equals(node.getNodeName())) {
-                    String name = aFormula.getAttribute(XML_ATTR_FORMULA_SIGNATURE);
+                    String name = aFormula.getAttribute(XML_ATTRIBUTE_FORMULA_SIGNATURE);
                     NodeList nodeList = aFormula.getElementsByTagName(XML_TAG_EXPRESSION);
                     Element expressionElement = (Element)nodeList.item(0);
 

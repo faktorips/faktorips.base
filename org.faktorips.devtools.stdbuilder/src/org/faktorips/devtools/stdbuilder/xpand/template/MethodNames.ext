@@ -1,4 +1,5 @@
 extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::template::Constants reexport;
 
 // ---------------------------------
 // Methods in ListUtil

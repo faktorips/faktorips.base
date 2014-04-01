@@ -370,17 +370,17 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
 
-        value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
+        value = ValueToXmlHelper.getValueFromElement(element, ValueToXmlHelper.XML_TAG_VALUE);
 
-        pcTypeAttribute = element.getAttribute("attribute"); //$NON-NLS-1$
+        pcTypeAttribute = element.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
         name = pcTypeAttribute;
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
-        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
+        element.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, pcTypeAttribute);
+        ValueToXmlHelper.addValueToElement(value, element, ValueToXmlHelper.XML_TAG_VALUE);
     }
 
     @Override
@@ -397,12 +397,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         if (ValueSet.XML_TAG.equals(xmlTagName)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
-
-        } else if (PROPERTY_VALUE.equalsIgnoreCase(xmlTagName)) {
-            // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
-            return null;
         }
-
         return null;
     }
 

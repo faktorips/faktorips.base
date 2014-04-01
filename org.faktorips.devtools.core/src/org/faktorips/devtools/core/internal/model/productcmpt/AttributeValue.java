@@ -169,7 +169,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
-        Element valueEl = XmlUtil.getFirstElement(element, ValueToXmlHelper.XML_TAGNAME_VALUE);
+        Element valueEl = XmlUtil.getFirstElement(element, ValueToXmlHelper.XML_TAG_VALUE);
         valueHolder = AbstractValueHolder.initValueHolder(this, valueEl);
     }
 
