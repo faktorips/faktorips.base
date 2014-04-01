@@ -39,6 +39,8 @@
 
 			«EXPAND ProductAssociation::field FOREACH associations-»
 			
+			«EXPAND TableUsages::propertyField FOREACH tables»
+			
 			«EXPAND TableUsages::memberField FOREACH tables»
 			
 		    /**

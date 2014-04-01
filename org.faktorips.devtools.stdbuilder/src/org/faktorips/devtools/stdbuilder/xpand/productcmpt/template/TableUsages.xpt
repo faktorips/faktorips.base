@@ -15,6 +15,15 @@
     protected String «field(fieldName)» = null;
 «ENDDEFINE»
 
+«DEFINE propertyField FOR XTableUsage-»
+	/**
+	 * «localizedJDoc("PROPERTY_TABLE_USAGE", name)»
+	 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+	 * @generated
+	 */
+	 public static final String «field(constantNameTable)» = "«name»";
+«ENDDEFINE»
+
 «DEFINE getterAndSetter FOR XTableUsage-»
 	«EXPAND getter-»
 	«EXPAND setter-»
@@ -47,12 +56,12 @@
 «ENDDEFINE»
 
 «DEFINE initTableUsages FOR XTableUsage-»
-        element = tableUsageMap.get("«name»");
+        element = tableUsageMap.get(«constantNameTable»);
         if (element != null) {
             «fieldName» = «ValueToXmlHelper()».«getValueFromElement("element", "\"TableContentName\"")»;
         }
 «ENDDEFINE»
 
 «DEFINE writeTableUsages FOR XTableUsage-»
-        writeTableUsageToXml(element, "«name»", «fieldName»);
+        writeTableUsageToXml(element, «constantNameTable», «fieldName»);
 «ENDDEFINE»
