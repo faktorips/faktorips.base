@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,8 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
  */
 public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
-    private List<IActiveGenerationChangedListener> activeGenerationChangedListeners = new ArrayList<IActiveGenerationChangedListener>(
-            1);
+    private final List<IActiveGenerationChangedListener> activeGenerationChangedListeners = new CopyOnWriteArrayList<IActiveGenerationChangedListener>();
 
     private IIpsObjectGeneration generation;
 
@@ -79,9 +77,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     }
 
     private void notifyGenerationChanged() {
-        List<IActiveGenerationChangedListener> copy = new CopyOnWriteArrayList<IActiveGenerationChangedListener>(
-                activeGenerationChangedListeners);
-        for (IActiveGenerationChangedListener listener : copy) {
+        for (IActiveGenerationChangedListener listener : activeGenerationChangedListeners) {
             listener.activeGenerationChanged(generation);
         }
     }

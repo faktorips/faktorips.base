@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -95,10 +95,10 @@ public class BindingContext {
      * listener for changes and focus losts. Instance of an inner class is used to avoid poluting
      * this class' interface.
      */
-    private Listener listener = new Listener();
+    private final Listener listener = new Listener();
 
     /** list of mappings between edit fields and properties of model objects. */
-    private List<FieldPropertyMapping<?>> mappings = new ArrayList<FieldPropertyMapping<?>>();
+    private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
 
     /**
      * a list of the ips objects containing at least one binded ips part container each container is
@@ -106,11 +106,11 @@ public class BindingContext {
      * because once binded, we need to access all binded containers, and this is faster with a list,
      * than a hashset or treeset.
      */
-    private Set<Validatable> validatables = new HashSet<Validatable>(1);
+    private final Set<Validatable> validatables = new HashSet<Validatable>(1);
 
-    private List<ControlPropertyBinding> controlBindings = new ArrayList<ControlPropertyBinding>(2);
+    private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<ControlPropertyBinding>();
 
-    private Set<String> ignoredMessageCodes = new HashSet<String>(2);
+    private final Set<String> ignoredMessageCodes = new HashSet<String>(2);
 
     /**
      * Updates the UI with information from the model.
@@ -510,17 +510,15 @@ public class BindingContext {
      */
     public void removeBindings(Control control) {
         List<Object> listenerRemoveCandidates = new ArrayList<Object>();
-        for (Iterator<ControlPropertyBinding> it = controlBindings.iterator(); it.hasNext();) {
-            ControlPropertyBinding binding = it.next();
+        for (ControlPropertyBinding binding : controlBindings) {
             if (binding.getControl() == control) {
-                it.remove();
+                controlBindings.remove(binding);
                 listenerRemoveCandidates.add(binding.getObject());
             }
         }
-        for (Iterator<FieldPropertyMapping<?>> it = mappings.iterator(); it.hasNext();) {
-            FieldPropertyMapping<?> mapping = it.next();
+        for (FieldPropertyMapping<?> mapping : mappings) {
             if (mapping.getField().getControl() == control) {
-                it.remove();
+                mappings.remove(mapping);
                 mapping.getField().removeChangeListener(listener);
                 if (!mapping.getField().getControl().isDisposed()) {
                     mapping.getField().getControl().removeFocusListener(listener);
@@ -566,16 +564,14 @@ public class BindingContext {
      * @param object the bound object.
      */
     public void removeBindings(Object object) {
-        for (Iterator<ControlPropertyBinding> it = controlBindings.iterator(); it.hasNext();) {
-            ControlPropertyBinding binding = it.next();
+        for (ControlPropertyBinding binding : controlBindings) {
             if (binding.getObject() == object) {
-                it.remove();
+                controlBindings.remove(binding);
             }
         }
-        for (Iterator<FieldPropertyMapping<?>> it = mappings.iterator(); it.hasNext();) {
-            FieldPropertyMapping<?> mapping = it.next();
+        for (FieldPropertyMapping<?> mapping : mappings) {
             if (mapping.getObject() == object) {
-                it.remove();
+                mappings.remove(mapping);
                 mapping.getField().removeChangeListener(listener);
                 mapping.getField().getControl().removeFocusListener(listener);
             }
@@ -605,12 +601,8 @@ public class BindingContext {
      */
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener);
-        // defensive copy to avoid concurrent modification
-        List<FieldPropertyMapping<?>> mappingsCopy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-        // exceptions
         Set<Object> disposedPmos = new HashSet<Object>();
-        for (FieldPropertyMapping<?> mapping : mappingsCopy) {
+        for (FieldPropertyMapping<?> mapping : mappings) {
             mapping.getField().removeChangeListener(listener);
             if (!mapping.getField().getControl().isDisposed()) {
                 mapping.getField().getControl().removeFocusListener(listener);
@@ -618,11 +610,7 @@ public class BindingContext {
             disposeObjectIfNeccessary(disposedPmos, mapping.getObject());
         }
 
-        // defensive copy to avoid concurrent
-        List<ControlPropertyBinding> controlsCopy = new CopyOnWriteArrayList<ControlPropertyBinding>(controlBindings);
-
-        // modification exceptions
-        for (ControlPropertyBinding mapping : controlsCopy) {
+        for (ControlPropertyBinding mapping : controlBindings) {
             disposeObjectIfNeccessary(disposedPmos, mapping.getObject());
         }
     }
@@ -701,8 +689,7 @@ public class BindingContext {
      *            of an object may have changed.
      */
     private void applyControlBindings(String propertyName) {
-        List<ControlPropertyBinding> copy = new CopyOnWriteArrayList<ControlPropertyBinding>(controlBindings);
-        for (ControlPropertyBinding binding : copy) {
+        for (ControlPropertyBinding binding : controlBindings) {
             removeBindingIfControlIsDisposed(binding);
             try {
                 if (propertyName == null) {
@@ -726,11 +713,7 @@ public class BindingContext {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
-            // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-            // exceptions
-            for (FieldPropertyMapping<?> mapping : copy) {
+            for (FieldPropertyMapping<?> mapping : mappings) {
                 if (e.field == mapping.getField()) {
                     try {
                         mapping.setPropertyValue();
@@ -755,13 +738,10 @@ public class BindingContext {
 
         @Override
         public void contentsChanged(ContentChangeEvent event) {
-            // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-            // exceptions
-            for (FieldPropertyMapping<?> mapping : copy) {
-                if (mapping.getObject() instanceof IIpsObjectPartContainer) {
-                    if (event.isAffected((IIpsObjectPartContainer)mapping.getObject())) {
+            for (FieldPropertyMapping<?> mapping : mappings) {
+                IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
+                if (mappedPart != null) {
+                    if (event.isAffected(mappedPart)) {
                         try {
                             mapping.setControlValue();
                         } catch (Exception ex) {
@@ -772,17 +752,24 @@ public class BindingContext {
                 }
             }
 
-            showValidationStatus(copy);
+            showValidationStatus(mappings);
             applyControlBindings();
+        }
+
+        /* private */IIpsObjectPartContainer getMappedPart(Object object) {
+            if (object instanceof IIpsObjectPartContainer) {
+                return (IIpsObjectPartContainer)object;
+            } else if (object instanceof IpsObjectPartPmo) {
+                return ((IpsObjectPartPmo)object).getIpsObjectPartContainer();
+            } else if (object instanceof IAdaptable) {
+                return (IIpsObjectPartContainer)((IAdaptable)object).getAdapter(IIpsObjectPartContainer.class);
+            }
+            return null;
         }
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
-
-            // exceptions
-            for (FieldPropertyMapping<?> mapping : copy) {
+            for (FieldPropertyMapping<?> mapping : mappings) {
                 if (mapping.getObject() == evt.getSource()) {
                     try {
                         mapping.setControlValue();
@@ -793,7 +780,7 @@ public class BindingContext {
                 }
             }
 
-            showValidationStatus(copy);
+            showValidationStatus(mappings);
             applyControlBindings(evt.getPropertyName());
         }
     }

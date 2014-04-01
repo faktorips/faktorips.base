@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -134,9 +135,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private ResourceDeltaVisitor resourceDeltaVisitor;
 
     /** set of model change listeners that are notified about model changes */
-    private Set<ContentsChangeListener> changeListeners = new HashSet<ContentsChangeListener>(100);
+    private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<ContentsChangeListener>();
 
-    private Set<IIpsSrcFilesChangeListener> ipsSrcFilesChangeListeners = new HashSet<IIpsSrcFilesChangeListener>(10);
+    private final Set<IIpsSrcFilesChangeListener> ipsSrcFilesChangeListeners = new CopyOnWriteArraySet<IIpsSrcFilesChangeListener>();
 
     /** set of modification status change listeners */
     private Set<IModificationStatusChangeListener> modificationStatusChangeListeners = new HashSet<IModificationStatusChangeListener>(
@@ -341,7 +342,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             int flags,
             IProgressMonitor monitor) throws CoreException {
 
-        if (changeListeners.size() == 0 && modificationStatusChangeListeners.size() == 0) {
+        if (changeListeners.isEmpty() && modificationStatusChangeListeners.isEmpty()) {
             getWorkspace().run(action, rule, flags, monitor);
             return;
         }
@@ -370,7 +371,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         } finally {
             // restore change listeners
             removeChangeListener(batchListener);
-            changeListeners = new HashSet<ContentsChangeListener>(listeners);
+            changeListeners = new CopyOnWriteArraySet<ContentsChangeListener>(listeners);
 
             // notify about changes
             for (IIpsSrcFile file : changedSrcFileEvents.keySet()) {
@@ -696,9 +697,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles) {
-        final List<IIpsSrcFilesChangeListener> copy = new CopyOnWriteArrayList<IIpsSrcFilesChangeListener>(
-                ipsSrcFilesChangeListeners);
-        for (IIpsSrcFilesChangeListener listener : copy) {
+        for (IIpsSrcFilesChangeListener listener : ipsSrcFilesChangeListeners) {
             listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles));
         }
     }
@@ -1703,8 +1702,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         @Override
         public void run() {
-            List<ContentsChangeListener> copy = new CopyOnWriteArrayList<ContentsChangeListener>(changeListeners);
-            for (ContentsChangeListener listener : copy) {
+            for (ContentsChangeListener listener : changeListeners) {
                 if (!event.getIpsSrcFile().exists()) {
                     break;
                 }

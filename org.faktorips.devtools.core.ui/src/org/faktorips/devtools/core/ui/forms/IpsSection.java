@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.forms;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.Platform;
@@ -87,7 +85,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     private boolean isInitCollapsedIfNoContent = false;
 
-    private ArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
+    private CopyOnWriteArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
     private Composite clientComposite;
 
@@ -387,9 +385,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             return;
         }
 
-        List<IDataChangeableStateChangeListener> listeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>(
-                dataChangeableStateChangeListeners);
-        for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : listeners) {
+        for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : dataChangeableStateChangeListeners) {
             iDataChangeableStateChangeListener.dataChangeableStateHasChanged(this);
         }
     }
@@ -401,7 +397,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
 
         if (dataChangeableStateChangeListeners == null) {
-            dataChangeableStateChangeListeners = new ArrayList<IDataChangeableStateChangeListener>(1);
+            dataChangeableStateChangeListeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>();
         }
 
         dataChangeableStateChangeListeners.add(listener);

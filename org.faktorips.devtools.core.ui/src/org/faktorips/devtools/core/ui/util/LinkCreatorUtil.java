@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
@@ -160,8 +159,8 @@ public class LinkCreatorUtil {
             shell = new Shell(Display.getDefault());
         }
         //
-        SelectionDialog dialog = new AssociationSelectionDialog(shell, new CopyOnWriteArrayList<IAssociation>(
-                possibleAssos), NLS.bind(Messages.LinkDropListener_selectAssociation, droppedCmptName));
+        SelectionDialog dialog = new AssociationSelectionDialog(shell, new ArrayList<IAssociation>(possibleAssos),
+                NLS.bind(Messages.LinkDropListener_selectAssociation, droppedCmptName));
         dialog.setBlockOnOpen(true);
         dialog.setHelpAvailable(false);
         if (dialog.open() == Window.OK) {

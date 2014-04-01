@@ -16,7 +16,6 @@ package org.faktorips.runtime;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -32,7 +31,7 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
 
     private final Object sourceBean;
 
-    private List<PropertyChangeListener> childChangeListeners = new ArrayList<PropertyChangeListener>(1);
+    private final List<PropertyChangeListener> childChangeListeners = new CopyOnWriteArrayList<PropertyChangeListener>();
 
     public IpsPropertyChangeSupport(Object sourceBean) {
         super(sourceBean);
@@ -115,9 +114,7 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
      * subscribed to this object interested in child property changes will be notified in turn.
      */
     public void fireChildPropertyChange(PropertyChangeEvent evt) {
-        List<PropertyChangeListener> targets = null;
-        targets = new CopyOnWriteArrayList<PropertyChangeListener>(childChangeListeners);
-        for (PropertyChangeListener target : targets) {
+        for (PropertyChangeListener target : childChangeListeners) {
             target.propertyChange(evt);
         }
     }

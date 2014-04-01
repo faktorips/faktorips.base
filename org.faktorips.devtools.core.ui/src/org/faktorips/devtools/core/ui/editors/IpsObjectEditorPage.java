@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -49,7 +48,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
     private boolean dataChangeable = true;
 
-    private ArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
+    private List<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
     /**
      * Creates a new <tt>IpsObjectEditorPage</tt>.
@@ -283,9 +282,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
             return;
         }
 
-        List<IDataChangeableStateChangeListener> listeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>(
-                dataChangeableStateChangeListeners);
-        for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : listeners) {
+        for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : dataChangeableStateChangeListeners) {
             iDataChangeableStateChangeListener.dataChangeableStateHasChanged(this);
         }
     }
@@ -297,7 +294,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
 
         if (dataChangeableStateChangeListeners == null) {
-            dataChangeableStateChangeListeners = new ArrayList<IDataChangeableStateChangeListener>(1);
+            dataChangeableStateChangeListeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>();
         }
 
         dataChangeableStateChangeListeners.add(listener);

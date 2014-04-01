@@ -68,10 +68,10 @@ public class ClassLoaderProvider {
      * a list of IPaths that contain the class files, either a path to a file if it's a Jar-File or
      * to a directory if it's a directory containing class files.
      */
-    private List<IPath> classfileContainers = new ArrayList<IPath>();
+    private final List<IPath> classfileContainers = new ArrayList<IPath>();
 
     /** listeners that are informed if the contents of the classpath changes */
-    private List<IClasspathContentsChangeListener> classpathContentsChangeListeners = new ArrayList<IClasspathContentsChangeListener>();
+    private final List<IClasspathContentsChangeListener> classpathContentsChangeListeners = new CopyOnWriteArrayList<IClasspathContentsChangeListener>();
 
     /**
      * resource change listener that is used to test for changes of the classpath elements (jars and
@@ -145,9 +145,7 @@ public class ClassLoaderProvider {
      */
     private void classpathContentsChanged() {
         classLoader = null;
-        List<IClasspathContentsChangeListener> copy = new CopyOnWriteArrayList<IClasspathContentsChangeListener>(
-                classpathContentsChangeListeners);
-        for (IClasspathContentsChangeListener listener : copy) {
+        for (IClasspathContentsChangeListener listener : classpathContentsChangeListeners) {
             listener.classpathContentsChanges(javaProject);
         }
     }
