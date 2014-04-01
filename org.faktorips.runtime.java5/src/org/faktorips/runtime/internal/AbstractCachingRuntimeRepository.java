@@ -10,11 +10,11 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -112,7 +112,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             };
             enumValuesCacheByClass = cacheFactory.createEnumCache(enumValueComputer);
 
-            enumXmlAdapters = new CopyOnWriteArrayList<XmlAdapter<?, ?>>();
+            enumXmlAdapters = new ArrayList<XmlAdapter<?, ?>>();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

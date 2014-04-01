@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,7 +35,7 @@ import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
  */
 public class IpsProblemMarkerManager implements IResourceChangeListener {
 
-    private List<IIpsProblemChangedListener> listeners = new ArrayList<IIpsProblemChangedListener>();
+    private final List<IIpsProblemChangedListener> listeners = new CopyOnWriteArrayList<IIpsProblemChangedListener>();
 
     public IpsProblemMarkerManager() {
         super();
@@ -80,8 +79,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
      */
     private void fireChanges(IResource[] changes) {
         // copy to avoid concurrent modifications!
-        List<IIpsProblemChangedListener> listenersCopy = new CopyOnWriteArrayList<IIpsProblemChangedListener>(listeners);
-        for (IIpsProblemChangedListener listener : listenersCopy) {
+        for (IIpsProblemChangedListener listener : listeners) {
             listener.problemsChanged(changes);
         }
     }
