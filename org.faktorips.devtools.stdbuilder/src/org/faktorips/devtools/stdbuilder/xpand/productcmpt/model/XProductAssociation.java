@@ -20,6 +20,7 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.util.StringUtil;
 
 public class XProductAssociation extends XAssociation {
 
@@ -70,6 +71,10 @@ public class XProductAssociation extends XAssociation {
 
     public String getNameOfMatchingAssociation() throws CoreException {
         return getAssociation().findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular();
+    }
+
+    public String getConstantNameXmlTag() {
+        return "XML_TAG_" + StringUtil.camelCaseToUnderscore(getName(isOneToMany())).toUpperCase();
     }
 
     public boolean hasMatchingAssociation() {
