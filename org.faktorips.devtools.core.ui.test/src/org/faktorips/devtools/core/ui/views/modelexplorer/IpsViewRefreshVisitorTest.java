@@ -26,7 +26,11 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -36,28 +40,36 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements IResourceChangeListener {
+public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot packRoot;
     private IResourceChangeEvent event;
+    private IResourceChangeListener resourceChangeListener;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        resourceChangeListener = new IResourceChangeListener() {
+
+            @Override
+            public void resourceChanged(IResourceChangeEvent event) {
+                IpsViewRefreshVisitorTest.this.event = event;
+            }
+        };
         ipsProject = newIpsProject();
         packRoot = ipsProject.getIpsPackageFragmentRoots()[0];
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener);
     }
 
     @Override
     protected void tearDownExtension() {
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
     }
 
     @Test
-    public void test_FlatLayout() throws CoreException, InterruptedException {
+    public void test_FlatLayout() throws Exception {
         // test case 1: new package "model.base" and new PolicyCmptType
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
         IIpsPackageFragment basePack = policyType.getIpsPackageFragment();
@@ -202,7 +214,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
     }
 
     @Test
-    public void test_HierarchicalLayout() throws CoreException, InterruptedException {
+    public void test_HierarchicalLayout() throws Exception {
         // test case 1: new package "model.base" and new PolicyCmptType
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
         IIpsPackageFragment basePack = policyType.getIpsPackageFragment();
@@ -400,8 +412,29 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         return recentEvent;
     }
 
-    @Override
-    public void resourceChanged(IResourceChangeEvent event) {
-        this.event = event;
+    @Test
+    public void testVisit_ipsAndJavaResource() throws Exception {
+        addIpsRootAsSourceEntry();
+        newPolicyCmptType(ipsProject, "model.base.Policy");
+
+        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.HIERACHICAL);
+        Set<Object> elementsToRefresh = visitor.getElementsToRefresh();
+
+        assertTrue(elementsToRefresh.contains(packRoot));
     }
+
+    private void addIpsRootAsSourceEntry() throws Exception {
+        IJavaProject javaProject = ipsProject.getJavaProject();
+        IClasspathEntry[] entries = javaProject.getRawClasspath();
+
+        IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
+        System.arraycopy(entries, 0, newEntries, 0, entries.length);
+
+        IPath srcPath = packRoot.getEnclosingResource().getFullPath();
+        IClasspathEntry srcEntry = JavaCore.newSourceEntry(srcPath, null);
+
+        newEntries[entries.length] = JavaCore.newSourceEntry(srcEntry.getPath());
+        javaProject.setRawClasspath(newEntries, null);
+    }
+
 }
