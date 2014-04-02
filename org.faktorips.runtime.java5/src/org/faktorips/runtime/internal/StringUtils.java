@@ -29,7 +29,15 @@ public class StringUtils {
      * <code>false</code>.
      */
     public static final boolean isEmpty(String s) {
-        return s == null || EMPTY.equals(s.trim());
+        return s == null || s.isEmpty();
+    }
+
+    /**
+     * Returns <code>true</code> if s is either null, the empty string or a string that only
+     * contains whitespaces, otherwise <code>false</code>.
+     */
+    public static final boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
     }
 
 }

@@ -351,9 +351,10 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         enumValue.getEnumAttributeValues().get(3).setValue(ValueFactory.createStringValue("ABC"));
 
         JavaCodeFragment codeFragement = builder.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+        System.out.println(codeFragement.getSourcecode());
 
         assertEquals(
-                "this.getRepository().getEnumValue(TestEnumType.class, (\"1\"==null || \"1\".equals(\"\")) ? null : Integer.valueOf(\"1\"))",
+                "this.getRepository().getEnumValue(TestEnumType.class, StringUtils.isEmpty(\"1\") ? null : Integer.valueOf(\"1\"))",
                 codeFragement.getSourcecode());
     }
 

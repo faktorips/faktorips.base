@@ -13,7 +13,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
-		public final static String «field(constantNamePropertyName)» = "«name»";
+		public static final String «field(constantNamePropertyName)» = "«name»";
 	«ENDIF-»
 «ENDDEFINE»
 
@@ -24,7 +24,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
-		public final static «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
+		public static final «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
 	«ENDIF-»
 «ENDDEFINE»
 

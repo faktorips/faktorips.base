@@ -41,7 +41,7 @@ public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {
         assertEquals("m", attr2El.getAttribute("value"));
 
         Element attr3El = map.get("attribute3");
-        assertEquals("AttributeValue", attr3El.getNodeName());
+        assertEquals(ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE, attr3El.getNodeName());
         assertEquals("attribute3", attr3El.getAttribute("attribute"));
         assertEquals("42", attr3El.getAttribute("value"));
 

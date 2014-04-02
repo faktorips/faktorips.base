@@ -21,10 +21,20 @@ public class StringUtilsTest {
     public void testIsEmpty() {
         assertTrue(StringUtils.isEmpty(null));
         assertTrue(StringUtils.isEmpty(""));
-        assertTrue(StringUtils.isEmpty("           "));
-        assertTrue(StringUtils.isEmpty("      \n     "));
+        assertFalse(StringUtils.isEmpty("           "));
+        assertFalse(StringUtils.isEmpty("      \n     "));
         assertFalse(StringUtils.isEmpty("a"));
         assertFalse(StringUtils.isEmpty(" a "));
+    }
+
+    @Test
+    public void testIsBlank() {
+        assertTrue(StringUtils.isBlank(null));
+        assertTrue(StringUtils.isBlank(""));
+        assertTrue(StringUtils.isBlank("           "));
+        assertTrue(StringUtils.isBlank("      \n     "));
+        assertFalse(StringUtils.isBlank("a"));
+        assertFalse(StringUtils.isBlank(" a "));
     }
 
 }

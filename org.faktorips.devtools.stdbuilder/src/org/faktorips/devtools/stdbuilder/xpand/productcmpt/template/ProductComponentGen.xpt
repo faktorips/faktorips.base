@@ -25,6 +25,8 @@
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
+			«EXPAND ProductAssociation::privateConstants FOREACH associations-»
+		 
 		 	«FOREACH attributes AS this-»
 		 		«IF !generatePublishedInterfaces || !published -»
 			 		«EXPAND ProductAttribute::constantForPropertyName-»
@@ -36,6 +38,8 @@
 			«EXPAND DefaultAndAllowedValues::defaultAndAllowedValuesFields FOREACH configuredAttributes-»
 
 			«EXPAND ProductAssociation::field FOREACH associations-»
+			
+			«EXPAND TableUsages::propertyField FOREACH tables»
 			
 			«EXPAND TableUsages::memberField FOREACH tables»
 			

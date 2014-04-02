@@ -8,6 +8,16 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
+«DEFINE privateConstants FOR XProductAssociation-»
+	«IF !derivedUnion && !constrain-»
+	    /** «localizedJDoc("CONSTANT_XML_TAG_ASSOCIATION", fieldName)»
+	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+	     * @generated
+	     */
+	    private static final String «field(constantNameXmlTag)» = "«name»";
+    «ENDIF»
+«ENDDEFINE»
+
 «DEFINE field FOR XProductAssociation-»
 	«IF !derivedUnion && !constrain-»
 	    /**
@@ -337,7 +347,7 @@
 
 «DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
 	«IF !derivedUnion && !constrain-»
-	   associationElements = elementsMap.get("«name»");
+	   associationElements = elementsMap.get(«constantNameXmlTag»);
 	    if (associationElements != null) {
 			«IF oneToMany-»
 			        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(associationElements.size());

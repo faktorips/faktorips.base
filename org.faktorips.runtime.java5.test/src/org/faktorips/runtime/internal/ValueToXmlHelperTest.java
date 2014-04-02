@@ -40,7 +40,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         node = (Element)doc.getDocumentElement().getElementsByTagName("EmptyTestElement").item(0);
         ValueToXmlHelper.addValueToElement(null, node, "ValueNode");
         node = (Element)node.getElementsByTagName("ValueNode").item(0);
-        assertEquals("true", node.getAttribute("isNull"));
+        assertEquals("true", node.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL));
     }
 
     @Test

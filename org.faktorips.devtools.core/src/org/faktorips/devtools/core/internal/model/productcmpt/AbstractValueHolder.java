@@ -97,7 +97,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
 
     @Override
     public Element toXml(Document doc) {
-        Element valueEl = doc.createElement(ValueToXmlHelper.XML_TAGNAME_VALUE);
+        Element valueEl = doc.createElement(ValueToXmlHelper.XML_TAG_VALUE);
         valueEl.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL, Boolean.toString(isNullValue()));
         valueEl.setAttribute(XML_ATTRIBUTE_VALUE_TYPE, getType().getXmlTypeName());
         contentToXml(valueEl, doc);
@@ -106,11 +106,11 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
 
     /**
      * Called by {@link #toXml(Document)} with the already created value element. The name of the
-     * element is {@link ValueToXmlHelper#XML_TAGNAME_VALUE}. Also the attribtue
+     * element is {@link ValueToXmlHelper#XML_TAG_VALUE}. Also the attribtue
      * {@link #XML_ATTRIBUTE_VALUE_TYPE} is already set with the type returned by {@link #getType()}
      * .
      * 
-     * @param valueEl The XML element with the name {@link ValueToXmlHelper#XML_TAGNAME_VALUE}
+     * @param valueEl The XML element with the name {@link ValueToXmlHelper#XML_TAG_VALUE}
      *            holding the value.
      * @param doc The owner document to create additional XML elements
      */

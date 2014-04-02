@@ -21,6 +21,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
 import org.faktorips.runtime.ITable;
+import org.faktorips.util.StringUtil;
 
 public class XTableUsage extends AbstractGeneratorModelNode {
 
@@ -65,5 +66,9 @@ public class XTableUsage extends AbstractGeneratorModelNode {
             XTable xTable = getModelNode(tableStructure, XTable.class);
             return xTable.getSimpleName(BuilderAspect.IMPLEMENTATION);
         }
+    }
+
+    public String getConstantNameTable() {
+        return "TABLE_" + StringUtil.camelCaseToUnderscore(getName()).toUpperCase();
     }
 }
