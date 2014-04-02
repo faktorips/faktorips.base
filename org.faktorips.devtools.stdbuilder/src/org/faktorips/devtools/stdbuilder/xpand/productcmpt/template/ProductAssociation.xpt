@@ -14,7 +14,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	    private final static String «field(constantNameXmlTag)» = "«name»";
+	    private static final String «field(constantNameXmlTag)» = "«name»";
     «ENDIF»
 «ENDDEFINE»
 
