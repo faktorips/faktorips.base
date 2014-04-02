@@ -71,13 +71,15 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         if (expression == null || expression.length() == 0) {
             return nullExpression();
         }
-        if (expression.startsWith("(")) { //$NON-NLS-1$
-            expression = '(' + expression + ')';
+
+        String resultingExpression = expression;
+        if (resultingExpression.startsWith("(")) { //$NON-NLS-1$
+            resultingExpression = '(' + resultingExpression + ')';
         }
         if (!checkForNull) {
-            return valueOfExpression(expression);
+            return valueOfExpression(resultingExpression);
         }
-        return generateNewInstanceWithStringUtils(expression);
+        return generateNewInstanceWithStringUtils(resultingExpression);
     }
 
     private JavaCodeFragment generateNewInstanceWithStringUtils(String expression) {

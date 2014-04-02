@@ -44,7 +44,7 @@ public class ValueToXmlHelper {
     public static final String XML_TAG_TABLE_CONTENT_NAME = "TableContentName"; //$NON-NLS-1$
     public static final String XML_TAG_TABLE_CONTENT_USAGE = "TableContentUsage"; //$NON-NLS-1$
 
-    public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage";//$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
 
