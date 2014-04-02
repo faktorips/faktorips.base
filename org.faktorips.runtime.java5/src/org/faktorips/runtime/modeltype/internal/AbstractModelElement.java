@@ -51,7 +51,7 @@ public class AbstractModelElement implements IModelElement {
 
     public String getDescription(Locale locale) {
         String description = descriptionsByLocale.get(locale);
-        return StringUtils.isEmpty(description) ? "" : description;
+        return StringUtils.isEmpty(description) ? StringUtils.EMPTY : description;
     }
 
     public Object getExtensionPropertyValue(String propertyId) {

@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.faktorips.dtflcommon
 Bundle-Version: 3.12.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.util,
- org.faktorips.valuetypes.java5
+ org.faktorips.valuetypes.java5,
+ org.faktorips.runtime.java5
 Export-Package: org.faktorips.codegen,org.faktorips.codegen.conversion
  ,org.faktorips.codegen.dthelpers,org.faktorips.codegen.dthelpers.joda
  ,org.faktorips.datatype,org.faktorips.datatype.classtypes,org.faktori

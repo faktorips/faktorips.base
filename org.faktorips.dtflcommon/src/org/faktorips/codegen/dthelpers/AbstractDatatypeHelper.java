@@ -14,7 +14,9 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.valueset.OrderedValueSet;
 
 /**
  * Abstract base class for datatype helpers.
@@ -66,7 +68,6 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     }
 
     public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
-
         if (expression == null || expression.length() == 0) {
             return nullExpression();
         }
@@ -77,12 +78,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             return valueOfExpression(expression);
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("("); //$NON-NLS-1$
-        fragment.append(expression);
-        fragment.append("==null || "); //$NON-NLS-1$
-        fragment.append(expression);
-        fragment.append(".equals(\"\")"); //$NON-NLS-1$
-        fragment.append(") ? "); //$NON-NLS-1$
+        fragment.appendClassName(StringUtils.class).append(".isEmpty(") //$NON-NLS-1$
+                .append(expression).append(") ? "); //$NON-NLS-1$
         fragment.append(nullExpression());
         fragment.append(" : "); //$NON-NLS-1$
         fragment.append(valueOfExpression(expression));
@@ -133,7 +130,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new "); //$NON-NLS-1$
-        frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
+        frag.appendClassName(OrderedValueSet.class);
         frag.append("<"); //$NON-NLS-1$
         frag.appendClassName(getJavaClassName());
         frag.append(">("); //$NON-NLS-1$
@@ -154,7 +151,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new "); //$NON-NLS-1$
-        frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
+        frag.appendClassName(OrderedValueSet.class);
         frag.append("<"); //$NON-NLS-1$
         frag.appendClassName(getJavaClassName());
         frag.append(">"); //$NON-NLS-1$
