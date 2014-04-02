@@ -51,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
@@ -79,7 +80,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected static final String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$
 
     /** Name of the XML element containing a property value. */
-    protected static final String XML_VALUE_ELEMENT = "Value"; //$NON-NLS-1$
+    protected static final String XML_VALUE_ELEMENT = ValueToXmlHelper.XML_TAG_VALUE;
 
     /** Name of the value element's attribute that stores the property id. */
     protected static final String XML_ATTRIBUTE_EXTPROPERTYID = "id"; //$NON-NLS-1$
@@ -88,7 +89,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Name of the value element's attribute that stores the information if the value is
      * <code>null</code> or not.
      */
-    protected static final String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
+    protected static final String XML_ATTRIBUTE_ISNULL = ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL;
 
     /** Name of the object part container's version */
     protected static final String XML_ATTRIBUTE_VERSION = "since"; //$NON-NLS-1$

@@ -59,7 +59,7 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
         stringList.add("bar");
         stringList.add("4711");
 
-        Element attrValueElement = getTestDocument().createElement("AttributeValue");
+        Element attrValueElement = getTestDocument().createElement(ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE);
         MultiValueXmlHelper.addValuesToElement(attrValueElement, stringList);
 
         NodeList outerValueElementNodeList = attrValueElement.getChildNodes();
@@ -86,7 +86,7 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
         stringList.add("bar");
         stringList.add("4711");
 
-        Element attrValueElement = getTestDocument().createElement("AttributeValue");
+        Element attrValueElement = getTestDocument().createElement(ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE);
         MultiValueXmlHelper.addValuesToElement(attrValueElement, stringList);
         List<String> resultList = MultiValueXmlHelper.getValuesFromXML(attrValueElement);
         assertNotSame(stringList, resultList);

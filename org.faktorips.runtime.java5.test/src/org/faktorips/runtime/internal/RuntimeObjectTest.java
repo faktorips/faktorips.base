@@ -45,7 +45,7 @@ public class RuntimeObjectTest {
         Element extProp2 = (Element)extPropRoot.getChildNodes().item(1);
 
         assertEquals(0, extProp1.getChildNodes().getLength());
-        assertEquals("true", extProp1.getAttribute("isNull"));
+        assertEquals("true", extProp1.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL));
 
         assertEquals(1, extProp2.getChildNodes().getLength());
         assertEquals("importantValue", extProp2.getChildNodes().item(0).getNodeValue());

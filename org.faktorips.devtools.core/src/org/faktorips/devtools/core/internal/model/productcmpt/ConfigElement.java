@@ -51,7 +51,7 @@ import org.w3c.dom.Element;
 
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
-    public static final String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
+    public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIG_ELEMENT;
 
     private String pcTypeAttribute;
 

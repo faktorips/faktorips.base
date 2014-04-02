@@ -91,9 +91,9 @@ final class ProductComponentXmlUtil {
                 } else if (ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE.equals(node.getNodeName())) {
                     Element childElement = (Element)nl.item(i);
                     elementMap.put(childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE), childElement);
-                } else if ("TableContentUsage".equals(node.getNodeName())) {
+                } else if (ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE.equals(node.getNodeName())) {
                     Element childElement = (Element)nl.item(i);
-                    String structureUsage = childElement.getAttribute("structureUsage");
+                    String structureUsage = childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_STRUCTURE_USAGE);
                     elementMap.put(structureUsage, childElement);
                 }
 

@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,7 +28,7 @@ import org.w3c.dom.Element;
  */
 public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
 
-    public static final String XML_TAG_UNRESTRICTED = "AllValues"; //$NON-NLS-1$
+    public static final String XML_TAG_UNRESTRICTED = ValueToXmlHelper.XML_TAG_ALL_VALUES;
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The

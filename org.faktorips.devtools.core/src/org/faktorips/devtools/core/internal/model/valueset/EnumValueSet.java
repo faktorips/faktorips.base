@@ -57,11 +57,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     public static final String ENUM_VALUESET_EMPTY = ENUM_VALUESET_START + ENUM_VALUESET_END;
 
-    public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
+    public static final String XML_TAG_ENUM = ValueToXmlHelper.XML_TAG_ENUM;
 
-    private static final String XML_DATA = "Data"; //$NON-NLS-1$
+    private static final String XML_DATA = ValueToXmlHelper.XML_TAG_DATA;
 
-    private static final String XML_VALUE = "Value"; //$NON-NLS-1$
+    private static final String XML_VALUE = ValueToXmlHelper.XML_TAG_VALUE;
 
     /** The values in the set as list */
     private List<String> values = new ArrayList<String>();
@@ -187,7 +187,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private boolean containsAllValues(IValueSet subset) {
         IEnumValueSet enumSubset = (IEnumValueSet)subset;
         String[] subsetValues = enumSubset.getValues();
-    
+
         for (String value : subsetValues) {
             try {
                 if (!containsValue(value, getIpsProject())) {

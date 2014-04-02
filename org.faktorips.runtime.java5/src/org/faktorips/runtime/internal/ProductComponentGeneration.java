@@ -194,7 +194,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                 NodeList formulas = genElement.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA);
                 for (int i = 0; i < formulas.getLength(); i++) {
                     Element aFormula = (Element)formulas.item(i);
-                    String name = aFormula.getAttribute("formulaSignature");
+                    String name = aFormula.getAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE);
                     NodeList nodeList = aFormula
                             .getElementsByTagName(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
                     if (nodeList.getLength() == 1) {
@@ -246,25 +246,25 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     protected Element getRangeElement(Element configElement) {
         Element valueSetElement = getValueSetElement(configElement);
-        return XmlUtil.getFirstElement(valueSetElement, "Range");
+        return XmlUtil.getFirstElement(valueSetElement, ValueToXmlHelper.XML_TAG_RANGE);
     }
 
     protected NodeList getEnumNodeList(Element configElement) {
         Element enumElement = getEnumElement(configElement);
-        NodeList nl = enumElement.getElementsByTagName("Value");
+        NodeList nl = enumElement.getElementsByTagName(ValueToXmlHelper.XML_TAG_VALUE);
         return nl;
     }
 
     private Element getEnumElement(Element configElement) {
         Element valueSetElement = getValueSetElement(configElement);
-        return XmlUtil.getFirstElement(valueSetElement, "Enum");
+        return XmlUtil.getFirstElement(valueSetElement, ValueToXmlHelper.XML_TAG_ENUM);
     }
 
     private Element getValueSetElement(Element configElement) {
         if (configElement == null) {
             throw new NullPointerException();
         }
-        Element valueSetElement = XmlUtil.getFirstElement(configElement, "ValueSet");
+        Element valueSetElement = XmlUtil.getFirstElement(configElement, ValueToXmlHelper.XML_TAG_VALUE_SET);
         if (valueSetElement == null) {
             throw new NullPointerException();
         }
@@ -352,9 +352,11 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
-        Element tableContentElement = element.getOwnerDocument().createElement("TableContentUsage");
-        tableContentElement.setAttribute("structureUsage", structureUsage);
-        ValueToXmlHelper.addValueToElement(tableContentName, tableContentElement, "TableContentName");
+        Element tableContentElement = element.getOwnerDocument().createElement(
+                ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE);
+        tableContentElement.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_STRUCTURE_USAGE, structureUsage);
+        ValueToXmlHelper.addValueToElement(tableContentName, tableContentElement,
+                ValueToXmlHelper.XML_TAG_TABLE_CONTENT_NAME);
         element.appendChild(tableContentElement);
     }
 

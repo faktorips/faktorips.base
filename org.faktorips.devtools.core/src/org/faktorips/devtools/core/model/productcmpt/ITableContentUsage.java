@@ -20,9 +20,9 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
  * @author Thorsten Guenther
  */
 public interface ITableContentUsage extends IPropertyValue {
-    public static final String PROPERTY_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
+    public static final String PROPERTY_STRUCTURE_USAGE = "structureUsage";//$NON-NLS-1$
 
-    public static final String PROPERTY_TABLE_CONTENT = "tableContentName"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_CONTENT = "TableContentName"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.

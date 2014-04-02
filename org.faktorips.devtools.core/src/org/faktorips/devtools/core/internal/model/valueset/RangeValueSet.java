@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  */
 public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
-    public static final String XML_TAG_RANGE = "Range"; //$NON-NLS-1$
+    public static final String XML_TAG_RANGE = ValueToXmlHelper.XML_TAG_RANGE;
 
     private String lowerBound;
     private String upperBound;

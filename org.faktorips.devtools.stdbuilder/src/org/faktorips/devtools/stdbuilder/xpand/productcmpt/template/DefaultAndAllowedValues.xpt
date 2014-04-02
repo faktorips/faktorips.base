@@ -72,7 +72,7 @@
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
         configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
         if (configElement != null) {
-            String value = «ValueToXmlHelper()».«getValueFromElement("configElement", XML_TAG_VALUE_SET())»;
+            String value = «ValueToXmlHelper()».«getValueFromElement("configElement", XML_TAG_VALUE())»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
             «IF valueSetUnrestricted-»
             	«IF ipsEnum-»

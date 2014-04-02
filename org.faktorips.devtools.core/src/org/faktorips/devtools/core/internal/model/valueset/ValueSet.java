@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -42,7 +43,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     /**
      * Name of the xml element used in the xml conversion.
      */
-    public static final String XML_TAG = "ValueSet"; //$NON-NLS-1$
+    public static final String XML_TAG = ValueToXmlHelper.XML_TAG_VALUE_SET;
 
     /**
      * Flag that defines this valueset as abstract
