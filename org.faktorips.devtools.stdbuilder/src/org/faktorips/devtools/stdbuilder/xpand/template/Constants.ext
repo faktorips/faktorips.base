@@ -36,6 +36,9 @@ XML_TAG_LOWER_BOUND(AbstractGeneratorModelNode this):
 XML_TAG_UPPER_BOUND(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_UPPER_BOUND";
 	
+XML_TAG_TABLE_CONTENT_NAME(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_TABLE_CONTENT_NAME";
+	
 	
 XML_ATTRIBUTE_ATTRIBUTE(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_ATTRIBUTE_ATTRIBUTE";

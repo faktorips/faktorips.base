@@ -58,7 +58,7 @@
 «DEFINE initTableUsages FOR XTableUsage-»
         element = tableUsageMap.get(«constantNameTable»);
         if (element != null) {
-            «fieldName» = «ValueToXmlHelper()».«getValueFromElement("element", "\"TableContentName\"")»;
+            «fieldName» = «ValueToXmlHelper()».«getValueFromElement("element", XML_TAG_TABLE_CONTENT_NAME())»;
         }
 «ENDDEFINE»
 
