@@ -23,18 +23,18 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener;
+import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.NewWizardMenu;
 import org.eclipse.ui.actions.OpenPerspectiveAction;
 import org.eclipse.ui.actions.PerspectiveMenu;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.ide.IDEActionFactory;
@@ -265,7 +265,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IActionBarConfigurer2 actionBarConfigurer = (IActionBarConfigurer2)getActionBarConfigurer();
         coolBar.add(new GroupMarker(IIDEActionConstants.GROUP_FILE));
-        { // File Group
+        {
+            // File Group
             IToolBarManager fileToolBar = actionBarConfigurer.createToolBarManager();
             fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_GROUP));
             fileToolBar.add(saveAction);
@@ -837,12 +838,12 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
         @Override
         protected void run(IPerspectiveDescriptor desc) {
-            try {
-                IWorkbenchPage page = PlatformUI.getWorkbench().showPerspective(desc.getId(), getWindow());
-                fixPerspective(page);
-            } catch (WorkbenchException e) {
-                throw new RuntimeException(e);
-            }
+            IWorkbenchWindow workbenchWindow = getWindow();
+            IPerspectiveRegistry registry = PlatformUI.getWorkbench().getPerspectiveRegistry();
+            IWorkbenchPage page = workbenchWindow.getActivePage();
+            page.setPerspective(registry.findPerspectiveWithId(desc.getId()));
+
+            fixPerspective(page);
         }
 
     }
