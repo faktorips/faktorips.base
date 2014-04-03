@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+
+<target name="Target for Faktor-IPS Base (Kepler)" sequenceNumber="143">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.3.0.v20131123020001"/>
+<unit id="org.eclipse.babel.nls_modeling.emf_de.feature.group" version="4.3.0.v20131123020001"/>
+<unit id="org.eclipse.babel.nls_technology.subversive_de.feature.group" version="4.3.0.v20131123020001"/>
+<repository location="https://update.faktorzehn.org/p2repositories/babel-kepler"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.egit.feature.group" version="1.3.0.201202151440-r"/>
+<unit id="org.eclipse.jgit.feature.group" version="1.3.0.201202151440-r"/>
+<repository location="https://update.faktorzehn.org/p2repositories/egit/updates"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="3.0.5.I20140122-1700"/>
+<unit id="org.polarion.eclipse.team.svn.connector.svnkit17.feature.group" version="3.0.5.I20140122-1700"/>
+<repository location="http://community.polarion.com/projects/subversive/download/eclipse/3.0/kepler-site/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.commons.lang" version="2.6.0"/>
+<unit id="org.apache.openejb.javaee-api" version="0.0.0"/>
+<unit id="groovy-all" version="0.0.0"/>
+<repository location="https://update.faktorzehn.org/p2repositories/faktorips/deploy"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.faktorips.testdependencies.feature.group" version="0.0.0"/>
+<repository location="http://faktorzehn.org:8081/job/Latest_p2_repository/ws/repositories/FaktorIPS_HEAD/testdependencies"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.faktorips.feature.feature.group" version="0.0.0"/>
+<unit id="org.faktorips.feature.nls1.feature.group" version="0.0.0"/>
+<unit id="org.faktorips.feature.source.feature.group" version="0.0.0"/>
+<repository location="http://faktorzehn.org:8081/job/FaktorIPS_3_10/ws/org.faktorips.p2repository/target/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.faktorips.ormext.feature.feature.group" version="0.0.0"/>
+<unit id="org.faktorips.ormext.feature.nls1.feature.group" version="0.0.0"/>
+<repository location="http://www.faktorzehn.org:8081/job/FaktorIPS_ORMExt/ws/org.faktorips.ormext.p2repository/target/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="com.faktorzehn.bundles.feature.feature.group" version="0.0.0"/>
+<repository location="http://update.faktorzehn.org/p2repositories/thirdparty"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.cvs.feature.group" version="1.4.0.v20140221-1700"/>
+<unit id="org.eclipse.wst.common.fproj.feature.group" version="3.4.0.v201202292300-377F8N8s735555393B7B"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.platform.feature.group" version="4.3.2.v20140221-1852"/>
+<unit id="org.eclipse.recommenders.feature.rcp.core.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.9.2.v20140203-1126"/>
+<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.0.100.v20130502-0334"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.1.201308190730"/>
+<unit id="org.eclipse.m2e.feature.feature.group" version="1.4.0.20130601-0317"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.1.v201309030422"/>
+<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.3.1.v201309030422"/>
+<unit id="org.eclipse.team.svn.feature.group" version="1.1.3.I20140206-1700"/>
+<unit id="org.eclipse.wst.common_core.feature.feature.group" version="3.5.2.v201312050600-7B7EFSkF7RZHOoKlQwR7NJ"/>
+<unit id="org.eclipse.wst.common_ui.feature.feature.group" version="3.5.2.v201310231535-7C7BFeGEdhOaxlXh9oUj1pLmRxS8OK"/>
+<unit id="org.eclipse.wst.server_adapters.feature.feature.group" version="3.2.300.v20130502_0936-7L3FD9CcNBGWBgJUl7NCO"/>
+<unit id="org.eclipse.wst.server_core.feature.feature.group" version="3.3.300.v20131206_1548-34F8S8s7358384La2533"/>
+<unit id="org.eclipse.wst.server_ui.feature.feature.group" version="3.3.302.v20140204_1502-7B7AFRGAtNe9vEHKb-OaTZyg8E94"/>
+<unit id="org.eclipse.wst.xml_core.feature.feature.group" version="3.5.2.v201401062113-7C7OFvVF7RZHQXIlNxNyPh"/>
+<unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.xpand.feature.group" version="1.4.0.v201306110406"/>
+<unit id="org.eclipse.xsd.feature.group" version="2.9.1.v20140203-1126"/>
+<unit id="org.eclipse.xtend.feature.group" version="1.4.0.v201306110406"/>
+<unit id="org.eclipse.ui.views.log" version="0.0.0"/>
+
+<repository location="https://update.faktorzehn.org/p2repositories/kepler"/>
+</location>
+</locations>
+<launcherArgs>
+<vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -XX:MaxPermSize=256m</vmArgs>
+</launcherArgs>
+</target>
