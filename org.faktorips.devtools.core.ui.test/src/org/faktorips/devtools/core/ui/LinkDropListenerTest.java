@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -420,6 +421,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     }
 
     @Override
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         singletonMockHelper.reset();

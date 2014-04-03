@@ -140,6 +140,7 @@ public class IntegerNumberFormatTest {
         assertEquals("1.123", parsed);
     }
 
+    @Test
     public void testFormatT() {
         numberFormat.initFormat(Locale.GERMANY);
         String input = "1";
