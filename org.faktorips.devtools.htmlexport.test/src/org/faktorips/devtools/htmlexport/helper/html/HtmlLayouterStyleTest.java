@@ -13,6 +13,7 @@ package org.faktorips.devtools.htmlexport.helper.html;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
@@ -23,7 +24,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.BOLD);
 
-        assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -32,7 +33,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.ITALIC);
 
-        assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -42,7 +43,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         pageElement.addStyles(Style.ITALIC);
         pageElement.addStyles(Style.BOLD);
 
-        assertTrue(layout(pageElement).matches("<span class=\"(ITALIC BOLD|BOLD ITALIC)\">" + text + "</span>")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertTrue(layout(pageElement).matches("<span class=\"(ITALIC BOLD|BOLD ITALIC)\">" + text + "</span>")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -51,6 +52,6 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
         pageElement.addStyles(Style.CENTER);
 
-        assertEquals("<div class=\"CENTER\">" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("<div class=\"CENTER\">" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

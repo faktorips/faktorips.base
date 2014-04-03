@@ -16,8 +16,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import junit.framework.Assert;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -175,7 +173,7 @@ public class UIDatatypeFormatterTest {
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(enumValueSet);
-        Assert.assertEquals(expectedFormat, formatString);
+        assertEquals(expectedFormat, formatString);
     }
 
     @Test

@@ -10,23 +10,24 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
+import org.junit.Before;
+import org.junit.Test;
 
-public class IntegerNumberFormatTest extends TestCase {
+public class IntegerNumberFormatTest {
 
     private IntegerNumberFormat numberFormat;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         numberFormat = new IntegerNumberFormat(ValueDatatype.LONG);
     }
 
+    @Test
     public void testParseStringBoolean() {
         numberFormat.initFormat(Locale.GERMANY);
         String input = "1";

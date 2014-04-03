@@ -13,6 +13,7 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
@@ -26,7 +27,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        assertEquals(TESTTEXT, layouter.generateText());
+        Assert.assertEquals(TESTTEXT, layouter.generateText());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        assertEquals("<span class=\"BOLD\">" + TESTTEXT + "</span>", layouter.generateText());
+        Assert.assertEquals("<span class=\"BOLD\">" + TESTTEXT + "</span>", layouter.generateText());
     }
 
     @Test
@@ -50,7 +51,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        assertEquals("<h4>" + TESTTEXT + "</h4>", layouter.generateText());
+        Assert.assertEquals("<h4>" + TESTTEXT + "</h4>", layouter.generateText());
     }
 
     @Test
@@ -63,7 +64,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        assertEquals("<h3 class=\"ITALIC\">" + TESTTEXT + "</h3>", layouter.generateText());
+        Assert.assertEquals("<h3 class=\"ITALIC\">" + TESTTEXT + "</h3>", layouter.generateText());
     }
 
     @Test
@@ -75,7 +76,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        assertEquals("<a id=\"anker\"/>" + TESTTEXT, layouter.generateText());
+        Assert.assertEquals("<a id=\"anker\"/>" + TESTTEXT, layouter.generateText());
     }
 
 }

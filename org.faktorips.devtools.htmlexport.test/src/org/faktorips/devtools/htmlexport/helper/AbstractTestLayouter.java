@@ -12,8 +12,6 @@ package org.faktorips.devtools.htmlexport.helper;
 
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
@@ -24,6 +22,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.junit.Assert;
 
 public abstract class AbstractTestLayouter extends Assert implements ILayouter {
 

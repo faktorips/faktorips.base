@@ -27,8 +27,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -53,13 +51,13 @@ public class EnumValueSubsetChooserModelTest {
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
         EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(initialValues, enumValueSetSpy, null);
 
-        Assert.assertEquals(4, model.getPreDefinedValues().size());
-        Assert.assertEquals(0, model.getResultingValues().size());
+        assertEquals(4, model.getPreDefinedValues().size());
+        assertEquals(0, model.getResultingValues().size());
 
         model.moveAllValuesFromPreDefinedToResulting();
 
-        Assert.assertEquals(0, model.getPreDefinedValues().size());
-        Assert.assertEquals(4, model.getResultingValues().size());
+        assertEquals(0, model.getPreDefinedValues().size());
+        assertEquals(4, model.getResultingValues().size());
     }
 
     private EnumValueSet getEnumValueSetMock() {
@@ -84,13 +82,13 @@ public class EnumValueSubsetChooserModelTest {
 
         model.moveAllValuesFromPreDefinedToResulting();
 
-        Assert.assertEquals(0, model.getPreDefinedValues().size());
-        Assert.assertEquals(4, model.getResultingValues().size());
+        assertEquals(0, model.getPreDefinedValues().size());
+        assertEquals(4, model.getResultingValues().size());
 
         model.moveAllValuesFromResultingToPreDefined();
 
-        Assert.assertEquals(4, model.getPreDefinedValues().size());
-        Assert.assertEquals(0, model.getResultingValues().size());
+        assertEquals(4, model.getPreDefinedValues().size());
+        assertEquals(0, model.getResultingValues().size());
     }
 
     @Test
@@ -103,28 +101,28 @@ public class EnumValueSubsetChooserModelTest {
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
         EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(initialValues, enumValueSetSpy, null);
 
-        Assert.assertEquals(4, model.getPreDefinedValues().size());
-        Assert.assertEquals(0, model.getResultingValues().size());
+        assertEquals(4, model.getPreDefinedValues().size());
+        assertEquals(0, model.getResultingValues().size());
 
         List<ListChooserValue> valuesToBeMoved = new ArrayList<ListChooserValue>();
         valuesToBeMoved.add(new ListChooserValue("two"));
         model.moveValuesFromPreDefinedToResulting(valuesToBeMoved);
 
-        Assert.assertEquals(3, model.getPreDefinedValues().size());
+        assertEquals(3, model.getPreDefinedValues().size());
         assertEquals("1", model.getPreDefinedValues().get(0).getValue());
         assertEquals("three", model.getPreDefinedValues().get(1).getValue());
         assertNull(model.getPreDefinedValues().get(2).getValue());
-        Assert.assertEquals(1, model.getResultingValues().size());
+        assertEquals(1, model.getResultingValues().size());
         assertEquals("two", model.getResultingValues().get(0).getValue());
 
         valuesToBeMoved = new ArrayList<ListChooserValue>();
         valuesToBeMoved.add(new ListChooserValue(null));
         model.moveValuesFromPreDefinedToResulting(valuesToBeMoved);
 
-        Assert.assertEquals(2, model.getPreDefinedValues().size());
+        assertEquals(2, model.getPreDefinedValues().size());
         assertEquals("1", model.getPreDefinedValues().get(0).getValue());
         assertEquals("three", model.getPreDefinedValues().get(1).getValue());
-        Assert.assertEquals(2, model.getResultingValues().size());
+        assertEquals(2, model.getResultingValues().size());
         assertEquals("two", model.getResultingValues().get(0).getValue());
         assertNull(model.getResultingValues().get(1).getValue());
     }
@@ -144,13 +142,13 @@ public class EnumValueSubsetChooserModelTest {
         movedElements.add(new ListChooserValue("two"));
 
         model.moveUp(movedElements);
-        Assert.assertEquals(3, model.getResultingValues().size());
+        assertEquals(3, model.getResultingValues().size());
         assertEquals("two", model.getResultingValues().get(0).getValue());
         assertEquals("1", model.getResultingValues().get(1).getValue());
         assertEquals("three", model.getResultingValues().get(2).getValue());
 
         model.moveUp(movedElements);
-        Assert.assertEquals(3, model.getResultingValues().size());
+        assertEquals(3, model.getResultingValues().size());
         assertEquals("two", model.getResultingValues().get(0).getValue());
         assertEquals("1", model.getResultingValues().get(1).getValue());
         assertEquals("three", model.getResultingValues().get(2).getValue());
@@ -171,16 +169,16 @@ public class EnumValueSubsetChooserModelTest {
         movedElements.add(new ListChooserValue("two"));
 
         model.moveDown(movedElements);
-        Assert.assertEquals(3, model.getResultingValues().size());
-        Assert.assertEquals("1", model.getResultingValues().get(0).getValue());
-        Assert.assertEquals("three", model.getResultingValues().get(1).getValue());
-        Assert.assertEquals("two", model.getResultingValues().get(2).getValue());
+        assertEquals(3, model.getResultingValues().size());
+        assertEquals("1", model.getResultingValues().get(0).getValue());
+        assertEquals("three", model.getResultingValues().get(1).getValue());
+        assertEquals("two", model.getResultingValues().get(2).getValue());
 
         model.moveDown(movedElements);
-        Assert.assertEquals(3, model.getResultingValues().size());
-        Assert.assertEquals("1", model.getResultingValues().get(0).getValue());
-        Assert.assertEquals("three", model.getResultingValues().get(1).getValue());
-        Assert.assertEquals("two", model.getResultingValues().get(2).getValue());
+        assertEquals(3, model.getResultingValues().size());
+        assertEquals("1", model.getResultingValues().get(0).getValue());
+        assertEquals("three", model.getResultingValues().get(1).getValue());
+        assertEquals("two", model.getResultingValues().get(2).getValue());
     }
 
     @Test

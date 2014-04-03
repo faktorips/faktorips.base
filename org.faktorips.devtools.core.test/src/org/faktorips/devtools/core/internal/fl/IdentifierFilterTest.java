@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.internal.fl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.faktorips.devtools.core.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.core.fl.IdentifierKind;
@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class IdentifierFilterTest extends TestCase {
+public class IdentifierFilterTest {
 
     @Mock
     private IAttribute attribute;
@@ -35,7 +35,6 @@ public class IdentifierFilterTest extends TestCase {
 
     private IdentifierFilter filter;
 
-    @Override
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
