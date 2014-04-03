@@ -76,10 +76,15 @@ public class DatatypeInputFormatRegistry {
             IConfigurationElement datatypeElement) {
         String classAttribute = datatypeElement.getAttribute(IpsUIPlugin.CONFIG_PROPERTY_CLASS);
         try {
-            // class enforced by extension-point definition
             Bundle bundle = Platform.getBundle(extension.getContributor().getName());
-            @SuppressWarnings("unchecked")
-            Class<? extends ValueDatatype> datatypeClass = bundle.loadClass(classAttribute);
+            /*
+             * Type-safety (class ValueDatatype) is enforced by extension-point definition.
+             * 
+             * Cast required in Eclipse 4 but not in Eclipse 3.x
+             */
+            @SuppressWarnings({ "unchecked", "cast" })
+            Class<? extends ValueDatatype> datatypeClass = (Class<? extends ValueDatatype>)bundle
+                    .loadClass(classAttribute);
             return datatypeClass;
         } catch (ClassNotFoundException e) {
             throw new CoreRuntimeException(new IpsStatus(
