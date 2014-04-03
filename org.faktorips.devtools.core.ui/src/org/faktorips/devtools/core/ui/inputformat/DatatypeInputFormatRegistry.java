@@ -82,10 +82,10 @@ public class DatatypeInputFormatRegistry {
              * 
              * Cast required in Eclipse 4 but not in Eclipse 3.x
              */
-            @SuppressWarnings({ "unchecked", "cast" })
-            Class<? extends ValueDatatype> datatypeClass = (Class<? extends ValueDatatype>)bundle
-                    .loadClass(classAttribute);
-            return datatypeClass;
+            Class<?> datatypeClass = bundle.loadClass(classAttribute);
+            @SuppressWarnings("unchecked")
+            Class<? extends ValueDatatype> castedResult = (Class<? extends ValueDatatype>)datatypeClass;
+            return castedResult;
         } catch (ClassNotFoundException e) {
             throw new CoreRuntimeException(new IpsStatus(
                     "Cannot load class " + classAttribute + " while loading extension " //$NON-NLS-1$ //$NON-NLS-2$
