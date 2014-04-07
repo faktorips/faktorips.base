@@ -314,4 +314,56 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         subRange.setStep("3");
         assertFalse(range.containsValueSet(subRange));
     }
+
+    @Test
+    public void testContainsValueSet_stepNull() {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        range.setLowerBound("10");
+        range.setUpperBound("20");
+        range.setStep(null);
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("12");
+        subRange.setUpperBound("20");
+        subRange.setStep(null);
+
+        assertTrue(range.containsValueSet(subRange));
+
+        range.setStep(null);
+        subRange.setStep("2");
+        assertTrue(range.containsValueSet(subRange));
+
+        range.setStep(null);
+        subRange.setStep("27");
+        assertFalse(range.containsValueSet(subRange));
+
+        range.setStep("2");
+        subRange.setStep(null);
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_equalStepOtherBounds() {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        range.setLowerBound("10");
+        range.setUpperBound("20");
+        range.setStep("2");
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("11");
+        subRange.setUpperBound("19");
+        subRange.setStep("2");
+
+        assertFalse(range.containsValueSet(subRange));
+
+        range.setStep(null);
+
+        assertTrue(range.containsValueSet(subRange));
+
+        range.setStep("2");
+        subRange.setLowerBound("12");
+        subRange.setUpperBound("20");
+        assertTrue(range.containsValueSet(subRange));
+    }
+
 }

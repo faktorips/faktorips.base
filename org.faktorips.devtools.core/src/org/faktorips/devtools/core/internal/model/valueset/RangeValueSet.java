@@ -270,17 +270,21 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     private boolean isSubrangeMatchStep(IRangeValueSet other, NumericDatatype datatype) {
         String subStep = other.getStep();
-
-        if (isNullValue(step, datatype) && !isNullValue(subStep, datatype)) {
+        if (isNullValue(step, datatype)) {
+            // every valid sub-step is allowed
             return true;
-        }
-        if (datatype.areValuesEqual(step, subStep)) {
-            return true;
-        }
-        if (!datatype.divisibleWithoutRemainder(subStep, step)) {
+        } else if (isNullValue(subStep, datatype)) {
+            // null is no valid sub-step because this step is not null
             return false;
+        } else if (!datatype.divisibleWithoutRemainder(subStep, step)) {
+            // sub-step must be divisor of step
+            return false;
+        } else {
+            return isSubBoundsMatchingStep(other, datatype);
         }
+    }
 
+    private boolean isSubBoundsMatchingStep(IRangeValueSet other, NumericDatatype datatype) {
         String lower = getLowerBound();
         String subLower = other.getLowerBound();
         String upper = getUpperBound();
@@ -289,12 +293,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!datatype.divisibleWithoutRemainder(diffLower, step)) {
             return false;
         }
-
         String diffUpper = datatype.subtract(upper, subUpper);
         if (!datatype.divisibleWithoutRemainder(diffUpper, step)) {
             return false;
         }
-
         return true;
     }
 
