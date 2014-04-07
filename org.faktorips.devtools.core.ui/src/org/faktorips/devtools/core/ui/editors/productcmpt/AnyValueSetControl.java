@@ -170,7 +170,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
-        getTextControl().setEnabled(dataChangeable);
+        getTextControl().setEditable(dataChangeable);
     }
 
     @Override

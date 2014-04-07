@@ -37,7 +37,12 @@ public class DatatypeEditingSupport<T> extends FormattedCellEditingSupport<T, St
 
     public DatatypeEditingSupport(UIToolkit toolkit, TableViewer tableViewer, IIpsProject ipsProject,
             ValueDatatype datatype, IElementModifier<T, String> elementModifier) {
-        super(tableViewer, elementModifier);
+        this(toolkit, tableViewer, ipsProject, datatype, elementModifier, DEFAULT_EDIT_CONDITION);
+    }
+
+    public DatatypeEditingSupport(UIToolkit toolkit, TableViewer tableViewer, IIpsProject ipsProject,
+            ValueDatatype datatype, IElementModifier<T, String> elementModifier, EditCondition editCondition) {
+        super(tableViewer, elementModifier, editCondition);
         this.toolkit = toolkit;
         this.tableViewer = tableViewer;
         this.ipsProject = ipsProject;
@@ -48,11 +53,6 @@ public class DatatypeEditingSupport<T> extends FormattedCellEditingSupport<T, St
     @Override
     protected IpsCellEditor getCellEditorInternal(T element) {
         return controlFactory.createTableCellEditor(toolkit, datatype, null, tableViewer, 0, ipsProject);
-    }
-
-    @Override
-    protected boolean canEdit(Object element) {
-        return true;
     }
 
     /**

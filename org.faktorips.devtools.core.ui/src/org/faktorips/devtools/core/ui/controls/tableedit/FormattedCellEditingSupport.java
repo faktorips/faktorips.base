@@ -17,11 +17,33 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 
 public abstract class FormattedCellEditingSupport<T, V> extends CellTrackingEditingSupport<T> {
+
+    public static final EditCondition DEFAULT_EDIT_CONDITION = new EditCondition() {
+
+        @Override
+        public boolean isEditable() {
+            return true;
+        }
+    };
+
     private final IElementModifier<T, V> elementModifier;
 
+    private final EditCondition editCondition;
+
     public FormattedCellEditingSupport(ColumnViewer viewer, IElementModifier<T, V> elementModifier) {
+        this(viewer, elementModifier, DEFAULT_EDIT_CONDITION);
+    }
+
+    public FormattedCellEditingSupport(ColumnViewer viewer, IElementModifier<T, V> elementModifier,
+            EditCondition editCondition) {
         super(viewer);
         this.elementModifier = elementModifier;
+        this.editCondition = editCondition;
+    }
+
+    @Override
+    protected boolean canEdit(Object element) {
+        return editCondition.isEditable();
     }
 
     @Override
@@ -55,4 +77,11 @@ public abstract class FormattedCellEditingSupport<T, V> extends CellTrackingEdit
      * @param element the element to return a formatted string for
      */
     public abstract String getFormattedValue(T element);
+
+    public static interface EditCondition {
+
+        boolean isEditable();
+
+    }
+
 }

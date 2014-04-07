@@ -64,10 +64,11 @@ import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
+import org.faktorips.devtools.core.ui.controls.tableedit.DatatypeEditingSupport;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
+import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport.EditCondition;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.enums.EnumEditingSupport.Condition;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
@@ -349,8 +350,16 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             int columnIndex) {
         EnumInternationalStringCellModifier cellModifier = new EnumInternationalStringCellModifier(columnIndex,
                 IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(ipsProject));
+        EditCondition editCondition = new EditCondition() {
+
+            @Override
+            public boolean isEditable() {
+                return isDataChangeable();
+            }
+        };
+
         EnumInternationalStringEditingSupport editingSupport = new EnumInternationalStringEditingSupport(
-                enumValuesTableViewer, getToolkit(), cellModifier);
+                enumValuesTableViewer, getToolkit(), cellModifier, editCondition);
         newColumn.setEditingSupport(editingSupport);
         return editingSupport;
     }
@@ -359,18 +368,18 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             final boolean literalNameColumn,
             TableViewerColumn newColumn,
             final int columnIndex) {
-        Condition canEditCondition = new Condition() {
+        EditCondition canEditCondition = new EditCondition() {
 
             @Override
             public boolean isEditable() {
-                return !literalNameColumn || !lockAndSynchronizeLiteralNames;
+                return (!literalNameColumn || !lockAndSynchronizeLiteralNames) && isDataChangeable();
             }
 
         };
 
         EnumStringCellModifier elementModifier = new EnumStringCellModifier(getShell(), columnIndex);
-        EnumEditingSupport editingSupport = new EnumEditingSupport(getToolkit(), enumValuesTableViewer, ipsProject,
-                datatype, elementModifier, canEditCondition);
+        DatatypeEditingSupport<IEnumValue> editingSupport = new DatatypeEditingSupport<IEnumValue>(getToolkit(),
+                enumValuesTableViewer, ipsProject, datatype, elementModifier, canEditCondition);
         newColumn.setEditingSupport(editingSupport);
         return editingSupport;
     }

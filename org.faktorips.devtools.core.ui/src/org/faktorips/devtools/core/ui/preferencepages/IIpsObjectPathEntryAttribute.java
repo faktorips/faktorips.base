@@ -23,19 +23,19 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsObjectPathEntryAttribute {
 
-    public final static String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable"; //$NON-NLS-1$
-    public final static String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable"; //$NON-NLS-1$
+    public static final String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable"; //$NON-NLS-1$
+    public static final String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable"; //$NON-NLS-1$
 
-    public final static String DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "defaultOutputFolderDerived"; //$NON-NLS-1$
-    public final static String SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "specificOutputFolderDerived"; //$NON-NLS-1$
+    public static final String DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "defaultOutputFolderDerived"; //$NON-NLS-1$
+    public static final String SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "specificOutputFolderDerived"; //$NON-NLS-1$
 
-    public final static String DEFAULT_BASE_PACKAGE_MERGABLE = "defaultBasePackageMergable"; //$NON-NLS-1$
-    public final static String SPECIFIC_BASE_PACKAGE_MERGABLE = "specificBasePackageMergable"; //$NON-NLS-1$
+    public static final String DEFAULT_BASE_PACKAGE_MERGABLE = "defaultBasePackageMergable"; //$NON-NLS-1$
+    public static final String SPECIFIC_BASE_PACKAGE_MERGABLE = "specificBasePackageMergable"; //$NON-NLS-1$
 
-    public final static String DEFAULT_BASE_PACKAGE_DERIVED = "defaultBasePackageDerived"; //$NON-NLS-1$
-    public final static String SPECIFIC_BASE_PACKAGE_DERIVED = "specificBasePackageDerived"; //$NON-NLS-1$
+    public static final String DEFAULT_BASE_PACKAGE_DERIVED = "defaultBasePackageDerived"; //$NON-NLS-1$
+    public static final String SPECIFIC_BASE_PACKAGE_DERIVED = "specificBasePackageDerived"; //$NON-NLS-1$
 
-    public final static String SPECIFIC_TOC_PATH = "tocPath"; //$NON-NLS-1$
+    public static final String SPECIFIC_TOC_PATH = "tocPath"; //$NON-NLS-1$
 
     /**
      * @return the mappings value, which can be any arbitrary object

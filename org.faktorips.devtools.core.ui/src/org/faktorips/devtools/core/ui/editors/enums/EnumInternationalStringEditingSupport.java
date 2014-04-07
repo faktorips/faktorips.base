@@ -29,8 +29,8 @@ public class EnumInternationalStringEditingSupport extends FormattedCellEditingS
     private final UIToolkit toolkit;
 
     public EnumInternationalStringEditingSupport(TableViewer viewer, UIToolkit toolkit,
-            EnumInternationalStringCellModifier elementModifier) {
-        super(viewer, elementModifier);
+            EnumInternationalStringCellModifier elementModifier, EditCondition editCondition) {
+        super(viewer, elementModifier, editCondition);
         this.toolkit = toolkit;
         this.elementModifier = elementModifier;
     }
@@ -52,11 +52,6 @@ public class EnumInternationalStringEditingSupport extends FormattedCellEditingS
         InternationalStringControl control = new InternationalStringControl(getViewer().getTable(), toolkit, handler);
         control.setHeightHint(getViewer().getTable().getItemHeight());
         return new InternationalStringCellEditor(control);
-    }
-
-    @Override
-    protected boolean canEdit(Object element) {
-        return true;
     }
 
 }
