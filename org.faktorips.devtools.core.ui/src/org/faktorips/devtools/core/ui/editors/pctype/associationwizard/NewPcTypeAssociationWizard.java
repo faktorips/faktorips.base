@@ -26,7 +26,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -876,22 +876,16 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     /**
      * Creates a descripton control.
+     * 
      */
-    public Text createDescriptionText(Composite parent, int span) {
+    public DescriptionEditComposite createDescriptionText(Composite parent, int span) {
         toolkit.createVerticalSpacer(parent, 20);
-
-        Composite composite = toolkit.createComposite(parent);
+        DescriptionEditComposite descriptionEditComposite = new DescriptionEditComposite(parent, association, toolkit,
+                bindingContext);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.horizontalSpan = span;
-        composite.setLayoutData(gridData);
-        composite.setLayout(new GridLayout());
-
-        toolkit.createFormLabel(composite, Messages.NewPcTypeAssociationWizard_labelDescription);
-        Text description = toolkit.createMultilineText(composite);
-
-        // bindingContext.bindContent(description, association,
-        // IIpsObjectPart.PROPERTY_DESCRIPTION);
-        return description;
+        descriptionEditComposite.setLayoutData(gridData);
+        return descriptionEditComposite;
     }
 
     /**

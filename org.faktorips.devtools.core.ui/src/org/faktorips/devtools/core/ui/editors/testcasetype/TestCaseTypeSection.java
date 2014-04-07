@@ -118,6 +118,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -198,10 +199,8 @@ public class TestCaseTypeSection extends IpsSection {
 
         private Composite attributesDetails;
         private Text attributesPolicyCmptType;
-        private Text attributesDescription;
-        private TextField attributesDescriptionField;
+        private DescriptionEditComposite attributesDescription;
         private ExpandableComposite attributeExpandable;
-        private IpsObjectUIController uiControllerAttributeDescription = null;
         private boolean manualTriggered = false;
 
         /**
@@ -240,11 +239,9 @@ public class TestCaseTypeSection extends IpsSection {
 
             toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelDescription);
             toolkit.createVerticalSpacer(attributesDetails, 1);
-            attributesDescription = toolkit.createMultilineText(attributesDetails);
+            attributesDescription = new DescriptionEditComposite(attributesDetails, null, toolkit);
             gd = (GridData)attributesDescription.getLayoutData();
             gd.horizontalSpan = 2;
-
-            attributesDescriptionField = new TextField(attributesDescription);
         }
 
         /**
@@ -257,12 +254,7 @@ public class TestCaseTypeSection extends IpsSection {
                     redrawForm();
                 }
 
-                if (uiControllerAttributeDescription != null) {
-                    uiControllerAttributeDescription.remove(attributesDescriptionField);
-                }
-
-                uiControllerAttributeDescription = createUIController(selectedAttribute);
-                uiControllerAttributeDescription.add(attributesDescriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
+                attributesDescription.setDescribedElement(selectedAttribute);
 
                 if (selectedAttribute.isBasedOnModelAttribute()) {
                     attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
@@ -271,7 +263,7 @@ public class TestCaseTypeSection extends IpsSection {
                             .setText(Messages.TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr);
                 }
 
-                uiControllerAttributeDescription.updateUI();
+                attributesDescription.refresh();
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
@@ -1300,7 +1292,7 @@ public class TestCaseTypeSection extends IpsSection {
         } else if (testParam instanceof ITestValueParameter) {
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
         } else if (testParam instanceof ITestRuleParameter) {
-            createTestRuleParamDetails(editFieldsComposite, uiController);
+            createTestRuleParamDetails(editFieldsComposite, testParam);
         }
 
         uiController.updateUI();
@@ -1610,29 +1602,23 @@ public class TestCaseTypeSection extends IpsSection {
 
         toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
         toolkit.createVerticalSpacer(editFieldsComposite, 1);
-        Text description = toolkit.createMultilineText(editFieldsComposite);
+        DescriptionEditComposite description = new DescriptionEditComposite(editFieldsComposite, parameter, toolkit);
         GridData gd = (GridData)description.getLayoutData();
         gd.horizontalSpan = 2;
 
-        TextField descriptionField = new TextField(description);
-
         // connect to model
         uiController.add(editFieldDatatype, ITestValueParameter.PROPERTY_VALUEDATATYPE);
-        uiController.add(descriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
     }
 
     /**
      * Creates the edit fields for the test rule parameter
      */
-    private void createTestRuleParamDetails(Composite editFieldsComposite, IpsObjectUIController uiController) {
+    private void createTestRuleParamDetails(Composite editFieldsComposite, ITestParameter testParam) {
         toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
         toolkit.createVerticalSpacer(editFieldsComposite, 1);
-        Text description = toolkit.createMultilineText(editFieldsComposite);
+        DescriptionEditComposite description = new DescriptionEditComposite(editFieldsComposite, testParam, toolkit);
         GridData gd = (GridData)description.getLayoutData();
         gd.horizontalSpan = 2;
-
-        TextField descriptionField = new TextField(description);
-        uiController.add(descriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
     }
 
     /**
