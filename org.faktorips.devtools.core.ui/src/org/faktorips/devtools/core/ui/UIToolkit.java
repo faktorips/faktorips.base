@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -145,7 +146,11 @@ public class UIToolkit {
             return false;
         }
         if (c instanceof Combo) {
-            ((Combo)c).setEnabled(changeable);
+            Combo combo = (Combo)c;
+            combo.setEnabled(changeable);
+            if (!changeable) {
+                setComboTooltip(combo);
+            }
             return false;
         }
         if (c instanceof Button) {
@@ -153,6 +158,19 @@ public class UIToolkit {
             return false;
         }
         return true;
+    }
+
+    /**
+     * If the content of a combo is too long to be displayed the whole value cannot be read in case
+     * of a disabled combo. Therefore a tooltip will be introduced. For a disabled Combo the tooltip
+     * has to be set by the according Composite. The tooltip shall only be set if there isn't
+     * already an other tooltip.
+     */
+    private void setComboTooltip(Combo combo) {
+        Composite comboParent = combo.getParent();
+        if (StringUtils.isEmpty(comboParent.getToolTipText())) {
+            comboParent.setToolTipText(combo.getText());
+        }
     }
 
     private void setDataChangeableChildren(Control c, boolean changeable) {
