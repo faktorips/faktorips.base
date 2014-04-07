@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Roman Grutza
  */
-public class ReferencedProjectsComposite extends Composite {
+public class ReferencedProjectsComposite extends DataChangeableComposite {
 
     private UIToolkit toolkit;
     private Table table;
@@ -187,6 +187,12 @@ public class ReferencedProjectsComposite extends Composite {
         }
     }
 
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        table.setEnabled(changeable);
+    }
+
     /**
      * Get open IPS projects from the current workspace. Skip already referenced projects and the
      * current project.
@@ -212,6 +218,22 @@ public class ReferencedProjectsComposite extends Composite {
         IIpsProject[] refIpsProject = new IIpsProject[resultList.size()];
 
         return resultList.toArray(refIpsProject);
+    }
+
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            tableViewer.refresh();
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    tableViewer.refresh();
+                }
+            });
+        }
     }
 
     private static final class TableLabelProvider extends LabelProvider {
@@ -260,22 +282,6 @@ public class ReferencedProjectsComposite extends Composite {
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // nothing to do
-        }
-    }
-
-    /**
-     * Manually update the UI
-     */
-    public void doUpdateUI() {
-        if (Display.getCurrent() != null) {
-            tableViewer.refresh();
-        } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
         }
     }
 
