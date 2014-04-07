@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Roman Grutza
  */
-public class ObjectPathOrderComposite extends Composite {
+public class ObjectPathOrderComposite extends DataChangeableComposite {
 
     private IIpsObjectPath ipsObjectPath;
     private UIToolkit toolkit;
@@ -152,40 +152,6 @@ public class ObjectPathOrderComposite extends Composite {
         }
     }
 
-    // widget action handling
-    private class IpsPathOrderAdapter implements ISelectionChangedListener, SelectionListener {
-
-        @Override
-        public void selectionChanged(SelectionChangedEvent event) {
-            if (event.getSelection().isEmpty()) {
-                setButtonEnabledStates(false);
-            } else {
-                setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
-            }
-        }
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            if (e.getSource() == moveUpButton) {
-                moveSelectedEntries(true);
-            } else if (e.getSource() == moveDownButton) {
-                moveSelectedEntries(false);
-            } else if (e.getSource() == moveTopButton) {
-                moveEntriesTopBottom(true);
-            } else if (e.getSource() == moveBottomButton) {
-                moveEntriesTopBottom(false);
-            }
-
-            setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
-            tableViewer.refresh(false);
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // nothing to do
-        }
-    }
-
     private void moveSelectedEntries(boolean up) {
         Table table = tableViewer.getTable();
 
@@ -244,6 +210,46 @@ public class ObjectPathOrderComposite extends Composite {
                     tableViewer.refresh();
                 }
             });
+        }
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        tableViewer.getTable().setEnabled(changeable);
+    }
+
+    // widget action handling
+    private class IpsPathOrderAdapter implements ISelectionChangedListener, SelectionListener {
+
+        @Override
+        public void selectionChanged(SelectionChangedEvent event) {
+            if (event.getSelection().isEmpty()) {
+                setButtonEnabledStates(false);
+            } else {
+                setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
+            }
+        }
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            if (e.getSource() == moveUpButton) {
+                moveSelectedEntries(true);
+            } else if (e.getSource() == moveDownButton) {
+                moveSelectedEntries(false);
+            } else if (e.getSource() == moveTopButton) {
+                moveEntriesTopBottom(true);
+            } else if (e.getSource() == moveBottomButton) {
+                moveEntriesTopBottom(false);
+            }
+
+            setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
+            tableViewer.refresh(false);
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
         }
     }
 
