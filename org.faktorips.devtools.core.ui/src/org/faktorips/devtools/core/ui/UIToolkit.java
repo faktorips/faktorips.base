@@ -108,6 +108,7 @@ public class UIToolkit {
             ((IDataChangeableReadWriteAccess)c).setDataChangeable(changeable);
             return;
         }
+        c.setData(DATA_CHANGEABLE, changeable);
         if (c instanceof Text) {
             ((Text)c).setEditable(changeable);
             setForegroundColor(c, changeable);
@@ -136,7 +137,7 @@ public class UIToolkit {
         setDataChangeableChildren(c, changeable);
     }
 
-    private boolean isDataChangeableRelevant(Control c) {
+    private static boolean isDataChangeableRelevant(Control c) {
         return c instanceof Checkbox || c instanceof Combo || c instanceof Button;
     }
 
@@ -177,19 +178,14 @@ public class UIToolkit {
      *         (by checking {@link Text#getEditable()} but disabled by checking
      *         {@link Text#isEnabled()}.
      */
-    public boolean isDataChangeable(Control c) {
+    public static boolean isDataChangeable(Control c) {
         if (c == null) {
             return false;
         } else if (c instanceof IDataChangeableReadAccess) {
             return ((IDataChangeableReadAccess)c).isDataChangeable();
-        } else if (c instanceof Text) {
-            return ((Text)c).getEditable();
-        } else if (isDataChangeableRelevant(c)) {
-            Object dataChangeable = c.getData(DATA_CHANGEABLE);
-            return dataChangeable instanceof Boolean ? Boolean.TRUE.equals(dataChangeable) : true;
-        } else {
-            return true;
         }
+        Object dataChangeable = c.getData(DATA_CHANGEABLE);
+        return dataChangeable instanceof Boolean ? Boolean.TRUE.equals(dataChangeable) : true;
     }
 
     private void setForegroundColor(Control control, boolean changeable) {

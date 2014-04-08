@@ -62,7 +62,7 @@ public class EnableBinding extends ControlPropertyBinding {
     }
 
     private boolean isDataChangeable() {
-        return new UIToolkit(null).isDataChangeable(getControl());
+        return UIToolkit.isDataChangeable(getControl());
     }
 
 }
