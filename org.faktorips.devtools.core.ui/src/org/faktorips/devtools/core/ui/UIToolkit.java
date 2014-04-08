@@ -128,7 +128,8 @@ public class UIToolkit {
         if (c instanceof Group) {
             setForegroundColor(c, changeable);
         }
-        if (!setControlEnabled(c, changeable)) {
+        if (isDataChangeableRelevant(c)) {
+            setControlChangeable(c, changeable);
             return;
         }
         // note: this has to be the last if statement as other controls might derive from
@@ -136,37 +137,31 @@ public class UIToolkit {
         setDataChangeableChildren(c, changeable);
     }
 
-    /**
-     * Setting the control's enable state if it should be changed (depends on the kind of control).
-     * Returns <code>true</code> if {@link #setDataChangeable(Control, boolean)} should continue,
-     * <code>false</code> to return after this call.
-     */
-    private boolean setControlEnabled(Control c, boolean changeable) {
-        if (isDataChangeRelevantControl(c)) {
-            c.setEnabled(changeable);
-            if (c instanceof Combo && !changeable) {
-                setComboTooltip((Combo)c);
-            }
-            return false;
-        }
-        return true;
+    private boolean isDataChangeableRelevant(Control c) {
+        return c instanceof Checkbox || c instanceof Combo || c instanceof Button;
+    }
+
+    private void setControlChangeable(Control c, boolean changeable) {
+        c.setEnabled(changeable);
+        setTooltipIfNecessary(c, changeable);
     }
 
     /**
-     * If the content of a combo is too long to be displayed the whole value cannot be read in case
-     * of a disabled combo. Therefore a tooltip will be introduced. For a disabled Combo the tooltip
-     * has to be set by the according Composite. The tooltip shall only be set if there isn't
-     * already an other tooltip.
+     * In case a combo is disabled it can neither show a tool-tip nor display its contents (if they
+     * are too long). In that case use its parent to display the content as a tool-tip. Does not
+     * change existing tool-tips, however.
      */
+    private void setTooltipIfNecessary(Control c, boolean changeable) {
+        if (c instanceof Combo && !changeable) {
+            setComboTooltip((Combo)c);
+        }
+    }
+
     private void setComboTooltip(Combo combo) {
         Composite comboParent = combo.getParent();
         if (StringUtils.isEmpty(comboParent.getToolTipText())) {
             comboParent.setToolTipText(combo.getText());
         }
-    }
-
-    private boolean isDataChangeRelevantControl(Control c) {
-        return c instanceof Checkbox || c instanceof Combo || c instanceof Button;
     }
 
     private void setDataChangeableChildren(Control c, boolean changeable) {
@@ -197,7 +192,7 @@ public class UIToolkit {
             return ((IDataChangeableReadAccess)c).isDataChangeable();
         } else if (c instanceof Text) {
             return ((Text)c).getEditable();
-        } else if (isDataChangeRelevantControl(c)) {
+        } else if (isDataChangeableRelevant(c)) {
             Object dataChangeable = c.getData(DATA_CHANGEABLE);
             return dataChangeable instanceof Boolean ? Boolean.TRUE.equals(dataChangeable) : true;
         } else {
