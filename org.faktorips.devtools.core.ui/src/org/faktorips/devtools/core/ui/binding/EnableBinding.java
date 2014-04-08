@@ -13,10 +13,8 @@ package org.faktorips.devtools.core.ui.binding;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
  * Binding between the enable property of a SWT control and a boolean property of an abitrary
@@ -33,14 +31,29 @@ public class EnableBinding extends ControlPropertyBinding {
         this.expectedValue = expectedValue;
     }
 
+    /**
+     * This method updates the enabled state of the control referenced by {@link #getControl()}. The
+     * disabled state of a control should be overcontrol an the data changeable state that may be
+     * already set by {@link UIToolkit#setDataChangeable(Control, boolean)}. But the data changeable
+     * state should not be overcontrolled by an enabled state. This behaviour is important because
+     * some controls have different behaviour in read-onlny and disabled state. For example a
+     * {@link Text} control is set by {@link Text#setEditable(boolean)} to read-only state but
+     * {@link Text#setEnabled(boolean)} in disabled state. That leads to following logik:
+     * <ul>
+     * <li>Control is read-only, enabled-binding set enabled: control stays read-only</li>
+     * <li>Control is read-write, enabled-binding set enabled: control stays enabled</li>
+     * <li>Control is read-only, enabled-binding set disabled: control set disabled</li>
+     * <li>Control is read-write, enabled-binding set disabled: control set disabled</li>
+     * </ul>
+     */
     @Override
     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
-            boolean workingModeEdit = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
-            boolean objectEdiable = isObjectEditable(getObject());
             Object value = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-            boolean enabled = value != null && value.equals(expectedValue) && workingModeEdit && objectEdiable;
-            getControl().setEnabled(enabled);
+            boolean enabled = value != null && value.equals(expectedValue);
+            if (isDataChangeable() || !enabled) {
+                getControl().setEnabled(enabled);
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -48,19 +61,8 @@ public class EnableBinding extends ControlPropertyBinding {
         }
     }
 
-    private boolean isObjectEditable(Object object) {
-        if (object instanceof IIpsObjectPartContainer) {
-            IIpsObjectPartContainer partContainer = (IIpsObjectPartContainer)object;
-            return IpsUIPlugin.isEditable(partContainer.getIpsSrcFile());
-        } else if (object instanceof IpsObjectPartPmo) {
-            IIpsObjectPartContainer partContainer = ((IpsObjectPartPmo)object).getIpsObjectPartContainer();
-            return isObjectEditable(partContainer);
-        } else if (object instanceof IIpsSrcFile) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)object;
-            return IpsUIPlugin.isEditable(srcFile);
-        } else {
-            return true;
-        }
+    private boolean isDataChangeable() {
+        return new UIToolkit(null).isDataChangeable(getControl());
     }
 
 }

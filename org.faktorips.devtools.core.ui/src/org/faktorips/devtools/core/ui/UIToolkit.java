@@ -80,6 +80,7 @@ public class UIToolkit {
     public static final int DEFAULT_WIDTH = 100;
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
     private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$
+    private static final String DATA_CHANGEABLE = "dataChangeable"; //$NON-NLS-1$
 
     private static final int FOREGROUND_COLOR_DISABLED = SWT.COLOR_DARK_GRAY;
     private static final int FOREGROUND_COLOR_ENABLED = SWT.COLOR_LIST_FOREGROUND;
@@ -141,21 +142,12 @@ public class UIToolkit {
      * <code>false</code> to return after this call.
      */
     private boolean setControlEnabled(Control c, boolean changeable) {
-        if (c instanceof Checkbox) {
-            ((Checkbox)c).setEnabled(changeable);
-            return false;
-        }
-        if (c instanceof Combo) {
-            Combo combo = (Combo)c;
-            combo.setEnabled(changeable);
-            if (!changeable) {
-                setComboTooltip(combo);
+        if (isDataChangeRelevantControl(c)) {
+            c.setEnabled(changeable);
+            if (c instanceof Combo && !changeable) {
+                setComboTooltip((Combo)c);
+                return false;
             }
-            return false;
-        }
-        if (c instanceof Button) {
-            ((Button)c).setEnabled(changeable);
-            return false;
         }
         return true;
     }
@@ -173,12 +165,43 @@ public class UIToolkit {
         }
     }
 
+    private boolean isDataChangeRelevantControl(Control c) {
+        return c instanceof Checkbox || c instanceof Combo || c instanceof Button;
+    }
+
     private void setDataChangeableChildren(Control c, boolean changeable) {
         if (c instanceof Composite) {
             Control[] children = ((Composite)c).getChildren();
             for (Control element : children) {
                 setDataChangeable(element, changeable);
             }
+        }
+    }
+
+    /**
+     * Checks whether the given control's data are changeable according to
+     * {@link #setDataChangeable(Control, boolean)}. In contrast to
+     * {@link #setDataChangeable(Control, boolean)} this method could only checks the given control
+     * and do not check any child.
+     * 
+     * @return <code>true</code> if the data seems to be changeable, that means it is not set to be
+     *         read-only by {@link #setDataChangeable(Control, boolean)}. That does not necessarily
+     *         means that the control is enabled. For example a {@link Text} control may be editable
+     *         (by checking {@link Text#getEditable()} but disabled by checking
+     *         {@link Text#isEnabled()}.
+     */
+    public boolean isDataChangeable(Control c) {
+        if (c == null) {
+            return false;
+        } else if (c instanceof IDataChangeableReadAccess) {
+            return ((IDataChangeableReadAccess)c).isDataChangeable();
+        } else if (c instanceof Text) {
+            return ((Text)c).getEditable();
+        } else if (isDataChangeRelevantControl(c)) {
+            Object dataChangeable = c.getData(DATA_CHANGEABLE);
+            return dataChangeable instanceof Boolean ? Boolean.TRUE.equals(dataChangeable) : true;
+        } else {
+            return true;
         }
     }
 
