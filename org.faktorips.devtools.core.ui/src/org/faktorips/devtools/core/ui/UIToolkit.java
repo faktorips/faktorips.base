@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -148,19 +147,12 @@ public class UIToolkit {
 
     /**
      * In case a combo is disabled it can neither show a tool-tip nor display its contents (if they
-     * are too long). In that case use its parent to display the content as a tool-tip. Does not
-     * change existing tool-tips, however.
+     * are too long). In that case use its parent to display the content as a tool-tip.
      */
     private void setTooltipIfNecessary(Control c, boolean changeable) {
         if (c instanceof Combo && !changeable) {
-            setComboTooltip((Combo)c);
-        }
-    }
-
-    private void setComboTooltip(Combo combo) {
-        Composite comboParent = combo.getParent();
-        if (StringUtils.isEmpty(comboParent.getToolTipText())) {
-            comboParent.setToolTipText(combo.getText());
+            Combo combo = (Combo)c;
+            combo.getParent().setToolTipText(combo.getText());
         }
     }
 
