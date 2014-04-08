@@ -146,8 +146,8 @@ public class UIToolkit {
             c.setEnabled(changeable);
             if (c instanceof Combo && !changeable) {
                 setComboTooltip((Combo)c);
-                return false;
             }
+            return false;
         }
         return true;
     }
