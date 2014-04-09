@@ -261,22 +261,21 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         }
     }
 
+    @SuppressWarnings("restriction")
     @Override
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IActionBarConfigurer2 actionBarConfigurer = (IActionBarConfigurer2)getActionBarConfigurer();
         coolBar.add(new GroupMarker(IIDEActionConstants.GROUP_FILE));
-        {
-            // File Group
-            IToolBarManager fileToolBar = actionBarConfigurer.createToolBarManager();
-            fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_GROUP));
-            fileToolBar.add(saveAction);
-            fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_EXT));
-            fileToolBar.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        // File Group
+        IToolBarManager fileToolBar = actionBarConfigurer.createToolBarManager();
+        fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_GROUP));
+        fileToolBar.add(saveAction);
+        fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_EXT));
+        fileToolBar.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-            // Add to the cool bar manager
-            coolBar.add(actionBarConfigurer.createToolBarContributionItem(fileToolBar,
-                    IWorkbenchActionConstants.TOOLBAR_FILE));
-        }
+        // Add to the cool bar manager
+        coolBar.add(actionBarConfigurer.createToolBarContributionItem(fileToolBar,
+                IWorkbenchActionConstants.TOOLBAR_FILE));
 
         coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
