@@ -43,8 +43,6 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptTypeAssociation extends Association implements IPolicyCmptTypeAssociation {
 
-    public static final String PROPERTY_CONSTRAINED_BY_PRODUCT_STRUCTURE_CONFIGURABLE = "constrainedByProductStructureConfigurable"; //$NON-NLS-1$
-
     private boolean qualified = false;
 
     private boolean configurable = true;
@@ -169,14 +167,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     public boolean isConstrainedByProductStructure(IIpsProject ipsProject) throws CoreException {
         return findMatchingProductCmptTypeAssociation(ipsProject) != null;
-    }
-
-    /**
-     * This method should only be used for the method bindEnabled of configurable Checkboxes. Don't
-     * use this method otherwise.
-     */
-    public boolean isConstrainedByProductStructureConfigurable() throws CoreException {
-        return isConstrainedByProductStructure(getIpsProject());
     }
 
     @Override

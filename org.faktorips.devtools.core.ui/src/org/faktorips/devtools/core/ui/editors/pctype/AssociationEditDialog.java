@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -457,8 +456,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     Messages.AssociationEditDialog_check_configuration);
             getBindingContext().bindContent(checkbox, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE);
-            getBindingContext().bindEnabled(checkbox, association,
-                    PolicyCmptTypeAssociation.PROPERTY_CONSTRAINED_BY_PRODUCT_STRUCTURE_CONFIGURABLE);
+            getBindingContext().bindEnabled(checkbox, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED);
         }
     }
 
@@ -471,7 +470,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
         public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
-
+        public static final String PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED = "configurableCheckboxEnabled"; //$NON-NLS-1$
         private boolean matchingExplicitly;
 
         private String actualConfiguredAssociationSourceName;
@@ -486,6 +485,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         private IPolicyCmptTypeAssociation getAssociation() {
             return (IPolicyCmptTypeAssociation)super.getIpsObjectPartContainer();
+        }
+
+        public boolean isConfigurableCheckboxEnabled() {
+            try {
+                return getAssociation().isConstrainedByProductStructure(ipsProject);
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+            return false;
         }
 
         public String getQualificationLabel() {
@@ -938,7 +946,5 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             return group;
         }
-
     }
-
 }
