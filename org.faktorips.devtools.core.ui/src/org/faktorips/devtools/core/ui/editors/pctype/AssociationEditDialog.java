@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -452,25 +453,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private void createConfigurationGroup(Group groupMatching) {
-            final Checkbox checkbox = getToolkit().createCheckbox(groupMatching,
+            Checkbox checkbox = getToolkit().createCheckbox(groupMatching,
                     Messages.AssociationEditDialog_check_configuration);
             getBindingContext().bindContent(checkbox, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE);
-            getBindingContext().add(
-                    new ControlPropertyBinding(checkbox, association, IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE,
-                            Boolean.TYPE) {
-
-                        @Override
-                        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                            try {
-                                boolean constrainedByProductStructure = association
-                                        .isConstrainedByProductStructure(ipsProject);
-                                checkbox.setEnabled(constrainedByProductStructure);
-                            } catch (CoreException e) {
-                                IpsPlugin.log(e);
-                            }
-                        }
-                    });
+            getBindingContext().bindEnabled(checkbox, association,
+                    PolicyCmptTypeAssociation.PROPERTY_CONSTRAINED_BY_PRODUCT_STRUCTURE_CONFIGURABLE);
         }
     }
 
