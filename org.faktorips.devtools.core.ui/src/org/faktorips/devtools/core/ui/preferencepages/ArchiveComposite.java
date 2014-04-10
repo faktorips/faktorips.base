@@ -64,38 +64,29 @@ public class ArchiveComposite extends Composite {
     private boolean dataChanged = false;
 
     /**
-     * Referenced IPS archives for the current IPS projects have been modified
-     * 
-     * @return true if current project's archives have been modified, false otherwise
-     */
-    public final boolean isDataChanged() {
-        return dataChanged;
-    }
-
-    /**
      * @param parent Composite
      */
     public ArchiveComposite(Composite parent) {
         super(parent, SWT.NONE);
-
+    
         toolkit = new UIToolkit(null);
-
+    
         setLayout(new GridLayout(1, true));
-
+    
         Composite tableWithButtons = toolkit.createGridComposite(this, 2, false, true);
         tableWithButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+    
         IpsArchiveAdapter archiveAdapter = new IpsArchiveAdapter();
-
+    
         Label tableViewerLabel = new Label(tableWithButtons, SWT.NONE);
         tableViewerLabel.setText(Messages.ArchiveComposite_viewer_label);
         GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
         gd.horizontalSpan = 2;
         tableViewerLabel.setLayoutData(gd);
-
+    
         tableViewer = createViewer(tableWithButtons, archiveAdapter);
         tableViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+    
         Composite buttons = toolkit.createComposite(tableWithButtons);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);
@@ -104,6 +95,15 @@ public class ArchiveComposite extends Composite {
         buttonLayout.marginHeight = 0;
         buttons.setLayout(buttonLayout);
         createButtons(buttons, archiveAdapter);
+    }
+
+    /**
+     * Referenced IPS archives for the current IPS projects have been modified
+     * 
+     * @return true if current project's archives have been modified, false otherwise
+     */
+    public final boolean isDataChanged() {
+        return dataChanged;
     }
 
     private void createButtons(Composite buttons, IpsArchiveAdapter archiveAdapter) {
@@ -245,6 +245,22 @@ public class ArchiveComposite extends Composite {
         }
     }
 
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            tableViewer.refresh();
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    tableViewer.refresh();
+                }
+            });
+        }
+    }
+
     private class IpsArchiveAdapter implements SelectionListener, ISelectionChangedListener {
 
         @Override
@@ -272,22 +288,6 @@ public class ArchiveComposite extends Composite {
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // nothing to do
-        }
-    }
-
-    /**
-     * Manually update the UI
-     */
-    public void doUpdateUI() {
-        if (Display.getCurrent() != null) {
-            tableViewer.refresh();
-        } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
         }
     }
 

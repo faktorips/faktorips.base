@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 import org.faktorips.devtools.core.ui.editors.pctype.AssociationDerivedUnionGroup;
 
 /**
@@ -38,8 +39,6 @@ import org.faktorips.devtools.core.ui.editors.pctype.AssociationDerivedUnionGrou
  */
 public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage,
         IHiddenWizardPage, IDefaultFocusPage {
-
-    private static final String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
 
     private NewPcTypeAssociationWizard wizard;
     private IProductCmptTypeAssociation association;
@@ -53,12 +52,9 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private Text targetRolePluralTextProdCmptType;
     private CardinalityField cardinalityFieldMinProdCmptType;
     private CardinalityField cardinalityFieldMaxProdCmptType;
-    private Text descriptionText;
+    private DescriptionEditComposite descriptionText;
     private Text targetText;
     private Combo typeCombo;
-    private Text unionText;
-    private Checkbox derivedUnion;
-    private Checkbox subsetCheckbox;
 
     /**
      * Composites to dispose an recreate the page content if the inverse association wil be
@@ -98,7 +94,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
         // description
         descriptionText = wizard.createDescriptionText(pageComposite, 2);
-        visibleProperties.add(PROPERTY_DESCRIPTION);
 
         setControl(pageComposite);
     }
@@ -215,17 +210,11 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         bindingContext.removeBindings(targetRolePluralTextProdCmptType);
         bindingContext.removeBindings(cardinalityFieldMinProdCmptType.getControl());
         bindingContext.removeBindings(cardinalityFieldMaxProdCmptType.getControl());
-        bindingContext.removeBindings(descriptionText);
-
-        bindingContext.removeBindings(derivedUnion);
-        bindingContext.removeBindings(subsetCheckbox);
-        bindingContext.removeBindings(unionText);
 
         targetRoleSingularTextProdCmptType.setText(""); //$NON-NLS-1$
         targetRolePluralTextProdCmptType.setText(""); //$NON-NLS-1$
         cardinalityFieldMinProdCmptType.setText(""); //$NON-NLS-1$
         cardinalityFieldMaxProdCmptType.setText(""); //$NON-NLS-1$
-        descriptionText.setText(""); //$NON-NLS-1$
     }
 
     private void bindAllControls(IProductCmptTypeAssociation productCmptAssociation) {
@@ -242,7 +231,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
                 IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         bindingContext.bindContent(cardinalityFieldMaxProdCmptType, productCmptAssociation,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(descriptionText, productCmptAssociation, PROPERTY_DESCRIPTION);
+        descriptionText.setDescribedElement(productCmptAssociation);
 
         derivedUnionGroup.bindContent(bindingContext, association);
 

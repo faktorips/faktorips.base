@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 
 /**
  * Page to specify the inverse association, either define properties for a new association, or
@@ -40,8 +41,6 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
  */
 public class InverseAssociationPropertyPage extends WizardPage implements IBlockedValidationWizardPage,
         IHiddenWizardPage, IDefaultFocusPage {
-
-    private static final String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
 
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
@@ -62,7 +61,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
 
     private String prevSelExistingAssociation;
     private IPolicyCmptTypeAssociation prevInverseAssociation;
-    private Text description;
+    private DescriptionEditComposite description;
 
     /**
      * Composites to dispose an recreate the page content if the inverse association wil be
@@ -130,7 +129,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         createMainProperties(parent);
 
         description = wizard.createDescriptionText(parent, 2);
-        visibleProperties.add(PROPERTY_DESCRIPTION);
 
         return parent;
     }
@@ -215,7 +213,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         bindingContext.removeBindings(targetRolePluralText);
         bindingContext.removeBindings(cardinalityFieldMin.getControl());
         bindingContext.removeBindings(cardinalityFieldMax.getControl());
-        bindingContext.removeBindings(description);
 
         targetRoleSingularText.setText(""); //$NON-NLS-1$
         targetRolePluralText.setText(""); //$NON-NLS-1$
@@ -223,7 +220,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         cardinalityFieldMax.setText(""); //$NON-NLS-1$
         targetText.setText(""); //$NON-NLS-1$
         typeText.setText(""); //$NON-NLS-1$
-        description.setText(""); //$NON-NLS-1$
     }
 
     private void bindAllControls(IPolicyCmptTypeAssociation association) {
@@ -231,7 +227,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         bindingContext.bindContent(targetRolePluralText, association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         bindingContext.bindContent(cardinalityFieldMin, association, IAssociation.PROPERTY_MIN_CARDINALITY);
         bindingContext.bindContent(cardinalityFieldMax, association, IAssociation.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(description, association, PROPERTY_DESCRIPTION);
+        description.setDescribedElement(association);
 
         targetText.setText(association.getTarget());
         typeText.setText(association.getAssociationType().getName());
