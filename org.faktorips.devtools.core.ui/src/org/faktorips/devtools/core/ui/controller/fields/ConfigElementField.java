@@ -58,7 +58,9 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
                     ValueSetType.ENUM);
             if (enumValueSetAllowed) {
                 ValueDatatype valueDatatype = configElement.findValueDatatype(getIpsProject());
-                if (valueDatatype.isEnum()) {
+                if (valueDatatype == null) {
+                    return false;
+                } else if (valueDatatype.isEnum()) {
                     return true;
                 }
                 IValueSet modelValueSet = configElement.findPcTypeAttribute(getIpsProject()).getValueSet();
