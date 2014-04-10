@@ -34,9 +34,9 @@ import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
  */
 public class DescriptionPropertySection extends AbstractPropertySection {
 
+    private BindingContext bindingContext;
+    private UIToolkit uiToolkit;
     private DescriptionEditComposite descriptionField;
-    protected BindingContext bindingContext;
-    protected UIToolkit uiToolkit;
 
     @Override
     public final void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {

@@ -25,24 +25,23 @@ import org.faktorips.util.message.MessageList;
  */
 public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute {
 
-    String type;
-    private Object value;
-
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "IIPSOBJECTPATHENTRYATTRIBUTE-"; //$NON-NLS-1$
-
+    public static final String MSGCODE_PREFIX = "IIPSOBJECTPATHENTRYATTRIBUTE-"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that a related folder is missing.
      */
-    public final static String MSGCODE_MISSING_FOLDER = MSGCODE_PREFIX + "MissingFolder"; //$NON-NLS-1$
-
+    public static final String MSGCODE_MISSING_FOLDER = MSGCODE_PREFIX + "MissingFolder"; //$NON-NLS-1$
     /**
      * Message code constant to indicate the source folder must be a direct child of the project and
      * it isn't.
      */
-    public final static String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROJECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
+    public static final String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROJECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
+
+    private String type;
+
+    private Object value;
 
     /**
      * 
@@ -51,15 +50,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
      * @param value object to be set
      */
     public IpsObjectPathEntryAttribute(String type, Object value) {
-        if (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type)
-                || IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type)
-                || IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
-                || IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
-                || IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED.equals(type)
-                || IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE.equals(type)
-                || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
-                || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
-                || IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH.equals(type)) {
+        if (isDerivedOrMergable(type)) {
             this.type = type;
             this.value = value;
             return;
@@ -70,6 +61,24 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
         }
         throw new IllegalArgumentException(
                 "Attribute type must be one of the constants defined in IIpsObjectPathEntryAttribute"); //$NON-NLS-1$
+    }
+
+    private boolean isDerivedOrMergable(String type) {
+        return isDerived(type) || isMergable(type) || IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH.equals(type);
+    }
+
+    private boolean isDerived(String type) {
+        return IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type)
+                || IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
+                || IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED.equals(type)
+                || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type);
+    }
+
+    private boolean isMergable(String type) {
+        return IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type)
+                || IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
+                || IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE.equals(type)
+                || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type);
     }
 
     @Override

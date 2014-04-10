@@ -1,4 +1,5 @@
 // CSOFF: FileLengthCheck
+// CSOFF: InnerTypeLastCheck
 // TODO This class is a huge ugly moloch and needs to be completely rewritten scratch.
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
@@ -1589,6 +1590,7 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * Creates the edit fields for the test value parameter
      */
+    @SuppressWarnings("deprecation")
     private void createTestValueParamDetails(Composite editFieldsComposite,
             ITestValueParameter parameter,
             IpsObjectUIController uiController) {

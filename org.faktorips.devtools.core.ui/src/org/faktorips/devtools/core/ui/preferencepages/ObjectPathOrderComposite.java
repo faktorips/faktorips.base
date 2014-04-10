@@ -152,49 +152,15 @@ public class ObjectPathOrderComposite extends Composite {
         }
     }
 
-    // widget action handling
-    private class IpsPathOrderAdapter implements ISelectionChangedListener, SelectionListener {
-
-        @Override
-        public void selectionChanged(SelectionChangedEvent event) {
-            if (event.getSelection().isEmpty()) {
-                setButtonEnabledStates(false);
-            } else {
-                setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
-            }
-        }
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            if (e.getSource() == moveUpButton) {
-                moveSelectedEntries(true);
-            } else if (e.getSource() == moveDownButton) {
-                moveSelectedEntries(false);
-            } else if (e.getSource() == moveTopButton) {
-                moveEntriesTopBottom(true);
-            } else if (e.getSource() == moveBottomButton) {
-                moveEntriesTopBottom(false);
-            }
-
-            setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
-            tableViewer.refresh(false);
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // nothing to do
-        }
-    }
-
     private void moveSelectedEntries(boolean up) {
         Table table = tableViewer.getTable();
-
+    
         int[] selectionIndices = table.getSelectionIndices();
         int[] newSelection = ipsObjectPath.moveEntries(selectionIndices, up);
-
+    
         tableViewer.refresh(false);
         table.setSelection(newSelection);
-
+    
         dataChanged = true;
     }
 
@@ -204,11 +170,11 @@ public class ObjectPathOrderComposite extends Composite {
      */
     private void moveEntriesTopBottom(boolean top) {
         int[] currentSelection = tableViewer.getTable().getSelectionIndices();
-
+    
         if (currentSelection.length == 0) {
             return;
         }
-
+    
         if (top) {
             for (int i = 0; i < currentSelection[currentSelection.length - 1]; i++) {
                 moveSelectedEntries(true);
@@ -244,6 +210,40 @@ public class ObjectPathOrderComposite extends Composite {
                     tableViewer.refresh();
                 }
             });
+        }
+    }
+
+    // widget action handling
+    private class IpsPathOrderAdapter implements ISelectionChangedListener, SelectionListener {
+
+        @Override
+        public void selectionChanged(SelectionChangedEvent event) {
+            if (event.getSelection().isEmpty()) {
+                setButtonEnabledStates(false);
+            } else {
+                setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
+            }
+        }
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            if (e.getSource() == moveUpButton) {
+                moveSelectedEntries(true);
+            } else if (e.getSource() == moveDownButton) {
+                moveSelectedEntries(false);
+            } else if (e.getSource() == moveTopButton) {
+                moveEntriesTopBottom(true);
+            } else if (e.getSource() == moveBottomButton) {
+                moveEntriesTopBottom(false);
+            }
+
+            setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
+            tableViewer.refresh(false);
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
         }
     }
 

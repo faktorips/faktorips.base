@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 public interface IIpsObjectPart extends IIpsObjectPartContainer {
 
-    public final static String PROPERTY_ID = "id"; //$NON-NLS-1$
+    public static final String PROPERTY_ID = "id"; //$NON-NLS-1$
 
     /**
      * The part's id that uniquely identifies it in it's parent.

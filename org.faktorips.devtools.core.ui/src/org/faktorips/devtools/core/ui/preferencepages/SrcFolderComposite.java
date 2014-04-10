@@ -329,58 +329,67 @@ public class SrcFolderComposite extends Composite {
             if (selectedElement instanceof IpsObjectPathEntryAttribute) {
                 IIpsObjectPathEntryAttribute attribute = (IIpsObjectPathEntryAttribute)selectedElement;
 
-                if (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources()) {
-                    OutputFolderEditDialog editDialog = new OutputFolderEditDialog(getShell(), srcFolderEntry,
-                            attribute);
-                    if (editDialog.open() == Window.OK) {
-                        IContainer newOutputFolder = editDialog.getSelectedFolder();
-                        if (attribute.isFolderForDerivedSources()) {
-                            srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles((IFolder)newOutputFolder
-                                    .getAdapter(IFolder.class));
-                        } else {
-                            srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles((IFolder)newOutputFolder
-                                    .getAdapter(IFolder.class));
-                        }
-                        dataChanged = true;
-                    }
-                } else if (attribute.isPackageNameForDerivedSources()) {
-
-                    PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
-                    if (editDialog.open() == Window.OK) {
-                        String newPackageName = editDialog.getPackageName();
-                        srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
-                        dataChanged = true;
-                    }
-                } else if (attribute.isPackageNameForMergableSources()) {
-                    PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
-                    if (editDialog.open() == Window.OK) {
-                        String newPackageName = editDialog.getPackageName();
-                        srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
-                        dataChanged = true;
-                    }
-                } else if (attribute.isTocPath()) {
-                    String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
-                    IInputValidator inputValidator = new IInputValidator() {
-                        @Override
-                        public String isValid(String newText) {
-                            if (newText == null || newText.length() < 1) {
-                                return Messages.SrcFolderComposite_filename_invalid_validator;
-                            }
-                            return null;
-                        }
-                    };
-                    InputDialog newTocPathDialog = new InputDialog(getShell(),
-                            Messages.SrcFolderComposite_tocpath_title, Messages.SrcFolderComposite_tocpath_message,
-                            tocPath, inputValidator);
-
-                    if (newTocPathDialog.open() == Window.OK) {
-                        srcFolderEntry.setBasePackageRelativeTocPath(newTocPathDialog.getValue());
-                        dataChanged = true;
-                    }
-                }
+                createEditDialogForEntryAttribute(srcFolderEntry, attribute);
             }
         }
         treeViewer.refresh();
+    }
+
+    private void createEditDialogForEntryAttribute(IIpsSrcFolderEntry srcFolderEntry,
+            IIpsObjectPathEntryAttribute attribute) {
+        if (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources()) {
+            OutputFolderEditDialog editDialog = new OutputFolderEditDialog(getShell(), srcFolderEntry,
+                    attribute);
+            if (editDialog.open() == Window.OK) {
+                IContainer newOutputFolder = editDialog.getSelectedFolder();
+                if (attribute.isFolderForDerivedSources()) {
+                    srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles((IFolder)newOutputFolder
+                            .getAdapter(IFolder.class));
+                } else {
+                    srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles((IFolder)newOutputFolder
+                            .getAdapter(IFolder.class));
+                }
+                dataChanged = true;
+            }
+        } else if (attribute.isPackageNameForDerivedSources()) {
+
+            PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
+            if (editDialog.open() == Window.OK) {
+                String newPackageName = editDialog.getPackageName();
+                srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
+                dataChanged = true;
+            }
+        } else if (attribute.isPackageNameForMergableSources()) {
+            PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
+            if (editDialog.open() == Window.OK) {
+                String newPackageName = editDialog.getPackageName();
+                srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
+                dataChanged = true;
+            }
+        } else if (attribute.isTocPath()) {
+            createTocPathDialog(srcFolderEntry);
+        }
+    }
+
+    private void createTocPathDialog(IIpsSrcFolderEntry srcFolderEntry) {
+        String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
+        IInputValidator inputValidator = new IInputValidator() {
+            @Override
+            public String isValid(String newText) {
+                if (newText == null || newText.length() < 1) {
+                    return Messages.SrcFolderComposite_filename_invalid_validator;
+                }
+                return null;
+            }
+        };
+        InputDialog newTocPathDialog = new InputDialog(getShell(),
+                Messages.SrcFolderComposite_tocpath_title, Messages.SrcFolderComposite_tocpath_message,
+                tocPath, inputValidator);
+
+        if (newTocPathDialog.open() == Window.OK) {
+            srcFolderEntry.setBasePackageRelativeTocPath(newTocPathDialog.getValue());
+            dataChanged = true;
+        }
     }
 
     private ElementTreeSelectionDialog createSelectFolderDialog() {
@@ -418,38 +427,7 @@ public class SrcFolderComposite extends Composite {
                 Composite composite = (Composite)super.createDialogArea(parent);
 
                 Button newSrcFolderButton = new Button(composite, SWT.NONE);
-                newSrcFolderButton.addSelectionListener(new SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(SelectionEvent event) {
-                        IInputValidator validator = new IInputValidator() {
-                            @Override
-                            public String isValid(String folderName) {
-                                if (folderName == null || folderName.length() == 0) {
-                                    return Messages.SrcFolderComposite_enterFolderName_validator;
-                                }
-                                if (ipsObjectPath.getIpsProject().getProject().getFolder(folderName).exists()) {
-                                    return Messages.SrcFolderComposite_folder_already_exists_validator;
-                                }
-                                return null;
-                            }
-                        };
-
-                        InputDialog dialog = new InputDialog(getShell(),
-                                Messages.SrcFolderComposite_create_new_folder_title,
-                                Messages.SrcFolderComposite_create_new_folder_message,
-                                Messages.SrcFolderComposite_create_new_folder_defaultText, validator);
-
-                        if (dialog.open() == Window.OK) {
-                            IFolder newFolder = ipsObjectPath.getIpsProject().getProject().getFolder(dialog.getValue());
-                            try {
-                                newFolder.create(true, false, null);
-                            } catch (CoreException e) {
-                                IpsPlugin.logAndShowErrorDialog(e);
-                            }
-                        }
-
-                    }
-                });
+                newSrcFolderButton.addSelectionListener(new SelectionAdapterExtension());
                 newSrcFolderButton.setText(Messages.SrcFolderComposite_create_new_folder_title);
 
                 return composite;
@@ -535,6 +513,38 @@ public class SrcFolderComposite extends Composite {
         }
 
         dataChanged = true;
+    }
+
+    private final class SelectionAdapterExtension extends SelectionAdapter {
+        @Override
+        public void widgetSelected(SelectionEvent event) {
+            IInputValidator validator = new IInputValidator() {
+                @Override
+                public String isValid(String folderName) {
+                    if (folderName == null || folderName.length() == 0) {
+                        return Messages.SrcFolderComposite_enterFolderName_validator;
+                    }
+                    if (ipsObjectPath.getIpsProject().getProject().getFolder(folderName).exists()) {
+                        return Messages.SrcFolderComposite_folder_already_exists_validator;
+                    }
+                    return null;
+                }
+            };
+
+            InputDialog dialog = new InputDialog(getShell(), Messages.SrcFolderComposite_create_new_folder_title,
+                    Messages.SrcFolderComposite_create_new_folder_message,
+                    Messages.SrcFolderComposite_create_new_folder_defaultText, validator);
+
+            if (dialog.open() == Window.OK) {
+                IFolder newFolder = ipsObjectPath.getIpsProject().getProject().getFolder(dialog.getValue());
+                try {
+                    newFolder.create(true, false, null);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+
+        }
     }
 
     private class IpsSrcFolderAdapter implements ISelectionChangedListener, SelectionListener, ValueChangeListener {

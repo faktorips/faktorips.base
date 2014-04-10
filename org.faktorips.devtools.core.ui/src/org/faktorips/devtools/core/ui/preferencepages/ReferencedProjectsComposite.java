@@ -214,6 +214,22 @@ public class ReferencedProjectsComposite extends Composite {
         return resultList.toArray(refIpsProject);
     }
 
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            tableViewer.refresh();
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    tableViewer.refresh();
+                }
+            });
+        }
+    }
+
     private static final class TableLabelProvider extends LabelProvider {
 
         private static final String PROJECT_IMG = "IpsProject.gif"; //$NON-NLS-1$
@@ -260,22 +276,6 @@ public class ReferencedProjectsComposite extends Composite {
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // nothing to do
-        }
-    }
-
-    /**
-     * Manually update the UI
-     */
-    public void doUpdateUI() {
-        if (Display.getCurrent() != null) {
-            tableViewer.refresh();
-        } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
         }
     }
 
