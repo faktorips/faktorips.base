@@ -19,6 +19,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -37,6 +38,7 @@ public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        IpsPlugin.getDefault().setTestMode(true);
         IIpsProject project = newIpsProject();
         ProductCmpt productCmpt = newProductCmpt(project, "ProductCmpt");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
@@ -49,7 +51,7 @@ public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOpenEditorWithConfigElementAndEnumDatatype() throws PartInitException {
+    public void testOpenEditorWithConfigElementAndEnumDatatype() throws PartInitException, Exception {
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .openEditor(editorInput, EDITOR_ID);
 
